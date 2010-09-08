@@ -1,0 +1,47 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: PK2LevelEditor - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\WINDOWS\TEMP\RSP10D2.TMP" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /Fp"Debug/PK2LevelEditor.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"G:\Microsoft Visual Studio\MyProjects\PK2LevelEditor\LevelEditor.cpp"
+]
+Creating command line "cl.exe @C:\WINDOWS\TEMP\RSP10D2.TMP" 
+Creating temporary file "C:\WINDOWS\TEMP\RSP10D3.TMP" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/PK2LevelEditor.pdb" /debug /machine:I386 /out:"Debug/PK2LevelEditor.exe" /pdbtype:sept 
+".\Debug\LevelEditor.obj"
+".\Debug\PisteDraw.obj"
+".\Debug\PisteFont.obj"
+".\Debug\PisteInput.obj"
+".\Debug\PisteLanguage.obj"
+".\Debug\PisteLog.obj"
+".\Debug\PisteSFX.obj"
+".\Debug\PisteSound.obj"
+".\Debug\PisteWait.obj"
+".\Debug\PK2Map.obj"
+".\Debug\PK2Sprite.obj"
+".\Debug\Resource.res"
+"..\..\..\mssdk\DirectX7\lib\ddraw.lib"
+"..\..\..\mssdk\DirectX7\lib\dinput.lib"
+"..\..\Vc98\Lib\Winmm.lib"
+"..\..\..\mssdk\DirectX7\lib\dsound.lib"
+]
+Creating command line "link.exe @C:\WINDOWS\TEMP\RSP10D3.TMP"
+<h3>Output Window</h3>
+Compiling...
+LevelEditor.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+PK2LevelEditor.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

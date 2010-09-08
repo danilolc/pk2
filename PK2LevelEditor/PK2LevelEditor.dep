@@ -1,0 +1,42 @@
+# Microsoft Developer Studio Generated Dependency File, included by PK2LevelEditor.mak
+
+.\LevelEditor.cpp : \
+	"..\..\vc98\include\basetsd.h"\
+	"..\PisteEngine\PisteDraw.h"\
+	"..\PisteEngine\PisteInput.h"\
+	"..\PisteEngine\PisteWait.h"\
+	"..\Pk2\PK2Map.h"\
+	"..\pk2\pk2sprite.h"\
+	
+
+..\PisteEngine\PisteDraw.cpp : \
+	"..\..\vc98\include\basetsd.h"\
+	"..\PisteEngine\PisteDraw.h"\
+	"..\PisteEngine\PisteFont.h"\
+	
+
+..\PisteEngine\PisteFont.cpp : \
+	"..\..\vc98\include\basetsd.h"\
+	"..\PisteEngine\PisteFont.h"\
+	
+
+..\PisteEngine\PisteInput.cpp : \
+	"..\..\vc98\include\basetsd.h"\
+	"..\PisteEngine\PisteInput.h"\
+	
+
+..\PisteEngine\PisteWait.cpp : \
+	"..\..\vc98\include\basetsd.h"\
+	"..\PisteEngine\PisteWait.h"\
+	
+
+..\Pk2\PK2Map.cpp : \
+	"..\..\vc98\include\basetsd.h"\
+	"..\PisteEngine\PisteDraw.h"\
+	"..\Pk2\PK2Map.h"\
+	
+
+.\Resource.rc : \
+	".\cursor1.cur"\
+	".\GameIcon.ico"\
+	

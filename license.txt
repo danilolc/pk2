@@ -1,0 +1,3 @@
+This package contains the source codes for the game Pekka Kana 2, written by Janne Kivilahti.
+The game and it's code are copyrighted by Janne Kivilahti, but you can modify and use the code freely
+as long as the original author is mentioned.
