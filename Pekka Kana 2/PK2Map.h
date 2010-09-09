@@ -61,6 +61,21 @@ void PK2Kartta_Cos_Sin(double *cost, double *sint);
 void PK2Kartta_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys);
 void PK2Kartta_Aseta_Ruudun_Mitat(int leveys, int korkeus);
 
+
+#ifndef WIN32
+ #include <string.h>
+ #define _MAX_PATH 128
+
+typedef struct {
+	int left, top, right, bottom;
+} RECT;
+
+void itoa(int n, char s[], int radix);
+void ltoa(long n, char s[], int radix);
+void strlwr(char *s);
+#endif
+
+
 class PK2Kartta
 {
 	public:

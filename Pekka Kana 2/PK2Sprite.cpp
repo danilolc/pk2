@@ -1,13 +1,19 @@
+#ifdef WIN32
 #include <windows.h>   
 #include <windowsx.h> 
 #include <mmsystem.h>
+#include <io.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
-#include <fstream.h>
+#include <fstream>
 #include "PK2Sprite.h"
-#include "D:\Visual Studio\MyProjects\PisteEngine\PisteDraw.h"
-#include "D:\Visual Studio\MyProjects\PisteEngine\PisteSound.h"
+#include "PisteDraw.h"
+#include "PisteSound.h"
 
+#define _MAX_PATH 128
+
+using namespace std;
 
 /* -------- PK2Sprite Prototyyppi ------------------------------------------------------------------ */
 
@@ -84,10 +90,10 @@ PK2Sprite_Prototyyppi::PK2Sprite_Prototyyppi()
 		AI[i] = AI_EI;
 	}
 
-	for (i=0;i<SPRITE_MAX_FRAMEJA;i++)
+	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
 		framet[i] = 0;
 
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			animaatiot[i].sekvenssi[j] = 0;
@@ -178,10 +184,10 @@ void PK2Sprite_Prototyyppi::Kopioi(const PK2Sprite_Prototyyppi &proto)
 		AI[i] = proto.AI[i];
 	}
 
-	for (i=0;i<SPRITE_MAX_FRAMEJA;i++)
+	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
 		framet[i] = proto.framet[i];
 
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
@@ -258,7 +264,9 @@ void PK2Sprite_Prototyyppi::Uusi()
 	bonus_aina		= false;
 	osaa_uida		= false;
 
-	for (int i=0;i<SPRITE_MAX_AI;i++)
+	int i=0;
+
+	for (i=0;i<SPRITE_MAX_AI;i++)
 	{
 		AI[i] = AI_EI;
 	}
@@ -354,7 +362,7 @@ PK2Sprite_Prototyyppi10 PK2Sprite_Prototyyppi::GetProto10()
 		proto.AI[i] = AI[i];
 	}
 	
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			proto.animaatiot[i].sekvenssi[j] = animaatiot[i].sekvenssi[j];
@@ -418,7 +426,7 @@ PK2Sprite_Prototyyppi11 PK2Sprite_Prototyyppi::GetProto11()
 		proto.AI[i] = AI[i];
 	}
 	
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			proto.animaatiot[i].sekvenssi[j] = animaatiot[i].sekvenssi[j];
@@ -489,7 +497,7 @@ PK2Sprite_Prototyyppi12 PK2Sprite_Prototyyppi::GetProto12()
 		proto.AI[i] = AI[i];
 	}
 	
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			proto.animaatiot[i].sekvenssi[j] = animaatiot[i].sekvenssi[j];
@@ -568,7 +576,7 @@ PK2Sprite_Prototyyppi13 PK2Sprite_Prototyyppi::GetProto13()
 		proto.AI[i] = AI[i];
 	}
 	
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			proto.animaatiot[i].sekvenssi[j] = animaatiot[i].sekvenssi[j];
@@ -624,7 +632,7 @@ void PK2Sprite_Prototyyppi::SetProto10(PK2Sprite_Prototyyppi10 &proto)
 		AI[i] = proto.AI[i];
 	}
 	
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
@@ -684,7 +692,7 @@ void PK2Sprite_Prototyyppi::SetProto11(PK2Sprite_Prototyyppi11 &proto)
 		AI[i] = proto.AI[i];
 	}
 	
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
@@ -751,7 +759,7 @@ void PK2Sprite_Prototyyppi::SetProto12(PK2Sprite_Prototyyppi12 &proto)
 		AI[i] = proto.AI[i];
 	}
 	
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
@@ -826,7 +834,7 @@ void PK2Sprite_Prototyyppi::SetProto13(PK2Sprite_Prototyyppi13 &proto)
 		AI[i] = proto.AI[i];
 	}
 	
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
@@ -854,7 +862,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi)
 		strcpy(polku,tiedoston_nimi);
 	}
 
-	ifstream *tiedosto = new ifstream(polku, ios::binary | ios::nocreate);
+	ifstream *tiedosto = new ifstream(polku, ios::binary);
 	char versio[4];
 	
 	if (tiedosto->fail())
@@ -919,7 +927,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi)
 	
 	if (PisteDraw_Lataa_Kuva(bufferi,kuva,false) == PD_VIRHE)
 		return 1;
-
+/*
 	if (this->vari != VARI_NORMAALI)
 	{
 		UCHAR *buffer = NULL;
@@ -938,7 +946,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi)
 
 		PisteDraw_Piirto_Lopeta(bufferi);
 	}
-
+*/
 	int frame_i = 0,
 		frame_x = kuva_x,
 		frame_y = kuva_y;
@@ -2348,9 +2356,10 @@ int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &
 			int portit[1200];
 			int portti_index = 0;
 			int porttien_maara = 0;	
-	
+			int i = 0;
+
 			// alustetaan portit-taulukko, johon ker‰t‰‰n kaikkien teleportti spritejen indeksit
-			for (int i=0;i<max;i++)
+			for (i=0;i<max;i++)
 				portit[i] = -1;
 
 			// etsit‰‰n SAMANTYYPPISET teleportit

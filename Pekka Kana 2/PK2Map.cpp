@@ -1,15 +1,19 @@
+#ifdef WIN32
 #include <windows.h>   
 #include <windowsx.h> 
 #include <mmsystem.h>
+#include <io.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
-#include <io.h>
-#include <fstream.h>
-#include <iostream.h>
+#include <fstream>
+#include <iostream>
 
 #include "PK2Map.h"
-#include "D:\Visual Studio\MyProjects\PisteEngine\PisteDraw.h"
+#include "PisteDraw.h"
+
+using namespace std;
 
 double *kartta_cos_table;
 double *kartta_sin_table;
@@ -38,7 +42,7 @@ struct PK2KARTTA	// Vanha versio 0.1
 
 bool PK2Kartta_Onko_File(char *filename)
 {
-	ifstream *tiedosto = new ifstream(filename, ios::binary | ios::nocreate);
+	ifstream *tiedosto = new ifstream(filename, ios::binary);
 	
 	if (tiedosto->fail())
 	{
@@ -141,7 +145,9 @@ PK2Kartta::PK2Kartta(const PK2Kartta &kartta)
 	this->y				= kartta.y;
 	this->ikoni			= kartta.ikoni;
 
-	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	int i;
+
+	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		this->taustat[i] = kartta.taustat[i];
 
 	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
@@ -426,7 +432,7 @@ void PK2Kartta::LueTallennusAlue(UCHAR *lahde, RECT alue, int kohde)
 		kartan_leveys = kartan_ala - kartan_yla;
 
 	UCHAR tile;
-	if (lahde != NULL && kohde != NULL)	{
+	if (&lahde != NULL && kohde != NULL)	{
 		for (y=0;y<kartan_korkeus;y++) {
 			for (x=0;x<kartan_leveys;x++) {
 				tile = lahde[x+y*kartan_leveys];
@@ -678,7 +684,7 @@ int PK2Kartta::Lataa(char *polku, char *nimi)
 	strcpy(file,polku);
 	strcat(file,nimi);
 	
-	ifstream *tiedosto = new ifstream(file, ios::binary | ios::nocreate);
+	ifstream *tiedosto = new ifstream(file, ios::binary);
 	char versio[8] = "\0";
 	
 	if (tiedosto->fail())
@@ -736,7 +742,7 @@ int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi)
 	strcpy(file,polku);
 	strcat(file,nimi);
 	
-	ifstream *tiedosto = new ifstream(file, ios::binary | ios::nocreate);
+	ifstream *tiedosto = new ifstream(file, ios::binary);
 	char versio[8] = "\0";
 	
 	if (tiedosto->fail())
@@ -841,10 +847,10 @@ int PK2Kartta::LataaVersio10(char *filename)
 	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		this->taustat[i] = kartta->taustat[i];
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		this->seinat[i] = kartta->seinat[i];
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		this->spritet[i] = kartta->spritet[i];
 	
 	
@@ -861,7 +867,7 @@ int PK2Kartta::LataaVersio11(char *filename)
 	FILE *tiedosto;
 	int virhe = 0;
 	
-	_setmode( _fileno( stdin ), _O_BINARY );
+//	_setmode( _fileno( stdin ), _O_BINARY );
 
 	if ((tiedosto = fopen(filename, "r")) == NULL)
 	{
@@ -888,7 +894,9 @@ int PK2Kartta::LataaVersio11(char *filename)
 
 	fclose(tiedosto);
 
-	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	int i;
+
+	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		if (seinat[i] != 255)
 			seinat[i] -= 50;
 		
@@ -909,7 +917,7 @@ int PK2Kartta::LataaVersio11(char *filename)
 int PK2Kartta::LataaVersio12(char *filename)
 {
 	
-	ifstream *tiedosto = new ifstream(filename, ios::binary | ios::nocreate);
+	ifstream *tiedosto = new ifstream(filename, ios::binary);
 	char luku[8];
 
 	if (tiedosto->fail())
@@ -960,11 +968,11 @@ int PK2Kartta::LataaVersio12(char *filename)
 	tiedosto->read(luku, sizeof(luku));
 	this->pelaaja_sprite = atoi(luku);
 
-	tiedosto->read(this->taustat,		sizeof(taustat));
-	tiedosto->read(this->seinat,		sizeof(seinat));
-	tiedosto->read(this->spritet,		sizeof(spritet));
+	tiedosto->read((char*)this->taustat,		sizeof(taustat));
+	tiedosto->read((char*)this->seinat,		sizeof(seinat));
+	tiedosto->read((char*)this->spritet,		sizeof(spritet));
 	
-	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 		tiedosto->read(this->protot[i],sizeof(protot[i]));
 
 	if (tiedosto->fail())
@@ -984,7 +992,7 @@ int PK2Kartta::LataaVersio12(char *filename)
 int PK2Kartta::LataaVersio13(char *filename)
 {
 	
-	ifstream *tiedosto = new ifstream(filename, ios::binary | ios::nocreate);
+	ifstream *tiedosto = new ifstream(filename, ios::binary);
 	char luku[8];
 	DWORD i;
 
@@ -1255,7 +1263,9 @@ PK2Kartta &PK2Kartta::operator = (const PK2Kartta &kartta)
 	this->extra		= kartta.extra;
 	this->tausta	= kartta.tausta;
 
-	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	int i;
+
+	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		this->seinat[i] = kartta.seinat[i];
 		
 	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
@@ -1281,7 +1291,7 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename)
 	if (!PK2Kartta_Onko_File(file))
 	{
 		strcpy(file,PK2Kartta::pk2_hakemisto);
-		strcat(file,"gfx\\scenery\\");
+		strcat(file,"gfx/scenery/");
 		strcat(file,filename);
 		if (!PK2Kartta_Onko_File(file))
 			return 1;
@@ -1325,7 +1335,7 @@ int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename)
 	if (!PK2Kartta_Onko_File(file))
 	{
 		strcpy(file,PK2Kartta::pk2_hakemisto);
-		strcat(file,"gfx\\tiles\\");
+		strcat(file,"gfx/tiles/");
 		strcat(file,filename);
 		if (!PK2Kartta_Onko_File(file))
 			return 1;
@@ -1368,7 +1378,9 @@ void PK2Kartta::Kopioi(PK2Kartta &kartta)
 		this->extra		= kartta.extra;
 		this->tausta	= kartta.tausta;
 
-		for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+		int i;
+
+		for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 			this->seinat[i] = kartta.seinat[i];
 			
 		for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)

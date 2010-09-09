@@ -1,12 +1,17 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <fstream.h>
-#include <iostream.h>
-#include <io.h>
+#include <fstream>
+#include <iostream>
 #include <fcntl.h>
+#ifdef WIN32
+#include <io.h>
 #include <windows.h> 
+#endif
+#include <string.h>
 
 #include "PisteLanguage.h"
+
+using namespace std;
 
 PisteLanguage::PisteLanguage()
 {
@@ -38,7 +43,7 @@ PisteLanguage::~PisteLanguage(){}
 bool PisteLanguage::Lue_Tiedosto(char *filename)
 {
 	
-	ifstream *tiedosto = new ifstream(filename, ios::in | ios::nocreate);
+	ifstream *tiedosto = new ifstream(filename, ios::in);
 
 	if (tiedosto->fail())
 	{
@@ -97,6 +102,7 @@ bool PisteLanguage::Lue_Tiedosto(char *filename)
 							}
 							break;
 		
+		case '\r'		:	
 		case '\n'		:	if (lue != LUE_SKIP)
 							{
 								lue = LUE_SKIP;
@@ -159,6 +165,7 @@ int PisteLanguage::Hae_Indeksi(char *otsikko)
 
 char *PisteLanguage::Hae_Teksti(int index)
 {
+	//printf("PisteLanguage::Hae_Teksti %i -%s-\n", index, tekstit[index]);
 	if (index >= 0 && index < MAX_TEKSTEJA)
 		return tekstit[index];
 	else

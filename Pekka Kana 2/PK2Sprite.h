@@ -1,6 +1,7 @@
 #ifndef PK2SPRITE
 #define PK2SPRITE
 
+typedef unsigned long  DWORD;
 typedef unsigned char  UCHAR;
 
 const char PK2SPRITE_VIIMEISIN_VERSIO[4] = "1.3";
