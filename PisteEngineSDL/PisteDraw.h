@@ -14,9 +14,9 @@
 #define		PD_TAUSTABUFFER	 0
 #define		PD_TAUSTABUFFER2 1
 
-#define		PD_FADE_NOPEA	 5
-#define		PD_FADE_NORMAALI 2
-#define		PD_FADE_HIDAS	 1
+#define		PD_FADE_NOPEA	 15
+#define		PD_FADE_NORMAALI 10
+#define		PD_FADE_HIDAS	 5
 
 typedef unsigned long  DWORD;
 typedef unsigned char  UCHAR;

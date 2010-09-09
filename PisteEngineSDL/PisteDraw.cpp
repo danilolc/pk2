@@ -237,54 +237,44 @@ bool PisteDraw_Buffer_Tuhoa(int i)
   return true;
 }
 
-void strtoupper(char *s) {
-  if(s == NULL)
-    return;
-  while(*s != '\0')
-    *s++ = toupper(*s);
-}
-
 // for trying to guess an available filename if requested one wasn't there
 char *PisteDraw_Locate_Kuva(char *filename)
 {
-  // cut up the path and file base components
-  char *dir = strdup(filename);
-  char *base = strrchr(dir, '/');
   struct stat st;
-  if(base != NULL) {
-    *base++ = '\0';
-  } else {
-    // just filename
-    base = dir;
-  }
-  // expecting it to be 6+3 dos filename, forget the extension
-  char *t = strrchr(base, '.');
-  if(t != NULL) *t = '\0';
+  char *ret = strdup(filename);
 
-  char altfile[strlen(filename)];
-  sprintf(altfile, "%s/%s.png", dir==base?".":dir, base);
-  if(stat(altfile, &st) == 0)
-    return altfile;
+  // expecting it to be 6+3 dos filename
+  char *ext = strrchr(ret, '.');
+  if(ext == NULL) return NULL;
+
+  // cut up the path and file base components
+  char *base = strrchr(ret, '/');
+  // just a filename without dir
+  if(base == NULL) {
+    base = ret;
+  }
+
+	strcpy(ext, ".png");
+  if(stat(ret, &st) == 0)
+    return ret;
   else
   {
-    strtoupper(base);
-    sprintf(altfile, "%s/%s.png", dir==base?".":dir, base);
-    if(stat(altfile, &st) == 0)
-      return altfile;
+		char *c = base;
+  	while(c != ext) *c++ = toupper(*c);
+
+    if(stat(ret, &st) == 0)
+      return ret;
     else
     {
-      sprintf(altfile, "%s/%s.bmp", dir==base?".":dir, base);
-      free(dir);
-      if(stat(altfile, &st) == 0)
-        return altfile;
-      else
-        return NULL;
+			strcpy(ext, ".bmp");
+      if(stat(ret, &st) == 0)
+        return ret;
     }
   }
-  free(dir);
+  return NULL;
 }
 
-// TODO: repurposed lataa_paletti, now meaning enable_transparency
+// TODO: only open each file once
 int PisteDraw_Lataa_Kuva(int index, char *filename, bool lataa_paletti)
 {
   PD_buffers[index] = IMG_Load(filename);
@@ -299,6 +289,7 @@ int PisteDraw_Lataa_Kuva(int index, char *filename, bool lataa_paletti)
        return PD_VIRHE;
     }
   }
+	//printf("%i = %s\n", index, filename);
 
   if(lataa_paletti) {
     if(PD_buffers[index]->format->BitsPerPixel != 8)
@@ -399,7 +390,7 @@ int PisteDraw_Fade_Paletti_Do(int pros)
 {
   UCHAR i;
   //SDL_SetAlpha(PD_buffers[PD_TAUSTABUFFER], SDL_SRCALPHA, pros);
-  boxRGBA(PD_buffers[PD_TAUSTABUFFER], 0,0, PD_buffers[PD_TAUSTABUFFER]->w, PD_buffers[PD_TAUSTABUFFER]->h, 0,0,0, 200-pros);
+  boxRGBA(PD_buffers[PD_TAUSTABUFFER], 0,0, PD_buffers[PD_TAUSTABUFFER]->w, PD_buffers[PD_TAUSTABUFFER]->h, 0,0,0, pros);
   
   return 0;
 }
@@ -466,7 +457,7 @@ int PisteDraw_Paletti_Pyorita(UCHAR eka_vari, UCHAR vika_vari)
 */
 int PisteDraw_Fade_Paletti(void)
 {
-  if ((PD_paletti_fade_pros < 100 && PD_paletti_fade_laskuri > 0) ||
+  if ((PD_paletti_fade_pros < 250 && PD_paletti_fade_laskuri > 0) ||
     (PD_paletti_fade_pros > 0 && PD_paletti_fade_laskuri < 0))
   {
     PD_paletti_fade_pros += PD_paletti_fade_laskuri;
@@ -486,14 +477,14 @@ void PisteDraw_Fade_Paletti_Set(int laskuri)
 
 void PisteDraw_Fade_Paletti_In(int laskuri)
 {
-  PD_paletti_fade_pros    =  0;
-  PD_paletti_fade_laskuri =  laskuri; 
+  PD_paletti_fade_pros    =  250;
+  PD_paletti_fade_laskuri = -laskuri; 
 }
 
 void PisteDraw_Fade_Paletti_Out(int laskuri)
 {
-  PD_paletti_fade_pros    =  200;
-  PD_paletti_fade_laskuri = -laskuri; 
+  PD_paletti_fade_pros    =  0;
+  PD_paletti_fade_laskuri =  laskuri; 
 }
 
 bool PisteDraw_Fade_Paletti_Valmis(void)
@@ -501,7 +492,7 @@ bool PisteDraw_Fade_Paletti_Valmis(void)
   if (PD_paletti_fade_pros > 0   && PD_paletti_fade_laskuri < 0)
     return false;
 
-  if (PD_paletti_fade_pros < 100 && PD_paletti_fade_laskuri > 0)
+  if (PD_paletti_fade_pros < 250 && PD_paletti_fade_laskuri > 0)
     return false;
 
   return true;
