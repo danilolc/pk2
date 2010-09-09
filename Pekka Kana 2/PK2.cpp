@@ -813,7 +813,6 @@ int PK_Asetukset_Lataa(char *filename)
 	delete (tiedosto);
 
 	asetukset.ladattu = true;
-/* TODO: rikki?
 	kontrolli_vasemmalle	= asetukset.kontrolli_vasemmalle;
 	kontrolli_oikealle		= asetukset.kontrolli_oikealle;
 	kontrolli_hyppy			= asetukset.kontrolli_hyppy;
@@ -822,8 +821,6 @@ int PK_Asetukset_Lataa(char *filename)
 	kontrolli_hyokkays1		= asetukset.kontrolli_hyokkays1;
 	kontrolli_hyokkays2		= asetukset.kontrolli_hyokkays2;
 	kontrolli_kayta_esine	= asetukset.kontrolli_kayta_esine;
-*/
-	 
 
 	return 0;	
 }
@@ -1347,37 +1344,6 @@ void PK_Jaksot_Alusta()
 	}
 }
 
-// there's also winapi _findfirst emulation wrapper available in OGRE
-int findfiles(char *hakemisto, char *findext)
-{
-  struct dirent **namelist;
-  int i = 0, n = scandir(hakemisto, &namelist, 0, alphasort);
-
-  while(n--)
-	{
-		/* oh didn't actually need recursion
-		if(namelist[n]->d_type == DT_DIR && strcmp(namelist[n]->d_name, "..") != 0 && strcmp(namelist[n]->d_name, ".") != 0)
-		{
-			char hak[strlen(hakemisto)+strlen(namelist[n]->d_name)+2];
-			sprintf(hak, "%s/%s", hakemisto, namelist[n]->d_name);
-			i += findfiles(hak, findext);
-		} else if(namelist[n]->d_type == DT_REG) {*/
-		if(strcmp(namelist[n]->d_name, "..") != 0 && strcmp(namelist[n]->d_name, ".") != 0) {
-			char *ext = strrchr(namelist[n]->d_name, '.');
-			if((findext == NULL && namelist[n]->d_type == DT_DIR) ||
-					(findext != NULL && ext != NULL && strlen(ext) == strlen(findext) && strcmp(ext, findext) == 0))
-			{
-				printf("fil: %s\n", namelist[n]->d_name);
-				strcpy(jaksot[i].tiedosto, namelist[n]->d_name);
-		    free(namelist[n]);
-				i++;
-			}
-		}
-  }
-  free(namelist);
-	return i;
-}
-
 void PK_Jaksot_Hae()
 {
 	char hakemisto[_MAX_PATH];
@@ -1502,7 +1468,7 @@ int PK_Episodit_Aakkosta(void)
 	DWORD i,t;
 	char temp[_MAX_PATH] = "";
 	bool tehty;
-#ifdef WIN32
+
 	if (episodi_lkm > 1) {
 
 		for (i=episodi_lkm-1;i>=0;i--) {
@@ -1523,7 +1489,7 @@ int PK_Episodit_Aakkosta(void)
 				return 0;
 		}
 	}
-#endif	
+
 	return 0;
 }
 
@@ -11284,7 +11250,7 @@ int PK_Main_Kartta(void)
 
 	degree = 1 + degree % 360;
 
-	if (siirry_kartasta_peliin)// && PisteDraw_Fade_Paletti_Valmis())
+	if (siirry_kartasta_peliin && PisteDraw_Fade_Paletti_Valmis())
 	{
 		pelin_seuraava_tila = TILA_PELI;
 		//strcpy(seuraava_kartta,jaksot[i].tiedosto);
@@ -11297,13 +11263,13 @@ int PK_Main_Kartta(void)
 
 	if (key_delay == 0)
 	{
-			siirry_kartasta_peliin = true;
+		/*
 		if (PisteInput_Keydown(SDLK_SPACE))
 		{
 			siirry_kartasta_peliin = true;
 			//pelin_seuraava_tila = TILA_PELI;
 			PisteDraw_Fade_Paletti_Out(PD_FADE_HIDAS);
-		}
+		}*/
 	}
 
 	return 0;
@@ -11769,8 +11735,6 @@ int PK_Main(void)
 */
 	if (lopeta_peli && PisteDraw_Fade_Paletti_Valmis()) 
 	{
-		PK_Quit();
-		SDL_Quit();
 //		SendMessage(ikkunan_kahva, WM_CLOSE,0,0);
 		window_closed = true;
 	}
@@ -11928,7 +11892,7 @@ int main(int argc, char *argv[])
 	else
 		pelin_seuraava_tila = TILA_INTRO;
 
-	while(!PK2_virhe)
+	while(!PK2_virhe && !window_closed)
 	{
     
 		PK_Alusta_Tilat();
@@ -11945,6 +11909,7 @@ int main(int argc, char *argv[])
 	PK_Asetukset_Tallenna("data/settings.ini");
 
 	PK_Quit();
+	SDL_Quit();
 
 	PisteLog_Kirjoita("========================\n");
 	PisteLog_Kirjoita("PK2 EXITS\n");
