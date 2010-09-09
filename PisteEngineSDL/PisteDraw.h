@@ -54,7 +54,9 @@ int		PisteDraw_Buffer_Tayta(int i, const int vasen, const int yla, const int oik
 //-----------------------------------------------------------------------------------------------------------
 bool	PisteDraw_Buffer_Tuhoa(int i);
 //-----------------------------------------------------------------------------------------------------------
+int		PisteDraw_Buffer_Varaa();
 int		PisteDraw_Buffer_Uusi(int leveys, int korkeus, bool video_muisti, UCHAR color);
+int		PisteDraw_Buffer_Uusi(int leveys, int korkeus, int colorform);
 //-----------------------------------------------------------------------------------------------------------
 int		PisteDraw_Fade_Paletti(void);
 //-----------------------------------------------------------------------------------------------------------
@@ -73,6 +75,7 @@ int		PisteDraw_Font_Kirjoita(int font_index, char *merkkijono, int buffer_index,
 int		PisteDraw_Font_Kirjoita_Lapinakyva(int font_index, char *merkkijono, int buffer_index, 
 										   int x, int y, int pros);
 //-----------------------------------------------------------------------------------------------------------
+char	*PisteDraw_Locate_Kuva(char *filename);
 int		PisteDraw_Lataa_Kuva(int i, char *filename, bool lataa_paletti);
 //-----------------------------------------------------------------------------------------------------------
 int		PisteDraw_Lopeta();

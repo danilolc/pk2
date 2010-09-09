@@ -42,16 +42,11 @@ struct PK2KARTTA	// Vanha versio 0.1
 
 bool PK2Kartta_Onko_File(char *filename)
 {
-	ifstream *tiedosto = new ifstream(filename, ios::binary);
-	
-	if (tiedosto->fail())
-	{
-		delete (tiedosto);
-		return false;
-	}
-	
-	delete (tiedosto);
-	return true;
+	struct stat st;
+	bool ret = (stat(filename, &st) == 0);
+	if(!ret && PisteDraw_Locate_Kuva(filename) != NULL) ret = true;
+	if(!ret) printf("PK2Map asked about non-existing file: %s\n", filename);
+	return ret;
 }
 
 void PK2Kartta_Cos_Sin(double *cost, double *sint)
@@ -1297,7 +1292,7 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename)
 			return 1;
 	}
 
-	if (PisteDraw_Lataa_Kuva(this->taustakuva_buffer,file,true) == PD_VIRHE)
+	if (PisteDraw_Lataa_Kuva(this->taustakuva_buffer,file,false) == PD_VIRHE)
 		return 2;
 
 	strcpy(this->taustakuva,filename);
@@ -1341,7 +1336,7 @@ int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename)
 			return 1;
 	}
 
-	if (PisteDraw_Lataa_Kuva(this->palikat_buffer,file,false) == PD_VIRHE)
+	if (PisteDraw_Lataa_Kuva(this->palikat_buffer,file,true) == PD_VIRHE)
 		return 2;
 
 	PisteDraw_Buffer_Flip_Nopea(this->palikat_buffer,palikat_vesi_buffer,0,0,0,416,320,448);

@@ -923,7 +923,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi)
 	
 	strcat(kuva,kuvatiedosto);
 
-	int bufferi = PisteDraw_Buffer_Uusi(640,480,false,255);
+	int bufferi = PisteDraw_Buffer_Varaa(); //Uusi(640,480,false,255);
 	
 	if (PisteDraw_Lataa_Kuva(bufferi,kuva,false) == PD_VIRHE)
 		return 1;
@@ -953,8 +953,8 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi)
 
 	for (frame_i=0; frame_i<frameja; frame_i++)
 	{
-		framet[frame_i] = PisteDraw_Buffer_Uusi(kuva_frame_leveys,kuva_frame_korkeus,true,255);
-		framet_peilikuva[frame_i] = PisteDraw_Buffer_Uusi(kuva_frame_leveys,kuva_frame_korkeus,true,255);
+		framet[frame_i] = PisteDraw_Buffer_Uusi(kuva_frame_leveys,kuva_frame_korkeus,bufferi);
+		framet_peilikuva[frame_i] = PisteDraw_Buffer_Uusi(kuva_frame_leveys,kuva_frame_korkeus,bufferi);
 
 		PisteDraw_Buffer_Tayta(framet[frame_i],255);
 		PisteDraw_Buffer_Tayta(framet_peilikuva[frame_i],255);
