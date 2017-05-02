@@ -1,7 +1,7 @@
 CPP = g++
 CFLAGS = -Wno-write-strings -g
 LFLAGS = -lSDL2 -lSDL2_image -lSDL2_mixer
-EXE = 
+EXE =
 
 #Defines directories
 ENGINE_DIR = engine/
@@ -32,10 +32,14 @@ PK2_LE_OBJ = $(BUILD_DIR)pk2_le.o
 PK2_SC_SRC = $(SPRITECREATOR_DIR)pk2_sc.cpp
 PK2_SC_OBJ = $(BUILD_DIR)pk2_sc.o
 
+ENGINETEST_SRC = $(SRC_DIR)enginetest.cpp
+ENGINETEST_OBJ = $(BUILD_DIR)enginetest.o
+
 #Defines the destination of each binary file
 PK2_BIN = $(BIN_DIR)PK2$(EXE)
 PK2_LE_BIN = $(BIN_DIR)PK2_LevelEditor$(EXE)
 PK2_SC_BIN = $(BIN_DIR)PK2_SpriteCreator$(EXE)
+ENGINETESTBIN = $(BIN_DIR)EngineTest$(EXE)
 
 DEPENDENCIES := $(PK2_OBJ) $(PK2_SPRITE_OBJ) $(PK2_MAP_OBJ) $(ENGINE_OBJ)
 DEPENDENCIES := $(basename $(DEPENDENCIES))

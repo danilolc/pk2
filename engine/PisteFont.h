@@ -9,6 +9,33 @@
 #include "PisteDraw.h"
 #include "PisteLanguage.h"
 
+class PisteFont2{
+private:
+	int charList[256];
+	int char_w, char_h, char_count;
+	int ImageIndex;
+	int InitCharList();
+
+public:
+
+	int GetImage(int x,int y,int img_source);
+	int Write_Text(int posx, int posy, const char *text);
+	int Write_TextTrasparent(int posx, int posy, const char* text, int alpha);
+	int LoadFile(const char* path, const char* file);
+
+	PisteFont2(int img_source, int x, int y, int width, int height, int count);
+	PisteFont2();
+	~PisteFont2();
+};
+
+
+
+
+
+
+
+
+
 class PisteFont
 {
 	private:
@@ -23,13 +50,13 @@ class PisteFont
 		int Init_fonts(void);
 		int Init_fonts_tiedosto(void);
 		int Get_bitmap(int buffer_x, int buffer_y, int ruudun_leveys, int buffer_index);
-		int Get_bitmap(int buffer_x, int buffer_y, int ruudun_leveys,UCHAR *buffer);
-	
+		int Get_bitmap(int buffer_x, int buffer_y, int ruudun_leveys, UCHAR *buffer);
+
 		int Piirra_merkkijono(char *merkkijono, int font_x, int font_y, int kohde_buffer);
 
-		int Piirra_merkkijono(int font_x, int font_y, int lPitch, char *merkkijono, 
+		int Piirra_merkkijono(int font_x, int font_y, int lPitch, char *merkkijono,
 			UCHAR *back_buffer, bool loop);
-		int Piirra_merkkijono_led(int font_x, int font_y, int lPitch, char *merkkijono, 
+		int Piirra_merkkijono_led(int font_x, int font_y, int lPitch, char *merkkijono,
 			UCHAR *back_buffer);
 		int Piirra_merkkijono_lapinakyva(char *merkkijono, int font_x, int font_y, int kohde_buffer, int alpha);
 		int Piirra_merkkijono_varillinen(int font_x, int font_y, int lPitch, char *merkkijono,

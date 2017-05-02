@@ -15,7 +15,9 @@ int FPS = 60;
 bool draw = true;
 bool ready = false;
 
-void GDB_Break(){} //Empty function called when press Q to use in GDB ("break GDB_Break()") 
+void GDB_Break(){
+	//Empty function called when press Q to use in GDB ("break GDB_Break()")
+}
 bool Piste_GDB = true;
 
 void PisteDraw_Paivita_Naytto(bool draw);
@@ -26,6 +28,7 @@ int Piste_Init(){
 		return -1;
 	}
 	atexit(SDL_Quit);
+	//TODO - Start PisteDraw2
 	PisteSound_Start();
 	counter = SDL_GetTicks();
 	ready = true;
@@ -34,11 +37,12 @@ int Piste_Init(){
 
 int Piste_Loop(bool &running,int (*Game)()){
 	while(running){
+
+		Game();
+
 		while(SDL_PollEvent(&event))
 			if(event.type == SDL_QUIT)
 					running = false;
-		
-		Game();
 
 		if(PisteInput_Lue_Kontrolli(PI_R))
 			Piste_IgnoreFrame();
@@ -48,9 +52,10 @@ int Piste_Loop(bool &running,int (*Game)()){
 		if (last_time < counter + (1000 / FPS) && draw)
 			SDL_Delay(counter + (1000 / FPS) - last_time);
 
-
+		//TODO - Test PisteDraw2
 		PisteDraw_Paivita_Naytto(draw);
-		
+		PisteDraw2_Update(draw);
+
 		draw = true;
 
 		if(PisteInput_Lue_Kontrolli(PI_Q) && Piste_GDB)
@@ -65,6 +70,7 @@ int Piste_Loop(bool &running,int (*Game)()){
 
 int Piste_Quit(){
 	PisteDraw_Lopeta();
+	PisteDraw2_Exit();
 	PisteSound_End();
 	SDL_Quit();
 	ready = false;
@@ -72,7 +78,6 @@ int Piste_Quit(){
 }
 
 int Piste_IgnoreFrame(){
-	if(!draw) return -1;
 	draw = false;
 	return 0;
 }

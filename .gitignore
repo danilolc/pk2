@@ -1,6 +1,8 @@
+doc.txt
+
 bin/
 build/
 
 res/data/saves.dat
 res/data/settings.ini
-res/editor/settings.ini
+res/editor/settings.dat
