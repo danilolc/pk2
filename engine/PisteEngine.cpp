@@ -6,6 +6,11 @@
 #include <SDL2/SDL.h>
 #include "PisteEngine.h"
 
+#ifdef _WIN32
+#include "stdio.h"
+#include "stdlib.h"
+#endif
+
 SDL_Event event;
 
 DWORD counter = 0;

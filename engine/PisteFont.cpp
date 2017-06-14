@@ -11,6 +11,10 @@
 #include <iostream>
 #include <string.h>
 
+#ifdef _WIN32
+#include "win32hacks.h"
+#endif
+
 int PisteFont2::InitCharList(){
 	int font_index[256], i;
 
@@ -78,15 +82,18 @@ int PisteFont2::InitCharList(){
 }
 int PisteFont2::GetImage(int x, int y, int img_source){
 	ImageIndex = PisteDraw2_Image_Cut(img_source, x, y, char_w*char_count, char_h*char_count);
+
+	return 0;
 }
 int PisteFont2::LoadFile(const char* path, const char* file){
 	//TODO
+	return 0;
 }
 
 int PisteFont2::Write_Text(int posx, int posy, const char *text){
 	int i = 0, i2;
 	int ix;
-	char character;
+	char character = '\0';
 
 	PD_RECT srcrect, dstrect;
 	srcrect.y = 0;
@@ -111,6 +118,7 @@ int PisteFont2::Write_Text(int posx, int posy, const char *text){
 }
 int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int alpha){
 	//TODO
+	return 0;
 }
 
 PisteFont2::PisteFont2(int img_source, int x, int y, int width, int height, int count){
@@ -218,7 +226,7 @@ int PisteFont::LataaTiedostosta(char *polku, char *file){
 	font_buffer	 = PisteDraw_Buffer_Uusi(font_leveys * font_lkm,font_korkeus,true,255);
 
 	UCHAR *buffer = NULL;
-	DWORD ruudun_leveys;
+	DWORD ruudun_leveys = 0;
 
 	Get_bitmap(buf_x,buf_y,ruudun_leveys,temp_kuva);
 
@@ -327,6 +335,8 @@ int PisteFont::Get_bitmap(int buffer_x, int buffer_y, int ruudun_leveys, int buf
 		0, 0,
 		x, y,
 		x+w, y+h);
+
+	return 0;
 }
 
 int PisteFont::Piirra_merkkijono(int font_x, int font_y, int lPitch, char *merkkijono,

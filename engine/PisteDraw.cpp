@@ -13,6 +13,10 @@
 
 #include <SDL2/SDL_image.h>
 
+#ifdef _WIN32
+#include "win32hacks.h"
+#endif
+
 const int MAX_IMAGES = 200;
 const int MAX_FONTS = 20;
 
@@ -59,10 +63,14 @@ bool PisteDraw2_IsFading(){
 int PisteDraw2_FadeOut(int speed){
 	PD_alpha    =  254;
 	PD_fade_speed =  -speed;
+
+	return 0;
 }
 int PisteDraw2_FadeIn(int speed){
 	PD_alpha    =  1;
 	PD_fade_speed = speed;
+
+	return 0;
 }
 
 int PisteDraw2_Image_Load(const char* filename, bool getPalette){
@@ -143,6 +151,8 @@ int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int alpha){
 }
 int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
 	SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer, (SDL_Rect*)&dstrect);
+
+	return 0;
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha){
 	UCHAR *imagePix = NULL;
@@ -262,6 +272,8 @@ int PisteDraw2_DrawImage_Start(int index, UCHAR* &pixels, int &pitch){
 }
 int PisteDraw2_DrawImage_End(int index){
 	SDL_UnlockSurface(imageList[index]);
+
+	return 0;
 }
 UCHAR PisteDraw2_BlendColors(UCHAR color, UCHAR colBack, int alpha){
 	int result;
@@ -572,7 +584,7 @@ int PisteDraw_Buffer_Varaa(){
 int PisteDraw_Buffer_Uusi(int leveys, int korkeus, bool video_muisti, UCHAR color){
 	//PisteDraw_CreateBuffer
 	int index = PisteDraw_Buffer_Varaa();
-	int i;
+	//int i;
 
 	if(index<0) return index;
 
