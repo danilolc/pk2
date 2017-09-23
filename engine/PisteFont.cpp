@@ -142,7 +142,7 @@ int PisteFont2::LoadFile(const char* file_path, const char* file){
 int PisteFont2::Write_Text(int posx, int posy, const char *text){
 	int i = 0, i2;
 	int ix;
-	char character;
+	char curr_char;
 
 	PD_RECT srcrect, dstrect;
 	srcrect.y = 0;
@@ -151,8 +151,8 @@ int PisteFont2::Write_Text(int posx, int posy, const char *text){
 	dstrect.y = posy;
 
 	do{
-		character = text[i];
-		ix = charList[(BYTE)toupper(character)];
+		curr_char = text[i];
+		ix = charList[(BYTE)toupper(curr_char)];
 		i2 = i * char_w + posx;
 		if (ix > -1){
 			srcrect.x = ix;
@@ -160,12 +160,54 @@ int PisteFont2::Write_Text(int posx, int posy, const char *text){
 			PisteDraw2_Image_CutClip(ImageIndex,srcrect,dstrect);
 		}
 		i++;
-	}while(character != '\0');
+	}while(curr_char != '\0');
 
 	return((i-1)*char_w);
 }
 int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int alpha){
-	this->Write_Text(posx, posy, text);//TODO
+
+	BYTE *back_buffer, *txt_buffer;
+	DWORD back_w, txt_w;
+
+	int i = 0;
+	int x, y, ix, fx, fy;
+	BYTE color1, color2;
+	char curr_char;
+
+	if (alpha > 100) alpha = 100;
+
+	PisteDraw2_DrawScreen_Start(*&back_buffer, (DWORD &)back_w);
+	PisteDraw2_DrawImage_Start(ImageIndex, *&txt_buffer, (DWORD &)txt_w);
+
+	do{
+		curr_char = text[i];
+		ix = charList[(BYTE)toupper(curr_char)];
+		if (ix > -1){
+			for (x=0;x<char_w;x++){
+				fx = posx + x + i * char_w;
+
+				for (y=0;y<char_h;y++){
+					color1 = txt_buffer[ix+x+y*txt_w];
+
+					if (color1!=255){
+						fy = posy + y;
+
+						fy *= back_w;
+						fy += fx;
+						color2  = back_buffer[fy];
+
+						back_buffer[fy] = PisteDraw2_BlendColors(color1, color2, alpha);
+					}
+				}
+			}
+		}
+		i++;
+	}while(curr_char != '\0');
+
+	PisteDraw2_DrawScreen_End();
+	PisteDraw2_DrawImage_End(ImageIndex);
+
+	return((i-1)*char_w);
 }
 
 PisteFont2::PisteFont2(int img_source, int x, int y, int width, int height, int count){

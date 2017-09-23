@@ -15,14 +15,10 @@ To add a new episode, just download the zip file and extract it to its respectiv
 
 
 # Known bugs:
-?-Sometimes it starts crashing
-
-!-There is no colision between player and sprites wall
+ -There is no colision between player and sprites wall
 
  -Sounds volume and frequency don't work
 
  -Set controlls
-
- -Draw transparent texts
 
  -Menu background

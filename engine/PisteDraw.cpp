@@ -61,10 +61,12 @@ bool PisteDraw2_IsFading(){
 int PisteDraw2_FadeOut(int speed){
 	PD_alpha    =  254;
 	PD_fade_speed =  -speed;
+	return 0;
 }
 int PisteDraw2_FadeIn(int speed){
 	PD_alpha    =  1;
 	PD_fade_speed = speed;
+	return 0;
 }
 
 int PisteDraw2_Image_New(int w, int h){
@@ -118,6 +120,7 @@ int PisteDraw2_Image_Copy(int src_i, int dst_i){
 	if(src_i < 0 || dst_i < 0) return -1;
 	SDL_FillRect(imageList[dst_i], NULL, 255);
 	SDL_BlitSurface(imageList[src_i], NULL, imageList[dst_i], NULL);
+	return 0;
 }
 int PisteDraw2_Image_Cut(int ImgIndex, int x, int y, int w, int h){ //Create a new image from a existing image
 	PD_RECT area;
@@ -207,7 +210,7 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 			}
 		}
 	PisteDraw2_DrawScreen_End();
-
+	//printf("T\n");
 	return 0;
 }
 void PisteDraw2_Image_GetSize(int index, int& w, int& h){

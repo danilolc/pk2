@@ -12,11 +12,9 @@
 //in a separated code to be used in the Level Editor.
 //-------------------------
 //Known bugs:
-//?-Sometimes it starts crashing
-//?-There is no colision between player and sprites wall
+// -There is no colision between player and sprites wall
 // -Sounds volume and frequency don't work
 // -Set controlls
-// -Draw transparent texts
 // -Menu background
 //
 //TODO:
@@ -1545,32 +1543,22 @@ int PK_Sumenna_Kuva(int kbuffer, DWORD kleveys, int kkorkeus){
 
 	return 0;
 }
-//Draw menu background if open in map
+//Copy the screen to bg buffer
 int PK_Kopioi_Pelitilanne_Taustakuvaksi(){
 
-	BYTE *buffer1 = NULL,
-		  *buffer2 = NULL;
-	DWORD leveys1, leveys2;
+	BYTE *screen_buff = NULL, *bg_buff = NULL;
+	DWORD screen_w, bg_w;
 	int x,y;
 
-	if (PisteDraw2_DrawScreen_Start(*&buffer1,(DWORD &)leveys1)==1)
-		return 1;
+	PisteDraw2_DrawScreen_Start(*&screen_buff,(DWORD &)screen_w);
+	PisteDraw2_DrawImage_Start(kuva_tausta,*&bg_buff,(DWORD &)bg_w);
 
-	if (PisteDraw2_DrawImage_Start(kuva_tausta,*&buffer2,(DWORD &)leveys2)==1)
-		return 1;
+	for (x=0;x<640;x++)
+		for (y=0;y<480;y++)
+			bg_buff[x+y*bg_w] = (BYTE)(rand()*255);
 
-	for (y=0;y<478;y++)
-		for(x=0;x<638;x++)
-			buffer2[x+y*leveys2] = buffer1[x+y*leveys1];
-
-	if (PisteDraw2_DrawImage_End(kuva_tausta)==1)
-	{
-		PisteDraw2_DrawScreen_End();
-		return 1;
-	}
-
-	if (PisteDraw2_DrawScreen_End()==1)
-		return 1;
+	PisteDraw2_DrawImage_End(kuva_tausta);
+	PisteDraw2_DrawScreen_End();
 
 	return 0;
 }
@@ -1653,18 +1641,15 @@ int PK_Piirra_LaineTeksti_Hidas(char *teksti, int fontti, int x, int y){
 	char kirjain[3] = " \0";
 	int ys, xs;
 
-	if (pituus > 0)
-	{
-		for (int i=0;i<pituus;i++)
-		{
+	if (pituus > 0){
+		for (int i=0;i<pituus;i++){
 			ys = (int)(sin_table[((i+degree)*4)%360])/9;
 			xs = (int)(cos_table[((i+degree)*4)%360])/11;
 			kirjain[0] = teksti[i];
 
 			if (asetukset.lapinakyvat_menutekstit)
 				vali += PisteDraw2_Font_WriteAlpha(fontti,kirjain,x+vali-xs,y+ys,75);
-			else
-			{
+			else{
 				PisteDraw2_Font_Write(fontti4,kirjain,x+vali-xs+1,y+ys+1);
 				vali += PisteDraw2_Font_Write(fontti,kirjain,x+vali-xs,y+ys);
 			}
@@ -1678,78 +1663,9 @@ int PK_Piirra_LaineTeksti_Hidas(char *teksti, int fontti, int x, int y){
 int PK_Piirra_Lapinakyva_Objekti(int lahde_buffer, DWORD lahde_x, DWORD lahde_y, DWORD lahde_leveys, DWORD lahde_korkeus,
 						 DWORD kohde_x, DWORD kohde_y, int pros, BYTE vari){
 
-
-	int vasen = kohde_x,
-		oikea = kohde_x + lahde_leveys,
-		yla = kohde_y,
-		ala = kohde_y + lahde_korkeus;
-
-	if (pros > 99)
-		pros = 99;
-
-	if (vasen < 0)
-		vasen = 0;
-
-	if (yla < 0)
-		yla = 0;
-
-
-	if (RAJAA_KARTANPIIRTOALUE)	{
-		if (oikea > KARTANPIIRTO_LEVEYS)
-			oikea = KARTANPIIRTO_LEVEYS;
-		if (ala > KARTANPIIRTO_KORKEUS)
-			ala = KARTANPIIRTO_KORKEUS;
-	}
-	else {
-		if (oikea > RUUDUN_LEVEYS)
-			oikea = RUUDUN_LEVEYS;
-		if (ala > RUUDUN_KORKEUS)
-			ala = RUUDUN_KORKEUS;
-	}
-
-	vasen -= kohde_x;
-	oikea -= kohde_x;
-	yla   -= kohde_y;
-	ala   -= kohde_y;
-
-	if (vasen > oikea || yla > ala || pros < 1 || pros > 99)
-		return 1;
-
-	//Starts to draw
-
-	BYTE *buffer_lahde = NULL,
-		  *buffer_kohde = NULL,
-		   color1;
-	DWORD leveys_buffer_lahde,
-		  leveys_buffer_kohde,
-		  lahde_kursori,
-		  kohde_kursori;
-		  //kohde_kursori2;
-	int   px,
-		  py;
-
-	PisteDraw2_DrawImage_Start(lahde_buffer,    *&buffer_lahde, (DWORD &)leveys_buffer_lahde);
-	PisteDraw2_DrawScreen_Start(*&buffer_kohde, (DWORD &)leveys_buffer_kohde);
-
-	lahde_kursori = lahde_y*leveys_buffer_lahde + lahde_x;
-	kohde_kursori = kohde_y*leveys_buffer_kohde + kohde_x;
-
-	for (py = yla; py < ala; py++) {
-		for (px = vasen; px < oikea; px++) {
-
-			color1 = buffer_lahde[px+lahde_kursori];
-			if (color1 != 255);//TODO - put color on screen
-
-
-		}
-
-		lahde_kursori += leveys_buffer_lahde;
-		kohde_kursori += leveys_buffer_kohde;
-	}
-
-	PisteDraw2_DrawScreen_End();
-	PisteDraw2_DrawImage_End(lahde_buffer);
-
+	PD_RECT src = {lahde_x, lahde_y, lahde_leveys, lahde_korkeus};
+	PD_RECT dst = {kohde_x, kohde_y, lahde_leveys, lahde_korkeus};
+	PisteDraw2_Image_CutClipTransparent(lahde_buffer, src, dst, pros);
 	return 0;
 }
 
@@ -5439,15 +5355,11 @@ int PK_Alusta_Tilat(){
 		if (pelin_seuraava_tila == TILA_MENUT){
 			//PisteLog_Kirjoita("- Initializing menu screen \n");
 
-			//PisteDraw2_Image_Clip(kuva_tausta,0,0);
-			//PisteLog_Kirjoita("  - Copying game situation as background image \n");
 			PK_Kopioi_Pelitilanne_Taustakuvaksi();
-			PK_Sumenna_Kuva(kuva_tausta, 640, 480); //TODO - testando
-			//PK_Kopioi_Pelitilanne_Taustakuvaksi();
+			PK_Sumenna_Kuva(kuva_tausta, 640, 480);
 
 			PisteDraw2_ScreenFill(0);
 
-			//PisteLog_Kirjoita("  - Loading episodes \n");
 			PK_Episodit_Hae();
 
 			if (!peli_kesken){
