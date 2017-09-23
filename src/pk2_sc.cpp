@@ -11,12 +11,10 @@
 #include <cstdlib>
 #include <cstdio>
 
-typedef unsigned char  UCHAR;
-
-void Animaatio_Uusi(PK2Sprite_Prototyyppi &proto, int anim_i, UCHAR *sekvenssi, bool looppi)
+void Animaatio_Uusi(PK2Sprite_Prototyyppi &proto, int anim_i, BYTE *sekvenssi, bool looppi)
 {
-	UCHAR frame_i = 0;
-	
+	BYTE frame_i = 0;
+
 	if (anim_i < SPRITE_MAX_ANIMAATIOITA)
 	{
 		proto.animaatiot[anim_i].frameja = 0;
@@ -27,16 +25,16 @@ void Animaatio_Uusi(PK2Sprite_Prototyyppi &proto, int anim_i, UCHAR *sekvenssi, 
 			proto.animaatiot[anim_i].frameja++;
 			frame_i++;
 		}
-	
+
 		proto.animaatiot[anim_i].looppi = looppi;
 	}
 }
 /*
 void Animaatio_Uusi(PK2Sprite_Prototyyppi &proto, int anim_i, char *sekvenssi, bool looppi)
 {
-	UCHAR frame_i = 0;
+	BYTE frame_i = 0;
 	int frame = 1;
-	
+
 	if (anim_i < SPRITE_MAX_ANIMAATIOITA)
 	{
 		proto.animaatiot[anim_i].frameja = 0;
@@ -63,14 +61,14 @@ void Animaatio_Uusi(PK2Sprite_Prototyyppi &proto, int anim_i, char *sekvenssi, b
 			proto.animaatiot[anim_i].frameja++;
 			frame_i++;
 		}
-	
+
 		proto.animaatiot[anim_i].looppi = looppi;
 	}
 }
 */
 void luo_prototyyppi_kukko(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -79,7 +77,7 @@ void luo_prototyyppi_kukko(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");//egg.spr
 	strcpy(proto.ammus2_sprite,"");//doodle.spr
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"p_damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"p_ko.wav");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"p_layegg.wav");
@@ -87,7 +85,7 @@ void luo_prototyyppi_kukko(char *tiedosto)
 
 	proto.AI[0]			= AI_KANA;
 	proto.AI[1]			= AI_MUUTOS_JOS_ENERGIAA_ALLE_2;
-	
+
 	for (int ai=2;ai<SPRITE_MAX_AI;ai++)
 		proto.AI[ai]	= AI_EI;
 
@@ -129,31 +127,31 @@ void luo_prototyyppi_kukko(char *tiedosto)
 	proto.boss			= false;
 	proto.bonus_aina	= false;
 
-	UCHAR seq1[8] = {1,1,1,1,1,2,1,0}; 
+	BYTE seq1[8] = {1,1,1,1,1,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {3,4,5,6,0}; 
+	BYTE seq2[5] = {3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {7,0}; 
+	BYTE seq3[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[5] = {8,8,9,9,0}; 
+	BYTE seq4[5] = {8,8,9,9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[5] = {1,10,11,12,0}; 
+	BYTE seq5[5] = {1,10,11,12,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {13,14,0}; 
+
+	BYTE seq6[3] = {13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[8] = {15,15,16,16,17,17,18,0}; 
+	BYTE seq7[8] = {15,15,16,16,17,17,18,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {19,19,19,19,0}; 
+	BYTE seq8[5] = {19,19,19,19,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 
-	UCHAR seq9[5] = {20,20,21,21,0}; 
+	BYTE seq9[5] = {20,20,21,21,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq9, true);
 
 	proto.Tallenna(tiedosto);
@@ -161,7 +159,7 @@ void luo_prototyyppi_kukko(char *tiedosto)
 
 void luo_prototyyppi_kukko_kynitty(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -219,31 +217,31 @@ void luo_prototyyppi_kukko_kynitty(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.liitokyky		= true;
 
-	UCHAR seq1[9] = {1,1,21,21,22,22,2,1,0}; 
+	BYTE seq1[9] = {1,1,21,21,22,22,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {3,4,5,6,0}; 
+	BYTE seq2[5] = {3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {7,0}; 
+	BYTE seq3[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[5] = {8,8,9,9,0}; 
+	BYTE seq4[5] = {8,8,9,9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[5] = {1,10,11,12,0}; 
+	BYTE seq5[5] = {1,10,11,12,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {13,14,0}; 
+
+	BYTE seq6[3] = {13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[8] = {15,15,16,16,17,17,18,0}; 
+	BYTE seq7[8] = {15,15,16,16,17,17,18,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {19,19,19,19,0}; 
+	BYTE seq8[5] = {19,19,19,19,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 
-	UCHAR seq9[5] = {20,20,20,20,0}; 
+	BYTE seq9[5] = {20,20,20,20,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq9, false);
 
 	proto.Tallenna(tiedosto);
@@ -253,7 +251,7 @@ void luo_prototyyppi_kukko_kynitty(char *tiedosto)
 
 void luo_prototyyppi_pikkukana(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -262,7 +260,7 @@ void luo_prototyyppi_pikkukana(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
 		strcpy(proto.aanitiedostot[aani], "");
@@ -303,28 +301,28 @@ void luo_prototyyppi_pikkukana(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.liitokyky     = false;
 
-	UCHAR seq1[9] = {1,1,1,1,1,1,2,1,0}; 
+	BYTE seq1[9] = {1,1,1,1,1,1,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
-	UCHAR seq2[3] = {1,3,0}; 
+	BYTE seq2[3] = {1,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,	 seq2, true);
 
-	UCHAR seq3[2] = {3,0}; 
+	BYTE seq3[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS, seq3, true);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS, seq4, true);
 
-	UCHAR seq5[2] = {8,0}; 
+	BYTE seq5[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY, seq5, false);
 
-	UCHAR seq6[2] = {7,0}; 
+	BYTE seq6[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO, seq6, true);
 
-	UCHAR seq7[7] = {7,4,4,5,5,6,0}; 
+	BYTE seq7[7] = {7,4,4,5,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA, seq7, false);
 
-	UCHAR seq8[7] = {1,3,0}; 
+	BYTE seq8[7] = {1,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -333,7 +331,7 @@ void luo_prototyyppi_pikkukana(char *tiedosto)
 
 void luo_prototyyppi_kana(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -342,7 +340,7 @@ void luo_prototyyppi_kana(char *tiedosto)
 	strcpy(proto.bonus_sprite,"feather.spr");
 	strcpy(proto.ammus1_sprite,"egg.spr");//egg.spr
 	strcpy(proto.ammus2_sprite,"");//doodle.spr
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"p_damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"p_ko.wav");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"p_layegg.wav");
@@ -351,7 +349,7 @@ void luo_prototyyppi_kana(char *tiedosto)
 
 
 	proto.AI[0]			= AI_KANA;
-	
+
 	proto.aani_frq		= 26050;
 	proto.animaatioita	= 9;
 	proto.avain			= false;
@@ -390,39 +388,39 @@ void luo_prototyyppi_kana(char *tiedosto)
 	proto.boss			= false;
 	proto.bonus_aina	= false;
 
-	UCHAR seq1[8] = {1,1,1,1,1,2,1,0}; 
+	BYTE seq1[8] = {1,1,1,1,1,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {3,3,4,4,0}; 
+	BYTE seq2[5] = {3,3,4,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[5] = {5,5,6,6,0}; 
+	BYTE seq3[5] = {5,5,6,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {5,6,0}; 
+	BYTE seq4[3] = {5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {7,0}; 
+	BYTE seq5[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {8,9,0}; 
+
+	BYTE seq6[3] = {8,9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[6] = {8,8,8,7,10,0}; 
+	BYTE seq7[6] = {8,8,8,7,10,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {5,5,5,5,0}; 
+	BYTE seq8[5] = {5,5,5,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 
-	UCHAR seq9[5] = {9,9,9,9,0}; 
+	BYTE seq9[5] = {9,9,9,9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq9, true);
 
 	proto.Tallenna(tiedosto);
 }
 
-void luo_prototyyppi_karkki(char *tiedosto, char *nimi, UCHAR vari, int pisteet)
+void luo_prototyyppi_karkki(char *tiedosto, char *nimi, BYTE vari, int pisteet)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bon2.bmp");
@@ -463,16 +461,16 @@ void luo_prototyyppi_karkki(char *tiedosto, char *nimi, UCHAR vari, int pisteet)
 	proto.vari			= vari;
 	proto.vihollinen	= false;
 
-	//UCHAR seq1[2] = {1,0}; 
-	UCHAR seq1[11] = {1,2,3,4,5,6,7,8,9,10,0};
+	//BYTE seq1[2] = {1,0};
+	BYTE seq1[11] = {1,2,3,4,5,6,7,8,9,10,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
 }
 
-void luo_prototyyppi_jalokivi(char *tiedosto, char *nimi, UCHAR vari, int pisteet)
+void luo_prototyyppi_jalokivi(char *tiedosto, char *nimi, BYTE vari, int pisteet)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bon2.bmp");
@@ -513,8 +511,8 @@ void luo_prototyyppi_jalokivi(char *tiedosto, char *nimi, UCHAR vari, int pistee
 	proto.vari			= vari;
 	proto.vihollinen	= false;
 
-	//UCHAR seq1[2] = {1,0}; 
-	UCHAR seq1[11] = {1,2,3,4,5,6,7,8,9,10,0};
+	//BYTE seq1[2] = {1,0};
+	BYTE seq1[11] = {1,2,3,4,5,6,7,8,9,10,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -522,7 +520,7 @@ void luo_prototyyppi_jalokivi(char *tiedosto, char *nimi, UCHAR vari, int pistee
 
 void luo_prototyyppi_omena1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -569,8 +567,8 @@ void luo_prototyyppi_omena1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	//UCHAR seq1[2] = {1,0}; 
-	UCHAR seq1[9] = {1,2,3,4,5,6,7,8,0};
+	//BYTE seq1[2] = {1,0};
+	BYTE seq1[9] = {1,2,3,4,5,6,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -578,7 +576,7 @@ void luo_prototyyppi_omena1(char *tiedosto)
 
 void luo_prototyyppi_omena2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -625,7 +623,7 @@ void luo_prototyyppi_omena2(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[9] = {1,2,3,4,5,6,7,8,0};
+	BYTE seq1[9] = {1,2,3,4,5,6,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -633,7 +631,7 @@ void luo_prototyyppi_omena2(char *tiedosto)
 
 void luo_prototyyppi_omena3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -675,7 +673,7 @@ void luo_prototyyppi_omena3(char *tiedosto)
 	proto.vari			= VARI_ORANSSI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[9] = {1,2,3,4,5,6,7,8,0};
+	BYTE seq1[9] = {1,2,3,4,5,6,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -683,7 +681,7 @@ void luo_prototyyppi_omena3(char *tiedosto)
 
 void luo_prototyyppi_omena4(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -724,7 +722,7 @@ void luo_prototyyppi_omena4(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[9] = {1,2,3,4,5,6,7,8,0};
+	BYTE seq1[9] = {1,2,3,4,5,6,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -732,7 +730,7 @@ void luo_prototyyppi_omena4(char *tiedosto)
 
 void luo_prototyyppi_omena5(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -774,7 +772,7 @@ void luo_prototyyppi_omena5(char *tiedosto)
 	proto.vari			= VARI_VIOLETTI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[9] = {1,2,3,4,5,6,7,8,0};
+	BYTE seq1[9] = {1,2,3,4,5,6,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -782,7 +780,7 @@ void luo_prototyyppi_omena5(char *tiedosto)
 
 void luo_prototyyppi_iso_omena(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -831,7 +829,7 @@ void luo_prototyyppi_iso_omena(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -839,7 +837,7 @@ void luo_prototyyppi_iso_omena(char *tiedosto)
 
 void luo_prototyyppi_iso_omena2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -888,7 +886,7 @@ void luo_prototyyppi_iso_omena2(char *tiedosto)
 	proto.vari			= VARI_ORANSSI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -896,7 +894,7 @@ void luo_prototyyppi_iso_omena2(char *tiedosto)
 
 void luo_prototyyppi_porkkana(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -945,7 +943,7 @@ void luo_prototyyppi_porkkana(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -953,7 +951,7 @@ void luo_prototyyppi_porkkana(char *tiedosto)
 
 void luo_prototyyppi_juusto(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1002,7 +1000,7 @@ void luo_prototyyppi_juusto(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -1010,7 +1008,7 @@ void luo_prototyyppi_juusto(char *tiedosto)
 
 void luo_prototyyppi_pippuri(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1059,7 +1057,7 @@ void luo_prototyyppi_pippuri(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -1067,7 +1065,7 @@ void luo_prototyyppi_pippuri(char *tiedosto)
 
 void luo_prototyyppi_hoyhen(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1116,7 +1114,7 @@ void luo_prototyyppi_hoyhen(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -1124,7 +1122,7 @@ void luo_prototyyppi_hoyhen(char *tiedosto)
 
 void luo_prototyyppi_hoyhen2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1173,7 +1171,7 @@ void luo_prototyyppi_hoyhen2(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -1181,7 +1179,7 @@ void luo_prototyyppi_hoyhen2(char *tiedosto)
 /*
 void luo_prototyyppi_appelsiini(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1190,7 +1188,7 @@ void luo_prototyyppi_appelsiini(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
 		strcpy(proto.aanitiedostot[aani], "");
@@ -1227,7 +1225,7 @@ void luo_prototyyppi_appelsiini(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -1235,7 +1233,7 @@ void luo_prototyyppi_appelsiini(char *tiedosto)
 */
 void luo_prototyyppi_appelsiini(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1244,7 +1242,7 @@ void luo_prototyyppi_appelsiini(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
 		strcpy(proto.aanitiedostot[aani], "");
@@ -1281,10 +1279,10 @@ void luo_prototyyppi_appelsiini(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {4,0}; 
+	BYTE seq1[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
-	
-	UCHAR seq2[9] = {1,2,3,4,5,6,0}; 
+
+	BYTE seq2[9] = {1,2,3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq2, true);
@@ -1299,7 +1297,7 @@ void luo_prototyyppi_appelsiini(char *tiedosto)
 
 void luo_prototyyppi_greippi(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1308,7 +1306,7 @@ void luo_prototyyppi_greippi(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
 		strcpy(proto.aanitiedostot[aani], "");
@@ -1345,10 +1343,10 @@ void luo_prototyyppi_greippi(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {4,0}; 
+	BYTE seq1[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
-	
-	UCHAR seq2[9] = {1,2,3,4,5,6,0}; 
+
+	BYTE seq2[9] = {1,2,3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq2, true);
@@ -1363,7 +1361,7 @@ void luo_prototyyppi_greippi(char *tiedosto)
 
 void luo_prototyyppi_viinirypale(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1372,7 +1370,7 @@ void luo_prototyyppi_viinirypale(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
 		strcpy(proto.aanitiedostot[aani], "");
@@ -1409,7 +1407,7 @@ void luo_prototyyppi_viinirypale(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, false);
@@ -1425,7 +1423,7 @@ void luo_prototyyppi_viinirypale(char *tiedosto)
 
 void luo_prototyyppi_ananas1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bon2.bmp");
@@ -1466,8 +1464,8 @@ void luo_prototyyppi_ananas1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	//UCHAR seq1[2] = {1,0}; 
-	UCHAR seq1[7] = {1,2,3,4,5,6,0};
+	//BYTE seq1[2] = {1,0};
+	BYTE seq1[7] = {1,2,3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -1475,7 +1473,7 @@ void luo_prototyyppi_ananas1(char *tiedosto)
 
 void luo_prototyyppi_kummitusjauhe1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bon2.bmp");
@@ -1484,7 +1482,7 @@ void luo_prototyyppi_kummitusjauhe1(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "bonus12.wav");
 
 	proto.AI[0]			= AI_PERUS;//AI_BONUS;
@@ -1516,7 +1514,7 @@ void luo_prototyyppi_kummitusjauhe1(char *tiedosto)
 	proto.vari			= VARI_SININEN;
 	proto.vihollinen	= false;
 
-	UCHAR seq2[2] = {1,0}; 
+	BYTE seq2[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq2, false);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq2, false);
@@ -1532,7 +1530,7 @@ void luo_prototyyppi_kummitusjauhe1(char *tiedosto)
 
 void luo_prototyyppi_kummitusjauhe2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bon2.bmp");
@@ -1541,7 +1539,7 @@ void luo_prototyyppi_kummitusjauhe2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "bonus12.wav");
 
 	proto.AI[0]			= AI_PERUS;//AI_BONUS;
@@ -1574,7 +1572,7 @@ void luo_prototyyppi_kummitusjauhe2(char *tiedosto)
 	proto.vari			= VARI_TURKOOSI;
 	proto.vihollinen	= false;
 
-	UCHAR seq2[2] = {1,0}; 
+	BYTE seq2[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq2, false);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq2, false);
@@ -1588,10 +1586,10 @@ void luo_prototyyppi_kummitusjauhe2(char *tiedosto)
 	proto.Tallenna(tiedosto);
 }
 
-void luo_prototyyppi_paasiaismuna(char *tiedosto, char *nimi, char *sprite, 
-								  int pisteet, UCHAR vari, UCHAR tuhoutuminen)
+void luo_prototyyppi_paasiaismuna(char *tiedosto, char *nimi, char *sprite,
+								  int pisteet, BYTE vari, BYTE tuhoutuminen)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1632,8 +1630,8 @@ void luo_prototyyppi_paasiaismuna(char *tiedosto, char *nimi, char *sprite,
 	proto.vari			= vari;
 	proto.vihollinen	= false;
 
-	//UCHAR seq1[2] = {1,0}; 
-	UCHAR seq1[9] = {1,2,3,4,5,6,0};
+	//BYTE seq1[2] = {1,0};
+	BYTE seq1[9] = {1,2,3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -1641,7 +1639,7 @@ void luo_prototyyppi_paasiaismuna(char *tiedosto, char *nimi, char *sprite,
 
 void luo_prototyyppi_avain1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1650,7 +1648,7 @@ void luo_prototyyppi_avain1(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
 		strcpy(proto.aanitiedostot[aani], "");
@@ -1690,7 +1688,7 @@ void luo_prototyyppi_avain1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -1698,7 +1696,7 @@ void luo_prototyyppi_avain1(char *tiedosto)
 
 void luo_prototyyppi_avain2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1707,7 +1705,7 @@ void luo_prototyyppi_avain2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
 		strcpy(proto.aanitiedostot[aani], "");
@@ -1745,7 +1743,7 @@ void luo_prototyyppi_avain2(char *tiedosto)
 	proto.vari			= VARI_SININEN;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -1753,7 +1751,7 @@ void luo_prototyyppi_avain2(char *tiedosto)
 
 void luo_prototyyppi_avain3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1762,7 +1760,7 @@ void luo_prototyyppi_avain3(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "bonus3.wav");
 
 	proto.AI[0]			= AI_BONUS;
@@ -1794,7 +1792,7 @@ void luo_prototyyppi_avain3(char *tiedosto)
 	proto.vari			= VARI_TURKOOSI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -1802,7 +1800,7 @@ void luo_prototyyppi_avain3(char *tiedosto)
 
 void luo_prototyyppi_avain4(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1811,7 +1809,7 @@ void luo_prototyyppi_avain4(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "bonus3.wav");
 
 	proto.AI[0]			= AI_BONUS;
@@ -1845,7 +1843,7 @@ void luo_prototyyppi_avain4(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, false);
@@ -1860,7 +1858,7 @@ void luo_prototyyppi_avain4(char *tiedosto)
 
 void luo_prototyyppi_kello1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1902,7 +1900,7 @@ void luo_prototyyppi_kello1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0};
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -1910,7 +1908,7 @@ void luo_prototyyppi_kello1(char *tiedosto)
 
 void luo_prototyyppi_kello2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -1952,7 +1950,7 @@ void luo_prototyyppi_kello2(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0};
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -1960,7 +1958,7 @@ void luo_prototyyppi_kello2(char *tiedosto)
 
 void luo_prototyyppi_kello3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -2002,7 +2000,7 @@ void luo_prototyyppi_kello3(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0};
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -2010,7 +2008,7 @@ void luo_prototyyppi_kello3(char *tiedosto)
 
 void luo_prototyyppi_muna(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2019,7 +2017,7 @@ void luo_prototyyppi_muna(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"eggcrack.wav");
 
 	proto.AI[0]			= AI_MUNA;
@@ -2054,10 +2052,10 @@ void luo_prototyyppi_muna(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.tulitauko		= 50;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
-	UCHAR seq2[5] = {2,3,4,5,0}; 
+	BYTE seq2[5] = {2,3,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	 seq2, false);
 
 	proto.Tallenna(tiedosto);
@@ -2065,7 +2063,7 @@ void luo_prototyyppi_muna(char *tiedosto)
 
 void luo_prototyyppi_muna_haju(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2074,7 +2072,7 @@ void luo_prototyyppi_muna_haju(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"eggcrack.wav");
 
 	proto.AI[0]			= AI_MUNA;
@@ -2109,10 +2107,10 @@ void luo_prototyyppi_muna_haju(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.tulitauko		= 10;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
-	UCHAR seq2[5] = {2,3,4,5,0}; 
+	BYTE seq2[5] = {2,3,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	 seq2, false);
 
 	proto.Tallenna(tiedosto);
@@ -2120,7 +2118,7 @@ void luo_prototyyppi_muna_haju(char *tiedosto)
 
 void luo_prototyyppi_muna_tuli(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2129,7 +2127,7 @@ void luo_prototyyppi_muna_tuli(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"flame.spr");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"eggcrack.wav");
 
 	proto.AI[0]			= AI_AMMUS;
@@ -2162,10 +2160,10 @@ void luo_prototyyppi_muna_tuli(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.tulitauko		= 50;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
-	UCHAR seq2[5] = {2,3,4,5,0}; 
+	BYTE seq2[5] = {2,3,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	 seq2, false);
 
 	proto.Tallenna(tiedosto);
@@ -2173,7 +2171,7 @@ void luo_prototyyppi_muna_tuli(char *tiedosto)
 
 void luo_prototyyppi_muna_jaa(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2182,7 +2180,7 @@ void luo_prototyyppi_muna_jaa(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"icecube.spr");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"eggcrack.wav");
 
 	proto.AI[0]			= AI_AMMUS;
@@ -2215,10 +2213,10 @@ void luo_prototyyppi_muna_jaa(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.tulitauko		= 50;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
-	UCHAR seq2[5] = {2,3,4,5,0}; 
+	BYTE seq2[5] = {2,3,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	 seq2, false);
 
 	proto.Tallenna(tiedosto);
@@ -2226,7 +2224,7 @@ void luo_prototyyppi_muna_jaa(char *tiedosto)
 
 void luo_prototyyppi_pommi(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_batb.bmp");
@@ -2235,7 +2233,7 @@ void luo_prototyyppi_pommi(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"flame.spr");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"explot.wav");
 
 	proto.AI[0]			= AI_BONUS;
@@ -2269,7 +2267,7 @@ void luo_prototyyppi_pommi(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.tulitauko		= 0;
 
-	UCHAR seq1[4] = {1,2,3,0}; 
+	BYTE seq1[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -2277,7 +2275,7 @@ void luo_prototyyppi_pommi(char *tiedosto)
 
 void luo_prototyyppi_kieku(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2286,7 +2284,7 @@ void luo_prototyyppi_kieku(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 
 	proto.AI[0]			= AI_AMMUS;
@@ -2322,7 +2320,7 @@ void luo_prototyyppi_kieku(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.tulitauko		= 90;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -2330,7 +2328,7 @@ void luo_prototyyppi_kieku(char *tiedosto)
 
 void luo_prototyyppi_kieku_tuli(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2339,7 +2337,7 @@ void luo_prototyyppi_kieku_tuli(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"flame.spr");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 
 	proto.AI[0]			= AI_AMMUS;
@@ -2374,7 +2372,7 @@ void luo_prototyyppi_kieku_tuli(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.tulitauko		= 60;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -2382,7 +2380,7 @@ void luo_prototyyppi_kieku_tuli(char *tiedosto)
 
 void luo_prototyyppi_kieku_tuli_2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2391,7 +2389,7 @@ void luo_prototyyppi_kieku_tuli_2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 
 	proto.AI[0]			= AI_AMMUS;
@@ -2425,7 +2423,7 @@ void luo_prototyyppi_kieku_tuli_2(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.tulitauko		= 50;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -2433,7 +2431,7 @@ void luo_prototyyppi_kieku_tuli_2(char *tiedosto)
 
 void luo_prototyyppi_kieku_lumi(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2442,7 +2440,7 @@ void luo_prototyyppi_kieku_lumi(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"icecube.spr");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 
 	proto.AI[0]			= AI_AMMUS;
@@ -2476,7 +2474,7 @@ void luo_prototyyppi_kieku_lumi(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.tulitauko		= 60;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -2484,7 +2482,7 @@ void luo_prototyyppi_kieku_lumi(char *tiedosto)
 
 void luo_prototyyppi_kieku_valkosipuli(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2493,7 +2491,7 @@ void luo_prototyyppi_kieku_valkosipuli(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 
 	proto.AI[0]			= AI_AMMUS;
@@ -2526,7 +2524,7 @@ void luo_prototyyppi_kieku_valkosipuli(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.tulitauko		= 10;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -2534,7 +2532,7 @@ void luo_prototyyppi_kieku_valkosipuli(char *tiedosto)
 
 void luo_prototyyppi_kieku_sonic(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2543,7 +2541,7 @@ void luo_prototyyppi_kieku_sonic(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 
 	proto.AI[0]			= AI_AMMUS;
@@ -2577,7 +2575,7 @@ void luo_prototyyppi_kieku_sonic(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.tulitauko		= 20;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -2585,7 +2583,7 @@ void luo_prototyyppi_kieku_sonic(char *tiedosto)
 
 void luo_prototyyppi_ammus1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_tank.bmp");
@@ -2594,7 +2592,7 @@ void luo_prototyyppi_ammus1(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 
 	proto.AI[0]			= AI_AMMUS;
@@ -2627,7 +2625,7 @@ void luo_prototyyppi_ammus1(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.tulitauko		= 40;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -2635,7 +2633,7 @@ void luo_prototyyppi_ammus1(char *tiedosto)
 
 void luo_prototyyppi_ammus2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_tank.bmp");
@@ -2644,7 +2642,7 @@ void luo_prototyyppi_ammus2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 
 	proto.AI[0]			= AI_AMMUS;
@@ -2677,7 +2675,7 @@ void luo_prototyyppi_ammus2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.tulitauko		= 40;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -2685,7 +2683,7 @@ void luo_prototyyppi_ammus2(char *tiedosto)
 
 void luo_prototyyppi_jaapala(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2697,7 +2695,7 @@ void luo_prototyyppi_jaapala(char *tiedosto)
 
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "");
-	
+
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_POMMI;
 	proto.AI[2]			= AI_KITKA_VAIKUTTAA;
@@ -2728,7 +2726,7 @@ void luo_prototyyppi_jaapala(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -2743,7 +2741,7 @@ void luo_prototyyppi_jaapala(char *tiedosto)
 
 void luo_prototyyppi_kivipala(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hens.bmp");
@@ -2755,7 +2753,7 @@ void luo_prototyyppi_kivipala(char *tiedosto)
 
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "");
-	
+
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_KITKA_VAIKUTTAA;
 
@@ -2784,7 +2782,7 @@ void luo_prototyyppi_kivipala(char *tiedosto)
 	proto.vari			= VARI_HARMAA;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -2799,7 +2797,7 @@ void luo_prototyyppi_kivipala(char *tiedosto)
 
 void luo_prototyyppi_kivipala2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -2811,7 +2809,7 @@ void luo_prototyyppi_kivipala2(char *tiedosto)
 
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "");
-	
+
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_KITKA_VAIKUTTAA;
 	proto.AI[2]			= AI_MUUTOS_AJASTIN;
@@ -2841,7 +2839,7 @@ void luo_prototyyppi_kivipala2(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -2856,7 +2854,7 @@ void luo_prototyyppi_kivipala2(char *tiedosto)
 
 void luo_prototyyppi_kivipala3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -2868,7 +2866,7 @@ void luo_prototyyppi_kivipala3(char *tiedosto)
 
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "");
-	
+
 	proto.AI[0]			= AI_BONUS;
 
 	proto.animaatioita	= 1;
@@ -2896,7 +2894,7 @@ void luo_prototyyppi_kivipala3(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -2904,7 +2902,7 @@ void luo_prototyyppi_kivipala3(char *tiedosto)
 
 void luo_prototyyppi_tennispallo(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_mous.bmp");
@@ -2916,7 +2914,7 @@ void luo_prototyyppi_tennispallo(char *tiedosto)
 
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "");
-	
+
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_HEITTOASE;
 	proto.AI[2]			= AI_POMMI;
@@ -2948,7 +2946,7 @@ void luo_prototyyppi_tennispallo(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[5] = {1,2,3,4,0}; 
+	BYTE seq1[5] = {1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -2964,7 +2962,7 @@ void luo_prototyyppi_tennispallo(char *tiedosto)
 /*
 void luo_prototyyppi_hyppija(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"pk2spr01.bmp");
@@ -3010,28 +3008,28 @@ void luo_prototyyppi_hyppija(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[2] = {1,0}; 
+	BYTE seq2[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {2,0}; 
+	BYTE seq3[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {4,5,0}; 
+
+	BYTE seq6[3] = {4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[10] = {6,6,7,7,8,9,10,11,12,0}; 
+	BYTE seq7[10] = {6,6,7,7,8,9,10,11,12,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {2,0}; 
+	BYTE seq8[5] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	proto.Tallenna(tiedosto);
@@ -3039,7 +3037,7 @@ void luo_prototyyppi_hyppija(char *tiedosto)
 
 void luo_prototyyppi_hyppija2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"pk2spr01.bmp");
@@ -3084,28 +3082,28 @@ void luo_prototyyppi_hyppija2(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[2] = {1,0}; 
+	BYTE seq2[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {2,0}; 
+	BYTE seq3[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {4,5,0}; 
+
+	BYTE seq6[3] = {4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[10] = {6,6,7,7,8,9,10,11,12,0}; 
+	BYTE seq7[10] = {6,6,7,7,8,9,10,11,12,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {2,0}; 
+	BYTE seq8[5] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	proto.Tallenna(tiedosto);
@@ -3113,7 +3111,7 @@ void luo_prototyyppi_hyppija2(char *tiedosto)
 /*
 void luo_prototyyppi_kani(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"pk2spr01.bmp");
@@ -3158,25 +3156,25 @@ void luo_prototyyppi_kani(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[10] = {1,1,2,2,1,1,2,2,1,0}; 
+	BYTE seq1[10] = {1,1,2,2,1,1,2,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[7] = {7,8,9,10,11,12,0}; 
+	BYTE seq2[7] = {7,8,9,10,11,12,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {3,0}; 
+	BYTE seq3[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {4,0}; 
+	BYTE seq4[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[4] = {1,5,6,0}; 
+	BYTE seq5[4] = {1,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[5] = {13,13,14,14,0}; 
+
+	BYTE seq6[5] = {13,13,14,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[10] = {15,15,16,16,17,17,18,18,19,0}; 
+	BYTE seq7[10] = {15,15,16,16,17,17,18,18,19,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
 	proto.Tallenna(tiedosto);
@@ -3184,7 +3182,7 @@ void luo_prototyyppi_kani(char *tiedosto)
 */
 void luo_prototyyppi_susi1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_wolf.bmp");
@@ -3237,28 +3235,28 @@ void luo_prototyyppi_susi1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[8] = {5,5,5,5,5,5,6,0}; 
+	BYTE seq1[8] = {5,5,5,5,5,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {1,2,3,4,0}; 
+	BYTE seq2[5] = {1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {7,0}; 
+	BYTE seq3[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {8,0}; 
+	BYTE seq4[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[4] = {9,9,10,0}; 
+	BYTE seq5[4] = {9,9,10,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {13,14,0}; 
+
+	BYTE seq6[3] = {13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[10] = {13,13,13,14,14,14,14,15,16,0}; 
+	BYTE seq7[10] = {13,13,13,14,14,14,14,15,16,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {11,11,12,12,0}; 
+	BYTE seq8[5] = {11,11,12,12,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -3268,7 +3266,7 @@ void luo_prototyyppi_susi1(char *tiedosto)
 
 void luo_prototyyppi_susi2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_wolf.bmp");
@@ -3317,28 +3315,28 @@ void luo_prototyyppi_susi2(char *tiedosto)
 	proto.vari			= VARI_VIOLETTI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[8] = {5,5,5,5,5,5,6,0}; 
+	BYTE seq1[8] = {5,5,5,5,5,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {1,2,3,4,0}; 
+	BYTE seq2[5] = {1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {7,0}; 
+	BYTE seq3[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {8,0}; 
+	BYTE seq4[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[4] = {9,9,10,0}; 
+	BYTE seq5[4] = {9,9,10,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {13,14,0}; 
+
+	BYTE seq6[3] = {13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[10] = {13,13,13,14,14,14,14,15,16,0}; 
+	BYTE seq7[10] = {13,13,13,14,14,14,14,15,16,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {11,11,12,12,0}; 
+	BYTE seq8[5] = {11,11,12,12,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -3348,7 +3346,7 @@ void luo_prototyyppi_susi2(char *tiedosto)
 
 void luo_prototyyppi_susi3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_wolf.bmp");
@@ -3399,28 +3397,28 @@ void luo_prototyyppi_susi3(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[8] = {5,5,5,5,5,5,6,0}; 
+	BYTE seq1[8] = {5,5,5,5,5,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {1,2,3,4,0}; 
+	BYTE seq2[5] = {1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {7,0}; 
+	BYTE seq3[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {8,0}; 
+	BYTE seq4[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[4] = {9,9,10,0}; 
+	BYTE seq5[4] = {9,9,10,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {13,14,0}; 
+
+	BYTE seq6[3] = {13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[10] = {13,13,13,14,14,14,14,15,16,0}; 
+	BYTE seq7[10] = {13,13,13,14,14,14,14,15,16,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {11,11,12,12,0}; 
+	BYTE seq8[5] = {11,11,12,12,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -3430,7 +3428,7 @@ void luo_prototyyppi_susi3(char *tiedosto)
 
 void luo_prototyyppi_sammakko1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_frog.bmp");
@@ -3477,25 +3475,25 @@ void luo_prototyyppi_sammakko1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[5] = {1,1,2,2,0}; 
+	BYTE seq1[5] = {1,1,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[5] = {1,4,3,4,0}; 
+	BYTE seq2[5] = {1,4,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[6] = {4,4,4,4,3,0}; 
+	BYTE seq3[6] = {4,4,4,4,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, false);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {5,0}; 
+	BYTE seq5[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {6,7,0}; 
+
+	BYTE seq6[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[2] = {8,0}; 
+	BYTE seq8[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -3504,7 +3502,7 @@ void luo_prototyyppi_sammakko1(char *tiedosto)
 
 void luo_prototyyppi_sammakko2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_frog.bmp");
@@ -3551,25 +3549,25 @@ void luo_prototyyppi_sammakko2(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[5] = {1,1,2,2,0}; 
+	BYTE seq1[5] = {1,1,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[5] = {5,5,5,1,0}; 
+	BYTE seq2[5] = {5,5,5,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, false);
 
-	UCHAR seq3[6] = {4,4,4,4,3,0}; 
+	BYTE seq3[6] = {4,4,4,4,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, false);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {5,0}; 
+	BYTE seq5[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {6,7,0}; 
+
+	BYTE seq6[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[2] = {8,0}; 
+	BYTE seq8[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -3578,7 +3576,7 @@ void luo_prototyyppi_sammakko2(char *tiedosto)
 
 void luo_prototyyppi_sammakko3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_frog.bmp");
@@ -3625,25 +3623,25 @@ void luo_prototyyppi_sammakko3(char *tiedosto)
 	proto.vari			= VARI_SININEN;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[5] = {1,1,2,2,0}; 
+	BYTE seq1[5] = {1,1,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[5] = {1,4,3,4,0}; 
+	BYTE seq2[5] = {1,4,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[6] = {4,4,4,4,3,0}; 
+	BYTE seq3[6] = {4,4,4,4,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, false);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {5,0}; 
+	BYTE seq5[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {6,7,0}; 
+
+	BYTE seq6[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[2] = {8,0}; 
+	BYTE seq8[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -3652,7 +3650,7 @@ void luo_prototyyppi_sammakko3(char *tiedosto)
 
 void luo_prototyyppi_sammakko4(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_frog.bmp");
@@ -3699,25 +3697,25 @@ void luo_prototyyppi_sammakko4(char *tiedosto)
 	proto.vari			= VARI_VIOLETTI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[5] = {1,1,2,2,0}; 
+	BYTE seq1[5] = {1,1,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[5] = {1,4,3,4,0}; 
+	BYTE seq2[5] = {1,4,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[6] = {4,4,4,4,3,0}; 
+	BYTE seq3[6] = {4,4,4,4,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, false);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {5,0}; 
+	BYTE seq5[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {6,7,0}; 
+
+	BYTE seq6[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[2] = {8,0}; 
+	BYTE seq8[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -3726,7 +3724,7 @@ void luo_prototyyppi_sammakko4(char *tiedosto)
 
 void luo_prototyyppi_sammakko5(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_frog.bmp");
@@ -3770,25 +3768,25 @@ void luo_prototyyppi_sammakko5(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.liitokyky     = false;
 
-	UCHAR seq1[5] = {1,1,2,2,0}; 
+	BYTE seq1[5] = {1,1,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[5] = {1,4,3,4,0}; 
+	BYTE seq2[5] = {1,4,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[6] = {4,4,4,4,3,0}; 
+	BYTE seq3[6] = {4,4,4,4,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, false);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {5,0}; 
+	BYTE seq5[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {6,7,0}; 
+
+	BYTE seq6[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[2] = {8,0}; 
+	BYTE seq8[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -3797,7 +3795,7 @@ void luo_prototyyppi_sammakko5(char *tiedosto)
 
 void luo_prototyyppi_hyppija(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bun.bmp");
@@ -3847,28 +3845,28 @@ void luo_prototyyppi_hyppija(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[10] = {1,1,2,2,1,1,2,2,1,0}; 
+	BYTE seq1[10] = {1,1,2,2,1,1,2,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[7] = {9,10,11,12,13,14,0}; 
+	BYTE seq2[7] = {9,10,11,12,13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {3,0}; 
+	BYTE seq3[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {4,0}; 
+	BYTE seq4[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {19,0}; 
+	BYTE seq5[2] = {19,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[5] = {15,15,16,16,0}; 
+
+	BYTE seq6[5] = {15,15,16,16,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[8] = {5,5,6,6,7,7,8,0}; 
+	BYTE seq7[8] = {5,5,6,6,7,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {17,17,18,18,0}; 
+	BYTE seq8[5] = {17,17,18,18,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -3877,7 +3875,7 @@ void luo_prototyyppi_hyppija(char *tiedosto)
 
 void luo_prototyyppi_hyppija2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bun.bmp");
@@ -3889,7 +3887,7 @@ void luo_prototyyppi_hyppija2(char *tiedosto)
 
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "bunny_dm.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "bunny_ko.wav");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1], "bunny_at.wav");
@@ -3925,28 +3923,28 @@ void luo_prototyyppi_hyppija2(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[10] = {1,1,2,2,1,1,2,2,1,0}; 
+	BYTE seq1[10] = {1,1,2,2,1,1,2,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[7] = {9,10,11,12,13,14,0}; 
+	BYTE seq2[7] = {9,10,11,12,13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {3,0}; 
+	BYTE seq3[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {4,0}; 
+	BYTE seq4[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {19,0}; 
+	BYTE seq5[2] = {19,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[5] = {15,15,16,16,0}; 
+
+	BYTE seq6[5] = {15,15,16,16,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[8] = {5,5,6,6,7,7,8,0}; 
+	BYTE seq7[8] = {5,5,6,6,7,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {17,17,18,18,0}; 
+	BYTE seq8[5] = {17,17,18,18,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -3955,7 +3953,7 @@ void luo_prototyyppi_hyppija2(char *tiedosto)
 
 void luo_prototyyppi_kani(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bun.bmp");
@@ -4013,28 +4011,28 @@ void luo_prototyyppi_kani(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[10] = {1,1,2,2,1,1,2,2,1,0}; 
+	BYTE seq1[10] = {1,1,2,2,1,1,2,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[7] = {9,10,11,12,13,14,0}; 
+	BYTE seq2[7] = {9,10,11,12,13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {3,0}; 
+	BYTE seq3[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {4,0}; 
+	BYTE seq4[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {19,0}; 
+	BYTE seq5[2] = {19,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[5] = {15,15,16,16,0}; 
+
+	BYTE seq6[5] = {15,15,16,16,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[8] = {5,5,6,6,7,7,8,0}; 
+	BYTE seq7[8] = {5,5,6,6,7,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {17,17,18,18,0}; 
+	BYTE seq8[5] = {17,17,18,18,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4043,7 +4041,7 @@ void luo_prototyyppi_kani(char *tiedosto)
 
 void luo_prototyyppi_kani2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bun.bmp");
@@ -4094,28 +4092,28 @@ void luo_prototyyppi_kani2(char *tiedosto)
 	proto.vari			= VARI_ORANSSI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[10] = {1,1,2,2,1,1,2,2,1,0}; 
+	BYTE seq1[10] = {1,1,2,2,1,1,2,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[7] = {9,10,11,12,13,14,0}; 
+	BYTE seq2[7] = {9,10,11,12,13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {3,0}; 
+	BYTE seq3[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {4,0}; 
+	BYTE seq4[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {19,0}; 
+	BYTE seq5[2] = {19,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[5] = {15,15,16,16,0}; 
+
+	BYTE seq6[5] = {15,15,16,16,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[8] = {5,5,6,6,7,7,8,0}; 
+	BYTE seq7[8] = {5,5,6,6,7,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {17,17,18,18,0}; 
+	BYTE seq8[5] = {17,17,18,18,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4124,7 +4122,7 @@ void luo_prototyyppi_kani2(char *tiedosto)
 
 void luo_prototyyppi_kilpikonna_vaihe1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_turt.bmp");
@@ -4174,28 +4172,28 @@ void luo_prototyyppi_kilpikonna_vaihe1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {2,3,4,5,0}; 
+	BYTE seq2[5] = {2,3,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {4,0}; 
+	BYTE seq3[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {6,0}; 
+	BYTE seq5[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {11,12,0}; 
+
+	BYTE seq6[3] = {11,12,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[7] = {12,12,12,11,1,13,0}; 
+	BYTE seq7[7] = {12,12,12,11,1,13,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {2,3,4,5,0}; 
+	BYTE seq8[5] = {2,3,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4204,7 +4202,7 @@ void luo_prototyyppi_kilpikonna_vaihe1(char *tiedosto)
 
 void luo_prototyyppi_kilpikonna_vaihe2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_turt.bmp");
@@ -4223,7 +4221,7 @@ void luo_prototyyppi_kilpikonna_vaihe2(char *tiedosto)
 	proto.AI[3]			= AI_KAANTYY_ESTEESTA_HORI;
 	proto.AI[4]			= AI_VAROO_KUOPPAA;
 	proto.AI[5]			= AI_KITKA_VAIKUTTAA;
-	
+
 	proto.este			= true;
 	proto.este_ylos		= false;
 	proto.este_alas		= true;
@@ -4254,28 +4252,28 @@ void luo_prototyyppi_kilpikonna_vaihe2(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[10] = {1,1,2,2,3,3,4,4,5,0}; 
+	BYTE seq1[10] = {1,1,2,2,3,3,4,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {5,0}; 
+	BYTE seq2[5] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, false);
 
-	UCHAR seq3[2] = {5,0}; 
+	BYTE seq3[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, false);
 
-	UCHAR seq4[2] = {5,0}; 
+	BYTE seq4[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, false);
 
-	UCHAR seq5[2] = {5,0}; 
+	BYTE seq5[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {6,7,0}; 
+
+	BYTE seq6[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[6] = {6,7,6,7,8,0}; 
+	BYTE seq7[6] = {6,7,6,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[2] = {4,0}; 
+	BYTE seq8[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4284,7 +4282,7 @@ void luo_prototyyppi_kilpikonna_vaihe2(char *tiedosto)
 
 void luo_prototyyppi_kilpikonna_vaihe3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_turt.bmp");
@@ -4303,7 +4301,7 @@ void luo_prototyyppi_kilpikonna_vaihe3(char *tiedosto)
 	proto.AI[3]			= AI_KAANTYY_ESTEESTA_HORI;
 	proto.AI[4]			= AI_VAROO_KUOPPAA;
 	proto.AI[5]			= AI_KITKA_VAIKUTTAA;
-	
+
 	proto.este			= true;
 	proto.este_ylos		= false;
 	proto.este_alas		= true;
@@ -4334,28 +4332,28 @@ void luo_prototyyppi_kilpikonna_vaihe3(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[10] = {5,5,4,4,3,3,2,2,1,0}; 
+	BYTE seq1[10] = {5,5,4,4,3,3,2,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {1,0}; 
+	BYTE seq2[5] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, false);
 
-	UCHAR seq3[2] = {1,0}; 
+	BYTE seq3[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, false);
 
-	UCHAR seq4[2] = {1,0}; 
+	BYTE seq4[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, false);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {6,7,0}; 
+
+	BYTE seq6[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[6] = {6,7,6,7,8,0}; 
+	BYTE seq7[6] = {6,7,6,7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[2] = {1,0}; 
+	BYTE seq8[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4364,7 +4362,7 @@ void luo_prototyyppi_kilpikonna_vaihe3(char *tiedosto)
 
 void luo_prototyyppi_tulikilpikonna(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_turt.bmp");
@@ -4415,28 +4413,28 @@ void luo_prototyyppi_tulikilpikonna(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina    = true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {2,3,4,5,0}; 
+	BYTE seq2[5] = {2,3,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {4,0}; 
+	BYTE seq3[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {6,0}; 
+	BYTE seq5[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {11,12,0}; 
+
+	BYTE seq6[3] = {11,12,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[7] = {12,12,12,11,1,13,0}; 
+	BYTE seq7[7] = {12,12,12,11,1,13,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {2,3,4,5,0}; 
+	BYTE seq8[5] = {2,3,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4445,7 +4443,7 @@ void luo_prototyyppi_tulikilpikonna(char *tiedosto)
 
 void luo_prototyyppi_siili(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hedg.bmp");
@@ -4497,28 +4495,28 @@ void luo_prototyyppi_siili(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {4,0}; 
+	BYTE seq3[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {4,0}; 
+	BYTE seq4[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {3,0}; 
+
+	BYTE seq6[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[3] = {3,5,0}; 
+	BYTE seq7[3] = {3,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[2] = {6,0}; 
+	BYTE seq8[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4527,7 +4525,7 @@ void luo_prototyyppi_siili(char *tiedosto)
 
 void luo_prototyyppi_siili2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hedg.bmp");
@@ -4578,28 +4576,28 @@ void luo_prototyyppi_siili2(char *tiedosto)
 	proto.vari			= VARI_VIOLETTI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {4,0}; 
+	BYTE seq3[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {4,0}; 
+	BYTE seq4[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {3,0}; 
+
+	BYTE seq6[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[3] = {3,5,0}; 
+	BYTE seq7[3] = {3,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[2] = {6,0}; 
+	BYTE seq8[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4608,7 +4606,7 @@ void luo_prototyyppi_siili2(char *tiedosto)
 
 void luo_prototyyppi_siili3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hedg.bmp");
@@ -4660,28 +4658,28 @@ void luo_prototyyppi_siili3(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {4,0}; 
+	BYTE seq3[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {4,0}; 
+	BYTE seq4[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {3,0}; 
+
+	BYTE seq6[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[3] = {3,5,0}; 
+	BYTE seq7[3] = {3,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[2] = {6,0}; 
+	BYTE seq8[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4690,7 +4688,7 @@ void luo_prototyyppi_siili3(char *tiedosto)
 
 void luo_prototyyppi_siili4(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_hedg.bmp");
@@ -4736,28 +4734,28 @@ void luo_prototyyppi_siili4(char *tiedosto)
 	proto.vari			= VARI_HARMAA;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {4,0}; 
+	BYTE seq3[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {4,0}; 
+	BYTE seq4[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {3,0}; 
+
+	BYTE seq6[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[3] = {3,5,0}; 
+	BYTE seq7[3] = {3,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[2] = {6,0}; 
+	BYTE seq8[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4765,7 +4763,7 @@ void luo_prototyyppi_siili4(char *tiedosto)
 }
 void luo_prototyyppi_lepakko(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_batb.bmp");
@@ -4810,28 +4808,28 @@ void luo_prototyyppi_lepakko(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[3] = {1,2,0}; 
+	BYTE seq5[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {3,0}; 
+
+	BYTE seq6[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {3,0}; 
+	BYTE seq7[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {4,2,0}; 
+	BYTE seq8[3] = {4,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4840,7 +4838,7 @@ void luo_prototyyppi_lepakko(char *tiedosto)
 
 void luo_prototyyppi_lepakko2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_batb.bmp");
@@ -4885,28 +4883,28 @@ void luo_prototyyppi_lepakko2(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[3] = {1,2,0}; 
+	BYTE seq5[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {3,0}; 
+
+	BYTE seq6[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {3,0}; 
+	BYTE seq7[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {4,2,0}; 
+	BYTE seq8[3] = {4,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4915,7 +4913,7 @@ void luo_prototyyppi_lepakko2(char *tiedosto)
 
 void luo_prototyyppi_lepakko3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_batb.bmp");
@@ -4960,28 +4958,28 @@ void luo_prototyyppi_lepakko3(char *tiedosto)
 	proto.vari			= VARI_VIOLETTI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[3] = {1,2,0}; 
+	BYTE seq5[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {3,0}; 
+
+	BYTE seq6[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {3,0}; 
+	BYTE seq7[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {4,2,0}; 
+	BYTE seq8[3] = {4,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -4990,7 +4988,7 @@ void luo_prototyyppi_lepakko3(char *tiedosto)
 
 void luo_prototyyppi_lintu(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bird.bmp");
@@ -5034,7 +5032,7 @@ void luo_prototyyppi_lintu(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[5] = {1,2,3,2,0}; 
+	BYTE seq1[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
@@ -5044,14 +5042,14 @@ void luo_prototyyppi_lintu(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq1, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
-	
-	UCHAR seq6[3] = {7,8,0}; 
+
+	BYTE seq6[3] = {7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[4] = {7,8,9,0}; 
+	BYTE seq7[4] = {7,8,9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {4,5,6,5,0}; 
+	BYTE seq8[5] = {4,5,6,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -5060,7 +5058,7 @@ void luo_prototyyppi_lintu(char *tiedosto)
 
 void luo_prototyyppi_lintu2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bird.bmp");
@@ -5105,7 +5103,7 @@ void luo_prototyyppi_lintu2(char *tiedosto)
 	proto.vari			= VARI_VIOLETTI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[5] = {1,2,3,2,0}; 
+	BYTE seq1[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
@@ -5115,14 +5113,14 @@ void luo_prototyyppi_lintu2(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq1, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
-	
-	UCHAR seq6[3] = {7,8,0}; 
+
+	BYTE seq6[3] = {7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[4] = {7,8,9,0}; 
+	BYTE seq7[4] = {7,8,9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {4,5,6,5,0}; 
+	BYTE seq8[5] = {4,5,6,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -5131,7 +5129,7 @@ void luo_prototyyppi_lintu2(char *tiedosto)
 
 void luo_prototyyppi_lintu3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bird.bmp");
@@ -5173,7 +5171,7 @@ void luo_prototyyppi_lintu3(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[5] = {1,2,3,2,0}; 
+	BYTE seq1[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
@@ -5183,14 +5181,14 @@ void luo_prototyyppi_lintu3(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq1, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
-	
-	UCHAR seq6[3] = {7,8,0}; 
+
+	BYTE seq6[3] = {7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[4] = {7,8,9,0}; 
+	BYTE seq7[4] = {7,8,9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {4,5,6,5,0}; 
+	BYTE seq8[5] = {4,5,6,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -5199,7 +5197,7 @@ void luo_prototyyppi_lintu3(char *tiedosto)
 
 void luo_prototyyppi_lintu4(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bird.bmp");
@@ -5243,7 +5241,7 @@ void luo_prototyyppi_lintu4(char *tiedosto)
 	proto.vari			= VARI_TURKOOSI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[5] = {1,2,3,2,0}; 
+	BYTE seq1[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
@@ -5253,14 +5251,14 @@ void luo_prototyyppi_lintu4(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq1, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
-	
-	UCHAR seq6[3] = {7,8,0}; 
+
+	BYTE seq6[3] = {7,8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[4] = {7,8,9,0}; 
+	BYTE seq7[4] = {7,8,9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[5] = {4,5,6,5,0}; 
+	BYTE seq8[5] = {4,5,6,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -5269,7 +5267,7 @@ void luo_prototyyppi_lintu4(char *tiedosto)
 
 void luo_prototyyppi_kala1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_fisb.bmp");
@@ -5313,28 +5311,28 @@ void luo_prototyyppi_kala1(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[7] = {1,1,1,2,2,2,0}; 
+	BYTE seq1[7] = {1,1,1,2,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {2,2,0}; 
+	BYTE seq4[3] = {2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[3] = {4,4,0}; 
+	BYTE seq5[3] = {4,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[3] = {5,6,0}; 
+
+	BYTE seq6[3] = {5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {7,0}; 
+	BYTE seq7[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {3,4,0}; 
+	BYTE seq8[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -5343,7 +5341,7 @@ void luo_prototyyppi_kala1(char *tiedosto)
 
 void luo_prototyyppi_kala2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_fisb.bmp");
@@ -5385,28 +5383,28 @@ void luo_prototyyppi_kala2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[7] = {1,1,1,2,2,2,0}; 
+	BYTE seq1[7] = {1,1,1,2,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {2,2,0}; 
+	BYTE seq4[3] = {2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[3] = {4,4,0}; 
+	BYTE seq5[3] = {4,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[3] = {5,6,0}; 
+
+	BYTE seq6[3] = {5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {7,0}; 
+	BYTE seq7[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {3,4,0}; 
+	BYTE seq8[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -5415,7 +5413,7 @@ void luo_prototyyppi_kala2(char *tiedosto)
 
 void luo_prototyyppi_kala3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_fisb.bmp");
@@ -5459,28 +5457,28 @@ void luo_prototyyppi_kala3(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[7] = {1,1,1,2,2,2,0}; 
+	BYTE seq1[7] = {1,1,1,2,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {2,2,0}; 
+	BYTE seq4[3] = {2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[3] = {4,4,0}; 
+	BYTE seq5[3] = {4,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[3] = {5,6,0}; 
+
+	BYTE seq6[3] = {5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {7,0}; 
+	BYTE seq7[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {3,4,0}; 
+	BYTE seq8[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -5489,7 +5487,7 @@ void luo_prototyyppi_kala3(char *tiedosto)
 
 void luo_prototyyppi_mehilainen(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_fisb.bmp");
@@ -5541,7 +5539,7 @@ void luo_prototyyppi_mehilainen(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -5549,7 +5547,7 @@ void luo_prototyyppi_mehilainen(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq1, true);
 
-	UCHAR seq2[3] = {3,4,0}; 
+	BYTE seq2[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq2, true);
 
@@ -5558,7 +5556,7 @@ void luo_prototyyppi_mehilainen(char *tiedosto)
 
 void luo_prototyyppi_mehilainen2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_fisb.bmp");
@@ -5609,7 +5607,7 @@ void luo_prototyyppi_mehilainen2(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -5617,7 +5615,7 @@ void luo_prototyyppi_mehilainen2(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq1, true);
 
-	UCHAR seq2[3] = {3,4,0}; 
+	BYTE seq2[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq2, true);
 
@@ -5626,7 +5624,7 @@ void luo_prototyyppi_mehilainen2(char *tiedosto)
 
 void luo_prototyyppi_mehilainen3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_fisb.bmp");
@@ -5676,7 +5674,7 @@ void luo_prototyyppi_mehilainen3(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -5684,7 +5682,7 @@ void luo_prototyyppi_mehilainen3(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq1, true);
 
-	UCHAR seq2[3] = {3,4,0}; 
+	BYTE seq2[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq2, true);
 
@@ -5693,7 +5691,7 @@ void luo_prototyyppi_mehilainen3(char *tiedosto)
 
 void luo_prototyyppi_mehilaispesa(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_fisb.bmp");
@@ -5702,7 +5700,7 @@ void luo_prototyyppi_mehilaispesa(char *tiedosto)
 	strcpy(proto.bonus_sprite,"bee2.spr");
 	strcpy(proto.ammus1_sprite,"bee2.spr");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"beehive.wav");
 	strcpy(proto.aanitiedostot[AANI_RANDOM],	  "beehive.wav");
 
@@ -5738,7 +5736,7 @@ void luo_prototyyppi_mehilaispesa(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -5746,7 +5744,7 @@ void luo_prototyyppi_mehilaispesa(char *tiedosto)
 
 void luo_prototyyppi_mehilaispesa2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_fisb.bmp");
@@ -5755,7 +5753,7 @@ void luo_prototyyppi_mehilaispesa2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"bee2.spr");
 	strcpy(proto.ammus1_sprite,"bee2.spr");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"beehive.wav");
 	strcpy(proto.aanitiedostot[AANI_RANDOM],	  "beehive.wav");
 
@@ -5790,7 +5788,7 @@ void luo_prototyyppi_mehilaispesa2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -5798,7 +5796,7 @@ void luo_prototyyppi_mehilaispesa2(char *tiedosto)
 /*
 void luo_prototyyppi_jattimehilainen(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_fisb.bmp");
@@ -5845,7 +5843,7 @@ void luo_prototyyppi_jattimehilainen(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -5860,7 +5858,7 @@ void luo_prototyyppi_jattimehilainen(char *tiedosto)
 */
 void luo_prototyyppi_jattimehilainen(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_fisb.bmp");
@@ -5913,9 +5911,9 @@ void luo_prototyyppi_jattimehilainen(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
-	UCHAR seq2[5] = {1,1,2,2,0}; 
-	UCHAR seq3[2] = {3,0};
+	BYTE seq1[3] = {1,2,0};
+	BYTE seq2[5] = {1,1,2,2,0};
+	BYTE seq3[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -5930,7 +5928,7 @@ void luo_prototyyppi_jattimehilainen(char *tiedosto)
 
 void luo_prototyyppi_jattihiiri(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_mous.bmp");
@@ -5939,7 +5937,7 @@ void luo_prototyyppi_jattihiiri(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");//tennisb.spr
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"tennisb.spr");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],  "ko1.wav");
@@ -5951,7 +5949,7 @@ void luo_prototyyppi_jattihiiri(char *tiedosto)
 	proto.AI[2]			= AI_HYOKKAYS_2_JOS_PELAAJA_EDESSA;
 	proto.AI[3]			= AI_VAIHDA_KALLOT_JOS_TYRMATTY;
 	proto.AI[4]			= AI_RANDOM_HYPPY;
-	
+
 	proto.aani_frq		= 11050;
 	proto.animaatioita	= 5;
 	proto.avain			= false;
@@ -5984,28 +5982,28 @@ void luo_prototyyppi_jattihiiri(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[8] = {1,1,1,1,2,2,2,0}; 
+	BYTE seq1[8] = {1,1,1,1,2,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[2] = {1,0}; 
+	BYTE seq2[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {3,0}; 
+	BYTE seq3[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {5,0}; 
+
+	BYTE seq6[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[5] = {6,6,7,7,0}; 
+	BYTE seq7[5] = {6,6,7,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[9] = {3,3,4,4,4,4,4,4,0}; 
+	BYTE seq8[9] = {3,3,4,4,4,4,4,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -6014,7 +6012,7 @@ void luo_prototyyppi_jattihiiri(char *tiedosto)
 
 void luo_prototyyppi_jattihiiri2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_mous.bmp");
@@ -6023,7 +6021,7 @@ void luo_prototyyppi_jattihiiri2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");//tennisb.spr
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"tennisb.spr");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],  "ko1.wav");
@@ -6037,7 +6035,7 @@ void luo_prototyyppi_jattihiiri2(char *tiedosto)
 	proto.AI[4]			= AI_KAANTYY_ESTEESTA_HORI;
 	proto.AI[5]			= AI_KAANTYY_JOS_OSUTTU;
 	proto.AI[6]			= AI_KITKA_VAIKUTTAA;
-	
+
 	proto.aani_frq		= 11050;
 	proto.animaatioita	= 5;
 	proto.avain			= false;
@@ -6070,28 +6068,28 @@ void luo_prototyyppi_jattihiiri2(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[8] = {1,1,1,1,2,2,2,0}; 
+	BYTE seq1[8] = {1,1,1,1,2,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[2] = {1,0}; 
+	BYTE seq2[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {3,0}; 
+	BYTE seq3[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {5,0}; 
+
+	BYTE seq6[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[5] = {6,6,7,7,0}; 
+	BYTE seq7[5] = {6,6,7,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[9] = {3,3,4,4,4,4,4,4,0}; 
+	BYTE seq8[9] = {3,3,4,4,4,4,4,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -6100,7 +6098,7 @@ void luo_prototyyppi_jattihiiri2(char *tiedosto)
 
 void luo_prototyyppi_jattihiiri3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_mous.bmp");
@@ -6109,7 +6107,7 @@ void luo_prototyyppi_jattihiiri3(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");//tennisb.spr
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"tennisb.spr");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],  "ko1.wav");
@@ -6121,7 +6119,7 @@ void luo_prototyyppi_jattihiiri3(char *tiedosto)
 	proto.AI[2]			= AI_HYOKKAYS_2_JOS_PELAAJA_EDESSA;
 	proto.AI[3]			= AI_VAIHDA_KALLOT_JOS_TYRMATTY;
 	proto.AI[4]			= AI_RANDOM_HYPPY;
-	
+
 	proto.aani_frq		= 11050;
 	proto.animaatioita	= 5;
 	proto.avain			= false;
@@ -6154,28 +6152,28 @@ void luo_prototyyppi_jattihiiri3(char *tiedosto)
 	proto.vari			= VARI_SININEN;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[8] = {1,1,1,1,2,2,2,0}; 
+	BYTE seq1[8] = {1,1,1,1,2,2,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[2] = {1,0}; 
+	BYTE seq2[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {3,0}; 
+	BYTE seq3[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {3,0}; 
+	BYTE seq4[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {5,0}; 
+
+	BYTE seq6[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[5] = {6,6,7,7,0}; 
+	BYTE seq7[5] = {6,6,7,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[9] = {3,3,4,4,4,4,4,4,0}; 
+	BYTE seq8[9] = {3,3,4,4,4,4,4,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -6184,7 +6182,7 @@ void luo_prototyyppi_jattihiiri3(char *tiedosto)
 
 void luo_prototyyppi_jattirobokana_muoto1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_mach.bmp");
@@ -6193,7 +6191,7 @@ void luo_prototyyppi_jattirobokana_muoto1(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");//tennisb.spr
 	strcpy(proto.ammus1_sprite,"robohead.spr");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"boss2_dm.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],  "boss2_ko.wav");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
@@ -6206,7 +6204,7 @@ void luo_prototyyppi_jattirobokana_muoto1(char *tiedosto)
 	proto.AI[4]			= AI_NONSTOP;
 	proto.AI[5]			= AI_SAMMAKKO1;
 	//proto.AI[4]			= AI_HYOKKAYS_1_NONSTOP;
-	
+
 	/*
 	proto.AI[1]			= AI_SAMMAKKO2;
 	proto.AI[2]			= AI_HYOKKAYS_2_JOS_PELAAJA_EDESSA;
@@ -6214,7 +6212,7 @@ void luo_prototyyppi_jattirobokana_muoto1(char *tiedosto)
 	proto.AI[4]			= AI_KAANTYY_ESTEESTA_HORI;
 	proto.AI[5]			= AI_KAANTYY_JOS_OSUTTU;
 	proto.AI[6]			= AI_KITKA_VAIKUTTAA;*/
-	
+
 	proto.aani_frq		= 11050;
 	proto.animaatioita	= 8;
 	proto.avain			= false;
@@ -6246,28 +6244,28 @@ void luo_prototyyppi_jattirobokana_muoto1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,3,0}; 
+	BYTE seq3[3] = {1,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {2,4,0}; 
+	BYTE seq4[3] = {2,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {5,0}; 
+
+	BYTE seq6[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {5,0}; 
+	BYTE seq7[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[2] = {6,0}; 
+	BYTE seq8[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, false);
 
@@ -6276,7 +6274,7 @@ void luo_prototyyppi_jattirobokana_muoto1(char *tiedosto)
 
 void luo_prototyyppi_jattirobokana_muoto2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_mach.bmp");
@@ -6285,7 +6283,7 @@ void luo_prototyyppi_jattirobokana_muoto2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");//tennisb.spr
 	strcpy(proto.ammus1_sprite,"robohead.spr");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"boss2_dm.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],  "boss2_ko.wav");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
@@ -6295,7 +6293,7 @@ void luo_prototyyppi_jattirobokana_muoto2(char *tiedosto)
 	proto.AI[1]			= AI_MUUTOS_AJASTIN;
 	proto.AI[2]			= AI_VAIHDA_KALLOT_JOS_TYRMATTY;
 	proto.AI[3]			= AI_SEURAA_PELAAJAA;
-	
+
 	//proto.AI[3]			= AI_HYOKKAYS_1_JOS_PELAAJA_EDESSA;
 	/*
 	proto.AI[4]			= AI_MUUTOS_AJASTIN;
@@ -6306,7 +6304,7 @@ void luo_prototyyppi_jattirobokana_muoto2(char *tiedosto)
 	proto.AI[4]			= AI_KAANTYY_ESTEESTA_HORI;
 	proto.AI[5]			= AI_KAANTYY_JOS_OSUTTU;
 	proto.AI[6]			= AI_KITKA_VAIKUTTAA;*/
-	
+
 	proto.aani_frq		= 11050;
 	proto.animaatioita	= 8;
 	proto.avain			= false;
@@ -6338,28 +6336,28 @@ void luo_prototyyppi_jattirobokana_muoto2(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,3,0}; 
+	BYTE seq3[3] = {1,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {2,4,0}; 
+	BYTE seq4[3] = {2,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {5,0}; 
+
+	BYTE seq6[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {5,0}; 
+	BYTE seq7[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[2] = {6,0}; 
+	BYTE seq8[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, false);
 
@@ -6368,7 +6366,7 @@ void luo_prototyyppi_jattirobokana_muoto2(char *tiedosto)
 
 void luo_prototyyppi_jattirobokana_muoto3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_mach.bmp");
@@ -6377,7 +6375,7 @@ void luo_prototyyppi_jattirobokana_muoto3(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");//tennisb.spr
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"boss2_dm.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],  "boss2_ko.wav");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
@@ -6386,7 +6384,7 @@ void luo_prototyyppi_jattirobokana_muoto3(char *tiedosto)
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_MUUTOS_AJASTIN;
 	proto.AI[2]			= AI_VAIHDA_KALLOT_JOS_TYRMATTY;
-	
+
 	proto.aani_frq		= 11050;
 	proto.animaatioita	= 8;
 	proto.avain			= false;
@@ -6418,28 +6416,28 @@ void luo_prototyyppi_jattirobokana_muoto3(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {2,0}; 
+	BYTE seq1[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,3,0}; 
+	BYTE seq3[3] = {1,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {5,0}; 
+
+	BYTE seq6[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {5,0}; 
+	BYTE seq7[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[2] = {6,0}; 
+	BYTE seq8[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, false);
 
@@ -6448,7 +6446,7 @@ void luo_prototyyppi_jattirobokana_muoto3(char *tiedosto)
 
 void luo_prototyyppi_jattirobokana_muoto4(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_mach.bmp");
@@ -6457,7 +6455,7 @@ void luo_prototyyppi_jattirobokana_muoto4(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");//tennisb.spr
 	strcpy(proto.ammus1_sprite,"robohen.spr");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"boss2_dm.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],  "boss2_ko.wav");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
@@ -6465,7 +6463,7 @@ void luo_prototyyppi_jattirobokana_muoto4(char *tiedosto)
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_HYOKKAYS_1_NONSTOP;
-	
+
 	proto.aani_frq		= 11050;
 	proto.animaatioita	= 8;
 	proto.avain			= false;
@@ -6497,28 +6495,28 @@ void luo_prototyyppi_jattirobokana_muoto4(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {2,0}; 
+	BYTE seq1[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,3,0}; 
+	BYTE seq3[3] = {1,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {5,0}; 
+
+	BYTE seq6[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {5,0}; 
+	BYTE seq7[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[2] = {6,0}; 
+	BYTE seq8[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, false);
 
@@ -6527,7 +6525,7 @@ void luo_prototyyppi_jattirobokana_muoto4(char *tiedosto)
 
 void luo_prototyyppi_jattirobokana_muoto5(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_mach.bmp");
@@ -6536,14 +6534,14 @@ void luo_prototyyppi_jattirobokana_muoto5(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");//tennisb.spr
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"boss2_dm.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],  "boss2_ko.wav");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS2],		"");
 
 	proto.AI[0]			= AI_PERUS;
-	
+
 	proto.aani_frq		= 11050;
 	proto.animaatioita	= 8;
 	proto.avain			= false;
@@ -6575,28 +6573,28 @@ void luo_prototyyppi_jattirobokana_muoto5(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {2,0}; 
+	BYTE seq1[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,3,0}; 
+	BYTE seq3[3] = {1,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {5,0}; 
+
+	BYTE seq6[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {5,0}; 
+	BYTE seq7[2] = {5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[2] = {6,0}; 
+	BYTE seq8[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, false);
 
@@ -6605,7 +6603,7 @@ void luo_prototyyppi_jattirobokana_muoto5(char *tiedosto)
 
 void luo_prototyyppi_liekki(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_batb.bmp");
@@ -6648,28 +6646,28 @@ void luo_prototyyppi_liekki(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[4] = {1,2,3,0}; 
+	BYTE seq1[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[4] = {1,2,3,0};  
+	BYTE seq2[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[4] = {1,2,3,0}; 
+	BYTE seq3[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[4] = {1,2,3,0}; 
+	BYTE seq4[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[4] = {1,2,3,0};  
+	BYTE seq5[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[4] = {1,2,3,0};  
+
+	BYTE seq6[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[4] = {1,2,3,0}; 
+	BYTE seq7[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[4] = {1,2,3,0}; 
+	BYTE seq8[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	proto.Tallenna(tiedosto);
@@ -6677,7 +6675,7 @@ void luo_prototyyppi_liekki(char *tiedosto)
 
 void luo_prototyyppi_liekki2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_batb.bmp");
@@ -6719,28 +6717,28 @@ void luo_prototyyppi_liekki2(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[4] = {1,2,3,0}; 
+	BYTE seq1[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[4] = {1,2,3,0};  
+	BYTE seq2[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[4] = {1,2,3,0}; 
+	BYTE seq3[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[4] = {1,2,3,0}; 
+	BYTE seq4[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[4] = {1,2,3,0};  
+	BYTE seq5[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[4] = {1,2,3,0};  
+
+	BYTE seq6[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[4] = {1,2,3,0}; 
+	BYTE seq7[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[4] = {1,2,3,0}; 
+	BYTE seq8[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	proto.Tallenna(tiedosto);
@@ -6748,7 +6746,7 @@ void luo_prototyyppi_liekki2(char *tiedosto)
 
 void luo_prototyyppi_liekki3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_batb.bmp");
@@ -6793,28 +6791,28 @@ void luo_prototyyppi_liekki3(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[4] = {1,2,3,0}; 
+	BYTE seq1[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[4] = {1,2,3,0};  
+	BYTE seq2[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[4] = {1,2,3,0}; 
+	BYTE seq3[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[4] = {1,2,3,0}; 
+	BYTE seq4[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[4] = {1,2,3,0};  
+	BYTE seq5[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[4] = {1,2,3,0};  
+
+	BYTE seq6[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[4] = {1,2,3,0}; 
+	BYTE seq7[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[4] = {1,2,3,0}; 
+	BYTE seq8[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	proto.Tallenna(tiedosto);
@@ -6822,7 +6820,7 @@ void luo_prototyyppi_liekki3(char *tiedosto)
 
 void luo_prototyyppi_possu(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_pigs.bmp");
@@ -6870,28 +6868,28 @@ void luo_prototyyppi_possu(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.liitokyky     = false;
 
-	UCHAR seq1[9] = {1,1,1,1,2,2,2,1,0}; 
+	BYTE seq1[9] = {1,1,1,1,2,2,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {3,4,5,6,0}; 
+	BYTE seq2[5] = {3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {7,0}; 
+	BYTE seq3[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {8,0}; 
+	BYTE seq4[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {9,0}; 
+	BYTE seq5[2] = {9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {13,14,0}; 
+
+	BYTE seq6[3] = {13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[8] = {15,15,16,16,17,17,18,0}; 
+	BYTE seq7[8] = {15,15,16,16,17,17,18,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[10] = {10,11,12,12,12,12,11,10,1,0}; 
+	BYTE seq8[10] = {10,11,12,12,12,12,11,10,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
@@ -6901,7 +6899,7 @@ void luo_prototyyppi_possu(char *tiedosto)
 
 void luo_prototyyppi_possu2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_pigs.bmp");
@@ -6949,28 +6947,28 @@ void luo_prototyyppi_possu2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.liitokyky     = false;
 
-	UCHAR seq1[9] = {1,1,1,1,2,2,2,1,0}; 
+	BYTE seq1[9] = {1,1,1,1,2,2,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {3,4,5,6,0}; 
+	BYTE seq2[5] = {3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {7,0}; 
+	BYTE seq3[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {8,0}; 
+	BYTE seq4[2] = {8,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {9,0}; 
+	BYTE seq5[2] = {9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {13,14,0}; 
+
+	BYTE seq6[3] = {13,14,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[8] = {15,15,16,16,17,17,18,0}; 
+	BYTE seq7[8] = {15,15,16,16,17,17,18,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[10] = {10,11,12,12,12,12,11,10,1,0}; 
+	BYTE seq8[10] = {10,11,12,12,12,12,11,10,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
@@ -6980,7 +6978,7 @@ void luo_prototyyppi_possu2(char *tiedosto)
 
 void luo_prototyyppi_lentava_possu(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_pigs.bmp");
@@ -6996,7 +6994,7 @@ void luo_prototyyppi_lentava_possu(char *tiedosto)
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
-	proto.AI[1]			= AI_MUUTOS_JOS_ENERGIAA_ALLE_2;	
+	proto.AI[1]			= AI_MUUTOS_JOS_ENERGIAA_ALLE_2;
 	proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
 	proto.AI[3]			= AI_HYOKKAYS_2_JOS_PELAAJA_EDESSA;
 	proto.AI[4]			= AI_NONSTOP;
@@ -7027,28 +7025,28 @@ void luo_prototyyppi_lentava_possu(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {3,0}; 
+	BYTE seq5[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
 
-	UCHAR seq6[3] = {3,4,0}; 
+	BYTE seq6[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[3] = {3,4,0}; 
+	BYTE seq7[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {5,6,0}; 
+	BYTE seq8[3] = {5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
@@ -7058,7 +7056,7 @@ void luo_prototyyppi_lentava_possu(char *tiedosto)
 
 void luo_prototyyppi_tankki1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_tank.bmp");
@@ -7107,28 +7105,28 @@ void luo_prototyyppi_tankki1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {2,0}; 
+	BYTE seq3[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {2,0}; 
+	BYTE seq4[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {3,0}; 
+	BYTE seq5[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {4,5,0}; 
+
+	BYTE seq6[3] = {4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {6,0}; 
+	BYTE seq7[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
@@ -7138,7 +7136,7 @@ void luo_prototyyppi_tankki1(char *tiedosto)
 
 void luo_prototyyppi_tankki2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_tank.bmp");
@@ -7186,28 +7184,28 @@ void luo_prototyyppi_tankki2(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {2,0}; 
+	BYTE seq3[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {2,0}; 
+	BYTE seq4[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {3,0}; 
+	BYTE seq5[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {4,5,0}; 
+
+	BYTE seq6[3] = {4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {6,0}; 
+	BYTE seq7[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
@@ -7217,7 +7215,7 @@ void luo_prototyyppi_tankki2(char *tiedosto)
 
 void luo_prototyyppi_tankki3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_tank.bmp");
@@ -7262,28 +7260,28 @@ void luo_prototyyppi_tankki3(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {2,0}; 
+	BYTE seq3[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {2,0}; 
+	BYTE seq4[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {3,0}; 
+	BYTE seq5[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {4,5,0}; 
+
+	BYTE seq6[3] = {4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {6,0}; 
+	BYTE seq7[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
@@ -7293,7 +7291,7 @@ void luo_prototyyppi_tankki3(char *tiedosto)
 
 void luo_prototyyppi_tankki4(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_tank.bmp");
@@ -7338,28 +7336,28 @@ void luo_prototyyppi_tankki4(char *tiedosto)
 	proto.vari			= VARI_VIOLETTI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {2,0}; 
+	BYTE seq3[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {2,0}; 
+	BYTE seq4[2] = {2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {3,0}; 
+	BYTE seq5[2] = {3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[3] = {4,5,0}; 
+
+	BYTE seq6[3] = {4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[2] = {6,0}; 
+	BYTE seq7[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
@@ -7369,12 +7367,12 @@ void luo_prototyyppi_tankki4(char *tiedosto)
 
 void luo_prototyyppi_aave1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_batb.bmp");
 	strcpy(proto.nimi, "ghost 1");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
@@ -7411,8 +7409,8 @@ void luo_prototyyppi_aave1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
-	UCHAR seq2[3] = {3,4,0};
+	BYTE seq1[3] = {1,2,0};
+	BYTE seq2[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -7427,7 +7425,7 @@ void luo_prototyyppi_aave1(char *tiedosto)
 
 void luo_prototyyppi_pahakana(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_evil.bmp");
@@ -7476,19 +7474,19 @@ void luo_prototyyppi_pahakana(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[9] = {1,1,1,2,1,2,1,2,0}; 
+	BYTE seq1[9] = {1,1,1,2,1,2,1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[5] = {4,4,3,3,0}; 
+	BYTE seq2[5] = {4,4,3,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
-	UCHAR seq3[2] = {7,0}; 
+	BYTE seq3[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq1, true);
-	UCHAR seq4[3] = {6,5,0}; 
+	BYTE seq4[3] = {6,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq4, true);
 
 	proto.Tallenna(tiedosto);
@@ -7496,7 +7494,7 @@ void luo_prototyyppi_pahakana(char *tiedosto)
 
 void luo_prototyyppi_pahakana2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_evil.bmp");
@@ -7547,19 +7545,19 @@ void luo_prototyyppi_pahakana2(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[9] = {1,1,1,2,1,2,1,2,0}; 
+	BYTE seq1[9] = {1,1,1,2,1,2,1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[5] = {4,4,3,3,0}; 
+	BYTE seq2[5] = {4,4,3,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
-	UCHAR seq3[2] = {7,0}; 
+	BYTE seq3[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq1, true);
-	UCHAR seq4[3] = {6,5,0}; 
+	BYTE seq4[3] = {6,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq4, true);
 
 	proto.Tallenna(tiedosto);
@@ -7567,7 +7565,7 @@ void luo_prototyyppi_pahakana2(char *tiedosto)
 
 void luo_prototyyppi_luut1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bone.bmp");
@@ -7576,14 +7574,14 @@ void luo_prototyyppi_luut1(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");//egg.spr
 	strcpy(proto.ammus2_sprite,"");//doodle.spr
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 	proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
 	proto.AI[3]			= AI_VAROO_KUOPPAA;
-	
+
 	proto.aani_frq		= 22050;
 	proto.animaatioita	= 9;
 	proto.avain			= false;
@@ -7622,31 +7620,31 @@ void luo_prototyyppi_luut1(char *tiedosto)
 	proto.boss			= false;
 	proto.bonus_aina	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[5] = {2,3,4,5,0}; 
+	BYTE seq2[5] = {2,3,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[5] = {6,6,7,7,0}; 
+	BYTE seq3[5] = {6,6,7,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[5] = {6,7,0}; 
+	BYTE seq4[5] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[4] = {8,8,9,0}; 
+	BYTE seq5[4] = {8,8,9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {10,0}; 
+
+	BYTE seq6[2] = {10,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[6] = {11,11,12,12,13,0}; 
+	BYTE seq7[6] = {11,11,12,12,13,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {6,7,0}; 
+	BYTE seq8[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 
-	UCHAR seq9[3] = {6,7,0}; 
+	BYTE seq9[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq9, true);
 
 	proto.Tallenna(tiedosto);
@@ -7654,7 +7652,7 @@ void luo_prototyyppi_luut1(char *tiedosto)
 
 void luo_prototyyppi_luut2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bone.bmp");
@@ -7663,7 +7661,7 @@ void luo_prototyyppi_luut2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");//egg.spr
 	strcpy(proto.ammus2_sprite,"");//doodle.spr
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
@@ -7672,7 +7670,7 @@ void luo_prototyyppi_luut2(char *tiedosto)
 	proto.AI[3]			= AI_NONSTOP;
 	proto.AI[4]			= AI_KAANTYY_ESTEESTA_HORI;
 	proto.AI[5]			= AI_KAANTYY_ESTEESTA_VERT;
-	
+
 	proto.aani_frq		= 22050;
 	proto.animaatioita	= 9;
 	proto.avain			= false;
@@ -7711,31 +7709,31 @@ void luo_prototyyppi_luut2(char *tiedosto)
 	proto.boss			= false;
 	proto.bonus_aina	= false;
 
-	UCHAR seq1[3] = {6,7,0}; 
+	BYTE seq1[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[3] = {6,7,0}; 
+	BYTE seq2[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[5] = {6,6,7,7,0}; 
+	BYTE seq3[5] = {6,6,7,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[5] = {6,7,0}; 
+	BYTE seq4[5] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[4] = {8,8,9,0}; 
+	BYTE seq5[4] = {8,8,9,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[2] = {10,0}; 
+
+	BYTE seq6[2] = {10,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq7[7] = {10,11,11,12,12,13,0}; 
+	BYTE seq7[7] = {10,11,11,12,12,13,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, false);
 
-	UCHAR seq8[3] = {6,7,0}; 
+	BYTE seq8[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 
-	UCHAR seq9[3] = {6,7,0}; 
+	BYTE seq9[3] = {6,7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq9, true);
 
 	proto.Tallenna(tiedosto);
@@ -7743,7 +7741,7 @@ void luo_prototyyppi_luut2(char *tiedosto)
 
 void luo_prototyyppi_robokana(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_robo.bmp");
@@ -7752,7 +7750,7 @@ void luo_prototyyppi_robokana(char *tiedosto)
 	strcpy(proto.bonus_sprite,"robohead.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "robo_dmg.wav");
 	strcpy(proto.aanitiedostot[AANI_RANDOM], "robo_rnd.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "explot.wav");
@@ -7792,28 +7790,28 @@ void luo_prototyyppi_robokana(char *tiedosto)
 	proto.liitokyky     = false;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
-	UCHAR seq2[5] = {2,3,4,5,0}; 
+	BYTE seq2[5] = {2,3,4,5,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,	 seq2, true);
 
-	UCHAR seq3[2] = {6,0}; 
+	BYTE seq3[2] = {6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS, seq3, true);
 
-	UCHAR seq4[2] = {7,0}; 
+	BYTE seq4[2] = {7,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS, seq4, true);
 
-	UCHAR seq5[4] = {8,9,10,0}; 
+	BYTE seq5[4] = {8,9,10,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY, seq5, false);
 
-	UCHAR seq6[2] = {11,0}; 
+	BYTE seq6[2] = {11,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO, seq6, true);
 
-	UCHAR seq7[2] = {1,0}; 
+	BYTE seq7[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA, seq7, false);
 
-	UCHAR seq8[3] = {3,6,0}; 
+	BYTE seq8[3] = {3,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -7822,7 +7820,7 @@ void luo_prototyyppi_robokana(char *tiedosto)
 
 void luo_prototyyppi_robokanan_paa(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_robo.bmp");
@@ -7864,7 +7862,7 @@ void luo_prototyyppi_robokanan_paa(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[5] = {1,2,3,4,0}; 
+	BYTE seq1[5] = {1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -7872,7 +7870,7 @@ void luo_prototyyppi_robokanan_paa(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq1, true);
 
-	UCHAR seq2[3] = {3,4,0}; 
+	BYTE seq2[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq2, true);
 
@@ -7881,7 +7879,7 @@ void luo_prototyyppi_robokanan_paa(char *tiedosto)
 
 void luo_prototyyppi_piikkipaa1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_shed.bmp");
@@ -7890,7 +7888,7 @@ void luo_prototyyppi_piikkipaa1(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -7900,7 +7898,7 @@ void luo_prototyyppi_piikkipaa1(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -7928,25 +7926,25 @@ void luo_prototyyppi_piikkipaa1(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {1,0}; 
+
+	BYTE seq6[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -7955,7 +7953,7 @@ void luo_prototyyppi_piikkipaa1(char *tiedosto)
 
 void luo_prototyyppi_piikkipaa2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_shed.bmp");
@@ -7964,7 +7962,7 @@ void luo_prototyyppi_piikkipaa2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -7974,7 +7972,7 @@ void luo_prototyyppi_piikkipaa2(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8002,25 +8000,25 @@ void luo_prototyyppi_piikkipaa2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {1,0}; 
+
+	BYTE seq6[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -8029,7 +8027,7 @@ void luo_prototyyppi_piikkipaa2(char *tiedosto)
 
 void luo_prototyyppi_piikkipaa3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_shed.bmp");
@@ -8038,7 +8036,7 @@ void luo_prototyyppi_piikkipaa3(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8048,7 +8046,7 @@ void luo_prototyyppi_piikkipaa3(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8076,25 +8074,25 @@ void luo_prototyyppi_piikkipaa3(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {1,0}; 
+
+	BYTE seq6[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -8103,7 +8101,7 @@ void luo_prototyyppi_piikkipaa3(char *tiedosto)
 
 void luo_prototyyppi_piikkipaa4(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_shed.bmp");
@@ -8112,7 +8110,7 @@ void luo_prototyyppi_piikkipaa4(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8127,7 +8125,7 @@ void luo_prototyyppi_piikkipaa4(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8155,25 +8153,25 @@ void luo_prototyyppi_piikkipaa4(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {1,0}; 
+
+	BYTE seq6[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -8182,7 +8180,7 @@ void luo_prototyyppi_piikkipaa4(char *tiedosto)
 
 void luo_prototyyppi_piikkipaa5(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_shed.bmp");
@@ -8191,7 +8189,7 @@ void luo_prototyyppi_piikkipaa5(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8204,7 +8202,7 @@ void luo_prototyyppi_piikkipaa5(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8232,25 +8230,25 @@ void luo_prototyyppi_piikkipaa5(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {3,4,0}; 
+	BYTE seq3[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {3,4,0}; 
+	BYTE seq4[3] = {3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {1,0}; 
+
+	BYTE seq6[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -8259,7 +8257,7 @@ void luo_prototyyppi_piikkipaa5(char *tiedosto)
 
 void luo_prototyyppi_piikkipaa6(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_shed.bmp");
@@ -8268,7 +8266,7 @@ void luo_prototyyppi_piikkipaa6(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8277,7 +8275,7 @@ void luo_prototyyppi_piikkipaa6(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8305,19 +8303,19 @@ void luo_prototyyppi_piikkipaa6(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[9] = {4,3,2,1,1,2,3,4,0}; 
+	BYTE seq1[9] = {4,3,2,1,1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq1, true);
 
-	UCHAR seq2[2] = {4,0}; 
+	BYTE seq2[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq2, true);
-	
-	UCHAR seq3[2] = {1,0}; 
+
+	BYTE seq3[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq3, true);
 
-	UCHAR seq8[9] = {1,1,1,1,1,2,3,4,0}; 
+	BYTE seq8[9] = {1,1,1,1,1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, false);
 
@@ -8326,7 +8324,7 @@ void luo_prototyyppi_piikkipaa6(char *tiedosto)
 
 void luo_prototyyppi_piikkipaa7(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_shed.bmp");
@@ -8335,7 +8333,7 @@ void luo_prototyyppi_piikkipaa7(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8345,7 +8343,7 @@ void luo_prototyyppi_piikkipaa7(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8373,25 +8371,25 @@ void luo_prototyyppi_piikkipaa7(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[5] = {4,3,2,1,0}; 
+	BYTE seq1[5] = {4,3,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[2] = {1,0}; 
+	BYTE seq2[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {1,0}; 
+	BYTE seq3[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {1,0}; 
+	BYTE seq4[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {1,0}; 
+
+	BYTE seq6[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[9] = {1,1,1,1,1,2,3,4,0}; 
+	BYTE seq8[9] = {1,1,1,1,1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, false);
 
@@ -8400,7 +8398,7 @@ void luo_prototyyppi_piikkipaa7(char *tiedosto)
 
 void luo_prototyyppi_piikkipaa8(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_shed.bmp");
@@ -8409,7 +8407,7 @@ void luo_prototyyppi_piikkipaa8(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8419,7 +8417,7 @@ void luo_prototyyppi_piikkipaa8(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8447,25 +8445,25 @@ void luo_prototyyppi_piikkipaa8(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[5] = {1,2,3,4,0}; 
+	BYTE seq1[5] = {1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
-	UCHAR seq2[2] = {4,0}; 
+	BYTE seq2[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {4,0}; 
+	BYTE seq3[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {4,0}; 
+	BYTE seq4[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {4,0}; 
+	BYTE seq5[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {4,0}; 
+
+	BYTE seq6[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[2] = {4,0}; 
+	BYTE seq8[2] = {4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, false);
 
@@ -8474,7 +8472,7 @@ void luo_prototyyppi_piikkipaa8(char *tiedosto)
 
 void luo_prototyyppi_hamahakki1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_spid.bmp");
@@ -8483,7 +8481,7 @@ void luo_prototyyppi_hamahakki1(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8493,7 +8491,7 @@ void luo_prototyyppi_hamahakki1(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8521,25 +8519,25 @@ void luo_prototyyppi_hamahakki1(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[5] = {1,2,3,2,0}; 
+	BYTE seq1[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[5] = {1,2,3,2,0}; 
+	BYTE seq2[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[5] = {1,2,3,2,0}; 
+	BYTE seq3[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[5] = {1,2,3,2,0}; 
+	BYTE seq4[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[5] = {1,2,3,2,0}; 
+	BYTE seq5[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[5] = {1,2,3,2,0}; 
+
+	BYTE seq6[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -8548,7 +8546,7 @@ void luo_prototyyppi_hamahakki1(char *tiedosto)
 
 void luo_prototyyppi_hamahakki2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_spid.bmp");
@@ -8557,7 +8555,7 @@ void luo_prototyyppi_hamahakki2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8565,7 +8563,7 @@ void luo_prototyyppi_hamahakki2(char *tiedosto)
 	proto.AI[1]			= AI_SEURAA_PELAAJAA_VERT_HORI;
 	proto.AI[2]			= AI_KAANTYY_ESTEESTA_VERT;
 	proto.AI[3]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI_VERT;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8593,25 +8591,25 @@ void luo_prototyyppi_hamahakki2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[5] = {1,2,3,2,0}; 
+	BYTE seq1[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[5] = {1,2,3,2,0}; 
+	BYTE seq2[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[5] = {1,2,3,2,0}; 
+	BYTE seq3[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[5] = {1,2,3,2,0}; 
+	BYTE seq4[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[5] = {1,2,3,2,0}; 
+	BYTE seq5[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[5] = {1,2,3,2,0}; 
+
+	BYTE seq6[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -8620,7 +8618,7 @@ void luo_prototyyppi_hamahakki2(char *tiedosto)
 
 void luo_prototyyppi_hamahakki3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_spid.bmp");
@@ -8629,7 +8627,7 @@ void luo_prototyyppi_hamahakki3(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8637,7 +8635,7 @@ void luo_prototyyppi_hamahakki3(char *tiedosto)
 	proto.AI[1]			= AI_SEURAA_PELAAJAA_JOS_NAKEE_VERT_HORI;
 	proto.AI[2]			= AI_KAANTYY_ESTEESTA_VERT;
 	proto.AI[3]			= AI_PALAA_ALKUUN_Y;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8665,25 +8663,25 @@ void luo_prototyyppi_hamahakki3(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[5] = {1,2,3,2,0}; 
+	BYTE seq1[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[5] = {1,2,3,2,0}; 
+	BYTE seq2[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[5] = {1,2,3,2,0}; 
+	BYTE seq3[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[5] = {1,2,3,2,0}; 
+	BYTE seq4[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[5] = {1,2,3,2,0}; 
+	BYTE seq5[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[5] = {1,2,3,2,0}; 
+
+	BYTE seq6[5] = {1,2,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -8692,7 +8690,7 @@ void luo_prototyyppi_hamahakki3(char *tiedosto)
 
 void luo_prototyyppi_hissi1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_plat.bmp");
@@ -8701,7 +8699,7 @@ void luo_prototyyppi_hissi1(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8712,11 +8710,11 @@ void luo_prototyyppi_hissi1(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
-	
+
 	proto.este			= true;
 	proto.este_ylos		= false;
 	proto.este_alas		= true;
@@ -8746,25 +8744,25 @@ void luo_prototyyppi_hissi1(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[4] = {1,2,3,0}; 
+	BYTE seq2[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {1,0}; 
+
+	BYTE seq6[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -8773,7 +8771,7 @@ void luo_prototyyppi_hissi1(char *tiedosto)
 
 void luo_prototyyppi_hissi2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_plat.bmp");
@@ -8782,7 +8780,7 @@ void luo_prototyyppi_hissi2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8793,7 +8791,7 @@ void luo_prototyyppi_hissi2(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8825,25 +8823,25 @@ void luo_prototyyppi_hissi2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[3] = {1,2,0}; 
+	BYTE seq2[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {1,0}; 
+
+	BYTE seq6[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -8852,7 +8850,7 @@ void luo_prototyyppi_hissi2(char *tiedosto)
 
 void luo_prototyyppi_hissi3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_plat.bmp");
@@ -8861,7 +8859,7 @@ void luo_prototyyppi_hissi3(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
@@ -8875,7 +8873,7 @@ void luo_prototyyppi_hissi3(char *tiedosto)
 	//proto.AI[1]			= AI_ALOITUSSUUNTA_PELAAJAA_KOHTI;
 
 	//proto.AI[2]			= AI_KAANTYY_ESTEESTA_HORI;
-	
+
 	proto.animaatioita	= 8;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8907,25 +8905,25 @@ void luo_prototyyppi_hissi3(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[4] = {1,2,3,0}; 
+	BYTE seq2[4] = {1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[3] = {1,2,0}; 
+	BYTE seq3[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[3] = {1,2,0}; 
+	BYTE seq4[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, true);
-	
-	UCHAR seq6[2] = {1,0}; 
+
+	BYTE seq6[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, true);
 
-	UCHAR seq8[3] = {1,2,0}; 
+	BYTE seq8[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, true);
 
@@ -8934,7 +8932,7 @@ void luo_prototyyppi_hissi3(char *tiedosto)
 
 void luo_prototyyppi_nuoli_oikealle(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_arrw.bmp");
@@ -8943,13 +8941,13 @@ void luo_prototyyppi_nuoli_oikealle(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_NUOLI_OIKEALLE;
-	
+
 	proto.animaatioita	= 1;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -8977,7 +8975,7 @@ void luo_prototyyppi_nuoli_oikealle(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -8985,7 +8983,7 @@ void luo_prototyyppi_nuoli_oikealle(char *tiedosto)
 
 void luo_prototyyppi_nuoli_ylos(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_arrw.bmp");
@@ -8994,13 +8992,13 @@ void luo_prototyyppi_nuoli_ylos(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_NUOLI_YLOS;
-	
+
 	proto.animaatioita	= 1;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -9028,7 +9026,7 @@ void luo_prototyyppi_nuoli_ylos(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -9036,7 +9034,7 @@ void luo_prototyyppi_nuoli_ylos(char *tiedosto)
 
 void luo_prototyyppi_nuoli_vasemmalle(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_arrw.bmp");
@@ -9045,13 +9043,13 @@ void luo_prototyyppi_nuoli_vasemmalle(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_NUOLI_VASEMMALLE;
-	
+
 	proto.animaatioita	= 1;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -9079,7 +9077,7 @@ void luo_prototyyppi_nuoli_vasemmalle(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -9087,7 +9085,7 @@ void luo_prototyyppi_nuoli_vasemmalle(char *tiedosto)
 
 void luo_prototyyppi_nuoli_alas(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_arrw.bmp");
@@ -9096,13 +9094,13 @@ void luo_prototyyppi_nuoli_alas(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_NUOLI_ALAS;
-	
+
 	proto.animaatioita	= 1;
 	proto.avain			= false;
 	proto.energia		= 1;
@@ -9130,7 +9128,7 @@ void luo_prototyyppi_nuoli_alas(char *tiedosto)
 	proto.vihollinen	= false;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[3] = {1,2,0}; 
+	BYTE seq1[3] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -9138,7 +9136,7 @@ void luo_prototyyppi_nuoli_alas(char *tiedosto)
 
 void luo_prototyyppi_nuoli_oikealle2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_arrw.bmp");
@@ -9147,14 +9145,14 @@ void luo_prototyyppi_nuoli_oikealle2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_NUOLI_OIKEALLE;
 	proto.AI[2]			= AI_MUUTOS_JOS_OSUTTU;
-	
+
 	proto.animaatioita	= 1;
 	proto.avain			= false;
 	proto.energia		= 10000;
@@ -9182,7 +9180,7 @@ void luo_prototyyppi_nuoli_oikealle2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[7] = {4,3,2,1,2,3,0}; 
+	BYTE seq1[7] = {4,3,2,1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -9190,7 +9188,7 @@ void luo_prototyyppi_nuoli_oikealle2(char *tiedosto)
 
 void luo_prototyyppi_nuoli_ylos2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_arrw.bmp");
@@ -9199,14 +9197,14 @@ void luo_prototyyppi_nuoli_ylos2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_NUOLI_YLOS;
 	proto.AI[2]			= AI_MUUTOS_JOS_OSUTTU;
-	
+
 	proto.animaatioita	= 1;
 	proto.avain			= false;
 	proto.energia		= 10000;
@@ -9234,7 +9232,7 @@ void luo_prototyyppi_nuoli_ylos2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[7] = {4,3,2,1,2,3,0}; 
+	BYTE seq1[7] = {4,3,2,1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -9242,7 +9240,7 @@ void luo_prototyyppi_nuoli_ylos2(char *tiedosto)
 
 void luo_prototyyppi_nuoli_vasemmalle2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_arrw.bmp");
@@ -9251,14 +9249,14 @@ void luo_prototyyppi_nuoli_vasemmalle2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_NUOLI_VASEMMALLE;
 	proto.AI[2]			= AI_MUUTOS_JOS_OSUTTU;
-	
+
 	proto.animaatioita	= 1;
 	proto.avain			= false;
 	proto.energia		= 10000;
@@ -9286,7 +9284,7 @@ void luo_prototyyppi_nuoli_vasemmalle2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[7] = {4,3,2,1,2,3,0}; 
+	BYTE seq1[7] = {4,3,2,1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -9294,7 +9292,7 @@ void luo_prototyyppi_nuoli_vasemmalle2(char *tiedosto)
 
 void luo_prototyyppi_nuoli_alas2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_arrw.bmp");
@@ -9303,14 +9301,14 @@ void luo_prototyyppi_nuoli_alas2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	//strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	//strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN], "ko1.wav");
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_NUOLI_ALAS;
 	proto.AI[2]			= AI_MUUTOS_JOS_OSUTTU;
-	
+
 	proto.animaatioita	= 1;
 	proto.avain			= false;
 	proto.energia		= 10000;
@@ -9338,7 +9336,7 @@ void luo_prototyyppi_nuoli_alas2(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.osaa_uida		= true;
 
-	UCHAR seq1[7] = {4,3,2,1,2,3,0}; 
+	BYTE seq1[7] = {4,3,2,1,2,3,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -9346,7 +9344,7 @@ void luo_prototyyppi_nuoli_alas2(char *tiedosto)
 
 void luo_prototyyppi_kallokytkin1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_wall.bmp");
@@ -9355,7 +9353,7 @@ void luo_prototyyppi_kallokytkin1(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");//tennisb.spr
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],  "tennis.wav");
@@ -9396,28 +9394,28 @@ void luo_prototyyppi_kallokytkin1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[10] = {1,1,1,1,1,1,11,11,11,0}; 
+	BYTE seq1[10] = {1,1,1,1,1,1,11,11,11,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[2] = {1,0}; 
+	BYTE seq2[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {1,0}; 
+	BYTE seq3[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {1,0}; 
+	BYTE seq4[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[10] = {1,2,3,4,5,6,7,8,9,10}; 
+
+	BYTE seq6[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, false);
 
-	UCHAR seq7[10] = {1,2,3,4,5,6,7,8,9,10}; 
+	BYTE seq7[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[2] = {1,0}; 
+	BYTE seq8[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, false);
 
@@ -9427,7 +9425,7 @@ void luo_prototyyppi_kallokytkin1(char *tiedosto)
 
 void luo_prototyyppi_kallokytkin2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_wall.bmp");
@@ -9436,7 +9434,7 @@ void luo_prototyyppi_kallokytkin2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");//tennisb.spr
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],  "tennis.wav");
@@ -9477,28 +9475,28 @@ void luo_prototyyppi_kallokytkin2(char *tiedosto)
 	proto.vari			= VARI_ORANSSI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[10] = {1,1,1,1,1,1,11,11,11,0}; 
+	BYTE seq1[10] = {1,1,1,1,1,1,11,11,11,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
-	UCHAR seq2[2] = {1,0}; 
+	BYTE seq2[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq2, true);
 
-	UCHAR seq3[2] = {1,0}; 
+	BYTE seq3[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq3, true);
 
-	UCHAR seq4[2] = {1,0}; 
+	BYTE seq4[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_ALAS,	seq4, true);
 
-	UCHAR seq5[2] = {1,0}; 
+	BYTE seq5[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq5, false);
-	
-	UCHAR seq6[10] = {1,2,3,4,5,6,7,8,9,10}; 
+
+	BYTE seq6[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq6, false);
 
-	UCHAR seq7[10] = {1,2,3,4,5,6,7,8,9,10}; 
+	BYTE seq7[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq7, true);
 
-	UCHAR seq8[2] = {1,0}; 
+	BYTE seq8[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq8, false);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq8, false);
 
@@ -9507,7 +9505,7 @@ void luo_prototyyppi_kallokytkin2(char *tiedosto)
 
 void luo_prototyyppi_laatikko_appelsiini(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -9516,7 +9514,7 @@ void luo_prototyyppi_laatikko_appelsiini(char *tiedosto)
 	strcpy(proto.bonus_sprite,"orange.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"boxcrack.wav");
 
@@ -9550,7 +9548,7 @@ void luo_prototyyppi_laatikko_appelsiini(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -9558,7 +9556,7 @@ void luo_prototyyppi_laatikko_appelsiini(char *tiedosto)
 
 void luo_prototyyppi_laatikko_megafooni(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -9567,7 +9565,7 @@ void luo_prototyyppi_laatikko_megafooni(char *tiedosto)
 	strcpy(proto.bonus_sprite,"megaphon.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"boxcrack.wav");
 
@@ -9601,7 +9599,7 @@ void luo_prototyyppi_laatikko_megafooni(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -9609,7 +9607,7 @@ void luo_prototyyppi_laatikko_megafooni(char *tiedosto)
 
 void luo_prototyyppi_laatikko_juoma_muna(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -9618,7 +9616,7 @@ void luo_prototyyppi_laatikko_juoma_muna(char *tiedosto)
 	strcpy(proto.bonus_sprite,"eegg_egg.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"boxcrack.wav");
 
@@ -9652,7 +9650,7 @@ void luo_prototyyppi_laatikko_juoma_muna(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -9660,7 +9658,7 @@ void luo_prototyyppi_laatikko_juoma_muna(char *tiedosto)
 
 void luo_prototyyppi_laatikko_juoma_tulimuna(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -9669,7 +9667,7 @@ void luo_prototyyppi_laatikko_juoma_tulimuna(char *tiedosto)
 	strcpy(proto.bonus_sprite,"eegg_fir.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"boxcrack.wav");
 
@@ -9703,7 +9701,7 @@ void luo_prototyyppi_laatikko_juoma_tulimuna(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -9711,7 +9709,7 @@ void luo_prototyyppi_laatikko_juoma_tulimuna(char *tiedosto)
 
 void luo_prototyyppi_laatikko_hoyhen(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -9720,7 +9718,7 @@ void luo_prototyyppi_laatikko_hoyhen(char *tiedosto)
 	strcpy(proto.bonus_sprite,"feather.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"boxcrack.wav");
 
@@ -9754,7 +9752,7 @@ void luo_prototyyppi_laatikko_hoyhen(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -9762,7 +9760,7 @@ void luo_prototyyppi_laatikko_hoyhen(char *tiedosto)
 
 void luo_prototyyppi_laatikko_kana(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -9771,7 +9769,7 @@ void luo_prototyyppi_laatikko_kana(char *tiedosto)
 	strcpy(proto.bonus_sprite,"hen.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"boxcrack.wav");
 
@@ -9807,7 +9805,7 @@ void luo_prototyyppi_laatikko_kana(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -9815,7 +9813,7 @@ void luo_prototyyppi_laatikko_kana(char *tiedosto)
 
 void luo_prototyyppi_laatikko_pikkukana(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -9824,7 +9822,7 @@ void luo_prototyyppi_laatikko_pikkukana(char *tiedosto)
 	strcpy(proto.bonus_sprite,"smallhen.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"boxcrack.wav");
 
@@ -9860,7 +9858,7 @@ void luo_prototyyppi_laatikko_pikkukana(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -9868,7 +9866,7 @@ void luo_prototyyppi_laatikko_pikkukana(char *tiedosto)
 
 void luo_prototyyppi_laatikko_pikkukanoja(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -9877,7 +9875,7 @@ void luo_prototyyppi_laatikko_pikkukanoja(char *tiedosto)
 	strcpy(proto.bonus_sprite,"smallhen.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"boxcrack.wav");
 
@@ -9913,7 +9911,7 @@ void luo_prototyyppi_laatikko_pikkukanoja(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -9921,7 +9919,7 @@ void luo_prototyyppi_laatikko_pikkukanoja(char *tiedosto)
 
 void luo_prototyyppi_laatikko_siili(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -9930,7 +9928,7 @@ void luo_prototyyppi_laatikko_siili(char *tiedosto)
 	strcpy(proto.bonus_sprite,"hedgehog.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"boxcrack.wav");
 
@@ -9965,7 +9963,7 @@ void luo_prototyyppi_laatikko_siili(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -9973,7 +9971,7 @@ void luo_prototyyppi_laatikko_siili(char *tiedosto)
 
 void luo_prototyyppi_laatikko_perhoset(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -9982,7 +9980,7 @@ void luo_prototyyppi_laatikko_perhoset(char *tiedosto)
 	strcpy(proto.bonus_sprite,"bttrfly2.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO], "damage.wav");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"boxcrack.wav");
 
@@ -10018,7 +10016,7 @@ void luo_prototyyppi_laatikko_perhoset(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10026,7 +10024,7 @@ void luo_prototyyppi_laatikko_perhoset(char *tiedosto)
 
 void luo_prototyyppi_nippu_omenoita(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10035,7 +10033,7 @@ void luo_prototyyppi_nippu_omenoita(char *tiedosto)
 	strcpy(proto.bonus_sprite,"apple3.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"damage.wav");
 
 	proto.AI[0]			= AI_BONUS;
@@ -10069,7 +10067,7 @@ void luo_prototyyppi_nippu_omenoita(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10077,7 +10075,7 @@ void luo_prototyyppi_nippu_omenoita(char *tiedosto)
 
 void luo_prototyyppi_rypaleterttu(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10086,7 +10084,7 @@ void luo_prototyyppi_rypaleterttu(char *tiedosto)
 	strcpy(proto.bonus_sprite,"wgrape.spr");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],"damage.wav");
 
 	proto.AI[0]			= AI_BONUS;
@@ -10120,7 +10118,7 @@ void luo_prototyyppi_rypaleterttu(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10128,7 +10126,7 @@ void luo_prototyyppi_rypaleterttu(char *tiedosto)
 
 void luo_prototyyppi_lahja_hoyhen(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10173,7 +10171,7 @@ void luo_prototyyppi_lahja_hoyhen(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[10] = {1,2,3,4,5,6,7,8,9,10}; 
+	BYTE seq1[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -10181,7 +10179,7 @@ void luo_prototyyppi_lahja_hoyhen(char *tiedosto)
 
 void luo_prototyyppi_lahja_siili(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10226,7 +10224,7 @@ void luo_prototyyppi_lahja_siili(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[10] = {1,2,3,4,5,6,7,8,9,10}; 
+	BYTE seq1[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -10234,7 +10232,7 @@ void luo_prototyyppi_lahja_siili(char *tiedosto)
 
 void luo_prototyyppi_lahja_pikkukana(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10279,7 +10277,7 @@ void luo_prototyyppi_lahja_pikkukana(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[10] = {1,2,3,4,5,6,7,8,9,10}; 
+	BYTE seq1[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -10287,7 +10285,7 @@ void luo_prototyyppi_lahja_pikkukana(char *tiedosto)
 
 void luo_prototyyppi_lahja_kivikuutio(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10332,7 +10330,7 @@ void luo_prototyyppi_lahja_kivikuutio(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[10] = {1,2,3,4,5,6,7,8,9,10}; 
+	BYTE seq1[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -10340,7 +10338,7 @@ void luo_prototyyppi_lahja_kivikuutio(char *tiedosto)
 
 void luo_prototyyppi_lahja(char *tiedosto, char *csprite, char *snimi)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10385,7 +10383,7 @@ void luo_prototyyppi_lahja(char *tiedosto, char *csprite, char *snimi)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[10] = {1,2,3,4,5,6,7,8,9,10}; 
+	BYTE seq1[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -10393,7 +10391,7 @@ void luo_prototyyppi_lahja(char *tiedosto, char *csprite, char *snimi)
 
 void luo_prototyyppi_lahja_doodle_tuli(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10432,7 +10430,7 @@ void luo_prototyyppi_lahja_doodle_tuli(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[10] = {1,2,3,4,5,6,7,8,9,10}; 
+	BYTE seq1[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -10440,7 +10438,7 @@ void luo_prototyyppi_lahja_doodle_tuli(char *tiedosto)
 
 void luo_prototyyppi_lahja_doodle_lumi(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10479,7 +10477,7 @@ void luo_prototyyppi_lahja_doodle_lumi(char *tiedosto)
 	proto.vari			= VARI_SININEN;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[10] = {1,2,3,4,5,6,7,8,9,10}; 
+	BYTE seq1[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -10487,7 +10485,7 @@ void luo_prototyyppi_lahja_doodle_lumi(char *tiedosto)
 
 void luo_prototyyppi_taikajuoma_kana(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10535,7 +10533,7 @@ void luo_prototyyppi_taikajuoma_kana(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10543,7 +10541,7 @@ void luo_prototyyppi_taikajuoma_kana(char *tiedosto)
 
 void luo_prototyyppi_taikajuoma_pikkukana(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10591,7 +10589,7 @@ void luo_prototyyppi_taikajuoma_pikkukana(char *tiedosto)
 	proto.vari			= VARI_ORANSSI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10599,7 +10597,7 @@ void luo_prototyyppi_taikajuoma_pikkukana(char *tiedosto)
 
 void luo_prototyyppi_taikajuoma_possu(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10647,7 +10645,7 @@ void luo_prototyyppi_taikajuoma_possu(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10655,7 +10653,7 @@ void luo_prototyyppi_taikajuoma_possu(char *tiedosto)
 
 void luo_prototyyppi_taikajuoma_lintu(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10703,7 +10701,7 @@ void luo_prototyyppi_taikajuoma_lintu(char *tiedosto)
 	proto.vari			= VARI_TURKOOSI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10711,7 +10709,7 @@ void luo_prototyyppi_taikajuoma_lintu(char *tiedosto)
 
 void luo_prototyyppi_taikajuoma_sammakko(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10759,7 +10757,7 @@ void luo_prototyyppi_taikajuoma_sammakko(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10767,7 +10765,7 @@ void luo_prototyyppi_taikajuoma_sammakko(char *tiedosto)
 
 void luo_prototyyppi_juoma_muna(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10806,7 +10804,7 @@ void luo_prototyyppi_juoma_muna(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10814,7 +10812,7 @@ void luo_prototyyppi_juoma_muna(char *tiedosto)
 
 void luo_prototyyppi_juoma_tulimuna(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10862,7 +10860,7 @@ void luo_prototyyppi_juoma_tulimuna(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10870,7 +10868,7 @@ void luo_prototyyppi_juoma_tulimuna(char *tiedosto)
 
 void luo_prototyyppi_megafooni(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10910,7 +10908,7 @@ void luo_prototyyppi_megafooni(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[10] = {1,2,3,4,5,6,7,8,9,10}; 
+	BYTE seq1[10] = {1,2,3,4,5,6,7,8,9,10};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -10918,7 +10916,7 @@ void luo_prototyyppi_megafooni(char *tiedosto)
 
 void luo_prototyyppi_doodle_chili(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -10958,7 +10956,7 @@ void luo_prototyyppi_doodle_chili(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -10966,7 +10964,7 @@ void luo_prototyyppi_doodle_chili(char *tiedosto)
 
 void luo_prototyyppi_doodle_jaatee(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -11006,7 +11004,7 @@ void luo_prototyyppi_doodle_jaatee(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11014,7 +11012,7 @@ void luo_prototyyppi_doodle_jaatee(char *tiedosto)
 
 void luo_prototyyppi_doodle_valkosipuli(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -11054,7 +11052,7 @@ void luo_prototyyppi_doodle_valkosipuli(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11062,7 +11060,7 @@ void luo_prototyyppi_doodle_valkosipuli(char *tiedosto)
 
 void luo_prototyyppi_doodle_sonic(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -11102,7 +11100,7 @@ void luo_prototyyppi_doodle_sonic(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	 seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11110,7 +11108,7 @@ void luo_prototyyppi_doodle_sonic(char *tiedosto)
 
 void luo_prototyyppi_teleportti1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_tele.bmp");
@@ -11119,7 +11117,7 @@ void luo_prototyyppi_teleportti1(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"teleport.wav");
@@ -11127,7 +11125,7 @@ void luo_prototyyppi_teleportti1(char *tiedosto)
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_TELEPORTTI;
-	
+
 	proto.animaatioita	= 9;
 	proto.avain			= false;
 	proto.bonusten_lkm  = 0;
@@ -11158,7 +11156,7 @@ void luo_prototyyppi_teleportti1(char *tiedosto)
 	proto.vari			= VARI_SININEN;//VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[7] = {1,2,3,4,5,6,0}; 
+	BYTE seq1[7] = {1,2,3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -11166,7 +11164,7 @@ void luo_prototyyppi_teleportti1(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq1, true);
-	UCHAR seq2[7] = {6,5,4,3,2,1,0};
+	BYTE seq2[7] = {6,5,4,3,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq2, true);
 
@@ -11175,7 +11173,7 @@ void luo_prototyyppi_teleportti1(char *tiedosto)
 
 void luo_prototyyppi_teleportti2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_tele.bmp");
@@ -11184,7 +11182,7 @@ void luo_prototyyppi_teleportti2(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"teleport.wav");
@@ -11192,7 +11190,7 @@ void luo_prototyyppi_teleportti2(char *tiedosto)
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_TELEPORTTI;
-	
+
 	proto.animaatioita	= 9;
 	proto.avain			= false;
 	proto.bonusten_lkm  = 0;
@@ -11223,7 +11221,7 @@ void luo_prototyyppi_teleportti2(char *tiedosto)
 	proto.vari			= VARI_PUNAINEN;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[7] = {1,2,3,4,5,6,0}; 
+	BYTE seq1[7] = {1,2,3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -11231,7 +11229,7 @@ void luo_prototyyppi_teleportti2(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq1, true);
-	UCHAR seq2[7] = {6,5,4,3,2,1,0};
+	BYTE seq2[7] = {6,5,4,3,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq2, true);
 
@@ -11240,7 +11238,7 @@ void luo_prototyyppi_teleportti2(char *tiedosto)
 
 void luo_prototyyppi_teleportti3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_tele.bmp");
@@ -11249,7 +11247,7 @@ void luo_prototyyppi_teleportti3(char *tiedosto)
 	strcpy(proto.bonus_sprite,"");
 	strcpy(proto.ammus1_sprite,"");
 	strcpy(proto.ammus2_sprite,"");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"teleport.wav");
@@ -11257,7 +11255,7 @@ void luo_prototyyppi_teleportti3(char *tiedosto)
 
 	proto.AI[0]			= AI_PERUS;
 	proto.AI[1]			= AI_TELEPORTTI;
-	
+
 	proto.animaatioita	= 9;
 	proto.avain			= false;
 	proto.bonusten_lkm  = 0;
@@ -11288,7 +11286,7 @@ void luo_prototyyppi_teleportti3(char *tiedosto)
 	proto.vari			= VARI_VIHREA;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[7] = {1,2,3,4,5,6,0}; 
+	BYTE seq1[7] = {1,2,3,4,5,6,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -11296,7 +11294,7 @@ void luo_prototyyppi_teleportti3(char *tiedosto)
 	Animaatio_Uusi(proto, ANIMAATIO_KYYKKY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_VAHINKO,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KUOLEMA,	seq1, true);
-	UCHAR seq2[7] = {6,5,4,3,2,1,0};
+	BYTE seq2[7] = {6,5,4,3,2,1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS1,	seq2, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYOKKAYS2,	seq2, true);
 
@@ -11305,7 +11303,7 @@ void luo_prototyyppi_teleportti3(char *tiedosto)
 
 void luo_prototyyppi_tausta_puu(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11328,7 +11326,7 @@ void luo_prototyyppi_tausta_puu(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 14; 
+	proto.pallarx_kerroin = 14;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11339,7 +11337,7 @@ void luo_prototyyppi_tausta_puu(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11347,7 +11345,7 @@ void luo_prototyyppi_tausta_puu(char *tiedosto)
 
 void luo_prototyyppi_tausta_puu2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11370,7 +11368,7 @@ void luo_prototyyppi_tausta_puu2(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 8; 
+	proto.pallarx_kerroin = 8;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11381,7 +11379,7 @@ void luo_prototyyppi_tausta_puu2(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11389,7 +11387,7 @@ void luo_prototyyppi_tausta_puu2(char *tiedosto)
 
 void luo_prototyyppi_tausta_pensas(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11412,7 +11410,7 @@ void luo_prototyyppi_tausta_pensas(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 19; 
+	proto.pallarx_kerroin = 19;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11423,7 +11421,7 @@ void luo_prototyyppi_tausta_pensas(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11431,7 +11429,7 @@ void luo_prototyyppi_tausta_pensas(char *tiedosto)
 
 void luo_prototyyppi_tausta_vesipensas(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11454,7 +11452,7 @@ void luo_prototyyppi_tausta_vesipensas(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 2; 
+	proto.pallarx_kerroin = 2;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11465,7 +11463,7 @@ void luo_prototyyppi_tausta_vesipensas(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11473,7 +11471,7 @@ void luo_prototyyppi_tausta_vesipensas(char *tiedosto)
 
 void luo_prototyyppi_tausta_pilvi(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11509,7 +11507,7 @@ void luo_prototyyppi_tausta_pilvi(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11517,7 +11515,7 @@ void luo_prototyyppi_tausta_pilvi(char *tiedosto)
 
 void luo_prototyyppi_tausta_kuu(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11542,7 +11540,7 @@ void luo_prototyyppi_tausta_kuu(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 1; 
+	proto.pallarx_kerroin = 1;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11553,7 +11551,7 @@ void luo_prototyyppi_tausta_kuu(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11561,7 +11559,7 @@ void luo_prototyyppi_tausta_kuu(char *tiedosto)
 
 void luo_prototyyppi_tausta_kukka1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11584,7 +11582,7 @@ void luo_prototyyppi_tausta_kukka1(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 0; 
+	proto.pallarx_kerroin = 0;
 	proto.pisteet		= 100;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11595,7 +11593,7 @@ void luo_prototyyppi_tausta_kukka1(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[5] = {1,2,3,4,0}; 
+	BYTE seq1[5] = {1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -11603,7 +11601,7 @@ void luo_prototyyppi_tausta_kukka1(char *tiedosto)
 
 void luo_prototyyppi_tausta_kukka2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11626,7 +11624,7 @@ void luo_prototyyppi_tausta_kukka2(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 0; 
+	proto.pallarx_kerroin = 0;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11637,7 +11635,7 @@ void luo_prototyyppi_tausta_kukka2(char *tiedosto)
 	proto.vari			= VARI_SININEN;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[5] = {1,2,3,4,0}; 
+	BYTE seq1[5] = {1,2,3,4,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -11645,7 +11643,7 @@ void luo_prototyyppi_tausta_kukka2(char *tiedosto)
 
 void luo_prototyyppi_tausta_ketju_vert(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11670,7 +11668,7 @@ void luo_prototyyppi_tausta_ketju_vert(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 0; 
+	proto.pallarx_kerroin = 0;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11682,7 +11680,7 @@ void luo_prototyyppi_tausta_ketju_vert(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11690,7 +11688,7 @@ void luo_prototyyppi_tausta_ketju_vert(char *tiedosto)
 
 void luo_prototyyppi_tausta_ketju_hori(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11715,7 +11713,7 @@ void luo_prototyyppi_tausta_ketju_hori(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 0; 
+	proto.pallarx_kerroin = 0;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11726,9 +11724,9 @@ void luo_prototyyppi_tausta_ketju_hori(char *tiedosto)
 	proto.vahinko_tyyppi= VAHINKO_EI;
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
-	
 
-	UCHAR seq1[2] = {1,0}; 
+
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11736,7 +11734,7 @@ void luo_prototyyppi_tausta_ketju_hori(char *tiedosto)
 
 void luo_prototyyppi_tausta_kivikasa(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11759,7 +11757,7 @@ void luo_prototyyppi_tausta_kivikasa(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 16; 
+	proto.pallarx_kerroin = 16;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11770,7 +11768,7 @@ void luo_prototyyppi_tausta_kivikasa(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -11778,7 +11776,7 @@ void luo_prototyyppi_tausta_kivikasa(char *tiedosto)
 
 void luo_prototyyppi_tausta_kanto(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11801,7 +11799,7 @@ void luo_prototyyppi_tausta_kanto(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 0; 
+	proto.pallarx_kerroin = 0;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11812,7 +11810,7 @@ void luo_prototyyppi_tausta_kanto(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -11820,7 +11818,7 @@ void luo_prototyyppi_tausta_kanto(char *tiedosto)
 
 void luo_prototyyppi_tausta_mainos(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
@@ -11843,7 +11841,7 @@ void luo_prototyyppi_tausta_mainos(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 0;
-	proto.pallarx_kerroin = 60; 
+	proto.pallarx_kerroin = 60;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -11854,7 +11852,7 @@ void luo_prototyyppi_tausta_mainos(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 
 	proto.Tallenna(tiedosto);
@@ -11862,12 +11860,12 @@ void luo_prototyyppi_tausta_mainos(char *tiedosto)
 
 void luo_prototyyppi_mato(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
 	strcpy(proto.nimi, "worm");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
@@ -11903,7 +11901,7 @@ void luo_prototyyppi_mato(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[7] = {1,2,3,4,3,2,0}; 
+	BYTE seq1[7] = {1,2,3,4,3,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -11918,12 +11916,12 @@ void luo_prototyyppi_mato(char *tiedosto)
 
 void luo_prototyyppi_perhonen(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
 	strcpy(proto.nimi, "butterfly");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
@@ -11959,7 +11957,7 @@ void luo_prototyyppi_perhonen(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[7] = {1,2,0}; 
+	BYTE seq1[7] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -11974,12 +11972,12 @@ void luo_prototyyppi_perhonen(char *tiedosto)
 
 void luo_prototyyppi_perhonen2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
 	strcpy(proto.nimi, "butterfly 2");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
@@ -12015,7 +12013,7 @@ void luo_prototyyppi_perhonen2(char *tiedosto)
 	proto.vari			= VARI_ORANSSI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[7] = {1,2,0}; 
+	BYTE seq1[7] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -12030,13 +12028,13 @@ void luo_prototyyppi_perhonen2(char *tiedosto)
 
 void luo_prototyyppi_perhonen3(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
 	strcpy(proto.nimi, "butterfly 3");
 	strcpy(proto.bonus_sprite,"key2.spr");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
@@ -12074,7 +12072,7 @@ void luo_prototyyppi_perhonen3(char *tiedosto)
 	proto.vihollinen	= true;
 	proto.bonus_aina	= true;
 
-	UCHAR seq1[7] = {1,2,0}; 
+	BYTE seq1[7] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -12089,12 +12087,12 @@ void luo_prototyyppi_perhonen3(char *tiedosto)
 
 void luo_prototyyppi_karpanen(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bg1.bmp");
 	strcpy(proto.nimi, "fly");
-	
+
 	strcpy(proto.aanitiedostot[AANI_VAHINKO],		"");
 	strcpy(proto.aanitiedostot[AANI_TUHOUTUMINEN],	"");
 	strcpy(proto.aanitiedostot[AANI_HYOKKAYS1],		"");
@@ -12134,7 +12132,7 @@ void luo_prototyyppi_karpanen(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[7] = {1,2,0}; 
+	BYTE seq1[7] = {1,2,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -12147,11 +12145,11 @@ void luo_prototyyppi_karpanen(char *tiedosto)
 	proto.Tallenna(tiedosto);
 }
 
-void luo_prototyyppi_ansa(char *tiedosto, char *nimi, int AI, 
+void luo_prototyyppi_ansa(char *tiedosto, char *nimi, int AI,
 						  bool ylos, bool alas, bool oikealle, bool vasemmalle,
 						  int kuva_x, double paino, int vari)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_spks.bmp");
@@ -12195,7 +12193,7 @@ void luo_prototyyppi_ansa(char *tiedosto, char *nimi, int AI,
 	proto.vari			= vari;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -12210,7 +12208,7 @@ void luo_prototyyppi_ansa(char *tiedosto, char *nimi, int AI,
 
 void luo_prototyyppi_seina_iso(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_wall.bmp");
@@ -12235,7 +12233,7 @@ void luo_prototyyppi_seina_iso(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 3;
-	proto.pallarx_kerroin = 0; 
+	proto.pallarx_kerroin = 0;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -12246,7 +12244,7 @@ void luo_prototyyppi_seina_iso(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -12254,7 +12252,7 @@ void luo_prototyyppi_seina_iso(char *tiedosto)
 
 void luo_prototyyppi_seina_iso_liikkuu_y(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_wall.bmp");
@@ -12279,7 +12277,7 @@ void luo_prototyyppi_seina_iso_liikkuu_y(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 3;
-	proto.pallarx_kerroin = 0; 
+	proto.pallarx_kerroin = 0;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -12291,7 +12289,7 @@ void luo_prototyyppi_seina_iso_liikkuu_y(char *tiedosto)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 
 	proto.Tallenna(tiedosto);
@@ -12299,7 +12297,7 @@ void luo_prototyyppi_seina_iso_liikkuu_y(char *tiedosto)
 
 void luo_prototyyppi_iso_ansaseina_vaihe1(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_spk2.bmp");
@@ -12330,7 +12328,7 @@ void luo_prototyyppi_iso_ansaseina_vaihe1(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= 3;
-	proto.pallarx_kerroin = 0; 
+	proto.pallarx_kerroin = 0;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -12340,9 +12338,9 @@ void luo_prototyyppi_iso_ansaseina_vaihe1(char *tiedosto)
 	proto.vahinko_tyyppi= VAHINKO_PUDOTUS;
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
-	
 
-	UCHAR seq1[2] = {1,0}; 
+
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -12358,7 +12356,7 @@ void luo_prototyyppi_iso_ansaseina_vaihe1(char *tiedosto)
 
 void luo_prototyyppi_iso_ansaseina_vaihe2(char *tiedosto)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_spk2.bmp");
@@ -12389,7 +12387,7 @@ void luo_prototyyppi_iso_ansaseina_vaihe2(char *tiedosto)
 	proto.max_hyppy		= 0;
 	proto.max_nopeus	= 0;
 	proto.paino			= -0.5;
-	proto.pallarx_kerroin = 0; 
+	proto.pallarx_kerroin = 0;
 	proto.pisteet		= 0;
 	proto.suojaus		= VAHINKO_EI;
 	proto.tuhoutuminen	= TUHOUTUMINEN_EI_TUHOUDU;
@@ -12399,9 +12397,9 @@ void luo_prototyyppi_iso_ansaseina_vaihe2(char *tiedosto)
 	proto.vahinko_tyyppi= VAHINKO_PUDOTUS;
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= true;
-	
 
-	UCHAR seq1[2] = {1,0}; 
+
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, false);
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
@@ -12418,7 +12416,7 @@ void luo_prototyyppi_iso_ansaseina_vaihe2(char *tiedosto)
 
 void luo_prototyyppi_info(char *tiedosto, char *nimi, int AI)
 {
-	PK2Sprite_Prototyyppi proto; 
+	PK2Sprite_Prototyyppi proto;
 
 	strcpy(proto.versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(proto.kuvatiedosto,"spr_bons.bmp");
@@ -12454,7 +12452,7 @@ void luo_prototyyppi_info(char *tiedosto, char *nimi, int AI)
 	proto.vari			= VARI_NORMAALI;
 	proto.vihollinen	= false;
 
-	UCHAR seq1[2] = {1,0}; 
+	BYTE seq1[2] = {1,0};
 	Animaatio_Uusi(proto, ANIMAATIO_PAIKALLA,	seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_KAVELY,		seq1, true);
 	Animaatio_Uusi(proto, ANIMAATIO_HYPPY_YLOS,	seq1, true);
@@ -12568,7 +12566,7 @@ int main()
 	luo_prototyyppi_nuoli_alas2(		"sprites\\arrow2_d.spr");	// uusi - update 3!!
 	//luo_prototyyppi_aave2(				"sprites\\ghost1.spr");
 	/*
-	
+
 	// BONUKSET
 	*/
 	luo_prototyyppi_ananas1(			"sprites\\pineapp1.spr");	// uusi - update 3!!
@@ -12613,9 +12611,9 @@ int main()
 	luo_prototyyppi_kello1(				"sprites\\clock1.spr");
 	luo_prototyyppi_kello2(				"sprites\\clock2.spr");
 	luo_prototyyppi_kello3(				"sprites\\clock3.spr");
-	
+
 	// "AMMUKSET"
-	luo_prototyyppi_muna(				"sprites\\egg.spr");//		
+	luo_prototyyppi_muna(				"sprites\\egg.spr");//
 	luo_prototyyppi_muna_tuli(			"sprites\\egg_fire.spr");
 	luo_prototyyppi_muna_haju(			"sprites\\egg_stnk.spr");
 	luo_prototyyppi_muna_jaa(			"sprites\\egg_ice.spr");	// uusi! - update 2
@@ -12629,8 +12627,8 @@ int main()
 	luo_prototyyppi_tennispallo(		"sprites\\tennisb.spr");
 	luo_prototyyppi_ammus1(				"sprites\\ammo1.spr");
 	luo_prototyyppi_ammus2(				"sprites\\ammo2.spr");
-	
-	
+
+
 	// LAATIKOT
 	luo_prototyyppi_laatikko_megafooni( "sprites\\box_mph.spr");
 	luo_prototyyppi_laatikko_juoma_muna("sprites\\box_egg.spr");
@@ -12657,7 +12655,7 @@ int main()
 	luo_prototyyppi_lahja(				"sprites\\gift_key.spr", "key.spr", "gift key");      // uusi - update 1!
 	luo_prototyyppi_lahja(				"sprites\\gift_ke2.spr", "key2.spr", "gift blue key");     // uusi - update 1!
 	luo_prototyyppi_lahja(				"sprites\\gift_bee.spr", "bee3.spr", "gift bee");     // uusi - update 1!
-	
+
 	// TAIKAJUOMAT
 	luo_prototyyppi_taikajuoma_kana(	"sprites\\potion_h.spr");
 	luo_prototyyppi_taikajuoma_pikkukana("sprites\\potion_s.spr");
@@ -12671,7 +12669,7 @@ int main()
 	luo_prototyyppi_paasiaismuna(		"sprites\\eegg_stn.spr","smelly easter egg","egg_stnk.spr",30,VARI_VIHREA, TUHOUTUMINEN_SAVU_VIHREA);
 	luo_prototyyppi_paasiaismuna(		"sprites\\eegg_ice.spr","ice egg","egg_ice.spr",30,VARI_SININEN, TUHOUTUMINEN_SAVU_SININEN);  // uusi! - update 2
 
-	
+
 
 	// DOODLET-JUOMAT JA MEGAFOONI
 	luo_prototyyppi_megafooni(		    "sprites\\megaphon.spr");
@@ -12679,7 +12677,7 @@ int main()
 	luo_prototyyppi_doodle_jaatee(		"sprites\\can_icet.spr");
 	luo_prototyyppi_doodle_valkosipuli(	"sprites\\can_garl.spr");
 	luo_prototyyppi_doodle_sonic(		"sprites\\can_snic.spr");
-	
+
 
 	// TELEPORTIT
 	luo_prototyyppi_teleportti1(		"sprites\\tlport1.spr");
@@ -12709,7 +12707,7 @@ int main()
 	luo_prototyyppi_tausta_kivikasa(	"sprites\\bg_spile.spr");	// uusi - update 2!
 	luo_prototyyppi_tausta_kanto(		"sprites\\bg_stump.spr");	// uusi - update 2!
 	luo_prototyyppi_tausta_mainos(		"sprites\\bg_ad.spr");		// uusi - update 2!
-	
+
 	// SEINAT
 	luo_prototyyppi_kivipala(			"sprites\\stncube.spr");
 	luo_prototyyppi_kivipala2(			"sprites\\stncube2.spr");
@@ -12752,7 +12750,7 @@ int main()
 
 	*/
 
-	/* UPDATE 2 
+	/* UPDATE 2
 
 	luo_prototyyppi_kukko(				"sprites\\rooster.spr");	// paivitetty - update 1!
 	luo_prototyyppi_kukko_kynitty(		"sprites\\r_naked.spr");	// paivitetty - update 1!
@@ -12767,7 +12765,7 @@ int main()
 	luo_prototyyppi_mehilainen3(		"sprites\\bee3.spr");	// uusi - update 1!
 	luo_prototyyppi_tankki1(			"sprites\\tank.spr");	//aanet paivitetty - update 2!
 	luo_prototyyppi_tankki2(			"sprites\\tank2.spr");	//aanet paivitetty - update 2!
-	luo_prototyyppi_tankki3(			"sprites\\tank3.spr");	//aanet paivitetty - update 2!	
+	luo_prototyyppi_tankki3(			"sprites\\tank3.spr");	//aanet paivitetty - update 2!
 	luo_prototyyppi_tankki4(			"sprites\\tank4.spr");	//aanet paivitetty - update 2!
 	luo_prototyyppi_pahakana2(			"sprites\\evilone2.spr"); // uusi - update 2!
 	luo_prototyyppi_jattimehilainen(	"sprites\\gbee.spr");	// uusi - update 2!
@@ -12779,15 +12777,15 @@ int main()
 	luo_prototyyppi_jattirobokana_muoto4("sprites\\roboss4.spr"); // uusi - update 2!
 	luo_prototyyppi_jattirobokana_muoto5("sprites\\roboss5.spr"); // uusi - update 2!
 	luo_prototyyppi_lintu4(				"sprites\\bird4.spr");	// paivitetty - update 2!
-	
+
 	// BONUKSET
 	luo_prototyyppi_viinirypale(		"sprites\\wgrape.spr"); // uusi - update 2!
 	luo_prototyyppi_rypaleterttu(		"sprites\\wgrapes.spr"); // uusi - update 2!
 	luo_prototyyppi_avain4(				"sprites\\key4.spr");	// paivitetty - update 2!
-	
+
 	// "AMMUKSET"
 	luo_prototyyppi_muna_jaa(			"sprites\\egg_ice.spr");	// uusi! - update 2
-	
+
 	// LAATIKOT
 	luo_prototyyppi_laatikko_perhoset(	"sprites\\box_bfly.spr");	// uusi! - update 2
 
@@ -12802,14 +12800,14 @@ int main()
 	luo_prototyyppi_lahja(				"sprites\\gift_key.spr", "key.spr", "gift key");      // uusi - update 1!
 	luo_prototyyppi_lahja(				"sprites\\gift_ke2.spr", "key2.spr", "gift blue key");     // uusi - update 1!
 	luo_prototyyppi_lahja(				"sprites\\gift_bee.spr", "bee3.spr", "gift bee");     // uusi - update 1!
-	
+
 	// TAIKAJUOMAT
 	luo_prototyyppi_taikajuoma_sammakko("sprites\\potion_f.spr"); // uusi! - update 2
 	luo_prototyyppi_paasiaismuna(		"sprites\\eegg_ice.spr","ice egg","egg_ice.spr",30,VARI_SININEN, TUHOUTUMINEN_SAVU_SININEN);  // uusi! - update 2
-	
+
 
 	// DOODLET-JUOMAT JA MEGAFOONI
-	
+
 
 	// TELEPORTIT
 
@@ -12823,10 +12821,10 @@ int main()
 	luo_prototyyppi_perhonen3(			"sprites\\bttrfly3.spr");	// paivitetty - update 1!
 	luo_prototyyppi_tausta_kivikasa(	"sprites\\bg_spile.spr");	// uusi - update 2!
 	luo_prototyyppi_tausta_kanto(		"sprites\\bg_stump.spr");	// uusi - update 2!
-	luo_prototyyppi_tausta_mainos(		"sprites\\bg_ad.spr");		// uusi - update 2!	
-*/	
-	
-	
+	luo_prototyyppi_tausta_mainos(		"sprites\\bg_ad.spr");		// uusi - update 2!
+*/
+
+
 /*
 *info01:			use doodle to knock out enemys.
 *info02:			use eggs to knock out enemys.

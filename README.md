@@ -17,8 +17,6 @@ To add a new episode, just download the zip file and extract it to its respectiv
 # Known bugs:
 ?-Sometimes it starts crashing
 
-!-The player's charge attack time is 0
-
 !-There is no colision between player and sprites wall
 
  -Sounds volume and frequency don't work

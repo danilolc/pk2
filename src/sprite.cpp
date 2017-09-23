@@ -3,10 +3,10 @@
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <fstream>
 #include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <cstdio>
 #include <cstring>
 
 #include "sprite.h"
@@ -103,7 +103,6 @@ PK2Sprite_Prototyyppi::PK2Sprite_Prototyyppi(){
 		animaatiot[i].frameja = 0;
 	}
 }
-
 PK2Sprite_Prototyyppi::~PK2Sprite_Prototyyppi(){
 	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
 		if (framet[i] > 0)
@@ -192,7 +191,6 @@ void PK2Sprite_Prototyyppi::Kopioi(const PK2Sprite_Prototyyppi &proto){
 		animaatiot[i].frameja = proto.animaatiot[i].frameja;
 	}
 }
-
 void PK2Sprite_Prototyyppi::Uusi(){
 	strcpy(versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(tiedosto,"");
@@ -290,9 +288,8 @@ void PK2Sprite_Prototyyppi::Uusi(){
 		animaatiot[i].frameja = 0;
 	}
 }
-
-int PK2Sprite_Prototyyppi::Animaatio_Uusi(int anim_i, UCHAR *sekvenssi, bool looppi){
-	UCHAR frame_i = 0;
+int PK2Sprite_Prototyyppi::Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi){
+	BYTE frame_i = 0;
 
 	if (anim_i < SPRITE_MAX_ANIMAATIOITA)
 	{
@@ -340,7 +337,7 @@ PK2Sprite_Prototyyppi10 PK2Sprite_Prototyyppi::GetProto10(){
 	proto.latausaika		= latausaika;
 	proto.leveys			= leveys;
 	proto.max_hyppy			= max_hyppy;
-	proto.max_nopeus		= (UCHAR)max_nopeus;
+	proto.max_nopeus		= (BYTE)max_nopeus;
 	proto.paino				= paino;
 	proto.pisteet			= pisteet;
 	proto.suojaus			= suojaus;
@@ -366,7 +363,6 @@ PK2Sprite_Prototyyppi10 PK2Sprite_Prototyyppi::GetProto10(){
 
 	return proto;
 }
-
 PK2Sprite_Prototyyppi11 PK2Sprite_Prototyyppi::GetProto11(){
 	PK2Sprite_Prototyyppi11 proto;
 
@@ -400,7 +396,7 @@ PK2Sprite_Prototyyppi11 PK2Sprite_Prototyyppi::GetProto11(){
 	proto.latausaika		= latausaika;
 	proto.leveys			= leveys;
 	proto.max_hyppy			= max_hyppy;
-	proto.max_nopeus		= (UCHAR)max_nopeus;
+	proto.max_nopeus		= (BYTE)max_nopeus;
 	proto.paino				= paino;
 	proto.pallarx_kerroin   = pallarx_kerroin;
 	proto.pisteet			= pisteet;
@@ -429,7 +425,6 @@ PK2Sprite_Prototyyppi11 PK2Sprite_Prototyyppi::GetProto11(){
 
 	return proto;
 }
-
 PK2Sprite_Prototyyppi12 PK2Sprite_Prototyyppi::GetProto12(){
 	PK2Sprite_Prototyyppi12 proto;
 
@@ -468,7 +463,7 @@ PK2Sprite_Prototyyppi12 PK2Sprite_Prototyyppi::GetProto12(){
 	proto.latausaika		= latausaika;
 	proto.leveys			= leveys;
 	proto.max_hyppy			= max_hyppy;
-	proto.max_nopeus		= (UCHAR)max_nopeus;
+	proto.max_nopeus		= (BYTE)max_nopeus;
 	proto.paino				= paino;
 	proto.pallarx_kerroin   = pallarx_kerroin;
 	proto.pisteet			= pisteet;
@@ -499,7 +494,6 @@ PK2Sprite_Prototyyppi12 PK2Sprite_Prototyyppi::GetProto12(){
 
 	return proto;
 }
-
 PK2Sprite_Prototyyppi13 PK2Sprite_Prototyyppi::GetProto13(){
 	PK2Sprite_Prototyyppi13 proto;
 
@@ -630,7 +624,6 @@ void PK2Sprite_Prototyyppi::SetProto10(PK2Sprite_Prototyyppi10 &proto){
 		animaatiot[i].frameja = proto.animaatiot[i].frameja;
 	}
 }
-
 void PK2Sprite_Prototyyppi::SetProto11(PK2Sprite_Prototyyppi11 &proto){
 	strcpy(kuvatiedosto,	proto.kuvatiedosto);
 	strcpy(nimi,			proto.nimi);
@@ -689,7 +682,6 @@ void PK2Sprite_Prototyyppi::SetProto11(PK2Sprite_Prototyyppi11 &proto){
 		animaatiot[i].frameja = proto.animaatiot[i].frameja;
 	}
 }
-
 void PK2Sprite_Prototyyppi::SetProto12(PK2Sprite_Prototyyppi12 &proto){
 	strcpy(kuvatiedosto,	proto.kuvatiedosto);
 	strcpy(nimi,			proto.nimi);
@@ -755,7 +747,6 @@ void PK2Sprite_Prototyyppi::SetProto12(PK2Sprite_Prototyyppi12 &proto){
 		animaatiot[i].frameja = proto.animaatiot[i].frameja;
 	}
 }
-
 void PK2Sprite_Prototyyppi::SetProto13(PK2Sprite_Prototyyppi13 &proto){
 	strcpy(kuvatiedosto,	proto.kuvatiedosto);
 	strcpy(nimi,			proto.nimi);
@@ -914,9 +905,9 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 		return 1;
 
 	//Set diferent colors
-	UCHAR *buffer = NULL;
+	BYTE *buffer = NULL;
 	DWORD leveys;
-	UCHAR vari;
+	BYTE vari;
 	int x,y,w,h;
 
 	if (this->vari != VARI_NORMAALI){
@@ -968,7 +959,6 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 	PisteDraw_Buffer_Tuhoa(bufferi);
 	return 0;
 }
-
 void PK2Sprite_Prototyyppi::Tallenna(char *tiedoston_nimi){
    	strcpy(this->tiedosto,tiedoston_nimi);
 
@@ -983,85 +973,10 @@ void PK2Sprite_Prototyyppi::Tallenna(char *tiedoston_nimi){
 	delete (tiedosto);
 }
 
-/*
-int PK2Sprite_Prototyyppi::Lataa(char *filename)
-{
-	FILE *tiedosto;
-
-	if ((tiedosto = fopen(filename, "r")) == NULL)
-	{
-		return 1;
-	}
-
-	char versio[4] = "\0";
-
-	fread(versio, sizeof(this->versio), 1, tiedosto);
-
-	fclose(tiedosto);
-
-	// Tutkitaan versionumeroa jos tarvitsee
-
-	if ((tiedosto = fopen(filename, "r")) == NULL)
-	{
-		return(1);
-	}
-
-	fread(this, sizeof(PK2Sprite_Prototyyppi), 1, tiedosto);
-
-	fclose(tiedosto);
-
-	int bufferi = PisteDraw_Buffer_Uusi(640,480,false,255);
-	PisteDraw_Lataa_Kuva(bufferi,kuvatiedosto,false);
-
-	int frame_i = 0,
-		frame_x = kuva_x;
-
-	for (frame_i=0; frame_i<frameja; frame_i++)
-	{
-		framet[frame_i] = PisteDraw_Buffer_Uusi(kuva_frame_leveys,kuva_frame_korkeus,true,255);
-		framet_peilikuva[frame_i] = PisteDraw_Buffer_Uusi(kuva_frame_leveys,kuva_frame_korkeus,true,255);
-
-		PisteDraw_Buffer_Tayta(framet[frame_i],255);
-		PisteDraw_Buffer_Tayta(framet_peilikuva[frame_i],255);
-
-		PisteDraw_Buffer_Flip_Nopea(bufferi,framet[frame_i],0,0,
-									frame_x,
-									kuva_y,
-									frame_x + kuva_frame_leveys,
-									kuva_y  + kuva_frame_korkeus);
-
-		PisteDraw_Buffer_Flip(framet[frame_i], framet_peilikuva[frame_i], 0, 0, true, false);
-
-		frame_x += 35;
-
-	}
-
-	PisteDraw_Buffer_Tuhoa(bufferi);
-
-	return 0;
-}
-
-int PK2Sprite_Prototyyppi::Tallenna(char *filename)
-{
-	FILE *tiedosto;
-
-	if ((tiedosto = fopen(filename, "w")) == NULL)
-	{
-		return(1);
-	}
-
-	fwrite(this, sizeof(PK2Sprite_Prototyyppi), 1, tiedosto);
-	fclose(tiedosto);
-
-	return 0;
-}
-*/
-
 int PK2Sprite_Prototyyppi::Piirra(int x, int y, int frame){
 	PisteDraw_Buffer_Flip_Nopea(framet[frame], PD_TAUSTABUFFER, x, y);
 	return 0;
 }
-
 bool PK2Sprite_Prototyyppi::Onko_AI(int ai){
 	for (int i=0;i<SPRITE_MAX_AI;i++)
 		if (AI[i] == ai)
@@ -1113,7 +1028,6 @@ PK2Sprite::PK2Sprite(){
 	this->ajastin		= 0;
 	this->muutos_ajastin = 0;
 }
-
 PK2Sprite::PK2Sprite(PK2Sprite_Prototyyppi *tyyppi, int pelaaja, bool piilota, double x, double y){
 	if (tyyppi){
 		this->tyyppi		= tyyppi;
@@ -1158,7 +1072,6 @@ PK2Sprite::PK2Sprite(PK2Sprite_Prototyyppi *tyyppi, int pelaaja, bool piilota, d
 		this->muutos_ajastin = 0;
 	}
 }
-
 PK2Sprite::~PK2Sprite() {}
 
 bool PK2Sprite::Onko_AI(int ai){
@@ -1167,7 +1080,6 @@ bool PK2Sprite::Onko_AI(int ai){
 			return true;
 	return false;
 }
-
 int PK2Sprite::Animaatio(int anim_i, bool nollaus){
 	if (anim_i != animaatio_index){
 		if (nollaus)
@@ -1178,7 +1090,6 @@ int PK2Sprite::Animaatio(int anim_i, bool nollaus){
 
 	return 0;
 }
-
 int PK2Sprite::Animoi(){
 	int frame = 0;
 
@@ -1205,8 +1116,7 @@ int PK2Sprite::Animoi(){
 	if (frame_aika < tyyppi->frame_rate)
 		frame_aika++;
 	// Jos aika on kulunut loppuun, vaihdetaan seuraava frame tamanhetkisesta animaatiosta
-	else
-	{
+	else{
 		frame_aika = 0;
 
 		// Onko animaatiossa enaa frameja?
@@ -1225,7 +1135,6 @@ int PK2Sprite::Animoi(){
 
 	return frame;
 }
-
 int PK2Sprite::Piirra(int kamera_x, int kamera_y){
 	// Tehdaan apumuuttujia
 	int	l = (int)tyyppi->kuva_frame_leveys/2,//leveys
@@ -1296,7 +1205,6 @@ int PK2Sprite::AI_Perus(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Kaantyy_Esteesta_Hori(){
 	if (energia > 0)
 	{
@@ -1314,7 +1222,6 @@ int PK2Sprite::AI_Kaantyy_Esteesta_Hori(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Kaantyy_Esteesta_Vert(){
 	if (energia > 0)
 	{
@@ -1332,7 +1239,6 @@ int PK2Sprite::AI_Kaantyy_Esteesta_Vert(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Kiipeilija(){
 	if (energia > 0)
 	{
@@ -1367,10 +1273,8 @@ int PK2Sprite::AI_Kiipeilija(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Kiipeilija2(){
-	if (energia > 0)
-	{
+	if (energia > 0){
 		if (vasemmalle && oikealle && ylos && alas) {
 
 			if (a < 0) {
@@ -1389,17 +1293,12 @@ int PK2Sprite::AI_Kiipeilija2(){
 				a = this->tyyppi->max_nopeus / 3.5;
 				//b = 0;
 			}
-/*
-			if (a != 0)
-				b = 0;
-*/
 			if (b != 0)
 				a = 0;
 		}
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Varoo_Kuoppaa(){
 	double max = tyyppi->max_nopeus / 3.5;
 
@@ -1432,7 +1331,6 @@ int PK2Sprite::AI_Varoo_Kuoppaa(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Random_Hyppy(){
 	if (energia > 0)
 	{
@@ -1443,7 +1341,6 @@ int PK2Sprite::AI_Random_Hyppy(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Sammakko1(){
 	if (energia > 0)
 	{
@@ -1454,7 +1351,6 @@ int PK2Sprite::AI_Sammakko1(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Sammakko2(){
 	if (energia > 0)
 	{
@@ -1474,7 +1370,6 @@ int PK2Sprite::AI_Sammakko2(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Random_Suunnanvaihto_Hori(){
 	if (energia > 0)
 	{
@@ -1488,7 +1383,6 @@ int PK2Sprite::AI_Random_Suunnanvaihto_Hori(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Random_Kaantyminen(){
 	if (energia > 0)
 	{
@@ -1499,7 +1393,6 @@ int PK2Sprite::AI_Random_Kaantyminen(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Kaantyy_Jos_Osuttu(){
 	if (isku == VAHINKO_AIKA/* saatu_vahinko*/ > 0 && energia > 0)
 	{
@@ -1510,7 +1403,6 @@ int PK2Sprite::AI_Kaantyy_Jos_Osuttu(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Random_Liikahdus_Vert_Hori(){
 	if (energia > 0)
 	{
@@ -1535,7 +1427,6 @@ int PK2Sprite::AI_Random_Liikahdus_Vert_Hori(){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Seuraa_Pelaajaa(PK2Sprite &pelaaja){
 	if (energia > 0 && pelaaja.energia > 0)
 	{
@@ -1564,7 +1455,6 @@ int PK2Sprite::AI_Seuraa_Pelaajaa(PK2Sprite &pelaaja){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Pakenee_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 	if (energia > 0 && pelaaja.energia > 0)
 	{
@@ -1589,7 +1479,6 @@ int PK2Sprite::AI_Pakenee_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 	if (energia > 0  && pelaaja.energia > 0)
 	{
@@ -1621,7 +1510,6 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Jahtaa_Pelaajaa(PK2Sprite &pelaaja){
 	if (energia > 0 && pelaaja.energia > 0)
 	{
@@ -1666,7 +1554,6 @@ int PK2Sprite::AI_Jahtaa_Pelaajaa(PK2Sprite &pelaaja){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Seuraa_Pelaajaa_Vert_Hori(PK2Sprite &pelaaja){
 	if (energia > 0 && pelaaja.energia > 0)
 	{
@@ -1705,7 +1592,6 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Vert_Hori(PK2Sprite &pelaaja){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(PK2Sprite &pelaaja){
 	if (energia > 0  && pelaaja.energia > 0)
 	{
@@ -1743,7 +1629,6 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(PK2Sprite &pelaaja){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Muutos_Jos_Energiaa_Alle_2(PK2Sprite_Prototyyppi &muutos){
 	if (energia < 2 && muutos.indeksi != tyyppi->indeksi)
 	{
@@ -1756,7 +1641,6 @@ int PK2Sprite::AI_Muutos_Jos_Energiaa_Alle_2(PK2Sprite_Prototyyppi &muutos){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Muutos_Jos_Energiaa_Yli_1(PK2Sprite_Prototyyppi &muutos){
 	if (energia > 1 && muutos.indeksi != tyyppi->indeksi)
 	{
@@ -1769,7 +1653,6 @@ int PK2Sprite::AI_Muutos_Jos_Energiaa_Yli_1(PK2Sprite_Prototyyppi &muutos){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Muutos_Ajastin(PK2Sprite_Prototyyppi &muutos){
 	if (energia > 0 && muutos.indeksi != tyyppi->indeksi)
 	{
@@ -1793,7 +1676,6 @@ int PK2Sprite::AI_Muutos_Ajastin(PK2Sprite_Prototyyppi &muutos){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Muutos_Jos_Osuttu(PK2Sprite_Prototyyppi &muutos){
 	if (energia > 0 && muutos.indeksi != tyyppi->indeksi)
 	{
@@ -1815,7 +1697,6 @@ int PK2Sprite::AI_Muutos_Jos_Osuttu(PK2Sprite_Prototyyppi &muutos){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Tuhoutuu_Jos_Emo_Tuhoutuu(PK2Sprite *spritet){
 	if (emosprite > -1)
 	{
@@ -1830,7 +1711,6 @@ int PK2Sprite::AI_Tuhoutuu_Jos_Emo_Tuhoutuu(PK2Sprite *spritet){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Hyokkays_1_Jos_Osuttu(){
 	if (saatu_vahinko > 0 && energia > 0)
 	{
@@ -1841,7 +1721,6 @@ int PK2Sprite::AI_Hyokkays_1_Jos_Osuttu(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Hyokkays_2_Jos_Osuttu(){
 	if (saatu_vahinko > 0 && energia > 0)
 	{
@@ -1852,7 +1731,6 @@ int PK2Sprite::AI_Hyokkays_2_Jos_Osuttu(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Hyokkays_1_Nonstop(){
 	if (this->lataus == 0 && energia > 0)
 	{
@@ -1862,7 +1740,6 @@ int PK2Sprite::AI_Hyokkays_1_Nonstop(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Hyokkays_2_Nonstop(){
 	if (this->lataus == 0 && energia > 0)
 	{
@@ -1872,7 +1749,6 @@ int PK2Sprite::AI_Hyokkays_2_Nonstop(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Hyokkays_1_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja){
 	if (energia > 0 && isku == 0 && pelaaja.energia > 0)
 	{
@@ -1888,7 +1764,6 @@ int PK2Sprite::AI_Hyokkays_1_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Hyokkays_2_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja){
 	if (energia > 0 && isku == 0 && pelaaja.energia > 0)
 	{
@@ -1904,7 +1779,6 @@ int PK2Sprite::AI_Hyokkays_2_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(PK2Sprite &pelaaja){
 	if (energia > 0 && isku == 0 && pelaaja.energia > 0)
 	{
@@ -1917,7 +1791,6 @@ int PK2Sprite::AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(PK2Sprite &pelaaja){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_Hyppy_Jos_Pelaaja_Ylapuolella(PK2Sprite &pelaaja){
 	if (energia > 0 && hyppy_ajastin == 0 && pelaaja.energia > 0)
 	{
@@ -1930,7 +1803,6 @@ int PK2Sprite::AI_Hyppy_Jos_Pelaaja_Ylapuolella(PK2Sprite &pelaaja){
 	}
 	return 0;
 }
-
 int PK2Sprite::AI_NonStop(){
 	if (energia > 0)
 	{
@@ -1951,7 +1823,6 @@ int PK2Sprite::AI_NonStop(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Kitka_Vaikuttaa(){
 
 	if (energia > 0)
@@ -1964,7 +1835,6 @@ int PK2Sprite::AI_Kitka_Vaikuttaa(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Piiloutuu(){
 
 	if (energia > 0 && piilossa)
@@ -1975,7 +1845,6 @@ int PK2Sprite::AI_Piiloutuu(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Palaa_Alkuun_X(){
 
 	if (energia < 1 || pelaaja_x !=  -1)
@@ -1991,7 +1860,6 @@ int PK2Sprite::AI_Palaa_Alkuun_X(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Palaa_Alkuun_Y(){
 
 	if (energia > 0 && pelaaja_x == -1)
@@ -2007,7 +1875,6 @@ int PK2Sprite::AI_Palaa_Alkuun_Y(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Tippuu_Tarinasta(int tarina){
 
 	if (energia > 0 && tarina > 0)
@@ -2017,7 +1884,6 @@ int PK2Sprite::AI_Tippuu_Tarinasta(int tarina){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Vahingoittuu_Vedesta(){
 	if (energia > 0)
 		if (this->vedessa)
@@ -2025,14 +1891,12 @@ int PK2Sprite::AI_Vahingoittuu_Vedesta(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Tapa_Kaikki(){
 	if (energia > 0)
 		this->vihollinen = !this->vihollinen;
 
 	return 0;
 }
-
 int PK2Sprite::AI_Hyppija(){
 	if (x < 10)
 	{
@@ -2060,14 +1924,12 @@ int PK2Sprite::AI_Hyppija(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Liikkuu_X(double liike){
 	if (energia > 0)
 		this->x = this->alku_x + liike;
 
 	return 0;
 }
-
 int PK2Sprite::AI_Liikkuu_Y(double liike){
 	if (energia > 0)
 	{
@@ -2076,7 +1938,6 @@ int PK2Sprite::AI_Liikkuu_Y(double liike){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Tippuu_Jos_Kytkin_Painettu(int kytkin){
 	if (kytkin > 0)
 	{
@@ -2085,7 +1946,6 @@ int PK2Sprite::AI_Tippuu_Jos_Kytkin_Painettu(int kytkin){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Liikkuu_Jos_Kytkin_Painettu(int kytkin, int ak, int bk){
 	if (kytkin > 0)
 	{
@@ -2102,7 +1962,6 @@ int PK2Sprite::AI_Liikkuu_Jos_Kytkin_Painettu(int kytkin, int ak, int bk){
 
 	return 0;
 }
-
 bool PK2Sprite::AI_Info(PK2Sprite &pelaaja){
 	if ((pelaaja.x - x < 10 && pelaaja.x - x > -10) &&
 		(pelaaja.y - y < tyyppi->korkeus && pelaaja.y - y > -tyyppi->korkeus))
@@ -2112,7 +1971,6 @@ bool PK2Sprite::AI_Info(PK2Sprite &pelaaja){
 
 	return false;
 }
-
 int PK2Sprite::AI_Kana(){
 	if (x < 10)
 	{
@@ -2179,7 +2037,6 @@ int PK2Sprite::AI_Kana(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Bonus(){
 	if (x < 10)
 	{
@@ -2193,7 +2050,6 @@ int PK2Sprite::AI_Bonus(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Muna(){
 	if (x < 10)
 	{
@@ -2218,7 +2074,6 @@ int PK2Sprite::AI_Muna(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Ammus(){
 	if (x < 10)
 	{
@@ -2250,7 +2105,6 @@ int PK2Sprite::AI_Ammus(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Pommi(){
 	if (this->lataus == 0)
 		lataus = this->tyyppi->latausaika;
@@ -2263,7 +2117,6 @@ int PK2Sprite::AI_Pommi(){
 
 	return 0;
 }
-
 int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &sprite){
 	int siirto = 0;
 
@@ -2341,53 +2194,7 @@ int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &
 	return siirto;
 }
 
-/*
-int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &pelaaja)
-{
-
-	int siirto = 0;
-
-	if (energia > 0 && lataus == 0 && hyokkays1 == 0)
-	{
-		UCHAR todnak = 100; // todennakaisyys tulla valituksi kohdeteleportiksi
-
-		if (pelaaja.x <= x + tyyppi->leveys /2 && pelaaja.x >= x - tyyppi->leveys /2 &&
-			pelaaja.y <= y + tyyppi->korkeus/2 && pelaaja.y >= y - tyyppi->korkeus/2 )
-		{
-			for (int i=0;i<max;i++)
-			{
-				if (spritet[i].tyyppi != NULL)
-				{
-					if (spritet[i].tyyppi->tyyppi == TYYPPI_TELEPORTTI)
-					{
-						if (tyyppi->indeksi == spritet[i].tyyppi->indeksi && oma_i != i)
-						{
-							if (rand()%100 < todnak)
-							{
-								pelaaja.x = spritet[i].x;
-								pelaaja.y = spritet[i].y;
-								//lataus    = tyyppi->latausaika;
-								hyokkays1 = tyyppi->hyokkays1_aika;
-								//spritet[i].lataus    = spritet[i].tyyppi->latausaika;
-								spritet[i].hyokkays1 = spritet[i].tyyppi->hyokkays1_aika;
-								lataus = 0;
-								spritet[i].lataus = 0;
-								siirto = 1;
-							}
-
-							todnak /= 2;
-						}
-					}
-				}
-			}
-		}
-	}
-	return siirto;
-}
-*/
-
-int PK2Sprite::Animaatio_Perus()
-{
+int PK2Sprite::Animaatio_Perus(){
 
 	int uusi_animaatio = -1;
 	bool alusta = false;
@@ -2455,9 +2262,7 @@ int PK2Sprite::Animaatio_Perus()
 
 	return 0;
 }
-
-int PK2Sprite::Animaatio_Kana()
-{
+int PK2Sprite::Animaatio_Kana(){
 
 	int uusi_animaatio = -1;
 	bool alusta = false;
@@ -2525,29 +2330,22 @@ int PK2Sprite::Animaatio_Kana()
 
 	return 0;
 }
-
-int PK2Sprite::Animaatio_Bonus()
-{
+int PK2Sprite::Animaatio_Bonus(){
 	Animaatio(ANIMAATIO_PAIKALLA, true);
 	return 0;
 }
-
-int PK2Sprite::Animaatio_Ammus()
-{
+int PK2Sprite::Animaatio_Ammus(){
 	Animaatio(ANIMAATIO_PAIKALLA, true);
 	return 0;
 }
-
-int PK2Sprite::Animaatio_Muna()
-{
+int PK2Sprite::Animaatio_Muna(){
 	int uusi_animaatio = 0;
 	bool alusta = false;
 
 	uusi_animaatio = ANIMAATIO_PAIKALLA;
 	alusta = true;
 
-	if (energia < tyyppi->energia)
-	{
+	if (energia < tyyppi->energia){
 		uusi_animaatio = ANIMAATIO_KUOLEMA;
 		alusta = true;
 	}
@@ -2556,5 +2354,3 @@ int PK2Sprite::Animaatio_Muna()
 
 	return 0;
 }
-
-

@@ -39,23 +39,23 @@ using namespace std;
 //Constants
 //##################################################
 
-const UCHAR MENU_EI				= 100;
-const UCHAR	MENU_KARTTA			= 0;
-const UCHAR	MENU_PALIKAT		= 1;
-const UCHAR	MENU_INFO			= 2;
-const UCHAR	MENU_SPRITET		= 3;
-const UCHAR	MENU_TIEDOSTOT		= 4;
-const UCHAR	MENU_SAVE			= 5;
-const UCHAR	MENU_HELP			= 6;
-const UCHAR	MENU_EXIT			= 7;
-const UCHAR	MENU_TOOLS			= 8;
-const UCHAR	MENU_LOKI			= 9;
+const BYTE MENU_EI				= 100;
+const BYTE	MENU_KARTTA			= 0;
+const BYTE	MENU_PALIKAT		= 1;
+const BYTE	MENU_INFO			= 2;
+const BYTE	MENU_SPRITET		= 3;
+const BYTE	MENU_TIEDOSTOT		= 4;
+const BYTE	MENU_SAVE			= 5;
+const BYTE	MENU_HELP			= 6;
+const BYTE	MENU_EXIT			= 7;
+const BYTE	MENU_TOOLS			= 8;
+const BYTE	MENU_LOKI			= 9;
 
-const UCHAR N_OF_MENUS			= 10;
+const BYTE N_OF_MENUS			= 10;
 
-const UCHAR EDIT_MAP			= 0;
-const UCHAR EDIT_MENU			= 1;
-const UCHAR EDIT_SPRITE			= 2;
+const BYTE EDIT_MAP			= 0;
+const BYTE EDIT_MENU			= 1;
+const BYTE EDIT_SPRITE			= 2;
 
 const int MAX_DIR_FILES			= 1000;
 
@@ -77,8 +77,8 @@ const int KENTTA_TEKIJA			= 3;
 const int KENTTA_MUSIIKKI		= 4;
 
 const int MAX_LOG_LABEL			= 55;
-const UCHAR LOG_INFO			= 1;
-const UCHAR LOG_VIRHE			= 2;
+const BYTE LOG_INFO			= 1;
+const BYTE LOG_VIRHE			= 2;
 
 
 //##################################################
@@ -107,21 +107,21 @@ struct MENU
 struct LEFILE
 {
 	char		name[_MAX_PATH];
-	UCHAR		type;
+	BYTE		type;
 };
 
 struct LEIKEPOYTA
 {
-	UCHAR	taustat[PK2KARTTA_KARTTA_KOKO];
-	UCHAR	seinat[PK2KARTTA_KARTTA_KOKO];
-	UCHAR	spritet[PK2KARTTA_KARTTA_KOKO];
+	BYTE	taustat[PK2KARTTA_KARTTA_KOKO];
+	BYTE	seinat[PK2KARTTA_KARTTA_KOKO];
+	BYTE	spritet[PK2KARTTA_KARTTA_KOKO];
 	RECT	alue;
 };
 
 struct LOKIMERKINTA
 {
 	char	teksti[200];
-	UCHAR	type;
+	BYTE	type;
 };
 
 struct ASETUKSET
@@ -155,8 +155,8 @@ double cos_table[360];
 double sin_table[360];
 int degree = 0;
 
-UCHAR edit_screen = EDIT_MAP;
-UCHAR active_menu = MENU_EI;
+BYTE edit_screen = EDIT_MAP;
+BYTE active_menu = MENU_EI;
 
 bool moving_window = false;
 int  virt_x;
@@ -249,7 +249,7 @@ LOKIMERKINTA loki[MAX_LOG_LABEL];
 
 bool kirjoita_loki = false;
 
-UCHAR karttavarit[150];
+BYTE karttavarit[150];
 
 //ASETUKSET
 ASETUKSET asetukset;
@@ -261,7 +261,7 @@ bool piirto_aloitettu = false;
 //Prototypes
 //##################################################
 
-int Level_Editor_Draw_Nelio(int vasen, int yla, int oikea, int ala, UCHAR color);
+int Level_Editor_Draw_Nelio(int vasen, int yla, int oikea, int ala, BYTE color);
 int Level_Editor_Map_Update();
 void Level_Editor_Laske_TileVarit();
 void Level_Editor_Aseta_Palikat(char *filename);
@@ -852,9 +852,9 @@ void Level_Editor_Map_Undo(){
 
 //Draw mini map
 int Level_Editor_Map_Update(){
-	UCHAR *buffer = NULL;
+	BYTE *buffer = NULL;
 	DWORD tod_leveys;
-	UCHAR vari_taka, vari_etu, vari, vari_sprite;
+	BYTE vari_taka, vari_etu, vari, vari_sprite;
 
 	PisteDraw_Piirto_Aloita(kuva_kartta, *&buffer, (DWORD &)tod_leveys);
 
@@ -1092,14 +1092,14 @@ int Level_Editor_Kartta_Lataa(char *filename){
 
 void Level_Editor_Laske_TileVarit(){
 
-	UCHAR *buffer = NULL;
+	BYTE *buffer = NULL;
 	DWORD leveys;
 	int i;
 	DWORD x,y;
 	DWORD paavari;
 	DWORD keskiarvoVari;
 	int lapinakyvia;
-	UCHAR vari;
+	BYTE vari;
 	DWORD lkm;
 	DWORD paavarit[9];
 
@@ -1159,8 +1159,8 @@ void Level_Editor_Laske_TileVarit(){
 			keskiarvoVari = 31;
 
 
-		karttavarit[tile] = (UCHAR)(keskiarvoVari + paavari*32);
-		//karttavarit[tile] = UCHAR(paavari*32);*/
+		karttavarit[tile] = (BYTE)(keskiarvoVari + paavari*32);
+		//karttavarit[tile] = BYTE(paavari*32);*/
 	}
 
 
@@ -1473,7 +1473,7 @@ int Level_Editor_Draw_Nuolet2(int x, int y, int menuId){
 }
 
 //Square
-int Level_Editor_Draw_Nelio(int vasen, int yla, int oikea, int ala, UCHAR color){
+int Level_Editor_Draw_Nelio(int vasen, int yla, int oikea, int ala, BYTE color){
 	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,vasen,yla,oikea,yla+1,color);
 	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,vasen,ala-1,oikea,ala,color);
 	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,vasen,yla,vasen+1,ala,color);
@@ -1483,11 +1483,11 @@ int Level_Editor_Draw_Nelio(int vasen, int yla, int oikea, int ala, UCHAR color)
 }
 
 //Line
-void Level_Editor_Viiva_Hori(int x, int y, int pituus, UCHAR vari){
+void Level_Editor_Viiva_Hori(int x, int y, int pituus, BYTE vari){
 	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,x,y,x+pituus,y+1,vari);
 }
 
-void Level_Editor_Viiva_Vert(int x, int y, int pituus, UCHAR vari){
+void Level_Editor_Viiva_Vert(int x, int y, int pituus, BYTE vari){
 	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,x,y,x+1,y+pituus,vari);
 }
 
@@ -1497,9 +1497,9 @@ bool Level_Editor_Nappi(char *otsikko, int vasen, int yla, int menuId){
 
 	int vali = PisteDraw_Font_Kirjoita(fontti1,otsikko,PD_TAUSTABUFFER,vasen+2,yla+2);
 
-	//UCHAR *buffer = NULL;
+	//BYTE *buffer = NULL;
 	//DWORD tod_leveys;
-	UCHAR color = 18;
+	BYTE color = 18;
 
 	int oikea = vasen+vali+2,
 		ala   = yla+12;
@@ -1560,7 +1560,7 @@ bool Level_Editor_Link(char *otsikko, int vasen, int yla, int menuId){
 		paalla = true;
 
 	if (paalla){
-		UCHAR *buffer = NULL;
+		BYTE *buffer = NULL;
 		DWORD tod_leveys;
 
 		PisteDraw_Piirto_Aloita(PD_TAUSTABUFFER, *&buffer, (DWORD &)tod_leveys);
@@ -1585,7 +1585,7 @@ bool Level_Editor_Link(char *otsikko, int vasen, int yla, int menuId){
 bool Level_Editor_Input(char *teksti, int vasen, int yla, int lkm, int id, int menuId){
 	bool editoi = false;
 
-	UCHAR color = 10;
+	BYTE color = 10;
 
 	char merkki;
 
@@ -2437,7 +2437,7 @@ int Level_Editor_Menu_Quit(int i){
 	return 0;
 }
 
-int Level_Editor_Draw_Menu(int index, bool tayta, UCHAR vari){
+int Level_Editor_Draw_Menu(int index, bool tayta, BYTE vari){
 	int leveys = menut[index].leveys;
 	int korkeus = menut[index].korkeus;
 

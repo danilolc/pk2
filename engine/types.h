@@ -1,9 +1,10 @@
 //Deletar este arquivo
+#include <stdint.h>
+typedef uint8_t  BYTE;
+typedef uint16_t WORD;
+typedef uint32_t DWORD;
 
-typedef unsigned int   UINT;
-typedef unsigned short USHORT;//
-typedef unsigned short WORD;  
-typedef unsigned long  DWORD;
-typedef unsigned char  UCHAR; //
-typedef unsigned char  BYTE;
-typedef unsigned char  CHAR;  //
+//typedef uint32_t UINT;  //
+//typedef uint16_t USHORT;//
+//typedef uint8_t  UCHAR; //
+//typedef uint8_t  CHAR;  //

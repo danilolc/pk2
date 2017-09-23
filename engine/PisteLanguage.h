@@ -10,8 +10,7 @@ const int MAX_TEXTS = 200;
 const int MAX_TEXT_LENGTH = 80;
 const int MAX_HEAD_LENGTH = 50;
 
-class PisteLanguage
-{
+class PisteLanguage{
 	public:
 		PisteLanguage();
 		PisteLanguage(char *filename);
@@ -24,7 +23,7 @@ class PisteLanguage
 	private:
 		char tekstit[MAX_TEXTS][MAX_TEXT_LENGTH+1];
 		char otsikot[MAX_TEXTS][MAX_HEAD_LENGTH+1];
-		int  read; 
+		int  read;
 };
 
 #endif

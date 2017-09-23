@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sys/stat.h>
 #include <algorithm>
+#include <ctime>
 
 #include <SDL2/SDL_image.h>
 
@@ -18,9 +19,10 @@ const int MAX_FONTS = 20;
 
 SDL_Window* 	PD_Window = NULL;
 SDL_Renderer* PD_Renderer = NULL;
-SDL_Texture*	PD_Texture = NULL;
 
-SDL_Surface*	frameBuffer = NULL;
+SDL_Surface*	frameBuffer8 = NULL;
+
+SDL_Palette* 	PD_Palette = NULL;
 
 SDL_Surface*	imageList[MAX_IMAGES];
 PisteFont2*		fontList[MAX_FONTS];
@@ -30,7 +32,7 @@ int				PD_screen_height;
 bool			PD2_loaded = false;
 
 int				PD_fade_speed = 0;
-UCHAR 		PD_alpha = 0;
+BYTE 		PD_alpha = 0;
 
 int findfreeimage(){
 	int i;
@@ -86,11 +88,11 @@ int PisteDraw2_Image_Load(const char* filename, bool getPalette){
 	if(getPalette){
 		pal = imageList[index]->format->palette;
 		for(i=0;i<256;i++)
-			frameBuffer->format->palette->colors[i] = pal->colors[i];
+			frameBuffer8->format->palette->colors[i] = pal->colors[i];
 	}
 
-	imageList[index]->userdata = (void*)imageList[index]->format->palette;
-	imageList[index]->format->palette = frameBuffer->format->palette;
+	imageList[index]->userdata = (void*)imageList[index]->format->palette; //Put allicated pallete in userdata
+	imageList[index]->format->palette = frameBuffer8->format->palette;
 
 	return 0;
 }
@@ -115,7 +117,7 @@ int PisteDraw2_Image_Cut(int ImgIndex, PD_RECT area){
 	SDL_FillRect(imageList[index], NULL, 255);
 
 	imageList[index]->userdata = (void*)imageList[index]->format->palette;
-	imageList[index]->format->palette = frameBuffer->format->palette;
+	imageList[index]->format->palette = frameBuffer8->format->palette;
 
 	SDL_BlitScaled(imageList[ImgIndex], (SDL_Rect*)&area, imageList[index], NULL);
 
@@ -127,7 +129,7 @@ int PisteDraw2_Image_Clip(int index, int x, int y){
 	dstrect.x = x;
 	dstrect.y = y;
 
-	SDL_BlitSurface(imageList[index], NULL, frameBuffer, &dstrect);
+	SDL_BlitSurface(imageList[index], NULL, frameBuffer8, &dstrect);
 
 	return 0;
 }
@@ -142,12 +144,12 @@ int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int alpha){
 	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha);
 }
 int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
-	SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer, (SDL_Rect*)&dstrect);
+	SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha){
-	UCHAR *imagePix = NULL;
-	UCHAR *screenPix = NULL;
-	UCHAR color1, color2;
+	BYTE *imagePix = NULL;
+	BYTE *screenPix = NULL;
+	BYTE color1, color2;
 	int imagePitch, screenPitch;
 	int posx, posy;
 
@@ -162,7 +164,7 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 	if (y_end > PD_screen_height) y_end = PD_screen_height;
 	if (x_start > x_end || y_start > y_end) return -1;
 
-	imagePix = (UCHAR*)imageList[index]->pixels;
+	imagePix = (BYTE*)imageList[index]->pixels;
 	imagePitch = imageList[index]->pitch;
 
 	PisteDraw2_DrawScreen_Start(screenPix, screenPitch);
@@ -184,7 +186,7 @@ void PisteDraw2_Image_GetSize(int index, int& w, int& h){
 }
 int PisteDraw2_Image_FlipHori(int index){
 	int i, h, w, p;
-	UCHAR* pix_array;
+	BYTE* pix_array;
 
 	h = imageList[index]->h;
 	w = imageList[index]->w;
@@ -192,7 +194,7 @@ int PisteDraw2_Image_FlipHori(int index){
 
 	SDL_LockSurface(imageList[index]);
 
-	pix_array  = (UCHAR*)(imageList[index]->pixels);
+	pix_array  = (BYTE*)(imageList[index]->pixels);
 
 	for(i=0; i<h*p; i+=p)
 		std::reverse(&pix_array[i],&pix_array[i + w]);
@@ -202,7 +204,7 @@ int PisteDraw2_Image_FlipHori(int index){
 }
 int PisteDraw2_Image_Delete(int& index){
 	if (imageList[index] == NULL) return -1;
-	imageList[index]->format->palette = (SDL_Palette*)imageList[index]->userdata;
+	imageList[index]->format->palette = (SDL_Palette*)imageList[index]->userdata; //Return to the original pallete
 	SDL_FreeSurface(imageList[index]);
 	imageList[index] = NULL;
 	index = -1;
@@ -246,24 +248,24 @@ int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, i
 	return fontList[font_index]->Write_TextTrasparent(x, y, text, alpha);
 }
 
-int PisteDraw2_DrawScreen_Start(UCHAR* &pixels, int &pitch){
-	pixels = (UCHAR*)frameBuffer->pixels;
-	pitch = frameBuffer->pitch;
-	return SDL_LockSurface(frameBuffer);
+int PisteDraw2_DrawScreen_Start(BYTE* &pixels, int &pitch){
+	pixels = (BYTE*)frameBuffer8->pixels;
+	pitch = frameBuffer8->pitch;
+	return SDL_LockSurface(frameBuffer8);
 }
 int PisteDraw2_DrawScreen_End(){
-	SDL_UnlockSurface(frameBuffer);
+	SDL_UnlockSurface(frameBuffer8);
 	return 0;
 }
-int PisteDraw2_DrawImage_Start(int index, UCHAR* &pixels, int &pitch){
-	pixels = (UCHAR*)imageList[index]->pixels;
+int PisteDraw2_DrawImage_Start(int index, BYTE* &pixels, int &pitch){
+	pixels = (BYTE*)imageList[index]->pixels;
 	pitch = imageList[index]->pitch;
 	return SDL_LockSurface(imageList[index]);
 }
 int PisteDraw2_DrawImage_End(int index){
 	SDL_UnlockSurface(imageList[index]);
 }
-UCHAR PisteDraw2_BlendColors(UCHAR color, UCHAR colBack, int alpha){
+BYTE PisteDraw2_BlendColors(BYTE color, BYTE colBack, int alpha){
 	int result;
 
 	if(alpha>100) alpha = 100;
@@ -276,7 +278,7 @@ UCHAR PisteDraw2_BlendColors(UCHAR color, UCHAR colBack, int alpha){
 
 	/*
 	//For text
-	UCHAR color1,color2,color3;
+	BYTE color1,color2,color3;
 	color1 = color;
 	color2 = colBack;
 	color3 = (color2>>5)<<5;
@@ -293,11 +295,11 @@ int PisteDraw2_Start(int width, int height, const char* name){
 
 	PD_Window = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
 	PD_Renderer = SDL_CreateRenderer(PD_Window, -1, SDL_RENDERER_ACCELERATED);//| SDL_RENDERER_PRESENTVSYNC);
-	PD_Texture = SDL_CreateTexture(PD_Renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, width, height);
 
-	frameBuffer = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+	frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
 
 	SDL_ShowCursor(false);
+	SDL_RenderClear(PD_Renderer);
 
 	PD_screen_width = width;
 	PD_screen_height = height;
@@ -321,16 +323,19 @@ int PisteDraw2_Exit(){
       fontList[i] = NULL;
   }
 
-	SDL_FreeSurface(frameBuffer);
-	SDL_DestroyTexture(PD_Texture);
+	SDL_FreeSurface(frameBuffer8);
 	SDL_RenderClear(PD_Renderer);
 	SDL_DestroyWindow(PD_Window);
 
   PD2_loaded = false;
   return 0;
 }
-void PisteDraw2_Update(bool draw){
+void PisteDraw2_Update(bool draw,int pc, int fps){
 	if(!PD2_loaded) return;
+
+	char title[100];
+	sprintf(title,"Draw time %i%%, %iFPS",pc,fps);
+	SDL_SetWindowTitle(PD_Window,title);
 
 	if (PisteDraw2_IsFading()){
 		PD_alpha += PD_fade_speed;
@@ -338,36 +343,35 @@ void PisteDraw2_Update(bool draw){
 		if(PD_alpha > 255) PD_alpha = 255;
 	}
 
+	struct timespec tstart, tend;
+	static double sum = 0;
+	static int count = 0;
+
 	if(draw){
-		void *Texturepix, *Framepix;
-		int Texturepitch, Framepitch;
 
-		SDL_Color* colors;
-		UCHAR pal;
-		int x, y;
+		clock_gettime(CLOCK_MONOTONIC, &tstart);
 
-		Framepitch = frameBuffer->pitch;
-		Framepix = frameBuffer->pixels;
-		colors = frameBuffer->format->palette->colors;
 
-		SDL_LockTexture(PD_Texture, NULL, &Texturepix, &Texturepitch);
-		for(x=0;x<PD_screen_width;x++)
-			for(y=0;y<PD_screen_height;y++){
-				pal = ((UCHAR*)Framepix)[x+Framepitch*y];
-				((UCHAR*)Texturepix)[3*x+Texturepitch*y+0] = colors[pal].r;
-				((UCHAR*)Texturepix)[3*x+Texturepitch*y+1] = colors[pal].g;
-				((UCHAR*)Texturepix)[3*x+Texturepitch*y+2] = colors[pal].b;
-			}
-		SDL_UnlockTexture(PD_Texture);
 
-		if(PD_alpha>0)
-			SDL_SetTextureAlphaMod(PD_Texture, 256 - PD_alpha);
+		SDL_Texture* texture;
+		texture = SDL_CreateTextureFromSurface(PD_Renderer, frameBuffer8);
+		if(PD_alpha>0) SDL_SetTextureAlphaMod(texture, 255 - PD_alpha);
 
-		SDL_RenderClear(PD_Renderer);
-		SDL_RenderCopy(PD_Renderer, PD_Texture, NULL, NULL);
+		SDL_RenderCopy(PD_Renderer, texture, NULL, NULL);
 		SDL_RenderPresent(PD_Renderer);
+
+		SDL_DestroyTexture(texture);
+		SDL_FillRect(frameBuffer8,NULL,0);
+
+
+		clock_gettime(CLOCK_MONOTONIC, &tend);
+		sum+=((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec);
+		count++;
+		printf("Took %.3f ms\n",(sum/count)*1000);
+
+		//TODO
 	}
-	SDL_FillRect(frameBuffer,NULL,0);
+
 }
 
 
@@ -376,7 +380,7 @@ void PisteDraw2_Update(bool draw){
 
 
 //##############################################################################
-
+//PisteDraw 1
 
 
 
@@ -404,17 +408,16 @@ int				PD_font_korkein = 0;
 int				PD_buffereita_varattu = 2;
 char			virhe[60];
 
-//A turma dos lixos
 void PisteDraw_FullScreen(){
 	SDL_SetWindowFullscreen(PD_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 }
-int	PisteDraw_SetColor(UCHAR color, int x, int y, int alpha){
+int	PisteDraw_SetColor(BYTE color, int x, int y, int alpha){
 
-	UCHAR* buffer_screen;
+	BYTE* buffer_screen;
 	int w;
 	double a;
 
-	buffer_screen = (UCHAR*)PD_buffers[PD_TAUSTABUFFER]->pixels;
+	buffer_screen = (BYTE*)PD_buffers[PD_TAUSTABUFFER]->pixels;
 	w = PD_buffers[PD_TAUSTABUFFER]->w;
 
 	buffer_screen = &buffer_screen[4*(x+y*w)];
@@ -425,9 +428,9 @@ int	PisteDraw_SetColor(UCHAR color, int x, int y, int alpha){
 		buffer_screen[2] = PD_palette->colors[color].r;
 	} else{
 		a = (double)alpha / 100;
-		buffer_screen[0] = (UCHAR)((a * PD_palette->colors[color].b) + ((1-a) * buffer_screen[0]));
-		buffer_screen[1] = (UCHAR)((a * PD_palette->colors[color].g) + ((1-a) * buffer_screen[1]));
-		buffer_screen[2] = (UCHAR)((a * PD_palette->colors[color].r) + ((1-a) * buffer_screen[2]));
+		buffer_screen[0] = (BYTE)((a * PD_palette->colors[color].b) + ((1-a) * buffer_screen[0]));
+		buffer_screen[1] = (BYTE)((a * PD_palette->colors[color].g) + ((1-a) * buffer_screen[1]));
+		buffer_screen[2] = (BYTE)((a * PD_palette->colors[color].r) + ((1-a) * buffer_screen[2]));
 	}
 
 	return 0;
@@ -569,7 +572,7 @@ int PisteDraw_Buffer_Varaa(){
 		}
 	return -1;
 }
-int PisteDraw_Buffer_Uusi(int leveys, int korkeus, bool video_muisti, UCHAR color){
+int PisteDraw_Buffer_Uusi(int leveys, int korkeus, bool video_muisti, BYTE color){
 	//PisteDraw_CreateBuffer
 	int index = PisteDraw_Buffer_Varaa();
 	int i;
@@ -677,7 +680,7 @@ int PisteDraw_Font_Uusi(char *polku, char *tiedosto){
 int PisteDraw_Font_Kirjoita(int font_index, char *text, int buffer_index, int x, int y){
 	return PD_fontit[font_index]->Piirra_merkkijono(text, x, y, buffer_index);
 }
-int PisteDraw_Font_Kirjoita_Lapinakyva(int font_index, char *text, int buffer_index, int x, int y, UCHAR alpha){
+int PisteDraw_Font_Kirjoita_Lapinakyva(int font_index, char *text, int buffer_index, int x, int y, BYTE alpha){
 	return PD_fontit[font_index]->Piirra_merkkijono_lapinakyva(text, x, y, buffer_index, alpha);
 }
 int PisteDraw_Lataa_Kuva(int index, char *filename, bool lataa_paletti){
@@ -745,8 +748,8 @@ int PisteDraw_Buffer_Flip_Vert(int index){
 	int i;
 	int height;
 	int weight;
-	UCHAR *col_buffer;
-	UCHAR *pix_array;
+	BYTE *col_buffer;
+	BYTE *pix_array;
 
 	if (PD_buffers[index]->format->BitsPerPixel == 8){
 
@@ -755,8 +758,8 @@ int PisteDraw_Buffer_Flip_Vert(int index){
 		height = PD_buffers[index]->h;
 		weight = PD_buffers[index]->w;
 
-		col_buffer = new UCHAR[height];
-		pix_array  = (UCHAR *)PD_buffers[index]->pixels;
+		col_buffer = new BYTE[height];
+		pix_array  = (BYTE *)PD_buffers[index]->pixels;
 
 		SDL_LockSurface(PD_buffers[index]);
 
@@ -778,7 +781,7 @@ int PisteDraw_Buffer_Flip_Hori(int index){
 	int height;
 	int weight;
 	int pitch;
-	UCHAR* pix_array;
+	BYTE* pix_array;
 
 	if (PD_buffers[index]->format->BitsPerPixel == 8){
 
@@ -786,7 +789,7 @@ int PisteDraw_Buffer_Flip_Hori(int index){
 		weight = PD_buffers[index]->w;
 		pitch  = PD_buffers[index]->pitch;
 
-		pix_array  = (UCHAR*)(PD_buffers[index]->pixels);
+		pix_array  = (BYTE*)(PD_buffers[index]->pixels);
 
 		SDL_LockSurface(PD_buffers[index]);
 
@@ -800,11 +803,11 @@ int PisteDraw_Buffer_Flip_Hori(int index){
 
 	return -1;
 }
-int PisteDraw_Buffer_Tayta(int i, UCHAR color){
+int PisteDraw_Buffer_Tayta(int i, BYTE color){
 	//Preencher Buffer
 	return PisteDraw_Buffer_Tayta(i, 0, 0, PD_buffers[i]->w, PD_buffers[i]->h, color);
 }
-int PisteDraw_Buffer_Tayta(int i, int vasen, int yla, int oikea, int ala, UCHAR color){
+int PisteDraw_Buffer_Tayta(int i, int vasen, int yla, int oikea, int ala, BYTE color){
 	SDL_Rect r = {vasen, yla, oikea-vasen, ala-yla};
 	SDL_Color col;
 	if(PD_buffers[i]->format->BitsPerPixel == 8)
@@ -819,8 +822,8 @@ void PisteDraw_Aseta_Marginaali_Vasen(int vasen){
 void PisteDraw_Aseta_Marginaali_Yla(int yla){
   yla_marginaali = yla;
 }
-int PisteDraw_Piirto_Aloita(int i, UCHAR *&back_buffer, DWORD &lPitch){
-  back_buffer = (UCHAR*)PD_buffers[i]->pixels;
+int PisteDraw_Piirto_Aloita(int i, BYTE *&back_buffer, DWORD &lPitch){
+  back_buffer = (BYTE*)PD_buffers[i]->pixels;
   // should it be (y*pitch) + x*bpp
   //lPitch = PD_buffers[i]->format->BytesPerPixel;
   lPitch = PD_buffers[i]->w; //Danilo
@@ -844,8 +847,8 @@ void PisteDraw_Aseta_Klipperi(int i, int vasen, int yla, int oikea, int ala){
   SDL_Rect r = {vasen, yla, oikea-vasen, ala-yla};
   SDL_SetClipRect(PD_buffers[i], &r);
 }
-int PisteDraw_Paletti_Pyorita(UCHAR eka_vari, UCHAR vika_vari){
-	UCHAR i;
+int PisteDraw_Paletti_Pyorita(BYTE eka_vari, BYTE vika_vari){
+	BYTE i;
 
 	SDL_Color *colors;
 	//colors = PD_paletti_nyt;

@@ -1,3 +1,5 @@
+#Cofigurations for buid with Makefile
+
 CPP = g++
 CFLAGS = -Wno-write-strings -g
 LFLAGS = -lSDL2 -lSDL2_image -lSDL2_mixer

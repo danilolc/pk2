@@ -24,6 +24,7 @@ void PisteUtils_RemoveSpace(char* string){
 	}
 }
 
+//This need to receive just the filename, not the path
 void getext(char* string){
 	int i, b = -1, len;
 	for(i=0; string[i]!='\0'; i++)
@@ -42,7 +43,7 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[128], int lengt
 	char ext[128];
 
 	struct dirent **namelist;
-	
+
 	numb = scandir(dir, &namelist, 0, alphasort);
 
 	for(i=0; i<numb; i++){

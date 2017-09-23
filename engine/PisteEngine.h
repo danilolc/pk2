@@ -6,7 +6,12 @@
 #ifndef P_ENGINE
 #define P_ENGINE
 
-#include "types.h"
+//#include "types.h"
+#include <stdint.h>
+
+typedef uint8_t  BYTE;
+typedef uint16_t WORD;
+typedef uint32_t DWORD;
 
 #include "PisteDraw.h"
 #include "PisteInput.h"
@@ -14,11 +19,11 @@
 #include "PisteUtils.h"
 #include "PisteLanguage.h"
 
-int Piste_Init();
-int Piste_Loop(bool &running,int (*Game)());
-int Piste_Quit();
-
-int Piste_IgnoreFrame();
+void Piste_IgnoreFrame();
 void Piste_SetFPS(int fps);
+
+int Piste_Init();
+int Piste_Loop(bool &running, int (*GameLogic)());
+int Piste_Quit();
 
 #endif

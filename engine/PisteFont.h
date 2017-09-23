@@ -15,10 +15,9 @@ private:
 	int char_w, char_h, char_count;
 	int ImageIndex;
 	int InitCharList();
+	int GetImage(int x,int y,int img_source);
 
 public:
-
-	int GetImage(int x,int y,int img_source);
 	int Write_Text(int posx, int posy, const char *text);
 	int Write_TextTrasparent(int posx, int posy, const char* text, int alpha);
 	int LoadFile(const char* path, const char* file);
@@ -44,23 +43,23 @@ class PisteFont
 		PisteLanguage* param_file;
 
 	public:
-		UCHAR *font_bitmap;
+		BYTE *font_bitmap;
 		int font_buffer;
 
 		int Init_fonts(void);
 		int Init_fonts_tiedosto(void);
 		int Get_bitmap(int buffer_x, int buffer_y, int ruudun_leveys, int buffer_index);
-		int Get_bitmap(int buffer_x, int buffer_y, int ruudun_leveys, UCHAR *buffer);
+		int Get_bitmap(int buffer_x, int buffer_y, int ruudun_leveys, BYTE *buffer);
 
 		int Piirra_merkkijono(char *merkkijono, int font_x, int font_y, int kohde_buffer);
 
 		int Piirra_merkkijono(int font_x, int font_y, int lPitch, char *merkkijono,
-			UCHAR *back_buffer, bool loop);
+			BYTE *back_buffer, bool loop);
 		int Piirra_merkkijono_led(int font_x, int font_y, int lPitch, char *merkkijono,
-			UCHAR *back_buffer);
+			BYTE *back_buffer);
 		int Piirra_merkkijono_lapinakyva(char *merkkijono, int font_x, int font_y, int kohde_buffer, int alpha);
 		int Piirra_merkkijono_varillinen(int font_x, int font_y, int lPitch, char *merkkijono,
-			UCHAR *back_buffer, bool loop, UCHAR color2);
+			BYTE *back_buffer, bool loop, BYTE color2);
 		int Korkeus(void){return font_korkeus;};
 
 		int LataaTiedostosta(char *polku, char *file);

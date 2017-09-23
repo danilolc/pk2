@@ -14,65 +14,63 @@
 int PisteFont2::InitCharList(){
 	int font_index[256], i;
 
-	for (i=0;i<256;i++)
-		charList[i]=-1;
-	for (i=0;i<char_count;i++)
-		font_index[i] = i * char_w;
+	for (i=0;i<256;i++) charList[i]=-1;
+	for (i=0;i<char_count;i++) font_index[i] = i * char_w;
 
-	charList[(UCHAR)'A'] = font_index[0];
-	charList[(UCHAR)'B'] = font_index[1];
-	charList[(UCHAR)'C'] = font_index[2];
-	charList[(UCHAR)'D'] = font_index[3];
-	charList[(UCHAR)'E'] = font_index[4];
-	charList[(UCHAR)'F'] = font_index[5];
-	charList[(UCHAR)'G'] = font_index[6];
-	charList[(UCHAR)'H'] = font_index[7];
-	charList[(UCHAR)'I'] = font_index[8];
-	charList[(UCHAR)'J'] = font_index[9];
-	charList[(UCHAR)'K'] = font_index[10];
-	charList[(UCHAR)'L'] = font_index[11];
-	charList[(UCHAR)'M'] = font_index[12];
-	charList[(UCHAR)'N'] = font_index[13];
-	charList[(UCHAR)'O'] = font_index[14];
-	charList[(UCHAR)'P'] = font_index[15];
-	charList[(UCHAR)'Q'] = font_index[16];
-	charList[(UCHAR)'R'] = font_index[17];
-	charList[(UCHAR)'S'] = font_index[18];
-	charList[(UCHAR)'T'] = font_index[19];
-	charList[(UCHAR)'U'] = font_index[20];
-	charList[(UCHAR)'V'] = font_index[21];
-	charList[(UCHAR)'W'] = font_index[22];
-	charList[(UCHAR)'X'] = font_index[23];
-	charList[(UCHAR)'Y'] = font_index[24];
-	charList[(UCHAR)'Z'] = font_index[25];
-	charList[(UCHAR)toupper('�')] = font_index[26];
-	charList[(UCHAR)toupper('�')] = font_index[27];
-	charList[(UCHAR)toupper('�')] = font_index[28];
-	charList[(UCHAR)'0'] = font_index[29];
-	charList[(UCHAR)'1'] = font_index[30];
-	charList[(UCHAR)'2'] = font_index[31];
-	charList[(UCHAR)'3'] = font_index[32];
-	charList[(UCHAR)'4'] = font_index[33];
-	charList[(UCHAR)'5'] = font_index[34];
-	charList[(UCHAR)'6'] = font_index[35];
-	charList[(UCHAR)'7'] = font_index[36];
-	charList[(UCHAR)'8'] = font_index[37];
-	charList[(UCHAR)'9'] = font_index[38];
-	charList[(UCHAR)'.'] = font_index[39];
-	charList[(UCHAR)'!'] = font_index[40];
-	charList[(UCHAR)'?'] = font_index[41];
-	charList[(UCHAR)':'] = font_index[42];
-	charList[(UCHAR)'-'] = font_index[43];
-	charList[(UCHAR)','] = font_index[44];
-	charList[(UCHAR)'+'] = font_index[45];
-	charList[(UCHAR)'='] = font_index[46];
-	charList[(UCHAR)'('] = font_index[47];
-	charList[(UCHAR)')'] = font_index[48];
-	charList[(UCHAR)'/'] = font_index[49];
-	charList[(UCHAR)'#'] = font_index[50];
-	charList[(UCHAR)'\\']= font_index[51];
-	charList[(UCHAR)'_']= font_index[52];
-	charList[(UCHAR)'%']= font_index[53];
+	charList[(BYTE)'A'] = font_index[0];
+	charList[(BYTE)'B'] = font_index[1];
+	charList[(BYTE)'C'] = font_index[2];
+	charList[(BYTE)'D'] = font_index[3];
+	charList[(BYTE)'E'] = font_index[4];
+	charList[(BYTE)'F'] = font_index[5];
+	charList[(BYTE)'G'] = font_index[6];
+	charList[(BYTE)'H'] = font_index[7];
+	charList[(BYTE)'I'] = font_index[8];
+	charList[(BYTE)'J'] = font_index[9];
+	charList[(BYTE)'K'] = font_index[10];
+	charList[(BYTE)'L'] = font_index[11];
+	charList[(BYTE)'M'] = font_index[12];
+	charList[(BYTE)'N'] = font_index[13];
+	charList[(BYTE)'O'] = font_index[14];
+	charList[(BYTE)'P'] = font_index[15];
+	charList[(BYTE)'Q'] = font_index[16];
+	charList[(BYTE)'R'] = font_index[17];
+	charList[(BYTE)'S'] = font_index[18];
+	charList[(BYTE)'T'] = font_index[19];
+	charList[(BYTE)'U'] = font_index[20];
+	charList[(BYTE)'V'] = font_index[21];
+	charList[(BYTE)'W'] = font_index[22];
+	charList[(BYTE)'X'] = font_index[23];
+	charList[(BYTE)'Y'] = font_index[24];
+	charList[(BYTE)'Z'] = font_index[25];
+	charList[(BYTE)toupper('�')] = font_index[26];
+	charList[(BYTE)toupper('�')] = font_index[27];
+	charList[(BYTE)toupper('�')] = font_index[28];
+	charList[(BYTE)'0'] = font_index[29];
+	charList[(BYTE)'1'] = font_index[30];
+	charList[(BYTE)'2'] = font_index[31];
+	charList[(BYTE)'3'] = font_index[32];
+	charList[(BYTE)'4'] = font_index[33];
+	charList[(BYTE)'5'] = font_index[34];
+	charList[(BYTE)'6'] = font_index[35];
+	charList[(BYTE)'7'] = font_index[36];
+	charList[(BYTE)'8'] = font_index[37];
+	charList[(BYTE)'9'] = font_index[38];
+	charList[(BYTE)'.'] = font_index[39];
+	charList[(BYTE)'!'] = font_index[40];
+	charList[(BYTE)'?'] = font_index[41];
+	charList[(BYTE)':'] = font_index[42];
+	charList[(BYTE)'-'] = font_index[43];
+	charList[(BYTE)','] = font_index[44];
+	charList[(BYTE)'+'] = font_index[45];
+	charList[(BYTE)'='] = font_index[46];
+	charList[(BYTE)'('] = font_index[47];
+	charList[(BYTE)')'] = font_index[48];
+	charList[(BYTE)'/'] = font_index[49];
+	charList[(BYTE)'#'] = font_index[50];
+	charList[(BYTE)'\\']= font_index[51];
+	charList[(BYTE)'_']= font_index[52];
+	charList[(BYTE)'%']= font_index[53];
 
 	return 0;
 }
@@ -94,18 +92,17 @@ int PisteFont2::Write_Text(int posx, int posy, const char *text){
 	srcrect.h = char_h;
 	dstrect.y = posy;
 
-	while (character != '\0'){
+	do{
 		character = text[i];
-		ix = charList[(UCHAR)toupper(character)];
+		ix = charList[(BYTE)toupper(character)];
 		i2 = i * char_w;
-
 		if (ix > -1){
 			srcrect.x = ix;
 			dstrect.x = i2;
 			PisteDraw2_Image_CutClip(ImageIndex,srcrect,dstrect);
 		}
 		i++;
-	}
+	}while(character != '\0');
 
 	return((i-1)*char_w);
 }
@@ -146,7 +143,7 @@ PisteFont::PisteFont(int korkeus, int leveys, int lkm){
 	font_korkeus = korkeus;
 	font_leveys  = leveys;
 	font_lkm	 = lkm;
-	font_bitmap  = new UCHAR[korkeus * leveys * lkm];//(UCHAR *)malloc(korkeus * leveys * lkm);
+	font_bitmap  = new BYTE[korkeus * leveys * lkm];//(BYTE *)malloc(korkeus * leveys * lkm);
 
 	font_buffer	 = PisteDraw_Buffer_Uusi(leveys*lkm,korkeus,true,255);
 
@@ -214,10 +211,10 @@ int PisteFont::LataaTiedostosta(char *polku, char *file){
 		return -1;
 	}
 
-	font_bitmap  = new UCHAR[font_korkeus * font_leveys * font_lkm];//(UCHAR *)malloc(font_korkeus * font_leveys * font_lkm);
+	font_bitmap  = new BYTE[font_korkeus * font_leveys * font_lkm];//(BYTE *)malloc(font_korkeus * font_leveys * font_lkm);
 	font_buffer	 = PisteDraw_Buffer_Uusi(font_leveys * font_lkm,font_korkeus,true,255);
 
-	UCHAR *buffer = NULL;
+	BYTE *buffer = NULL;
 	DWORD ruudun_leveys;
 
 	Get_bitmap(buf_x,buf_y,ruudun_leveys,temp_kuva);
@@ -244,7 +241,7 @@ int PisteFont::Init_fonts_tiedosto(){
 		font_index[i] = i * font_leveys;
 
 	for (i=0;i<font_lkm;i++)
-		font_table[(UCHAR)toupper(kirjaimet[i])] = font_index[i];
+		font_table[(BYTE)toupper(kirjaimet[i])] = font_index[i];
 
 	return(0);
 }
@@ -259,60 +256,60 @@ int PisteFont::Init_fonts(){
 	for (i=0;i<font_lkm;i++)
 		font_index[i] = i * font_leveys;
 
-	font_table[(UCHAR)'A'] = font_index[0];
-	font_table[(UCHAR)'B'] = font_index[1];
-	font_table[(UCHAR)'C'] = font_index[2];
-	font_table[(UCHAR)'D'] = font_index[3];
-	font_table[(UCHAR)'E'] = font_index[4];
-	font_table[(UCHAR)'F'] = font_index[5];
-	font_table[(UCHAR)'G'] = font_index[6];
-	font_table[(UCHAR)'H'] = font_index[7];
-	font_table[(UCHAR)'I'] = font_index[8];
-	font_table[(UCHAR)'J'] = font_index[9];
-	font_table[(UCHAR)'K'] = font_index[10];
-	font_table[(UCHAR)'L'] = font_index[11];
-	font_table[(UCHAR)'M'] = font_index[12];
-	font_table[(UCHAR)'N'] = font_index[13];
-	font_table[(UCHAR)'O'] = font_index[14];
-	font_table[(UCHAR)'P'] = font_index[15];
-	font_table[(UCHAR)'Q'] = font_index[16];
-	font_table[(UCHAR)'R'] = font_index[17];
-	font_table[(UCHAR)'S'] = font_index[18];
-	font_table[(UCHAR)'T'] = font_index[19];
-	font_table[(UCHAR)'U'] = font_index[20];
-	font_table[(UCHAR)'V'] = font_index[21];
-	font_table[(UCHAR)'W'] = font_index[22];
-	font_table[(UCHAR)'X'] = font_index[23];
-	font_table[(UCHAR)'Y'] = font_index[24];
-	font_table[(UCHAR)'Z'] = font_index[25];
-	font_table[(UCHAR)toupper('�')] = font_index[26];
-	font_table[(UCHAR)toupper('�')] = font_index[27];
-	font_table[(UCHAR)toupper('�')] = font_index[28];
-	font_table[(UCHAR)'0'] = font_index[29];
-	font_table[(UCHAR)'1'] = font_index[30];
-	font_table[(UCHAR)'2'] = font_index[31];
-	font_table[(UCHAR)'3'] = font_index[32];
-	font_table[(UCHAR)'4'] = font_index[33];
-	font_table[(UCHAR)'5'] = font_index[34];
-	font_table[(UCHAR)'6'] = font_index[35];
-	font_table[(UCHAR)'7'] = font_index[36];
-	font_table[(UCHAR)'8'] = font_index[37];
-	font_table[(UCHAR)'9'] = font_index[38];
-	font_table[(UCHAR)'.'] = font_index[39];
-	font_table[(UCHAR)'!'] = font_index[40];
-	font_table[(UCHAR)'?'] = font_index[41];
-	font_table[(UCHAR)':'] = font_index[42];
-	font_table[(UCHAR)'-'] = font_index[43];
-	font_table[(UCHAR)','] = font_index[44];
-	font_table[(UCHAR)'+'] = font_index[45];
-	font_table[(UCHAR)'='] = font_index[46];
-	font_table[(UCHAR)'('] = font_index[47];
-	font_table[(UCHAR)')'] = font_index[48];
-	font_table[(UCHAR)'/'] = font_index[49];
-	font_table[(UCHAR)'#'] = font_index[50];
-	font_table[(UCHAR)'\\']= font_index[51];
-	font_table[(UCHAR)'_']= font_index[52];
-	font_table[(UCHAR)'%']= font_index[53];
+	font_table[(BYTE)'A'] = font_index[0];
+	font_table[(BYTE)'B'] = font_index[1];
+	font_table[(BYTE)'C'] = font_index[2];
+	font_table[(BYTE)'D'] = font_index[3];
+	font_table[(BYTE)'E'] = font_index[4];
+	font_table[(BYTE)'F'] = font_index[5];
+	font_table[(BYTE)'G'] = font_index[6];
+	font_table[(BYTE)'H'] = font_index[7];
+	font_table[(BYTE)'I'] = font_index[8];
+	font_table[(BYTE)'J'] = font_index[9];
+	font_table[(BYTE)'K'] = font_index[10];
+	font_table[(BYTE)'L'] = font_index[11];
+	font_table[(BYTE)'M'] = font_index[12];
+	font_table[(BYTE)'N'] = font_index[13];
+	font_table[(BYTE)'O'] = font_index[14];
+	font_table[(BYTE)'P'] = font_index[15];
+	font_table[(BYTE)'Q'] = font_index[16];
+	font_table[(BYTE)'R'] = font_index[17];
+	font_table[(BYTE)'S'] = font_index[18];
+	font_table[(BYTE)'T'] = font_index[19];
+	font_table[(BYTE)'U'] = font_index[20];
+	font_table[(BYTE)'V'] = font_index[21];
+	font_table[(BYTE)'W'] = font_index[22];
+	font_table[(BYTE)'X'] = font_index[23];
+	font_table[(BYTE)'Y'] = font_index[24];
+	font_table[(BYTE)'Z'] = font_index[25];
+	font_table[(BYTE)toupper('�')] = font_index[26];
+	font_table[(BYTE)toupper('�')] = font_index[27];
+	font_table[(BYTE)toupper('�')] = font_index[28];
+	font_table[(BYTE)'0'] = font_index[29];
+	font_table[(BYTE)'1'] = font_index[30];
+	font_table[(BYTE)'2'] = font_index[31];
+	font_table[(BYTE)'3'] = font_index[32];
+	font_table[(BYTE)'4'] = font_index[33];
+	font_table[(BYTE)'5'] = font_index[34];
+	font_table[(BYTE)'6'] = font_index[35];
+	font_table[(BYTE)'7'] = font_index[36];
+	font_table[(BYTE)'8'] = font_index[37];
+	font_table[(BYTE)'9'] = font_index[38];
+	font_table[(BYTE)'.'] = font_index[39];
+	font_table[(BYTE)'!'] = font_index[40];
+	font_table[(BYTE)'?'] = font_index[41];
+	font_table[(BYTE)':'] = font_index[42];
+	font_table[(BYTE)'-'] = font_index[43];
+	font_table[(BYTE)','] = font_index[44];
+	font_table[(BYTE)'+'] = font_index[45];
+	font_table[(BYTE)'='] = font_index[46];
+	font_table[(BYTE)'('] = font_index[47];
+	font_table[(BYTE)')'] = font_index[48];
+	font_table[(BYTE)'/'] = font_index[49];
+	font_table[(BYTE)'#'] = font_index[50];
+	font_table[(BYTE)'\\']= font_index[51];
+	font_table[(BYTE)'_']= font_index[52];
+	font_table[(BYTE)'%']= font_index[53];
 	return(0);
 }
 int PisteFont::Get_bitmap(int buffer_x, int buffer_y, int ruudun_leveys, int buffer_index){
@@ -330,17 +327,17 @@ int PisteFont::Get_bitmap(int buffer_x, int buffer_y, int ruudun_leveys, int buf
 }
 
 int PisteFont::Piirra_merkkijono(int font_x, int font_y, int lPitch, char *merkkijono,
-								 UCHAR *back_buffer, bool loop){
+								 BYTE *back_buffer, bool loop){
 	int i = 0, i2;
 	int x, y, ix, fx, fy, x2;
-	UCHAR color;
+	BYTE color;
 	char merkki = '0';
 	int font_bitmap_leveys = font_lkm * font_leveys;
-	UCHAR *buffer;
+	BYTE *buffer;
 
 	while (merkki != '\0'){
 		merkki = merkkijono[i];
-		ix = font_table[(UCHAR)toupper(merkki)];
+		ix = font_table[(BYTE)toupper(merkki)];
 		i2 = i * font_leveys;
 		if (ix > -1){
 			for (x=0;x<font_leveys;x++){
@@ -367,7 +364,7 @@ int PisteFont::Piirra_merkkijono(char *merkkijono, int font_x, int font_y, int k
 
 	while (merkki != '\0'){
 		merkki = merkkijono[i];
-		ix = font_table[(UCHAR)toupper(merkki)];
+		ix = font_table[(BYTE)toupper(merkki)];
 		i2 = i * font_leveys;
 
 		if (ix > -1)
@@ -378,16 +375,16 @@ int PisteFont::Piirra_merkkijono(char *merkkijono, int font_x, int font_y, int k
 	return((i-1)*font_leveys);
 }
 int PisteFont::Piirra_merkkijono_led(int font_x, int font_y, int lPitch, char *merkkijono,//[],
-									 UCHAR *back_buffer){
+									 BYTE *back_buffer){
 	int i = 0, i2;
 	int x, y, ix, fx, fy, x2;
-	UCHAR color;
+	BYTE color;
 	char merkki = '0';
 	int font_bitmap_leveys = font_lkm * font_leveys;
 
 	while (merkki != '\0'){
 		merkki = merkkijono[i];
-		ix = font_table[(UCHAR)toupper(merkki)];
+		ix = font_table[(BYTE)toupper(merkki)];
 		i2 = i * font_leveys;
 		if (ix > -1){
 			for (x=0;x<font_leveys;x++){
@@ -412,18 +409,18 @@ int PisteFont::Piirra_merkkijono_lapinakyva(char *merkkijono, int font_x, int fo
 
 	int i = 0;
 	int x, y, ix, fx, fy;
-	UCHAR color;
+	BYTE color;
 	char merkki = '0';
 
 	int font_bitmap_leveys = font_lkm * font_leveys;
 
-	UCHAR* buffer;
+	BYTE* buffer;
 	DWORD w;
 	PisteDraw_Piirto_Aloita(PD_TAUSTABUFFER, *&buffer, (DWORD &)w);
 
 	while (merkki != '\0'){
 		merkki = merkkijono[i];
-		ix = font_table[(UCHAR)toupper(merkki)];
+		ix = font_table[(BYTE)toupper(merkki)];
 		if (ix > -1){
 			for (x=0;x<font_leveys;x++){
 				for (y=0;y<font_korkeus;y++){
@@ -444,16 +441,16 @@ int PisteFont::Piirra_merkkijono_lapinakyva(char *merkkijono, int font_x, int fo
 	return((i-1)*font_leveys);
 }
 int PisteFont::Piirra_merkkijono_varillinen(int font_x, int font_y, int lPitch, char *merkkijono,
-							  UCHAR *back_buffer, bool loop, UCHAR color2){
+							  BYTE *back_buffer, bool loop, BYTE color2){
 	int i = 0, i2;
 	int x, y, ix, fx, fy, x2;
-	UCHAR color;
+	BYTE color;
 	char merkki = '0';
 	int font_bitmap_leveys = font_lkm * font_leveys;
 
 	while (merkki != '\0'){
 		merkki = merkkijono[i];
-		ix = font_table[(UCHAR)toupper(merkki)];
+		ix = font_table[(BYTE)toupper(merkki)];
 		i2 = i * font_leveys;
 		if (ix > -1){
 			for (x=0;x<font_leveys;x++){

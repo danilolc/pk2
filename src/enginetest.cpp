@@ -7,15 +7,13 @@ int font;
 
 int Main_Loop(){
   int i;
-  //for (i=0;i<700;i++){
-  //  PisteDraw2_Image_Draw(buffer, x+2*i, y+2*i);
-  //}
   x++;
   int a = (int)x%100;
-  PisteDraw2_Font_Write(font, "o danilo e muito legal", 90, 100);
+  PisteDraw2_Font_Write(font, "pekka kana", 90, 100);
   if(x>400) {PisteDraw2_FadeIn(5); x = 30;}
   if (((int)x/40)%2==1) PisteDraw2_Image_Clip(buffer2, 30, 30);
   else PisteDraw2_Image_Clip(buffer, 30, 30);
+
   PisteDraw2_Image_ClipTransparent(buffer, x, x, a);
 
 
@@ -28,7 +26,7 @@ int Main_Loop(){
   dstrect.x = x+20;
   dstrect.y = x+20;
 
-  PisteDraw2_Image_CutClipTransparent(buffer2,srcrect,dstrect,100-a);
+  //PisteDraw2_Image_CutClipTransparent(buffer2,srcrect,dstrect,100-a);
 
 }
 

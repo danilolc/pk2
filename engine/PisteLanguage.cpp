@@ -12,14 +12,14 @@
 
 #include "PisteLanguage.h"
 
-const int	LUE_SKIP	= 0,
-			LUE_OTSIKKO = 1,
-			LUE_TEKSTI	= 2;
-
-const char	MARKER_1	= '*',
-			MARKER_2	= ':';
-
 using namespace std;
+
+const int	LUE_SKIP    = 0,
+          LUE_OTSIKKO = 1,
+          LUE_TEKSTI  = 2;
+
+const char MARKER_1 = '*',
+           MARKER_2 = ':';
 
 PisteLanguage::PisteLanguage(){
 	read = LUE_SKIP;
@@ -30,12 +30,10 @@ PisteLanguage::PisteLanguage(){
 
 }
 
-PisteLanguage::PisteLanguage(char *tiedosto)
-{
+PisteLanguage::PisteLanguage(char *tiedosto){
 	read = LUE_SKIP;
 
-	for (int i=0;i<MAX_TEXTS;i++)
-	{
+	for (int i=0;i<MAX_TEXTS;i++){
 		strcpy(tekstit[i],"");
 		strcpy(otsikot[i],"");
 	}
@@ -45,22 +43,19 @@ PisteLanguage::PisteLanguage(char *tiedosto)
 
 PisteLanguage::~PisteLanguage(){}
 
-bool PisteLanguage::Read_File(char *filename)
-{
-	
+bool PisteLanguage::Read_File(char *filename){
+
 	ifstream *tiedosto = new ifstream(filename, ios::in);
 
-	if (tiedosto->fail())
-	{
+	if (tiedosto->fail()){
 		delete (tiedosto);
 		return false;
 	}
 
-	for (int i=0;i<MAX_TEXTS;i++)
-	{
+	for (int i=0;i<MAX_TEXTS;i++){
 		strcpy(tekstit[i],"");
 		strcpy(otsikot[i],"");
-	}	
+	}
 
 	char merkki;
 	int taulukko_index = 0;
@@ -69,88 +64,72 @@ bool PisteLanguage::Read_File(char *filename)
 
 	bool jatka = true;
 
-	while(jatka && tiedosto->peek() != EOF)
-	{
-		//tiedosto->read(merkki, sizeof(merkki));
-	
+	while(jatka && tiedosto->peek() != EOF){
 		merkki = tiedosto->get();
 
-		switch (merkki)
-		{
-		case MARKER_1	:	if (read == LUE_SKIP)
-							{
-								read = LUE_OTSIKKO;
-								mjono_index = 0;
-							}
-							else
-							{
-								read = LUE_SKIP;
-								taulukko_index++;
-							}
-							break;
-		
-		case MARKER_2	:	if (read == LUE_OTSIKKO)
-							{
-								read = LUE_TEKSTI;
-								mjono_index = 0;
-								break;
-							}
+		switch (merkki){
+			case MARKER_1:
+				if (read == LUE_SKIP){
+					read = LUE_OTSIKKO;
+					mjono_index = 0;
+				} else{
+					read = LUE_SKIP;
+					taulukko_index++;
+				}
+				break;
 
-							if (read == LUE_TEKSTI)
-							{
-								if (mjono_index < MAX_TEXT_LENGTH)
-								{
-									tekstit[taulukko_index][mjono_index] = merkki;
-									tekstit[taulukko_index][mjono_index+1] = '\0';
-									mjono_index++;
-								}
-							}
-							break;
-		
-		case '\r'		:	
-		case '\n'		:	if (read != LUE_SKIP)
-							{
-								read = LUE_SKIP;
-								taulukko_index++;
-							}
-							break;
+			case MARKER_2:
+				if (read == LUE_OTSIKKO){
+					read = LUE_TEKSTI;
+					mjono_index = 0;
+					break;
+				}
+				if (read == LUE_TEKSTI){
+					if (mjono_index < MAX_TEXT_LENGTH){
+						tekstit[taulukko_index][mjono_index] = merkki;
+						tekstit[taulukko_index][mjono_index+1] = '\0';
+						mjono_index++;
+					}
+				}
+				break;
 
-		case '\t'		:	break;
-		case '\v'		:	break;
-							
-		default			:	if (read != LUE_SKIP && !(mjono_index == 0 && merkki == ' '))
-							{
-								if (read == LUE_OTSIKKO)
-								{
-									if (mjono_index < MAX_HEAD_LENGTH)
-									{
-										//strcat(otsikot[taulukko_index],(char *)merkki);
-										otsikot[taulukko_index][mjono_index] = merkki;
-										otsikot[taulukko_index][mjono_index+1] = '\0';
-										mjono_index++;
-									}
-								}
-								if (read == LUE_TEKSTI)
-								{
-									if (mjono_index < MAX_TEXT_LENGTH)
-									{
-										//strcat(tekstit[taulukko_index],(char *)merkki);
-										tekstit[taulukko_index][mjono_index] = merkki;
-										tekstit[taulukko_index][mjono_index+1] = '\0';
-										mjono_index++;
-									}
-								}
-							}
-							break;
-							
+			case '\r':
+			case '\n':
+				if (read != LUE_SKIP){
+					read = LUE_SKIP;
+					taulukko_index++;
+				}
+				break;
+
+			case '\t': break;
+			case '\v': break;
+
+			default:
+				if (read != LUE_SKIP && !(mjono_index == 0 && merkki == ' ')){
+					if (read == LUE_OTSIKKO){
+						if (mjono_index < MAX_HEAD_LENGTH){
+							otsikot[taulukko_index][mjono_index] = merkki;
+							otsikot[taulukko_index][mjono_index+1] = '\0';
+							mjono_index++;
+						}
+					}
+					if (read == LUE_TEKSTI){
+						if (mjono_index < MAX_TEXT_LENGTH){
+							tekstit[taulukko_index][mjono_index] = merkki;
+							tekstit[taulukko_index][mjono_index+1] = '\0';
+							mjono_index++;
+						}
+					}
+				}
+				break;
 		}
-	
+
 		if (taulukko_index >= MAX_TEXTS)
 			jatka = false;
 	}
 
 	delete tiedosto;
-	
+
 	return true;
 }
 

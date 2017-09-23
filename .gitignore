@@ -6,3 +6,4 @@ build/
 res/data/saves.dat
 res/data/settings.ini
 res/editor/settings.dat
+res/episodes/*/scores.dat
