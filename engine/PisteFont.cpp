@@ -4,6 +4,7 @@
 //#########################
 
 #include "PisteFont.h"
+#include "PisteLanguage.h"
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -77,8 +78,65 @@ int PisteFont2::InitCharList(){
 int PisteFont2::GetImage(int x, int y, int img_source){
 	ImageIndex = PisteDraw2_Image_Cut(img_source, x, y, char_w*char_count, char_h*char_count);
 }
-int PisteFont2::LoadFile(const char* path, const char* file){
-	//TODO
+int PisteFont2::LoadFile(const char* file_path, const char* file){
+	char path[128];
+	int i = 0;
+	int temp_image;
+	int buf_x, buf_y, buf_width;
+	int font_index[256];
+	char chars[256];
+
+	PisteLanguage* param_file = new PisteLanguage();
+
+	strcpy(path,file_path);
+	strcat(path,file);
+
+	if (!param_file->Read_File(path)){
+		delete param_file;
+		return -1;
+	}
+
+	i = param_file->Hae_Indeksi("image width");
+	buf_width = atoi(param_file->Hae_Teksti(i));
+
+	i = param_file->Hae_Indeksi("image x");
+	buf_x = atoi(param_file->Hae_Teksti(i));
+
+	i = param_file->Hae_Indeksi("image y");
+	buf_y = atoi(param_file->Hae_Teksti(i));
+
+	i = param_file->Hae_Indeksi("letters");
+	char_count = strlen(param_file->Hae_Teksti(i));
+
+	i = param_file->Hae_Indeksi("letter width");
+	char_w = atoi(param_file->Hae_Teksti(i));
+
+	i = param_file->Hae_Indeksi("letter height");
+	char_h = atoi(param_file->Hae_Teksti(i));
+
+	i = param_file->Hae_Indeksi("letters");
+	strcpy(chars,param_file->Hae_Teksti(i));
+
+	i = param_file->Hae_Indeksi("image");
+	strcpy(path,file_path);
+	strcat(path,param_file->Hae_Teksti(i));
+
+	delete param_file;
+
+	temp_image = PisteDraw2_Image_Load(path,false);
+	if (temp_image == -1) return -1;
+
+	this->GetImage(buf_x,buf_y,temp_image);
+	PisteDraw2_Image_Delete(temp_image);
+
+	for (i=0;i<256;i++)
+		charList[i]=-1;
+	for (i=0;i<char_count;i++)
+		font_index[i] = i * char_w;
+	for (i=0;i<char_count;i++)
+		charList[(BYTE)toupper(chars[i])] = font_index[i];
+
+	return 0;
 }
 
 int PisteFont2::Write_Text(int posx, int posy, const char *text){
@@ -95,7 +153,7 @@ int PisteFont2::Write_Text(int posx, int posy, const char *text){
 	do{
 		character = text[i];
 		ix = charList[(BYTE)toupper(character)];
-		i2 = i * char_w;
+		i2 = i * char_w + posx;
 		if (ix > -1){
 			srcrect.x = ix;
 			dstrect.x = i2;
@@ -107,7 +165,7 @@ int PisteFont2::Write_Text(int posx, int posy, const char *text){
 	return((i-1)*char_w);
 }
 int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int alpha){
-	//TODO
+	this->Write_Text(posx, posy, text);//TODO
 }
 
 PisteFont2::PisteFont2(int img_source, int x, int y, int width, int height, int count){

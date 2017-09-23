@@ -31,8 +31,8 @@ int Main_Loop(){
 }
 
 int main(){
-  Piste_Init();
-  PisteDraw2_Start(600,480,"Test");
+  Piste_Init(600,480,"Test");
+  Piste_SetFPS(60);
 
   image = PisteDraw2_Image_Load("../res/gfx/pk2stuff.bmp", true);
 

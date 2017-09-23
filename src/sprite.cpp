@@ -30,8 +30,7 @@ PK2Sprite_Prototyyppi::PK2Sprite_Prototyyppi(){
 	strcpy(this->ammus1_sprite,"");
 	strcpy(this->ammus2_sprite,"");
 
-	for (int aani=0;aani<MAX_AANIA;aani++)
-	{
+	for (int aani=0;aani<MAX_AANIA;aani++){
 		strcpy(aanitiedostot[aani], "");
 		aanet[aani] = -1;
 	}
@@ -86,16 +85,14 @@ PK2Sprite_Prototyyppi::PK2Sprite_Prototyyppi(){
 	bonus_aina		= false;
 	osaa_uida		= false;
 
-	for (int i=0;i<SPRITE_MAX_AI;i++)
-	{
+	for (int i=0;i<SPRITE_MAX_AI;i++){
 		AI[i] = AI_EI;
 	}
 
 	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
 		framet[i] = 0;
 
-	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
-	{
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++){
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			animaatiot[i].sekvenssi[j] = 0;
 
@@ -106,7 +103,7 @@ PK2Sprite_Prototyyppi::PK2Sprite_Prototyyppi(){
 PK2Sprite_Prototyyppi::~PK2Sprite_Prototyyppi(){
 	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
 		if (framet[i] > 0)
-			PisteDraw_Buffer_Tuhoa(this->framet[i]);
+			PisteDraw2_Image_Delete(this->framet[i]);
 }
 
 void PK2Sprite_Prototyyppi::Kopioi(const PK2Sprite_Prototyyppi &proto){
@@ -201,8 +198,7 @@ void PK2Sprite_Prototyyppi::Uusi(){
 	strcpy(ammus1_sprite,"");
 	strcpy(ammus2_sprite,"");
 
-	for (int aani=0;aani<MAX_AANIA;aani++)
-	{
+	for (int aani=0;aani<MAX_AANIA;aani++){
 		strcpy(aanitiedostot[aani], "");
 		aanet[aani] = -1;
 	}
@@ -259,28 +255,24 @@ void PK2Sprite_Prototyyppi::Uusi(){
 
 	int i=0;
 
-	for (i=0;i<SPRITE_MAX_AI;i++)
-	{
+	for (i=0;i<SPRITE_MAX_AI;i++){
 		AI[i] = AI_EI;
 	}
 
-	for (i=0;i<SPRITE_MAX_FRAMEJA;i++)
-	{
+	for (i=0;i<SPRITE_MAX_FRAMEJA;i++){
 		if (framet[i] != 0)
-			PisteDraw_Buffer_Tuhoa(this->framet[i]);
+			PisteDraw2_Image_Delete(this->framet[i]);
 
 		if (this->framet_peilikuva[i] != 0)
-			PisteDraw_Buffer_Tuhoa(this->framet_peilikuva[i]);
+			PisteDraw2_Image_Delete(this->framet_peilikuva[i]);
 	}
 
-	for (i=0;i<SPRITE_MAX_FRAMEJA;i++)
-	{
+	for (i=0;i<SPRITE_MAX_FRAMEJA;i++){
 		framet[i] = 0;
 		framet_peilikuva[i] = 0;
 	}
 
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
-	{
+	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++){
 		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
 			animaatiot[i].sekvenssi[j] = 0;
 
@@ -833,24 +825,19 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 	if (strcmp(polku,"")!=0)
 		strcat(polku,tiedoston_nimi);
 	else
-	{
-		//strcpy(polku,"\\");
 		strcpy(polku,tiedoston_nimi);
-	}
 
 	ifstream *tiedosto = new ifstream(polku, ios::binary);
 	char versio[4];
 
-	if (tiedosto->fail())
-	{
+	if (tiedosto->fail()){
 		delete (tiedosto);
 		return 1;
 	}
 
 	tiedosto->read ((char *)versio, 4);
 
-	if (strcmp(versio,"1.0") == 0)
-	{
+	if (strcmp(versio,"1.0") == 0){
 		this->Uusi();
 		PK2Sprite_Prototyyppi10 proto;
 		tiedosto->read ((char *)&proto, sizeof (proto));
@@ -858,8 +845,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 		strcpy(this->versio,versio);
 		strcpy(this->tiedosto,tiedoston_nimi);
 	}
-	if (strcmp(versio,"1.1") == 0)
-	{
+	if (strcmp(versio,"1.1") == 0){
 		this->Uusi();
 		PK2Sprite_Prototyyppi11 proto;
 		tiedosto->read ((char *)&proto, sizeof (proto));
@@ -867,8 +853,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 		strcpy(this->versio,versio);
 		strcpy(this->tiedosto,tiedoston_nimi);
 	}
-	if (strcmp(versio,"1.2") == 0)
-	{
+	if (strcmp(versio,"1.2") == 0){
 		this->Uusi();
 		PK2Sprite_Prototyyppi12 proto;
 		tiedosto->read ((char *)&proto, sizeof (proto));
@@ -876,8 +861,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 		strcpy(this->versio,versio);
 		strcpy(this->tiedosto,tiedoston_nimi);
 	}
-	if (strcmp(versio,"1.3") == 0)
-	{
+	if (strcmp(versio,"1.3") == 0){
 		this->Uusi();
 		PK2Sprite_Prototyyppi13 proto;
 		tiedosto->read ((char *)&proto, sizeof (proto));
@@ -887,8 +871,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 	}
 	//tiedosto->read ((char *)this, sizeof (*this));
 
-	if (tiedosto->fail())
-	{
+	if (tiedosto->fail()){
 		delete (tiedosto);
 		return 1;
 	}
@@ -899,9 +882,9 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 
 	strcat(kuva,kuvatiedosto);
 
-	int bufferi = PisteDraw_Buffer_Varaa();//PisteDraw_Buffer_Uusi(640,480,false,255);
+	int bufferi = PisteDraw2_Image_Load(kuva,false);
 
-	if (PisteDraw_Lataa_Kuva(bufferi,kuva,false) == PD_VIRHE)
+	if (bufferi == -1)
 		return 1;
 
 	//Set diferent colors
@@ -910,10 +893,10 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 	BYTE vari;
 	int x,y,w,h;
 
-	if (this->vari != VARI_NORMAALI){
-		PisteDraw_GetBounds(bufferi,w,h);
+	if (this->vari != VARI_NORMAALI){ //Change sprite colors
+		PisteDraw2_Image_GetSize(bufferi,w,h);
 
-		PisteDraw_Piirto_Aloita(bufferi,*&buffer,leveys);
+		PisteDraw2_DrawImage_Start(bufferi,*&buffer,leveys);
 
 		for (x=0;x<w;x++)
 			for (y=0;y<h;y++)
@@ -923,7 +906,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 					buffer[x+y*leveys] = vari;
 				}
 
-		PisteDraw_Piirto_Lopeta(bufferi);
+		PisteDraw2_DrawImage_End(bufferi);
 	}
 
 	int frame_i = 0,
@@ -932,11 +915,9 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 
 	//Get each frame
 	for (frame_i=0; frame_i<frameja; frame_i++){
-		framet[frame_i] = PisteDraw_Buffer_Uusi(kuva_frame_leveys,kuva_frame_korkeus,bufferi); //palletas
-		framet_peilikuva[frame_i] = PisteDraw_Buffer_Uusi(kuva_frame_leveys,kuva_frame_korkeus,bufferi); //Buffer invertido
 
-		PisteDraw_Buffer_Tayta(framet[frame_i],255);
-		PisteDraw_Buffer_Tayta(framet_peilikuva[frame_i],255);
+		//PisteDraw2_ImageFill(framet[frame_i],255);
+		//PisteDraw2_ImageFill(framet_peilikuva[frame_i],255);
 
 		if (frame_x + kuva_frame_leveys > 640){
 			frame_y += this->kuva_frame_korkeus + 3;
@@ -944,19 +925,24 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 		}
 		//PisteDraw_Buffer_Tayta(bufferi,10);
 
-		PisteDraw_Buffer_Flip_Nopea(bufferi,framet[frame_i],0,0,
-									frame_x,
-									frame_y,
-									frame_x + kuva_frame_leveys,
-									frame_y + kuva_frame_korkeus);
+		//PisteDraw_Buffer_Flip_Nopea(bufferi,framet[frame_i],0,0,
+		//							frame_x,
+		//							frame_y,
+		//							frame_x + kuva_frame_leveys,
+		//							frame_y + kuva_frame_korkeus);
 
-		PisteDraw_Buffer_Flip_Nopea(framet[frame_i],framet_peilikuva[frame_i],0,0);
-		PisteDraw_Buffer_Flip_Hori(framet_peilikuva[frame_i]);
+		//PisteDraw_Buffer_Flip_Nopea(framet[frame_i],framet_peilikuva[frame_i],0,0);
+		framet[frame_i] = PisteDraw2_Image_Cut(bufferi,frame_x,frame_y,kuva_frame_leveys,kuva_frame_korkeus); //frames
+		framet_peilikuva[frame_i] = PisteDraw2_Image_Cut(bufferi,frame_x,frame_y,kuva_frame_leveys,kuva_frame_korkeus); //flipped frames
+		PisteDraw2_Image_FlipHori(framet_peilikuva[frame_i]);
+
+		//printf("%i,%s\n",framet[frame_i],tiedoston_nimi);
+		//printf("%i,%s\n",framet_peilikuva[frame_i],tiedoston_nimi);
 
 		frame_x += this->kuva_frame_leveys + 3;
 	}
 
-	PisteDraw_Buffer_Tuhoa(bufferi);
+	PisteDraw2_Image_Delete(bufferi);
 	return 0;
 }
 void PK2Sprite_Prototyyppi::Tallenna(char *tiedoston_nimi){
@@ -974,7 +960,7 @@ void PK2Sprite_Prototyyppi::Tallenna(char *tiedoston_nimi){
 }
 
 int PK2Sprite_Prototyyppi::Piirra(int x, int y, int frame){
-	PisteDraw_Buffer_Flip_Nopea(framet[frame], PD_TAUSTABUFFER, x, y);
+	PisteDraw2_Image_Clip(framet[frame], x, y);
 	return 0;
 }
 bool PK2Sprite_Prototyyppi::Onko_AI(int ai){
@@ -1154,16 +1140,16 @@ int PK2Sprite::Piirra(int kamera_x, int kamera_y){
 	if (flip_x)
 	{
 		if (!flip_y)
-			PisteDraw_Buffer_Flip_Nopea(tyyppi->framet_peilikuva[frame], PD_TAUSTABUFFER, x-l-1, y-h);
+			PisteDraw2_Image_Clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);
 		else
-			PisteDraw_Buffer_Flip(tyyppi->framet_peilikuva[frame], PD_TAUSTABUFFER, x-l-1, y-h, false, true);
+			PisteDraw2_Image_Clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);//, false, true);//TODO-Fix
 	}
 	else
 	{
 		if (!flip_y)
-			PisteDraw_Buffer_Flip_Nopea(tyyppi->framet[frame], PD_TAUSTABUFFER, x-l-1, y-h);
+			PisteDraw2_Image_Clip(tyyppi->framet[frame], x-l-1, y-h);
 		else
-			PisteDraw_Buffer_Flip(tyyppi->framet[frame], PD_TAUSTABUFFER, x-l-1, y-h, false, true);
+			PisteDraw2_Image_Clip(tyyppi->framet[frame], x-l-1, y-h);//, false, true);
 	}
 
 	return 0;

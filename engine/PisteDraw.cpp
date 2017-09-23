@@ -14,7 +14,7 @@
 
 #include <SDL2/SDL_image.h>
 
-const int MAX_IMAGES = 200;
+const int MAX_IMAGES = 2000;
 const int MAX_FONTS = 20;
 
 SDL_Window* 	PD_Window = NULL;
@@ -32,7 +32,7 @@ int				PD_screen_height;
 bool			PD2_loaded = false;
 
 int				PD_fade_speed = 0;
-BYTE 		PD_alpha = 0;
+int 		PD_alpha = 0;
 
 int findfreeimage(){
 	int i;
@@ -67,17 +67,35 @@ int PisteDraw2_FadeIn(int speed){
 	PD_fade_speed = speed;
 }
 
+int PisteDraw2_Image_New(int w, int h){
+	int index = findfreeimage();
+	if (index == -1) return -1;
+
+	imageList[index] = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
+
+	SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
+	SDL_FillRect(imageList[index], NULL, 255);
+
+	imageList[index]->userdata = (void*)imageList[index]->format->palette;
+	imageList[index]->format->palette = frameBuffer8->format->palette;
+
+	return index;
+}
 int PisteDraw2_Image_Load(const char* filename, bool getPalette){
 	int index, i;
 	SDL_Palette* pal;
 
 	index = findfreeimage();
 	if (index==-1){
-		printf("PisteEngine has run out of free images!");
+		printf("Error - Got index -1");
 		return -1;
 	}
 
 	imageList[index] = SDL_LoadBMP(filename);
+	if(imageList[index]==NULL){
+		printf("Error loading %s\n",filename);
+		return -1;
+	}
 	if(imageList[index]->format->BitsPerPixel != 8){
 		printf("Failed to open %s, just 8bpp indexed images!\n",filename);
 		PisteDraw2_Image_Delete(index);
@@ -91,15 +109,21 @@ int PisteDraw2_Image_Load(const char* filename, bool getPalette){
 			frameBuffer8->format->palette->colors[i] = pal->colors[i];
 	}
 
-	imageList[index]->userdata = (void*)imageList[index]->format->palette; //Put allicated pallete in userdata
+	imageList[index]->userdata = (void*)imageList[index]->format->palette; //Put allocated pallete in userdata
 	imageList[index]->format->palette = frameBuffer8->format->palette;
 
-	return 0;
+	return index;
 }
-int PisteDraw2_Image_Cut(int ImgIndex, int x, int y, int w, int h){
+int PisteDraw2_Image_Copy(int src_i, int dst_i){
+	if(src_i < 0 || dst_i < 0) return -1;
+	SDL_FillRect(imageList[dst_i], NULL, 255);
+	SDL_BlitSurface(imageList[src_i], NULL, imageList[dst_i], NULL);
+}
+int PisteDraw2_Image_Cut(int ImgIndex, int x, int y, int w, int h){ //Create a new image from a existing image
 	PD_RECT area;
 	area.x = x; area.y = y;
-	area.w = w; area.h = h;
+	area.w = (w <= 0) ? imageList[ImgIndex]->w : w; //If 0 get the entire image
+	area.h = (h <= 0) ? imageList[ImgIndex]->h : h;
 	return PisteDraw2_Image_Cut(ImgIndex, area);
 }
 int PisteDraw2_Image_Cut(int ImgIndex, PD_RECT area){
@@ -143,6 +167,12 @@ int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int alpha){
 	dstrect.y = y;
 	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha);
 }
+int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala){ //TODO - fix names
+	PD_RECT src = {srcx, srcy, oikea-srcx, ala-srcy};
+  PD_RECT dst = {dstx, dsty, oikea-srcx, ala-srcy};
+  PisteDraw2_Image_CutClip(index, src, dst);
+  return 0;
+}
 int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
 	SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
 }
@@ -150,7 +180,7 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 	BYTE *imagePix = NULL;
 	BYTE *screenPix = NULL;
 	BYTE color1, color2;
-	int imagePitch, screenPitch;
+	DWORD imagePitch, screenPitch;
 	int posx, posy;
 
 	int x_start = dstrect.x;
@@ -167,7 +197,7 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 	imagePix = (BYTE*)imageList[index]->pixels;
 	imagePitch = imageList[index]->pitch;
 
-	PisteDraw2_DrawScreen_Start(screenPix, screenPitch);
+	PisteDraw2_DrawScreen_Start(*&screenPix, (DWORD &)screenPitch);
 	for (posx = x_start; posx < x_end; posx++)
 		for (posy = y_start; posy < y_end; posy++) {
 			color1 = imagePix[(posx-x_start+srcrect.x)+imagePitch*(posy-y_start+srcrect.y)];
@@ -188,6 +218,8 @@ int PisteDraw2_Image_FlipHori(int index){
 	int i, h, w, p;
 	BYTE* pix_array;
 
+	if(index < 0) return -1;
+
 	h = imageList[index]->h;
 	w = imageList[index]->w;
 	p = imageList[index]->pitch;
@@ -203,6 +235,7 @@ int PisteDraw2_Image_FlipHori(int index){
 	return 0;
 }
 int PisteDraw2_Image_Delete(int& index){
+	if(index < 0) return -1;
 	if (imageList[index] == NULL) return -1;
 	imageList[index]->format->palette = (SDL_Palette*)imageList[index]->userdata; //Return to the original pallete
 	SDL_FreeSurface(imageList[index]);
@@ -212,6 +245,7 @@ int PisteDraw2_Image_Delete(int& index){
 }
 
 int PisteDraw2_Font_Create(int image, int x, int y, int char_w, int char_h, int count){
+	printf("Created font with image %i, x - %i, y - %i, char_w - %i, char_h - %i e count - %i\n",image,x,y,char_w,char_h,count);
   int index;
 
 	index = findfreefont();
@@ -224,6 +258,7 @@ int PisteDraw2_Font_Create(int image, int x, int y, int char_w, int char_h, int 
   return index;
 }
 int PisteDraw2_Font_Create(char* path, char* file){
+	printf("Created font with path %s e file %s\n",path,file);
 	int index;
 
 	index = findfreefont();
@@ -244,11 +279,11 @@ int PisteDraw2_Font_Create(char* path, char* file){
 int PisteDraw2_Font_Write(int font_index, const char* text, int x, int y){
 	return fontList[font_index]->Write_Text(x, y, text);
 }
-int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, int alpha){
+int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha){
 	return fontList[font_index]->Write_TextTrasparent(x, y, text, alpha);
 }
 
-int PisteDraw2_DrawScreen_Start(BYTE* &pixels, int &pitch){
+int PisteDraw2_DrawScreen_Start(BYTE *&pixels, DWORD &pitch){
 	pixels = (BYTE*)frameBuffer8->pixels;
 	pitch = frameBuffer8->pitch;
 	return SDL_LockSurface(frameBuffer8);
@@ -257,7 +292,7 @@ int PisteDraw2_DrawScreen_End(){
 	SDL_UnlockSurface(frameBuffer8);
 	return 0;
 }
-int PisteDraw2_DrawImage_Start(int index, BYTE* &pixels, int &pitch){
+int PisteDraw2_DrawImage_Start(int index, BYTE* &pixels, DWORD &pitch){
 	pixels = (BYTE*)imageList[index]->pixels;
 	pitch = imageList[index]->pitch;
 	return SDL_LockSurface(imageList[index]);
@@ -290,6 +325,24 @@ BYTE PisteDraw2_BlendColors(BYTE color, BYTE colBack, int alpha){
 	return result;//+32*col
 }
 
+int PisteDraw2_ImageFill(int index, BYTE color){
+	return PisteDraw2_ImageFill(index, 0, 0, imageList[index]->w, imageList[index]->h, color);
+}
+int PisteDraw2_ImageFill(int index, int posx, int posy, int oikea, int ala, BYTE color){
+	SDL_Rect r = {posx, posy, oikea-posx, ala-posy};
+	return SDL_FillRect(imageList[index], &r, color);
+}
+int PisteDraw2_ScreenFill(BYTE color){
+	return PisteDraw2_ScreenFill(0, 0, frameBuffer8->w, frameBuffer8->h, color);
+}
+int PisteDraw2_ScreenFill(int posx, int posy, int oikea, int ala, BYTE color){
+	SDL_Rect r = {posx, posy, oikea-posx, ala-posy};
+	return SDL_FillRect(frameBuffer8, &r, color);
+}
+
+void PisteDraw2_FullScreen(){
+	SDL_SetWindowFullscreen(PD_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+}
 int PisteDraw2_Start(int width, int height, const char* name){
 	if(PD2_loaded) return -1;
 
@@ -330,7 +383,7 @@ int PisteDraw2_Exit(){
   PD2_loaded = false;
   return 0;
 }
-void PisteDraw2_Update(bool draw,int pc, int fps){
+void PisteDraw2_Update(bool draw, int pc, int fps){
 	if(!PD2_loaded) return;
 
 	char title[100];
@@ -342,7 +395,6 @@ void PisteDraw2_Update(bool draw,int pc, int fps){
 		if(PD_alpha < 0) PD_alpha = 0;
 		if(PD_alpha > 255) PD_alpha = 255;
 	}
-
 	struct timespec tstart, tend;
 	static double sum = 0;
 	static int count = 0;
@@ -354,8 +406,10 @@ void PisteDraw2_Update(bool draw,int pc, int fps){
 
 
 		SDL_Texture* texture;
-		texture = SDL_CreateTextureFromSurface(PD_Renderer, frameBuffer8);
-		if(PD_alpha>0) SDL_SetTextureAlphaMod(texture, 255 - PD_alpha);
+		BYTE alpha = (BYTE) PD_alpha;
+
+		texture = SDL_CreateTextureFromSurface(PD_Renderer,frameBuffer8);
+		SDL_SetTextureColorMod(texture,alpha,alpha,alpha);
 
 		SDL_RenderCopy(PD_Renderer, texture, NULL, NULL);
 		SDL_RenderPresent(PD_Renderer);
@@ -364,20 +418,14 @@ void PisteDraw2_Update(bool draw,int pc, int fps){
 		SDL_FillRect(frameBuffer8,NULL,0);
 
 
+
 		clock_gettime(CLOCK_MONOTONIC, &tend);
 		sum+=((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec);
 		count++;
-		printf("Took %.3f ms\n",(sum/count)*1000);
-
-		//TODO
+		//printf("Took %.3f ms\n",(sum/count)*1000);
 	}
 
 }
-
-
-
-
-
 
 //##############################################################################
 //PisteDraw 1
@@ -410,64 +458,6 @@ char			virhe[60];
 
 void PisteDraw_FullScreen(){
 	SDL_SetWindowFullscreen(PD_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-}
-int	PisteDraw_SetColor(BYTE color, int x, int y, int alpha){
-
-	BYTE* buffer_screen;
-	int w;
-	double a;
-
-	buffer_screen = (BYTE*)PD_buffers[PD_TAUSTABUFFER]->pixels;
-	w = PD_buffers[PD_TAUSTABUFFER]->w;
-
-	buffer_screen = &buffer_screen[4*(x+y*w)];
-
-	if(alpha>=100){
-		buffer_screen[0] = PD_palette->colors[color].b;
-		buffer_screen[1] = PD_palette->colors[color].g;
-		buffer_screen[2] = PD_palette->colors[color].r;
-	} else{
-		a = (double)alpha / 100;
-		buffer_screen[0] = (BYTE)((a * PD_palette->colors[color].b) + ((1-a) * buffer_screen[0]));
-		buffer_screen[1] = (BYTE)((a * PD_palette->colors[color].g) + ((1-a) * buffer_screen[1]));
-		buffer_screen[2] = (BYTE)((a * PD_palette->colors[color].r) + ((1-a) * buffer_screen[2]));
-	}
-
-	return 0;
-}
-char *PisteDraw_Locate_Kuva(char *filename){
-  struct stat st;
-  char *ret = strdup(filename);
-
-  // expecting it to be 6+3 dos filename
-  char *ext = strrchr(ret, '.');
-  if(ext == NULL) return NULL;
-
-  // cut up the path and file base components
-  char *base = strrchr(ret, '/');
-  // just a filename without dir
-  if(base == NULL) {
-    base = ret;
-  }
-
-	strcpy(ext, ".png");
-  if(stat(ret, &st) == 0)
-    return ret;
-  else
-  {
-		char *c = base;
-  	while(c != ext) *c++ = toupper(*c);
-
-    if(stat(ret, &st) == 0)
-      return ret;
-    else
-    {
-			strcpy(ext, ".bmp");
-      if(stat(ret, &st) == 0)
-        return ret;
-    }
-  }
-  return NULL;
 }
 int	PisteDraw_Start(int width, int height, char* name){
 
@@ -513,6 +503,173 @@ int	PisteDraw_Start(int width, int height, char* name){
 	PD_loaded = true;
 
 	return 0;
+}
+int PisteDraw_Font_Uusi(int buffer_index, int buffer_x, int buffer_y, int leveys, int korkeus, int lkm){
+  int index = 0;
+  bool found = false;
+
+  while (index<MAX_FONTTEJA && !found){
+    if (PD_fontit[index] == NULL){
+      PD_fontit[index] = new PisteFont(korkeus,leveys,lkm);
+      //printf("PisteDraw_Font_Uusi %i bx:%i by:%i w:%i h:%i lkm:%i\n",
+      //    buffer_index,buffer_x,buffer_y,leveys,korkeus,lkm);
+
+      PD_fontit[index]->Get_bitmap(buffer_x,buffer_y,0/*unused*/,buffer_index);
+      found = true;
+    }
+    else index++;
+  }
+
+  if (!found){
+    printf("PisteEngine has run out of free fonts!");
+    index = PD_VIRHE;
+  }
+
+  return index;
+}
+int PisteDraw_Font_Uusi(char *polku, char *tiedosto){
+  int index = 0;
+  bool found = false;
+
+  while (index<MAX_FONTTEJA && !found){
+    if (PD_fontit[index] == NULL){
+
+      PD_fontit[index] = new PisteFont();
+
+      if (PD_fontit[index]->LataaTiedostosta(polku,tiedosto) == -1){
+        printf("PisteEngine can't load a font from file!");
+        //printf("fon? %s %s\n", polku, tiedosto);
+
+        return PD_VIRHE;
+      }
+
+      found = true;
+
+      if (PD_fontit[index]->Korkeus() > PD_font_korkein)
+		PD_font_korkein = PD_fontit[index]->Korkeus();
+    }
+    else index++;
+  }
+
+  if (!found){
+    strcpy(virhe,"PisteEngine has run out of free fonts!");
+    index = PD_VIRHE;
+  }
+
+  return index;
+}
+int PisteDraw_Font_Kirjoita(int font_index, char *text, int buffer_index, int x, int y){
+	return PD_fontit[font_index]->Piirra_merkkijono(text, x, y, buffer_index);
+}
+int PisteDraw_Font_Kirjoita_Lapinakyva(int font_index, char *text, int buffer_index, int x, int y, BYTE alpha){
+	return PD_fontit[font_index]->Piirra_merkkijono_lapinakyva(text, x, y, buffer_index, alpha);
+}
+void PisteDraw_Fade_Paletti_In(int laskuri){
+  PD_paletti_fade_pros    =  250;
+  PD_paletti_fade_laskuri = -laskuri;
+}
+void PisteDraw_Fade_Paletti_Out(int laskuri){
+  PD_paletti_fade_pros    =  0;
+  PD_paletti_fade_laskuri =  laskuri;
+}
+bool PisteDraw_Fade_Paletti_Valmis(void){
+  if (PD_paletti_fade_pros > 0   && PD_paletti_fade_laskuri < 0)
+    return false;
+
+  if (PD_paletti_fade_pros < 250 && PD_paletti_fade_laskuri > 0)
+    return false;
+
+  return true;
+}
+int PisteDraw_Buffer_Tayta(int i, BYTE color){
+	//Preencher Buffer
+	return PisteDraw_Buffer_Tayta(i, 0, 0, PD_buffers[i]->w, PD_buffers[i]->h, color);
+}
+int PisteDraw_Buffer_Tayta(int i, int vasen, int yla, int oikea, int ala, BYTE color){
+	SDL_Rect r = {vasen, yla, oikea-vasen, ala-yla};
+	SDL_Color col;
+	if(PD_buffers[i]->format->BitsPerPixel == 8)
+		return SDL_FillRect(PD_buffers[i], &r, color); //TODO Doing
+
+	col = PD_palette->colors[color];
+	return SDL_FillRect(PD_buffers[i], &r, SDL_MapRGB(PD_buffers[i]->format, col.r, col.g, col.b));
+}
+int PisteDraw_Piirto_Aloita(int i, BYTE *&back_buffer, DWORD &lPitch){
+  back_buffer = (BYTE*)PD_buffers[i]->pixels;
+  // should it be (y*pitch) + x*bpp
+  //lPitch = PD_buffers[i]->format->BytesPerPixel;
+  lPitch = PD_buffers[i]->w; //Danilo
+  return SDL_LockSurface(PD_buffers[i]);
+}
+int PisteDraw_Piirto_Lopeta(void){
+  int i=0;
+  while (i<MAX_BUFFEREITA /*PD_buffereita_varattu*/)
+  {
+    if (PD_buffers[i]->pixels != NULL)
+      SDL_UnlockSurface(PD_buffers[i]);
+    i++;
+  }
+  return 0;
+}
+int PisteDraw_Piirto_Lopeta(int i){
+  SDL_UnlockSurface(PD_buffers[i]);
+  return 0;
+}
+int	PisteDraw_SetColor(BYTE color, int x, int y, int alpha){
+
+	BYTE* buffer_screen;
+	int w;
+	double a;
+
+	buffer_screen = (BYTE*)PD_buffers[PD_TAUSTABUFFER]->pixels;
+	w = PD_buffers[PD_TAUSTABUFFER]->w;
+
+	buffer_screen = &buffer_screen[4*(x+y*w)];
+
+	if(alpha>=100){
+		buffer_screen[0] = PD_palette->colors[color].b;
+		buffer_screen[1] = PD_palette->colors[color].g;
+		buffer_screen[2] = PD_palette->colors[color].r;
+	} else{
+		a = (double)alpha / 100;
+		buffer_screen[0] = (BYTE)((a * PD_palette->colors[color].b) + ((1-a) * buffer_screen[0]));
+		buffer_screen[1] = (BYTE)((a * PD_palette->colors[color].g) + ((1-a) * buffer_screen[1]));
+		buffer_screen[2] = (BYTE)((a * PD_palette->colors[color].r) + ((1-a) * buffer_screen[2]));
+	}
+
+	return 0;
+}
+char *PisteDraw_Locate_Kuva(char *filename){
+  struct stat st;
+  char *ret = strdup(filename);
+
+  // expecting it to be 6+3 dos filename
+  char *ext = strrchr(ret, '.');
+  if(ext == NULL) return NULL;
+
+  // cut up the path and file base components
+  char *base = strrchr(ret, '/');
+  // just a filename without dir
+  if(base == NULL) base = ret;
+
+	strcpy(ext, ".png");
+  if(stat(ret, &st) == 0)
+    return ret;
+  else
+  {
+		char *c = base;
+  	while(c != ext) *c++ = toupper(*c);
+
+    if(stat(ret, &st) == 0)
+      return ret;
+    else
+    {
+			strcpy(ext, ".bmp");
+      if(stat(ret, &st) == 0)
+        return ret;
+    }
+  }
+  return NULL;
 }
 void PisteDraw_Paivita_Naytto(bool draw){
 	//PisteDraw_Update
@@ -623,66 +780,6 @@ void PisteDraw_GetBounds(int index, int& w, int& h){
 	w = PD_buffers[index]->w;
 	h = PD_buffers[index]->h;
 }
-int PisteDraw_Font_Uusi(int buffer_index, int buffer_x, int buffer_y, int leveys, int korkeus, int lkm){
-  int index = 0;
-  bool found = false;
-
-  while (index<MAX_FONTTEJA && !found){
-    if (PD_fontit[index] == NULL){
-      PD_fontit[index] = new PisteFont(korkeus,leveys,lkm);
-      //printf("PisteDraw_Font_Uusi %i bx:%i by:%i w:%i h:%i lkm:%i\n",
-      //    buffer_index,buffer_x,buffer_y,leveys,korkeus,lkm);
-
-      PD_fontit[index]->Get_bitmap(buffer_x,buffer_y,0/*unused*/,buffer_index);
-      found = true;
-    }
-    else index++;
-  }
-
-  if (!found){
-    printf("PisteEngine has run out of free fonts!");
-    index = PD_VIRHE;
-  }
-
-  return index;
-}
-int PisteDraw_Font_Uusi(char *polku, char *tiedosto){
-  int index = 0;
-  bool found = false;
-
-  while (index<MAX_FONTTEJA && !found){
-    if (PD_fontit[index] == NULL){
-
-      PD_fontit[index] = new PisteFont();
-
-      if (PD_fontit[index]->LataaTiedostosta(polku,tiedosto) == -1){
-        printf("PisteEngine can't load a font from file!");
-        //printf("fon? %s %s\n", polku, tiedosto);
-
-        return PD_VIRHE;
-      }
-
-      found = true;
-
-      if (PD_fontit[index]->Korkeus() > PD_font_korkein)
-		PD_font_korkein = PD_fontit[index]->Korkeus();
-    }
-    else index++;
-  }
-
-  if (!found){
-    strcpy(virhe,"PisteEngine has run out of free fonts!");
-    index = PD_VIRHE;
-  }
-
-  return index;
-}
-int PisteDraw_Font_Kirjoita(int font_index, char *text, int buffer_index, int x, int y){
-	return PD_fontit[font_index]->Piirra_merkkijono(text, x, y, buffer_index);
-}
-int PisteDraw_Font_Kirjoita_Lapinakyva(int font_index, char *text, int buffer_index, int x, int y, BYTE alpha){
-	return PD_fontit[font_index]->Piirra_merkkijono_lapinakyva(text, x, y, buffer_index, alpha);
-}
 int PisteDraw_Lataa_Kuva(int index, char *filename, bool lataa_paletti){
 	//Load Texture
 	int i;
@@ -730,18 +827,6 @@ int PisteDraw_Buffer_Flip(int i){
 }
 int PisteDraw_Buffer_Flip(int lahde_index, int kohde_index, int x, int y, bool peilaa_x, bool peilaa_y){
 	//Used by sprites.cpp
-  return 0;
-}
-int PisteDraw_Buffer_Flip_Nopea(int lahde_index, int kohde_index, int x, int y){
-  SDL_Rect dst = {x, y, PD_buffers[lahde_index]->w, PD_buffers[lahde_index]->h};
-  SDL_BlitSurface(PD_buffers[lahde_index], &PD_buffers[lahde_index]->clip_rect, PD_buffers[kohde_index], &dst);
-  return 0;
-}
-int PisteDraw_Buffer_Flip_Nopea(int lahde_index, int kohde_index, int x, int y,
-                  int vasen, int yla, int oikea, int ala){
-  SDL_Rect src = {vasen, yla, oikea-vasen,ala-yla};//PD_buffers[lahde_index]->w, PD_buffers[lahde_index]->h};
-  SDL_Rect dest = {x, y, oikea-vasen, ala-yla};
-  SDL_BlitSurface(PD_buffers[lahde_index], &src, PD_buffers[kohde_index], &dest);
   return 0;
 }
 int PisteDraw_Buffer_Flip_Vert(int index){
@@ -803,45 +888,11 @@ int PisteDraw_Buffer_Flip_Hori(int index){
 
 	return -1;
 }
-int PisteDraw_Buffer_Tayta(int i, BYTE color){
-	//Preencher Buffer
-	return PisteDraw_Buffer_Tayta(i, 0, 0, PD_buffers[i]->w, PD_buffers[i]->h, color);
-}
-int PisteDraw_Buffer_Tayta(int i, int vasen, int yla, int oikea, int ala, BYTE color){
-	SDL_Rect r = {vasen, yla, oikea-vasen, ala-yla};
-	SDL_Color col;
-	if(PD_buffers[i]->format->BitsPerPixel == 8)
-		return SDL_FillRect(PD_buffers[i], &r, color); //TODO Doing
-
-	col = PD_palette->colors[color];
-	return SDL_FillRect(PD_buffers[i], &r, SDL_MapRGB(PD_buffers[i]->format, col.r, col.g, col.b));
-}
 void PisteDraw_Aseta_Marginaali_Vasen(int vasen){
   vasen_marginaali = vasen;
 }
 void PisteDraw_Aseta_Marginaali_Yla(int yla){
   yla_marginaali = yla;
-}
-int PisteDraw_Piirto_Aloita(int i, BYTE *&back_buffer, DWORD &lPitch){
-  back_buffer = (BYTE*)PD_buffers[i]->pixels;
-  // should it be (y*pitch) + x*bpp
-  //lPitch = PD_buffers[i]->format->BytesPerPixel;
-  lPitch = PD_buffers[i]->w; //Danilo
-  return SDL_LockSurface(PD_buffers[i]);
-}
-int PisteDraw_Piirto_Lopeta(void){
-  int i=0;
-  while (i<MAX_BUFFEREITA /*PD_buffereita_varattu*/)
-  {
-    if (PD_buffers[i]->pixels != NULL)
-      SDL_UnlockSurface(PD_buffers[i]);
-    i++;
-  }
-  return 0;
-}
-int PisteDraw_Piirto_Lopeta(int i){
-  SDL_UnlockSurface(PD_buffers[i]);
-  return 0;
 }
 void PisteDraw_Aseta_Klipperi(int i, int vasen, int yla, int oikea, int ala){
   SDL_Rect r = {vasen, yla, oikea-vasen, ala-yla};
@@ -865,28 +916,24 @@ int PisteDraw_Paletti_Pyorita(BYTE eka_vari, BYTE vika_vari){
 
 	return 0;
 }
-void PisteDraw_Fade_Paletti_In(int laskuri){
-  PD_paletti_fade_pros    =  250;
-  PD_paletti_fade_laskuri = -laskuri;
-}
-void PisteDraw_Fade_Paletti_Out(int laskuri){
-  PD_paletti_fade_pros    =  0;
-  PD_paletti_fade_laskuri =  laskuri;
-}
-bool PisteDraw_Fade_Paletti_Valmis(void){
-  if (PD_paletti_fade_pros > 0   && PD_paletti_fade_laskuri < 0)
-    return false;
-
-  if (PD_paletti_fade_pros < 250 && PD_paletti_fade_laskuri > 0)
-    return false;
-
-  return true;
-}
 int PisteDraw_Reset_Paletti(void){
   return 0;
 }
 int PisteDraw_Paletti_Set(void){
   //if (FAILED(PD_lpddpal->SetEntries(0,0,255,PD_paletti_nyt))) {
 
+  return 0;
+}
+
+int PisteDraw_Buffer_Flip_Nopea(int lahde_index, int kohde_index, int x, int y){
+  SDL_Rect dst = {x, y, PD_buffers[lahde_index]->w, PD_buffers[lahde_index]->h};
+  SDL_BlitSurface(PD_buffers[lahde_index], &PD_buffers[lahde_index]->clip_rect, PD_buffers[kohde_index], &dst);
+  return 0;
+}
+int PisteDraw_Buffer_Flip_Nopea(int lahde_index, int kohde_index, int x, int y,
+                  int vasen, int yla, int oikea, int ala){
+  SDL_Rect src = {vasen, yla, oikea-vasen,ala-yla};//PD_buffers[lahde_index]->w, PD_buffers[lahde_index]->h};
+  SDL_Rect dest = {x, y, oikea-vasen, ala-yla};
+  SDL_BlitSurface(PD_buffers[lahde_index], &src, PD_buffers[kohde_index], &dest);
   return 0;
 }

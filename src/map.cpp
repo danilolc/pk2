@@ -81,6 +81,11 @@ void PK2Kartta_Aseta_Ruudun_Mitat(int leveys, int korkeus){
 char PK2Kartta::pk2_hakemisto[256] = "";
 
 PK2Kartta::PK2Kartta(){
+
+	this->palikat_buffer = -1;
+	this->taustakuva_buffer = -1;
+	this->palikat_vesi_buffer = -1;
+
 	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
 	strcpy(this->palikka_bmp,"blox.bmp");
 	strcpy(this->taustakuva, "default.bmp");
@@ -111,17 +116,21 @@ PK2Kartta::PK2Kartta(){
 	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 		strcpy(this->protot[i],"");
 
-	this->taustakuva_buffer = PisteDraw_Buffer_Uusi(640,480,true,255);
+	this->taustakuva_buffer = PisteDraw2_Image_New(640,480);
+	this->palikat_buffer = PisteDraw2_Image_New(PK2KARTTA_BLOCK_PALETTI_LEVEYS,PK2KARTTA_BLOCK_PALETTI_KORKEUS);
+	this->palikat_vesi_buffer = PisteDraw2_Image_New(PK2KARTTA_BLOCK_PALETTI_LEVEYS,32); //water
 
-	this->palikat_buffer = PisteDraw_Buffer_Uusi(PK2KARTTA_BLOCK_PALETTI_LEVEYS,PK2KARTTA_BLOCK_PALETTI_KORKEUS,
-												 true,255);
-	PisteDraw_Buffer_Tayta(this->taustakuva_buffer,0);
-	PisteDraw_Buffer_Tayta(this->palikat_buffer,0);
-
-	this->palikat_vesi_buffer = PisteDraw_Buffer_Uusi(PK2KARTTA_BLOCK_PALETTI_LEVEYS,32, true,255);
+	PisteDraw2_ImageFill(this->taustakuva_buffer,255);
+	PisteDraw2_ImageFill(this->palikat_buffer,255);
+	PisteDraw2_ImageFill(this->palikat_buffer,255);
 }
 
 PK2Kartta::PK2Kartta(const PK2Kartta &kartta){
+
+	this->palikat_buffer = -1;
+	this->taustakuva_buffer = -1;
+	this->palikat_vesi_buffer = -1;
+
 	strcpy(this->versio,		kartta.versio);
 	strcpy(this->palikka_bmp,	kartta.palikka_bmp);
 	strcpy(this->taustakuva,	kartta.taustakuva);
@@ -161,23 +170,16 @@ PK2Kartta::PK2Kartta(const PK2Kartta &kartta){
 	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 		strcpy(this->protot[i],kartta.protot[i]);
 
-	this->taustakuva_buffer = PisteDraw_Buffer_Uusi(640,480,true,255);
-	this->palikat_buffer	= PisteDraw_Buffer_Uusi(PK2KARTTA_BLOCK_PALETTI_LEVEYS,PK2KARTTA_BLOCK_PALETTI_KORKEUS,
-												 true,255);
 
-	this->palikat_vesi_buffer = PisteDraw_Buffer_Uusi(PK2KARTTA_BLOCK_PALETTI_LEVEYS,32,
-												 true,255);
-
-	PisteDraw_Buffer_Flip_Nopea(kartta.palikat_buffer, this->palikat_buffer, 0, 0);
-	PisteDraw_Buffer_Flip_Nopea(kartta.taustakuva_buffer, this->taustakuva_buffer, 0, 0);
-	PisteDraw_Buffer_Flip_Nopea(kartta.palikat_vesi_buffer, this->palikat_vesi_buffer, 0, 0);
+	PisteDraw2_Image_Copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
+	PisteDraw2_Image_Copy(kartta.palikat_buffer,this->palikat_buffer);
+	PisteDraw2_Image_Copy(kartta.palikat_vesi_buffer,this->palikat_vesi_buffer);
 }
 
 PK2Kartta::~PK2Kartta(){
-
-	PisteDraw_Buffer_Tuhoa(this->palikat_buffer);
-	PisteDraw_Buffer_Tuhoa(this->taustakuva_buffer);
-	PisteDraw_Buffer_Tuhoa(this->palikat_vesi_buffer);
+	PisteDraw2_Image_Delete(this->palikat_buffer);
+	PisteDraw2_Image_Delete(this->taustakuva_buffer);
+	PisteDraw2_Image_Delete(this->palikat_vesi_buffer);
 }
 
 RECT PK2Kartta::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
@@ -687,8 +689,7 @@ int PK2Kartta::LataaVersio01(char *filename){
 
 	PK2KARTTA kartta;
 
-	if ((tiedosto = fopen(filename, "r")) == NULL)
-	{
+	if ((tiedosto = fopen(filename, "r")) == NULL){
 		return(1);
 	}
 
@@ -1052,8 +1053,8 @@ void PK2Kartta::Tyhjenna(){
 	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 		strcpy(this->protot[i],"");
 
-	//PisteDraw_Buffer_Tayta(this->palikat_buffer,255);
-	//PisteDraw_Buffer_Tayta(this->taustakuva_buffer,255);
+	//PisteDraw2_ImageFill(this->palikat_buffer,255);
+	//PisteDraw2_ImageFill(this->taustakuva_buffer,255);
 }
 
 PK2Kartta &PK2Kartta::operator = (const PK2Kartta &kartta){
@@ -1082,8 +1083,8 @@ PK2Kartta &PK2Kartta::operator = (const PK2Kartta &kartta){
 	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		this->spritet[i] = kartta.spritet[i];
 
-	PisteDraw_Buffer_Flip_Nopea(kartta.palikat_buffer, this->palikat_buffer, 0, 0);
-	PisteDraw_Buffer_Flip_Nopea(kartta.taustakuva_buffer, this->taustakuva_buffer, 0, 0);
+	PisteDraw2_Image_Copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
+	PisteDraw2_Image_Copy(kartta.palikat_buffer,this->palikat_buffer);
 
 	return *this;
 }
@@ -1099,17 +1100,17 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 
 	strcat(file,filename);
 
-	if (!PK2Kartta_Onko_File(file))
-	{
+	if (!PK2Kartta_Onko_File(file)){
 		strcpy(file,PK2Kartta::pk2_hakemisto);
 		strcat(file,"gfx/scenery/");
 		strcat(file,filename);
-		if (!PK2Kartta_Onko_File(file))
-			return 1;
+		if (!PK2Kartta_Onko_File(file)) return 1;
 	}
 
-	if (PisteDraw_Lataa_Kuva(this->taustakuva_buffer,file,true) == PD_VIRHE)
-		return 2;
+	i = PisteDraw2_Image_Load(file,true);
+	if(i == -1) return 2;
+	PisteDraw2_Image_Copy(i,this->taustakuva_buffer);
+	PisteDraw2_Image_Delete(i);
 
 	strcpy(this->taustakuva,filename);
 
@@ -1118,7 +1119,7 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 	int x,y;
 	int color;
 
-	PisteDraw_Piirto_Aloita(taustakuva_buffer,*&buffer,(DWORD &)leveys);
+	PisteDraw2_DrawImage_Start(taustakuva_buffer,*&buffer,(DWORD &)leveys);
 
 	for (x=0;x<640;x++)
 		for (y=0;y<480;y++)
@@ -1131,7 +1132,7 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 			buffer[x+y*leveys] = color;
 		}
 
-	PisteDraw_Piirto_Lopeta(taustakuva_buffer);
+	PisteDraw2_DrawImage_End(taustakuva_buffer);
 
 	return 0;
 }
@@ -1155,10 +1156,10 @@ int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
 			return 1;
 	}
 
-	if (PisteDraw_Lataa_Kuva(this->palikat_buffer,file,false) == PD_VIRHE)
-		return 2;
-
-	PisteDraw_Buffer_Flip_Nopea(this->palikat_buffer,palikat_vesi_buffer,0,0,0,416,320,448);
+	i = PisteDraw2_Image_Load(file,false);
+	if(i == -1) return 2;
+	PisteDraw2_Image_Copy(i,this->palikat_buffer);
+	PisteDraw2_Image_Delete(i);
 
 	strcpy(this->palikka_bmp,filename);
 	return 0;
@@ -1203,26 +1204,26 @@ void PK2Kartta::Kopioi(PK2Kartta &kartta){
 		for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 			strcpy(this->protot[i],kartta.protot[i]);
 
-		PisteDraw_Buffer_Tayta(palikat_buffer,255);
-		PisteDraw_Buffer_Tayta(taustakuva_buffer,0);
+		PisteDraw2_ImageFill(palikat_buffer,255);
+		PisteDraw2_ImageFill(taustakuva_buffer,0);
 
-		PisteDraw_Buffer_Flip_Nopea(kartta.palikat_buffer,	this->palikat_buffer, 0, 0);
-		PisteDraw_Buffer_Flip_Nopea(kartta.taustakuva_buffer, this->taustakuva_buffer, 0, 0);
-		PisteDraw_Buffer_Flip_Nopea(kartta.palikat_vesi_buffer, this->palikat_vesi_buffer, 0, 0);
+		PisteDraw2_Image_Copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
+		PisteDraw2_Image_Copy(kartta.palikat_buffer,this->palikat_buffer);
+		PisteDraw2_Image_Copy(kartta.palikat_vesi_buffer,this->palikat_vesi_buffer);
 	}
 }
 
 
 
 /* Kartanpiirtorutiineja ----------------------------------------------------------------*/
-
+//Anim Fire
 void PK2Kartta::Animoi_Tuli(void){
 	BYTE *buffer = NULL;
 	DWORD leveys;
 	int x,y;
 	int color;
 
-	PisteDraw_Piirto_Aloita(palikat_buffer,*&buffer,(DWORD &)leveys);
+	PisteDraw2_DrawImage_Start(palikat_buffer,*&buffer,(DWORD &)leveys);
 
 	for (x=128;x<160;x++)
 		for (y=448;y<479;y++)
@@ -1257,9 +1258,9 @@ void PK2Kartta::Animoi_Tuli(void){
 		for (x=128;x<160;x++)
 			buffer[x+479*leveys] = 255;
 
-	PisteDraw_Piirto_Lopeta(palikat_buffer);
+	PisteDraw2_DrawImage_End(palikat_buffer);
 }
-
+//Anim
 void PK2Kartta::Animoi_Vesiputous(void){
 	BYTE *buffer = NULL;
 	DWORD leveys;
@@ -1268,7 +1269,7 @@ void PK2Kartta::Animoi_Vesiputous(void){
 
 	BYTE temp[32*32];
 
-	PisteDraw_Piirto_Aloita(palikat_buffer,*&buffer,(DWORD &)leveys);
+	PisteDraw2_DrawImage_Start(palikat_buffer,*&buffer,(DWORD &)leveys);
 
 	for (x=32;x<64;x++)
 		for (y=416;y<448;y++)
@@ -1299,9 +1300,9 @@ void PK2Kartta::Animoi_Vesiputous(void){
 		}
 	}
 
-	PisteDraw_Piirto_Lopeta(palikat_buffer);
+	PisteDraw2_DrawImage_End(palikat_buffer);
 }
-
+//Anim
 void PK2Kartta::Animoi_Vedenpinta(void){
 	BYTE *buffer = NULL;
 	DWORD leveys;
@@ -1309,7 +1310,7 @@ void PK2Kartta::Animoi_Vedenpinta(void){
 
 	BYTE temp[32];
 
-	PisteDraw_Piirto_Aloita(palikat_buffer,*&buffer,(DWORD &)leveys);
+	PisteDraw2_DrawImage_Start(palikat_buffer,*&buffer,(DWORD &)leveys);
 
 	for (y=416;y<448;y++)
 		temp[y-416] = buffer[y*leveys];
@@ -1325,9 +1326,9 @@ void PK2Kartta::Animoi_Vedenpinta(void){
 	for (y=416;y<448;y++)
 		buffer[31+y*leveys] = temp[y-416];
 
-	PisteDraw_Piirto_Lopeta(palikat_buffer);
+	PisteDraw2_DrawImage_End(palikat_buffer);
 }
-
+//Anim water
 void PK2Kartta::Animoi_Vesi(void){
 	BYTE *buffer_lahde = NULL, *buffer_kohde = NULL;
 	DWORD leveys_lahde, leveys_kohde;
@@ -1338,16 +1339,13 @@ void PK2Kartta::Animoi_Vesi(void){
 	int i;
 
 
-	PisteDraw_Piirto_Aloita(palikat_buffer,		*&buffer_kohde,(DWORD &)leveys_kohde);
-	PisteDraw_Piirto_Aloita(palikat_vesi_buffer,*&buffer_lahde,(DWORD &)leveys_lahde);
+	PisteDraw2_DrawImage_Start(palikat_buffer,		*&buffer_kohde,(DWORD &)leveys_kohde);
+	PisteDraw2_DrawImage_Start(palikat_vesi_buffer,*&buffer_lahde,(DWORD &)leveys_lahde);
 
-	for (y=0;y<32;y++)
-	{
+	for (y=0;y<32;y++){
 		d2 = d1;
 
-		for (x=0;x<32;x++)
-		{
-
+		for (x=0;x<32;x++){
 			sini = int((y+d2/2)*11.25)%360;
 			cosi = int((x+d1/2)*11.25)%360;
 			sini = (int)kartta_sin_table[sini];
@@ -1356,14 +1354,12 @@ void PK2Kartta::Animoi_Vesi(void){
 			vy = (y+sini/11)%32;
 			vx = (x+cosi/11)%32;
 
-			if (vy < 0)
-			{
+			if (vy < 0){
 				vy = -vy;
 				vy = 31-(vy%32);
 			}
 
-			if (vx < 0)
-			{
+			if (vx < 0){
 				vx= -vx;
 				vx = 31-(vx%32);
 			}
@@ -1378,18 +1374,15 @@ void PK2Kartta::Animoi_Vesi(void){
 
 	int vy2;
 
-	for (int p=2;p<5;p++)
-	{
+	for (int p=2;p<5;p++){
 		i = p*32;
 
-		for (y=0;y<32;y++)
-		{
+		for (y=0;y<32;y++){
 			//d2 = d1;
 			vy = y*leveys_lahde;
 			vy2 = (y+416)*leveys_kohde;
 
-			for (x=0;x<32;x++)
-			{
+			for (x=0;x<32;x++){
 				vx = x+vy;
 				color1 = buffer_lahde[32+vx];
 				color2 = buffer_lahde[ i+vx];
@@ -1397,8 +1390,8 @@ void PK2Kartta::Animoi_Vesi(void){
 			}
 		}
 	}
-	PisteDraw_Piirto_Lopeta(palikat_buffer);
-	PisteDraw_Piirto_Lopeta(palikat_vesi_buffer);
+	PisteDraw2_DrawImage_End(palikat_buffer);
+	PisteDraw2_DrawImage_End(palikat_vesi_buffer);
 }
 
 void PK2Kartta::Animoi_Virta_Ylos(void){
@@ -1408,7 +1401,7 @@ void PK2Kartta::Animoi_Virta_Ylos(void){
 
 	BYTE temp[32];
 
-	PisteDraw_Piirto_Aloita(palikat_buffer,*&buffer,(DWORD &)leveys);
+	PisteDraw2_DrawImage_Start(palikat_buffer,*&buffer,(DWORD &)leveys);
 
 	for (x=64;x<96;x++)
 		temp[x-64] = buffer[x+448*leveys];
@@ -1424,7 +1417,7 @@ void PK2Kartta::Animoi_Virta_Ylos(void){
 	for (x=64;x<96;x++)
 		buffer[x+479*leveys] = temp[x-64];
 
-	PisteDraw_Piirto_Lopeta(palikat_buffer);
+	PisteDraw2_DrawImage_End(palikat_buffer);
 }
 
 int PK2Kartta::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
@@ -1448,7 +1441,8 @@ int PK2Kartta::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 				if (palikka == BLOCK_ANIM1 || palikka == BLOCK_ANIM2 || palikka == BLOCK_ANIM3 || palikka == BLOCK_ANIM4)
 					px += animaatio * 32;
 
-				PisteDraw_Buffer_Flip_Nopea(palikat_buffer,PD_TAUSTABUFFER, x*32-(kamera_x%32), y*32-(kamera_y%32), px, py, px+32, py+32);
+				PisteDraw2_Image_CutClip(palikat_buffer, x*32-(kamera_x%32), y*32-(kamera_y%32), px, py, px+32, py+32);
+				//PisteDraw_Buffer_Flip_Nopea(palikat_buffer,PD_TAUSTABUFFER, x*32-(kamera_x%32), y*32-(kamera_y%32), px, py, px+32, py+32);
 			}
 		}
 	}
@@ -1568,7 +1562,8 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 				if (palikka == BLOCK_ANIM1 || palikka == BLOCK_ANIM2 || palikka == BLOCK_ANIM3 || palikka == BLOCK_ANIM4)
 					px += animaatio * 32;
 
-				PisteDraw_Buffer_Flip_Nopea(palikat_buffer,PD_TAUSTABUFFER, x*32-(kamera_x%32)+ax, y*32-(kamera_y%32)+ay, px, py, px+32, py+32);
+				PisteDraw2_Image_CutClip(palikat_buffer, x*32-(kamera_x%32)+ax, y*32-(kamera_y%32)+ay, px, py, px+32, py+32);
+				//PisteDraw_Buffer_Flip_Nopea(palikat_buffer,PD_TAUSTABUFFER, x*32-(kamera_x%32)+ax, y*32-(kamera_y%32)+ay, px, py, px+32, py+32);
 			}
 		}
 	}
@@ -1585,7 +1580,7 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 	if (vesiaste%4 == 0)
 	{
 		Animoi_Vesi(); //TODO fix
-		PisteDraw_Paletti_Pyorita(224,239);
+		//PisteDraw_Paletti_Pyorita(224,239);
 	}
 
 	vesiaste = 1 + vesiaste % 320;

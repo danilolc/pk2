@@ -75,10 +75,10 @@ void Piste_IgnoreFrame(){
 	draw = false;
 }
 void Piste_SetFPS(int fps){
-	FPS_ms = (int)1000.f/fps;
+	FPS_ms = (float)1000.f/fps;
 }
 
-int Piste_Init(){
+int Piste_Init(int width, int height, const char* name){
 
 	Setcwd();
 
@@ -87,8 +87,13 @@ int Piste_Init(){
 		return -1;
 	}
 	atexit(SDL_Quit);
-	//TODO - Start PisteDraw2
+
+	PisteDraw2_Start(width, height, name);
+
+	PisteInput_Alusta();
+
 	PisteSound_Start();
+
 	counter = SDL_GetTicks();
 	ready = true;
 	return 0;
@@ -118,7 +123,6 @@ int Piste_Loop(bool &running, int (*GameLogic)()){
 	return 0;
 }
 int Piste_Quit(){
-	PisteDraw_Lopeta();
 	PisteDraw2_Exit();
 	PisteSound_End();
 	SDL_Quit();

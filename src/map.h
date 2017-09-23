@@ -123,7 +123,7 @@ class PK2Kartta
 	int LataaVersio11(char *filename);	// Lataa kartta versio 1.1
 	int LataaVersio12(char *filename);  // Lataa kartta versio 1.2
 	int LataaVersio13(char *filename);  // Lataa kartta versio 1.3
-	int Tallenna(char *filename);	// Tallenna kartta (uusimpana versiona)
+	int Tallenna(char *filename);	// Save map
 	void Tyhjenna();				// Tyhjenna kartta
 	RECT LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde);
 	RECT LaskeTallennusAlue(BYTE *alue);

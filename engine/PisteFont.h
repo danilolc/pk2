@@ -7,7 +7,6 @@
 #define P_FONT
 
 #include "PisteDraw.h"
-#include "PisteLanguage.h"
 
 class PisteFont2{
 private:
@@ -20,7 +19,7 @@ private:
 public:
 	int Write_Text(int posx, int posy, const char *text);
 	int Write_TextTrasparent(int posx, int posy, const char* text, int alpha);
-	int LoadFile(const char* path, const char* file);
+	int LoadFile(const char* file_path, const char* file);
 
 	PisteFont2(int img_source, int x, int y, int width, int height, int count);
 	PisteFont2();
@@ -32,7 +31,7 @@ public:
 
 
 
-
+#include "PisteLanguage.h"
 
 
 class PisteFont
