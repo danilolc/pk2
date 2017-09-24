@@ -175,11 +175,13 @@ int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int a
 	DWORD back_w, txt_w;
 
 	int i = 0;
-	int x, y, ix, fx, fy;
-	BYTE color1, color2;
+	int x, y, ix, fx, fy, a1, a2;
+	BYTE color1, color2, color3;
 	char curr_char;
 
 	if (alpha > 100) alpha = 100;
+	a1 = alpha;
+	a2 = 100 - alpha;
 
 	PisteDraw2_DrawScreen_Start(*&back_buffer, (DWORD &)back_w);
 	PisteDraw2_DrawImage_Start(ImageIndex, *&txt_buffer, (DWORD &)txt_w);
@@ -193,15 +195,17 @@ int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int a
 
 				for (y=0;y<char_h;y++){
 					color1 = txt_buffer[ix+x+y*txt_w];
-
 					if (color1!=255){
 						fy = posy + y;
-
 						fy *= back_w;
 						fy += fx;
-						color2  = back_buffer[fy];
 
-						back_buffer[fy] = PisteDraw2_BlendColors(color1, color2, alpha);
+						color1 &= 0b00011111;
+						color2 = back_buffer[fy];
+						color3 = color2 & 0b11100000;
+						color2-= color3;
+						color1 = (color1 * a1 + color2 * a2)/100;
+						back_buffer[fy] = color1 + color3;
 					}
 				}
 			}

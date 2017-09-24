@@ -1666,13 +1666,11 @@ int PK_Piirra_LaineTeksti_Hidas(char *teksti, int fontti, int x, int y){
 	}
 	return vali;
 }
-//Draw transparent object //Depr
 int PK_Piirra_Lapinakyva_Objekti(int lahde_buffer, DWORD lahde_x, DWORD lahde_y, DWORD lahde_leveys, DWORD lahde_korkeus,
 						 DWORD kohde_x, DWORD kohde_y, int pros, BYTE vari){
-
 	PD_RECT src = {lahde_x, lahde_y, lahde_leveys, lahde_korkeus};
 	PD_RECT dst = {kohde_x, kohde_y, lahde_leveys, lahde_korkeus};
-	PisteDraw2_Image_CutClipTransparent(lahde_buffer, src, dst, pros);
+	PisteDraw2_Image_CutClipTransparent(lahde_buffer, src, dst, pros, vari);
 	return 0;
 }
 

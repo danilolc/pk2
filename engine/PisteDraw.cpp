@@ -182,6 +182,9 @@ int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
 	return 0;
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha){
+	PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha, 0);
+}
+int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum){
 	BYTE *imagePix = NULL;
 	BYTE *screenPix = NULL;
 	BYTE color1, color2;
@@ -208,7 +211,7 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 			color1 = imagePix[(posx-x_start+srcrect.x)+imagePitch*(posy-y_start+srcrect.y)];
 			if (color1 != 255) {
 				color2  = screenPix[posx+screenPitch*posy];
-				screenPix[posx+screenPitch*posy] = PisteDraw2_BlendColors(color1, color2, alpha);
+				screenPix[posx+screenPitch*posy] = PisteDraw2_BlendColors(color1, color2, alpha) + colorsum;
 			}
 		}
 	PisteDraw2_DrawScreen_End();

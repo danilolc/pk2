@@ -30,6 +30,7 @@ int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int alpha);
 int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala);
 int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect);
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha);
+int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum);
 void PisteDraw2_Image_GetSize(int index, int& w, int& h);
 int PisteDraw2_Image_FlipHori(int index);
 int PisteDraw2_Image_Delete(int& index);
