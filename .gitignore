@@ -7,3 +7,18 @@ res/data/saves.dat
 res/data/settings.ini
 res/editor/settings.dat
 res/episodes/*/scores.dat
+
+# Win32 stuff
+*.obj
+*.ilk
+*.pch
+*.lib
+*.dll
+*.exe
+*.idb
+*.pdb
+*.log
+*.tlog
+*.opensdf
+*.suo
+*.sdf

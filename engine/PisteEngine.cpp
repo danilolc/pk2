@@ -10,7 +10,8 @@
 using namespace std;
 
 #ifdef _WIN32
-	#include <windows.h>
+	#include "stdio.h"
+	#include "stdlib.h"
 #else
 	#define _MAX_PATH PATH_MAX
 	#include <unistd.h>

@@ -22,15 +22,18 @@
 //#########################
 
 #include <iostream>
-#include <dirent.h>
 #include <sys/stat.h>
 #include <fstream>
 #include <cmath>
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
+#ifdef _WIN32
+#include <direct.h>
+#else
 #include <unistd.h>
 #include <dirent.h>
+#endif
 
 #include "PisteEngine.h"
 #include "map.h"
@@ -40,12 +43,14 @@ using namespace std;
 
 #define GAME_NAME "Pekka Kana 2"
 
+#ifndef _WIN32
 void itoa(int n, char s[], int radix){
 	sprintf(s, "%i", n);
 }
 void ltoa(long n, char s[], int radix){
 	sprintf(s, "%i", (int)n);
 }
+#endif
 
 //#### Constants
 
@@ -1044,6 +1049,8 @@ void PK_Jaksot_Hae(){
 	int i=0;
 	char hakemisto[_MAX_PATH];
 	char list[EPISODI_MAX_JAKSOJA][_MAX_PATH];
+	for (int j = 0; j < EPISODI_MAX_JAKSOJA; j++)
+		memset(list[j], '\0', _MAX_PATH);
 
 	PK2Kartta *temp = new PK2Kartta();
 

@@ -7,7 +7,11 @@
 #include <cstring>
 #include <sys/stat.h>
 #include <ctype.h>
+#ifdef _WIN32
+#include <io.h>
+#else
 #include <dirent.h>
+#endif
 
 #include "PisteUtils.h"
 
@@ -69,7 +73,37 @@ void getext(char* string){
 		string[i] = string[b+i];
 	string[i] = '\0';
 }
+#ifdef _WIN32
+int PisteUtils_Scandir(const char* type, char* dir, char (*list)[128], int length){
+    struct _finddata_t map_file;
+    long hFile;
 
+	int i = 0;
+	char buffer[260];
+	if (type[0] != '/')
+		_snprintf(buffer, sizeof(buffer), "%s/*%s", dir, type);
+	else
+		_snprintf(buffer, sizeof(buffer), "%s/*", dir, type);
+
+	if((hFile = _findfirst(buffer, &map_file )) == -1L )
+       return 1;
+	else
+	{
+		strcpy(list[i], map_file.name);
+		i++;
+	}
+
+	while (i<length && _findnext( hFile, &map_file ) == 0)
+	{
+		strcpy(list[i], map_file.name);
+		i++;
+	}
+
+	_findclose( hFile );
+
+	return i;
+}
+#else
 int PisteUtils_Scandir(const char* type, char* dir, char (*list)[128], int length){
 	int i, numb = 0, files = 0;
 	char ext[128];
@@ -95,3 +129,4 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[128], int lengt
 
 	return files;
 }
+#endif

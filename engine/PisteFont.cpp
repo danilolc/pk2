@@ -12,6 +12,10 @@
 #include <iostream>
 #include <string.h>
 
+#ifdef _WIN32
+#include "win32hacks.h"
+#endif
+
 int PisteFont2::InitCharList(){
 	int font_index[256], i;
 
@@ -77,6 +81,7 @@ int PisteFont2::InitCharList(){
 }
 int PisteFont2::GetImage(int x, int y, int img_source){
 	ImageIndex = PisteDraw2_Image_Cut(img_source, x, y, char_w*char_count, char_h*char_count);
+	return 0;
 }
 int PisteFont2::LoadFile(const char* file_path, const char* file){
 	char path[128];

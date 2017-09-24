@@ -13,6 +13,10 @@
 
 #include <SDL2/SDL_image.h>
 
+#ifdef _WIN32
+#include "win32hacks.h"
+#endif
+
 const int MAX_IMAGES = 2000;
 const int MAX_FONTS = 20;
 
@@ -175,6 +179,7 @@ int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, 
 }
 int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
 	SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
+	return 0;
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha){
 	BYTE *imagePix = NULL;
