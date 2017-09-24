@@ -1555,7 +1555,7 @@ int PK_Kopioi_Pelitilanne_Taustakuvaksi(){
 
 	for (x=0;x<640;x++)
 		for (y=0;y<480;y++)
-			bg_buff[x+y*bg_w] = (BYTE)(rand()*255);
+			bg_buff[x+y*bg_w] = 0; //TODO - BG
 
 	PisteDraw2_DrawImage_End(kuva_tausta);
 	PisteDraw2_DrawScreen_End();
@@ -1709,7 +1709,7 @@ int PK_Fadetekstit_Piirra(){
 			if (asetukset.lapinakyvat_objektit && pros < 100)
 			{
 				if (PisteDraw2_Font_WriteAlpha( fadetekstit[i].fontti,fadetekstit[i].teksti,
-														fadetekstit[i].x-kamera_x, fadetekstit[i].y-kamera_y, pros)==PD_VIRHE)
+														fadetekstit[i].x-kamera_x, fadetekstit[i].y-kamera_y, pros)==-1)
 					return 1;
 			}
 			else
@@ -4404,7 +4404,7 @@ int PK_Sprite_Liikuta(int i){
 													kamera_y = (int)spritet[pelaaja_index].y;
 													dkamera_x = kamera_x-KARTANPIIRTO_LEVEYS/2;
 													dkamera_y = kamera_y-KARTANPIIRTO_KORKEUS/2;
-													PisteDraw2_FadeIn(PD_FADE_NORMAALI);
+													PisteDraw2_FadeIn(PD_FADE_NORMAL);
 													if (sprite.tyyppi->aanet[AANI_HYOKKAYS2] != -1)
 														PK_Soita_Aani_Menu(sprite.tyyppi->aanet[AANI_HYOKKAYS2], 100);
 														//PK_Soita_Aani(, 100, kamera_x, kamera_y, AANET_SAMPLERATE, false);
@@ -5139,24 +5139,24 @@ int PK_Alusta_Tilat(){
 
 			ind_font = tekstit->Hae_Indeksi("font small font");
 			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti1 = PisteDraw2_Font_Create("language/fonts/","ScandicSmall.txt")) == PD_VIRHE){
+				if ((fontti1 = PisteDraw2_Font_Create("language/fonts/","ScandicSmall.txt")) == -1){
 					PK2_virhe = true;
 				}
 			}
 			else {
-				if ((fontti1 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == PD_VIRHE){
+				if ((fontti1 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
 					PK2_virhe = true;
 				}
 			}
 
 			ind_font = tekstit->Hae_Indeksi("font big font normal");
 			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == PD_VIRHE){
+				if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
 				PK2_virhe = true;
 				}
 			}
 			else {
-				if ((fontti2 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == PD_VIRHE){
+				if ((fontti2 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
 				PK2_virhe = true;
 				//PisteLog_Kirjoita("    - Loading font ");
 				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
@@ -5167,12 +5167,12 @@ int PK_Alusta_Tilat(){
 
 			ind_font = tekstit->Hae_Indeksi("font big font hilite");
 			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == PD_VIRHE){
+				if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
 				PK2_virhe = true;
 				}
 			}
 			else {
-				if ((fontti3 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == PD_VIRHE){
+				if ((fontti3 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
 				PK2_virhe = true;
 				//PisteLog_Kirjoita("    - Loading font ");
 				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
@@ -5183,12 +5183,12 @@ int PK_Alusta_Tilat(){
 
 			ind_font = tekstit->Hae_Indeksi("font big font shadow");
 			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == PD_VIRHE){
+				if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
 				PK2_virhe = true;
 				}
 			}
 			else {
-				if ((fontti4 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == PD_VIRHE){
+				if ((fontti4 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
 				PK2_virhe = true;
 				//PisteLog_Kirjoita("    - Loading font ");
 				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
@@ -5197,15 +5197,15 @@ int PK_Alusta_Tilat(){
 				}
 			}
 
-			if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == PD_VIRHE){
+			if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
 				PK2_virhe = true;
 			}
 
-			if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == PD_VIRHE){
+			if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
 				PK2_virhe = true;
 			}
 
-			if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == PD_VIRHE){
+			if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
 				PK2_virhe = true;
 			}
 
@@ -5251,7 +5251,7 @@ int PK_Alusta_Tilat(){
 
 			//PisteWait_Start();
 
-			PisteDraw2_FadeIn(PD_FADE_HIDAS);
+			PisteDraw2_FadeIn(PD_FADE_SLOW);
 
 			//PisteLog_Kirjoita("  - Calculating tiles. \n");
 			PK_Palikka_Laske_Palikat();
@@ -5348,7 +5348,7 @@ int PK_Alusta_Tilat(){
 
 			siirry_kartasta_peliin = false;
 
-			PisteDraw2_FadeIn(PD_FADE_HIDAS);
+			PisteDraw2_FadeIn(PD_FADE_SLOW);
 		}
 
 		// MENUJEN ALUSTUS
@@ -5374,7 +5374,7 @@ int PK_Alusta_Tilat(){
 			menunelio.right = 320+5;
 			menunelio.bottom = 240+5;
 
-			PisteDraw2_FadeIn(PD_FADE_NORMAALI);
+			PisteDraw2_FadeIn(PD_FADE_NORMAL);
 
 			//PisteWait_Start();
 
@@ -5487,7 +5487,7 @@ int PK_Alusta_Tilat(){
 
 			siirry_pistelaskusta_karttaan = false;
 
-			//PisteDraw2_FadeIn(PD_FADE_NOPEA);
+			//PisteDraw2_FadeIn(PD_FADE_FAST);
 
 			//PisteWait_Start();
 		}
@@ -5512,7 +5512,7 @@ int PK_Alusta_Tilat(){
 			introlaskuri = 0;
 			siirry_pistelaskusta_karttaan = false;
 
-			//PisteDraw2_FadeIn(PD_FADE_NOPEA);
+			//PisteDraw2_FadeIn(PD_FADE_FAST);
 
 			//PisteWait_Start();
 
@@ -5534,13 +5534,13 @@ int PK_Alusta_Tilat(){
 			siirry_lopusta_menuun = false;
 			peli_kesken = false;
 
-			//PisteDraw2_FadeIn(PD_FADE_NOPEA);
+			//PisteDraw2_FadeIn(PD_FADE_FAST);
 
 			//PisteWait_Start();
 		}
 
 
-		PisteDraw2_FadeIn(PD_FADE_NORMAALI);
+		PisteDraw2_FadeIn(PD_FADE_NORMAL);
 
 		pelin_tila = pelin_seuraava_tila;
 
@@ -6480,7 +6480,7 @@ int PK_Piirra_Menut_PaaValikko(){
 	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_exit),180,my))
 	{
 		lopeta_peli = true;
-		PisteDraw2_FadeOut(PD_FADE_NORMAALI);
+		PisteDraw2_FadeOut(PD_FADE_NORMAL);
 		musiikin_voimakkuus = 0;
 	}
 	my += 20;
@@ -7062,7 +7062,7 @@ int PK_Piirra_Menut_Episodit(){
 				pelin_seuraava_tila = TILA_KARTTA;
 				peli_kesken = false;
 				PK_Uusi_Peli();
-				//PisteDraw2_FadeIn(PD_FADE_NORMAALI);
+				//PisteDraw2_FadeIn(PD_FADE_NORMAL);
 			}
 			my += 20;
 		}
@@ -7157,7 +7157,7 @@ int PK_Piirra_Menut(){
 	//PisteWait_Wait(0);//10
 
 	//if (PisteDraw2_IsFading())
-	//	PisteDraw2_FadeIn(PD_FADE_NORMAALI);
+	//	PisteDraw2_FadeIn(PD_FADE_NORMAL);
 
 
 	//PisteWait_Start();
@@ -7297,7 +7297,7 @@ int PK_Piirra_Kartta(){
 					//jakso = i;
 					jakso_indeksi_nyt = i;
 					siirry_kartasta_peliin = true;
-					PisteDraw2_FadeOut(PD_FADE_HIDAS);
+					PisteDraw2_FadeOut(PD_FADE_SLOW);
 					musiikin_voimakkuus = 0;
 					PK_Soita_Aani_Menu(kieku_aani,90);
 				}
@@ -7464,7 +7464,7 @@ int PK_Piirra_Pistelasku(){
 	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_score_screen_continue),100,430)){
 		musiikin_voimakkuus = 0;
 		siirry_pistelaskusta_karttaan = true;
-		PisteDraw2_FadeOut(PD_FADE_HIDAS);
+		PisteDraw2_FadeOut(PD_FADE_SLOW);
 		//pelin_seuraava_tila = TILA_KARTTA;
 	}
 
@@ -7668,7 +7668,7 @@ int PK_Main_Intro(){
 	if (key_delay == 0)
 		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE) || introlaskuri == 2500){
 			siirry_introsta_menuun = true;
-			PisteDraw2_FadeOut(PD_FADE_HIDAS);
+			PisteDraw2_FadeOut(PD_FADE_SLOW);
 		}
 
 	return 0;
@@ -7760,7 +7760,7 @@ int PK_Main_Pistelasku(){
 		if (PisteInput_Keydown(PI_RETURN) && pistelaskuvaihe == 5){
 			siirry_pistelaskusta_karttaan = true;
 			musiikin_voimakkuus = 0;
-			PisteDraw2_FadeOut(PD_FADE_HIDAS);
+			PisteDraw2_FadeOut(PD_FADE_SLOW);
 			key_delay = 20;
 		}
 
@@ -7793,7 +7793,7 @@ int PK_Main_Kartta(){
 		pelin_seuraava_tila = TILA_PELI;
 		//strcpy(seuraava_kartta,jaksot[i].tiedosto);
 		peli_kesken = false;//true;
-		//PisteDraw2_FadeIn(PD_FADE_NORMAALI);
+		//PisteDraw2_FadeIn(PD_FADE_NORMAL);
 	}
 
 	if (key_delay > 0)
@@ -7806,7 +7806,7 @@ int PK_Main_Kartta(){
 		{
 			siirry_kartasta_peliin = true;
 			//pelin_seuraava_tila = TILA_PELI;
-			PisteDraw2_FadeOut(PD_FADE_HIDAS);
+			PisteDraw2_FadeOut(PD_FADE_SLOW);
 		}*/
 	}
 
@@ -7906,7 +7906,7 @@ int PK_Main_Peli(){
 				else
 				{
 					peli_ohi = true;
-					//PisteDraw2_FadeOut(PD_FADE_HIDAS);
+					//PisteDraw2_FadeOut(PD_FADE_SLOW);
 				}
 			}
 		}
@@ -7938,7 +7938,7 @@ int PK_Main_Peli(){
 
 		if (lopetusajastin == 2)
 		{
-			PisteDraw2_FadeOut(PD_FADE_NORMAALI);
+			PisteDraw2_FadeOut(PD_FADE_NORMAL);
 			//musiikin_voimakkuus = 0;
 		}
 	}
@@ -8046,7 +8046,7 @@ int PK_Main_Loppu(){
 		{
 			siirry_lopusta_menuun = true;
 			musiikin_voimakkuus = 0;
-			PisteDraw2_FadeOut(PD_FADE_HIDAS);
+			PisteDraw2_FadeOut(PD_FADE_SLOW);
 		}
 	}
 
@@ -8131,7 +8131,7 @@ int PK_Main(){
 		else if (pelin_tila == TILA_MENUT){
 			lopeta_peli = true;
 			musiikin_voimakkuus = 0;
-			PisteDraw2_FadeOut(PD_FADE_NOPEA);
+			PisteDraw2_FadeOut(PD_FADE_FAST);
 		}
 	}
 	if (lopeta_peli && PisteDraw2_IsFading())

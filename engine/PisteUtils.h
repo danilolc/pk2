@@ -6,8 +6,9 @@
 #ifndef PISTELUTILS
 #define PISTELUTILS
 
-void PisteUtils_Lower(char* string);
-void PisteUtils_RemoveSpace(char* string);
+void  PisteUtils_Lower(char* string);
+void  PisteUtils_RemoveSpace(char* string);
+char *PisteUtils_FindImage(char *filename);
 
 //type:
 // "/" - directory

@@ -31,7 +31,6 @@
 #include "sprite.h"
 
 #define GAME_NAME "PK2 Level Editor"
-#define _MAX_DIR 100
 
 using namespace std;
 
@@ -39,46 +38,46 @@ using namespace std;
 //Constants
 //##################################################
 
-const BYTE MENU_EI				= 100;
-const BYTE	MENU_KARTTA			= 0;
-const BYTE	MENU_PALIKAT		= 1;
-const BYTE	MENU_INFO			= 2;
-const BYTE	MENU_SPRITET		= 3;
-const BYTE	MENU_TIEDOSTOT		= 4;
-const BYTE	MENU_SAVE			= 5;
-const BYTE	MENU_HELP			= 6;
-const BYTE	MENU_EXIT			= 7;
-const BYTE	MENU_TOOLS			= 8;
-const BYTE	MENU_LOKI			= 9;
+const BYTE MENU_EI         = 100;
+const BYTE	MENU_KARTTA    = 0;
+const BYTE	MENU_PALIKAT   = 1;
+const BYTE	MENU_INFO      = 2;
+const BYTE	MENU_SPRITET   = 3;
+const BYTE	MENU_TIEDOSTOT = 4;
+const BYTE	MENU_SAVE      = 5;
+const BYTE	MENU_HELP      = 6;
+const BYTE	MENU_EXIT      = 7;
+const BYTE	MENU_TOOLS     = 8;
+const BYTE	MENU_LOKI      = 9;
 
-const BYTE N_OF_MENUS			= 10;
+const BYTE N_OF_MENUS = 10;
 
-const BYTE EDIT_MAP			= 0;
-const BYTE EDIT_MENU			= 1;
-const BYTE EDIT_SPRITE			= 2;
+const BYTE EDIT_MAP    = 0;
+const BYTE EDIT_MENU   = 1;
+const BYTE EDIT_SPRITE = 2;
 
-const int MAX_DIR_FILES			= 1000;
+const int MAX_DIR_FILES = 1000;
 
-const int FILE_DIR				= 1;
-const int FILE_MAP				= 2;
-const int FILE_BMP				= 3;
-const int FILE_SPR				= 4;
-const int FILE_MUS				= 5;
+const int FILE_DIR = 1;
+const int FILE_MAP = 2;
+const int FILE_BMP = 3;
+const int FILE_SPR = 4;
+const int FILE_MUS = 5;
 
-const int EDIT_BACKGROUND		= 0;
-const int EDIT_WALLS			= 1;
-const int EDIT_JUST_BACKGROUND 	= 2;
+const int EDIT_BACKGROUND      = 0;
+const int EDIT_WALLS           = 1;
+const int EDIT_JUST_BACKGROUND = 2;
 
-const int MAX_SPRITES			= 600;
+const int MAX_SPRITES = 600;
 
-const int KENTTA_FILE			= 1;
-const int KENTTA_NIMI			= 2;
-const int KENTTA_TEKIJA			= 3;
-const int KENTTA_MUSIIKKI		= 4;
+const int KENTTA_FILE     = 1;
+const int KENTTA_NIMI     = 2;
+const int KENTTA_TEKIJA   = 3;
+const int KENTTA_MUSIIKKI = 4;
 
-const int MAX_LOG_LABEL			= 55;
-const BYTE LOG_INFO			= 1;
-const BYTE LOG_VIRHE			= 2;
+const int MAX_LOG_LABEL = 55;
+const BYTE LOG_INFO     = 1;
+const BYTE LOG_VIRHE    = 2;
 
 
 //##################################################
@@ -541,7 +540,7 @@ int Level_Editor_Start_PK2_Directory(){
 
 //Unused
 int Level_Editor_Tallenna_pk2_path(char *hakemisto){
-	char tal[_MAX_DIR] = "";
+	char tal[_MAX_PATH] = "";
 	strcpy(tal,editor_path);
 	strcat(tal,"//pk2le_dir.ini");
 	//Level_Editor_Log_Write("saving pk2le_dir.ini.", LOG_INFO);
@@ -856,7 +855,7 @@ int Level_Editor_Map_Update(){
 	DWORD tod_leveys;
 	BYTE vari_taka, vari_etu, vari, vari_sprite;
 
-	PisteDraw_Piirto_Aloita(kuva_kartta, *&buffer, (DWORD &)tod_leveys);
+	PisteDraw2_DrawImage_Start(kuva_kartta, *&buffer, (DWORD &)tod_leveys);
 
 	for (int x=0; x<PK2KARTTA_KARTTA_LEVEYS; x++){
 		for (int y=0; y<PK2KARTTA_KARTTA_KORKEUS; y++){
@@ -893,7 +892,7 @@ int Level_Editor_Map_Update(){
 		}
 	}
 
-	PisteDraw_Piirto_Lopeta(kuva_kartta);
+	PisteDraw2_DrawImage_End(kuva_kartta);
 
 	Level_Editor_Calculate_Sprites();
 
@@ -912,7 +911,7 @@ int Level_Editor_Map_Defaults(){
 		strcpy(tiedosto,"tiles01.bmp");
 		Level_Editor_Aseta_Palikat(tiedosto);
 
-		//PisteDraw_Lataa_Kuva(kartta->palikat_buffer,tiedosto,false);
+		//PisteDraw3_Lataa_Kuva(kartta->palikat_buffer,tiedosto,false);
 	}
 
 	if (strcmp(pk2_path," ")!=0){
@@ -938,7 +937,7 @@ int Level_Editor_Kartta_Alusta(){
 
 	kartta->Tyhjenna();
 
-	PisteDraw_Buffer_Tayta(kartta->taustakuva_buffer,37);
+	PisteDraw2_ImageFill(kartta->taustakuva_buffer,37);
 
 	Level_Editor_Remove_All_Sprites();
 
@@ -998,7 +997,7 @@ int Level_Editor_Kartta_Lataa(char *filename){
 
 	//Level_Editor_Log_Write("trying to load map.", LOG_INFO);
 
-	//DWORD loki_muistia = PisteDraw_Videomuistia();
+	//DWORD loki_muistia = PisteDraw3_Videomuistia();
 	//char muistia[255];
 	//itoa(loki_muistia,muistia,10);
 
@@ -1053,7 +1052,7 @@ int Level_Editor_Kartta_Lataa(char *filename){
 	else
 		Level_Editor_Remove_All_Sprites();
 /*
-	char polku[_MAX_DIR];
+	char polku[_MAX_PATH];
 	strcpy(polku,pk2_path);
 	strcat(polku,"/");
 
@@ -1105,7 +1104,7 @@ void Level_Editor_Laske_TileVarit(){
 
 	//Level_Editor_Log_Write("calculating tile colors.", LOG_INFO);
 
-	PisteDraw_Piirto_Aloita(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
+	PisteDraw2_DrawImage_Start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
 
 	for (int tile = 0; tile < 150; tile++){
 
@@ -1164,7 +1163,7 @@ void Level_Editor_Laske_TileVarit(){
 	}
 
 
-	PisteDraw_Piirto_Lopeta(kartta->palikat_buffer);
+	PisteDraw2_DrawImage_End(kartta->palikat_buffer);
 
 }
 
@@ -1343,14 +1342,6 @@ void Level_Editor_Aseta_Taustakuva(char *filename){
 }
 
 int Level_Editor_Init(){
-	//Level_Editor_Log_Start();
-	//Level_Editor_Log_Write("--------------------", LOG_INFO);
-	//Level_Editor_Log_Write("starting new session", LOG_INFO);
-	//Level_Editor_Log_Write("--------------------", LOG_INFO);
-	//Level_Editor_Log_Save("----------------------------------\n");
-	//Level_Editor_Log_Save("Uusi istunto.\n");
-	//Level_Editor_Log_Save("----------------------------------\n");
-
 	for (int ci=0; ci<360; ci++)
 		cos_table[ci] = cos(3.1415*2* (ci%360)/180)*33;
 
@@ -1360,11 +1351,10 @@ int Level_Editor_Init(){
 	PK2Kartta_Cos_Sin(cos_table, sin_table);
 	PK2Kartta_Aseta_Ruudun_Mitat(SCREEN_WIDTH,SCREEN_HEIGHT);
 
-	//getcwd(tyohakemisto, _MAX_PATH);
 	strcpy(tyohakemisto,"./");
 
 	strcpy(pk2_path,tyohakemisto);
-	strcat(pk2_path,"/../res");
+	strcat(pk2_path,"../res");
 
 	strcpy(editor_path,tyohakemisto);
 
@@ -1376,35 +1366,18 @@ int Level_Editor_Init(){
 
 	//MessageBox(0, "Welcome to Pekka Kana 2 Level Editor:)","PK2 Level Editor 0.91", MB_OK);
 
-	if ((PisteInput_Alusta()) == PI_VIRHE)
-		Error = true;
+	kuva_editori = PisteDraw2_Image_Load("../res/editor/pk2edit.bmp", true);
+	if(kuva_editori < 0) Error = true;
 
-	if ((PisteDraw_Start(SCREEN_WIDTH, SCREEN_HEIGHT, GAME_NAME)) == PD_VIRHE)
+	if (kuva_kartta  = PisteDraw2_Image_New(PK2KARTTA_KARTTA_LEVEYS,PK2KARTTA_KARTTA_KORKEUS) == -1)
 		Error = true;
-
-
-	if ((kuva_editori = PisteDraw_Buffer_Uusi(SCREEN_WIDTH,SCREEN_HEIGHT, true, 255)) == PD_VIRHE)
-		Error = true;
-
-	if ((kuva_kartta  = PisteDraw_Buffer_Uusi(PK2KARTTA_KARTTA_LEVEYS,PK2KARTTA_KARTTA_KORKEUS, false, 255)) == PD_VIRHE)
-		Error = true;
-
-	if (PisteDraw_Lataa_Kuva(kuva_editori,"../res/editor/pk2edit.bmp", true) == PD_VIRHE){
-		//Level_Editor_Log_Write("could not load pk2edit.bmp.", LOG_INFO);
-		Error = true;
-	}
 
 	kartta  = new PK2Kartta();
 	undo	= new PK2Kartta();
 
-	if ((fontti1 = PisteDraw_Font_Uusi(kuva_editori,1,456,8,8,52)) == PD_VIRHE)
+	if ((fontti1 = PisteDraw2_Font_Create(kuva_editori,1,456,8,8,52)) == -1)
 		Error = true;
-	/*
-	protot[PROTOTYYPPI_KANA].Kana("pk2spr01.bmp");
-	protot[PROTOTYYPPI_MUNA].Muna("pk2spr01.bmp");
-	protot[PROTOTYYPPI_PIKKUKANA].Pikkukana("pk2spr01.bmp");
-	protot[PROTOTYYPPI_OMENA].Omena("pk2spr01.bmp");
-*/
+
 	Level_Editor_Kartta_Alusta();
 
 	//Level_Editor_Map_Defaults();
@@ -1413,11 +1386,7 @@ int Level_Editor_Init(){
 
 	Level_Editor_Save_Undo();
 
-	PisteDraw_Fade_Paletti_In(PD_FADE_NOPEA);
-
-	//PisteWait_Start();
-
-	//Level_Editor_Log_Write("startup completed.", LOG_INFO);
+	PisteDraw2_FadeIn(PD_FADE_FAST);
 
 	Level_Editor_Get_Settings();
 
@@ -1433,7 +1402,7 @@ int Level_Editor_Draw_Nuolet(int x, int y, int menuId){
 	int leveys = 13,
 		korkeus = 27;
 
-	PisteDraw_Buffer_Flip_Nopea(kuva_editori,PD_TAUSTABUFFER,x,y,324,1,337,28);
+	PisteDraw2_Image_CutClip(kuva_editori,x,y,324,1,337,28);
 
 	if (PisteInput_Hiiri_Vasen() && key_delay == 0 && menuId==active_menu){
 		if (mouse_x > x && mouse_x < x+leveys && mouse_y > y && mouse_y < y+korkeus/2){
@@ -1454,8 +1423,8 @@ int Level_Editor_Draw_Nuolet2(int x, int y, int menuId){
 	int leveys = 13,
 		korkeus = 13;
 
-	PisteDraw_Buffer_Flip_Nopea(kuva_editori,PD_TAUSTABUFFER,x,y,   324, 1,337,15);
-	PisteDraw_Buffer_Flip_Nopea(kuva_editori,PD_TAUSTABUFFER,x+14,y,324,15,337,28);
+	PisteDraw2_Image_CutClip(kuva_editori,x,y,   324, 1,337,15);
+	PisteDraw2_Image_CutClip(kuva_editori,x+14,y,324,15,337,28);
 
 	if (PisteInput_Hiiri_Vasen() && key_delay == 0 && menuId==active_menu){
 		if (mouse_x > x && mouse_x < x+13 && mouse_y > y && mouse_y < y+13){
@@ -1474,28 +1443,28 @@ int Level_Editor_Draw_Nuolet2(int x, int y, int menuId){
 
 //Square
 int Level_Editor_Draw_Nelio(int vasen, int yla, int oikea, int ala, BYTE color){
-	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,vasen,yla,oikea,yla+1,color);
-	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,vasen,ala-1,oikea,ala,color);
-	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,vasen,yla,vasen+1,ala,color);
-	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,oikea-1,yla,oikea,ala,color);
+	PisteDraw2_ScreenFill(vasen,yla,oikea,yla+1,color);
+	PisteDraw2_ScreenFill(vasen,ala-1,oikea,ala,color);
+	PisteDraw2_ScreenFill(vasen,yla,vasen+1,ala,color);
+	PisteDraw2_ScreenFill(oikea-1,yla,oikea,ala,color);
 
 	return 0;
 }
 
 //Line
 void Level_Editor_Viiva_Hori(int x, int y, int pituus, BYTE vari){
-	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,x,y,x+pituus,y+1,vari);
+	PisteDraw2_ScreenFill(x,y,x+pituus,y+1,vari);
 }
 
 void Level_Editor_Viiva_Vert(int x, int y, int pituus, BYTE vari){
-	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,x,y,x+1,y+pituus,vari);
+	PisteDraw2_ScreenFill(x,y,x+1,y+pituus,vari);
 }
 
 //Button
 bool Level_Editor_Nappi(char *otsikko, int vasen, int yla, int menuId){
 	bool paalla = false;
 
-	int vali = PisteDraw_Font_Kirjoita(fontti1,otsikko,PD_TAUSTABUFFER,vasen+2,yla+2);
+	int vali = PisteDraw2_Font_Write(fontti1,otsikko,vasen+2,yla+2);
 
 	//BYTE *buffer = NULL;
 	//DWORD tod_leveys;
@@ -1525,7 +1494,7 @@ void Level_Editor_List(TOOL_LIST &lista){
 	if (lista.nakyva){
 		int lista_y = 3;
 
-		PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,lista.x, lista.y, lista.x + 58, lista.y + 75, 12);
+		PisteDraw2_ScreenFill(lista.x, lista.y, lista.x + 58, lista.y + 75, 12);
 
 		if (mouse_x > lista.x && mouse_x < lista.x+58 && mouse_y > lista.y && mouse_y < lista.y+75)
 			edit_screen = EDIT_MENU;
@@ -1548,7 +1517,7 @@ void Level_Editor_List(TOOL_LIST &lista){
 bool Level_Editor_Link(char *otsikko, int vasen, int yla, int menuId){
 	bool paalla = false;
 
-	int vali = PisteDraw_Font_Kirjoita(fontti1,otsikko,PD_TAUSTABUFFER,vasen,yla);
+	int vali = PisteDraw2_Font_Write(fontti1,otsikko,vasen,yla);
 
 	int oikea = vasen+200, //vali,
 		ala   = yla+8;
@@ -1563,15 +1532,15 @@ bool Level_Editor_Link(char *otsikko, int vasen, int yla, int menuId){
 		BYTE *buffer = NULL;
 		DWORD tod_leveys;
 
-		PisteDraw_Piirto_Aloita(PD_TAUSTABUFFER, *&buffer, (DWORD &)tod_leveys);
+		PisteDraw2_DrawScreen_Start(*&buffer, (DWORD &)tod_leveys);
 
 		for (int x = vasen; x <= oikea; x++)
 			for (int y = yla; y <= ala; y++)
 				buffer[x+y*tod_leveys] = 41;
 
-		PisteDraw_Piirto_Lopeta(PD_TAUSTABUFFER);
+		PisteDraw2_DrawScreen_End();
 
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,otsikko,PD_TAUSTABUFFER,vasen,yla,90);
+		PisteDraw2_Font_WriteAlpha(fontti1,otsikko,vasen,yla,90);
 	}
 
 	if (paalla && PisteInput_Hiiri_Vasen() && key_delay == 0){
@@ -1701,12 +1670,12 @@ bool Level_Editor_Input(char *teksti, int vasen, int yla, int lkm, int id, int m
 		}
 	}
 
-	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,vasen,yla,oikea,ala,color);
+	PisteDraw2_ScreenFill(vasen,yla,oikea,ala,color);
 
 	if (editoi)
-		PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,vasen+editKursori*8,yla,vasen+editKursori*8+8,ala,20);
+		PisteDraw2_ScreenFill(vasen+editKursori*8,yla,vasen+editKursori*8+8,ala,20);
 
-	PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,teksti,PD_TAUSTABUFFER,vasen,yla+2,85);
+	PisteDraw2_Font_WriteAlpha(fontti1,teksti,vasen,yla+2,85);
 
 	if (editoi)
 		strcpy(teksti,editTeksti);
@@ -1723,29 +1692,29 @@ int Level_Editor_Menu_Help(int i){
 		y = menut[i].y,//+16,
 		my = y+19;
 
-	PisteDraw_Font_Kirjoita(fontti1,"f1 = help", PD_TAUSTABUFFER, x+3, my);			my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"f2 = map", PD_TAUSTABUFFER, x+3, my);			my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"f3 = tile palette", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"f4 = sprites", PD_TAUSTABUFFER, x+3, my);		my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"f5 = load map/files", PD_TAUSTABUFFER, x+3, my);		my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"f6 = save map", PD_TAUSTABUFFER, x+3, my);		my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"f7 = map information", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"f8 = clear map", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"s  = quick save ", PD_TAUSTABUFFER, x+3, my);	my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"u  = undo ", PD_TAUSTABUFFER, x+3, my);		my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"a  = animate moving tiles", PD_TAUSTABUFFER, x+3, my);	my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"shift = background / foreground", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"mouse left  = draw", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"mouse right = remove", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"mouse left  = paint (map menu)", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"mouse right = go to (map menu)", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"alt + mouse = select area", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"ctrl + c = copy", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"ctrl + b = paste simple", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"ctrl + v = paste pattern", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"ctrl + x = cut", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"arrows = scroll map", PD_TAUSTABUFFER, x+3, my);my+=9;
-	PisteDraw_Font_Kirjoita(fontti1,"esc = exit", PD_TAUSTABUFFER, x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"f1 = help", x+3, my);			my+=9;
+	PisteDraw2_Font_Write(fontti1,"f2 = map", x+3, my);			my+=9;
+	PisteDraw2_Font_Write(fontti1,"f3 = tile palette", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"f4 = sprites", x+3, my);		my+=9;
+	PisteDraw2_Font_Write(fontti1,"f5 = load map/files", x+3, my);		my+=9;
+	PisteDraw2_Font_Write(fontti1,"f6 = save map", x+3, my);		my+=9;
+	PisteDraw2_Font_Write(fontti1,"f7 = map information", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"f8 = clear map", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"s  = quick save ", x+3, my);	my+=9;
+	PisteDraw2_Font_Write(fontti1,"u  = undo ", x+3, my);		my+=9;
+	PisteDraw2_Font_Write(fontti1,"a  = animate moving tiles", x+3, my);	my+=9;
+	PisteDraw2_Font_Write(fontti1,"shift = background / foreground", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"mouse left  = draw", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"mouse right = remove", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"mouse left  = paint (map menu)", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"mouse right = go to (map menu)", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"alt + mouse = select area", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"ctrl + c = copy", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"ctrl + b = paste simple", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"ctrl + v = paste pattern", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"ctrl + x = cut", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"arrows = scroll map", x+3, my);my+=9;
+	PisteDraw2_Font_Write(fontti1,"esc = exit", x+3, my);my+=9;
 
 	return 0;
 }
@@ -1754,7 +1723,7 @@ int Level_Editor_Menu_Map(int i){
 	int x = menut[i].x,
 		y = menut[i].y+15;
 
-	PisteDraw_Buffer_Flip_Nopea(kuva_kartta,PD_TAUSTABUFFER, x, y, 0, 0, PK2KARTTA_KARTTA_LEVEYS, PK2KARTTA_KARTTA_KORKEUS);
+	PisteDraw2_Image_CutClip(kuva_kartta, x, y, 0, 0, PK2KARTTA_KARTTA_LEVEYS, PK2KARTTA_KARTTA_KORKEUS);
 
 	if (active_menu == i){
 		if (menut[i].lista.nakyva)
@@ -1799,7 +1768,7 @@ int Level_Editor_Menu_Tiles(int i){
 
 	char luku[10];
 
-	PisteDraw_Buffer_Flip_Nopea(kartta->palikat_buffer,PD_TAUSTABUFFER, x, y, 0, 0+y_plus, 320, 480+y_plus);
+	PisteDraw2_Image_CutClip(kartta->palikat_buffer, x, y, 0, 0+y_plus, 320, 480+y_plus);
 
 	if (active_menu == i){
 		RECT nelio = {0,0,0,0};
@@ -1830,7 +1799,7 @@ int Level_Editor_Menu_Tiles(int i){
 
 		//itoa(px+py+menu_palikat_nayta_y*10+1,luku,10);
 		sprintf(luku, "%i", px+py+menu_palikat_nayta_y*10+1);
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,luku,PD_TAUSTABUFFER,nelio.left+2,nelio.top+2,65);
+		PisteDraw2_Font_WriteAlpha(fontti1,luku,nelio.left+2,nelio.top+2,65);
 
 		if (PisteInput_Hiiri_Vasen() && mouse_y > y)
 		{
@@ -1856,7 +1825,7 @@ int Level_Editor_Menu_Sprites(int i){
 		y = menut[i].y+16;
 	int vali;
 
-	PisteDraw_Aseta_Klipperi(PD_TAUSTABUFFER, menut[i].x, menut[i].y, menut[i].x+menut[i].leveys, menut[i].y+menut[i].korkeus+16);
+	PisteDraw2_SetMask(menut[i].x, menut[i].y, menut[i].x+menut[i].leveys, menut[i].y+menut[i].korkeus+16);
 
 	int piirto_y = 5, piirto_x = 15, rv_korkeus = 0;
 	bool rivinvaihto = false;
@@ -1903,16 +1872,16 @@ int Level_Editor_Menu_Sprites(int i){
 			}
 
 //			itoa(j_luku+1,luku,10);
-//			PisteDraw_Font_Kirjoita(fontti1,luku,PD_TAUSTABUFFER,x+4,y+piirto_y);
+//			PisteDraw2_Font_Write(fontti1,luku,x+4,y+piirto_y);
 			protot[proto].Piirra(x+piirto_x,y+piirto_y,0);
-			PisteDraw_Font_Kirjoita(fontti1,protot[proto].nimi,PD_TAUSTABUFFER,x+120,y+piirto_y);
-			PisteDraw_Font_Kirjoita(fontti1,kartta->protot[proto],PD_TAUSTABUFFER,x+120,y+piirto_y+10);
+			PisteDraw2_Font_Write(fontti1,protot[proto].nimi,x+120,y+piirto_y);
+			PisteDraw2_Font_Write(fontti1,kartta->protot[proto],x+120,y+piirto_y+10);
 
 			if (protot[proto].tyyppi == TYYPPI_PELIHAHMO){
 				if (proto == kartta->pelaaja_sprite)
-					vali = PisteDraw_Font_Kirjoita(fontti1,"player: yes",PD_TAUSTABUFFER,x+120,y+piirto_y+20);
+					vali = PisteDraw2_Font_Write(fontti1,"player: yes",x+120,y+piirto_y+20);
 				else
-					vali = PisteDraw_Font_Kirjoita(fontti1,"player: no",PD_TAUSTABUFFER,x+120,y+piirto_y+20);
+					vali = PisteDraw2_Font_Write(fontti1,"player: no",x+120,y+piirto_y+20);
 
 				if (Level_Editor_Nappi("set player",x+125+vali,y+piirto_y+18,i))
 					kartta->pelaaja_sprite = proto;
@@ -1920,10 +1889,10 @@ int Level_Editor_Menu_Sprites(int i){
 
 			//itoa(j_luku+1,luku,10);
 			sprintf(luku, "%i", j_luku);
-			PisteDraw_Font_Kirjoita(fontti1,luku,PD_TAUSTABUFFER,x+4,y+piirto_y);
+			PisteDraw2_Font_Write(fontti1,luku,x+4,y+piirto_y);
 
-			//vali = PisteDraw_Font_Kirjoita(fontti1,"bonus: ",PD_TAUSTABUFFER,x+240,y+piirto_y);
-			//PisteDraw_Font_Kirjoita(fontti1,protot[proto].bonus_sprite,PD_TAUSTABUFFER,x+240+vali,y+piirto_y);
+			//vali = PisteDraw2_Font_Write(fontti1,"bonus: ",x+240,y+piirto_y);
+			//PisteDraw2_Font_Write(fontti1,protot[proto].bonus_sprite,x+240+vali,y+piirto_y);
 
 
 			Level_Editor_Viiva_Hori(x,y+piirto_y-3,320,13);
@@ -1955,7 +1924,7 @@ int Level_Editor_Menu_Sprites(int i){
 		menu_spritet_eka++;
 	}
 
-	PisteDraw_Aseta_Klipperi(PD_TAUSTABUFFER,0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
+	PisteDraw2_SetMask(0,0,SCREEN_WIDTH,SCREEN_HEIGHT);
 
 	return 0;
 }
@@ -1966,7 +1935,7 @@ int Level_Editor_Menu_Files(int i){
 		linkki_y = 0;
 
 	bool paivita = false;
-	char otsikko[_MAX_DIR];
+	char otsikko[_MAX_PATH];
 
 	if (menu_tiedostot_eka < 0)
 		menu_tiedostot_eka = 0;
@@ -1991,7 +1960,7 @@ int Level_Editor_Menu_Files(int i){
 		if (tiedostot[ti].type != 0){
 			if (tiedostot[ti].type == FILE_DIR && nayta_hakemistot){
 				strcpy(otsikko,tiedostot[ti].name);
-				PisteDraw_Buffer_Flip_Nopea(kuva_editori,PD_TAUSTABUFFER,x+5,y+linkki_y+3,338,1,346,8);
+				PisteDraw2_Image_CutClip(kuva_editori,x+5,y+linkki_y+3,338,1,346,8);
 				//strcat(otsikko,"...");
 				if (Level_Editor_Link(otsikko,x+5+10,y+linkki_y+3,i)){
 					if (chdir(tiedostot[ti].name) == 0){
@@ -2108,7 +2077,7 @@ int Level_Editor_Menu_Files(int i){
 		menu_tiedostot_eka = 0;
 
 		if (strcmp(pk2_path," ")!=0){
-			char temp[_MAX_DIR];
+			char temp[_MAX_PATH];
 			strcpy(temp, pk2_path);
 			strcat(temp,"/sprites");
 			if (chdir(temp) == 0){
@@ -2140,7 +2109,7 @@ int Level_Editor_Menu_Files(int i){
 		menu_tiedostot_eka = 0;
 
 		if (strcmp(pk2_path," ")!=0){
-			char temp[_MAX_DIR];
+			char temp[_MAX_PATH];
 			strcpy(temp, pk2_path);
 			strcat(temp,"/music");
 			if (chdir(temp) == 0){
@@ -2177,7 +2146,7 @@ int Level_Editor_Menu_Save(int i){
 	int x = menut[i].x,
 		y = menut[i].y+16;
 
-	PisteDraw_Font_Kirjoita(fontti1,"type the name of the level:", PD_TAUSTABUFFER, x+3, y+3);
+	PisteDraw2_Font_Write(fontti1,"type the name of the level:", x+3, y+3);
 
 	Level_Editor_Input(mapfile,x+3,y+15,12, KENTTA_FILE,i);
 
@@ -2199,25 +2168,25 @@ int Level_Editor_Menu_Param(int i){
 
 	char luku[20];
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"version", PD_TAUSTABUFFER, x+3, my);
-	PisteDraw_Font_Kirjoita(fontti1,kartta->versio, PD_TAUSTABUFFER, x+3+vali+16, my);my+=12;
+	vali = PisteDraw2_Font_Write(fontti1,"version", x+3, my);
+	PisteDraw2_Font_Write(fontti1,kartta->versio, x+3+vali+16, my);my+=12;
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"name:", PD_TAUSTABUFFER, x+3, my);
+	vali = PisteDraw2_Font_Write(fontti1,"name:", x+3, my);
 	Level_Editor_Input(kartta->nimi,x+83,my,16,KENTTA_NIMI,i);my+=12;
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"file name:", PD_TAUSTABUFFER, x+3, my);
+	vali = PisteDraw2_Font_Write(fontti1,"file name:", x+3, my);
 	Level_Editor_Input(mapfile,x+83,my,12, KENTTA_FILE,i);my+=12;
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"creator:", PD_TAUSTABUFFER, x+3, my);
+	vali = PisteDraw2_Font_Write(fontti1,"creator:", x+3, my);
 	Level_Editor_Input(kartta->tekija,x+83,my,29, KENTTA_TEKIJA,i);my+=12;
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"tile picture:", PD_TAUSTABUFFER, x+3, my);
-	PisteDraw_Font_Kirjoita(fontti1,kartta->palikka_bmp, PD_TAUSTABUFFER, x+3+vali+16, my);my+=12;
+	vali = PisteDraw2_Font_Write(fontti1,"tile picture:", x+3, my);
+	PisteDraw2_Font_Write(fontti1,kartta->palikka_bmp, x+3+vali+16, my);my+=12;
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"background picture:", PD_TAUSTABUFFER, x+3, my);
-	PisteDraw_Font_Kirjoita(fontti1,kartta->taustakuva, PD_TAUSTABUFFER, x+3+vali+16, my);my+=12;
+	vali = PisteDraw2_Font_Write(fontti1,"background picture:", x+3, my);
+	PisteDraw2_Font_Write(fontti1,kartta->taustakuva, x+3+vali+16, my);my+=12;
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"background music:", PD_TAUSTABUFFER, x+3, my);
+	vali = PisteDraw2_Font_Write(fontti1,"background music:", x+3, my);
 	Level_Editor_Input(kartta->musiikki,x+3+vali+16,my,12, KENTTA_MUSIIKKI,i);my+=12;
 
 	int nuoli;
@@ -2232,8 +2201,8 @@ int Level_Editor_Menu_Param(int i){
 
 	//itoa(kartta->jakso,luku,10);
 	sprintf(luku, "%i", kartta->jakso);
-	vali = PisteDraw_Font_Kirjoita(fontti1,"level:", PD_TAUSTABUFFER, x+3, my);
-	PisteDraw_Font_Kirjoita(fontti1,luku, PD_TAUSTABUFFER, x+3+vali+16, my);my+=12;
+	vali = PisteDraw2_Font_Write(fontti1,"level:", x+3, my);
+	PisteDraw2_Font_Write(fontti1,luku, x+3+vali+16, my);my+=12;
 	my+=10;
 
 	nuoli = Level_Editor_Draw_Nuolet2(x+108,my,i);
@@ -2248,21 +2217,21 @@ int Level_Editor_Menu_Param(int i){
 	int min = kartta->aika / 60,
 		sek = kartta->aika % 60;
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"time:", PD_TAUSTABUFFER, x+3, my);
+	vali = PisteDraw2_Font_Write(fontti1,"time:", x+3, my);
 	if (min<10)
-		vali += PisteDraw_Font_Kirjoita(fontti1,"0", PD_TAUSTABUFFER, x+3+vali+16, my);
+		vali += PisteDraw2_Font_Write(fontti1,"0", x+3+vali+16, my);
 	//itoa(min,luku,10);
 	sprintf(luku, "%i", min);
-	vali += PisteDraw_Font_Kirjoita(fontti1,luku, PD_TAUSTABUFFER, x+3+vali+16, my);
+	vali += PisteDraw2_Font_Write(fontti1,luku, x+3+vali+16, my);
 
 	if (sek<10)
-		vali += PisteDraw_Font_Kirjoita(fontti1,":0", PD_TAUSTABUFFER, x+3+vali+16, my);
+		vali += PisteDraw2_Font_Write(fontti1,":0", x+3+vali+16, my);
 	else
-		vali += PisteDraw_Font_Kirjoita(fontti1,":", PD_TAUSTABUFFER, x+3+vali+16, my);
+		vali += PisteDraw2_Font_Write(fontti1,":", x+3+vali+16, my);
 
 	//itoa(sek,luku,10);
 	sprintf(luku, "%i", sek);
-	vali += PisteDraw_Font_Kirjoita(fontti1,luku, PD_TAUSTABUFFER, x+3+vali+16, my);
+	vali += PisteDraw2_Font_Write(fontti1,luku, x+3+vali+16, my);
 
 	my+=16;
 
@@ -2277,7 +2246,7 @@ int Level_Editor_Menu_Param(int i){
 	default								: break;
 	}
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"background scrolling:", PD_TAUSTABUFFER, x+3, my);
+	vali = PisteDraw2_Font_Write(fontti1,"background scrolling:", x+3, my);
 	if (Level_Editor_Nappi(tausta,x+3+vali+16,my,i)){
 		kartta->tausta++;
 		kartta->tausta %= 4;
@@ -2293,7 +2262,7 @@ int Level_Editor_Menu_Param(int i){
 	default								: break;
 	}
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"special:", PD_TAUSTABUFFER, x+3, my);
+	vali = PisteDraw2_Font_Write(fontti1,"special:", x+3, my);
 	if (Level_Editor_Nappi(tausta,x+3+vali+16,my,i)){
 		kartta->ilma++;
 		kartta->ilma %= 5;
@@ -2302,10 +2271,10 @@ int Level_Editor_Menu_Param(int i){
 	my+=19;
 
 	/* Kartan ikoni */
-	vali = PisteDraw_Font_Kirjoita(fontti1,"map icon:", PD_TAUSTABUFFER, x+3, my);
+	vali = PisteDraw2_Font_Write(fontti1,"map icon:", x+3, my);
 	//itoa(kartta->ikoni+1,luku,10);
 	sprintf(luku, "%i", kartta->ikoni+1);
-	PisteDraw_Font_Kirjoita(fontti1, luku, PD_TAUSTABUFFER, x+3+vali+16, my);
+	PisteDraw2_Font_Write(fontti1, luku, x+3+vali+16, my);
 
 	nuoli = Level_Editor_Draw_Nuolet2(x+118,my,i);
 	if (nuoli == 1)
@@ -2319,20 +2288,20 @@ int Level_Editor_Menu_Param(int i){
 	my+=16;
 
 	/* Kartan x-kordinaatti */
-	vali = PisteDraw_Font_Kirjoita(fontti1,"map x:", PD_TAUSTABUFFER, x+3, my);
+	vali = PisteDraw2_Font_Write(fontti1,"map x:", x+3, my);
 	//itoa(kartta->x,luku,10);
 	sprintf(luku, "%i", kartta->x);
-	PisteDraw_Font_Kirjoita(fontti1, luku, PD_TAUSTABUFFER, x+vali+9, my);
+	PisteDraw2_Font_Write(fontti1, luku, x+vali+9, my);
 	nuoli = Level_Editor_Draw_Nuolet2(x+100,my,i);
 	if (nuoli == 1)	kartta->x+= 15;
 	if (nuoli == 2)	kartta->x-= 15;
 	if (kartta->x < 0) kartta->x = 0;
 	if (kartta->x > 620) kartta->x = 620;
 
-	vali = PisteDraw_Font_Kirjoita(fontti1,"map y:", PD_TAUSTABUFFER, x+3+150, my);
+	vali = PisteDraw2_Font_Write(fontti1,"map y:", x+3+150, my);
 	//itoa(kartta->y,luku,10);
 	sprintf(luku, "%i", kartta->y);
-	PisteDraw_Font_Kirjoita(fontti1, luku, PD_TAUSTABUFFER, x+vali+9+150, my);
+	PisteDraw2_Font_Write(fontti1, luku, x+vali+9+150, my);
 	nuoli = Level_Editor_Draw_Nuolet2(x+100+150,my,i);
 	if (nuoli == 1)	kartta->y+=15;
 	if (nuoli == 2)	kartta->y-=15;
@@ -2348,7 +2317,7 @@ int Level_Editor_Menu_Tools(int i){
 	int x = menut[i].x,
 		y = menut[i].y+16;
 
-	//PisteDraw_Font_Kirjoita(fontti1,"", PD_TAUSTABUFFER, x+3, y+3);
+	//PisteDraw2_Font_Write(fontti1,"", x+3, y+3);
 
 	//Level_Editor_Input(mapfile/*kartta->nimi*/,x+3,y+15,12, KENTTA_FILE);
 
@@ -2393,14 +2362,14 @@ int Level_Editor_Menu_Log(int i){
 	for (int l=0;l<MAX_LOG_LABEL;l++){
 
 		if (loki[l].type == LOG_VIRHE){
-			PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER, x+3, y+3+l*9+3, x+7, y+7+l*9+3, 20+64);
+			PisteDraw2_ScreenFill( x+3, y+3+l*9+3, x+7, y+7+l*9+3, 20+64);
 		}
 
 		if (loki[l].type == LOG_INFO){
-			PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER, x+3, y+3+l*9+3, x+7, y+7+l*9+3, 20+96);
+			PisteDraw2_ScreenFill( x+3, y+3+l*9+3, x+7, y+7+l*9+3, 20+96);
 		}
 
-		PisteDraw_Font_Kirjoita(fontti1,loki[l].teksti, PD_TAUSTABUFFER, x+3+8, y+3+l*9);
+		PisteDraw2_Font_Write(fontti1,loki[l].teksti, x+3+8, y+3+l*9);
 
 	}
 
@@ -2412,10 +2381,10 @@ int Level_Editor_Menu_Quit(int i){
 	int x = menut[i].x,
 		y = menut[i].y+16;
 
-	PisteDraw_Font_Kirjoita(fontti1,"do you really want to quit?", PD_TAUSTABUFFER, x+3, y+3);
+	PisteDraw2_Font_Write(fontti1,"do you really want to quit?", x+3, y+3);
 
 	if (Level_Editor_Nappi("quit",x+3,y+20,i)){
-		PisteDraw_Fade_Paletti_Out(PD_FADE_NOPEA);
+		PisteDraw2_FadeOut(PD_FADE_FAST);
 		exit_editor = true;
 		key_delay = 15;
 	}
@@ -2427,7 +2396,7 @@ int Level_Editor_Menu_Quit(int i){
 
 	if (Level_Editor_Nappi("save and quit",x+100,y+20,i)){
 		if (Level_Editor_Map_Save()==0){
-			PisteDraw_Fade_Paletti_Out(PD_FADE_NOPEA);
+			PisteDraw2_FadeOut(PD_FADE_FAST);
 			exit_editor = true;
 		}
 
@@ -2443,7 +2412,7 @@ int Level_Editor_Draw_Menu(int index, bool tayta, BYTE vari){
 
 	leveys = leveys - 14;
 
-	//PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER, menut[index].x-1, menut[index].y-1,
+	//PisteDraw2_ScreenFill( menut[index].x-1, menut[index].y-1,
 	//					   menut[index].x+menut[index].leveys+1, menut[index].y+16+korkeus, 0);
 
 	Level_Editor_Draw_Nelio(menut[index].x-1, menut[index].y-1,
@@ -2453,25 +2422,25 @@ int Level_Editor_Draw_Menu(int index, bool tayta, BYTE vari){
 		double kork = menut[index].korkeus/6.0;
 		double ky = 0;
 		for (int c=0;c<6;c++)	{
-			PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER, menut[index].x, menut[index].y+15+int(ky),
+			PisteDraw2_ScreenFill( menut[index].x, menut[index].y+15+int(ky),
 							   menut[index].x+menut[index].leveys,  menut[index].y+15+int(ky+kork), 6-c+vari);
 			ky += kork;
 		}
 	}
 
-	PisteDraw_Buffer_Flip_Nopea(kuva_editori,PD_TAUSTABUFFER, menut[index].x, menut[index].y,
+	PisteDraw2_Image_CutClip(kuva_editori, menut[index].x, menut[index].y,
 								1, 1, 5, 16);
 
-	PisteDraw_Buffer_Flip_Nopea(kuva_editori,PD_TAUSTABUFFER, menut[index].x+4, menut[index].y,
+	PisteDraw2_Image_CutClip(kuva_editori, menut[index].x+4, menut[index].y,
 								6, 1, 6+leveys, 16);
 
-	PisteDraw_Buffer_Flip_Nopea(kuva_editori,PD_TAUSTABUFFER, menut[index].x+2+leveys, menut[index].y,
+	PisteDraw2_Image_CutClip(kuva_editori, menut[index].x+2+leveys, menut[index].y,
 								311, 1, 323, 16);
 
 	if (index == active_menu)
-		PisteDraw_Font_Kirjoita(fontti1,menut[index].otsikko,PD_TAUSTABUFFER,menut[index].x+5,menut[index].y+3);
+		PisteDraw2_Font_Write(fontti1,menut[index].otsikko,menut[index].x+5,menut[index].y+3);
 	else
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,menut[index].otsikko,PD_TAUSTABUFFER,menut[index].x+5,menut[index].y+3,50);
+		PisteDraw2_Font_WriteAlpha(fontti1,menut[index].otsikko,menut[index].x+5,menut[index].y+3,50);
 
 	switch(index){
 		case MENU_HELP		: Level_Editor_Menu_Help(index);break;
@@ -2612,19 +2581,19 @@ int Level_Editor_Draw_Info(){
 	char luku[40];
 
 	if (edit_screen == EDIT_MAP){
-		vali += PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"x: ",PD_TAUSTABUFFER,2+vali,2,65);
+		vali += PisteDraw2_Font_WriteAlpha(fontti1,"x: ",2+vali,2,65);
 
 		//itoa(kartta_x+mouse_x/32,luku,10);
 		sprintf(luku, "%i", kartta_x+mouse_x/32);
 
-		vali += 8+PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,luku,PD_TAUSTABUFFER,2+vali,2,65);
+		vali += 8+PisteDraw2_Font_WriteAlpha(fontti1,luku,2+vali,2,65);
 
-		vali += PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"y: ",PD_TAUSTABUFFER,2+vali,2,65);
+		vali += PisteDraw2_Font_WriteAlpha(fontti1,"y: ",2+vali,2,65);
 
 		//itoa(kartta_y+mouse_y/32,luku,10);
 		sprintf(luku, "%i", kartta_y+mouse_y/32);
 
-		vali += 10 + PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,luku,PD_TAUSTABUFFER,2+vali,2,65);
+		vali += 10 + PisteDraw2_Font_WriteAlpha(fontti1,luku,2+vali,2,65);
 
 
 		if (focustile_etu != 255)
@@ -2632,51 +2601,51 @@ int Level_Editor_Draw_Info(){
 			sprintf(luku, "%i", focustile_etu+1);
 		else
 			strcpy(luku,"n/a");
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"foreground tile: ",PD_TAUSTABUFFER,2,14,65);
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,luku,PD_TAUSTABUFFER,150,14,65);
+		PisteDraw2_Font_WriteAlpha(fontti1,"foreground tile: ",2,14,65);
+		PisteDraw2_Font_WriteAlpha(fontti1,luku,150,14,65);
 
 		if (focustile_taka != 255)
 			//itoa(focustile_taka+1,luku,10);
 			sprintf(luku, "%i", focustile_taka+1);
 		else
 			strcpy(luku,"n/a");
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"background tile: ",PD_TAUSTABUFFER,2,24,65);
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,luku,PD_TAUSTABUFFER,150,24,65);
+		PisteDraw2_Font_WriteAlpha(fontti1,"background tile: ",2,24,65);
+		PisteDraw2_Font_WriteAlpha(fontti1,luku,150,24,65);
 
 	}
 
 	if (edit_screen == EDIT_SPRITE){
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"sprite: ",PD_TAUSTABUFFER,2,14,65);
+		PisteDraw2_Font_WriteAlpha(fontti1,"sprite: ",2,14,65);
 		if (focussprite != 255)
-			PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,protot[focussprite].nimi,PD_TAUSTABUFFER,90,14,65);
+			PisteDraw2_Font_WriteAlpha(fontti1,protot[focussprite].nimi,90,14,65);
 		else
-			PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"n/a",PD_TAUSTABUFFER,90,14,65);
+			PisteDraw2_Font_WriteAlpha(fontti1,"n/a",90,14,65);
 	}
 
-	vali += PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,kartta->nimi,PD_TAUSTABUFFER,2+vali,2,65);
+	vali += PisteDraw2_Font_WriteAlpha(fontti1,kartta->nimi,2+vali,2,65);
 
-	PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,viesti,PD_TAUSTABUFFER,320,2,65);
+	PisteDraw2_Font_WriteAlpha(fontti1,viesti,320,2,65);
 
 	if (edit_kerros == EDIT_WALLS)
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"layer: both",PD_TAUSTABUFFER,320,12,65);
+		PisteDraw2_Font_WriteAlpha(fontti1,"layer: both",320,12,65);
 	if (edit_kerros == EDIT_BACKGROUND)
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"layer: only background",PD_TAUSTABUFFER,320,12,65);
+		PisteDraw2_Font_WriteAlpha(fontti1,"layer: only background",320,12,65);
 	if (edit_kerros == EDIT_JUST_BACKGROUND)
-		PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"layer: only foreground",PD_TAUSTABUFFER,320,12,65);
+		PisteDraw2_Font_WriteAlpha(fontti1,"layer: only foreground",320,12,65);
 
-	PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"f1=help, f2=map, f3=tiles, f4=sprites, f5=files, f6=save map, f7=map info, f8=tools, f9=log, esc=exit",PD_TAUSTABUFFER,2,SCREEN_HEIGHT-10,75);
+	PisteDraw2_Font_WriteAlpha(fontti1,"f1=help, f2=map, f3=tiles, f4=sprites, f5=files, f6=save map, f7=map info, f8=tools, f9=log, esc=exit",2,SCREEN_HEIGHT-10,75);
 
-	//PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,tyohakemisto,PD_TAUSTABUFFER,2,SCREEN_HEIGHT-25,65);
-	PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,PK2Kartta::pk2_hakemisto,PD_TAUSTABUFFER,2,SCREEN_HEIGHT-25,65);
+	//PisteDraw2_Font_WriteAlpha(fontti1,tyohakemisto,2,SCREEN_HEIGHT-25,65);
+	PisteDraw2_Font_WriteAlpha(fontti1,PK2Kartta::pk2_hakemisto,2,SCREEN_HEIGHT-25,65);
 
-	vali = PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"sprites: ",PD_TAUSTABUFFER,640,2,65);
+	vali = PisteDraw2_Font_WriteAlpha(fontti1,"sprites: ",640,2,65);
 	//itoa(spriteja,luku,10);
 	sprintf(luku, "%i", spriteja);
-	vali += PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,luku,PD_TAUSTABUFFER,640+vali,2,65);
-	vali += PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,"/",PD_TAUSTABUFFER,640+vali,2,65);
+	vali += PisteDraw2_Font_WriteAlpha(fontti1,luku,640+vali,2,65);
+	vali += PisteDraw2_Font_WriteAlpha(fontti1,"/",640+vali,2,65);
 	//itoa(MAX_SPRITES,luku,10);
 	sprintf(luku, "%i", MAX_SPRITES);
-	vali += PisteDraw_Font_Kirjoita_Lapinakyva(fontti1,luku,PD_TAUSTABUFFER,640+vali,2,65);
+	vali += PisteDraw2_Font_WriteAlpha(fontti1,luku,640+vali,2,65);
 
 	return 0;
 }
@@ -2696,14 +2665,14 @@ int Level_Editor_Draw_Cursor(){
 
 	if (edit_screen == EDIT_MAP){
 		Level_Editor_Draw_Nelio(x+1, y+1, x+33, y+33, 0);
-		PisteDraw_Buffer_Flip_Nopea(kartta->palikat_buffer,PD_TAUSTABUFFER, x, y, px, py, px+32, py+32);
+		PisteDraw2_Image_CutClip(kartta->palikat_buffer, x, y, px, py, px+32, py+32);
 		Level_Editor_Draw_Nelio(x, y, x+32, y+32, 57);
 	}
 
 	if (edit_screen == EDIT_SPRITE)
 		protot[proto_valittu].Piirra(x+16-protot[proto_valittu].leveys/2,y-protot[proto_valittu].korkeus+32,0);
 
-	PisteDraw_Buffer_Flip_Nopea(kuva_editori,PD_TAUSTABUFFER,mouse_x, mouse_y, 1, 33, 19, 51);
+	PisteDraw2_Image_CutClip(kuva_editori,mouse_x, mouse_y, 1, 33, 19, 51);
 
 	return 0;
 }
@@ -2725,28 +2694,28 @@ int Level_Editor_Draw(){
 
 	palikka_animaatio = 1 + palikka_animaatio % 99;//100
 
-	PisteDraw_Buffer_Tayta(PD_TAUSTABUFFER,37);
+	PisteDraw2_ScreenFill(37);
 
 	switch(kartta->tausta){
 		case TAUSTA_STAATTINEN:
-			PisteDraw_Buffer_Flip_Nopea(kartta->taustakuva_buffer,PD_TAUSTABUFFER,0,0);
+			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,0);
 			break;
 
 		case TAUSTA_PALLARX_HORI:
-			PisteDraw_Buffer_Flip_Nopea(kartta->taustakuva_buffer,PD_TAUSTABUFFER,0,0);
-			PisteDraw_Buffer_Flip_Nopea(kartta->taustakuva_buffer,PD_TAUSTABUFFER,640,0);
+			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,0);
+			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640,0);
 			break;
 
 		case TAUSTA_PALLARX_VERT:
-			PisteDraw_Buffer_Flip_Nopea(kartta->taustakuva_buffer,PD_TAUSTABUFFER,0,0);
-			PisteDraw_Buffer_Flip_Nopea(kartta->taustakuva_buffer,PD_TAUSTABUFFER,0,480);
+			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,0);
+			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,480);
 			break;
 
 		case TAUSTA_PALLARX_VERT_JA_HORI:
-			PisteDraw_Buffer_Flip_Nopea(kartta->taustakuva_buffer,PD_TAUSTABUFFER,0,0);
-			PisteDraw_Buffer_Flip_Nopea(kartta->taustakuva_buffer,PD_TAUSTABUFFER,640,0);
-			PisteDraw_Buffer_Flip_Nopea(kartta->taustakuva_buffer,PD_TAUSTABUFFER,0,480);
-			PisteDraw_Buffer_Flip_Nopea(kartta->taustakuva_buffer,PD_TAUSTABUFFER,640,480);
+			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,0);
+			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640,0);
+			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,480);
+			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640,480);
 			break;
 
 		default:
@@ -2768,14 +2737,6 @@ int Level_Editor_Draw(){
 
 	if (active_menu == MENU_EI)
 		Level_Editor_Edit_Map();
-
-	//PisteWait_Wait(10);
-
-	//PisteDraw_Paivita_Naytto();
-
-	//PisteWait_Start();
-
-	//Level_Editor_Log_Save("Piirtorutiinit on suoritettu.");
 
 	return 0;
 }
@@ -3047,7 +3008,7 @@ int Level_Editor_Main(){
 
 	}
 
-	if (exit_editor && PisteDraw_Fade_Paletti_Valmis()){
+	if (exit_editor && PisteDraw2_IsFading()){
 		//SendMessage(0, WM_CLOSE,0,0);
 		running = false;
 	}
@@ -3073,11 +3034,9 @@ int Level_Editor_Quit(){
 
 int main(int argc, char *argv[]){
 
-	Piste_Init();
+	Piste_Init(SCREEN_WIDTH, SCREEN_HEIGHT, GAME_NAME);
 
 	Level_Editor_Init();
-
-	//PisteDraw_Start_Debugger();
 
 	Piste_Loop(running,*Level_Editor_Main);
 

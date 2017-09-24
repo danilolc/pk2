@@ -13,6 +13,7 @@
 
 #include "map.h"
 #include "PisteDraw.h"
+#include "PisteUtils.h"
 
 using namespace std;
 
@@ -45,14 +46,14 @@ bool PK2Kartta_Onko_File(char *filename){
 
 	struct stat st;
 	bool ret = (stat(filename, &st) == 0);
-	if(!ret && PisteDraw_Locate_Kuva(filename) != NULL) ret = true;
+	if(!ret && PisteUtils_FindImage(filename) != NULL) ret = true;
 	if(!ret) printf("PK2Map asked about non-existing file: %s\n", filename);
 
 
 	if(!ret){
 		for (int i=0 ; filename[i]!='\0' ; i++)
         	filename[i]=tolower(filename[i]);
-		if(PisteDraw_Locate_Kuva(filename) != NULL) ret = true;
+		if(PisteUtils_FindImage(filename) != NULL) ret = true;
 	}
 
 

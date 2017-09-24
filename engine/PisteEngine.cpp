@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#ifdef WINDOWS
+#ifdef _WIN32
 	#include <windows.h>
 #else
 	#define _MAX_PATH PATH_MAX
@@ -43,8 +43,6 @@ int EngineLogic(bool &running){
 	if(PisteInput_Lue_Kontrolli(PI_R))
 		Piste_IgnoreFrame();
 
-	//TODO - Test PisteDraw2
-	PisteDraw_Paivita_Naytto(draw);
 	PisteDraw2_Update(draw, d_time, real_fps);
 	draw = true;
 

@@ -5,6 +5,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <sys/stat.h>
 #include <ctype.h>
 #include <dirent.h>
 
@@ -22,6 +23,37 @@ void PisteUtils_RemoveSpace(char* string){
 		string[len-2]='\0';
 		len--;
 	}
+}
+
+char *PisteUtils_FindImage(char *filename){
+	struct stat st;
+  char *ret = strdup(filename);
+
+  // expecting it to be 6+3 dos filename
+  char *ext = strrchr(ret, '.');
+  if(ext == NULL) return NULL;
+
+  // cut up the path and file base components
+  char *base = strrchr(ret, '/');
+  // just a filename without dir
+  if(base == NULL) base = ret;
+
+	strcpy(ext, ".png");
+  if(stat(ret, &st) == 0)
+    return ret;
+  else{
+		char *c = base;
+  	while(c != ext) *c++ = toupper(*c);
+
+    if(stat(ret, &st) == 0)
+      return ret;
+    else{
+			strcpy(ext, ".bmp");
+      if(stat(ret, &st) == 0)
+        return ret;
+    }
+  }
+  return NULL;
 }
 
 //This need to receive just the filename, not the path
