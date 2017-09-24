@@ -1369,8 +1369,8 @@ int Level_Editor_Init(){
 	kuva_editori = PisteDraw2_Image_Load("../res/editor/pk2edit.bmp", true);
 	if(kuva_editori < 0) Error = true;
 
-	if (kuva_kartta  = PisteDraw2_Image_New(PK2KARTTA_KARTTA_LEVEYS,PK2KARTTA_KARTTA_KORKEUS) == -1)
-		Error = true;
+	kuva_kartta = PisteDraw2_Image_New(PK2KARTTA_KARTTA_LEVEYS,PK2KARTTA_KARTTA_KORKEUS);
+	if(kuva_kartta < 0) Error = true;
 
 	kartta  = new PK2Kartta();
 	undo	= new PK2Kartta();
