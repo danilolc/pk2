@@ -14,6 +14,7 @@
 #endif
 
 #include "PisteUtils.h"
+#include "platform.h"
 
 void PisteUtils_Lower(char* string){
 	int i;

@@ -1,10 +1,9 @@
-// Win32 redefinitions and stuff to make MSVC happy
-// Pretty lazy huh? :) Need to do this in a better way
+// Platform defs
+#ifndef PLATFORM_H
+#define PLATFORM_H
 
-// this silences error C4996 (eg. 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead.)
-#ifndef _CRT_SECURE_NO_WARNINGS
-#define _CRT_SECURE_NO_WARNINGS
-#endif
+// Win32 redefinitions and stuff to make MSVC happy
+#if defined (_WIN32) && defined (_MSC_VER)
 
 // silence macro definition warnings (C4005)
 #pragma warning(disable: 4005)
@@ -22,6 +21,8 @@
 #define strdup _strdup
 #endif
 
+
+// require #include <direct.h>
 #ifndef getcwd
 #define getcwd _getcwd
 #endif
@@ -33,3 +34,12 @@
 #ifndef chdir
 #define chdir _chdir
 #endif
+
+#endif // _WIN32 && _MSC_VER
+
+
+#ifndef _MAX_PATH
+#define _MAX_PATH 128
+#endif
+
+#endif // PLATFORM_H

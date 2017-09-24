@@ -5,6 +5,9 @@
 
 #include <SDL2/SDL.h>
 #include <string>
+#ifdef _WIN32
+#include <direct.h>
+#endif
 #include "PisteEngine.h"
 
 using namespace std;
@@ -12,6 +15,7 @@ using namespace std;
 #ifdef _WIN32
 	#include "stdio.h"
 	#include "stdlib.h"
+	#include "winlite.h"
 #else
 	#define _MAX_PATH PATH_MAX
 	#include <unistd.h>
@@ -57,7 +61,7 @@ int Setcwd(){
 	char exepath[_MAX_PATH];
 	int count, find;
 
-	#ifdef WINDOWS
+	#ifdef _WIN32
 		string(exepath, GetModuleFileName(NULL, exepath, _MAX_PATH));
 	#else
 		count = readlink("/proc/self/exe", exepath, _MAX_PATH);
