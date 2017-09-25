@@ -13,8 +13,10 @@
 
 #include <SDL2/SDL_image.h>
 
+#include "platform.h"
+
 #ifdef _WIN32
-#include "win32hacks.h"
+#include "win32_clock.h"
 #endif
 
 const int MAX_IMAGES = 2000;
@@ -182,7 +184,7 @@ int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
 	return 0;
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha){
-	PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha, 0);
+	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha, 0);
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum){
 	BYTE *imagePix = NULL;
@@ -287,6 +289,7 @@ int PisteDraw2_DrawImage_Start(int index, BYTE* &pixels, DWORD &pitch){
 }
 int PisteDraw2_DrawImage_End(int index){
 	SDL_UnlockSurface(imageList[index]);
+	return 0;
 }
 BYTE PisteDraw2_BlendColors(BYTE color, BYTE colBack, int alpha){
 	int result;

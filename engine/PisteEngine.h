@@ -6,9 +6,7 @@
 #ifndef P_ENGINE
 #define P_ENGINE
 
-#ifdef _WIN32
-#include "win32hacks.h"
-#endif
+#include "platform.h"
 
 #include "types.h"
 

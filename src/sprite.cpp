@@ -13,7 +13,7 @@
 #include "PisteDraw.h"
 #include "PisteSound.h"
 
-#define _MAX_PATH 128
+#include "platform.h"
 
 using namespace std;
 

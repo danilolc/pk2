@@ -39,14 +39,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)res\</OutDir>
+    <OutDir>..\res\</OutDir>
+    <IntDir>pk2\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/win32/include;$(SolutionDir)/src;$(SolutionDir)/engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;../src;../engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -86,12 +87,14 @@
     <ClInclude Include="..\engine\PisteFont.h" />
     <ClInclude Include="..\engine\PisteInput.h" />
     <ClInclude Include="..\engine\PisteLanguage.h" />
+    <ClInclude Include="..\engine\platform.h" />
     <ClInclude Include="..\engine\PisteSound.h" />
     <ClInclude Include="..\engine\PisteUtils.h" />
     <ClInclude Include="..\engine\types.h" />
     <ClInclude Include="..\src\map.h" />
     <ClInclude Include="..\src\sprite.h" />
-    <ClInclude Include="include\win32hacks.h" />
+    <ClInclude Include="include\win32_clock.h" />
+    <ClInclude Include="include\winlite.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\x86\SDL2.lib" />

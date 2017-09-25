@@ -92,7 +92,13 @@
     <ClInclude Include="..\src\sprite.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="include\win32hacks.h">
+    <ClInclude Include="..\engine\platform.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\win32_clock.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\winlite.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>
