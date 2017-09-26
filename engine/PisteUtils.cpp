@@ -4,13 +4,14 @@
 //#########################
 
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <sys/stat.h>
 #include <ctype.h>
 #ifdef _WIN32
-#include <io.h>
+	#include <io.h>
 #else
-#include <dirent.h>
+	#include <dirent.h>
 #endif
 
 #include "PisteUtils.h"
@@ -74,7 +75,9 @@ void getext(char* string){
 		string[i] = string[b+i];
 	string[i] = '\0';
 }
+
 #ifdef _WIN32
+
 int PisteUtils_Scandir(const char* type, char* dir, char (*list)[128], int length){
     struct _finddata_t map_file;
     long hFile;
@@ -104,7 +107,13 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[128], int lengt
 
 	return i;
 }
+int PisteUtils_CreateDir(char *directory){
+	//TODO
+	return 0;
+}
+
 #else
+
 int PisteUtils_Scandir(const char* type, char* dir, char (*list)[128], int length){
 	int i, numb = 0, files = 0;
 	char ext[128];
@@ -130,4 +139,12 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[128], int lengt
 
 	return files;
 }
+int PisteUtils_CreateDir(char *directory){
+	char shell[_MAX_PATH];
+	strcpy(shell,"mkdir -p ");
+	strcat(shell,directory);
+	system(shell);
+	return 0;
+}
+
 #endif

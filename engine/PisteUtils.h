@@ -9,6 +9,7 @@
 void  PisteUtils_Lower(char* string);
 void  PisteUtils_RemoveSpace(char* string);
 char *PisteUtils_FindImage(char *filename);
+int   PisteUtils_CreateDir(char *directory);
 
 //type:
 // "/" - directory

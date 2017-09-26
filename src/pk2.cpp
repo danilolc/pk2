@@ -614,13 +614,10 @@ int txt_setup_options,
 
 //#### Prototypes
 
+int PK_Asetukset_Tallenna(char *filename);
 int  PK_Kartta_Aseta_Spritet();
 void PK_Esineet_Alusta();
 void PK_Lisaa_Episodin_Hakemisto(char *tiedosto);
-
-
-
-
 
 //#### Functions
 
@@ -655,6 +652,9 @@ void PK_Asetukset_Alusta(){
 	asetukset.kontrolli_hyokkays1		= PI_RCONTROL;
 	asetukset.kontrolli_hyokkays2		= PI_RSHIFT;
 	asetukset.kontrolli_kayta_esine		= PI_SPACE;
+
+	PisteUtils_CreateDir("data");
+	PK_Asetukset_Tallenna("data/settings.ini");
 }
 //PK_Settings_Open
 int PK_Asetukset_Lataa(char *filename){

@@ -3,8 +3,7 @@ doc.txt
 bin/
 build/
 
-res/data/saves.dat
-res/data/settings.ini
+res/data/
 res/editor/settings.dat
 res/episodes/*/scores.dat
 
