@@ -52,7 +52,7 @@ int PisteDraw2_Font_Create(char* path, char* file);
 int PisteDraw2_Font_Write(int font_index, const char* text, int x, int y);
 int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha);
 
-void PisteDraw2_FullScreen();
+void PisteDraw2_FullScreen(bool set);
 void PisteDraw2_AdjustScreen();
 int PisteDraw2_Start(int width, int height, const char* name);
 int PisteDraw2_Exit();

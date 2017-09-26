@@ -346,8 +346,8 @@ int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, B
 	return fontList[font_index]->Write_TextTrasparent(x, y, text, alpha);
 }
 
-void PisteDraw2_FullScreen(){
-	SDL_SetWindowFullscreen(PD_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+void PisteDraw2_FullScreen(bool set){
+	SDL_SetWindowFullscreen(PD_Window, set ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
 void PisteDraw2_AdjustScreen(){
 	int w, h;

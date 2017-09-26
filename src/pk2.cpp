@@ -240,6 +240,7 @@ struct PK2ASETUKSET{
 
 int RUUDUN_LEVEYS				= 640;
 int RUUDUN_KORKEUS				= 480;
+bool isFullScreen = false;
 
 int KARTANPIIRTO_LEVEYS   = 800;
 int KARTANPIIRTO_KORKEUS  = 480;
@@ -6464,9 +6465,18 @@ int PK_Piirra_Menut_PaaValikko(){
 	}
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta("full screen",180,my))
-	{
-		PisteDraw2_FullScreen();
+	if(isFullScreen){
+		if (PK_Piirra_Menut_Valinta("windowed screen",180,my))
+		{
+			PisteDraw2_FullScreen(false);
+			isFullScreen = false;
+		}
+	} else{
+		if (PK_Piirra_Menut_Valinta("full screen",180,my))
+		{
+			PisteDraw2_FullScreen(true);
+			isFullScreen = true;
+		}
 	}
 	my += 20;
 
