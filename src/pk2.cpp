@@ -6328,6 +6328,7 @@ bool PK_Piirra_Menut_Valinta(char *teksti, int x, int y){
 		{
 			PK_Soita_Aani_Menu(menu_aani, 100);
 			key_delay = 20;
+			menu_valinta_id++;
 			return true;
 		}
 
@@ -6462,21 +6463,6 @@ int PK_Piirra_Menut_PaaValikko(){
 	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_controls),180,my))
 	{
 		menu_nyt = MENU_KONTROLLIT;
-	}
-	my += 20;
-
-	if(isFullScreen){
-		if (PK_Piirra_Menut_Valinta("windowed screen",180,my))
-		{
-			PisteDraw2_FullScreen(false);
-			isFullScreen = false;
-		}
-	} else{
-		if (PK_Piirra_Menut_Valinta("full screen",180,my))
-		{
-			PisteDraw2_FullScreen(true);
-			isFullScreen = true;
-		}
 	}
 	my += 20;
 
@@ -6725,114 +6711,120 @@ int PK_Piirra_Menut_Tallenna(){
 }
 
 int PK_Piirra_Menut_Grafiikka(){
-	int my = 0;
+	int my = 150;
+	static bool moreOptions = false;
 
 	PK_Piirra_Menu_Nelio(40, 70, 640-40, 410, 224);
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_gfx_title),50,90);
-	my += 150;
 
-	if (asetukset.lapinakyvat_objektit)
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tfx_on),180,my))
-			asetukset.lapinakyvat_objektit = false;
-	}
-	else
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tfx_off),180,my))
-			asetukset.lapinakyvat_objektit = true;
-	}
+	if(moreOptions){
 
-	if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.lapinakyvat_objektit)) {
-		asetukset.lapinakyvat_objektit = !asetukset.lapinakyvat_objektit;
-	}
+		if (isFullScreen){
+			if (PK_Piirra_Menut_Valinta("fullscreen mode is on",180,my)){
+				isFullScreen = false;
+				PisteDraw2_FullScreen(false);
+			}
+		} if (!isFullScreen){
+			if (PK_Piirra_Menut_Valinta("fullscreen mode is off",180,my)){
+				isFullScreen = true;
+				PisteDraw2_FullScreen(true);
+			}
+		}
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, isFullScreen)) {
+			isFullScreen = !isFullScreen;
+		}
+		my += 30;
 
-	my += 30;
+		//Can add more options
 
-	if (asetukset.lapinakyvat_menutekstit)
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tmenus_on),180,my))
-			asetukset.lapinakyvat_menutekstit = false;
-	}
-	else
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tmenus_off),180,my))
-			asetukset.lapinakyvat_menutekstit = true;
-	}
+		if (PK_Piirra_Menut_Valinta("back",100,360))
+			moreOptions = false;
 
-	if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.lapinakyvat_menutekstit)) {
-		asetukset.lapinakyvat_menutekstit = !asetukset.lapinakyvat_menutekstit;
-	}
+	}else {
 
-	my += 30;
+		if (asetukset.lapinakyvat_objektit){
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tfx_on),180,my))
+				asetukset.lapinakyvat_objektit = false;
+		} else{
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tfx_off),180,my))
+				asetukset.lapinakyvat_objektit = true;
+		}
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.lapinakyvat_objektit)) {
+			asetukset.lapinakyvat_objektit = !asetukset.lapinakyvat_objektit;
+		}
+		my += 30;
 
-	if (asetukset.nayta_tavarat)
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_items_on),180,my))
-			asetukset.nayta_tavarat = false;
-	}
-	else
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_items_off),180,my))
-			asetukset.nayta_tavarat = true;
-	}
 
-	if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.nayta_tavarat)) {
-		asetukset.nayta_tavarat = !asetukset.nayta_tavarat;
-	}
+		if (asetukset.lapinakyvat_menutekstit){
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tmenus_on),180,my))
+				asetukset.lapinakyvat_menutekstit = false;
+		} else{
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tmenus_off),180,my))
+				asetukset.lapinakyvat_menutekstit = true;
+		}
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.lapinakyvat_menutekstit)) {
+			asetukset.lapinakyvat_menutekstit = !asetukset.lapinakyvat_menutekstit;
+		}
+		my += 30;
 
-	my += 30;
 
-	if (asetukset.saa_efektit)
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_weather_on),180,my))
-			asetukset.saa_efektit = false;
-	}
-	else
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_weather_off),180,my))
-			asetukset.saa_efektit = true;
-	}
+		if (asetukset.nayta_tavarat){
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_items_on),180,my))
+				asetukset.nayta_tavarat = false;
+		} else{
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_items_off),180,my))
+				asetukset.nayta_tavarat = true;
+		}
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.nayta_tavarat)) {
+			asetukset.nayta_tavarat = !asetukset.nayta_tavarat;
+		}
+		my += 30;
 
-	if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.saa_efektit)) {
-		asetukset.saa_efektit = !asetukset.saa_efektit;
-	}
 
-	my += 30;
+		if (asetukset.saa_efektit){
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_weather_on),180,my))
+				asetukset.saa_efektit = false;
+		} else{
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_weather_off),180,my))
+				asetukset.saa_efektit = true;
+		}
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.saa_efektit)) {
+			asetukset.saa_efektit = !asetukset.saa_efektit;
+		}
+		my += 30;
 
-	if (asetukset.tausta_spritet)
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_bgsprites_on),180,my))
-			asetukset.tausta_spritet = false;
-	}
-	else
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_bgsprites_off),180,my))
-			asetukset.tausta_spritet = true;
-	}
 
-	if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.tausta_spritet)) {
-		asetukset.tausta_spritet = !asetukset.tausta_spritet;
-	}
+		if (asetukset.tausta_spritet){
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_bgsprites_on),180,my))
+				asetukset.tausta_spritet = false;
+		} else{
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_bgsprites_off),180,my))
+				asetukset.tausta_spritet = true;
+		}
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.tausta_spritet)) {
+			asetukset.tausta_spritet = !asetukset.tausta_spritet;
+		}
+		my += 30;
 
-	my += 30;
 
-	if (tuplanopeus)
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_speed_double),180,my))
-			tuplanopeus = false;
-	}
-	else
-	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_speed_normal),180,my))
-			tuplanopeus = true;
-	}
+		if (tuplanopeus){
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_speed_double),180,my))
+				tuplanopeus = false;
+		} else{
+			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_speed_normal),180,my))
+				tuplanopeus = true;
+		}
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, tuplanopeus)) {
+			tuplanopeus = !tuplanopeus;
+		}
+		my += 30;
 
-	if (PK_Piirra_Menut_Valintalaatikko(100, my, tuplanopeus)) {
-		tuplanopeus = !tuplanopeus;
-	}
 
-	my += 30;
+		if (PK_Piirra_Menut_Valinta("more",100,360))
+			moreOptions = true;
+
+	}
 
 	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400))
 		menu_nyt = MENU_PAAVALIKKO;
@@ -7146,23 +7138,23 @@ int PK_Piirra_Menut_Language(){
 }
 //PK_Draw_Menu
 int PK_Piirra_Menut(){
-	PisteDraw2_ScreenFill(0);
+	//PisteDraw2_ScreenFill(0);
 	PisteDraw2_Image_Clip(kuva_tausta,0,0);
 
 	menu_valinta_id = 1;
 
 	switch (menu_nyt)
 	{
-	case MENU_PAAVALIKKO	: PK_Piirra_Menut_PaaValikko(); break;
-	case MENU_EPISODIT		: PK_Piirra_Menut_Episodit();   break;
-	case MENU_GRAFIIKKA		: PK_Piirra_Menut_Grafiikka();  break;
-	case MENU_AANET			: PK_Piirra_Menut_Aanet();		break;
-	case MENU_KONTROLLIT	: PK_Piirra_Menut_Kontrollit(); break;
-	case MENU_NIMI			: PK_Piirra_Menut_Nimi();		break;
-	case MENU_LATAA			: PK_Piirra_Menut_Lataa();		break;
-	case MENU_TALLENNA		: PK_Piirra_Menut_Tallenna();	break;
-	case MENU_LANGUAGE		: PK_Piirra_Menut_Language();	break;
-	default					: PK_Piirra_Menut_PaaValikko(); break;
+	case MENU_PAAVALIKKO : PK_Piirra_Menut_PaaValikko(); break;
+	case MENU_EPISODIT   : PK_Piirra_Menut_Episodit();   break;
+	case MENU_GRAFIIKKA  : PK_Piirra_Menut_Grafiikka();  break;
+	case MENU_AANET      : PK_Piirra_Menut_Aanet();      break;
+	case MENU_KONTROLLIT : PK_Piirra_Menut_Kontrollit(); break;
+	case MENU_NIMI       : PK_Piirra_Menut_Nimi();       break;
+	case MENU_LATAA      : PK_Piirra_Menut_Lataa();      break;
+	case MENU_TALLENNA   : PK_Piirra_Menut_Tallenna();   break;
+	case MENU_LANGUAGE   : PK_Piirra_Menut_Language();   break;
+	default              : PK_Piirra_Menut_PaaValikko(); break;
 	}
 
 	//PK_Partikkelit_Piirra();

@@ -34,7 +34,6 @@ int  PD_screen_width;
 int  PD_screen_height;
 SDL_Rect Screen_dest = {0, 0, 0, 0};
 
-
 bool PD2_loaded = false;
 
 int PD_fade_speed = 0;
