@@ -6826,8 +6826,10 @@ int PK_Piirra_Menut_Grafiikka(){
 
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400))
+	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400)){
 		menu_nyt = MENU_PAAVALIKKO;
+		moreOptions = false;
+	}
 
 	return 0;
 }
