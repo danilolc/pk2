@@ -41,9 +41,12 @@ void GDB_Break(){
 	//Empty function called when press Q to use in GDB ("break GDB_Break()")
 }
 int EngineLogic(bool &running){
-	while(SDL_PollEvent(&event))
+	while(SDL_PollEvent(&event)){
 		if(event.type == SDL_QUIT)
-				running = false;
+			running = false;
+		if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
+			PisteDraw2_AdjustScreen();
+	}
 
 	if(PisteInput_Lue_Kontrolli(PI_R))
 		Piste_IgnoreFrame();

@@ -32,6 +32,9 @@ PisteFont2*		fontList[MAX_FONTS];
 
 int  PD_screen_width;
 int  PD_screen_height;
+SDL_Rect Screen_dest = {0, 0, 0, 0};
+
+
 bool PD2_loaded = false;
 
 int PD_fade_speed = 0;
@@ -346,6 +349,17 @@ int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, B
 void PisteDraw2_FullScreen(){
 	SDL_SetWindowFullscreen(PD_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 }
+void PisteDraw2_AdjustScreen(){
+	int w, h;
+	SDL_GetWindowSize(PD_Window, &w, &h);
+
+	float buff_prop = (float)PD_screen_width / PD_screen_height;
+
+	Screen_dest.w = buff_prop * h;
+	Screen_dest.h = h;
+	Screen_dest.x = (w - Screen_dest.w) / 2;
+	Screen_dest.y = 0;
+}
 int PisteDraw2_Start(int width, int height, const char* name){
 	if(PD2_loaded) return -1;
 
@@ -362,6 +376,8 @@ int PisteDraw2_Start(int width, int height, const char* name){
 
 	PD_screen_width = width;
 	PD_screen_height = height;
+	PisteDraw2_AdjustScreen();
+
 	PD2_loaded = true;
 	return 0;
 }
@@ -393,42 +409,27 @@ void PisteDraw2_Update(bool draw, int pc, int fps){
 	if(!PD2_loaded) return;
 
 	char title[100];
-	sprintf(title,"Draw time %i%%, %iFPS",pc,fps);
-	SDL_SetWindowTitle(PD_Window,title);
 
 	if (PisteDraw2_IsFading()){
 		PD_alpha += PD_fade_speed;
 		if(PD_alpha < 0) PD_alpha = 0;
 		if(PD_alpha > 255) PD_alpha = 255;
 	}
-	struct timespec tstart, tend;
-	static double sum = 0;
-	static int count = 0;
 
 	if(draw){
-
-		clock_gettime(CLOCK_MONOTONIC, &tstart);
-
-
-
 		SDL_Texture* texture;
 		BYTE alpha = (BYTE) PD_alpha;
 
 		texture = SDL_CreateTextureFromSurface(PD_Renderer,frameBuffer8);
 		SDL_SetTextureColorMod(texture,alpha,alpha,alpha);
 
-		SDL_RenderCopy(PD_Renderer, texture, NULL, NULL);
+		SDL_RenderClear(PD_Renderer);
+		SDL_RenderCopy(PD_Renderer, texture, NULL, &Screen_dest);
 		SDL_RenderPresent(PD_Renderer);
 
 		SDL_DestroyTexture(texture);
 		SDL_FillRect(frameBuffer8,NULL,0);
 
-
-
-		clock_gettime(CLOCK_MONOTONIC, &tend);
-		sum+=((double)tend.tv_sec + 1.0e-9*tend.tv_nsec) - ((double)tstart.tv_sec + 1.0e-9*tstart.tv_nsec);
-		count++;
-		//printf("Took %.3f ms\n",(sum/count)*1000);
 	}
 
 }
