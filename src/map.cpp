@@ -1140,6 +1140,7 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 
 int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
 	int i;
+	int img;
 	char file[_MAX_PATH];
 	strcpy(file,"");
 	strcpy(file,polku);
@@ -1157,10 +1158,13 @@ int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
 			return 1;
 	}
 
-	i = PisteDraw2_Image_Load(file,false);
-	if(i == -1) return 2;
-	PisteDraw2_Image_Copy(i,this->palikat_buffer);
-	PisteDraw2_Image_Delete(i);
+	img = PisteDraw2_Image_Load(file,false);
+	if(img == -1) return 2;
+	PisteDraw2_Image_Copy(img,this->palikat_buffer);
+	PisteDraw2_Image_Delete(img);
+
+	PisteDraw2_Image_Delete(this->palikat_vesi_buffer); //Delete last water buffer
+	this->palikat_vesi_buffer = PisteDraw2_Image_Cut(this->palikat_buffer,0,416,320,32);
 
 	strcpy(this->palikka_bmp,filename);
 	return 0;
