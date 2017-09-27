@@ -7189,7 +7189,7 @@ int PK_Piirra_Menut(){
 
 	//PisteWait_Wait(0);//10
 
-	//if (PisteDraw2_IsFading())
+	//if (!PisteDraw2_IsFading())
 	//	PisteDraw2_FadeIn(PD_FADE_NORMAL);
 
 
@@ -7693,7 +7693,7 @@ int PK_Main_Intro(){
 
 	introlaskuri++;
 
-	if (siirry_introsta_menuun && PisteDraw2_IsFading()){
+	if (siirry_introsta_menuun && !PisteDraw2_IsFading()){
 		pelin_seuraava_tila = TILA_MENUT;
 		peli_kesken = false;
 	}
@@ -7770,7 +7770,7 @@ int PK_Main_Pistelasku(){
 	if (pistelaskudelay > 0)
 		pistelaskudelay--;
 
-	if (siirry_pistelaskusta_karttaan && PisteDraw2_IsFading()){
+	if (siirry_pistelaskusta_karttaan && !PisteDraw2_IsFading()){
 		/*tarkistetaan oliko viimeinen jakso*/
 
 		if (jakso_indeksi_nyt == EPISODI_MAX_JAKSOJA-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
@@ -7821,7 +7821,7 @@ int PK_Main_Kartta(){
 
 	degree = 1 + degree % 360;
 
-	if (siirry_kartasta_peliin && PisteDraw2_IsFading())
+	if (siirry_kartasta_peliin && !PisteDraw2_IsFading())
 	{
 		pelin_seuraava_tila = TILA_PELI;
 		//strcpy(seuraava_kartta,jaksot[i].tiedosto);
@@ -7975,7 +7975,7 @@ int PK_Main_Peli(){
 			//musiikin_voimakkuus = 0;
 		}
 	}
-	if (lopetusajastin == 1 && PisteDraw2_IsFading()){
+	if (lopetusajastin == 1 && !PisteDraw2_IsFading()){
 		if (jakso_lapaisty) pelin_seuraava_tila = TILA_PISTELASKU;
 		else pelin_seuraava_tila = TILA_KARTTA;
 	}
@@ -8063,7 +8063,7 @@ int PK_Main_Loppu(){
 	loppulaskuri++;
 	introlaskuri = loppulaskuri; // introtekstej� varten
 
-	if (siirry_lopusta_menuun && PisteDraw2_IsFading())
+	if (siirry_lopusta_menuun && !PisteDraw2_IsFading())
 	{
 		pelin_seuraava_tila = TILA_MENUT;
 		menu_nyt = MENU_PAAVALIKKO;
@@ -8167,7 +8167,7 @@ int PK_Main(){
 			PisteDraw2_FadeOut(PD_FADE_FAST);
 		}
 	}
-	if (lopeta_peli && PisteDraw2_IsFading())
+	if (lopeta_peli && !PisteDraw2_IsFading())
 		window_closed = true;
 	running = !PK2_virhe;
 	return 0;

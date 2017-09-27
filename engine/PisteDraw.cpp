@@ -55,21 +55,21 @@ int findfreefont(){
 }
 
 bool PisteDraw2_IsFading(){
-  if (PD_alpha > 0   && PD_fade_speed < 0)
+  if (PD_alpha > 0 && PD_fade_speed < 0)
     return true;
 
-  if (PD_alpha < 255 && PD_fade_speed > 0)
+  if (PD_alpha < 250 && PD_fade_speed > 0)
     return true;
 
   return false;
 }
 int PisteDraw2_FadeOut(int speed){
-	PD_alpha    =  254;
-	PD_fade_speed =  -speed;
+	PD_alpha = 250;
+	PD_fade_speed = -speed;
 	return 0;
 }
 int PisteDraw2_FadeIn(int speed){
-	PD_alpha    =  1;
+	PD_alpha = 0;
 	PD_fade_speed = speed;
 	return 0;
 }
