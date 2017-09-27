@@ -345,6 +345,13 @@ int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, B
 	return fontList[font_index]->Write_TextTrasparent(x, y, text, alpha);
 }
 
+
+int PisteDraw2_SetFilter(const char* filter){
+	if(SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,filter) == SDL_TRUE)
+		return 0;
+
+	return 1;
+}
 void PisteDraw2_FullScreen(bool set){
 	SDL_SetWindowFullscreen(PD_Window, set ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
 }
@@ -359,6 +366,7 @@ void PisteDraw2_AdjustScreen(){
 	Screen_dest.x = (w - Screen_dest.w) / 2;
 	Screen_dest.y = 0;
 }
+
 int PisteDraw2_Start(int width, int height, const char* name){
 	if(PD2_loaded) return -1;
 

@@ -12,6 +12,9 @@
 #define		PD_FADE_NORMAL	10
 #define		PD_FADE_SLOW		5
 
+#define		PD_FILTER_NEAREST  "0"
+#define		PD_FILTER_BILINEAR "1"
+
 struct PD_RECT{
 	int x, y, w, h;
 };
@@ -52,8 +55,10 @@ int PisteDraw2_Font_Create(char* path, char* file);
 int PisteDraw2_Font_Write(int font_index, const char* text, int x, int y);
 int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha);
 
+int PisteDraw2_SetFilter(const char* filter);
 void PisteDraw2_FullScreen(bool set);
 void PisteDraw2_AdjustScreen();
+
 int PisteDraw2_Start(int width, int height, const char* name);
 int PisteDraw2_Exit();
 void PisteDraw2_Update(bool draw,int pc, int fps);

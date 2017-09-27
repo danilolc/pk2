@@ -241,6 +241,7 @@ struct PK2ASETUKSET{
 int RUUDUN_LEVEYS				= 640;
 int RUUDUN_KORKEUS				= 480;
 bool isFullScreen = false;
+bool isFiltered = false;
 
 int KARTANPIIRTO_LEVEYS   = 800;
 int KARTANPIIRTO_KORKEUS  = 480;
@@ -6725,7 +6726,7 @@ int PK_Piirra_Menut_Grafiikka(){
 				isFullScreen = false;
 				PisteDraw2_FullScreen(false);
 			}
-		} if (!isFullScreen){
+		} else{
 			if (PK_Piirra_Menut_Valinta("fullscreen mode is off",180,my)){
 				isFullScreen = true;
 				PisteDraw2_FullScreen(true);
@@ -6736,10 +6737,31 @@ int PK_Piirra_Menut_Grafiikka(){
 		}
 		my += 30;
 
+
+		if (isFiltered){
+			if (PK_Piirra_Menut_Valinta("bilinear filter is on",180,my)){
+				isFiltered = false;
+				PisteDraw2_SetFilter(PD_FILTER_NEAREST);
+			}
+		} else{
+			if (PK_Piirra_Menut_Valinta("bilinear filter is off",180,my)){
+				isFiltered = true;
+				PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
+			}
+		}
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, isFiltered)) {
+			isFiltered = !isFiltered;
+		}
+		my += 30;
+
+
 		//Can add more options
 
-		if (PK_Piirra_Menut_Valinta("back",100,360))
+
+		if (PK_Piirra_Menut_Valinta("back",100,360)){
 			moreOptions = false;
+			menu_valittu_id = 0; //Set menu cursor to 0
+		}
 
 	}else {
 
@@ -6821,8 +6843,10 @@ int PK_Piirra_Menut_Grafiikka(){
 		my += 30;
 
 
-		if (PK_Piirra_Menut_Valinta("more",100,360))
+		if (PK_Piirra_Menut_Valinta("more",100,360)){
 			moreOptions = true;
+			menu_valittu_id = 0; //Set menu cursor to 0
+		}
 
 	}
 
