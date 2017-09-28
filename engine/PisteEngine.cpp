@@ -48,14 +48,14 @@ int EngineLogic(bool &running){
 			PisteDraw2_AdjustScreen();
 	}
 
-	if(PisteInput_Lue_Kontrolli(PI_R))
+	if(PisteInput_Keydown(PI_R))
 		Piste_IgnoreFrame();
 
 	PisteDraw2_Update(draw, d_time, real_fps);
 	draw = true;
 
 	if (debug){
-		if(PisteInput_Lue_Kontrolli(PI_Q)) GDB_Break();
+		if(PisteInput_Keydown(PI_Q)) GDB_Break();
 		fflush(stdout);
 	}
 	return 0;

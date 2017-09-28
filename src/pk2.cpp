@@ -3582,23 +3582,23 @@ int PK_Sprite_Liikuta(int i){
 	if (sprite.pelaaja != 0 && sprite.energia > 0)
 	{
 		/* WALK */
-		if (PisteInput_Lue_Kontrolli(kontrolli_juoksu))
+		if (PisteInput_Keydown(kontrolli_juoksu))
 			lisavauhti = false;
 
 		/* ATTACK 1 */
-		if (PisteInput_Lue_Kontrolli(kontrolli_hyokkays1) && sprite.lataus == 0 && sprite.ammus1 != -1) {
+		if (PisteInput_Keydown(kontrolli_hyokkays1) && sprite.lataus == 0 && sprite.ammus1 != -1) {
 			sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
 		}
 		/* ATTACK 2 */
 		else {
-			if (PisteInput_Lue_Kontrolli(kontrolli_hyokkays2) && sprite.lataus == 0 && sprite.ammus2 != -1)
+			if (PisteInput_Keydown(kontrolli_hyokkays2) && sprite.lataus == 0 && sprite.ammus2 != -1)
 				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
 		}
 
 		/* CROUCH */
 		sprite.kyykky = false;
 
-		if (PisteInput_Lue_Kontrolli(kontrolli_alas) && !sprite.alas)
+		if (PisteInput_Keydown(kontrolli_alas) && !sprite.alas)
 		{
 			sprite.kyykky = true;
 			sprite_yla += sprite_korkeus/1.5;
@@ -3607,7 +3607,7 @@ int PK_Sprite_Liikuta(int i){
 		double a_lisays = 0;
 
 		/* NAVIGATING TO RIGHT */
-		if (PisteInput_Lue_Kontrolli(kontrolli_oikealle))
+		if (PisteInput_Keydown(kontrolli_oikealle))
 		{
 			a_lisays = 0.04;//0.08;
 
@@ -3626,7 +3626,7 @@ int PK_Sprite_Liikuta(int i){
 		}
 
 		/* NAVIGATING TO LEFT */
-		if (PisteInput_Lue_Kontrolli(kontrolli_vasemmalle))
+		if (PisteInput_Keydown(kontrolli_vasemmalle))
 		{
 			a_lisays = -0.04;
 
@@ -3655,7 +3655,7 @@ int PK_Sprite_Liikuta(int i){
 		/* JUMPING */
 		if (sprite.tyyppi->paino > 0)
 		{
-			if (PisteInput_Lue_Kontrolli(kontrolli_hyppy))
+			if (PisteInput_Keydown(kontrolli_hyppy))
 			{
 				if (!sprite.kyykky)
 				{
@@ -3678,17 +3678,17 @@ int PK_Sprite_Liikuta(int i){
 			}
 
 			/* tippuminen hiljaa alasp�in */
-			if (PisteInput_Lue_Kontrolli(kontrolli_hyppy) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
+			if (PisteInput_Keydown(kontrolli_hyppy) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
 				sprite.tyyppi->liitokyky)
 				hidastus = true;
 		}
 		/* MOVING UP AND DOWN */
 		else{ // if the player sprite-weight is 0 - like birds
 
-			if (PisteInput_Lue_Kontrolli(kontrolli_hyppy))
+			if (PisteInput_Keydown(kontrolli_hyppy))
 				sprite_b -= 0.15;
 
-			if (PisteInput_Lue_Kontrolli(kontrolli_alas))
+			if (PisteInput_Keydown(kontrolli_alas))
 				sprite_b += 0.15;
 
 			sprite.hyppy_ajastin = 0;
@@ -6920,8 +6920,7 @@ int PK_Piirra_Menut_Kontrollit(){
 
 	my = 40;
 
-	if (menu_lue_kontrollit > 0)
-	{
+	if (menu_lue_kontrollit > 0){
 		PisteDraw2_ScreenFill(299,74+my+menu_lue_kontrollit*20,584,94+my+menu_lue_kontrollit*20,0);
 		PisteDraw2_ScreenFill(295,70+my+menu_lue_kontrollit*20,580,90+my+menu_lue_kontrollit*20,50);
 	}
@@ -6936,18 +6935,17 @@ int PK_Piirra_Menut_Kontrollit(){
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_controls_useitem),100,90+my);my+=20;
 
 	my = 40;
-	PisteDraw2_Font_Write(fontti2,PisteInput_Lue_Kontrollin_Nimi(kontrolli_vasemmalle),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_Lue_Kontrollin_Nimi(kontrolli_oikealle),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_Lue_Kontrollin_Nimi(kontrolli_hyppy),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_Lue_Kontrollin_Nimi(kontrolli_alas),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_Lue_Kontrollin_Nimi(kontrolli_juoksu),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_Lue_Kontrollin_Nimi(kontrolli_hyokkays1),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_Lue_Kontrollin_Nimi(kontrolli_hyokkays2),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_Lue_Kontrollin_Nimi(kontrolli_kayta_esine),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_vasemmalle),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_oikealle),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_hyppy),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_alas),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_juoksu),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_hyokkays1),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_hyokkays2),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_kayta_esine),310,90+my);my+=20;
 
 	/*
-	if (hiiri_x > 310 && hiiri_x < 580 && hiiri_y > 130 && hiiri_y < my-20)
-	{
+	if (hiiri_x > 310 && hiiri_x < 580 && hiiri_y > 130 && hiiri_y < my-20){
 		menu_lue_kontrollit = (hiiri_y - 120) / 20;
 
 		if (menu_lue_kontrollit < 0 || menu_lue_kontrollit > 8)
@@ -6958,16 +6956,15 @@ int PK_Piirra_Menut_Kontrollit(){
 
 	}*/
 
-	if (menu_lue_kontrollit == 0)
-	{
+	if (menu_lue_kontrollit == 0){
 		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_edit),100,90+my))
 			menu_lue_kontrollit = 1;
+			menu_valittu_id = 0; //Set menu cursor to 0
 	}
 
 	my += 30;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_kbdef),100,90+my))
-	{
+	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_kbdef),100,90+my)){
 		kontrolli_vasemmalle	= PI_LEFT;
 		kontrolli_oikealle		= PI_RIGHT;
 		kontrolli_hyppy			= PI_UP;
@@ -6977,12 +6974,12 @@ int PK_Piirra_Menut_Kontrollit(){
 		kontrolli_hyokkays2		= PI_RSHIFT;
 		kontrolli_kayta_esine	= PI_SPACE;
 		menu_lue_kontrollit = 0;
+		menu_valittu_id = 0;
 	}
 
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_gp4def),100,90+my))
-	{
+	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_gp4def),100,90+my)){
 		kontrolli_vasemmalle	= PI_OHJAIN1_VASEMMALLE;
 		kontrolli_oikealle		= PI_OHJAIN1_OIKEALLE;
 		kontrolli_hyppy			= PI_OHJAIN1_YLOS;
@@ -6992,12 +6989,12 @@ int PK_Piirra_Menut_Kontrollit(){
 		kontrolli_hyokkays2		= PI_OHJAIN1_NAPPI3;
 		kontrolli_kayta_esine	= PI_OHJAIN1_NAPPI4;
 		menu_lue_kontrollit = 0;
+		menu_valittu_id = 0;
 	}
 
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_gp6def),100,90+my))
-	{
+	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_gp6def),100,90+my)){
 		kontrolli_vasemmalle	= PI_OHJAIN1_VASEMMALLE;
 		kontrolli_oikealle		= PI_OHJAIN1_OIKEALLE;
 		kontrolli_hyppy			= PI_OHJAIN1_YLOS;//PI_OHJAIN1_NAPPI1;
@@ -7007,33 +7004,31 @@ int PK_Piirra_Menut_Kontrollit(){
 		kontrolli_hyokkays2		= PI_OHJAIN1_NAPPI4;
 		kontrolli_kayta_esine	= PI_OHJAIN1_NAPPI6;
 		menu_lue_kontrollit = 0;
+		menu_valittu_id = 0;
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400))
-	{
+	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400)){
 		menu_nyt = MENU_PAAVALIKKO;
 		menu_lue_kontrollit = 0;
+		menu_valittu_id = 0;
 	}
 
 	BYTE k = 0;
 
-	if (key_delay == 0 && menu_lue_kontrollit > 0)
-	{
-		k = PisteInput_Lue_Kontrolli();
+	if (key_delay == 0 && menu_lue_kontrollit > 0){
+		k = PisteInput_GetKey();
 
-		if (k != 0)
-		{
-			switch(menu_lue_kontrollit)
-			{
-				case 1 : kontrolli_vasemmalle	= k;break;
-				case 2 : kontrolli_oikealle		= k;break;
-				case 3 : kontrolli_hyppy		= k;break;
-				case 4 : kontrolli_alas			= k;break;
-				case 5 : kontrolli_juoksu		= k;break;
-				case 6 : kontrolli_hyokkays1	= k;break;
-				case 7 : kontrolli_hyokkays2	= k;break;
-				case 8 : kontrolli_kayta_esine	= k;break;
-				default: PK_Soita_Aani_Menu(ammuu_aani,100);break;
+		if (k != 0){
+			switch(menu_lue_kontrollit){
+				case 1 : kontrolli_vasemmalle  = k; break;
+				case 2 : kontrolli_oikealle    = k; break;
+				case 3 : kontrolli_hyppy       = k; break;
+				case 4 : kontrolli_alas        = k; break;
+				case 5 : kontrolli_juoksu      = k; break;
+				case 6 : kontrolli_hyokkays1   = k; break;
+				case 7 : kontrolli_hyokkays2   = k; break;
+				case 8 : kontrolli_kayta_esine = k; break;
+				default: PK_Soita_Aani_Menu(ammuu_aani,100); break;
 			}
 
 			key_delay = 20;
@@ -7042,7 +7037,7 @@ int PK_Piirra_Menut_Kontrollit(){
 
 		if (menu_lue_kontrollit > 8) {
 			menu_lue_kontrollit = 0;
-			menu_valittu_id = 1;
+			menu_valittu_id = 0;
 		}
 	}
 
@@ -7128,16 +7123,6 @@ int PK_Piirra_Menut_Language(){
 	char* next = "next";
 
 	if(totallangs>10){
-		if (PK_Piirra_Menut_Valinta(next,530-(strlen(next)*16/*font weight*/),my)){
-			if(langlistindex<totallangs-10){
-
-				for(i=0;i<9;i++)
-					strcpy(langmenulist[i],langmenulist[i+1]);
-				strcpy(langmenulist[9],langlist[langlistindex+10]);
-				langlistindex++;
-			}
-
-		}
 		if (PK_Piirra_Menut_Valinta("previous",130,my)){
 			if(langlistindex>0){
 
@@ -7145,6 +7130,15 @@ int PK_Piirra_Menut_Language(){
 					strcpy(langmenulist[i],langmenulist[i-1]);
 				strcpy(langmenulist[0],langlist[langlistindex-1]);
 				langlistindex--;
+			}
+		}
+		if (PK_Piirra_Menut_Valinta(next,530-(strlen(next)*16/*font weight*/),my)){
+			if(langlistindex<totallangs-10){
+
+				for(i=0;i<9;i++)
+					strcpy(langmenulist[i],langmenulist[i+1]);
+				strcpy(langmenulist[9],langlist[langlistindex+10]);
+				langlistindex++;
 			}
 		}
 	}
@@ -7876,7 +7870,7 @@ int PK_Main_Menut(){
 	PK_Piirra_Menut();
 
 	if (menu_nyt != menu_ennen)
-		menu_valittu_id = 1;
+		menu_valittu_id = 0;
 
 	degree = 1 + degree % 360;
 
@@ -7957,8 +7951,8 @@ int PK_Main_Peli(){
 		if (lopetusajastin == 0)
 			lopetusajastin = 800;//2000;
 
-		if (PisteInput_Lue_Kontrolli(kontrolli_hyokkays1) || PisteInput_Lue_Kontrolli(kontrolli_hyokkays2) ||
-			PisteInput_Lue_Kontrolli(kontrolli_hyppy) || PisteInput_Keydown(PI_RETURN))
+		if (PisteInput_Keydown(kontrolli_hyokkays1) || PisteInput_Keydown(kontrolli_hyokkays2) ||
+			PisteInput_Keydown(kontrolli_hyppy) || PisteInput_Keydown(PI_RETURN))
 			if (lopetusajastin > 2 && lopetusajastin < 600/*1900*/ && key_delay == 0)
 				lopetusajastin = 2;
 
@@ -7974,7 +7968,7 @@ int PK_Main_Peli(){
 	}
 
 	if (key_delay == 0){
-		if (PisteInput_Lue_Kontrolli(kontrolli_kayta_esine) && spritet[pelaaja_index].energia > 0){
+		if (PisteInput_Keydown(kontrolli_kayta_esine) && spritet[pelaaja_index].energia > 0){
 			PK_Esineet_Kayta();
 			key_delay = 10;
 		}

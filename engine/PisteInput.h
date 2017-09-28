@@ -6,6 +6,8 @@
 #ifndef P_INPUT
 #define P_INPUT
 
+#include "types.h"
+
 #define		PI_VIRHE -1000
 
 #define		PI_MAX_PELIOHJAIMIA 2
@@ -21,7 +23,7 @@
 #define		PI_OHJAIN_NAPPI_5 4
 #define		PI_OHJAIN_NAPPI_6 5
 
-#define		PI_OHJAIN1_VASEMMALLE	110	
+#define		PI_OHJAIN1_VASEMMALLE	110
 #define		PI_OHJAIN1_OIKEALLE		111
 #define		PI_OHJAIN1_YLOS			112
 #define		PI_OHJAIN1_ALAS			113
@@ -63,6 +65,10 @@ struct MOUSE { //RECT
 	int x, y;
 };
 
+const char* PisteInput_KeyName(BYTE key);
+BYTE	PisteInput_GetKey();
+bool	PisteInput_Keydown(int key);
+
 int		PisteInput_Alusta(); //DEP
 int		PisteInput_Lopeta(); //DEP
 bool	PisteInput_Hae_Hiiri(); //DEP
@@ -71,10 +77,8 @@ bool	PisteInput_Hae_Ohjaimet();
 bool	PisteInput_Hiiri_Oikea();
 bool	PisteInput_Hiiri_Vasen();
 MOUSE	PisteInput_Hiiri();
-bool	PisteInput_Keydown(int key);
 bool	PisteInput_Lue_Eventti();
-bool	PisteInput_Lue_Kontrolli(int kontrolli);
-char	PisteInput_Lue_Kontrolli();
+
 char*	PisteInput_Lue_Kontrollin_Nimi(unsigned char kontrolli);
 char	PisteInput_Lue_Nappaimisto(void);
 bool	PisteInput_Ohjain_Nappi(int ohjain, int index);

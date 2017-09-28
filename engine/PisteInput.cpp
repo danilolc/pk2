@@ -39,6 +39,35 @@ const int keylist[] = {
 	SDL_SCANCODE_U,	SDL_SCANCODE_V,	SDL_SCANCODE_W,	SDL_SCANCODE_X,
 	SDL_SCANCODE_Y,	SDL_SCANCODE_Z
 };
+
+const char keynames[][15] = {
+	"unknown key",
+
+	"f1","f2","f3",
+	"f4","f5","f6",
+	"f7","f8","f9",
+	"f10","f11","f12",
+
+	"escape","return",
+	"backspace","space",
+	"delete","end",
+	"tab",
+
+	"left alt","right alt",
+	"left ctrl","right ctrl",
+	"left shift","right shift",
+
+	"arrow left","arrow right",
+	"arrow up","arrow down",
+
+	"a","b","c","d",
+	"e","f","g","h",
+	"i","j","k","l",
+	"m","n","o","p",
+	"q","r","s","t",
+	"u","v","w","x",
+	"y","z"
+};
 /* VARIABLES ---------------------------------------------------------------------------------*/
 
 PELIOHJAIN				PI_joysticks[PI_MAX_PELIOHJAIMIA];
@@ -52,6 +81,23 @@ const Uint8 *m_keymap = SDL_GetKeyboardState(NULL);
 
 /* METHODS -----------------------------------------------------------------------------------*/
 
+const char* PisteInput_KeyName(BYTE key){
+	if(key >= sizeof(keynames) / 15) return keynames[0];
+	return keynames[key+1];
+}
+BYTE PisteInput_GetKey(){
+	SDL_PumpEvents();
+	int key;
+	int count = sizeof(keylist)/sizeof(int);
+
+	for(key=0; key < count; key++)
+		if(m_keymap[keylist[key]]) return key;
+	return 0;
+}
+bool PisteInput_Keydown(int key){
+	SDL_PumpEvents();
+	return m_keymap[keylist[key]];
+}
 
 
 bool PisteInput_Alusta_Ohjaimet(){
@@ -82,11 +128,6 @@ if(SDL_NumJoysticks()>0){
 
 int PisteInput_Alusta(){
 	return 0;
-}
-
-bool PisteInput_Keydown(int key){
-	SDL_PumpEvents();
-	return m_keymap[keylist[key]];
 }
 
 bool PisteInput_Hiiri_Vasen(){
@@ -184,9 +225,7 @@ char PisteInput_Lue_Nappaimisto(void){
 	return('\0');
 }
 
-char PisteInput_Lue_Kontrolli(){
-	return 0;
-}
+
 
 bool PisteInput_Lue_Eventti(){
 	SDL_PumpEvents();
@@ -201,21 +240,6 @@ bool PisteInput_Lue_Eventti(){
 	}
 */
 	return false;
-}
-
-bool PisteInput_Lue_Kontrolli(int k){
-	/*
-	bool pressed = false;
-	for(int i=0; i<SDLK_LAST; i++)
-	if(m_keymap[i])
-	{
-		printf("%i,",i);
-		pressed = true;
-	}
-	if(pressed) printf(" <- is %i here?\n",k);
-	*/
-	//return m_keymap[k];
-	return PisteInput_Keydown(k);
 }
 
 char* PisteInput_Lue_Kontrollin_Nimi(unsigned char k){
