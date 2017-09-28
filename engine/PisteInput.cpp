@@ -62,7 +62,7 @@ SDL_InitSubSystem(SDL_INIT_JOYSTICK);
 if(SDL_NumJoysticks()>0){
   // Open joystick
   joy=SDL_JoystickOpen(0);
-  
+
   if(joy)
   {
     printf("Opened Joystick 0\n");
@@ -73,7 +73,7 @@ if(SDL_NumJoysticks()>0){
   }
   else
     printf("Couldn't open Joystick 0\n");
-  
+
   if(SDL_JoystickOpened(0))
     SDL_JoystickClose(joy);
 	*/
@@ -118,7 +118,7 @@ int PisteInput_Ohjain_X(int ohjain){
 
 int PisteInput_Ohjain_Y(int ohjain){
 	int y = 0;
-	
+
 	if (PI_joysticks[ohjain].available)
 		y = SDL_JoystickGetAxis(PI_joysticks[ohjain].dev, 1);
 
@@ -127,7 +127,7 @@ int PisteInput_Ohjain_Y(int ohjain){
 
 bool PisteInput_Ohjain_Nappi(int ohjain, int index){
 	bool painettu = false;
-	
+
 	if (PI_joysticks[ohjain].available)
 		painettu = SDL_JoystickGetButton(PI_joysticks[ohjain].dev, index);
 
@@ -141,7 +141,7 @@ char *PisteInput_Ohjain_Nimi(int ohjain){
 //Game controller
 bool PisteInput_Hae_Ohjaimet(){
 	bool ok = false;
-	
+
 	for(int ohjain=0; ohjain < PI_MAX_PELIOHJAIMIA; ohjain++)
 	{
 /*
@@ -163,7 +163,7 @@ bool PisteInput_Hae_Ohjaimet(){
 
 bool PisteInput_Hae_Nappaimet(){
 	bool ok = true;
-	
+
 	return ok;
 }
 
@@ -173,8 +173,13 @@ bool PisteInput_Hae_Hiiri(){
 
 char PisteInput_Lue_Nappaimisto(void){
 	SDL_Event event;
+	char c;
 	while(SDL_PollEvent(&event)) {
-		if(event.type==SDL_KEYDOWN) return event.key.keysym.sym;
+		if(event.type==SDL_KEYDOWN) {
+			c = event.key.keysym.sym;
+			if(c >= 48 && c <= 57 || c >= 97 && c <= 122 || c == 32 || c == 46) //Just number, lower case, space and dot
+				return c;
+		}
 	}
 	return('\0');
 }

@@ -6491,24 +6491,23 @@ int PK_Piirra_Menut_PaaValikko(){
 }
 
 int PK_Piirra_Menut_Nimi(){
-	int my = 0,
-		mx = menu_nimi_index*15 + 180 + rand()%2;
+	int mx; //Text cursor
 	char merkki;
 	bool hiiri_alueella = false;
+	int nameSize = (int)strlen(pelaajan_nimi);
 
 	PK_Piirra_Menu_Nelio(90, 150, 640-90, 480-100, 224);
 
 	if (hiiri_x > 180 && hiiri_x < 180+15*20 && hiiri_y > 255 && hiiri_y < 255+18)
-		hiiri_alueella = true;
+		hiiri_alueella = true; //Mouse is in text
 
-	if (hiiri_alueella && PisteInput_Hiiri_Vasen() && key_delay == 0)
-	{
+	if (hiiri_alueella && PisteInput_Hiiri_Vasen() && key_delay == 0){
 		nimiedit = true;
-		menu_nimi_index = (hiiri_x - 180)/15;
+		menu_nimi_index = (hiiri_x - 180)/15; //Set text cursor with the mouse
 		key_delay = 10;
 	}
 
-	if (nimiedit && key_delay == 0) {
+	if (nimiedit && key_delay == 0){
 
 		if (PisteInput_Keydown(PI_LEFT)) {
 			menu_nimi_index--;
@@ -6521,23 +6520,26 @@ int PK_Piirra_Menut_Nimi(){
 		}
 	}
 
-	if (menu_nimi_index >= 19)
-		menu_nimi_index = 18;
+	if (menu_nimi_index >= 20)
+		menu_nimi_index = 19;
 
-	if (menu_nimi_index >= (int)strlen(pelaajan_nimi))
-		menu_nimi_index = (int)strlen(pelaajan_nimi);
+	if (menu_nimi_index >= nameSize)
+		menu_nimi_index = nameSize;
 
 	if (menu_nimi_index < 0)
 		menu_nimi_index = 0;
 
+
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_playermenu_type_name),180,224);
 
-	PisteDraw2_ScreenFill(180-2,255-2,180+20*15+4,255+18+4,0);
-	PisteDraw2_ScreenFill(180,255,180+20*15,255+18,50);
-	if (nimiedit) {
-		PisteDraw2_ScreenFill(mx-2,254,mx+16+3,254+20+3,0);
-		PisteDraw2_ScreenFill(mx-1,254,mx+16,254+20,96+16);
-		PisteDraw2_ScreenFill(mx+12,254,mx+16,254+20,96+8);
+	PisteDraw2_ScreenFill(180-2,255-2,180+19*15+4,255+18+4,0);
+	PisteDraw2_ScreenFill(180,255,180+19*15,255+18,50);
+
+	if (nimiedit) { //Draw text cursor
+		mx = menu_nimi_index*15 + 180 + rand()%2; //Text cursor x
+		PisteDraw2_ScreenFill(mx-2, 254, mx+6+3, 254+20+3, 0);
+		PisteDraw2_ScreenFill(mx-1, 254, mx+6, 254+20, 96+16);
+		PisteDraw2_ScreenFill(mx+4, 254, mx+6, 254+20, 96+8);
 	}
 
 	PK_Piirra_LaineTeksti_Hidas(pelaajan_nimi,fontti2,180,255);
@@ -6549,46 +6551,44 @@ int PK_Piirra_Menut_Nimi(){
 		nimiedit = false;
 	}
 
-	if (merkki != '\0' && (merkki != menu_nimi_ed_merkki || key_delay == 0) && nimiedit)
-	{
-		menu_nimi_ed_merkki = merkki;
+	if (merkki != '\0' && (merkki != menu_nimi_ed_merkki || key_delay == 0) && nimiedit && nameSize < 19) {
+		menu_nimi_ed_merkki = merkki; // Don't write the same letter many times
+		key_delay = 15;
 
-		if (merkki == PI_RETURN) {
+		for(int c = nameSize; c > menu_nimi_index; c--)
+			pelaajan_nimi[c] = pelaajan_nimi[c-1];
+
+		pelaajan_nimi[menu_nimi_index] = merkki;
+		menu_nimi_index++;
+	}
+
+	if (key_delay == 0){
+		if (PisteInput_Keydown(PI_DELETE)) {
+			for (int c=menu_nimi_index;c<19;c++)
+				pelaajan_nimi[c] = pelaajan_nimi[c+1];
+			pelaajan_nimi[19] = '\0';
+			key_delay = 10;
+		}
+
+		if (PisteInput_Keydown(PI_BACK) && menu_nimi_index != 0) {
+			for (int c=menu_nimi_index-1;c<19;c++)
+				pelaajan_nimi[c] = pelaajan_nimi[c+1];
+			pelaajan_nimi[19] = '\0';
+			if(pelaajan_nimi[menu_nimi_index] == '\0') pelaajan_nimi[menu_nimi_index-1] = '\0';
+			menu_nimi_index--;
+			key_delay = 10;
+		}
+
+		if (PisteInput_Keydown(PI_RETURN) && pelaajan_nimi[0] != '\0') {
+			key_delay = 10;
 			merkki = '\0';
 			nimiedit = false;
 			menu_valittu_id = 1;
 		}
-
-		key_delay = 15;
-		pelaajan_nimi[menu_nimi_index] = merkki;
-		menu_nimi_index++;
-
-		//if (hiiri_alueella)
-		//	hiiri_x += 15;
-	}
-
-	if (key_delay == 0)
-	{
-		if (PisteInput_Keydown(PI_DELETE) || PisteInput_Keydown(PI_BACK))
-		{
-			for (int c=menu_nimi_index;c<19;c++)
-				pelaajan_nimi[c] = pelaajan_nimi[c+1];
-				pelaajan_nimi[19] = '\0';
-				key_delay = 10;
-		}
-
-		if (PisteInput_Keydown(PI_BACK))
-		{
-			key_delay = 10;
-			menu_nimi_index--;
-		//if (hiiri_alueella)
-		//	hiiri_x -= 15;
-		}
 	}
 
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_playermenu_continue),180,300))
-	{
+	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_playermenu_continue),180,300)) {
 		menu_nyt = MENU_EPISODIT;
 		menu_nimi_index = 0;
 		nimiedit = false;
@@ -6600,19 +6600,14 @@ int PK_Piirra_Menut_Nimi(){
 			peli_kesken = false;
 			PK_Uusi_Peli();
 		}
-
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_playermenu_clear),340,300))
-	{
+	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_playermenu_clear),340,300)) {
 		memset(pelaajan_nimi,'\0',sizeof(pelaajan_nimi));
-		strcpy(pelaajan_nimi," ");
 		menu_nimi_index = 0;
 	}
 
-
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_exit),180,400))
-	{
+	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_exit),180,400)) {
 		menu_nyt = MENU_PAAVALIKKO;
 		menu_nimi_index = 0;
 		nimiedit = false;
@@ -6633,8 +6628,7 @@ int PK_Piirra_Menut_Lataa(){
 	PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_loadgame_info),50,110);
 	my = -20;
 
-	for (int i=0;i<MAX_TALLENNUKSIA;i++)
-	{
+	for (int i=0;i<MAX_TALLENNUKSIA;i++) {
 		itoa(i+1,ind,10);
 		strcpy(tpaikka,ind);
 		strcat(tpaikka,". ");
@@ -6644,8 +6638,7 @@ int PK_Piirra_Menut_Lataa(){
 		if (PK_Piirra_Menut_Valinta(tpaikka,100,150+my))
 			PK_Tallennukset_Lataa(i);
 
-		if (strcmp(tallennukset[i].episodi," ")!=0)
-		{
+		if (strcmp(tallennukset[i].episodi," ")!=0) {
 			vali = 0;
 			vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_loadgame_episode),400,150+my);
 			vali += PisteDraw2_Font_Write(fontti1,tallennukset[i].episodi,400+vali,150+my);
