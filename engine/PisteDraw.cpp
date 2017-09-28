@@ -207,19 +207,18 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 	if (y_end > PD_screen_height) y_end = PD_screen_height;
 	if (x_start > x_end || y_start > y_end) return -1;
 
-	imagePix = (BYTE*)imageList[index]->pixels;
-	imagePitch = imageList[index]->pitch;
-
+	PisteDraw2_DrawImage_Start(index, *&imagePix, (DWORD &)imagePitch);
 	PisteDraw2_DrawScreen_Start(*&screenPix, (DWORD &)screenPitch);
 	for (posx = x_start; posx < x_end; posx++)
 		for (posy = y_start; posy < y_end; posy++) {
 			color1 = imagePix[(posx-x_start+srcrect.x)+imagePitch*(posy-y_start+srcrect.y)];
 			if (color1 != 255) {
-				color2  = screenPix[posx+screenPitch*posy];
+				color2 = screenPix[posx+screenPitch*posy];
 				screenPix[posx+screenPitch*posy] = PisteDraw2_BlendColors(color1, color2, alpha) + colorsum;
 			}
 		}
 	PisteDraw2_DrawScreen_End();
+	PisteDraw2_DrawImage_End(index);
 	//printf("T\n");
 	return 0;
 }
@@ -247,6 +246,10 @@ int PisteDraw2_Image_FlipHori(int index){
 	SDL_UnlockSurface(imageList[index]);
 	return 0;
 }
+int PisteDraw2_Image_Snapshot(int index){
+	SDL_FillRect(imageList[index], NULL, 0);
+	return SDL_BlitSurface(frameBuffer8, NULL, imageList[index], NULL);
+}
 int PisteDraw2_Image_Delete(int& index){
 	if(index < 0) return -1;
 	if (imageList[index] == NULL) return -1;
@@ -265,7 +268,7 @@ int PisteDraw2_ImageFill(int index, int posx, int posy, int oikea, int ala, BYTE
 	return SDL_FillRect(imageList[index], &r, color);
 }
 int PisteDraw2_ScreenFill(BYTE color){
-	return PisteDraw2_ScreenFill(0, 0, frameBuffer8->w, frameBuffer8->h, color);
+  return PisteDraw2_ScreenFill(0, 0, frameBuffer8->w, frameBuffer8->h, color);
 }
 int PisteDraw2_ScreenFill(int posx, int posy, int oikea, int ala, BYTE color){
 	SDL_Rect r = {posx, posy, oikea-posx, ala-posy};
@@ -276,7 +279,7 @@ void PisteDraw2_SetMask(int x, int y, int w, int h){
 	SDL_SetClipRect(frameBuffer8, &r);
 }
 
-int PisteDraw2_DrawScreen_Start(BYTE *&pixels, DWORD &pitch){
+int PisteDraw2_DrawScreen_Start(BYTE* &pixels, DWORD &pitch){
 	pixels = (BYTE*)frameBuffer8->pixels;
 	pitch = frameBuffer8->pitch;
 	return SDL_LockSurface(frameBuffer8);
@@ -378,6 +381,8 @@ int PisteDraw2_Start(int width, int height, const char* name){
 	PD_Renderer = SDL_CreateRenderer(PD_Window, -1, SDL_RENDERER_ACCELERATED);//| SDL_RENDERER_PRESENTVSYNC);
 
 	frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+	SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
+	SDL_FillRect(frameBuffer8, NULL, 255);
 
 	SDL_ShowCursor(false);
 	SDL_RenderClear(PD_Renderer);
@@ -437,14 +442,12 @@ void PisteDraw2_Update(bool draw, int pc, int fps){
 		SDL_RenderClear(PD_Renderer);
 
 		if(ScreenFit)
-			SDL_RenderCopy(PD_Renderer, texture, NULL, &Screen_dest);
-		else
 			SDL_RenderCopy(PD_Renderer, texture, NULL, NULL);
+		else
+			SDL_RenderCopy(PD_Renderer, texture, NULL, &Screen_dest);
 		SDL_RenderPresent(PD_Renderer);
 
 		SDL_DestroyTexture(texture);
-		SDL_FillRect(frameBuffer8,NULL,0);
-
 	}
 
 }

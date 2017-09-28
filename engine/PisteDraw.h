@@ -36,6 +36,7 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum);
 void PisteDraw2_Image_GetSize(int index, int& w, int& h);
 int PisteDraw2_Image_FlipHori(int index);
+int PisteDraw2_Image_Snapshot(int index);
 int PisteDraw2_Image_Delete(int& index);
 
 int PisteDraw2_ImageFill(int index, BYTE color);
