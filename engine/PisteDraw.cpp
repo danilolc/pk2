@@ -33,6 +33,7 @@ PisteFont2*		fontList[MAX_FONTS];
 int  PD_screen_width;
 int  PD_screen_height;
 SDL_Rect Screen_dest = {0, 0, 0, 0};
+bool ScreenFit = false;
 
 bool PD2_loaded = false;
 
@@ -366,6 +367,9 @@ void PisteDraw2_AdjustScreen(){
 	Screen_dest.x = (w - Screen_dest.w) / 2;
 	Screen_dest.y = 0;
 }
+void PisteDraw2_FitScreen(bool fit){
+	ScreenFit = fit;
+}
 
 int PisteDraw2_Start(int width, int height, const char* name){
 	if(PD2_loaded) return -1;
@@ -431,7 +435,11 @@ void PisteDraw2_Update(bool draw, int pc, int fps){
 		SDL_SetTextureColorMod(texture,alpha,alpha,alpha);
 
 		SDL_RenderClear(PD_Renderer);
-		SDL_RenderCopy(PD_Renderer, texture, NULL, &Screen_dest);
+
+		if(ScreenFit)
+			SDL_RenderCopy(PD_Renderer, texture, NULL, &Screen_dest);
+		else
+			SDL_RenderCopy(PD_Renderer, texture, NULL, NULL);
 		SDL_RenderPresent(PD_Renderer);
 
 		SDL_DestroyTexture(texture);

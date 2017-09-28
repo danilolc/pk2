@@ -242,6 +242,7 @@ int RUUDUN_LEVEYS				= 640;
 int RUUDUN_KORKEUS				= 480;
 bool isFullScreen = false;
 bool isFiltered = false;
+bool isFit = false;
 
 int KARTANPIIRTO_LEVEYS   = 800;
 int KARTANPIIRTO_KORKEUS  = 480;
@@ -6705,6 +6706,7 @@ int PK_Piirra_Menut_Tallenna(){
 }
 
 int PK_Piirra_Menut_Grafiikka(){
+	bool wasFullScreen, wasFiltered, wasFit;
 	int my = 150;
 	static bool moreOptions = false;
 
@@ -6713,16 +6715,17 @@ int PK_Piirra_Menut_Grafiikka(){
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_gfx_title),50,90);
 
 	if(moreOptions){
+		wasFullScreen = isFullScreen;
+		wasFiltered = isFiltered;
+		wasFit = isFit;
 
 		if (isFullScreen){
 			if (PK_Piirra_Menut_Valinta("fullscreen mode is on",180,my)){
 				isFullScreen = false;
-				PisteDraw2_FullScreen(false);
 			}
 		} else{
 			if (PK_Piirra_Menut_Valinta("fullscreen mode is off",180,my)){
 				isFullScreen = true;
-				PisteDraw2_FullScreen(true);
 			}
 		}
 		if (PK_Piirra_Menut_Valintalaatikko(100, my, isFullScreen)) {
@@ -6730,16 +6733,13 @@ int PK_Piirra_Menut_Grafiikka(){
 		}
 		my += 30;
 
-
 		if (isFiltered){
 			if (PK_Piirra_Menut_Valinta("bilinear filter is on",180,my)){
 				isFiltered = false;
-				PisteDraw2_SetFilter(PD_FILTER_NEAREST);
 			}
 		} else{
 			if (PK_Piirra_Menut_Valinta("bilinear filter is off",180,my)){
 				isFiltered = true;
-				PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
 			}
 		}
 		if (PK_Piirra_Menut_Valintalaatikko(100, my, isFiltered)) {
@@ -6747,9 +6747,34 @@ int PK_Piirra_Menut_Grafiikka(){
 		}
 		my += 30;
 
+		if (isFit){
+			if (PK_Piirra_Menut_Valinta("screen fit is on",180,my)){
+				isFit = false;
+			}
+		} else{
+			if (PK_Piirra_Menut_Valinta("screen fit is off",180,my)){
+				isFit = true;
+			}
+		}
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, isFit)) {
+			isFit = !isFit;
+		}
+		my += 30;
+
 
 		//Can add more options
 
+		if(wasFullScreen != isFullScreen)
+			PisteDraw2_FullScreen(isFullScreen);
+
+		if(wasFiltered && !isFiltered)
+			PisteDraw2_SetFilter(PD_FILTER_NEAREST);
+		if(!wasFiltered && isFiltered)
+			PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
+
+		if(wasFit!=isFit)
+			PisteDraw2_FitScreen(isFit);
+			
 
 		if (PK_Piirra_Menut_Valinta("back",100,360)){
 			moreOptions = false;

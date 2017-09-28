@@ -58,6 +58,7 @@ int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, B
 int PisteDraw2_SetFilter(const char* filter);
 void PisteDraw2_FullScreen(bool set);
 void PisteDraw2_AdjustScreen();
+void PisteDraw2_FitScreen(bool fit);
 
 int PisteDraw2_Start(int width, int height, const char* name);
 int PisteDraw2_Exit();
