@@ -15,9 +15,9 @@
 
 #include "platform.h"
 
-#ifdef _WIN32
-#include "win32_clock.h"
-#endif
+//#ifdef _WIN32
+//#include "win32_clock.h"
+//#endif
 
 const int MAX_IMAGES = 2000;
 const int MAX_FONTS = 20;

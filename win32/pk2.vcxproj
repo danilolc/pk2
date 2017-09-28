@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -13,18 +13,19 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{07117172-C1AA-4E87-B798-4787BD53DA1F}</ProjectGuid>
     <RootNamespace>pk2</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -39,8 +40,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\res\</OutDir>
+    <OutDir>..\bin\</OutDir>
     <IntDir>pk2\$(Configuration)\</IntDir>
+    <IncludePath>C:\term\SDL2\VC\SDL2_image-2.0.1\include;C:\term\SDL2\VC\SDL2_mixer-2.0.1\include;C:\term\SDL2\VC\SDL2-2.0.6\include;$(IncludePath)</IncludePath>
+    <TargetName>$(ProjectName)_debug</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\bin\</OutDir>
+    <IntDir>pk2\$(Configuration)\</IntDir>
+    <IncludePath>C:\term\SDL2\VC\SDL2_image-2.0.1\include;C:\term\SDL2\VC\SDL2_mixer-2.0.1\include;C:\term\SDL2\VC\SDL2-2.0.6\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -61,7 +69,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)/src;$(SolutionDir)/engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;../src;../engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -95,12 +104,16 @@
     <ClInclude Include="..\src\sprite.h" />
     <ClInclude Include="include\win32_clock.h" />
     <ClInclude Include="include\winlite.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="lib\x86\SDL2.lib" />
-    <Library Include="lib\x86\SDL2main.lib" />
-    <Library Include="lib\x86\SDL2_image.lib" />
-    <Library Include="lib\x86\SDL2_mixer.lib" />
+    <ResourceCompile Include="pk2.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="sdl2\SDL2.lib" />
+    <Library Include="sdl2\SDL2main.lib" />
+    <Library Include="sdl2\SDL2_image.lib" />
+    <Library Include="sdl2\SDL2_mixer.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

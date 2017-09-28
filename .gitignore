@@ -21,3 +21,7 @@ res/episodes/*/scores.dat
 *.opensdf
 *.suo
 *.sdf
+
+win32/sdl2/
+win32/pk2/
+win32/.vs/

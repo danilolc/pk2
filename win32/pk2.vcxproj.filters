@@ -101,18 +101,26 @@
     <ClInclude Include="include\winlite.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="lib\x86\SDL2.lib">
+    <ResourceCompile Include="pk2.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="sdl2\SDL2.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
-    <Library Include="lib\x86\SDL2main.lib">
+    <Library Include="sdl2\SDL2_image.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
-    <Library Include="lib\x86\SDL2_image.lib">
+    <Library Include="sdl2\SDL2_mixer.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
-    <Library Include="lib\x86\SDL2_mixer.lib">
+    <Library Include="sdl2\SDL2main.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
   </ItemGroup>

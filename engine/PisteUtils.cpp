@@ -10,6 +10,7 @@
 #include <ctype.h>
 #ifdef _WIN32
 	#include <io.h>
+	#include "winlite.h"
 #else
 	#include <dirent.h>
 #endif
@@ -108,7 +109,7 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[128], int lengt
 	return i;
 }
 int PisteUtils_CreateDir(char *directory){
-	//TODO
+	CreateDirectory(directory, NULL);
 	return 0;
 }
 
