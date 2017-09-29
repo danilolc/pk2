@@ -6941,9 +6941,9 @@ int PK_Piirra_Menut_Kontrollit(){
 		kontrolli_oikealle		= PI_RIGHT;
 		kontrolli_hyppy			= PI_UP;
 		kontrolli_alas			= PI_DOWN;
-		kontrolli_juoksu		= PI_LALT;
-		kontrolli_hyokkays1		= PI_LCONTROL;
-		kontrolli_hyokkays2		= PI_LSHIFT;
+		kontrolli_juoksu		= PI_RALT;
+		kontrolli_hyokkays1		= PI_RCONTROL;
+		kontrolli_hyokkays2		= PI_RSHIFT;
 		kontrolli_kayta_esine	= PI_SPACE;
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;

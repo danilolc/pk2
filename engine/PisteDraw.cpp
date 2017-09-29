@@ -357,7 +357,13 @@ int PisteDraw2_SetFilter(const char* filter){
 	return 1;
 }
 void PisteDraw2_FullScreen(bool set){
-	SDL_SetWindowFullscreen(PD_Window, set ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+	if(set)
+		SDL_SetWindowFullscreen(PD_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	else {
+		SDL_SetWindowFullscreen(PD_Window, 0);
+		SDL_SetWindowSize(PD_Window, PD_screen_width, PD_screen_height);
+		SDL_SetWindowPosition(PD_Window, SDL_WINDOWPOS_CENTERED , SDL_WINDOWPOS_CENTERED);
+	}
 }
 void PisteDraw2_AdjustScreen(){
 	int w, h;
@@ -377,7 +383,7 @@ void PisteDraw2_FitScreen(bool fit){
 int PisteDraw2_Start(int width, int height, const char* name){
 	if(PD2_loaded) return -1;
 
-	PD_Window = SDL_CreateWindow(name, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
+	PD_Window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
 	PD_Renderer = SDL_CreateRenderer(PD_Window, -1, SDL_RENDERER_ACCELERATED);//| SDL_RENDERER_PRESENTVSYNC);
 
 	frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);

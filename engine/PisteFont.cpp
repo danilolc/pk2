@@ -199,17 +199,9 @@ int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int a
 						fy *= back_w;
 						fy += fx;
 
-#ifdef _WIN32 // TODO: Windows: Update project to MSVC15 to make binary literals work?
-						color1 &= (unsigned int)0x1F;
-#else
-						color1 &= 0b00011111;
-#endif
+						color1 &= (BYTE)0b00011111;
 						color2 = back_buffer[fy];
-#ifdef _WIN32
-						color3 = color2 & (unsigned int)0xE0;
-#else
-						color3 = color2 & 0b11100000;
-#endif
+						color3 = color2 & (BYTE)0b11100000;
 						color2-= color3;
 						color1 = (color1 * a1 + color2 * a2)/100;
 						back_buffer[fy] = color1 + color3;

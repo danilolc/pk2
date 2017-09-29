@@ -19,8 +19,6 @@ To add a new episode, just download the zip file and extract it to its respectiv
 
  -Sounds volume and frequency don't work
 
- -Screen reduces on Windows
-
 # Things to add or change:
  -Put new options in settings.ini
 
