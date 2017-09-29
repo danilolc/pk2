@@ -10,15 +10,6 @@
 //This code does everything, except the
 //sprite and map managing, that are made
 //in a separated code to be used in the Level Editor.
-//-------------------------
-//Known bugs:
-// -There is no colision between player and sprites wall
-// -Sounds volume and frequency don't work
-// -Set controlls
-// -Menu background
-//
-//TODO:
-// -Draw movable blocks outside screen
 //#########################
 
 #include <iostream>
@@ -7667,7 +7658,7 @@ int PK_Main_Intro(){
 	}
 	if (key_delay > 0) key_delay--;
 	if (key_delay == 0)
-		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE) || introlaskuri == 2500){
+		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE) || introlaskuri == 3500){
 			siirry_introsta_menuun = true;
 			PisteDraw2_FadeOut(PD_FADE_SLOW);
 		}

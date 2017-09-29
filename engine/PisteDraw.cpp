@@ -38,7 +38,7 @@ bool ScreenFit = false;
 bool PD2_loaded = false;
 
 int PD_fade_speed = 0;
-int PD_alpha = 0;
+int PD_alpha = 100;
 
 int findfreeimage(){
 	int i;
@@ -59,13 +59,13 @@ bool PisteDraw2_IsFading(){
   if (PD_alpha > 0 && PD_fade_speed < 0)
     return true;
 
-  if (PD_alpha < 255 && PD_fade_speed > 0)
+  if (PD_alpha < 100 && PD_fade_speed > 0)
     return true;
 
   return false;
 }
 int PisteDraw2_FadeOut(int speed){
-	PD_alpha = 255;
+	PD_alpha = 100;
 	PD_fade_speed = -speed;
 	return 0;
 }
@@ -426,7 +426,7 @@ void PisteDraw2_Update(bool draw, int pc, int fps){
 
 	if(draw){
 		SDL_Texture* texture;
-		BYTE alpha = (BYTE) PD_alpha;
+		BYTE alpha = (BYTE)(PD_alpha*255/100);
 
 		texture = SDL_CreateTextureFromSurface(PD_Renderer,frameBuffer8);
 		SDL_SetTextureColorMod(texture,alpha,alpha,alpha);

@@ -8,9 +8,9 @@
 
 #include "types.h"
 
-#define		PD_FADE_FAST		15
-#define		PD_FADE_NORMAL	10
-#define		PD_FADE_SLOW		5
+#define		PD_FADE_FAST		5
+#define		PD_FADE_NORMAL	2
+#define		PD_FADE_SLOW		1
 
 #define		PD_FILTER_NEAREST  "0"
 #define		PD_FILTER_BILINEAR "1"
