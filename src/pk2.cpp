@@ -5356,7 +5356,7 @@ int PK_Alusta_Tilat(){
 				musiikin_voimakkuus = musiikin_max_voimakkuus;
 			}
 			else{
-				PisteDraw2_Image_Snapshot(kuva_tausta);
+				PisteDraw2_Image_Snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
 				PK_Sumenna_Kuva(kuva_tausta, 640, 480);
 			}
 
@@ -8069,25 +8069,9 @@ int PK_Main(){
 		return 0;
 	}
 
-	MOUSE hiiri = PisteInput_Hiiri(); //TODO - Cursor
+	MOUSE hiiri = PisteInput_UpdateMouse(pelin_tila != TILA_MENUT);
 	hiiri_x = hiiri.x;
 	hiiri_y = hiiri.y;
-
-	//Move mouse with keys
-	if(pelin_tila != TILA_MENUT){
-		hiiri_x += PisteInput_Ohjain_X(PI_PELIOHJAIN_1)/30;
-		hiiri_y += PisteInput_Ohjain_Y(PI_PELIOHJAIN_1)/30;
-
-		if (PisteInput_Keydown(PI_LEFT)) hiiri_x -= 3;
-		if (PisteInput_Keydown(PI_RIGHT)) hiiri_x += 3;
-		if (PisteInput_Keydown(PI_UP)) hiiri_y -= 3;
-		if (PisteInput_Keydown(PI_DOWN)) hiiri_y += 3;
-	}
-
-	if (hiiri_x < 0) hiiri_x = 0;
-	if (hiiri_y < 0) hiiri_y = 0;
-	if (hiiri_x > 640-19) hiiri_x = 640-19;
-	if (hiiri_y > 480-19) hiiri_y = 480-19;
 
 	switch (pelin_tila){
 		case TILA_PELI       : PK_Main_Peli();       break;
@@ -8129,19 +8113,28 @@ int PK_Main(){
 	if (saada && asetukset.musiikki)
 		PisteSound_SetMusicVolume(musiikin_voimakkuus_nyt);
 
+	static bool wasPressed = false;
+
 	if (PisteInput_Keydown(PI_ESCAPE) && key_delay == 0){
 		if (menu_nyt != MENU_PAAVALIKKO || pelin_tila != TILA_MENUT){
 			pelin_seuraava_tila = TILA_MENUT;
 			menu_nyt = MENU_PAAVALIKKO;
-			key_delay = 70;
 			degree_temp = degree;
 		}
-		else if (pelin_tila == TILA_MENUT){
-			lopeta_peli = true;
-			musiikin_voimakkuus = 0;
-			PisteDraw2_FadeOut(PD_FADE_FAST);
+		else if (pelin_tila == TILA_MENUT && !wasPressed && PisteInput_Keydown(PI_ESCAPE)){ // Just pressed escape in menu
+			if(menu_valittu_id == menu_valinta_id-1){
+				if(!lopeta_peli) PisteDraw2_FadeOut(PD_FADE_FAST);
+				lopeta_peli = true;
+				musiikin_voimakkuus = 0;
+			}
+			else {
+				menu_valittu_id = menu_valinta_id-1; // Set to "exit" option
+			}
 		}
 	}
+
+	wasPressed = PisteInput_Keydown(PI_ESCAPE);
+
 	if (lopeta_peli && !PisteDraw2_IsFading())
 		window_closed = true;
 	running = !PK2_virhe;

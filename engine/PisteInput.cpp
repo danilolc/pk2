@@ -7,6 +7,8 @@
 
 #include <SDL2/SDL.h>
 
+#define MOUSE_SPEED 20
+
 struct PELIOHJAIN{
 	SDL_Joystick* dev;
 	bool					available;
@@ -98,6 +100,40 @@ bool PisteInput_Keydown(int key){
 	SDL_PumpEvents();
 	return m_keymap[keylist[key]];
 }
+MOUSE PisteInput_UpdateMouse(bool keyMove){
+	static MOUSE pos;
+	static int lastMouseUpdate=0, dx=0, dy=0;
+
+	if(SDL_GetTicks() - lastMouseUpdate > MOUSE_SPEED) {
+		lastMouseUpdate = SDL_GetTicks();
+		SDL_GetRelativeMouseState(&dx, &dy);
+		pos.x += dx;
+		pos.y += dy;
+	}
+	else {
+		pos.x += dx;
+		pos.y += dy;
+		dx = 0;
+		dy = 0;
+	}
+
+	if(keyMove){
+		pos.x += PisteInput_Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
+		pos.y += PisteInput_Ohjain_Y(PI_PELIOHJAIN_1)/30;
+
+		if (PisteInput_Keydown(PI_LEFT)) pos.x -= 3; //Move mouse with keys
+		if (PisteInput_Keydown(PI_RIGHT)) pos.x += 3;
+		if (PisteInput_Keydown(PI_UP)) pos.y -= 3;
+		if (PisteInput_Keydown(PI_DOWN)) pos.y += 3;
+	}
+
+	if (pos.x < 0) pos.x = 0;
+	if (pos.y < 0) pos.y = 0;
+	if (pos.x > 640-19) pos.x = 640-19;
+	if (pos.y > 480-19) pos.y = 480-19;
+
+	return pos;
+}
 
 
 bool PisteInput_Alusta_Ohjaimet(){
@@ -127,6 +163,7 @@ if(SDL_NumJoysticks()>0){
 }
 
 int PisteInput_Alusta(){
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 	return 0;
 }
 
@@ -138,14 +175,6 @@ bool PisteInput_Hiiri_Vasen(){
 bool PisteInput_Hiiri_Oikea(){
 	SDL_PumpEvents();
 	return SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(SDL_BUTTON_RIGHT);
-}
-
-MOUSE PisteInput_Hiiri(){
-	SDL_PumpEvents();
-	MOUSE pos;
-	SDL_GetMouseState(&pos.x, &pos.y);
-
-	return pos;
 }
 
 int PisteInput_Ohjain_X(int ohjain){

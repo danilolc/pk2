@@ -59,13 +59,13 @@ bool PisteDraw2_IsFading(){
   if (PD_alpha > 0 && PD_fade_speed < 0)
     return true;
 
-  if (PD_alpha < 250 && PD_fade_speed > 0)
+  if (PD_alpha < 255 && PD_fade_speed > 0)
     return true;
 
   return false;
 }
 int PisteDraw2_FadeOut(int speed){
-	PD_alpha = 250;
+	PD_alpha = 255;
 	PD_fade_speed = -speed;
 	return 0;
 }
@@ -426,12 +426,6 @@ void PisteDraw2_Update(bool draw, int pc, int fps){
 
 	char title[100];
 
-	if (PisteDraw2_IsFading()){
-		PD_alpha += PD_fade_speed;
-		if(PD_alpha < 0) PD_alpha = 0;
-		if(PD_alpha > 255) PD_alpha = 255;
-	}
-
 	if(draw){
 		SDL_Texture* texture;
 		BYTE alpha = (BYTE) PD_alpha;
@@ -448,6 +442,12 @@ void PisteDraw2_Update(bool draw, int pc, int fps){
 		SDL_RenderPresent(PD_Renderer);
 
 		SDL_DestroyTexture(texture);
+	}
+
+	if (PisteDraw2_IsFading()){
+		PD_alpha += PD_fade_speed;
+		if(PD_alpha < 0) PD_alpha = 0;
+		if(PD_alpha > 255) PD_alpha = 255;
 	}
 
 }
