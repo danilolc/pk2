@@ -48,14 +48,11 @@ int EngineLogic(bool &running){
 			PisteDraw2_AdjustScreen();
 	}
 
-	if(PisteInput_Keydown(PI_R))
-		Piste_IgnoreFrame();
-
 	PisteDraw2_Update(draw, d_time, real_fps);
-	draw = true;
 
 	if (debug){
 		if(PisteInput_Keydown(PI_Q)) GDB_Break();
+		if(PisteInput_Keydown(PI_R)) Piste_IgnoreFrame();
 		fflush(stdout);
 	}
 	return 0;
@@ -125,6 +122,8 @@ int Piste_Loop(bool &running, int (*GameLogic)()){
 		real_fps = (int)(1000.f/(SDL_GetTicks()-last_time));
 		d_time = 100*(float)(time_3-time_2)/(SDL_GetTicks()-last_time);
 		last_time = SDL_GetTicks();
+
+		draw = true;
 	}
 	return 0;
 }

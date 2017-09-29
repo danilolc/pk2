@@ -446,7 +446,7 @@ DWORD loppulaskuri = 0;
 bool siirry_lopusta_menuun = false;
 
 //GRAFIIKKA
-bool tuplanopeus = false;
+bool doublespeed = false;
 bool skip_frame = false;
 
 //Menus
@@ -6173,18 +6173,10 @@ int PK_Piirra_Peli(){
 		}
 
 
-	if (tuplanopeus)
-		skip_frame = !skip_frame;
-	else
-		skip_frame = false;
+	if (skip_frame) Piste_IgnoreFrame();
 
-	if (!skip_frame)
-	{
-		//PisteWait_Wait(0);//10
-
-
-		//PisteWait_Start();
-	}
+	if (doublespeed) skip_frame = !skip_frame;
+	else skip_frame = false;
 
 	palikka_animaatio = 1 + palikka_animaatio % 34;
 
@@ -6744,7 +6736,8 @@ int PK_Piirra_Menut_Grafiikka(){
 			menu_valittu_id = 0; //Set menu cursor to 0
 		}
 
-	}else {
+	}
+	else {
 
 		if (asetukset.lapinakyvat_objektit){
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tfx_on),180,my))
@@ -6811,15 +6804,15 @@ int PK_Piirra_Menut_Grafiikka(){
 		my += 30;
 
 
-		if (tuplanopeus){
+		if (doublespeed){
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_speed_double),180,my))
-				tuplanopeus = false;
+				doublespeed = false;
 		} else{
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_speed_normal),180,my))
-				tuplanopeus = true;
+				doublespeed = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, tuplanopeus)) {
-			tuplanopeus = !tuplanopeus;
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, doublespeed)) {
+			doublespeed = !doublespeed;
 		}
 		my += 30;
 
@@ -7862,7 +7855,7 @@ int PK_Main_Menut(){
 
 	degree = 1 + degree % 360;
 
-	if (tuplanopeus)
+	if (doublespeed)
 		degree = 1 + degree % 360;
 
 	if (key_delay > 0)
@@ -8115,7 +8108,8 @@ int PK_Main(){
 
 	static bool wasPressed = false;
 
-	if (PisteInput_Keydown(PI_ESCAPE) && key_delay == 0){
+	bool skipped = !skip_frame && doublespeed; // If is in double speed and don't skip this frame, so the last frame was skipped, and it wasn't drawn
+	if (PisteInput_Keydown(PI_ESCAPE) && key_delay == 0 && !skipped){ //Don't activate menu whith a not drawn screen
 		if (menu_nyt != MENU_PAAVALIKKO || pelin_tila != TILA_MENUT){
 			pelin_seuraava_tila = TILA_MENUT;
 			menu_nyt = MENU_PAAVALIKKO;

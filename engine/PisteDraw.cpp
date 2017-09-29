@@ -424,8 +424,6 @@ int PisteDraw2_Exit(){
 void PisteDraw2_Update(bool draw, int pc, int fps){
 	if(!PD2_loaded) return;
 
-	char title[100];
-
 	if(draw){
 		SDL_Texture* texture;
 		BYTE alpha = (BYTE) PD_alpha;
