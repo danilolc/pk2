@@ -69,7 +69,7 @@ int Setcwd(){
 	#endif
 
 	find = string(exepath).find_last_of("/\\");
-  exepath[find] = '\0';
+	exepath[find] = '\0';
 
 	chdir(exepath);
 }
@@ -94,7 +94,7 @@ int Piste_Init(int width, int height, const char* name){
 	PisteDraw2_Start(width, height, name);
 
 	PisteInput_Alusta();
-
+	
 	PisteSound_Start();
 
 	counter = SDL_GetTicks();

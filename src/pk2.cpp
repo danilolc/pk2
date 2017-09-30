@@ -8156,7 +8156,10 @@ int PK_Unload(){
 
 int main(int argc, char *argv[]){
 
-	Piste_Init(RUUDUN_LEVEYS, RUUDUN_KORKEUS, GAME_NAME);
+	if (Piste_Init(RUUDUN_LEVEYS, RUUDUN_KORKEUS, GAME_NAME) < 0) {
+		printf("Failed to init.\n");
+		return 0;
+	}
 	//Piste_SetFPS(60);
 
 	//Game works in ../res

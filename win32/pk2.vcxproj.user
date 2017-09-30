@@ -3,13 +3,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)..\bin\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(SolutionDir)bin\$(ProjectName).exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>dev</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommand>$(SolutionDir)..\bin\$(ProjectName).exe</LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments>dev debug</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)..\bin\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommand>$(SolutionDir)bin\$(ProjectName)_debug.exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>dev</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommand>$(SolutionDir)..\bin\$(ProjectName)_debug.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments>dev debug</LocalDebuggerCommandArguments>
+    <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
   </PropertyGroup>
 </Project>

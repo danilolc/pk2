@@ -112,10 +112,13 @@
     <ResourceCompile Include="pk2.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="sdl2\SDL2.lib" />
-    <Library Include="sdl2\SDL2main.lib" />
-    <Library Include="sdl2\SDL2_image.lib" />
-    <Library Include="sdl2\SDL2_mixer.lib" />
+    <None Include="..\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2.lib" />
+    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2main.lib" />
+    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2_image.lib" />
+    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2_mixer.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

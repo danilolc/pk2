@@ -111,16 +111,19 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="sdl2\SDL2.lib">
+    <None Include="..\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
-    <Library Include="sdl2\SDL2_image.lib">
+    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2_image.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
-    <Library Include="sdl2\SDL2_mixer.lib">
+    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2_mixer.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
-    <Library Include="sdl2\SDL2main.lib">
+    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2main.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
   </ItemGroup>
