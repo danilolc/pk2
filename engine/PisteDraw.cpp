@@ -64,15 +64,25 @@ bool PisteDraw2_IsFading(){
 
   return false;
 }
-int PisteDraw2_FadeOut(int speed){
+int  PisteDraw2_FadeOut(int speed){
 	PD_alpha = 100;
 	PD_fade_speed = -speed;
 	return 0;
 }
-int PisteDraw2_FadeIn(int speed){
+int  PisteDraw2_FadeIn(int speed){
 	PD_alpha = 0;
 	PD_fade_speed = speed;
 	return 0;
+}
+void PisteDraw2_RotatePalette(BYTE start, BYTE end){
+	BYTE i;
+	SDL_Color* game_colors = frameBuffer8->format->palette->colors;
+	SDL_Color temp_color = game_colors[end];
+
+	for (i=end;i>start;i--)
+		game_colors[i] = game_colors[i-1];
+
+	game_colors[start] = temp_color;
 }
 
 int PisteDraw2_Image_New(int w, int h){
@@ -348,7 +358,6 @@ int PisteDraw2_Font_Write(int font_index, const char* text, int x, int y){
 int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha){
 	return fontList[font_index]->Write_TextTrasparent(x, y, text, alpha);
 }
-
 
 int PisteDraw2_SetFilter(const char* filter){
 	if(SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,filter) == SDL_TRUE)

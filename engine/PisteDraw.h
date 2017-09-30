@@ -22,6 +22,7 @@ struct PD_RECT{
 bool PisteDraw2_IsFading();
 int PisteDraw2_FadeOut(int speed);
 int PisteDraw2_FadeIn(int speed);
+void PisteDraw2_RotatePalette(BYTE start, BYTE end);
 
 int PisteDraw2_Image_New(int w, int h);
 int PisteDraw2_Image_Load(const char* filename, bool getPalette);

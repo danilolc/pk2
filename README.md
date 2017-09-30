@@ -14,17 +14,10 @@ http://mapstore.the.cz/
 To add a new episode, just download the zip file and extract it to its respective path inside "res/".
 
 
-# Known bugs:
- -There is no colision between player and sprites wall
-
- -SDL_mixer don't work on Windows
-
 # Things to add or change:
  -Put new options in settings.ini
 
  -Set energy to update before draw on screen
-
- -Draw movable blocks outside screen
 
  -Open a level with arguments to LevelEditor test
 

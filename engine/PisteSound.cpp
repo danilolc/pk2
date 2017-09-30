@@ -25,6 +25,39 @@ Uint8* freq_chunks[MIX_CHANNELS]; //The chunk allocated for each channel
 Mix_Music* music = NULL;
 char playingMusic[_MAX_PATH] = "";
 
+//Change the chunk frequency
+int Change_Frequency(int index, int freq){
+	int channel;
+	SDL_AudioCVT cvt;
+
+	SDL_BuildAudioCVT(&cvt, MIX_DEFAULT_FORMAT, 2, freq, MIX_DEFAULT_FORMAT, 2, def_freq);
+	if (cvt.needed) {
+		for(channel=0; channel<MIX_CHANNELS; channel++) //Find a free channel
+			if(!Mix_Playing(channel)) break;
+
+		if(channel == MIX_CHANNELS) return -1;
+
+		cvt.len = indexes[index]->alen;
+		cvt.buf = (Uint8*)SDL_malloc(cvt.len * cvt.len_mult);
+		if (cvt.buf == NULL) return -1;
+
+		SDL_memcpy(cvt.buf, indexes[index]->abuf, indexes[index]->alen);
+		if(SDL_ConvertAudio(&cvt) < 0){
+			SDL_free(cvt.buf);
+			return -1;
+		}
+
+		indexes[index]->abuf = cvt.buf;
+		indexes[index]->alen = cvt.len_cvt;
+
+		if(freq_chunks[channel] != NULL) SDL_free(freq_chunks[channel]); //Don't ovewrite a allocated pointer
+		freq_chunks[channel] = cvt.buf; //Save the buffer to delete it after play
+
+		return channel;
+	}
+	else return -1;
+}
+
 int PisteSound_LoadSFX(char* filename){
 	int i = -1;
 	for(i=0;i<MAX_SOUNDS;i++)
@@ -38,43 +71,18 @@ void PisteSound_PlaySFX(int index){
 	PisteSound_PlaySFX(index, sfx_volume, def_freq);
 }
 void PisteSound_PlaySFX(int index, int volume, int freq){
-	int channel;
-
 	if(index == -1) return;
 	if(indexes[index] == NULL) return;
 
 	volume = volume * 128 / 100;
 	indexes[index]->volume = volume;
 
+	//Save a backup of the parameter that will be ovewrited
 	Uint8* bkp_buf = indexes[index]->abuf;
 	Uint32 bkp_len = indexes[index]->alen;
 
-	//Change the chunk frequency
-	SDL_AudioCVT cvt;
-	SDL_BuildAudioCVT(&cvt, MIX_DEFAULT_FORMAT, 2, freq, MIX_DEFAULT_FORMAT, 2, def_freq);
-	if (cvt.needed) {
-		cvt.len = indexes[index]->alen;
-		cvt.buf = (Uint8*)SDL_malloc(cvt.len * cvt.len_mult);
-		if (cvt.buf == NULL) return;
-		SDL_memcpy(cvt.buf, bkp_buf, indexes[index]->alen);
-		if(SDL_ConvertAudio(&cvt) < 0) return;
-
-		indexes[index]->abuf = cvt.buf;
-		indexes[index]->alen = cvt.len_cvt;
-
-		for(channel=0; channel<MIX_CHANNELS; channel++) //Find a free channel
-			if(!Mix_Playing(channel)) break;
-
-		if(channel == MIX_CHANNELS) return;
-
-		if(freq_chunks[channel] != NULL) SDL_free(freq_chunks[channel]); //Don't ovewrite a allocated pointer
-		freq_chunks[channel] = cvt.buf; //Save the buffer to delete it after play
-
-		Mix_PlayChannel(channel, indexes[index], 0);
-	}
-	else{
-		Mix_PlayChannel(-1, indexes[index], 0);
-	}
+	int channel = Change_Frequency(index, freq);
+	Mix_PlayChannel(channel, indexes[index], 0);
 
 	indexes[index]->abuf = bkp_buf;
 	indexes[index]->alen = bkp_len;
@@ -134,7 +142,7 @@ int PisteSound_Update(){
 				SDL_free(freq_chunks[i]); //Make sure that all allocated chunks will be deleted after playing
 				freq_chunks[i] = NULL;
 		}
-
+		return 0;
 }
 int PisteSound_End(){
 	PisteSound_ResetSFX();

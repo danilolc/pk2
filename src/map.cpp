@@ -1447,7 +1447,6 @@ int PK2Kartta::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 					px += animaatio * 32;
 
 				PisteDraw2_Image_CutClip(palikat_buffer, x*32-(kamera_x%32), y*32-(kamera_y%32), px, py, px+32, py+32);
-				//PisteDraw_Buffer_Flip_Nopea(palikat_buffer,PD_TAUSTABUFFER, x*32-(kamera_x%32), y*32-(kamera_y%32), px, py, px+32, py+32);
 			}
 		}
 	}
@@ -1503,72 +1502,53 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 	}
 
 
-	for (int x=0; x < ruudun_leveys_palikoina; x++)
-	{
-		for (int y=0; y < ruudun_korkeus_palikoina; y++)
-		{
-			palikka = seinat[x+kartta_x+(y+kartta_y)*PK2KARTTA_KARTTA_LEVEYS];
+	for (int x=-1; x < ruudun_leveys_palikoina+1; x++){
+		for (int y=-1; y < ruudun_korkeus_palikoina+1; y++){
+			int i = x + kartta_x+(y+kartta_y)*PK2KARTTA_KARTTA_LEVEYS;
+			if(i<0 || i >= sizeof(seinat)) continue; //Dont access a not allowed address
+			
+			palikka = seinat[i];
 
-			if (palikka != 255 && !(!editor && palikka == BLOCK_ESTO_ALAS))
-			{
+
+			if (palikka != 255 && !(!editor && palikka == BLOCK_ESTO_ALAS)){
 				px = ((palikka%10)*32);
 				py = ((palikka/10)*32);
 				ay = 0;
 				ax = 0;
 
-				if (!editor)
-				{
+				if (!editor){
 					if (palikka == BLOCK_HISSI_VERT)
-					{
 						ay = (int)kartta_sin_table[aste%360];
-					}
 
 					if (palikka == BLOCK_HISSI_HORI)
-					{
 						ax = (int)kartta_cos_table[aste%360];
-					}
 
 					if (palikka == BLOCK_KYTKIN1)
-					{
 						ay = ajastin1_y/2;
-					}
 
 					if (palikka == BLOCK_KYTKIN2_YLOS)
-					{
 						ay = -ajastin2_y/2;
-					}
 
 					if (palikka == BLOCK_KYTKIN2_ALAS)
-					{
 						ay = ajastin2_y/2;
-					}
 
 					if (palikka == BLOCK_KYTKIN2)
-					{
 						ay = ajastin2_y/2;
-					}
 
 					if (palikka == BLOCK_KYTKIN3_OIKEALLE)
-					{
 						ax = ajastin3_x/2;
-					}
 
 					if (palikka == BLOCK_KYTKIN3_VASEMMALLE)
-					{
 						ax = -ajastin3_x/2;
-					}
 
 					if (palikka == BLOCK_KYTKIN3)
-					{
 						ay = ajastin3_x/2;
-					}
 				}
 
 				if (palikka == BLOCK_ANIM1 || palikka == BLOCK_ANIM2 || palikka == BLOCK_ANIM3 || palikka == BLOCK_ANIM4)
 					px += animaatio * 32;
 
 				PisteDraw2_Image_CutClip(palikat_buffer, x*32-(kamera_x%32)+ax, y*32-(kamera_y%32)+ay, px, py, px+32, py+32);
-				//PisteDraw_Buffer_Flip_Nopea(palikat_buffer,PD_TAUSTABUFFER, x*32-(kamera_x%32)+ax, y*32-(kamera_y%32)+ay, px, py, px+32, py+32);
 			}
 		}
 	}
@@ -1579,13 +1559,12 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		Animoi_Vesiputous();
 		Animoi_Virta_Ylos();
 		Animoi_Vedenpinta();
-		//PisteDraw_Paletti_Pyorita(224,239);
 	}
 
 	if (vesiaste%4 == 0)
 	{
-		Animoi_Vesi(); //TODO fix
-		//PisteDraw_Paletti_Pyorita(224,239);
+		Animoi_Vesi();
+		PisteDraw2_RotatePalette(224,239);
 	}
 
 	vesiaste = 1 + vesiaste % 320;

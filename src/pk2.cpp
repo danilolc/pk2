@@ -3482,6 +3482,7 @@ void PK_Tutki_Seina(PK2Sprite &sprite, PK2BLOCK &palikka){
 	}
 }
 
+//PK_Move_Sprite
 int PK_Sprite_Liikuta(int i){
 
 	PK2Sprite &sprite = spritet[i]; //address of sprite = address of spritet[i] (if change sprite, change spritet[i])
@@ -3489,7 +3490,7 @@ int PK_Sprite_Liikuta(int i){
 	if (i >= MAX_SPRITEJA || i < 0)
 		return -1;
 
-	if (!spritet[i].tyyppi)
+	if (!sprite.tyyppi)
 		return -1;
 
 	sprite_x = sprite.x;
@@ -3776,8 +3777,8 @@ int PK_Sprite_Liikuta(int i){
 	/*****************************************************************************************/
 
 	int palikat_x_lkm,
-		palikat_y_lkm,
-		palikat_lkm;
+	    palikat_y_lkm,
+	    palikat_lkm;
 	DWORD p;
 
 	if (sprite.tyyppi->tiletarkistus){ //Find the tiles that the sprite occupies
@@ -3868,7 +3869,7 @@ int PK_Sprite_Liikuta(int i){
 			else
 				sprite2_yla = 0;
 
-			if (sprite2->tyyppi->este && sprite.tyyppi->tiletarkistus)
+			if (sprite2->tyyppi->este && sprite.tyyppi->tiletarkistus) //If there is a block sprite active
 			{
 
 				if (sprite_x-sprite_leveys/2 +sprite_a  <= sprite2->x + sprite2->tyyppi->leveys /2 &&
@@ -3901,13 +3902,25 @@ int PK_Sprite_Liikuta(int i){
 					}
 					*/
 
+					PK_Palikka_Este(spritepalikka);
+
+					if (!sprite.tyyppi->este){
+						if (!sprite2->tyyppi->este_alas)
+							spritepalikka.alas = BLOCK_TAUSTA;
+						if (!sprite2->tyyppi->este_ylos)
+							spritepalikka.ylos = BLOCK_TAUSTA;
+						if (!sprite2->tyyppi->este_oikealle)
+							spritepalikka.oikealle = BLOCK_TAUSTA;
+						if (!sprite2->tyyppi->este_vasemmalle)
+							spritepalikka.vasemmalle = BLOCK_TAUSTA;
+					}
+
 					if (sprite2->a > 0)
 						spritepalikka.koodi = BLOCK_HISSI_HORI;
 
 					if (sprite2->b > 0)
 						spritepalikka.koodi = BLOCK_HISSI_VERT;
 
-					PK_Palikka_Este(spritepalikka); //TODO - Errado
 					PK_Tutki_Seina2(sprite, spritepalikka); //Colision sprite and sprite block
 				}
 			}
@@ -4752,7 +4765,6 @@ int PK_Sprite_Liikuta_Bonus(int i){
 						spritepalikka.vesi  = false;
 
 						PK_Palikka_Este(spritepalikka);
-
 						PK_Tutki_Seina2(sprite, spritepalikka); //Colision bonus and sprite block
 					}
 				}
@@ -5328,7 +5340,7 @@ int PK_Alusta_Tilat(){
 
 			PisteSound_StartMusic(mapmusa);
 
-			musiikin_voimakkuus = musiikin_max_voimakkuus; //TODO - Set music volume
+			musiikin_voimakkuus = musiikin_max_voimakkuus;
 
 			siirry_kartasta_peliin = false;
 
