@@ -63,6 +63,6 @@ void PisteDraw2_FitScreen(bool fit);
 
 int PisteDraw2_Start(int width, int height, const char* name);
 int PisteDraw2_Exit();
-void PisteDraw2_Update(bool draw,int pc, int fps);
+void PisteDraw2_Update(bool draw);
 
 #endif

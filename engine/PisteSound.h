@@ -7,6 +7,7 @@
 #define P_SOUND
 
 int PisteSound_Start();
+int PisteSound_Update();
 int PisteSound_End();
 
 int PisteSound_LoadSFX(char* filename); //0 success, -1 fail

@@ -427,7 +427,7 @@ int PisteDraw2_Exit(){
   PD2_loaded = false;
   return 0;
 }
-void PisteDraw2_Update(bool draw, int pc, int fps){
+void PisteDraw2_Update(bool draw){
 	if(!PD2_loaded) return;
 
 	if(draw){

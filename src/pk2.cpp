@@ -6120,9 +6120,9 @@ int PK_Piirra_Peli(){
 	///////////////////
 	// piirr� framerate
 	///////////////////
-	if (fps_nayta)
-	{
+	if (fps_nayta){
 		vali = PisteDraw2_Font_Write(fontti1,"fps: ",570,48);
+		fps = Piste_GetFPS();
 		itoa(fps,luku,10);
 		PisteDraw2_Font_Write(fontti1,luku,570+vali,48);
 	}

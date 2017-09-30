@@ -48,7 +48,8 @@ int EngineLogic(bool &running){
 			PisteDraw2_AdjustScreen();
 	}
 
-	PisteDraw2_Update(draw, d_time, real_fps);
+	PisteDraw2_Update(draw);
+	PisteSound_Update();
 
 	if (debug){
 		if(PisteInput_Keydown(PI_Q)) GDB_Break();
@@ -80,6 +81,9 @@ void Piste_IgnoreFrame(){
 void Piste_SetFPS(int fps){
 	FPS_ms = (float)1000.f/fps;
 }
+int  Piste_GetFPS(){
+	return real_fps;
+}
 
 int Piste_Init(int width, int height, const char* name){
 
@@ -94,7 +98,7 @@ int Piste_Init(int width, int height, const char* name){
 	PisteDraw2_Start(width, height, name);
 
 	PisteInput_Alusta();
-	
+
 	PisteSound_Start();
 
 	counter = SDL_GetTicks();

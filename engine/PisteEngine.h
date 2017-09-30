@@ -18,6 +18,7 @@
 
 void Piste_IgnoreFrame();
 void Piste_SetFPS(int fps);
+int  Piste_GetFPS();
 
 int Piste_Init(int width, int height, const char* name);
 int Piste_Loop(bool &running, int (*GameLogic)());
