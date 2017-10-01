@@ -7498,6 +7498,8 @@ void PK_Piirra_Intro_Teksti(char *teksti, int fontti, int x, int y, DWORD alkuai
 }
 //PK_Draw_Intro
 int PK_Piirra_Intro(){
+	char remove2003[100];
+
 	DWORD pistelogo_alku	= 300;
 	DWORD pistelogo_loppu	= pistelogo_alku + 500;
 	DWORD tekijat_alku		= pistelogo_loppu + 80;
@@ -7525,17 +7527,21 @@ int PK_Piirra_Intro(){
 
 		PisteDraw2_Image_CutClip(kuva_tausta,/*120*/x,230, 37, 230, 194, 442);
 
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_presents), fontti1, 230, 400, pistelogo_alku, pistelogo_loppu-20);
+		strcpy(remove2003, tekstit->Hae_Teksti(txt_intro_presents));
+		remove2003[strlen(remove2003) - 6] = '\0';
+		PK_Piirra_Intro_Teksti(remove2003, fontti1, 165, 350, pistelogo_alku, pistelogo_loppu-20);
 
 	}
 
 	if (introlaskuri > tekijat_alku) {
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_a_game_by),fontti1, 120, 230, tekijat_alku, tekijat_loppu);
-		PK_Piirra_Intro_Teksti("janne kivilahti",			fontti1, 120, 250, tekijat_alku+20, tekijat_loppu+20);
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_original), fontti1, 120, 275, tekijat_alku+40, tekijat_loppu+40);
-		PK_Piirra_Intro_Teksti("antti suuronen 1998",		fontti1, 120, 295, tekijat_alku+50, tekijat_loppu+50);
-		//PK_Piirra_Intro_Teksti("sdl porting by",		fontti1, 120, 320, tekijat_alku+70, tekijat_loppu+70);
-		//PK_Piirra_Intro_Teksti("samuli tuomola 2010",		fontti1, 120, 340, tekijat_alku+80, tekijat_loppu+80);
+		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_a_game_by),fontti1, 120, 200, tekijat_alku, tekijat_loppu);
+		PK_Piirra_Intro_Teksti("janne kivilahti 2003",		            fontti1, 120, 220, tekijat_alku+20, tekijat_loppu+20);
+		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_original), fontti1, 120, 245, tekijat_alku+40, tekijat_loppu+40);
+		PK_Piirra_Intro_Teksti("antti suuronen 1998",		            fontti1, 120, 265, tekijat_alku+50, tekijat_loppu+50);
+		PK_Piirra_Intro_Teksti("sdl porting by",		                fontti1, 120, 290, tekijat_alku+70, tekijat_loppu+70);
+		PK_Piirra_Intro_Teksti("samuli tuomola 2010",		            fontti1, 120, 310, tekijat_alku+80, tekijat_loppu+80);
+		PK_Piirra_Intro_Teksti("sdl2 port and bug fixes",               fontti1, 120, 335, tekijat_alku + 90, tekijat_loppu + 90);
+		PK_Piirra_Intro_Teksti("danilo lemos 2017",                     fontti1, 120, 355, tekijat_alku + 100, tekijat_loppu + 100);
 	}
 
 	if (introlaskuri > testaajat_alku) {
