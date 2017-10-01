@@ -389,8 +389,12 @@ void PisteDraw2_FitScreen(bool fit){
 	ScreenFit = fit;
 }
 
-int PisteDraw2_Start(int width, int height, const char* name){
-	if(PD2_loaded) return -1;
+void PisteDraw2_GetWindowPosition(int* x, int* y) {
+	SDL_GetWindowPosition(PD_Window, x, y);
+}
+
+int PisteDraw2_Start(int width, int height, const char* name) {
+	if (PD2_loaded) return -1;
 
 	PD_Window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
 	PD_Renderer = SDL_CreateRenderer(PD_Window, -1, SDL_RENDERER_ACCELERATED);//| SDL_RENDERER_PRESENTVSYNC);
@@ -399,11 +403,10 @@ int PisteDraw2_Start(int width, int height, const char* name){
 	SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
 	SDL_FillRect(frameBuffer8, NULL, 255);
 
-	SDL_ShowCursor(false);
 	SDL_RenderClear(PD_Renderer);
 
 	SDL_Rect r = {0, 0, width, height};
-  SDL_SetClipRect(frameBuffer8, &r);
+	SDL_SetClipRect(frameBuffer8, &r);
 
 	PD_screen_width = width;
 	PD_screen_height = height;

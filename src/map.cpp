@@ -1502,14 +1502,16 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 	}
 
 
-	for (int x=-1; x < ruudun_leveys_palikoina+1; x++){
-		for (int y=-1; y < ruudun_korkeus_palikoina+1; y++){
-			int i = x + kartta_x+(y+kartta_y)*PK2KARTTA_KARTTA_LEVEYS;
+	for (int x=-1; x < ruudun_leveys_palikoina + 1; x++){
+		for (int y=-1; y < ruudun_korkeus_palikoina + 1; y++){
+			if (x + kartta_x < 0 || x + kartta_x > PK2KARTTA_KARTTA_LEVEYS) continue;
+			if (y + kartta_y < 0 || y + kartta_y > PK2KARTTA_KARTTA_KORKEUS) continue;
+
+			int i = x + kartta_x + (y + kartta_y)*PK2KARTTA_KARTTA_LEVEYS;
 			if(i<0 || i >= sizeof(seinat)) continue; //Dont access a not allowed address
-			
+						
 			palikka = seinat[i];
-
-
+			
 			if (palikka != 255 && !(!editor && palikka == BLOCK_ESTO_ALAS)){
 				px = ((palikka%10)*32);
 				py = ((palikka/10)*32);

@@ -28,6 +28,9 @@
     <Filter Include="Linked Libraries">
       <UniqueIdentifier>{0ed88200-f0db-41d2-b262-ff173e2116d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DLL">
+      <UniqueIdentifier>{a926b592-7f0a-4b5b-80c9-64974e219377}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\PisteDraw.cpp">
@@ -112,18 +115,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+    <None Include="sdl2\x86\libmodplug-1.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="sdl2\x86\SDL2.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="sdl2\x86\SDL2_mixer.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="sdl2\x86\SDL2_image.dll">
+      <Filter>DLL</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2.lib">
+    <Library Include="sdl2\x86\SDL2.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
-    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2_image.lib">
+    <Library Include="sdl2\x86\SDL2_image.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
-    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2_mixer.lib">
+    <Library Include="sdl2\x86\SDL2_mixer.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
-    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2main.lib">
+    <Library Include="sdl2\x86\SDL2main.lib">
       <Filter>Linked Libraries</Filter>
     </Library>
   </ItemGroup>

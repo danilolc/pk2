@@ -7,6 +7,8 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <cstring>
+
 #include "PisteSound.h"
 #include "PisteUtils.h"
 #include "platform.h"

@@ -4,8 +4,11 @@
 //#########################
 
 #include "PisteInput.h"
+#include "PisteDraw.h"
 
 #include <SDL2/SDL.h>
+#include <Windows.h>
+#include <cstdio>
 
 #define MOUSE_SPEED 20
 
@@ -79,9 +82,23 @@ bool					PI_unload = true;
 
 //Uint8 *m_keymap;
 const Uint8 *m_keymap = SDL_GetKeyboardState(NULL);
+MOUSE mouse_pos;
 
 
 /* METHODS -----------------------------------------------------------------------------------*/
+#ifdef _WIN32
+void SetMousePosition(int x, int y) {
+	int wx, wy;
+	PisteDraw2_GetWindowPosition(&wx, &wy);
+
+	SetCursorPos(x + wx, y+wy);
+}
+#else
+void SetMousePosition(int x, int y) {
+	//TODO
+}
+#endif
+
 
 const char* PisteInput_KeyName(BYTE key){
 	if(key >= sizeof(keynames) / 15) return keynames[0];
@@ -101,40 +118,49 @@ bool PisteInput_Keydown(int key){
 	return m_keymap[keylist[key]];
 }
 MOUSE PisteInput_UpdateMouse(bool keyMove){
-	static MOUSE pos;
-	static int lastMouseUpdate=0, dx=0, dy=0;
-
+	static int lastMouseUpdate = 0, dx = 0, dy = 0;
 	if(SDL_GetTicks() - lastMouseUpdate > MOUSE_SPEED) {
 		lastMouseUpdate = SDL_GetTicks();
 		SDL_GetRelativeMouseState(&dx, &dy);
-		pos.x += dx;
-		pos.y += dy;
+		mouse_pos.x += dx;
+		mouse_pos.y += dy;
 	}
 	else {
-		pos.x += dx;
-		pos.y += dy;
+		mouse_pos.x += dx;
+		mouse_pos.y += dy;
 		dx = 0;
 		dy = 0;
 	}
 
 	if(keyMove){
-		pos.x += PisteInput_Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
-		pos.y += PisteInput_Ohjain_Y(PI_PELIOHJAIN_1)/30;
+		mouse_pos.x += PisteInput_Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
+		mouse_pos.y += PisteInput_Ohjain_Y(PI_PELIOHJAIN_1)/30;
 
-		if (PisteInput_Keydown(PI_LEFT)) pos.x -= 3; //Move mouse with keys
-		if (PisteInput_Keydown(PI_RIGHT)) pos.x += 3;
-		if (PisteInput_Keydown(PI_UP)) pos.y -= 3;
-		if (PisteInput_Keydown(PI_DOWN)) pos.y += 3;
+		if (PisteInput_Keydown(PI_LEFT)) mouse_pos.x -= 3; //Move mouse with keys
+		if (PisteInput_Keydown(PI_RIGHT)) mouse_pos.x += 3;
+		if (PisteInput_Keydown(PI_UP)) mouse_pos.y -= 3;
+		if (PisteInput_Keydown(PI_DOWN)) mouse_pos.y += 3;
 	}
 
-	if (pos.x < 0) pos.x = 0;
-	if (pos.y < 0) pos.y = 0;
-	if (pos.x > 640-19) pos.x = 640-19;
-	if (pos.y > 480-19) pos.y = 480-19;
+	if (mouse_pos.x < 0) mouse_pos.x = 0;
+	if (mouse_pos.y < 0) mouse_pos.y = 0;
+	if (mouse_pos.x > 640-19) mouse_pos.x = 640-19;
+	if (mouse_pos.y > 480-19) mouse_pos.y = 480-19;
 
-	return pos;
+	return mouse_pos;
 }
-
+int PisteInput_ActivateWindow(bool active) {
+	if (active) {
+		SDL_GetRelativeMouseState(NULL, NULL);
+		SDL_GetMouseState(&mouse_pos.x, &mouse_pos.y);
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+	}
+	else {
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+		SetMousePosition(mouse_pos.x, mouse_pos.y);
+	}
+	return 0;
+}
 
 bool PisteInput_Alusta_Ohjaimet(){
 /*
@@ -243,11 +269,13 @@ bool PisteInput_Hae_Hiiri(){
 
 char PisteInput_Lue_Nappaimisto(void){
 	SDL_Event event;
-	char c;
+	char c, str[5];
 	while(SDL_PollEvent(&event)) {
-		if(event.type==SDL_KEYDOWN) {
-			c = event.key.keysym.sym;
-			if(c >= 48 && c <= 57 || c >= 97 && c <= 122 || c == 32 || c == 46) //Just number, lower case, space and dot
+		if(event.type== SDL_TEXTINPUT) {
+			strcpy(str, event.text.text);
+			c = str[0];
+			if(c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' 
+				|| c == '.' || c == '!' || c == '?' || c == ' ') //Just number, letter, space dot
 				return c;
 		}
 	}

@@ -68,10 +68,10 @@ struct MOUSE { //RECT
 const char* PisteInput_KeyName(BYTE key);
 BYTE	PisteInput_GetKey();
 bool	PisteInput_Keydown(int key);
-MOUSE PisteInput_UpdateMouse(bool keyMove);
+MOUSE   PisteInput_UpdateMouse(bool keyMove);
+int     PisteInput_ActivateWindow(bool active);
 
-
-int		PisteInput_Alusta(); //DEP
+int		PisteInput_Alusta();
 int		PisteInput_Lopeta(); //DEP
 bool	PisteInput_Hae_Hiiri(); //DEP
 bool	PisteInput_Hae_Nappaimet(); //DEP

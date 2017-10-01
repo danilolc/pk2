@@ -8058,6 +8058,8 @@ int PK_Main_Loppu(){
 }
 
 int PK_Main(){
+	static bool window_activated = true;
+
 	PK_Alusta_Tilat();
 
 	if (window_closed/*depr*/){
@@ -8065,9 +8067,20 @@ int PK_Main(){
 		return 0;
 	}
 
-	MOUSE hiiri = PisteInput_UpdateMouse(pelin_tila != TILA_MENUT);
-	hiiri_x = hiiri.x;
-	hiiri_y = hiiri.y;
+	if (window_activated) {
+		MOUSE hiiri = PisteInput_UpdateMouse(pelin_tila == TILA_KARTTA);
+		hiiri_x = hiiri.x;
+		hiiri_y = hiiri.y;
+	}
+	else {
+		hiiri_x = -30;
+		hiiri_y = -30;
+		if (PisteInput_Hiiri_Oikea() || PisteInput_Hiiri_Vasen()) {
+			PisteInput_ActivateWindow(true);
+			window_activated = true;
+			menu_valittu_id = 0;
+		}
+	}
 
 	switch (pelin_tila){
 		case TILA_PELI       : PK_Main_Peli();       break;
@@ -8079,7 +8092,7 @@ int PK_Main(){
 		default              : lopeta_peli = true;   break;
 	}
 
-	// MUSIIKIN ��NENS��T�
+	// GET MUSIC
 	bool saada = false;
 
 	if (musiikin_voimakkuus != musiikin_voimakkuus_nyt)
@@ -8126,6 +8139,8 @@ int PK_Main(){
 			}
 			else {
 				menu_valittu_id = menu_valinta_id-1; // Set to "exit" option
+				window_activated = false;
+				PisteInput_ActivateWindow(false);
 			}
 		}
 	}

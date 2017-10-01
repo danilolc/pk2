@@ -40,13 +40,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>pk2\$(Configuration)\</IntDir>
     <IncludePath>C:\term\SDL2\VC\SDL2_image-2.0.1\include;C:\term\SDL2\VC\SDL2_mixer-2.0.1\include;C:\term\SDL2\VC\SDL2-2.0.6\include;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\bin\</OutDir>
+    <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>pk2\$(Configuration)\</IntDir>
     <IncludePath>C:\term\SDL2\VC\SDL2_image-2.0.1\include;C:\term\SDL2\VC\SDL2_mixer-2.0.1\include;C:\term\SDL2\VC\SDL2-2.0.6\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -61,6 +61,9 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y $(SolutionDir)\sdl2\x86\*.dll $(SolutionDir)..\bin\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -79,6 +82,9 @@
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y $(SolutionDir)\sdl2\x86\*.dll $(SolutionDir)..\bin\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\PisteDraw.cpp" />
@@ -113,12 +119,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+    <None Include="sdl2\x86\libmodplug-1.dll" />
+    <None Include="sdl2\x86\SDL2.dll" />
+    <None Include="sdl2\x86\SDL2_image.dll" />
+    <None Include="sdl2\x86\SDL2_mixer.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2.lib" />
-    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2main.lib" />
-    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2_image.lib" />
-    <Library Include="..\..\..\source\repos\WindowsProject1\lib\SDL2_mixer.lib" />
+    <Library Include="sdl2\x86\SDL2.lib" />
+    <Library Include="sdl2\x86\SDL2main.lib" />
+    <Library Include="sdl2\x86\SDL2_image.lib" />
+    <Library Include="sdl2\x86\SDL2_mixer.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
