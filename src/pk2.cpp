@@ -121,7 +121,7 @@ PK2PARTIKKELI taustapartikkelit[MAX_TAUSTAPARTIKKELEITA];
 int taustapartikkeli_index = 0;
 
 //Episode
-const int EPISODI_MAX_JAKSOJA = 50;
+const int EPISODI_MAX_JAKSOJA = 100;
 const int MAX_EPISODEJA	= 300;
 
 const int MAX_ILMOITUKSENNAYTTOAIKA = 700;
@@ -7498,7 +7498,6 @@ void PK_Piirra_Intro_Teksti(char *teksti, int fontti, int x, int y, DWORD alkuai
 }
 //PK_Draw_Intro
 int PK_Piirra_Intro(){
-	char remove2003[100];
 
 	DWORD pistelogo_alku	= 300;
 	DWORD pistelogo_loppu	= pistelogo_alku + 500;
@@ -7527,9 +7526,7 @@ int PK_Piirra_Intro(){
 
 		PisteDraw2_Image_CutClip(kuva_tausta,/*120*/x,230, 37, 230, 194, 442);
 
-		strcpy(remove2003, tekstit->Hae_Teksti(txt_intro_presents));
-		remove2003[strlen(remove2003) - 6] = '\0';
-		PK_Piirra_Intro_Teksti(remove2003, fontti1, 165, 350, pistelogo_alku, pistelogo_loppu-20);
+		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_presents), fontti1, 230, 400, pistelogo_alku, pistelogo_loppu-20);
 
 	}
 

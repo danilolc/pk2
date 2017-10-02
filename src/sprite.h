@@ -238,6 +238,7 @@ struct PK2SPRITE_ANIMAATIO{
 	bool		looppi;									// onko looppaava animaatio
 };
 
+//Change to struct
 class PK2Sprite_Prototyyppi10{
 	public:
 	// Versionumero

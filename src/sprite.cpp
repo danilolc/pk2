@@ -11,7 +11,6 @@
 
 #include "sprite.h"
 #include "PisteDraw.h"
-#include "PisteSound.h"
 
 #include "platform.h"
 
@@ -878,10 +877,8 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 
 	delete (tiedosto);
 
-	// Ladataan kuva jossa spriten grafiikat ovat
-
+	// Get sprite bmp
 	strcat(kuva,kuvatiedosto);
-
 	int bufferi = PisteDraw2_Image_Load(kuva,false);
 
 	if (bufferi == -1)

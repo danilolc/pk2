@@ -2,6 +2,7 @@ doc.txt
 
 bin/
 build/
+doc/
 
 res/data/
 res/editor/settings.dat

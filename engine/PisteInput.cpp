@@ -7,7 +7,9 @@
 #include "PisteDraw.h"
 
 #include <SDL2/SDL.h>
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 #include <cstdio>
 
 #define MOUSE_SPEED 20
