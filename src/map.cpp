@@ -1432,14 +1432,17 @@ int PK2Kartta::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 		kartta_x = kamera_x/32,
 		kartta_y = kamera_y/32;
 
-	for (int x=0;x<ruudun_leveys_palikoina;x++)
-	{
-		for (int y=0;y<ruudun_korkeus_palikoina;y++)
-		{
-			palikka = taustat[x+kartta_x+(y+kartta_y)*PK2KARTTA_KARTTA_LEVEYS];
+	for (int x=-1;x<ruudun_leveys_palikoina;x++){
+		for (int y=0;y<ruudun_korkeus_palikoina;y++){
+			if (x + kartta_x < 0 || x + kartta_x > PK2KARTTA_KARTTA_LEVEYS) continue;
+			if (y + kartta_y < 0 || y + kartta_y > PK2KARTTA_KARTTA_KORKEUS) continue;
 
-			if (palikka != 255)
-			{
+			int i = x + kartta_x + (y + kartta_y)*PK2KARTTA_KARTTA_LEVEYS;
+			if(i<0 || i >= sizeof(taustat)) continue; //Dont access a not allowed address
+
+			palikka = taustat[i];
+
+			if (palikka != 255){
 				px = ((palikka%10)*32);
 				py = ((palikka/10)*32);
 
@@ -1468,8 +1471,7 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		ajastin2_y = 0,
 		ajastin3_x = 0;
 
-	if (ajastin1 > 0)
-	{
+	if (ajastin1 > 0){
 		ajastin1_y = 64;
 
 		if (ajastin1 < 64)
@@ -1479,8 +1481,7 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 			ajastin1_y = KYTKIN_ALOITUSARVO - ajastin1;
 	}
 
-	if (ajastin2 > 0)
-	{
+	if (ajastin2 > 0){
 		ajastin2_y = 64;
 
 		if (ajastin2 < 64)
@@ -1490,8 +1491,7 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 			ajastin2_y = KYTKIN_ALOITUSARVO - ajastin2;
 	}
 
-	if (ajastin3 > 0)
-	{
+	if (ajastin3 > 0){
 		ajastin3_x = 64;
 
 		if (ajastin3 < 64)
@@ -1509,9 +1509,9 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 
 			int i = x + kartta_x + (y + kartta_y)*PK2KARTTA_KARTTA_LEVEYS;
 			if(i<0 || i >= sizeof(seinat)) continue; //Dont access a not allowed address
-						
+
 			palikka = seinat[i];
-			
+
 			if (palikka != 255 && !(!editor && palikka == BLOCK_ESTO_ALAS)){
 				px = ((palikka%10)*32);
 				py = ((palikka/10)*32);

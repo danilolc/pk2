@@ -12,6 +12,7 @@
 #include "PisteSound.h"
 #include "PisteUtils.h"
 #include "platform.h"
+#include "types.h"
 
 #define AUDIO_FREQ 44100
 
@@ -70,20 +71,26 @@ int PisteSound_LoadSFX(char* filename){
 	return i;
 }
 void PisteSound_PlaySFX(int index){
-	PisteSound_PlaySFX(index, sfx_volume, def_freq);
+	PisteSound_PlaySFX(index, sfx_volume, 0, def_freq);
 }
-void PisteSound_PlaySFX(int index, int volume, int freq){
+void PisteSound_PlaySFX(int index, int volume, int panoramic, int freq){
+	//panoramic -10000 -> 10000
+
 	if(index == -1) return;
 	if(indexes[index] == NULL) return;
 
 	volume = volume * 128 / 100;
 	indexes[index]->volume = volume;
 
+	BYTE pan_left = 255; //TODO
+	BYTE pan_right = 255;
+
 	//Save a backup of the parameter that will be ovewrited
 	Uint8* bkp_buf = indexes[index]->abuf;
 	Uint32 bkp_len = indexes[index]->alen;
 
 	int channel = Change_Frequency(index, freq);
+	Mix_SetPanning(channel, pan_left, pan_right);
 	Mix_PlayChannel(channel, indexes[index], 0);
 
 	indexes[index]->abuf = bkp_buf;
@@ -135,7 +142,7 @@ int PisteSound_Start(){
 		return -1;
 	}
 
-	Mix_Init(MIX_INIT_MOD);
+	Mix_Init(MIX_INIT_MOD || MIX_INIT_MP3 || MIX_INIT_OGG);
 	return 0;
 }
 int PisteSound_Update(){

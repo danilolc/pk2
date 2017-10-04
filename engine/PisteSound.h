@@ -12,7 +12,7 @@ int PisteSound_End();
 
 int PisteSound_LoadSFX(char* filename); //0 success, -1 fail
 void PisteSound_PlaySFX(int index);
-void PisteSound_PlaySFX(int index, int volume, int freq);
+void PisteSound_PlaySFX(int index, int volume, int panoramic, int freq);
 void PisteSound_SetSFXVolume(int volume);
 int PisteSound_FreeSFX(int index);
 void PisteSound_ResetSFX();

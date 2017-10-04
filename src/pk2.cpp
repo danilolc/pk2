@@ -11,6 +11,10 @@
 //sprite and map managing, that are made
 //in a separated code to be used in the Level Editor.
 //#########################
+//TODO
+//-Remove bonus draw before start
+//-Play win music after boss
+//-16:9 resolution
 
 #include <iostream>
 #include <sys/stat.h>
@@ -48,15 +52,16 @@ void ltoa(long n, char s[], int radix){
 const int MAX_ESINEITA = 4;
 const int MAX_TALLENNUKSIA = 10;
 
-//Blocks
-const BYTE BLOCK_TAUSTA		= 0;
-const BYTE BLOCK_SEINA		= 1;
-const BYTE BLOCK_MAKI_OIKEA_YLOS = 2;
-const BYTE BLOCK_MAKI_VASEN_YLOS = 3;
-const BYTE BLOCK_MAKI_OIKEA_ALAS = 4;
-const BYTE BLOCK_MAKI_VASEN_ALAS = 5;
-const BYTE BLOCK_MAKI_YLOS = 6;
-const BYTE BLOCK_MAKI_ALAS = 7;
+enum { //Blocks
+	BLOCK_TAUSTA,
+	BLOCK_SEINA,
+	BLOCK_MAKI_OIKEA_YLOS,
+	BLOCK_MAKI_VASEN_YLOS,
+	BLOCK_MAKI_OIKEA_ALAS,
+	BLOCK_MAKI_VASEN_ALAS,
+	BLOCK_MAKI_YLOS,
+	BLOCK_MAKI_ALAS
+};
 
 const BYTE BLOCK_MAX_MASKEJA = 150;
 
@@ -76,26 +81,28 @@ struct PK2BLOCKMASKI{
 	short int	oikealle[32];
 };
 
-//Particles
-const BYTE PARTIKKELI_EI_MIKAAN = 0;
-const BYTE PARTIKKELI_TAHTI	    = 1;
-const BYTE PARTIKKELI_HOYHEN	  = 2;
-const BYTE PARTIKKELI_POLYPILVI = 3;
-const BYTE PARTIKKELI_VALO		  = 4;
-const BYTE PARTIKKELI_KIPINA	  = 5;
-const BYTE PARTIKKELI_PISTE	    = 6;
-const BYTE PARTIKKELI_SAVUPILVI = 7;
-const BYTE PARTIKKELI_TAHTI2	  = 8;
-
-const BYTE TAUSTAPARTIKKELI_VESIPISARA = 1;
-const BYTE TAUSTAPARTIKKELI_LEHTI1		= 2;
-const BYTE TAUSTAPARTIKKELI_LEHTI2		= 3;
-const BYTE TAUSTAPARTIKKELI_LEHTI3		= 4;
-const BYTE TAUSTAPARTIKKELI_LEHTI4		= 5;
-const BYTE TAUSTAPARTIKKELI_HIUTALE1	= 6;
-const BYTE TAUSTAPARTIKKELI_HIUTALE2	= 7;
-const BYTE TAUSTAPARTIKKELI_HIUTALE3	= 8;
-const BYTE TAUSTAPARTIKKELI_HIUTALE4	= 9;
+enum {//Particles
+	PARTIKKELI_EI_MIKAAN,
+	PARTIKKELI_TAHTI,
+	PARTIKKELI_HOYHEN,
+	PARTIKKELI_POLYPILVI,
+	PARTIKKELI_VALO,
+	PARTIKKELI_KIPINA,
+	PARTIKKELI_PISTE,
+	PARTIKKELI_SAVUPILVI,
+	PARTIKKELI_TAHTI2
+};
+enum{ //BG particles
+	TAUSTAPARTIKKELI_VESIPISARA,
+	TAUSTAPARTIKKELI_LEHTI1,
+	TAUSTAPARTIKKELI_LEHTI2,
+	TAUSTAPARTIKKELI_LEHTI3,
+	TAUSTAPARTIKKELI_LEHTI4,
+	TAUSTAPARTIKKELI_HIUTALE1,
+	TAUSTAPARTIKKELI_HIUTALE2,
+	TAUSTAPARTIKKELI_HIUTALE3,
+	TAUSTAPARTIKKELI_HIUTALE4
+};
 
 const int MAX_PARTIKKELEITA = 300;
 const int MAX_TAUSTAPARTIKKELEITA = 200;
@@ -121,7 +128,7 @@ PK2PARTIKKELI taustapartikkelit[MAX_TAUSTAPARTIKKELEITA];
 int taustapartikkeli_index = 0;
 
 //Episode
-const int EPISODI_MAX_JAKSOJA = 100;
+const int EPISODI_MAX_JAKSOJA = 100; //= 50;
 const int MAX_EPISODEJA	= 300;
 
 const int MAX_ILMOITUKSENNAYTTOAIKA = 700;
@@ -141,31 +148,30 @@ struct PK2EPISODIPISTEET{
 	char  episodin_top_pelaaja[20];
 };
 
-//Screen
-const int TILA_EI_ALUSTETTU = 0;
-const int TILA_PERUSALUSTUS = 1;
-const int TILA_INTRO = 2;
-const int TILA_MENUT = 3;
-const int TILA_KARTTA= 4;
-const int TILA_PELI  = 5;
-const int TILA_PISTELASKU = 6;
-const int TILA_LOPPU = 7;
-
-//Menu
-const BYTE MENU_PAAVALIKKO = 0;
-const BYTE MENU_EPISODIT   = 1;
-const BYTE MENU_KONTROLLIT = 2;
-const BYTE MENU_GRAFIIKKA  = 3;
-const BYTE MENU_AANET      = 4;
-const BYTE MENU_NIMI		= 5;
-const BYTE MENU_LATAA		= 6;
-const BYTE MENU_TALLENNA	= 7;
-const BYTE MENU_LANGUAGE   = 8;
+enum { //Screen
+	TILA_EI_ALUSTETTU,
+	TILA_PERUSALUSTUS,
+	TILA_INTRO,
+	TILA_MENUT,
+	TILA_KARTTA,
+	TILA_PELI,
+	TILA_PISTELASKU,
+	TILA_LOPPU
+};
+enum {//Menu
+	MENU_PAAVALIKKO,
+	MENU_EPISODIT,
+	MENU_KONTROLLIT,
+	MENU_GRAFIIKKA,
+	MENU_AANET,
+	MENU_NIMI,
+	MENU_LATAA,
+	MENU_TALLENNA,
+	MENU_LANGUAGE
+};
 
 //Sound
-const int AANET_STEREO			= 1;
 const int AANET_SAMPLERATE		= 22050;
-const int AANET_BITRATE			= 8;
 
 //#### Structs
 //PK2??
@@ -223,6 +229,8 @@ struct PK2ASETUKSET{
 	// audio
 	bool musiikki;
 	bool aanet;
+
+	//TODO - add new configurations
 };
 
 
@@ -252,8 +260,6 @@ bool taulut_laskettu = false;
 
 //ASETUKSET
 PK2ASETUKSET asetukset;
-
-bool alkusetup = true;
 
 //INFO MUUTTUJAT
 bool	piirra_infot = false;
@@ -305,10 +311,6 @@ int fontti5;
 //Controls
 int hiiri_x = 10;
 int hiiri_y = 10;
-double menukursori_x = RUUDUN_LEVEYS / 2;
-double menukursori_y = RUUDUN_KORKEUS / 2;
-double menukursori_xk = 0;
-double menukursori_yk = 0;
 
 int  kontrolli_vasemmalle		= PI_LEFT;
 int  kontrolli_oikealle			= PI_RIGHT;
@@ -451,7 +453,6 @@ RECT menunelio;
 
 //Framerate
 int   fps = 0;
-int   fps_laskuri = 0;
 bool  fps_nayta = false;
 
 //LANGUAGE AND TEXTS OF THE GAME
@@ -1263,12 +1264,13 @@ void PK_Soita_Aani(int aani, int voimakkuus, int x, int y, int freq, bool random
 			if (voimakkuus < 0)
 				voimakkuus = 0;
 
-			//int pan = kamera_x + (RUUDUN_LEVEYS / 2) - x;
+			int pan = kamera_x + (RUUDUN_LEVEYS / 2) - x;
+			pan *= -2;
 
 			if (random_freq)
 				freq = freq + rand()%4000 - rand()%2000;
 
-			PisteSound_PlaySFX(aani,aanenvoimakkuus, freq);
+			PisteSound_PlaySFX(aani,aanenvoimakkuus, pan, freq);
 		}
 	}
 }
@@ -1285,7 +1287,7 @@ void PK_Soita_Aani_Menu(int aani, int voimakkuus){
 
 		int freq = 22050 + rand()%5000 - rand()%5000;
 
-		PisteSound_PlaySFX(aani, aanenvoimakkuus, freq);
+		PisteSound_PlaySFX(aani, aanenvoimakkuus, 0, freq);
 	}
 }
 //PK_Calculate_Tables
@@ -5318,25 +5320,32 @@ int PK_Alusta_Tilat(){
 				kuva_tausta = PisteDraw2_Image_Load("gfx/map.bmp",true);
 
 			/* Ladataan kartan musiikki ...*/
-			char mapmusa[_MAX_PATH] = "map.xm";
-			if(!PK_Onko_File(mapmusa)){
+			char mapmusa[_MAX_PATH] = "map.mp3";
+			do {
+				PK_Lisaa_Episodin_Hakemisto(mapmusa);
+				if(PK_Onko_File(mapmusa)) break;
+				strcpy(mapmusa,"map.ogg");
+				PK_Lisaa_Episodin_Hakemisto(mapmusa);
+				if(PK_Onko_File(mapmusa)) break;
+				strcpy(mapmusa,"map.xm");
+				PK_Lisaa_Episodin_Hakemisto(mapmusa);
+				if(PK_Onko_File(mapmusa)) break;
 				strcpy(mapmusa,"map.mod");
 				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-
-				if (!PK_Onko_File(mapmusa)) {
-					strcpy(mapmusa,"map.it");
-					PK_Lisaa_Episodin_Hakemisto(mapmusa);
-
-					if (!PK_Onko_File(mapmusa)) {
-						strcpy(mapmusa,"map.s3m");
-						PK_Lisaa_Episodin_Hakemisto(mapmusa);
-
-						if (!PK_Onko_File(mapmusa)) {
-							strcpy(mapmusa,"music/map.xm");
-						}
-					}
-				}
-			}
+				if (PK_Onko_File(mapmusa)) break;
+				strcpy(mapmusa,"map.it");
+				PK_Lisaa_Episodin_Hakemisto(mapmusa);
+				if (PK_Onko_File(mapmusa)) break;
+				strcpy(mapmusa,"map.s3m");
+				PK_Lisaa_Episodin_Hakemisto(mapmusa);
+				if (PK_Onko_File(mapmusa)) break;
+				strcpy(mapmusa,"music/map.mp3");
+				if (PK_Onko_File(mapmusa)) break;
+				strcpy(mapmusa,"music/map.ogg");
+				if (PK_Onko_File(mapmusa)) break;
+				strcpy(mapmusa,"music/map.xm");
+				break;
+			} while(0);
 
 			PisteSound_StartMusic(mapmusa);
 
