@@ -111,11 +111,11 @@ int PisteDraw2_Image_Load(const char* filename, bool getPalette){
 
 	imageList[index] = SDL_LoadBMP(filename);
 	if(imageList[index]==NULL){
-		printf("Error loading %s\n",filename);
+		printf("PD     - Error loading %s\n",filename);
 		return -1;
 	}
 	if(imageList[index]->format->BitsPerPixel != 8){
-		printf("Failed to open %s, just 8bpp indexed images!\n",filename);
+		printf("PD     - Failed to open %s, just 8bpp indexed images!\n",filename);
 		PisteDraw2_Image_Delete(index);
 		return -1;
 	}
@@ -150,7 +150,7 @@ int PisteDraw2_Image_Cut(int ImgIndex, PD_RECT area){
 
 	index = findfreeimage();
 	if (index==-1){
-		printf("PisteEngine has run out of free images!");
+		printf("PD     - PisteDraw has run out of free images!");
 		return -1;
 	}
 
@@ -326,7 +326,7 @@ int PisteDraw2_Font_Create(int image, int x, int y, int char_w, int char_h, int 
 
 	index = findfreefont();
 	if (index==-1){
-		printf("PisteEngine has run out of free fonts!");
+		printf("PD    - PisteDraw has run out of free fonts!");
 		return -1;
 	}
 
@@ -334,18 +334,18 @@ int PisteDraw2_Font_Create(int image, int x, int y, int char_w, int char_h, int 
   return index;
 }
 int PisteDraw2_Font_Create(char* path, char* file){
-	printf("Created font with path %s e file %s\n",path,file);
+	printf("PD    - Created font with path %s e file %s\n",path,file);
 	int index;
 
 	index = findfreefont();
 	if (index==-1){
-		printf("PisteEngine has run out of free fonts!");
+		printf("PD    - PisteDraw has run out of free fonts!");
 		return -1;
 	}
 
 	fontList[index] = new PisteFont2();
   if (fontList[index]->LoadFile(path,file) == -1){
-    printf("PisteEngine can't load a font from file!");
+    printf("PD    - PisteDraw can't load a font from file!");
 		delete fontList[index];
     return -1;
   }

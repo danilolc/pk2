@@ -63,6 +63,10 @@ char *PisteUtils_FindImage(char *filename){
   return NULL;
 }
 
+bool PisteUtils_Search_File(char *filename){
+	//TODO
+}
+
 //This need to receive just the filename, not the path
 void getext(char* string){
 	int i, b = -1, len;

@@ -577,15 +577,11 @@ class PK2Sprite_Prototyyppi{
     int  Piirra(int x, int y, int frame);
     bool Onko_AI(int AI);
 
-    PK2Sprite_Prototyyppi10 GetProto10();
     void SetProto10(PK2Sprite_Prototyyppi10 &proto);
-    PK2Sprite_Prototyyppi11 GetProto11();
     void SetProto11(PK2Sprite_Prototyyppi11 &proto);
-    PK2Sprite_Prototyyppi12 GetProto12();
     void SetProto12(PK2Sprite_Prototyyppi12 &proto);
-    PK2Sprite_Prototyyppi13 GetProto13();
     void SetProto13(PK2Sprite_Prototyyppi13 &proto);
-
+    PK2Sprite_Prototyyppi13 GetProto13();
 };
 class PK2Sprite{
     public:

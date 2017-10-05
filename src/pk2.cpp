@@ -15,6 +15,7 @@
 //-Remove bonus draw before start
 //-Play win music after boss
 //-16:9 resolution
+//-Music loop
 
 #include <iostream>
 #include <sys/stat.h>
@@ -618,9 +619,10 @@ void PK_Lisaa_Episodin_Hakemisto(char *tiedosto);
 
 //PK_Check_File
 bool PK_Onko_File(char *filename){
+	//TODO - If isn't Windows - List directory, set lower case, test, and change "char *filename".
 	struct stat st;
 	bool ret = (stat(filename, &st) == 0);
-	if(!ret) printf("Asked about non-existing file: %s\n", filename);
+	if(!ret) printf("PK2    - asked about non-existing file: %s\n", filename);
 	return ret;
 }
 //PK_Settings_Start

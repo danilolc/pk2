@@ -117,11 +117,11 @@ int PisteSound_StartMusic(char* filename){
 
 	music = Mix_LoadMUS(filename);
 	if (music == NULL){
-		printf("Music load error: %s\n",Mix_GetError());
+		printf("PS     - Music load error: %s\n",Mix_GetError());
 		return -1;
 	}
 	if (Mix_PlayMusic( music, -1) == -1){
-		printf("Musir play error: %s\n",Mix_GetError());
+		printf("PS     - Music play error: %s\n",Mix_GetError());
 		return -1;
 	}
 
