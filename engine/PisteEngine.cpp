@@ -31,7 +31,7 @@ float FPS_ms = 16.667;
 int real_fps;
 int d_time;
 
-bool debug = true;
+bool debug = false;
 bool draw = true;
 bool ready = false;
 
@@ -53,7 +53,7 @@ int EngineLogic(bool &running){
 
 	if (debug){
 		if(PisteInput_Keydown(PI_Q)) GDB_Break();
-		if(PisteInput_Keydown(PI_R)) Piste_IgnoreFrame();
+		if(PisteInput_Keydown(PI_T)) Piste_IgnoreFrame();
 		fflush(stdout);
 	}
 	return 0;
@@ -83,6 +83,9 @@ void Piste_SetFPS(int fps){
 }
 int  Piste_GetFPS(){
 	return real_fps;
+}
+void Piste_SetDebug(bool set){
+	debug = set;
 }
 
 int Piste_Init(int width, int height, const char* name){

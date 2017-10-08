@@ -4584,7 +4584,7 @@ int PK_Sprite_Liikuta(int i){
 	BYTE color;
 	DWORD plk;
 
-	if (PisteInput_Keydown(PI_B))//PisteInput_Keydown(PI_B) && huijaukset)
+	if (PisteInput_Keydown(PI_B) && huijaukset)
 	{
 
 		if (i == pelaaja_index)
@@ -8208,9 +8208,11 @@ int main(int argc, char *argv[]){
 	strcpy(tyohakemisto,".");
 
 	for(int i=0; i<argc; i++){
-		if (strcmp(argv[i], "dev" ) == 0) huijaukset = true;
+		if (strcmp(argv[i], "dev" ) == 0) {
+			huijaukset = true;
+			Piste_SetDebug(true);
+		}
 		if (strcmp(argv[i], "nolimits" ) == 0) RAJAA_KARTANPIIRTOALUE = false;
-		if (strcmp(argv[i], "debug" ) == 0);
 	}
 
 	PK_Asetukset_Lataa("data/settings.ini");
