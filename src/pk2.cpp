@@ -12,10 +12,9 @@
 //in a separated code to be used in the Level Editor.
 //#########################
 //TODO
-//-Remove bonus draw before start
-//-Play win music after boss
 //-16:9 resolution
 //-Music loop
+//-Set panoramic audio
 
 #include <iostream>
 #include <sys/stat.h>
@@ -3292,6 +3291,8 @@ void PK_Tutki_Seina(PK2Sprite &sprite, PK2BLOCK &palikka){
 				jaksot[jakso_indeksi_nyt].lapaisty = true;
 				if (jaksot[jakso_indeksi_nyt].jarjestys >= jakso)
 					jakso++; //Increase level
+				musiikin_voimakkuus = musiikin_max_voimakkuus;
+				musiikin_voimakkuus_nyt = musiikin_max_voimakkuus-1;
 			}
 		}
 	}
@@ -5399,7 +5400,7 @@ int PK_Alusta_Tilat(){
 			{
 				jakso_lapaisty = false;
 
-				PK_Sprite_Tyhjenna();
+				PK_Sprite_Tyhjenna(); //Reset sprites
 				//PisteLog_Kirjoita("  - Loading map \n");
 				if (PK_Kartta_Lataa(seuraava_kartta) == 1) {
 					PK2_virhe = true;
@@ -5408,6 +5409,8 @@ int PK_Alusta_Tilat(){
 
 				//PisteLog_Kirjoita("  - Doing tile calcualtions...\n");
 				PK_Palikka_Laske_Palikat();
+
+				PK_Alusta_Fadetekstit(); //Reset fade text
 
 				//PisteLog_Kirjoita("  - Initializing items \n");
 				PK_Esineet_Alusta();

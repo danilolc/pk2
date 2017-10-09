@@ -125,6 +125,7 @@ int PisteSound_StartMusic(char* filename){
 		return -1;
 	}
 
+	printf("PS     - Loaded %s\n",filename);
 	strcpy(playingMusic,filename);
 	return 0;
 }
@@ -133,7 +134,7 @@ void PisteSound_SetMusicVolume(int volume){
 	mus_volume = volume;
 }
 void PisteSound_StopMusic(){
-	Mix_FadeOutMusic(1);
+	Mix_FadeOutMusic(0);
 }
 
 int PisteSound_Start(){
