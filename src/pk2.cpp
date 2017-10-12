@@ -10,6 +10,13 @@
 //This code does everything, except the
 //sprite and map managing, that are made
 //in a separated code to be used in the Level Editor.
+//-------------------------
+//It can be started with the "dev" argument to start the
+//cheats and "test" follown by the episode and level to
+//open directely on the level.
+//	Exemple:
+//	"./PK2 dev test rooster\ island\ 2/level13.map"
+//	Starts the level13.map on dev mode
 //#########################
 //TODO
 //-16:9 resolution
@@ -237,8 +244,8 @@ struct PK2ASETUKSET{
 
 //#### Global Variables
 
-int RUUDUN_LEVEYS				= 640;
-int RUUDUN_KORKEUS				= 480;
+int RUUDUN_LEVEYS = 640;
+int RUUDUN_KORKEUS = 480;
 bool isFullScreen = false;
 bool isFiltered = false;
 bool isFit = false;
@@ -248,10 +255,11 @@ int KARTANPIIRTO_KORKEUS  = 480;
 bool RAJAA_KARTANPIIRTOALUE = true;
 
 bool huijaukset = false;
+bool test_level = false;
 
-bool PK2_virhe				= false;// jos t�m� muuttuu todeksi niin ohjelma lopetetaan
+bool PK2_virhe = false;
 
-bool window_closed	= false;// onko ikkuna kiinni
+bool window_closed	= false;
 bool lopeta_peli = false;
 
 bool running = true;
@@ -610,9 +618,10 @@ int txt_setup_options,
 //#### Prototypes
 
 int PK_Asetukset_Tallenna(char *filename);
-int  PK_Kartta_Aseta_Spritet();
+int PK_Kartta_Aseta_Spritet();
 void PK_Esineet_Alusta();
 void PK_Lisaa_Episodin_Hakemisto(char *tiedosto);
+void PK_Quit();
 
 //#### Functions
 
@@ -1494,7 +1503,7 @@ int PK_Poista_Vari_254_Palikoista(){
 
 	return 0;
 }
-//Borrão ?
+//Create menu background shadow
 int PK_Sumenna_Kuva(int kbuffer, DWORD kleveys, int kkorkeus){
 	BYTE *buffer = NULL;
 	DWORD leveys;
@@ -2562,13 +2571,8 @@ int PK_Kartta_Lataa(char *nimi){
 	strcpy(polku,"");
 	PK_Lisaa_Episodin_Hakemisto(polku);
 
-	//PisteLog_Kirjoita("- Trying to load a map: ");
-	//PisteLog_Kirjoita(polku);
-	//PisteLog_Kirjoita(nimi);
-	//PisteLog_Kirjoita("\n");
-
 	if (kartta->Lataa(polku, nimi) == 1){
-		//PisteLog_Kirjoita("  - Loading failed. \n");
+		printf("PK2    - Error loading map '%s' at '%s'\n", seuraava_kartta, polku);
 		return 1;
 	}
 
@@ -3047,7 +3051,7 @@ int PK_Piirra_Bonukset(){
 	}
 	return 0;
 }
-
+//Clean items
 void PK_Esineet_Alusta(){
 	for (int i=0;i<MAX_ESINEITA;i++)
 		esineet[i] = NULL;
@@ -5095,8 +5099,10 @@ int PK_Alusta_Tilat(){
 			strcpy(pelaajan_nimi,tekstit->Hae_Teksti(txt_player_default_name));
 			srand((unsigned)time(NULL));
 			strcpy(viesti,"no message");
-			strcpy(episodi,"");
-			strcpy(seuraava_kartta,"untitle1.map");
+			if(!test_level){
+				strcpy(episodi,"");
+				strcpy(seuraava_kartta,"untitle1.map");
+			}
 
 			jakso = 1;
 
@@ -5396,23 +5402,18 @@ int PK_Alusta_Tilat(){
 			else
 				uusinta = false;
 
-			if (!peli_kesken)
-			{
+			if (!peli_kesken) {
 				jakso_lapaisty = false;
 
 				PK_Sprite_Tyhjenna(); //Reset sprites
-				//PisteLog_Kirjoita("  - Loading map \n");
-				if (PK_Kartta_Lataa(seuraava_kartta) == 1) {
-					PK2_virhe = true;
-					//PisteLog_Kirjoita("  - Loading map failed!\n");
-				}
 
-				//PisteLog_Kirjoita("  - Doing tile calcualtions...\n");
+				if (PK_Kartta_Lataa(seuraava_kartta) == 1)
+					PK2_virhe = true;
+
 				PK_Palikka_Laske_Palikat();
 
 				PK_Alusta_Fadetekstit(); //Reset fade text
 
-				//PisteLog_Kirjoita("  - Initializing items \n");
 				PK_Esineet_Alusta();
 				peli_kesken = true;
 				musiikin_voimakkuus = musiikin_max_voimakkuus;
@@ -5420,8 +5421,7 @@ int PK_Alusta_Tilat(){
 				item_paneeli_x = -215;
 				piste_lisays = 0;
 			}
-			else
-			{
+			else {
 				degree = degree_temp;
 			}
 
@@ -6453,11 +6453,7 @@ int PK_Piirra_Menut_PaaValikko(){
 	my += 20;
 
 	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_exit),180,my))
-	{
-		lopeta_peli = true;
-		PisteDraw2_FadeOut(PD_FADE_NORMAL);
-		musiikin_voimakkuus = 0;
-	}
+		PK_Quit();
 	my += 20;
 
 	return 0;
@@ -7272,10 +7268,8 @@ int PK_Piirra_Kartta(){
 	int pekkaframe = 0;
 
 
-	for (int i=0;i<=jaksoja;i++)
-	{
-		if (strcmp(jaksot[i].nimi,"")!=0 && jaksot[i].jarjestys > 0)
-		{
+	for (int i=0;i<=jaksoja;i++) {
+		if (strcmp(jaksot[i].nimi,"")!=0 && jaksot[i].jarjestys > 0) {
 			tyyppi = 0;							//0 harmaa
 			if (jaksot[i].jarjestys == jakso)
 				tyyppi = 1;						//1 vihre�
@@ -7295,8 +7289,7 @@ int PK_Piirra_Kartta(){
 			//PisteDraw2_Image_Clip(kuva_peli,jaksot[i].x-4,jaksot[i].y-4-30,1+(ikoni*27),452,27+(ikoni*27),478);
 			PisteDraw2_Image_CutClip(kuva_peli,jaksot[i].x-9,jaksot[i].y-14,1+(ikoni*28),452,28+(ikoni*28),479);
 
-			if (tyyppi==1)
-			{
+			if (tyyppi==1) {
 				//PisteDraw2_Image_Clip(kuva_peli,jaksot[i].x-30,jaksot[i].y-4,157,46,181,79);
 				sinx = (int)(sin_table[degree%360]/2);
 				cosy = (int)(cos_table[degree%360]/2);
@@ -7307,10 +7300,8 @@ int PK_Piirra_Kartta(){
 			paluu = PK_Piirra_Nuppi(jaksot[i].x-5, jaksot[i].y-10, tyyppi);
 
 			// jos klikattu
-			if (paluu == 2)
-			{
-				if (tyyppi < 2 || (huijaukset && tyyppi > 0))//== 1
-				{
+			if (paluu == 2) {
+				if (tyyppi < 2 || (huijaukset && tyyppi > 0)) {
 					strcpy(seuraava_kartta,jaksot[i].tiedosto);
 					//jakso = i;
 					jakso_indeksi_nyt = i;
@@ -7365,10 +7356,6 @@ int PK_Piirra_Kartta(){
 	}
 
 	PK_Piirra_Kursori(hiiri_x,hiiri_y);
-
-	//PisteWait_Wait(0);//10
-
-	//PisteWait_Start();
 
 	return 0;
 }
@@ -7809,8 +7796,7 @@ int PK_Main_Kartta(){
 
 	degree = 1 + degree % 360;
 
-	if (siirry_kartasta_peliin && !PisteDraw2_IsFading())
-	{
+	if (siirry_kartasta_peliin && !PisteDraw2_IsFading()) {
 		pelin_seuraava_tila = TILA_PELI;
 		//strcpy(seuraava_kartta,jaksot[i].tiedosto);
 		peli_kesken = false;//true;
@@ -7819,17 +7805,6 @@ int PK_Main_Kartta(){
 
 	if (key_delay > 0)
 		key_delay--;
-
-	if (key_delay == 0)
-	{
-		/*
-		if (PisteInput_Keydown(PI_SPACE))
-		{
-			siirry_kartasta_peliin = true;
-			//pelin_seuraava_tila = TILA_PELI;
-			PisteDraw2_FadeOut(PD_FADE_SLOW);
-		}*/
-	}
 
 	return 0;
 }
@@ -7964,8 +7939,14 @@ int PK_Main_Peli(){
 		}
 	}
 	if (lopetusajastin == 1 && !PisteDraw2_IsFading()){
-		if (jakso_lapaisty) pelin_seuraava_tila = TILA_PISTELASKU;
-		else pelin_seuraava_tila = TILA_KARTTA;
+		if(test_level){
+			lopeta_peli = true;
+			PK_Quit();
+		}
+		else{
+			if (jakso_lapaisty) pelin_seuraava_tila = TILA_PISTELASKU;
+			else pelin_seuraava_tila = TILA_KARTTA;
+		}
 	}
 
 	if (key_delay == 0){
@@ -8143,21 +8124,22 @@ int PK_Main(){
 
 	bool skipped = !skip_frame && doublespeed; // If is in double speed and don't skip this frame, so the last frame was skipped, and it wasn't drawn
 	if (PisteInput_Keydown(PI_ESCAPE) && key_delay == 0 && !skipped){ //Don't activate menu whith a not drawn screen
-		if (menu_nyt != MENU_PAAVALIKKO || pelin_tila != TILA_MENUT){
-			pelin_seuraava_tila = TILA_MENUT;
-			menu_nyt = MENU_PAAVALIKKO;
-			degree_temp = degree;
-		}
-		else if (pelin_tila == TILA_MENUT && !wasPressed && PisteInput_Keydown(PI_ESCAPE)){ // Just pressed escape in menu
-			if(menu_valittu_id == menu_valinta_id-1){
-				if(!lopeta_peli) PisteDraw2_FadeOut(PD_FADE_FAST);
-				lopeta_peli = true;
-				musiikin_voimakkuus = 0;
+		if(test_level)
+			PK_Quit();
+		else{
+			if (menu_nyt != MENU_PAAVALIKKO || pelin_tila != TILA_MENUT){
+				pelin_seuraava_tila = TILA_MENUT;
+				menu_nyt = MENU_PAAVALIKKO;
+				degree_temp = degree;
 			}
-			else {
-				menu_valittu_id = menu_valinta_id-1; // Set to "exit" option
-				window_activated = false;
-				PisteInput_ActivateWindow(false);
+			else if (pelin_tila == TILA_MENUT && !wasPressed && PisteInput_Keydown(PI_ESCAPE)){ // Just pressed escape in menu
+				if(menu_valittu_id == menu_valinta_id-1)
+					PK_Quit();
+				else {
+					menu_valittu_id = menu_valinta_id-1; // Set to "exit" option
+					window_activated = false;
+					PisteInput_ActivateWindow(false);
+				}
 			}
 		}
 	}
@@ -8198,6 +8180,36 @@ int PK_Unload(){
 	return 0;
 }
 
+void PK_Start_Test(const char* arg){
+	char buffer[_MAX_PATH] = "";
+	int sepindex;
+
+	strcpy(buffer, arg);
+	for (sepindex = 0; sepindex < _MAX_PATH; sepindex++)
+		if(buffer[sepindex]=='/') break; //TODO - Works on Windows?
+
+	strcpy(episodi, buffer);
+	episodi[sepindex] = '\0';
+
+	PK_Lataa_Lisainfot();
+	peli_kesken = false;
+	PK_Uusi_Peli();
+
+	strcpy(seuraava_kartta, buffer + sepindex + 1);
+	siirry_kartasta_peliin = true;
+	musiikin_voimakkuus = 0;
+	peli_kesken = false;
+
+	test_level = true;
+	printf("Testing episode %s level %s\n", episodi, seuraava_kartta);
+}
+
+void PK_Quit(){
+	if(!lopeta_peli) PisteDraw2_FadeOut(PD_FADE_FAST);
+	lopeta_peli = true;
+	musiikin_voimakkuus = 0;
+}
+
 int main(int argc, char *argv[]){
 
 	if (Piste_Init(RUUDUN_LEVEYS, RUUDUN_KORKEUS, GAME_NAME) < 0) {
@@ -8216,6 +8228,10 @@ int main(int argc, char *argv[]){
 			Piste_SetDebug(true);
 		}
 		if (strcmp(argv[i], "nolimits" ) == 0) RAJAA_KARTANPIIRTOALUE = false;
+		if (strcmp(argv[i], "test" ) == 0){
+			if(argc <= i+1) PK2_virhe = true;
+			else PK_Start_Test(argv[i+1]);
+		}
 	}
 
 	PK_Asetukset_Lataa("data/settings.ini");
@@ -8233,10 +8249,12 @@ int main(int argc, char *argv[]){
 
 	PK_Alusta_Tilat();
 
+	pelin_seuraava_tila = TILA_INTRO;
 	if (huijaukset)
 		pelin_seuraava_tila = TILA_MENUT;
-	else
-		pelin_seuraava_tila = TILA_INTRO;
+	if (test_level)
+		pelin_seuraava_tila = TILA_PELI;
+
 
 	Piste_Loop(running, *PK_Main);
 

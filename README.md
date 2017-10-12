@@ -13,13 +13,19 @@ User made episodes:
 http://mapstore.the.cz/
 To add a new episode, just download the zip file and extract it to its respective path inside "res/".
 
+It can be started with the "dev" argument to start the
+cheats and "test" follown by the episode and level to
+open directely on the level.
+
+This example starts the level13.map on dev mode:
+```
+./PK2 dev test rooster\ island\ 2/level13.map
+```
 
 # Things to add or change:
  -Put new options in settings.ini
 
  -Set energy to update before draw on screen
-
- -Open a level with arguments to LevelEditor test
 
  -Set the wide resolution
 
