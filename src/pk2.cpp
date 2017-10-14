@@ -42,7 +42,10 @@
 using namespace std;
 
 #define GAME_NAME   "Pekka Kana 2"
-#define PK2_VERSION "r1-c07"
+#define PK2_VERSION "r1"
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 480
 
 #ifndef _WIN32
 void itoa(int n, char s[], int radix){
@@ -53,16 +56,7 @@ void ltoa(long n, char s[], int radix){
 }
 #endif
 
-bool dev_mode = false;
-
-/*
-int pk2printf(const char *format, ...) {
-	if (!dev_mode) return 0;
-	return printf(format, ...);
-	
-}
-#define printf(x) pk2printf(x)
-*/
+//#define printf(args) if(dev_mode) printf(args)
 
 //#### Constants
 
@@ -191,7 +185,7 @@ enum {//Menu
 const int AANET_SAMPLERATE = 22050;
 
 //#### Structs
-//PK2??
+//PK2 Map
 struct PK2JAKSO{
 	char	tiedosto[_MAX_PATH];
 	char	nimi[40];
@@ -218,53 +212,52 @@ struct PK2TALLENNUS{
 	DWORD pisteet;
 };
 
-//PK2SETTINGS
-struct PK2ASETUKSET{
-	// versio
+struct PK2SETTINGS {
 	double versio;
-	// alustetaan jos ei ole ladattu
-	bool ladattu;
-	// kieli
-	char kieli[_MAX_PATH];
+	bool ladattu; // if it was started here
+	char kieli[128]; // language
+	
 	// grafiikka
-	int ruudun_korkeus;
-	int ruudun_leveys;
-	bool lapinakyvat_objektit;
-	bool lapinakyvat_menutekstit;
-	bool saa_efektit;
-	bool nayta_tavarat;
-	bool tausta_spritet;
+	DWORD ruudun_korkeus;
+	DWORD ruudun_leveys;
+	bool  lapinakyvat_objektit;
+	bool  lapinakyvat_menutekstit;
+	bool  saa_efektit;
+	bool  nayta_tavarat;
+	bool  tausta_spritet;
+	
 	// kontrollit
-	int  kontrolli_vasemmalle;
-	int  kontrolli_oikealle;
-	int  kontrolli_hyppy;
-	int  kontrolli_alas;
-	int  kontrolli_juoksu;
-	int  kontrolli_hyokkays1;
-	int  kontrolli_hyokkays2;
-	int  kontrolli_kayta_esine;
+	DWORD kontrolli_vasemmalle;
+	DWORD kontrolli_oikealle;
+	DWORD kontrolli_hyppy;
+	DWORD kontrolli_alas;
+	DWORD kontrolli_juoksu;
+	DWORD kontrolli_hyokkays1;
+	DWORD kontrolli_hyokkays2;
+	DWORD kontrolli_kayta_esine;
+	
 	// audio
 	bool musiikki;
 	bool aanet;
 
-	//TODO - add new configurations
+	//Version 1.1
+	bool isFullScreen;
+	bool isFiltered;
+	bool isFit;
+
 };
-
-
 
 //#### Global Variables
 
-int RUUDUN_LEVEYS  = 800;
-int RUUDUN_KORKEUS = 480;
-bool isFullScreen  = false;
-bool isFiltered    = true;
-bool isFit         = true;
+int RUUDUN_LEVEYS  = SCREEN_WIDTH;
+int RUUDUN_KORKEUS = SCREEN_HEIGHT;
 
 int KARTANPIIRTO_LEVEYS     = 800;
 int KARTANPIIRTO_KORKEUS    = 480;
 bool RAJAA_KARTANPIIRTOALUE = true;
 
 bool test_level = false;
+bool dev_mode = false;
 
 bool PK2_virhe = false;
 
@@ -276,7 +269,7 @@ bool unload = false;
 bool taulut_laskettu = false;
 
 //ASETUKSET
-PK2ASETUKSET asetukset;
+PK2SETTINGS settings;
 
 //INFO MUUTTUJAT
 bool	piirra_infot = false;
@@ -644,28 +637,32 @@ bool PK_Onko_File(char *filename){
 }
 //PK_Settings_Start
 void PK_Asetukset_Alusta(){
-	asetukset.ladattu = false;
-	strcpy(asetukset.kieli,"english.txt");
+	settings.ladattu = false;
+	strcpy(settings.kieli,"english.txt");
 
-	asetukset.ruudun_leveys = 640;
-	asetukset.ruudun_korkeus = 480;
-	asetukset.lapinakyvat_objektit = true;
-	asetukset.lapinakyvat_menutekstit = false;
-	asetukset.saa_efektit = true;
-	asetukset.nayta_tavarat = true;
-	asetukset.tausta_spritet = true;
+	settings.ruudun_leveys = SCREEN_WIDTH;
+	settings.ruudun_korkeus = SCREEN_HEIGHT;
+	settings.lapinakyvat_objektit = true;
+	settings.lapinakyvat_menutekstit = false;
+	settings.saa_efektit = true;
+	settings.nayta_tavarat = true;
+	settings.tausta_spritet = true;
 
-	asetukset.aanet = true;
-	asetukset.musiikki = true;
+	settings.aanet = true;
+	settings.musiikki = true;
 
-	asetukset.kontrolli_vasemmalle		= PI_LEFT;
-	asetukset.kontrolli_oikealle		= PI_RIGHT;
-	asetukset.kontrolli_hyppy			= PI_UP;
-	asetukset.kontrolli_alas			= PI_DOWN;
-	asetukset.kontrolli_juoksu			= PI_RALT;
-	asetukset.kontrolli_hyokkays1		= PI_RCONTROL;
-	asetukset.kontrolli_hyokkays2		= PI_RSHIFT;
-	asetukset.kontrolli_kayta_esine		= PI_SPACE;
+	settings.kontrolli_vasemmalle	= PI_LEFT;
+	settings.kontrolli_oikealle		= PI_RIGHT;
+	settings.kontrolli_hyppy		= PI_UP;
+	settings.kontrolli_alas			= PI_DOWN;
+	settings.kontrolli_juoksu		= PI_RALT;
+	settings.kontrolli_hyokkays1	= PI_RCONTROL;
+	settings.kontrolli_hyokkays2	= PI_RSHIFT;
+	settings.kontrolli_kayta_esine	= PI_SPACE;
+
+	settings.isFiltered = true;
+	settings.isFit = true;
+	settings.isFullScreen = true;
 
 	PisteUtils_CreateDir("data");
 	PK_Asetukset_Tallenna("data/settings.ini");
@@ -683,40 +680,45 @@ int PK_Asetukset_Lataa(char *filename){
 
 	tiedosto->read((char*)versio, 4);
 
-	if (strcmp(versio,"1.0") == 0)
-		tiedosto->read((char*)&asetukset, sizeof(asetukset));
+	if (strcmp(versio, "1.0") == 0) {
+		delete (tiedosto);
+		PK_Asetukset_Alusta();
+		return 2;
+	}
+	if (strcmp(versio, "1.1") == 0)
+		tiedosto->read((char*)&settings, sizeof(settings));
 
 	delete (tiedosto);
 
-	asetukset.ladattu = true;
-	kontrolli_vasemmalle	= asetukset.kontrolli_vasemmalle;
-	kontrolli_oikealle		= asetukset.kontrolli_oikealle;
-	kontrolli_hyppy			= asetukset.kontrolli_hyppy;
-	kontrolli_alas			= asetukset.kontrolli_alas;
-	kontrolli_juoksu		= asetukset.kontrolli_juoksu;
-	kontrolli_hyokkays1		= asetukset.kontrolli_hyokkays1;
-	kontrolli_hyokkays2		= asetukset.kontrolli_hyokkays2;
-	kontrolli_kayta_esine	= asetukset.kontrolli_kayta_esine;
+	settings.ladattu = true;
+	kontrolli_vasemmalle	= settings.kontrolli_vasemmalle;
+	kontrolli_oikealle		= settings.kontrolli_oikealle;
+	kontrolli_hyppy			= settings.kontrolli_hyppy;
+	kontrolli_alas			= settings.kontrolli_alas;
+	kontrolli_juoksu		= settings.kontrolli_juoksu;
+	kontrolli_hyokkays1		= settings.kontrolli_hyokkays1;
+	kontrolli_hyokkays2		= settings.kontrolli_hyokkays2;
+	kontrolli_kayta_esine	= settings.kontrolli_kayta_esine;
 
 	return 0;
 }
 //PK_Settings_Save
 int PK_Asetukset_Tallenna(char *filename){
-	asetukset.ruudun_korkeus	= RUUDUN_KORKEUS;
-	asetukset.ruudun_leveys		= RUUDUN_LEVEYS;
+	settings.ruudun_korkeus	= RUUDUN_KORKEUS;
+	settings.ruudun_leveys		= RUUDUN_LEVEYS;
 
-	asetukset.kontrolli_vasemmalle		= kontrolli_vasemmalle;
-	asetukset.kontrolli_oikealle		= kontrolli_oikealle;
-	asetukset.kontrolli_hyppy			= kontrolli_hyppy;
-	asetukset.kontrolli_alas			= kontrolli_alas;
-	asetukset.kontrolli_juoksu			= kontrolli_juoksu;
-	asetukset.kontrolli_hyokkays1		= kontrolli_hyokkays1;
-	asetukset.kontrolli_hyokkays2		= kontrolli_hyokkays2;
-	asetukset.kontrolli_kayta_esine		= kontrolli_kayta_esine;
+	settings.kontrolli_vasemmalle		= kontrolli_vasemmalle;
+	settings.kontrolli_oikealle		= kontrolli_oikealle;
+	settings.kontrolli_hyppy			= kontrolli_hyppy;
+	settings.kontrolli_alas			= kontrolli_alas;
+	settings.kontrolli_juoksu			= kontrolli_juoksu;
+	settings.kontrolli_hyokkays1		= kontrolli_hyokkays1;
+	settings.kontrolli_hyokkays2		= kontrolli_hyokkays2;
+	settings.kontrolli_kayta_esine		= kontrolli_kayta_esine;
 
 	ofstream *tiedosto = new ofstream(filename, ios::binary);
-	tiedosto->write ("1.0", 4);
-	tiedosto->write ((char *)&asetukset, sizeof (asetukset));
+	tiedosto->write ("1.1", 4);
+	tiedosto->write ((char *)&settings, sizeof (settings));
 
 	delete (tiedosto);
 
@@ -835,7 +837,7 @@ bool PK_Lataa_Kieli(){
 			strcpy(langmenulist[i],langlist[i]);
 	}
 
-	strcat(tiedosto,asetukset.kieli);
+	strcat(tiedosto,settings.kieli);
 
 	if (!tekstit->Read_File(tiedosto)){
 		//PK2_virhe = true;
@@ -1650,7 +1652,7 @@ int PK_Piirra_LaineTeksti_Hidas(char *teksti, int fontti, int x, int y){
 			xs = (int)(cos_table[((i+degree)*4)%360])/11;
 			kirjain[0] = teksti[i];
 
-			if (asetukset.lapinakyvat_menutekstit)
+			if (settings.lapinakyvat_menutekstit)
 				vali += PisteDraw2_Font_WriteAlpha(fontti,kirjain,x+vali-xs,y+ys,75);
 			else{
 				PisteDraw2_Font_Write(fontti4,kirjain,x+vali-xs+1,y+ys+1);
@@ -1707,7 +1709,7 @@ int PK_Fadetekstit_Piirra(){
 			else
 				pros = fadetekstit[i].ajastin * 2;
 
-			if (asetukset.lapinakyvat_objektit && pros < 100)
+			if (settings.lapinakyvat_objektit && pros < 100)
 			{
 				if (PisteDraw2_Font_WriteAlpha( fadetekstit[i].fontti,fadetekstit[i].teksti,
 														fadetekstit[i].x-kamera_x, fadetekstit[i].y-kamera_y, pros)==-1)
@@ -1750,7 +1752,7 @@ int PK_Piirra_Piste(DWORD x, DWORD y, int pros, BYTE vari){
 }
 
 int PK_Piirra_Tahti(DWORD x, DWORD y, int pros, BYTE vari){
-	if (pros > 99 || !asetukset.lapinakyvat_objektit)
+	if (pros > 99 || !settings.lapinakyvat_objektit)
 		PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x, y-kamera_y,1,1,11,11);
 	else
 		PK_Piirra_Lapinakyva_Objekti(kuva_peli_sysmem, 2, 2, 10, 10, x-kamera_x, y-kamera_y, pros, vari);
@@ -1765,7 +1767,7 @@ int PK_Piirra_Iskuvalays(DWORD x, DWORD y){
 }
 
 int PK_Piirra_Valo(DWORD x, DWORD y, int pros, BYTE vari){
-	if (asetukset.lapinakyvat_objektit)
+	if (settings.lapinakyvat_objektit)
 		PK_Piirra_Lapinakyva_Objekti(kuva_peli_sysmem, 1, 14, 13, 13, x-kamera_x, y-kamera_y, pros, vari);
 	else{
 		int vx = (vari/32) * 14;
@@ -1776,7 +1778,7 @@ int PK_Piirra_Valo(DWORD x, DWORD y, int pros, BYTE vari){
 }
 
 int PK_Piirra_Kipina(DWORD x, DWORD y, int pros, BYTE vari){
-	if (asetukset.lapinakyvat_objektit)
+	if (settings.lapinakyvat_objektit)
 		PK_Piirra_Lapinakyva_Objekti(kuva_peli_sysmem, 99, 14, 7, 7, x-kamera_x, y-kamera_y, pros, vari);
 	else{
 		int vx = (vari/32) * 8;
@@ -1813,7 +1815,7 @@ void PK_Piirra_Savupilvi(int x, int y, int &anim){
 }
 
 void PK_Piirra_Polypilvi(DWORD x, DWORD y, int pros, BYTE vari){
-	if (pros > 99 || !asetukset.lapinakyvat_objektit)
+	if (pros > 99 || !settings.lapinakyvat_objektit)
 		PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x,y-kamera_y,226,2,224,49);
 	else
 		PK_Piirra_Lapinakyva_Objekti(kuva_peli_sysmem, 226, 2, 18, 19, x-kamera_x, y-kamera_y, pros, vari);
@@ -5141,12 +5143,12 @@ int PK_Alusta_Tilat(){
 
 			kartta = new PK2Kartta();
 
-			if (!isFiltered)
+			if (!settings.isFiltered)
 				PisteDraw2_SetFilter(PD_FILTER_NEAREST);
-			if (isFiltered)
+			if (settings.isFiltered)
 				PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
-			PisteDraw2_FitScreen(isFit);
-			PisteDraw2_FullScreen(isFullScreen);
+			PisteDraw2_FitScreen(settings.isFit);
+			PisteDraw2_FullScreen(settings.isFullScreen);
 
 			PisteDraw2_Image_Delete(kuva_peli); //Delete if there is a image allocated
 			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
@@ -5285,7 +5287,7 @@ int PK_Alusta_Tilat(){
 			PK_Tallennukset_Hae_Kaikki("data/saves.dat");
 
 			//PisteLog_Kirjoita("  - PisteSound sounds on \n");
-			//PisteSound_Aanet_Paalla(asetukset.aanet);
+			//PisteSound_Aanet_Paalla(settings.aanet);
 
 			//PisteLog_Kirjoita("- Initializing basic stuff completed \n");
 		}
@@ -6086,10 +6088,10 @@ int PK_Piirra_Peli(){
 	PK2Kartta_Animoi(degree,palikka_animaatio/7,kytkin1,kytkin2,kytkin3,false);
 
 	if (!skip_frame)
-		if (asetukset.tausta_spritet)
+		if (settings.tausta_spritet)
 			PK_Spritet_Piirra_Taustat();
 
-	if (asetukset.saa_efektit)
+	if (settings.saa_efektit)
 		PK_Taustapartikkelit();
 
 	if (!skip_frame)
@@ -6116,7 +6118,7 @@ int PK_Piirra_Peli(){
 
 	PK_Fadetekstit_Piirra();
 
-	if (asetukset.nayta_tavarat)
+	if (settings.nayta_tavarat)
 		PK_Piirra_Alapaneeli();
 
 	PK_Piirra_Peli_Ylaosa();
@@ -6693,65 +6695,65 @@ int PK_Piirra_Menut_Grafiikka(){
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_gfx_title),50,90);
 
 	if(moreOptions){
-		wasFullScreen = isFullScreen;
-		wasFiltered = isFiltered;
-		wasFit = isFit;
+		wasFullScreen = settings.isFullScreen;
+		wasFiltered = settings.isFiltered;
+		wasFit = settings.isFit;
 
-		if (isFullScreen){
+		if (settings.isFullScreen){
 			if (PK_Piirra_Menut_Valinta("fullscreen mode is on",180,my)){
-				isFullScreen = false;
+				settings.isFullScreen = false;
 			}
 		} else{
 			if (PK_Piirra_Menut_Valinta("fullscreen mode is off",180,my)){
-				isFullScreen = true;
+				settings.isFullScreen = true;
 			}
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, isFullScreen)) {
-			isFullScreen = !isFullScreen;
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.isFullScreen)) {
+			settings.isFullScreen = !settings.isFullScreen;
 		}
 		my += 30;
 
-		if (isFiltered){
+		if (settings.isFiltered){
 			if (PK_Piirra_Menut_Valinta("bilinear filter is on",180,my)){
-				isFiltered = false;
+				settings.isFiltered = false;
 			}
 		} else{
 			if (PK_Piirra_Menut_Valinta("bilinear filter is off",180,my)){
-				isFiltered = true;
+				settings.isFiltered = true;
 			}
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, isFiltered)) {
-			isFiltered = !isFiltered;
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.isFiltered)) {
+			settings.isFiltered = !settings.isFiltered;
 		}
 		my += 30;
 
-		if (isFit){
+		if (settings.isFit){
 			if (PK_Piirra_Menut_Valinta("screen fit is on",180,my)){
-				isFit = false;
+				settings.isFit = false;
 			}
 		} else{
 			if (PK_Piirra_Menut_Valinta("screen fit is off",180,my)){
-				isFit = true;
+				settings.isFit = true;
 			}
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, isFit)) {
-			isFit = !isFit;
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.isFit)) {
+			settings.isFit = !settings.isFit;
 		}
 		my += 30;
 
 
 		//Can add more options
 
-		if(wasFullScreen != isFullScreen)
-			PisteDraw2_FullScreen(isFullScreen);
+		if(wasFullScreen != settings.isFullScreen)
+			PisteDraw2_FullScreen(settings.isFullScreen);
 
-		if(wasFiltered && !isFiltered)
+		if(wasFiltered && !settings.isFiltered)
 			PisteDraw2_SetFilter(PD_FILTER_NEAREST);
-		if(!wasFiltered && isFiltered)
+		if(!wasFiltered && settings.isFiltered)
 			PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
 
-		if(wasFit!=isFit)
-			PisteDraw2_FitScreen(isFit);
+		if(wasFit!= settings.isFit)
+			PisteDraw2_FitScreen(settings.isFit);
 
 
 		if (PK_Piirra_Menut_Valinta("back",100,360)){
@@ -6762,67 +6764,67 @@ int PK_Piirra_Menut_Grafiikka(){
 	}
 	else {
 
-		if (asetukset.lapinakyvat_objektit){
+		if (settings.lapinakyvat_objektit){
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tfx_on),180,my))
-				asetukset.lapinakyvat_objektit = false;
+				settings.lapinakyvat_objektit = false;
 		} else{
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tfx_off),180,my))
-				asetukset.lapinakyvat_objektit = true;
+				settings.lapinakyvat_objektit = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.lapinakyvat_objektit)) {
-			asetukset.lapinakyvat_objektit = !asetukset.lapinakyvat_objektit;
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.lapinakyvat_objektit)) {
+			settings.lapinakyvat_objektit = !settings.lapinakyvat_objektit;
 		}
 		my += 30;
 
 
-		if (asetukset.lapinakyvat_menutekstit){
+		if (settings.lapinakyvat_menutekstit){
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tmenus_on),180,my))
-				asetukset.lapinakyvat_menutekstit = false;
+				settings.lapinakyvat_menutekstit = false;
 		} else{
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tmenus_off),180,my))
-				asetukset.lapinakyvat_menutekstit = true;
+				settings.lapinakyvat_menutekstit = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.lapinakyvat_menutekstit)) {
-			asetukset.lapinakyvat_menutekstit = !asetukset.lapinakyvat_menutekstit;
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.lapinakyvat_menutekstit)) {
+			settings.lapinakyvat_menutekstit = !settings.lapinakyvat_menutekstit;
 		}
 		my += 30;
 
 
-		if (asetukset.nayta_tavarat){
+		if (settings.nayta_tavarat){
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_items_on),180,my))
-				asetukset.nayta_tavarat = false;
+				settings.nayta_tavarat = false;
 		} else{
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_items_off),180,my))
-				asetukset.nayta_tavarat = true;
+				settings.nayta_tavarat = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.nayta_tavarat)) {
-			asetukset.nayta_tavarat = !asetukset.nayta_tavarat;
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.nayta_tavarat)) {
+			settings.nayta_tavarat = !settings.nayta_tavarat;
 		}
 		my += 30;
 
 
-		if (asetukset.saa_efektit){
+		if (settings.saa_efektit){
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_weather_on),180,my))
-				asetukset.saa_efektit = false;
+				settings.saa_efektit = false;
 		} else{
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_weather_off),180,my))
-				asetukset.saa_efektit = true;
+				settings.saa_efektit = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.saa_efektit)) {
-			asetukset.saa_efektit = !asetukset.saa_efektit;
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.saa_efektit)) {
+			settings.saa_efektit = !settings.saa_efektit;
 		}
 		my += 30;
 
 
-		if (asetukset.tausta_spritet){
+		if (settings.tausta_spritet){
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_bgsprites_on),180,my))
-				asetukset.tausta_spritet = false;
+				settings.tausta_spritet = false;
 		} else{
 			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_bgsprites_off),180,my))
-				asetukset.tausta_spritet = true;
+				settings.tausta_spritet = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, asetukset.tausta_spritet)) {
-			asetukset.tausta_spritet = !asetukset.tausta_spritet;
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.tausta_spritet)) {
+			settings.tausta_spritet = !settings.tausta_spritet;
 		}
 		my += 30;
 
@@ -7116,7 +7118,7 @@ int PK_Piirra_Menut_Language(){
 	for (i=0;i<10;i++){
 		if(PK_Piirra_Menut_Valinta(langmenulist[i],150,150+my)){
 			//printf("Selected %s\n",langmenulist[i]);
-			strcpy(asetukset.kieli,langmenulist[i]);
+			strcpy(settings.kieli,langmenulist[i]);
 			PK_Lataa_Kieli();
 		}
 		my += 20;
@@ -7988,7 +7990,7 @@ int PK_Main_Peli(){
 			key_delay = 10;
 		}
 		if (PisteInput_Keydown(PI_G)){
-			asetukset.lapinakyvat_objektit = !asetukset.lapinakyvat_objektit;
+			settings.lapinakyvat_objektit = !settings.lapinakyvat_objektit;
 			key_delay = 20;
 		}
 		if (PisteInput_Keydown(PI_L)){
@@ -8127,7 +8129,7 @@ int PK_Main(){
 	if (musiikin_voimakkuus_nyt < 0)
 		musiikin_voimakkuus_nyt = 0;
 
-	if (saada && asetukset.musiikki)
+	if (saada && settings.musiikki)
 		PisteSound_SetMusicVolume(musiikin_voimakkuus_nyt);
 
 	static bool wasPressed = false;
@@ -8258,8 +8260,8 @@ int main(int argc, char *argv[]){
 	tekstit = new PisteLanguage();
 
 	if (!PK_Lataa_Kieli()){
-		printf("PK2    - Could not find %s!\n",asetukset.kieli);
-		strcpy(asetukset.kieli,"english.txt");
+		printf("PK2    - Could not find %s!\n",settings.kieli);
+		strcpy(settings.kieli,"english.txt");
 		if(!PK_Lataa_Kieli()){
 			printf("PK2    - Could not find the default language file!\n");
 			return 0;

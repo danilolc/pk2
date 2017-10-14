@@ -23,11 +23,7 @@ This example starts the level13.map on dev mode:
 ```
 
 # Things to add or change:
- -Put new options in settings.ini
-
  -Set energy to update before draw on screen
-
- -Set the wide resolution
 
  -Time is slow
 
