@@ -330,7 +330,7 @@ void PK2Sprite_Prototyyppi::SetProto10(PK2Sprite_Prototyyppi10 &proto){
 	max_nopeus			= proto.max_nopeus;
 	paino				= proto.paino;
 	pisteet				= proto.pisteet;
-	suojaus				= proto.suojaus;
+	suojaus				= (BYTE) proto.suojaus;
 	tuhoutuminen		= proto.tuhoutuminen;
 	tyyppi				= proto.tyyppi;
 	vahinko				= proto.vahinko;
@@ -1174,8 +1174,8 @@ int PK2Sprite::AI_Random_Kaantyminen(){
 	return 0;
 }
 int PK2Sprite::AI_Kaantyy_Jos_Osuttu(){
-	if (isku == VAHINKO_AIKA/* saatu_vahinko*/ > 0 && energia > 0)
-	{
+	int dam = (VAHINKO_AIKA > 0 && energia > 0)? 1 : 0; //Damage
+	if (isku == dam) {
 		if (a != 0)
 			a = -a;
 

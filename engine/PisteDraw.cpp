@@ -15,10 +15,6 @@
 
 #include "platform.h"
 
-//#ifdef _WIN32
-//#include "win32_clock.h"
-//#endif
-
 const int MAX_IMAGES = 2000;
 const int MAX_FONTS = 20;
 
@@ -187,10 +183,10 @@ int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int alpha){
 	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha);
 }
 int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala){ //TODO - fix names
-	PD_RECT src = {srcx, srcy, oikea-srcx, ala-srcy};
-  PD_RECT dst = {dstx, dsty, oikea-srcx, ala-srcy};
-  PisteDraw2_Image_CutClip(index, src, dst);
-  return 0;
+	PD_RECT src = {(DWORD)srcx, (DWORD)srcy, (DWORD)oikea-srcx, (DWORD)ala-srcy};
+	PD_RECT dst = {(DWORD)dstx, (DWORD)dsty, (DWORD)oikea-srcx, (DWORD)ala-srcy};
+	PisteDraw2_Image_CutClip(index, src, dst);
+	return 0;
 }
 int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
 	SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
@@ -380,9 +376,9 @@ void PisteDraw2_AdjustScreen(){
 
 	float buff_prop = (float)PD_screen_width / PD_screen_height;
 
-	Screen_dest.w = buff_prop * h;
+	Screen_dest.w = (int) (buff_prop * h);
 	Screen_dest.h = h;
-	Screen_dest.x = (w - Screen_dest.w) / 2;
+	Screen_dest.x = (int) ((w - Screen_dest.w) / 2);
 	Screen_dest.y = 0;
 }
 void PisteDraw2_FitScreen(bool fit){

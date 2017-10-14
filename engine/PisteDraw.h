@@ -16,7 +16,7 @@
 #define		PD_FILTER_BILINEAR "1"
 
 struct PD_RECT{
-	int x, y, w, h;
+	DWORD x, y, w, h;
 };
 
 bool PisteDraw2_IsFading();

@@ -23,18 +23,16 @@
 //-Music loop
 //-Set panoramic audio
 
-#include <iostream>
 #include <sys/stat.h>
 #include <fstream>
-#include <cmath>
-#include <cstdlib>
+#include <cmath> //sin cos
 #include <cstdio>
 #include <ctime>
+#include <cstdlib> //rand
 #ifdef _WIN32
-#include <direct.h>
+	#include <direct.h>
 #else
-#include <unistd.h>
-#include <dirent.h>
+	#include <unistd.h> //getcwd chdir
 #endif
 
 #include "PisteEngine.h"
@@ -43,7 +41,8 @@
 
 using namespace std;
 
-#define GAME_NAME "Pekka Kana 2"
+#define GAME_NAME   "Pekka Kana 2"
+#define PK2_VERSION "r1-c07"
 
 #ifndef _WIN32
 void itoa(int n, char s[], int radix){
@@ -53,6 +52,17 @@ void ltoa(long n, char s[], int radix){
 	sprintf(s, "%i", (int)n);
 }
 #endif
+
+bool dev_mode = false;
+
+/*
+int pk2printf(const char *format, ...) {
+	if (!dev_mode) return 0;
+	return printf(format, ...);
+	
+}
+#define printf(x) pk2printf(x)
+*/
 
 //#### Constants
 
@@ -178,7 +188,7 @@ enum {//Menu
 };
 
 //Sound
-const int AANET_SAMPLERATE		= 22050;
+const int AANET_SAMPLERATE = 22050;
 
 //#### Structs
 //PK2??
@@ -244,17 +254,16 @@ struct PK2ASETUKSET{
 
 //#### Global Variables
 
-int RUUDUN_LEVEYS = 640;
+int RUUDUN_LEVEYS  = 800;
 int RUUDUN_KORKEUS = 480;
-bool isFullScreen = false;
-bool isFiltered = false;
-bool isFit = false;
+bool isFullScreen  = false;
+bool isFiltered    = true;
+bool isFit         = true;
 
-int KARTANPIIRTO_LEVEYS   = 800;
-int KARTANPIIRTO_KORKEUS  = 480;
+int KARTANPIIRTO_LEVEYS     = 800;
+int KARTANPIIRTO_KORKEUS    = 480;
 bool RAJAA_KARTANPIIRTOALUE = true;
 
-bool huijaukset = false;
 bool test_level = false;
 
 bool PK2_virhe = false;
@@ -4589,7 +4598,7 @@ int PK_Sprite_Liikuta(int i){
 	BYTE color;
 	DWORD plk;
 
-	if (PisteInput_Keydown(PI_B) && huijaukset)
+	if (PisteInput_Keydown(PI_B) && dev_mode)
 	{
 
 		if (i == pelaaja_index)
@@ -5132,6 +5141,12 @@ int PK_Alusta_Tilat(){
 
 			kartta = new PK2Kartta();
 
+			if (!isFiltered)
+				PisteDraw2_SetFilter(PD_FILTER_NEAREST);
+			if (isFiltered)
+				PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
+			PisteDraw2_FitScreen(isFit);
+			PisteDraw2_FullScreen(isFullScreen);
 
 			PisteDraw2_Image_Delete(kuva_peli); //Delete if there is a image allocated
 			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
@@ -5252,11 +5267,6 @@ int PK_Alusta_Tilat(){
 
 			if ((pistelaskuri_aani = PisteSound_LoadSFX("sfx/counter.wav"))==-1)
 				PK2_virhe = true;
-
-			if (PK2_virhe);
-				//PisteLog_Kirjoita("  - Loading one or more basic sound fx failed!\n");
-
-			//PisteWait_Start();
 
 			PisteDraw2_FadeIn(PD_FADE_SLOW);
 
@@ -7301,7 +7311,7 @@ int PK_Piirra_Kartta(){
 
 			// jos klikattu
 			if (paluu == 2) {
-				if (tyyppi < 2 || (huijaukset && tyyppi > 0)) {
+				if (tyyppi < 2 || (dev_mode && tyyppi > 0)) {
 					strcpy(seuraava_kartta,jaksot[i].tiedosto);
 					//jakso = i;
 					jakso_indeksi_nyt = i;
@@ -7970,7 +7980,7 @@ int PK_Main_Peli(){
 		}
 	}
 
-	if (key_delay == 0 && huijaukset){ //Debug
+	if (key_delay == 0 && dev_mode){ //Debug
 		if (PisteInput_Keydown(PI_Z)){
 			kytkin1 = KYTKIN_ALOITUSARVO;
 			kytkin2 = KYTKIN_ALOITUSARVO;
@@ -8181,27 +8191,27 @@ int PK_Unload(){
 }
 
 void PK_Start_Test(const char* arg){
-	char buffer[_MAX_PATH] = "";
+	if (arg == NULL) return;
+
+	char buffer[_MAX_PATH];
 	int sepindex;
 
 	strcpy(buffer, arg);
 	for (sepindex = 0; sepindex < _MAX_PATH; sepindex++)
-		if(buffer[sepindex]=='/') break; //TODO - Works on Windows?
+		if(buffer[sepindex]=='/') break;
 
-	strcpy(episodi, buffer);
-	episodi[sepindex] = '\0';
+	strcpy(episodi, buffer); episodi[sepindex] = '\0';
+	strcpy(seuraava_kartta, buffer + sepindex + 1);
+	
+	printf("PK2    - testing episode '%s' level '%s'\n", episodi, seuraava_kartta);
 
 	PK_Lataa_Lisainfot();
 	peli_kesken = false;
 	PK_Uusi_Peli();
 
-	strcpy(seuraava_kartta, buffer + sepindex + 1);
 	siirry_kartasta_peliin = true;
 	musiikin_voimakkuus = 0;
 	peli_kesken = false;
-
-	test_level = true;
-	printf("Testing episode %s level %s\n", episodi, seuraava_kartta);
 }
 
 void PK_Quit(){
@@ -8211,9 +8221,30 @@ void PK_Quit(){
 }
 
 int main(int argc, char *argv[]){
+	char* test_path = NULL;
+
+	for (int i = 0; i < argc; i++) {
+		if (strcmp(argv[i], "dev") == 0) {
+			dev_mode = true;
+			Piste_SetDebug(true);
+		}
+		if (strcmp(argv[i], "nolimits") == 0) RAJAA_KARTANPIIRTOALUE = false;
+		if (strcmp(argv[i], "test") == 0) {
+			if (argc <= i + 1) PK2_virhe = true;
+			else {
+				test_level = true;
+				test_path = argv[i + 1];
+			}
+		}
+		if (strcmp(argv[i], "version") == 0) {
+			printf(PK2_VERSION);
+			printf("\n");
+			exit(0);
+		}
+	}
 
 	if (Piste_Init(RUUDUN_LEVEYS, RUUDUN_KORKEUS, GAME_NAME) < 0) {
-		printf("Failed to init.\n");
+		printf("PK2    - Failed to init PisteEngine.\n");
 		return 0;
 	}
 	//Piste_SetFPS(60);
@@ -8222,27 +8253,15 @@ int main(int argc, char *argv[]){
 	chdir("../res");
 	strcpy(tyohakemisto,".");
 
-	for(int i=0; i<argc; i++){
-		if (strcmp(argv[i], "dev" ) == 0) {
-			huijaukset = true;
-			Piste_SetDebug(true);
-		}
-		if (strcmp(argv[i], "nolimits" ) == 0) RAJAA_KARTANPIIRTOALUE = false;
-		if (strcmp(argv[i], "test" ) == 0){
-			if(argc <= i+1) PK2_virhe = true;
-			else PK_Start_Test(argv[i+1]);
-		}
-	}
-
 	PK_Asetukset_Lataa("data/settings.ini");
 
 	tekstit = new PisteLanguage();
 
 	if (!PK_Lataa_Kieli()){
-		printf("Could not find %s!\n",asetukset.kieli);
+		printf("PK2    - Could not find %s!\n",asetukset.kieli);
 		strcpy(asetukset.kieli,"english.txt");
 		if(!PK_Lataa_Kieli()){
-			printf("Could not find the default language file!\n");
+			printf("PK2    - Could not find the default language file!\n");
 			return 0;
 		}
 	}
@@ -8250,16 +8269,17 @@ int main(int argc, char *argv[]){
 	PK_Alusta_Tilat();
 
 	pelin_seuraava_tila = TILA_INTRO;
-	if (huijaukset)
+	if (dev_mode)
 		pelin_seuraava_tila = TILA_MENUT;
-	if (test_level)
+	if (test_level) {
 		pelin_seuraava_tila = TILA_PELI;
-
+		PK_Start_Test(test_path);
+	}
 
 	Piste_Loop(running, *PK_Main);
 
 	if(PK2_virhe)
-		printf("Error!\n");
+		printf("PK2    - Error!\n");
 
 	PK_Asetukset_Tallenna("data/settings.ini");
 

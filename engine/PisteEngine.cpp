@@ -26,7 +26,7 @@ SDL_Event event;
 
 DWORD counter = 0;
 DWORD last_time = 0;
-float FPS_ms = 16.667;
+float FPS_ms = 16.667f;
 
 int real_fps;
 int d_time;
@@ -60,19 +60,19 @@ int EngineLogic(bool &running){
 }
 int Setcwd(){
 	char exepath[_MAX_PATH];
-	int count, find;
+	int find;
 
 	#ifdef _WIN32
 		string(exepath, GetModuleFileName(NULL, exepath, _MAX_PATH));
 	#else
-		count = readlink("/proc/self/exe", exepath, _MAX_PATH);
+		int count = readlink("/proc/self/exe", exepath, _MAX_PATH);
 		if(count > 0) exepath[count] = '\0';
 	#endif
 
 	find = string(exepath).find_last_of("/\\");
 	exepath[find] = '\0';
 
-	chdir(exepath);
+	return chdir(exepath);
 }
 
 void Piste_IgnoreFrame(){
@@ -124,10 +124,10 @@ int Piste_Loop(bool &running, int (*GameLogic)()){
 
 		counter = time_3 - time_1;
 		if (counter < FPS_ms && draw)
-			SDL_Delay(FPS_ms - counter);
+			SDL_Delay((DWORD) (FPS_ms - counter));
 
 		real_fps = (int)(1000.f/(SDL_GetTicks()-last_time));
-		d_time = 100*(float)(time_3-time_2)/(SDL_GetTicks()-last_time);
+		d_time = (int)(100 * (float)(time_3-time_2)/(SDL_GetTicks()-last_time));
 		last_time = SDL_GetTicks();
 
 		draw = true;

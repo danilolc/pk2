@@ -18,8 +18,7 @@
 #define SPRITE_MAX_AI             10
 #define ANIMAATIO_MAX_SEKVENSSEJA 10
 #define MAX_AANIA                  7
-//Damage time?
-#define	VAHINKO_AIKA 50
+#define	VAHINKO_AIKA              50 //Damage time?
 
 //Spite file values
 enum { //Animation

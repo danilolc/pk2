@@ -110,7 +110,6 @@
     <ClInclude Include="..\engine\types.h" />
     <ClInclude Include="..\src\map.h" />
     <ClInclude Include="..\src\sprite.h" />
-    <ClInclude Include="include\win32_clock.h" />
     <ClInclude Include="include\winlite.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>

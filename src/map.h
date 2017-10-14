@@ -7,9 +7,9 @@
 #define PK2MAP
 
 #include "types.h"
+#include "platform.h"
 
 #include <string.h>
-#define _MAX_PATH 128
 
 typedef struct {
 	int left, top, right, bottom;
