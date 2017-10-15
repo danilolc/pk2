@@ -64,6 +64,7 @@ void PisteDraw2_FitScreen(bool fit);
 
 void PisteDraw2_GetWindowPosition(int* x, int* y);
 
+void PisteDraw2_SetXOffset(int x);
 int PisteDraw2_Start(int width, int height, const char* name);
 int PisteDraw2_Exit();
 void PisteDraw2_Update(bool draw);

@@ -53,7 +53,6 @@ int EngineLogic(bool &running){
 
 	if (debug){
 		if(PisteInput_Keydown(PI_Q)) GDB_Break();
-		if(PisteInput_Keydown(PI_T)) Piste_IgnoreFrame();
 		fflush(stdout);
 	}
 	return 0;
@@ -124,7 +123,7 @@ int Piste_Loop(bool &running, int (*GameLogic)()){
 
 		counter = time_3 - time_1;
 		if (counter < FPS_ms && draw)
-			SDL_Delay((DWORD) (FPS_ms - counter));
+			SDL_Delay((DWORD)(FPS_ms - counter));
 
 		real_fps = (int)(1000.f/(SDL_GetTicks()-last_time));
 		d_time = (int)(100 * (float)(time_3-time_2)/(SDL_GetTicks()-last_time));

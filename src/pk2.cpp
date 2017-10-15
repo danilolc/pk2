@@ -5294,8 +5294,8 @@ int PK_Alusta_Tilat(){
 
 		// Start map
 		if (pelin_seuraava_tila == TILA_KARTTA){
-			//PisteLog_Kirjoita("- Initializing map screen \n");
 
+			PisteDraw2_SetXOffset(80);
 			PisteDraw2_ScreenFill(0);
 			//PisteDraw2_Font_Write(fontti2,"loading...",RUUDUN_LEVEYS/2-82,RUUDUN_KORKEUS/2-9);
 
@@ -5380,6 +5380,7 @@ int PK_Alusta_Tilat(){
 		// Start menu
 		if (pelin_seuraava_tila == TILA_MENUT){
 
+			PisteDraw2_SetXOffset(80);
 			PK_Episodit_Hae();
 
 			if (!peli_kesken){
@@ -5406,6 +5407,7 @@ int PK_Alusta_Tilat(){
 		if (pelin_seuraava_tila == TILA_PELI){
 			//PisteLog_Kirjoita("- Initializing a new level \n");
 
+			PisteDraw2_SetXOffset(0);
 			PisteDraw2_ScreenFill(0);
 			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_game_loading),RUUDUN_LEVEYS/2-82,RUUDUN_KORKEUS/2-9);
 
@@ -7988,6 +7990,16 @@ int PK_Main_Peli(){
 			kytkin2 = KYTKIN_ALOITUSARVO;
 			kytkin3 = KYTKIN_ALOITUSARVO;
 			key_delay = 10;
+		}
+		if (PisteInput_Keydown(PI_X)) {
+			kytkin1 = 64;
+			kytkin2 = 64;
+			kytkin3 = 64;
+			key_delay = 10;
+		}
+		if (PisteInput_Keydown(PI_T)) {
+			doublespeed = !doublespeed;
+			key_delay = 20;
 		}
 		if (PisteInput_Keydown(PI_G)){
 			settings.lapinakyvat_objektit = !settings.lapinakyvat_objektit;

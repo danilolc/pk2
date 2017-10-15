@@ -36,6 +36,8 @@ bool PD2_loaded = false;
 int PD_fade_speed = 0;
 int PD_alpha = 100;
 
+int XOffset = 0;
+
 int findfreeimage(){
 	int i;
 	for(i=0;i<MAX_IMAGES;i++)
@@ -165,7 +167,7 @@ int PisteDraw2_Image_Cut(int ImgIndex, PD_RECT area){
 int PisteDraw2_Image_Clip(int index, int x, int y){
 	SDL_Rect dstrect;
 
-	dstrect.x = x;
+	dstrect.x = x + XOffset;
 	dstrect.y = y;
 
 	SDL_BlitSurface(imageList[index], NULL, frameBuffer8, &dstrect);
@@ -184,7 +186,7 @@ int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int alpha){
 }
 int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala){ //TODO - fix names
 	PD_RECT src = {(DWORD)srcx, (DWORD)srcy, (DWORD)oikea-srcx, (DWORD)ala-srcy};
-	PD_RECT dst = {(DWORD)dstx, (DWORD)dsty, (DWORD)oikea-srcx, (DWORD)ala-srcy};
+	PD_RECT dst = {(DWORD)dstx + XOffset, (DWORD)dsty, (DWORD)oikea-srcx, (DWORD)ala-srcy};
 	PisteDraw2_Image_CutClip(index, src, dst);
 	return 0;
 }
@@ -193,6 +195,7 @@ int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
 	return 0;
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha){
+	dstrect.x += XOffset;
 	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha, 0);
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum){
@@ -202,7 +205,7 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 	DWORD imagePitch, screenPitch;
 	int posx, posy;
 
-	int x_start = dstrect.x;
+	int x_start = dstrect.x + XOffset;
 	int	x_end = dstrect.x + srcrect.w;
 	int	y_start = dstrect.y;
 	int	y_end = dstrect.y + srcrect.h;
@@ -225,7 +228,6 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 		}
 	PisteDraw2_DrawScreen_End();
 	PisteDraw2_DrawImage_End(index);
-	//printf("T\n");
 	return 0;
 }
 void PisteDraw2_Image_GetSize(int index, int& w, int& h){
@@ -277,7 +279,7 @@ int PisteDraw2_ScreenFill(BYTE color){
   return PisteDraw2_ScreenFill(0, 0, frameBuffer8->w, frameBuffer8->h, color);
 }
 int PisteDraw2_ScreenFill(int posx, int posy, int oikea, int ala, BYTE color){
-	SDL_Rect r = {posx, posy, oikea-posx, ala-posy};
+	SDL_Rect r = {posx + XOffset, posy, oikea-posx, ala-posy};
 	return SDL_FillRect(frameBuffer8, &r, color);
 }
 void PisteDraw2_SetMask(int x, int y, int w, int h){
@@ -349,10 +351,10 @@ int PisteDraw2_Font_Create(char* path, char* file){
   return index;
 }
 int PisteDraw2_Font_Write(int font_index, const char* text, int x, int y){
-	return fontList[font_index]->Write_Text(x, y, text);
+	return fontList[font_index]->Write_Text(x + XOffset, y, text);
 }
 int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha){
-	return fontList[font_index]->Write_TextTrasparent(x, y, text, alpha);
+	return fontList[font_index]->Write_TextTrasparent(x + XOffset, y, text, alpha);
 }
 
 int PisteDraw2_SetFilter(const char* filter){
@@ -389,6 +391,9 @@ void PisteDraw2_GetWindowPosition(int* x, int* y) {
 	SDL_GetWindowPosition(PD_Window, x, y);
 }
 
+void PisteDraw2_SetXOffset(int x) {
+	XOffset = x;
+}
 int PisteDraw2_Start(int width, int height, const char* name) {
 	if (PD2_loaded) return -1;
 
