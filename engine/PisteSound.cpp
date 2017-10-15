@@ -139,7 +139,7 @@ void PisteSound_StopMusic(){
 
 int PisteSound_Start(){
 	if( Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, 4096) < 0){
-		printf("Unable to init Mixer: %s\n", Mix_GetError());
+		printf("PS     - Unable to init Mixer: %s\n", Mix_GetError());
 		return -1;
 	}
 

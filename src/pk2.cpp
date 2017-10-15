@@ -19,7 +19,6 @@
 //	Starts the level13.map on dev mode
 //#########################
 //TODO
-//-16:9 resolution
 //-Music loop
 //-Set panoramic audio
 
@@ -216,7 +215,7 @@ struct PK2SETTINGS {
 	double versio;
 	bool ladattu; // if it was started here
 	char kieli[128]; // language
-	
+
 	// grafiikka
 	DWORD ruudun_korkeus;
 	DWORD ruudun_leveys;
@@ -225,7 +224,7 @@ struct PK2SETTINGS {
 	bool  saa_efektit;
 	bool  nayta_tavarat;
 	bool  tausta_spritet;
-	
+
 	// kontrollit
 	DWORD kontrolli_vasemmalle;
 	DWORD kontrolli_oikealle;
@@ -235,7 +234,7 @@ struct PK2SETTINGS {
 	DWORD kontrolli_hyokkays1;
 	DWORD kontrolli_hyokkays2;
 	DWORD kontrolli_kayta_esine;
-	
+
 	// audio
 	bool musiikki;
 	bool aanet;
@@ -1515,7 +1514,7 @@ int PK_Poista_Vari_254_Palikoista(){
 	return 0;
 }
 //Create menu background shadow
-int PK_Sumenna_Kuva(int kbuffer, DWORD kleveys, int kkorkeus){
+int PK_Sumenna_Kuva(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 	BYTE *buffer = NULL;
 	DWORD leveys;
 	BYTE vari,/* vari2, vari3,*/ vari32;
@@ -1533,6 +1532,8 @@ int PK_Sumenna_Kuva(int kbuffer, DWORD kleveys, int kkorkeus){
 	kkorkeus -= 2;
 	kleveys  -= 2;
 
+	kleveys += startx - 30;
+
 	kerroin = 3;//2.25;//2
 
 	//for (y=0;y<kkorkeus;y++)
@@ -1540,7 +1541,7 @@ int PK_Sumenna_Kuva(int kbuffer, DWORD kleveys, int kkorkeus){
 	{
 		my = (y)*leveys;
 		//for(x=0;x<kleveys;x++)
-		for(x=30;x<kleveys-30;x++)
+		for(x=startx;x<kleveys-30;x++)
 		{
 			mx = x+my;
 			vari   = buffer[mx];
@@ -1548,7 +1549,7 @@ int PK_Sumenna_Kuva(int kbuffer, DWORD kleveys, int kkorkeus){
 			vari32 = VARI_TURKOOSI;//(vari>>5)<<5;
 			vari %= 32;
 
-			if (x == 30 || x == kleveys-31 || y == 35 || y == kkorkeus-31)
+			if (x == startx || x == kleveys-31 || y == 35 || y == kkorkeus-31)
 				vari = int((double)vari / (kerroin / 1.5));//1.25
 			else
 				vari = int((double)vari / kerroin);//1.25
@@ -5390,8 +5391,14 @@ int PK_Alusta_Tilat(){
 				musiikin_voimakkuus = musiikin_max_voimakkuus;
 			}
 			else{
+				int w, h;
+				PisteDraw2_Image_GetSize(kuva_tausta, w, h);
+				if( w != KARTANPIIRTO_LEVEYS ){
+					PisteDraw2_Image_Delete(kuva_tausta);
+					kuva_tausta = PisteDraw2_Image_New(KARTANPIIRTO_LEVEYS ,KARTANPIIRTO_KORKEUS);
+				}
 				PisteDraw2_Image_Snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
-				PK_Sumenna_Kuva(kuva_tausta, 640, 480);
+				PK_Sumenna_Kuva(kuva_tausta, 640, 480, 110);
 			}
 
 			menunelio.left = 320-5;
@@ -5444,11 +5451,12 @@ int PK_Alusta_Tilat(){
 		// Start pontuation
 		if (pelin_seuraava_tila == TILA_PISTELASKU){
 
+			PisteDraw2_SetXOffset(80);
 			PisteDraw2_ScreenFill(0);
 
 			PisteDraw2_Image_Delete(kuva_tausta);
 			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
-			PK_Sumenna_Kuva(kuva_tausta, 640, 480);
+			PK_Sumenna_Kuva(kuva_tausta, 640, 480, 30);
 
 			//if (PisteSound_StartMusic("music/hiscore.xm")!=0)
 			//	PK2_virhe = true;
@@ -5507,6 +5515,7 @@ int PK_Alusta_Tilat(){
 		if (pelin_seuraava_tila == TILA_INTRO){
 			//PisteLog_Kirjoita("- Initializing intro screen\n");
 
+			PisteDraw2_SetXOffset(80);
 			PisteDraw2_ScreenFill(0);
 
 			//PisteLog_Kirjoita("  - Loading picture: gfx/intro.bmp\n");
@@ -5529,6 +5538,7 @@ int PK_Alusta_Tilat(){
 		// Start ending
 		if (pelin_seuraava_tila == TILA_LOPPU){
 
+			PisteDraw2_SetXOffset(80);
 			PisteDraw2_ScreenFill(0);
 			PisteDraw2_Image_Delete(kuva_tausta);
 			kuva_tausta = PisteDraw2_Image_Load("gfx/ending.bmp",true);
@@ -7159,8 +7169,7 @@ int PK_Piirra_Menut_Language(){
 }
 //PK_Draw_Menu
 int PK_Piirra_Menut(){
-	//PisteDraw2_ScreenFill(0);
-	PisteDraw2_Image_Clip(kuva_tausta,0,0);
+	PisteDraw2_Image_Clip(kuva_tausta, peli_kesken? -80 : 0 ,0);
 
 	menu_valinta_id = 1;
 
@@ -7178,17 +7187,7 @@ int PK_Piirra_Menut(){
 	default              : PK_Piirra_Menut_PaaValikko(); break;
 	}
 
-	//PK_Partikkelit_Piirra();
-
 	PK_Piirra_Kursori(hiiri_x,hiiri_y);
-
-	//PisteWait_Wait(0);//10
-
-	//if (!PisteDraw2_IsFading())
-	//	PisteDraw2_FadeIn(PD_FADE_NORMAL);
-
-
-	//PisteWait_Start();
 
 	return 0;
 }
@@ -8014,7 +8013,8 @@ int PK_Main_Peli(){
 			key_delay = 20;
 		}
 		if (PisteInput_Keydown(PI_F)){
-			fps_nayta = !fps_nayta;
+			settings.isFullScreen = !settings.isFullScreen;
+			PisteDraw2_FullScreen(settings.isFullScreen);
 			key_delay = 20;
 		}
 		if (PisteInput_Keydown(PI_I)){
@@ -8025,6 +8025,9 @@ int PK_Main_Peli(){
 			PK_Kartta_Etsi_Alku();
 			spritet[pelaaja_index].energia = 10;
 			key_delay = 10;
+		}
+		if (PisteInput_Keydown(PI_U)){
+			spritet[pelaaja_index].b = -10;
 		}
 		if (PisteInput_Keydown(PI_END)){
 			if (PisteSound_StartMusic("music/hiscore.xm")!=0)
@@ -8156,7 +8159,7 @@ int PK_Main(){
 				menu_nyt = MENU_PAAVALIKKO;
 				degree_temp = degree;
 			}
-			else if (pelin_tila == TILA_MENUT && !wasPressed && PisteInput_Keydown(PI_ESCAPE)){ // Just pressed escape in menu
+			else if (pelin_tila == TILA_MENUT && !wasPressed && PisteInput_Keydown(PI_ESCAPE) && menu_lue_kontrollit == 0){ // Just pressed escape in menu
 				if(menu_valittu_id == menu_valinta_id-1)
 					PK_Quit();
 				else {
@@ -8216,7 +8219,7 @@ void PK_Start_Test(const char* arg){
 
 	strcpy(episodi, buffer); episodi[sepindex] = '\0';
 	strcpy(seuraava_kartta, buffer + sepindex + 1);
-	
+
 	printf("PK2    - testing episode '%s' level '%s'\n", episodi, seuraava_kartta);
 
 	PK_Lataa_Lisainfot();

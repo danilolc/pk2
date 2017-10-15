@@ -186,16 +186,16 @@ int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int alpha){
 }
 int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala){ //TODO - fix names
 	PD_RECT src = {(DWORD)srcx, (DWORD)srcy, (DWORD)oikea-srcx, (DWORD)ala-srcy};
-	PD_RECT dst = {(DWORD)dstx + XOffset, (DWORD)dsty, (DWORD)oikea-srcx, (DWORD)ala-srcy};
+	PD_RECT dst = {(DWORD)dstx, (DWORD)dsty, (DWORD)oikea-srcx, (DWORD)ala-srcy};
 	PisteDraw2_Image_CutClip(index, src, dst);
 	return 0;
 }
 int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
+	dstrect.x += XOffset;
 	SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
 	return 0;
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha){
-	dstrect.x += XOffset;
 	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha, 0);
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum){
@@ -276,7 +276,7 @@ int PisteDraw2_ImageFill(int index, int posx, int posy, int oikea, int ala, BYTE
 	return SDL_FillRect(imageList[index], &r, color);
 }
 int PisteDraw2_ScreenFill(BYTE color){
-  return PisteDraw2_ScreenFill(0, 0, frameBuffer8->w, frameBuffer8->h, color);
+	return SDL_FillRect(frameBuffer8, NULL, color);
 }
 int PisteDraw2_ScreenFill(int posx, int posy, int oikea, int ala, BYTE color){
 	SDL_Rect r = {posx + XOffset, posy, oikea-posx, ala-posy};
@@ -351,7 +351,7 @@ int PisteDraw2_Font_Create(char* path, char* file){
   return index;
 }
 int PisteDraw2_Font_Write(int font_index, const char* text, int x, int y){
-	return fontList[font_index]->Write_Text(x + XOffset, y, text);
+	return fontList[font_index]->Write_Text(x, y, text);
 }
 int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha){
 	return fontList[font_index]->Write_TextTrasparent(x + XOffset, y, text, alpha);
@@ -467,4 +467,8 @@ void PisteDraw2_Update(bool draw){
 		if(PD_alpha > 255) PD_alpha = 255;
 	}
 
+	SDL_Rect r = {0, 0, XOffset, PD_screen_height}; // Fill the unused borders
+	SDL_FillRect(frameBuffer8, &r, 0);
+	r.x = PD_screen_width - XOffset;
+	SDL_FillRect(frameBuffer8, &r, 0);
 }
