@@ -8094,6 +8094,11 @@ int PK_Main(){
 
 	if (window_activated) {
 		MOUSE hiiri = PisteInput_UpdateMouse(pelin_tila == TILA_KARTTA);
+		if (hiiri.x < 0) hiiri.x = 0;
+		if (hiiri.y < 0) hiiri.y = 0;
+		if (hiiri.x > 640-19) hiiri.x = 640-19;
+		if (hiiri.y > 480-19) hiiri.y = 480-19;
+
 		hiiri_x = hiiri.x;
 		hiiri_y = hiiri.y;
 	}

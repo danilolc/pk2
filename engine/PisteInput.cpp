@@ -144,11 +144,6 @@ MOUSE PisteInput_UpdateMouse(bool keyMove){
 		if (PisteInput_Keydown(PI_DOWN)) mouse_pos.y += 3;
 	}
 
-	if (mouse_pos.x < 0) mouse_pos.x = 0;
-	if (mouse_pos.y < 0) mouse_pos.y = 0;
-	if (mouse_pos.x > 640-19) mouse_pos.x = 640-19;
-	if (mouse_pos.y > 480-19) mouse_pos.y = 480-19;
-
 	return mouse_pos;
 }
 int PisteInput_ActivateWindow(bool active) {
@@ -276,7 +271,7 @@ char PisteInput_Lue_Nappaimisto(void){
 		if(event.type== SDL_TEXTINPUT) {
 			strcpy(str, event.text.text);
 			c = str[0];
-			if(c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' 
+			if(c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
 				|| c == '.' || c == '!' || c == '?' || c == ' ') //Just number, letter, space dot
 				return c;
 		}

@@ -419,18 +419,23 @@ int PK2Kartta::Tallenna(char *filename){
 	korkeus = alue.bottom - alue.top;
 	aloitus_x = alue.left;
 	aloitus_y = alue.top;
-	//ltoa(aloitus_x,luku,10);tiedosto->write(luku, sizeof(luku));
+
 	sprintf(luku, "%" PRIu32, aloitus_x);
+	tiedosto->write(luku, sizeof(luku));
 	memset(luku, 0, sizeof(luku));
-	//ltoa(aloitus_y,luku,10);tiedosto->write(luku, sizeof(luku));
+
 	sprintf(luku, "%" PRIu32, aloitus_y);
+	tiedosto->write(luku, sizeof(luku));
 	memset(luku, 0, sizeof(luku));
-	//ltoa(leveys,luku,10);   tiedosto->write(luku, sizeof(luku));
+
 	sprintf(luku, "%" PRIu32, leveys);
+	tiedosto->write(luku, sizeof(luku));
 	memset(luku, 0, sizeof(luku));
-	//ltoa(korkeus,luku,10);	tiedosto->write(luku, sizeof(luku));
+
 	sprintf(luku, "%" PRIu32, korkeus);
+	tiedosto->write(luku, sizeof(luku));
 	memset(luku, 0, sizeof(luku));
+
 	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
 		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
 			tile[0] = this->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
@@ -448,15 +453,15 @@ int PK2Kartta::Tallenna(char *filename){
 	sprintf(luku, "%" PRIu32, aloitus_x);
 	tiedosto->write(luku, sizeof(luku));
 	memset(luku, 0, sizeof(luku));
-	//ltoa(aloitus_y,luku,10);
+
 	sprintf(luku, "%" PRIu32, aloitus_y);
 	tiedosto->write(luku, sizeof(luku));
 	memset(luku, 0, sizeof(luku));
-	//ltoa(leveys,luku,10);
+
 	sprintf(luku, "%" PRIu32, leveys);
 	tiedosto->write(luku, sizeof(luku));
 	memset(luku, 0, sizeof(luku));
-	//ltoa(korkeus,luku,10);
+
 	sprintf(luku, "%" PRIu32, korkeus);
 	tiedosto->write(luku, sizeof(luku));
 	memset(luku, 0, sizeof(luku)); //TODO - MAKE A FUNCTION TO DO THIS
@@ -578,8 +583,7 @@ int PK2Kartta::Tallenna(char *filename){
 	tiedosto->write(this->spritet,		sizeof(spritet));
 	*/
 
-	if (tiedosto->fail())
-	{
+	if (tiedosto->fail()){
 		delete (tiedosto);
 		return 1;
 	}

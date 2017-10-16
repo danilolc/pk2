@@ -704,22 +704,17 @@ int Level_Editor_Sprite_File_Load(char *polku, char *tiedosto){
 	char msg[200];
 	strcpy(msg,"loading sprite: ");
 	strcat(msg,tiedosto);
-	//Level_Editor_Log_Write(msg, LOG_INFO);
 
-	//Level_Editor_Log_Write("loading sprite.", LOG_INFO);
-	//Level_Editor_Log_Save("Ladataan vanha prototyyppi ");
-	//Level_Editor_Log_Save(tiedosto);
-	//Level_Editor_Log_Save("\n");
 
 	char tiedostopolku[255];
 
 	strcpy(tiedostopolku,polku);
 	strcat(tiedostopolku,"/");
 
-
 	if (seuraava_vapaa_proto < MAX_PROTOTYYPPEJA){
 		if (protot[seuraava_vapaa_proto].Lataa(tiedostopolku, tiedosto) == 1){
 			strcpy(viesti,"could not load sprite ");
+			printf("could not load sprite\n");
 			strcat(viesti,tiedosto);
 			//Level_Editor_Log_Write(viesti, LOG_VIRHE);
 
@@ -771,7 +766,7 @@ int Level_Editor_Load_New_Sprite(char *polku, char *tiedosto){
 			//strcat(viesti,tiedosto);
 			return 1;
 		}
-
+			printf("Loading sprite %s\n",tiedosto);
 		strcpy(kartta->protot[seuraava_vapaa_proto],tiedosto);
 		strcpy(viesti,"loaded sprite ");
 		strcat(viesti,kartta->protot[seuraava_vapaa_proto]);
@@ -805,11 +800,9 @@ int Level_Editor_Prototyyppi_Lataa_Kaikki(){
 			strcat(tiedosto,"/sprites");
 			spriteja++;
 
-			//if (Level_Editor_Sprite_File_Load(tiedosto,kartta->protot[i])==1){
-				//Level_Editor_Log_Save("lataus ep�onnistui.\n");
-			//}
-			//else
-				//Level_Editor_Log_Save("lataus onnistui.\n");
+			if (Level_Editor_Sprite_File_Load(tiedosto,kartta->protot[i])==1){
+				printf("Can't load %s\n",kartta->protot[i]);
+			}
 		}
 		else
 			seuraava_vapaa_proto++;
@@ -964,6 +957,7 @@ int Level_Editor_Map_Save(){
 		strcat(filename,".map");
 
 	if ((virhe = kartta->Tallenna(filename)) != 0){
+		printf("ERROR SAVING\n");
 		if (virhe == 1){
 			//Level_Editor_Log_Write("could not save map!", LOG_VIRHE);
 			//strcpy(viesti,"could not save map!");
@@ -1302,6 +1296,10 @@ int Level_Editor_Search_Files(){
 				tiedostot[index].type = FILE_SPR;
 			else if(!strcmp(ext, ".xm" ))
 				tiedostot[index].type = FILE_MUS;
+			else if(!strcmp(ext, ".mp3" ))
+				tiedostot[index].type = FILE_MUS;
+			else if(!strcmp(ext, ".ogg" ))
+				tiedostot[index].type = FILE_MUS;
 			else if(!strcmp(ext, ".mod"))
 				tiedostot[index].type = FILE_MUS;
 			else if(!strcmp(ext, ".s3m"))
@@ -1314,7 +1312,6 @@ int Level_Editor_Search_Files(){
 		i++;
 
 	}
-	printf("Limpou\n");
 	free(namelist);
 
 	tiedostoja = index;
@@ -1356,6 +1353,10 @@ int Level_Editor_Init(){
 	strcpy(pk2_path,tyohakemisto);
 	strcat(pk2_path,"../res");
 
+	char buffer[_MAX_PATH];
+	strcpy(buffer, pk2_path);
+	realpath(buffer, pk2_path);
+
 	strcpy(editor_path,tyohakemisto);
 
 	Level_Editor_Start_PK2_Directory();
@@ -1389,6 +1390,10 @@ int Level_Editor_Init(){
 	PisteDraw2_FadeIn(PD_FADE_FAST);
 
 	Level_Editor_Get_Settings();
+
+	PisteDraw2_FullScreen(true);
+	PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
+	PisteDraw2_FitScreen(true);
 
 	return 0;
 }
@@ -1825,7 +1830,7 @@ int Level_Editor_Menu_Sprites(int i){
 		y = menut[i].y+16;
 	int vali;
 
-	PisteDraw2_SetMask(menut[i].x, menut[i].y, menut[i].x+menut[i].leveys, menut[i].y+menut[i].korkeus+16);
+	PisteDraw2_SetMask(menut[i].x, menut[i].y, menut[i].x+menut[i].leveys, menut[i].y+menut[i].korkeus+16); //TODO error
 
 	int piirto_y = 5, piirto_x = 15, rv_korkeus = 0;
 	bool rivinvaihto = false;
@@ -2825,9 +2830,14 @@ int Level_Editor_Menut(){
 }
 
 int Level_Editor_Cursor(){
-	MOUSE pos = PisteInput_Hiiri();
-	mouse_x = pos.x;
-	mouse_y = pos.y;
+	MOUSE hiiri = PisteInput_UpdateMouse(true);
+	if (hiiri.x < 0) hiiri.x = 0;
+	if (hiiri.y < 0) hiiri.y = 0;
+	if (hiiri.x > SCREEN_WIDTH-19) hiiri.x = SCREEN_WIDTH-19;
+	if (hiiri.y > SCREEN_HEIGHT-19) hiiri.y = SCREEN_HEIGHT-19;
+
+	mouse_x = hiiri.x;
+	mouse_y = hiiri.y;
 
 	if (mouse_x > SCREEN_WIDTH)
 		mouse_x = SCREEN_WIDTH;
@@ -2903,14 +2913,6 @@ int Level_Editor_Trimm(){
 int Level_Editor_Main(){
 	if (!running)
 		return(0);
-
-	//Has Keyboard
-	if (!PisteInput_Hae_Nappaimet())
-		Error = true;
-
-	//Has Mouse
-	if (!PisteInput_Hae_Hiiri())
-		Error = true;
 
 	Level_Editor_Cursor();
 
