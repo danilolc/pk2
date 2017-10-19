@@ -23,6 +23,7 @@ test: makedirs $(ENGINETESTBIN)
 $(PK2_BIN): $(PK2_OBJ) $(PK2_SPRITE_OBJ) $(PK2_MAP_OBJ) $(ENGINE_OBJ)
 	@echo -Linking PK2
 	@$(CPP) $^ $(LFLAGS) -o $@
+	@cp $@ $(RES_DIR)$(GAME_NAME).exe
 
 $(PK2_LE_BIN): $(PK2_LE_OBJ) $(PK2_SPRITE_OBJ) $(PK2_MAP_OBJ) $(ENGINE_OBJ)
 	@echo -Linking PK2_LE
@@ -45,12 +46,12 @@ $(ENGINETESTBIN): $(ENGINETEST_OBJ) $(ENGINE_OBJ)
 build/%.o : engine/%.cpp
 	@echo -Some dependence of $@ was changed, updating
 	@$(CPP) $(CFLAGS) -I$(ENGINE_DIR) -o $@ -c $<
-	@$(CPP) -MM -MT $@ -I$(ENGINE_DIR) $< > build/$*.d
+	@$(CPP) -MM -MT $@ -I$(ENGINE_DIR) $< > $(BUILD_DIR)$*.d
 
 build/%.o : src/%.cpp
 	@echo -Some dependence of $@ was changed, updating
 	@$(CPP) $(CFLAGS) -I$(SRC_DIR) -I$(ENGINE_DIR) -o $@ -c $<
-	@$(CPP) -MM -MT $@ -I$(SRC_DIR) -I$(ENGINE_DIR) $< > build/$*.d
+	@$(CPP) -MM -MT $@ -I$(SRC_DIR) -I$(ENGINE_DIR) $< > $(BUILD_DIR)$*.d
 ###########################
 
 clean:
