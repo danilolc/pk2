@@ -14,7 +14,6 @@ enum {
 };
 
 int menu_nyt = MENU_PAAVALIKKO;
-RECT menunelio;
 
 bool PK_DrawMenuOption(char *text, int x, int y);
 

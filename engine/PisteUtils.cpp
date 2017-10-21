@@ -17,6 +17,40 @@
 
 #include "PisteUtils.h"
 
+bool PisteUtils_CheckFile(char *filename){
+	//TODO - If isn't Windows - List directory, set lower case, test, and change "char *filename".
+	struct stat st;
+	bool ret = (stat(filename, &st) == 0);
+	if(!ret) printf("PU     - asked about non-existing file: %s\n", filename);
+	return ret;
+}
+int PisteUtils_AlphaSort(char *a, char *b){
+	int apituus = strlen(a);
+	int bpituus = strlen(b);
+	int looppi = apituus;
+
+	if (bpituus < apituus)
+		looppi = bpituus;
+
+	PisteUtils_Lower(a);
+	PisteUtils_Lower(b);
+
+	for (int i=0;i<looppi;i++){
+		if (a[i] < b[i])
+			return 2;
+		if (a[i] > b[i])
+			return 1;
+	}
+
+	if (apituus > bpituus)
+		return 1;
+
+	if (apituus < bpituus)
+		return 2;
+
+	return 0;
+}
+
 void PisteUtils_Lower(char* string){
 	int i;
 	for(i=0; string[i]!='\0'; i++)

@@ -40,12 +40,10 @@
 
 using namespace std;
 
-#define GAME_NAME   "Pekka Kana 2"
-#define PK2_VERSION "split"
-
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 480
 
+/*
 #ifndef _WIN32
 void itoa(int n, char s[], int radix){
 	sprintf(s, "%i", n);
@@ -54,8 +52,7 @@ void ltoa(long n, char s[], int radix){
 	sprintf(s, "%i", (int)n);
 }
 #endif
-
-//#define printf(args) if(dev_mode) printf(args)
+*/
 
 //#### Constants
 
@@ -118,7 +115,6 @@ const int MAX_PARTIKKELEITA = 300;
 const int MAX_TAUSTAPARTIKKELEITA = 200;
 const int MAX_FADETEKSTEJA  = 40;
 
-
 struct PK2PARTIKKELI{
 	int			tyyppi;
 	double		x;
@@ -137,26 +133,7 @@ int partikkeli_index = 0;
 PK2PARTIKKELI taustapartikkelit[MAX_TAUSTAPARTIKKELEITA];
 int taustapartikkeli_index = 0;
 
-//Episode
-const int EPISODI_MAX_JAKSOJA = 100; //= 50;
-const int MAX_EPISODEJA	= 300;
-
 const int MAX_ILMOITUKSENNAYTTOAIKA = 700;
-
-//PK2EPISODESCORES
-struct PK2EPISODIPISTEET{
-	// parhaat pisteet kullekin jaksolle episodissa..
-	DWORD pisteet[EPISODI_MAX_JAKSOJA];
-	// eniten pisteit� ker�nneet pelaajat kussakin jaksossa episodissa..
-	char top_pelaajat[EPISODI_MAX_JAKSOJA][20];
-	// parhaat ajat kullekin jaksolle episodissa..
-	DWORD ajat[EPISODI_MAX_JAKSOJA];
-	// nopeimmat pelaajat kussakin jaksossa episodissa..
-	char nopeimmat_pelaajat[EPISODI_MAX_JAKSOJA][20];
-
-	DWORD episodin_top_pisteet;
-	char  episodin_top_pelaaja[20];
-};
 
 //Sound
 const int AANET_SAMPLERATE = 22050;
@@ -295,20 +272,6 @@ int fontti3;
 int fontti4;
 int fontti5;
 
-//Controls
-int hiiri_x = 10;
-int hiiri_y = 10;
-
-int  kontrolli_vasemmalle		= PI_LEFT;
-int  kontrolli_oikealle			= PI_RIGHT;
-int  kontrolli_hyppy			= PI_UP;
-int  kontrolli_alas				= PI_DOWN;
-int  kontrolli_juoksu			= PI_RALT;
-int  kontrolli_hyokkays1		= PI_RCONTROL;
-int  kontrolli_hyokkays2		= PI_RSHIFT;
-int  kontrolli_kayta_esine		= PI_SPACE;
-int  key_delay = 0;
-
 //KAMERAN KORDINAATIT
 int kamera_x = 0;
 int kamera_y = 0;
@@ -316,22 +279,6 @@ double dkamera_x = 0;
 double dkamera_y = 0;
 double dkamera_a = 0;
 double dkamera_b = 0;
-
-//JAKSO JA EPISODI
-int	jakso = 1;
-int jaksoja = 1;
-int episodi_lkm = 0;
-int jakso_indeksi_nyt = 1;
-char episodit[MAX_EPISODEJA][_MAX_PATH];
-char episodi[_MAX_PATH];
-int  episodisivu = 0;
-PK2JAKSO jaksot[EPISODI_MAX_JAKSOJA];
-bool jakso_lapaisty = false;
-bool uusinta = false;
-bool peli_ohi = false;
-DWORD lopetusajastin = 0;
-DWORD jakso_pisteet = 0;
-DWORD fake_pisteet = 0;
 
 //PELAAJA
 int pelaaja_index = 0;
@@ -387,9 +334,6 @@ int item_paneeli_x = 10;
 
 int ilmoitus_ajastin = 0;
 char ilmoitus[80] = " ";
-
-//PISTEIDEN LASKEMINEN
-PK2EPISODIPISTEET episodipisteet;
 
 int pistelaskuvaihe = 0;
 int pistelaskudelay = 0;
@@ -583,15 +527,6 @@ void PK_Lisaa_Episodin_Hakemisto(char *tiedosto);
 void PK_Quit();
 
 //#### Functions
-
-//PK_Check_File
-bool PK_Onko_File(char *filename){
-	//TODO - If isn't Windows - List directory, set lower case, test, and change "char *filename".
-	struct stat st;
-	bool ret = (stat(filename, &st) == 0);
-	if(!ret) printf("PK2    - asked about non-existing file: %s\n", filename);
-	return ret;
-}
 //PK_Settings_Start
 void PK_Asetukset_Alusta(){
 	settings.ladattu = false;
@@ -681,78 +616,6 @@ int PK_Asetukset_Tallenna(char *filename){
 
 	return 0;
 }
-//PK_EpisodeScore_Start
-void PK_Episodipisteet_Alusta(){
-	for (int i=0;i<EPISODI_MAX_JAKSOJA;i++){
-		episodipisteet.pisteet[i] = 0;
-		episodipisteet.ajat[i] = 0;
-		strcpy(episodipisteet.top_pelaajat[i]," ");
-		strcpy(episodipisteet.nopeimmat_pelaajat[i]," ");
-	}
-
-	episodipisteet.episodin_top_pisteet = 0;
-	strcpy(episodipisteet.episodin_top_pelaaja," ");
-}
-//PK_EpisodeScore_Compare
-int PK_Episodipisteet_Vertaa(int jakso, DWORD episteet, DWORD aika, bool loppupisteet){
-	int paluu = 0;
-	if (!loppupisteet) {
-		if (episteet > episodipisteet.pisteet[jakso]) {
-			strcpy(episodipisteet.top_pelaajat[jakso],pelaajan_nimi);
-			episodipisteet.pisteet[jakso] = episteet;
-			jakso_uusi_ennatys = true;
-			paluu++;
-		}
-		if ((aika < episodipisteet.ajat[jakso] || episodipisteet.ajat[jakso] == 0) && kartta->aika > 0) {
-			strcpy(episodipisteet.nopeimmat_pelaajat[jakso],pelaajan_nimi);
-			episodipisteet.ajat[jakso] = aika;
-			jakso_uusi_ennatysaika = true;
-			paluu++;
-		}
-	}
-	else {
-		if (episteet > episodipisteet.episodin_top_pisteet) {
-		    episodipisteet.episodin_top_pisteet = episteet;
-			strcpy(episodipisteet.episodin_top_pelaaja,pelaajan_nimi);
-			episodi_uusi_ennatys = true;
-			paluu++;
-		}
-	}
-	return paluu;
-}
-//PK_EpisodeScore_Open
-int PK_Episodipisteet_Lataa(char *filename){
-	PK_Lisaa_Episodin_Hakemisto(filename);
-
-	ifstream *tiedosto = new ifstream(filename, ios::binary);
-	char versio[4];
-
-	if (tiedosto->fail()){
-		delete (tiedosto);
-		PK_Episodipisteet_Alusta();
-		return 1;
-	}
-
-	tiedosto->read ((char *)versio, 4);
-
-	if (strcmp(versio,"1.0") == 0) {
-		tiedosto->read ((char *)&episodipisteet, sizeof (episodipisteet));
-	}
-
-	delete (tiedosto);
-
-	return 0;
-}
-//PK_EpisodeScore_Save
-int PK_Episodipisteet_Tallenna(char *filename){
-	PK_Lisaa_Episodin_Hakemisto(filename);
-
-	ofstream *tiedosto = new ofstream(filename, ios::binary);
-	tiedosto->write ("1.0", 4);
-	tiedosto->write ((char *)&episodipisteet, sizeof (episodipisteet));
-	delete (tiedosto);
-	return 0;
-}
 //PK_Load_InfoText
 void PK_Lataa_Lisainfot(){
 	PisteLanguage* temp;
@@ -763,7 +626,7 @@ void PK_Lataa_Lisainfot(){
 	temp = new PisteLanguage();
 	PK_Lisaa_Episodin_Hakemisto(infofile);
 
-	if (PK_Onko_File(infofile)){
+	if (PisteUtils_CheckFile(infofile)){
 		if (temp->Read_File(infofile)){
 
 			for (i = 0 ; i<19 ; i++){
@@ -1005,231 +868,7 @@ void PK_Uusi_Jakso(){
 
 	nakymattomyys = 0;
 }
-//PK_Save_Start ??
-void PK_Jaksot_Alusta(){
-	for (int i=0;i<EPISODI_MAX_JAKSOJA;i++){
-		strcpy(jaksot[i].nimi,"");
-		strcpy(jaksot[i].tiedosto,"");
-		jaksot[i].x = 0;
-		jaksot[i].y = 0;
-		jaksot[i].jarjestys = -1;
-		jaksot[i].lapaisty = false;
-		jaksot[i].ikoni = 0;
-	}
-}
-//PK_Search_Dir -- PisteUtils_Search_Dir
-void PK_Jaksot_Hae(){
-	int i=0;
-	char hakemisto[_MAX_PATH];
-	char list[EPISODI_MAX_JAKSOJA][_MAX_PATH];
-	for (int j = 0; j < EPISODI_MAX_JAKSOJA; j++)
-		memset(list[j], '\0', _MAX_PATH);
 
-	PK2Kartta *temp = new PK2Kartta();
-
-	strcpy(hakemisto,"");
-	PK_Lisaa_Episodin_Hakemisto(hakemisto);
-	jaksoja = PisteUtils_Scandir(".map", hakemisto, list, EPISODI_MAX_JAKSOJA);
-
-	for (i=0;i<=jaksoja;i++){
-		strcpy(jaksot[i].tiedosto,list[i]);
-		if (temp->Lataa_Pelkat_Tiedot(hakemisto,jaksot[i].tiedosto) == 0){
-			strcpy(jaksot[i].nimi, temp->nimi);
-			jaksot[i].x = temp->x;//   142 + i*35;
-			jaksot[i].y = temp->y;// 270;
-			jaksot[i].jarjestys = temp->jakso;
-			jaksot[i].ikoni = temp->ikoni;
-		}
-	}
-
-	PK2JAKSO jakso;
-
-	bool lopeta = false;
-
-	while (!lopeta){
-		lopeta = true;
-
-		for (i=0;i<jaksoja;i++){
-			if (jaksot[i].jarjestys > jaksot[i+1].jarjestys){
-				jakso = jaksot[i];
-				jaksot[i] = jaksot[i+1];
-				jaksot[i+1] = jakso;
-				lopeta = false;
-			}
-		}
-	}
-	delete temp;
-}
-//PK_Episode_Compare ?? (Piste_Utils)
-int PK_Episodit_Vertaa(char *a, char *b){
-	int apituus = strlen(a);
-	int bpituus = strlen(b);
-	int looppi = apituus;
-
-	if (bpituus < apituus)
-		looppi = bpituus;
-
-	PisteUtils_Lower(a);
-	PisteUtils_Lower(b);
-
-	for (int i=0;i<looppi;i++){
-		if (a[i] < b[i])
-			return 2;
-		if (a[i] > b[i])
-			return 1;
-	}
-
-	if (apituus > bpituus)
-		return 1;
-
-	if (apituus < bpituus)
-		return 2;
-
-	return 0;
-}
-//PK_Episode_Order ?? (Piste_Utils)
-int PK_Episodit_Aakkosta(){
-	DWORD i,t;
-	char temp[_MAX_PATH] = "";
-	bool tehty;
-
-	if (episodi_lkm > 1) {
-
-		for (i=episodi_lkm-1;i>=0;i--) {
-
-			tehty = true;
-
-			//for (t=0;t<i;t++) {
-			for (t=2;t<i+2;t++) {
-				if (PK_Episodit_Vertaa(episodit[t],episodit[t+1]) == 1) {
-					strcpy(temp, episodit[t]);
-					strcpy(episodit[t], episodit[t+1]);
-					strcpy(episodit[t+1], temp);
-					tehty = false;
-				}
-			}
-
-			if (tehty)
-				return 0;
-		}
-	}
-
-	return 0;
-}
-//PK_Episode_Search
-int PK_Episodit_Hae(){
-	int i;
-	char hakemisto[_MAX_PATH];
-
-	for (i=0;i<MAX_EPISODEJA;i++)
-		strcpy(episodit[i],"");
-
-	strcpy(hakemisto,"episodes/");
-
-	episodi_lkm = PisteUtils_Scandir("/", hakemisto, episodit, MAX_EPISODEJA) - 2;
-
-	PK_Episodit_Aakkosta();
-
-	return 0;
-}
-//PK_Records_Empty
-int PK_Tallennukset_Tyhjenna(){
-	for (int i = 0;i < MAX_TALLENNUKSIA;i++){
-		tallennukset[i].kaytossa = false;
-		strcpy(tallennukset[i].episodi," ");
-		strcpy(tallennukset[i].nimi,"empty");
-		tallennukset[i].jakso = 0;
-		tallennukset[i].pisteet = 0;
-		for (int j = 0;j < EPISODI_MAX_JAKSOJA;j++)
-			tallennukset[i].jakso_lapaisty[j] = false;
-	}
-
-	return 0;
-}
-//PK_Records_Search
-int PK_Tallennukset_Hae_Kaikki(char *filename){
-	char versio[2];
-	char lkmc[8];
-	int lkm, i;
-
-	ifstream *tiedosto = new ifstream(filename, ios::binary);
-
-	if (tiedosto->fail()){
-		delete (tiedosto);
-		PK_Tallennukset_Tyhjenna();
-		return 1;
-	}
-
-	PK_Tallennukset_Tyhjenna();
-
-	tiedosto->read(versio,	sizeof(versio));
-
-	if (strcmp(versio,"1")==0){
-		tiedosto->read(lkmc, sizeof(lkmc));
-		lkm = atoi(lkmc);
-
-		for (i=0;i<lkm;i++)
-			tiedosto->read ((char *)&tallennukset[i], sizeof (tallennukset[i]));
-	}
-
-	delete (tiedosto);
-
-	return 0;
-}
-//PK_Records_SaveAll
-int PK_Tallennukset_Tallenna_Kaikki(char *filename){
-	char versio[2] = "1";
-	char lkm[8];
-
-	itoa(MAX_TALLENNUKSIA,lkm,10);
-
-	ofstream *tiedosto = new ofstream(filename, ios::binary);
-	tiedosto->write(versio,	sizeof(versio));
-	tiedosto->write(lkm,	sizeof(lkm));
-	for (int i=0;i< MAX_TALLENNUKSIA;i++)
-	{
-		tiedosto->write((char *)&tallennukset[i],	sizeof(tallennukset[i]));
-	}
-
-	delete (tiedosto);
-
-	return 0;
-}
-//PK_Records_Load
-int PK_Tallennukset_Lataa(int i){
-	if (strcmp(tallennukset[i].episodi," ")!=0){
-		strcpy(episodi,tallennukset[i].episodi);
-		strcpy(pelaajan_nimi, tallennukset[i].nimi);
-		jakso = tallennukset[i].jakso;
-		pisteet = tallennukset[i].pisteet;
-
-		PK_Jaksot_Alusta();
-
-		//for (int j = 0;j < EPISODI_MAX_JAKSOJA;j++)
-		//	jaksot[j].lapaisty = tallennukset[i].jakso_lapaisty[j];
-
-		pelin_seuraava_tila = TILA_KARTTA;
-		lataa_peli = i;
-		peli_kesken = false;
-	}
-
-	return 0;
-}
-//PK_Records_Save
-int PK_Tallennukset_Tallenna(int i){
-	tallennukset[i].kaytossa = true;
-	strcpy(tallennukset[i].episodi, episodi);
-	strcpy(tallennukset[i].nimi,pelaajan_nimi);
-	tallennukset[i].jakso = jakso;
-	tallennukset[i].pisteet = pisteet;
-
-	for (int j = 0;j < EPISODI_MAX_JAKSOJA;j++)
-		tallennukset[i].jakso_lapaisty[j] = jaksot[j].lapaisty;
-
-	PK_Tallennukset_Tallenna_Kaikki("data/saves.dat");
-
-	return 0;
-}
 //PK_Play_Sound
 void PK_Soita_Aani(int aani, int voimakkuus, int x, int y, int freq, bool random_freq){
 	if (aani > -1 && aanenvoimakkuus > 0 && voimakkuus > 0){
@@ -2323,7 +1962,7 @@ int PK_Prototyyppi_Lataa_Vanha(char *polku, char *tiedosto){
 			strcat(testipolku,"/");
 			strcat(testipolku,protot[seuraava_vapaa_proto].aanitiedostot[i]);
 
-			if (PK_Onko_File(testipolku))
+			if (PisteUtils_CheckFile(testipolku))
 				protot[seuraava_vapaa_proto].aanet[i] = PK_Prototyyppi_Lataa_Aani(aanipolku,protot[seuraava_vapaa_proto].aanitiedostot[i]);
 			else{
 			//if (protot[seuraava_vapaa_proto].aanet[i] == -1) {
@@ -2335,7 +1974,7 @@ int PK_Prototyyppi_Lataa_Vanha(char *polku, char *tiedosto){
 				strcat(testipolku,"/");
 				strcat(testipolku,protot[seuraava_vapaa_proto].aanitiedostot[i]);
 
-				if (PK_Onko_File(testipolku))
+				if (PisteUtils_CheckFile(testipolku))
 					protot[seuraava_vapaa_proto].aanet[i] = PK_Prototyyppi_Lataa_Aani(aanipolku,protot[seuraava_vapaa_proto].aanitiedostot[i]);
 			}
 		}

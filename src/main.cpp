@@ -1,8 +1,14 @@
+#include "menu.h"
+
+#include "PisteDraw.h"
+
+#define GAME_NAME   "Pekka Kana 2"
+#define PK2_VERSION "split"
+
 int UpdateScreen(){
 	if (pelin_seuraava_tila != pelin_tila){
 
 		PisteDraw2_FadeIn(PD_FADE_NORMAL);
-
 
 		switch (pelin_seuraava_tila){
 			case TILA_PERUSALUSTUS: break;
@@ -253,26 +259,26 @@ int UpdateScreen(){
 			char mapmusa[_MAX_PATH] = "map.mp3";
 			do {
 				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if(PK_Onko_File(mapmusa)) break;
+				if(PisteUtils_CheckFile(mapmusa)) break;
 				strcpy(mapmusa,"map.ogg");
 				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if(PK_Onko_File(mapmusa)) break;
+				if(PisteUtils_CheckFile(mapmusa)) break;
 				strcpy(mapmusa,"map.xm");
 				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if(PK_Onko_File(mapmusa)) break;
+				if(PisteUtils_CheckFile(mapmusa)) break;
 				strcpy(mapmusa,"map.mod");
 				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if (PK_Onko_File(mapmusa)) break;
+				if (PisteUtils_CheckFile(mapmusa)) break;
 				strcpy(mapmusa,"map.it");
 				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if (PK_Onko_File(mapmusa)) break;
+				if (PisteUtils_CheckFile(mapmusa)) break;
 				strcpy(mapmusa,"map.s3m");
 				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if (PK_Onko_File(mapmusa)) break;
+				if (PisteUtils_CheckFile(mapmusa)) break;
 				strcpy(mapmusa,"music/map.mp3");
-				if (PK_Onko_File(mapmusa)) break;
+				if (PisteUtils_CheckFile(mapmusa)) break;
 				strcpy(mapmusa,"music/map.ogg");
-				if (PK_Onko_File(mapmusa)) break;
+				if (PisteUtils_CheckFile(mapmusa)) break;
 				strcpy(mapmusa,"music/map.xm");
 				break;
 			} while(0);

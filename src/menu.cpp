@@ -1,5 +1,10 @@
 #include "menu.h"
 
+#include "PisteDraw.cpp"
+
+
+PD_RECT menunelio;
+
 bool nimiedit = false;
 char menu_nimi_ed_merkki = '\0';
 int menu_nimi_index = 0;

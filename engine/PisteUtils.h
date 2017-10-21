@@ -8,6 +8,8 @@
 
 #include "platform.h"
 
+bool PisteUtils_CheckFile(char *filename);
+int PisteUtils_AlphaSort(char *a, char *b);
 void  PisteUtils_Lower(char* string);
 void  PisteUtils_RemoveSpace(char* string);
 char *PisteUtils_FindImage(char *filename);
