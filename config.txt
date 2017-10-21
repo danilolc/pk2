@@ -25,6 +25,7 @@ PK2_SPRITE_OBJ = $(BUILD_DIR)sprite.o
 PK2_MAP_SRC = $(SRC_DIR)map.cpp
 PK2_MAP_OBJ = $(BUILD_DIR)map.o
 
+#TODO - add new sources
 PK2_SRC = $(SRC_DIR)pk2.cpp
 PK2_OBJ = $(BUILD_DIR)pk2.o
 
