@@ -1,6 +1,6 @@
 #include "menu.h"
 
-#include "PisteDraw.cpp"
+#include "PisteDraw.h"
 
 
 PD_RECT menunelio;

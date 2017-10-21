@@ -10,6 +10,7 @@ SRC_DIR = src/
 RES_DIR = res/
 BIN_DIR = bin/
 BUILD_DIR = build/
+TOOLS_DIR = src/tools/
 
 #Defines the engine and pk2 src used in main codes
 ENGINE_SRC = $(wildcard $(ENGINE_DIR)*.cpp)
@@ -25,14 +26,17 @@ PK2_SPRITE_OBJ = $(BUILD_DIR)sprite.o
 PK2_MAP_SRC = $(SRC_DIR)map.cpp
 PK2_MAP_OBJ = $(BUILD_DIR)map.o
 
-#TODO - add new sources
-PK2_SRC = $(SRC_DIR)pk2.cpp
-PK2_OBJ = $(BUILD_DIR)pk2.o
+PK2_SRC = $(wildcard $(SRC_DIR)*.cpp)$(SRC_DIR)pk2.cpp
 
-PK2_LE_SRC = $(EDITOR_DIR)pk2_le.cpp
+PK2_OBJ := $(basename $(PK2_SRC))
+PK2_OBJ := $(notdir $(PK2_OBJ))
+PK2_OBJ := $(addsuffix .o, $(PK2_OBJ))
+PK2_OBJ := $(addprefix $(BUILD_DIR), $(PK2_OBJ))
+
+PK2_LE_SRC = $(TOOLS_DIR)pk2_le.cpp
 PK2_LE_OBJ = $(BUILD_DIR)pk2_le.o
 
-PK2_SC_SRC = $(SPRITECREATOR_DIR)pk2_sc.cpp
+PK2_SC_SRC = $(TOOLS_DIR)pk2_sc.cpp
 PK2_SC_OBJ = $(BUILD_DIR)pk2_sc.o
 
 ENGINETEST_SRC = $(SRC_DIR)enginetest.cpp
@@ -45,6 +49,6 @@ PK2_LE_BIN = $(BIN_DIR)PK2_LevelEditor
 PK2_SC_BIN = $(BIN_DIR)PK2_SpriteCreator
 ENGINETESTBIN = $(BIN_DIR)EngineTest
 
-DEPENDENCIES := $(PK2_OBJ) $(PK2_SPRITE_OBJ) $(PK2_MAP_OBJ) $(ENGINE_OBJ)
+DEPENDENCIES := $(PK2_OBJ) $(ENGINE_OBJ)
 DEPENDENCIES := $(basename $(DEPENDENCIES))
 DEPENDENCIES := $(addsuffix .d, $(DEPENDENCIES))

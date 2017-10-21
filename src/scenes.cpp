@@ -4,6 +4,8 @@
 #include "PisteSound.h"
 #include "PisteInput.h"
 
+#include "graphics.h"
+
 bool siirry_introsta_menuun = false;
 bool siirry_lopusta_menuun = false;
 

@@ -20,7 +20,7 @@ test: makedirs $(ENGINETESTBIN)
 
 ###########################
 #Rules for generate the binaries using the object files
-$(PK2_BIN): $(PK2_OBJ) $(PK2_SPRITE_OBJ) $(PK2_MAP_OBJ) $(ENGINE_OBJ)
+$(PK2_BIN): $(PK2_OBJ) $(ENGINE_OBJ)
 	@echo -Linking PK2
 	@$(CPP) $^ $(LFLAGS) -o $@
 	@cp $@ $(RES_DIR)$(GAME_NAME).exe
