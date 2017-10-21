@@ -38,7 +38,7 @@ bool PK_DrawMenuOption(char *text, int x, int y){
 	return false;
 }
 
-int PK_Piirra_Menu_Nelio(int vasen, int yla, int oikea, int ala, BYTE pvari){
+int Draw_MenuSquare(int vasen, int yla, int oikea, int ala, BYTE pvari){
 	if (peli_kesken)
 		return 0;
 
@@ -120,7 +120,7 @@ int PK_Piirra_Menu_Nelio(int vasen, int yla, int oikea, int ala, BYTE pvari){
 
 	return 0;
 }
-int PK_DrawMenuOptionlaatikko(int x, int y, bool muuttuja){
+int Draw_OptionButton(int x, int y, bool muuttuja){
 	if (!muuttuja)
 		PisteDraw2_Image_CutClip(kuva_peli,x,y,473,124,473+31,124+31);
 	else
@@ -142,7 +142,7 @@ int PK_DrawMenuOptionlaatikko(int x, int y, bool muuttuja){
 
 	return false;
 }
-int PK_Piirra_Menut_Saatolaatikko(int x, int y){
+int PK_Piirra_Menut_Saatolaatikko(int x, int y){ //TODO - traduct
 	int val = 45;
 
 	int randx = rand()%3 - rand()%3;
@@ -190,7 +190,7 @@ int PK_Piirra_Menut_Saatolaatikko(int x, int y){
 int DrawMenu_MainMenu(){
 	int my = 240;//250;
 
-	PK_Piirra_Menu_Nelio(160, 200, 640-180, 410, 224);
+	Draw_MenuSquare(160, 200, 640-180, 410, 224);
 
 	if (peli_kesken)
 	{
@@ -266,7 +266,7 @@ int DrawMenu_Name(){
 	bool hiiri_alueella = false;
 	int nameSize = (int)strlen(pelaajan_nimi);
 
-	PK_Piirra_Menu_Nelio(90, 150, 640-90, 480-100, 224);
+	Draw_MenuSquare(90, 150, 640-90, 480-100, 224);
 
 	if (hiiri_x > 180 && hiiri_x < 180+15*20 && hiiri_y > 255 && hiiri_y < 255+18)
 		hiiri_alueella = true; //Mouse is in text
@@ -391,7 +391,7 @@ int DrawMenu_Load(){
 	char jaksoc[8];
 	char ind[4];
 
-	PK_Piirra_Menu_Nelio(40, 70, 640-40, 410, 70);
+	Draw_MenuSquare(40, 70, 640-40, 410, 70);
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_loadgame_title),50,90);
 	PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_loadgame_info),50,110);
@@ -433,7 +433,7 @@ int DrawMenu_Save(){
 	char jaksoc[8];
 	char ind[4];
 
-	PK_Piirra_Menu_Nelio(40, 70, 640-40, 410, 224);
+	Draw_MenuSquare(40, 70, 640-40, 410, 224);
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_savegame_title),50,90);
 	PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_savegame_info),50,110);
@@ -476,7 +476,7 @@ int DrawMenu_Graphics(){
 	int my = 150;
 	static bool moreOptions = false;
 
-	PK_Piirra_Menu_Nelio(40, 70, 640-40, 410, 224);
+	Draw_MenuSquare(40, 70, 640-40, 410, 224);
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_gfx_title),50,90);
 
@@ -494,7 +494,7 @@ int DrawMenu_Graphics(){
 				settings.isFullScreen = true;
 			}
 		}
-		if (PK_DrawMenuOptionlaatikko(100, my, settings.isFullScreen)) {
+		if (Draw_OptionButton(100, my, settings.isFullScreen)) {
 			settings.isFullScreen = !settings.isFullScreen;
 		}
 		my += 30;
@@ -508,7 +508,7 @@ int DrawMenu_Graphics(){
 				settings.isFiltered = true;
 			}
 		}
-		if (PK_DrawMenuOptionlaatikko(100, my, settings.isFiltered)) {
+		if (Draw_OptionButton(100, my, settings.isFiltered)) {
 			settings.isFiltered = !settings.isFiltered;
 		}
 		my += 30;
@@ -522,7 +522,7 @@ int DrawMenu_Graphics(){
 				settings.isFit = true;
 			}
 		}
-		if (PK_DrawMenuOptionlaatikko(100, my, settings.isFit)) {
+		if (Draw_OptionButton(100, my, settings.isFit)) {
 			settings.isFit = !settings.isFit;
 		}
 		my += 30;
@@ -557,7 +557,7 @@ int DrawMenu_Graphics(){
 			if (PK_DrawMenuOption(tekstit->Hae_Teksti(txt_gfx_tfx_off),180,my))
 				settings.lapinakyvat_objektit = true;
 		}
-		if (PK_DrawMenuOptionlaatikko(100, my, settings.lapinakyvat_objektit)) {
+		if (Draw_OptionButton(100, my, settings.lapinakyvat_objektit)) {
 			settings.lapinakyvat_objektit = !settings.lapinakyvat_objektit;
 		}
 		my += 30;
@@ -570,7 +570,7 @@ int DrawMenu_Graphics(){
 			if (PK_DrawMenuOption(tekstit->Hae_Teksti(txt_gfx_tmenus_off),180,my))
 				settings.lapinakyvat_menutekstit = true;
 		}
-		if (PK_DrawMenuOptionlaatikko(100, my, settings.lapinakyvat_menutekstit)) {
+		if (Draw_OptionButton(100, my, settings.lapinakyvat_menutekstit)) {
 			settings.lapinakyvat_menutekstit = !settings.lapinakyvat_menutekstit;
 		}
 		my += 30;
@@ -583,7 +583,7 @@ int DrawMenu_Graphics(){
 			if (PK_DrawMenuOption(tekstit->Hae_Teksti(txt_gfx_items_off),180,my))
 				settings.nayta_tavarat = true;
 		}
-		if (PK_DrawMenuOptionlaatikko(100, my, settings.nayta_tavarat)) {
+		if (Draw_OptionButton(100, my, settings.nayta_tavarat)) {
 			settings.nayta_tavarat = !settings.nayta_tavarat;
 		}
 		my += 30;
@@ -596,7 +596,7 @@ int DrawMenu_Graphics(){
 			if (PK_DrawMenuOption(tekstit->Hae_Teksti(txt_gfx_weather_off),180,my))
 				settings.saa_efektit = true;
 		}
-		if (PK_DrawMenuOptionlaatikko(100, my, settings.saa_efektit)) {
+		if (Draw_OptionButton(100, my, settings.saa_efektit)) {
 			settings.saa_efektit = !settings.saa_efektit;
 		}
 		my += 30;
@@ -609,7 +609,7 @@ int DrawMenu_Graphics(){
 			if (PK_DrawMenuOption(tekstit->Hae_Teksti(txt_gfx_bgsprites_off),180,my))
 				settings.tausta_spritet = true;
 		}
-		if (PK_DrawMenuOptionlaatikko(100, my, settings.tausta_spritet)) {
+		if (Draw_OptionButton(100, my, settings.tausta_spritet)) {
 			settings.tausta_spritet = !settings.tausta_spritet;
 		}
 		my += 30;
@@ -622,7 +622,7 @@ int DrawMenu_Graphics(){
 			if (PK_DrawMenuOption(tekstit->Hae_Teksti(txt_gfx_speed_normal),180,my))
 				doublespeed = true;
 		}
-		if (PK_DrawMenuOptionlaatikko(100, my, doublespeed)) {
+		if (Draw_OptionButton(100, my, doublespeed)) {
 			doublespeed = !doublespeed;
 		}
 		my += 30;
@@ -645,7 +645,7 @@ int DrawMenu_Graphics(){
 int DrawMenu_Sounds(){
 	int my = 0;
 
-	PK_Piirra_Menu_Nelio(40, 70, 640-40, 410, 224);
+	Draw_MenuSquare(40, 70, 640-40, 410, 224);
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_sound_title),50,90);
 	my += 20;
@@ -704,7 +704,7 @@ int DrawMenu_Sounds(){
 int DrawMenu_Controls(){
 	int my = 0;
 
-	PK_Piirra_Menu_Nelio(40, 70, 640-40, 410, 224);
+	Draw_MenuSquare(40, 70, 640-40, 410, 224);
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_controls_title),50,90);
 
@@ -838,7 +838,7 @@ int DrawMenu_Controls(){
 int DrawMenu_Episodes(){
 	int my = 0;
 
-	PK_Piirra_Menu_Nelio(110, 130, 640-110, 450, 224);
+	Draw_MenuSquare(110, 130, 640-110, 450, 224);
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_episodes_choose_episode),50,90);
 	my += 80;
@@ -892,7 +892,7 @@ int DrawMenu_Language(){
 	int i;
 	//char temp[10];
 
-	PK_Piirra_Menu_Nelio(110, 130, 640-110, 450, 224);
+	Draw_MenuSquare(110, 130, 640-110, 450, 224);
 
 	PisteDraw2_Font_Write(fontti2,"select a language:",50,100);
 
@@ -960,6 +960,7 @@ int Draw_Menu(){
 
 	return 0;
 }
+
 int PK_Main_Menut(){
 	if (!nimiedit && key_delay == 0 && menu_lue_kontrollit == 0) {
 		if (PisteInput_Keydown(PI_UP) || PisteInput_Keydown(PI_LEFT) ||
@@ -1007,4 +1008,34 @@ int PK_Main_Menut(){
 		key_delay--;
 
 	return 0;
+}
+int PK_Start_Menu(){
+    PisteDraw2_SetXOffset(80);
+    PK_Episodit_Hae();
+
+    if (!peli_kesken){
+        PisteDraw2_Image_Delete(kuva_tausta);
+        kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
+        PisteSound_StartMusic("music/song09.xm");//theme.xm
+        musiikin_voimakkuus = musiikin_max_voimakkuus;
+    }
+    else{
+        int w, h;
+        PisteDraw2_Image_GetSize(kuva_tausta, w, h);
+        if( w != KARTANPIIRTO_LEVEYS ){
+            PisteDraw2_Image_Delete(kuva_tausta);
+            kuva_tausta = PisteDraw2_Image_New(KARTANPIIRTO_LEVEYS, KARTANPIIRTO_KORKEUS);
+        }
+        PisteDraw2_Image_Snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
+        PK_Sumenna_Kuva(kuva_tausta, 640, 480, 110);
+    }
+
+    //menu_valittu_id = 1; //TODO - needed?
+
+    menunelio.left = 320-5;
+    menunelio.top = 240-5;
+    menunelio.right = 320+5;
+    menunelio.bottom = 240+5;
+
+    PisteDraw2_ScreenFill(0);
 }

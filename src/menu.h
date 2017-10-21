@@ -1,7 +1,7 @@
 #ifndef PK2_MENU
 #define PK2_MENU
 
-enum {//Menu
+enum {
 	MENU_PAAVALIKKO,
 	MENU_EPISODIT,
 	MENU_KONTROLLIT,
@@ -17,5 +17,8 @@ int menu_nyt = MENU_PAAVALIKKO;
 RECT menunelio;
 
 bool PK_DrawMenuOption(char *text, int x, int y);
+
+int PK_Main_Menut();
+int PK_Start_Menu();
 
 #endif
