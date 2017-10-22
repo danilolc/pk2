@@ -11,6 +11,7 @@
 //#include
 #include "scenes.h"
 
+#include "controls.h" // mouse
 
 #define GAME_NAME   "Pekka Kana 2"
 #define PK2_VERSION "split"
@@ -229,167 +230,17 @@ int UpdateScreen(){
 		PisteDraw2_FadeIn(PD_FADE_NORMAL);
 
 		switch (pelin_seuraava_tila){
-			case TILA_PERUSALUSTUS: FirstStart(); break;
-			case TILA_KARTTA: break;
-			case TILA_MENUT: PK_Start_Menu();     break;
-			case TILA_PELI:  PK_Start_Game();     break;
-			case TILA_PISTELASKU: break;
-			case TILA_INTRO: PK_Start_Intro();    break;
-			case TILA_LOPPU: PK_Start_EndGame();  break;
+			case TILA_PERUSALUSTUS: FirstStart();       break;
+			case TILA_KARTTA:       PK_Start_Map();     break;
+			case TILA_MENUT:        PK_Start_Menu();    break;
+			case TILA_PELI:         PK_Start_Game();    break;
+			case TILA_PISTELASKU:   PK_Start_Scores();  break;
+			case TILA_INTRO:        PK_Start_Intro();   break;
+			case TILA_LOPPU:        PK_Start_EndGame(); break;
 			default: break;
 		}
 
 		pelin_tila = pelin_seuraava_tila;
-
-		// Start map
-		if (pelin_seuraava_tila == TILA_KARTTA){
-
-			PisteDraw2_SetXOffset(80);
-			PisteDraw2_ScreenFill(0);
-			//PisteDraw2_Font_Write(fontti2,"loading...",RUUDUN_LEVEYS/2-82,RUUDUN_KORKEUS/2-9);
-
-			if (!peli_kesken)
-			{
-				if (lataa_peli != -1)
-				{
-					//PisteLog_Kirjoita("  - Loading a saved game \n");
-					PK_Jaksot_Hae();
-
-					for (int j = 0;j < EPISODI_MAX_JAKSOJA;j++)
-						 jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
-
-					lataa_peli = -1;
-					peli_kesken = true;
-					peli_ohi = true;
-					jakso_lapaisty = true;
-					lopetusajastin = 0;
-
-				}
-				else
-				{
-					//PisteLog_Kirjoita("  - Starting a new game \n");
-					PK_Jaksot_Alusta();	// jos ladataan peli, asetetaan l�p�istyarvot jaksoille aikaisemmin
-					PK_Jaksot_Hae();
-				}
-
-				//PisteLog_Kirjoita("  - Loading top scores \n");
-				char topscoretiedosto[_MAX_PATH] = "scores.dat";
-				PK_Episodipisteet_Lataa(topscoretiedosto);
-			}
-
-			/* Ladataan kartan taustakuva ...*/
-			char mapkuva[_MAX_PATH] = "map.bmp";
-			PK_Lisaa_Episodin_Hakemisto(mapkuva);
-			//PisteLog_Kirjoita("  - Loading map picture ");
-			//PisteLog_Kirjoita(mapkuva);
-			//PisteLog_Kirjoita(" from episode folder \n");
-
-			PisteDraw2_Image_Delete(kuva_tausta);
-			kuva_tausta = PisteDraw2_Image_Load(mapkuva,true);
-			if (kuva_tausta == -1)
-				kuva_tausta = PisteDraw2_Image_Load("gfx/map.bmp",true);
-
-			/* Ladataan kartan musiikki ...*/
-			char mapmusa[_MAX_PATH] = "map.mp3";
-			do {
-				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if(PisteUtils_CheckFile(mapmusa)) break;
-				strcpy(mapmusa,"map.ogg");
-				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if(PisteUtils_CheckFile(mapmusa)) break;
-				strcpy(mapmusa,"map.xm");
-				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if(PisteUtils_CheckFile(mapmusa)) break;
-				strcpy(mapmusa,"map.mod");
-				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if (PisteUtils_CheckFile(mapmusa)) break;
-				strcpy(mapmusa,"map.it");
-				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if (PisteUtils_CheckFile(mapmusa)) break;
-				strcpy(mapmusa,"map.s3m");
-				PK_Lisaa_Episodin_Hakemisto(mapmusa);
-				if (PisteUtils_CheckFile(mapmusa)) break;
-				strcpy(mapmusa,"music/map.mp3");
-				if (PisteUtils_CheckFile(mapmusa)) break;
-				strcpy(mapmusa,"music/map.ogg");
-				if (PisteUtils_CheckFile(mapmusa)) break;
-				strcpy(mapmusa,"music/map.xm");
-				break;
-			} while(0);
-
-			PisteSound_StartMusic(mapmusa);
-
-			musiikin_voimakkuus = musiikin_max_voimakkuus;
-
-			siirry_kartasta_peliin = false;
-
-			PisteDraw2_FadeIn(PD_FADE_SLOW);
-		}
-
-		// Start pontuation
-		if (pelin_seuraava_tila == TILA_PISTELASKU){
-
-			PisteDraw2_SetXOffset(80);
-			PisteDraw2_ScreenFill(0);
-
-			PisteDraw2_Image_Delete(kuva_tausta);
-			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
-			PK_Sumenna_Kuva(kuva_tausta, 640, 480, 30);
-
-			//if (PisteSound_StartMusic("music/hiscore.xm")!=0)
-			//	PK2_virhe = true;
-
-			jakso_uusi_ennatys = false;
-			jakso_uusi_ennatysaika = false;
-			episodi_uusi_ennatys = false;
-
-			// Lasketaan pelaajan kokonaispisteet etuk�teen
-			DWORD temp_pisteet = 0;
-			temp_pisteet += jakso_pisteet;
-			temp_pisteet += aika*5;
-			temp_pisteet += spritet[pelaaja_index].energia * 300;
-			for (int i=0;i<MAX_ESINEITA;i++)
-				if (esineet[i] != NULL)
-					temp_pisteet += esineet[i]->pisteet + 500;
-
-			//if (jaksot[jakso_indeksi_nyt].lapaisty)
-			//if (jaksot[jakso_indeksi_nyt].jarjestys == jakso-1)
-			pisteet += temp_pisteet;
-
-			if (uusinta)
-				pisteet -= temp_pisteet;
-
-			fake_pisteet = 0;
-			pistelaskuvaihe = 0;
-			pistelaskudelay = 30;
-			bonuspisteet = 0,
-			aikapisteet = 0,
-			energiapisteet = 0,
-			esinepisteet = 0,
-			pelastuspisteet = 0;
-
-			char pisteet_tiedosto[_MAX_PATH] = "scores.dat";
-			int vertailun_tulos;
-
-			/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
-			vertailun_tulos = PK_Episodipisteet_Vertaa(jakso_indeksi_nyt,temp_pisteet,kartta->aika-aika,false);
-			if (vertailun_tulos > 0) {
-				PK_Episodipisteet_Tallenna(pisteet_tiedosto);
-			}
-
-			/* Tutkitaan onko pelaaja rikkonut episodin piste-enn�tyksen */
-			vertailun_tulos = PK_Episodipisteet_Vertaa(0,pisteet,0,true);
-			if (vertailun_tulos > 0)
-				PK_Episodipisteet_Tallenna(pisteet_tiedosto);
-
-			musiikin_voimakkuus = musiikin_max_voimakkuus;
-
-			siirry_pistelaskusta_karttaan = false;
-
-			PisteDraw2_FadeIn(PD_FADE_FAST);
-		}
-
-
 	}
 	return 0;
 }
@@ -409,7 +260,7 @@ void PK_Quit(){
 	musiikin_voimakkuus = 0;
 }
 
-int PK_Main(){
+int MainLoop(){
 	static bool window_activated = true;
     bool window_closed = false;
 
@@ -420,6 +271,7 @@ int PK_Main(){
 		return 0;
 	}
 
+	// Update mouse
 	if (window_activated) {
 		MOUSE hiiri = PisteInput_UpdateMouse(pelin_tila == TILA_KARTTA);
 		if (hiiri.x < 0) hiiri.x = 0;
@@ -481,8 +333,8 @@ int PK_Main(){
 		PisteSound_SetMusicVolume(musiikin_voimakkuus_nyt);
 
 	static bool wasPressed = false;
-
 	bool skipped = !skip_frame && doublespeed; // If is in double speed and don't skip this frame, so the last frame was skipped, and it wasn't drawn
+
 	if (PisteInput_Keydown(PI_ESCAPE) && key_delay == 0 && !skipped){ //Don't activate menu whith a not drawn screen
 		if(test_level)
 			PK_Quit();
@@ -511,7 +363,6 @@ int PK_Main(){
 	running = !PK2_virhe;
 	return 0;
 }
-
 int main(int argc, char *argv[]){
 	char* test_path = NULL;
 
@@ -558,7 +409,7 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	UpdateScreen();
+	UpdateScreen(); // call FirstStart?
 
 	pelin_seuraava_tila = TILA_INTRO;
 	if (dev_mode)
@@ -568,7 +419,7 @@ int main(int argc, char *argv[]){
 		StartTest(test_path);
 	}
 
-	Piste_Loop(running, *PK_Main);
+	Piste_Loop(running, *MainLoop);
 
 	if(PK2_virhe)
 		printf("PK2    - Error!\n");

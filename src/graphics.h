@@ -154,4 +154,8 @@ void PK_Fadetekstit(){
 	}
 }
 
+void PK_Piirra_Kursori(int x,int y){
+	PisteDraw2_Image_CutClip(kuva_peli,x,y,621,461,640,480);
+}
+
 #endif

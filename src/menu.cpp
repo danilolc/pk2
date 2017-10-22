@@ -2,6 +2,8 @@
 
 #include "PisteDraw.h"
 
+#include "controls.h"
+
 
 PD_RECT menunelio;
 

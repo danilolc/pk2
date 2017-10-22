@@ -24,13 +24,11 @@ bool dev_mode = false;
 int RUUDUN_LEVEYS  = SCREEN_WIDTH;
 int RUUDUN_KORKEUS = SCREEN_HEIGHT;
 
-int KARTANPIIRTO_LEVEYS     = 800;
-int KARTANPIIRTO_KORKEUS    = 480;
+int KARTANPIIRTO_LEVEYS     = SCREEN_WIDTH;
+int KARTANPIIRTO_KORKEUS    = SCREEN_HEIGHT;
 bool RAJAA_KARTANPIIRTOALUE = true;
 
 bool PK2_virhe = false;
-
-
 bool lopeta_peli = false;
 
 bool running = true;
@@ -40,6 +38,5 @@ bool taulut_laskettu = false;
 char	viesti[60];
 
 void PK_Quit();
-
 
 #endif
