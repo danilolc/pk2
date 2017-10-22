@@ -1,211 +1,245 @@
-#include "menu.h"
+#include "main.h"
 
-#include "PisteDraw.h"
+#include "PisteEngine.h"
+
+#include "settings.h"
+#include "graphics.h"
+#include "language.h"
+
+#include "game.h"
+#include "manu.h"
+//#include
+#include "scenes.h"
+
 
 #define GAME_NAME   "Pekka Kana 2"
 #define PK2_VERSION "split"
 
+void FirstStart(){
+	strcpy(pelaajan_nimi,tekstit->Hae_Teksti(txt_player_default_name));
+	srand((unsigned)time(NULL));
+	strcpy(viesti,"no message");
+	if(!test_level){
+		strcpy(episodi,"");
+		strcpy(seuraava_kartta,"untitle1.map");
+	}
+
+	jakso = 1;
+
+	if (!taulut_laskettu){
+		//PisteLog_Kirjoita("  - Precalculating... \n");
+		PK_Laske_Taulut();
+
+		PK2Kartta_Cos_Sin(cos_table, sin_table);
+		taulut_laskettu = true;
+	}
+
+	PK_Alusta_Fadetekstit();
+
+	if (KARTANPIIRTO_LEVEYS > RUUDUN_LEVEYS)
+		KARTANPIIRTO_LEVEYS = RUUDUN_LEVEYS;
+
+	if (KARTANPIIRTO_KORKEUS > RUUDUN_KORKEUS)
+		KARTANPIIRTO_KORKEUS = RUUDUN_KORKEUS;
+
+	if (!RAJAA_KARTANPIIRTOALUE){
+
+		KARTANPIIRTO_LEVEYS = RUUDUN_LEVEYS;
+		KARTANPIIRTO_KORKEUS = RUUDUN_KORKEUS;
+	}
+
+	PK2Kartta_Aseta_Ruudun_Mitat(KARTANPIIRTO_LEVEYS,KARTANPIIRTO_KORKEUS);
+
+	kartta = new PK2Kartta();
+
+	if (!settings.isFiltered)
+		PisteDraw2_SetFilter(PD_FILTER_NEAREST);
+	if (settings.isFiltered)
+		PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
+	PisteDraw2_FitScreen(settings.isFit);
+	PisteDraw2_FullScreen(settings.isFullScreen);
+
+	PisteDraw2_Image_Delete(kuva_peli); //Delete if there is a image allocated
+	kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
+
+	PisteDraw2_Image_Delete(kuva_peli_sysmem);
+	kuva_peli_sysmem = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
+
+	int ind_font = 0,
+		ind_path = 0;
+
+	ind_path = tekstit->Hae_Indeksi("font path");
+
+	ind_font = tekstit->Hae_Indeksi("font small font");
+	if (ind_path == -1 || ind_font == -1) {
+		if ((fontti1 = PisteDraw2_Font_Create("language/fonts/","ScandicSmall.txt")) == -1){
+			PK2_virhe = true;
+		}
+	}
+	else {
+		if ((fontti1 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
+			PK2_virhe = true;
+		}
+	}
+
+	ind_font = tekstit->Hae_Indeksi("font big font normal");
+	if (ind_path == -1 || ind_font == -1) {
+		if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
+		PK2_virhe = true;
+		}
+	}
+	else {
+		if ((fontti2 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
+		PK2_virhe = true;
+		//PisteLog_Kirjoita("    - Loading font ");
+		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
+		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
+		//PisteLog_Kirjoita(" failed!\n");
+		}
+	}
+
+	ind_font = tekstit->Hae_Indeksi("font big font hilite");
+	if (ind_path == -1 || ind_font == -1) {
+		if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
+		PK2_virhe = true;
+		}
+	}
+	else {
+		if ((fontti3 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
+		PK2_virhe = true;
+		//PisteLog_Kirjoita("    - Loading font ");
+		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
+		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
+		//PisteLog_Kirjoita(" failed!\n");
+		}
+	}
+
+	ind_font = tekstit->Hae_Indeksi("font big font shadow");
+	if (ind_path == -1 || ind_font == -1) {
+		if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
+		PK2_virhe = true;
+		}
+	}
+	else {
+		if ((fontti4 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
+		PK2_virhe = true;
+		//PisteLog_Kirjoita("    - Loading font ");
+		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
+		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
+		//PisteLog_Kirjoita(" failed!\n");
+		}
+	}
+
+	if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
+		PK2_virhe = true;
+	}
+
+	if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
+		PK2_virhe = true;
+	}
+
+	if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
+		PK2_virhe = true;
+	}
+
+	PK_Sprite_Tyhjenna();
+
+	PK_Episodit_Hae();
+	PK_Jaksot_Alusta();
+	PK_Jaksot_Hae();
+
+	PisteDraw2_ScreenFill(0);
+
+	//PisteLog_Kirjoita("  - Loading basic sound fx \n");
+
+	if ((kytkin_aani = PisteSound_LoadSFX("sfx/switch3.wav"))==-1)
+		PK2_virhe = true;
+
+	if ((hyppy_aani  = PisteSound_LoadSFX("sfx/jump4.wav"))==-1)
+		PK2_virhe = true;
+
+	if ((loiskahdus_aani  = PisteSound_LoadSFX("sfx/splash.wav"))==-1)
+		PK2_virhe = true;
+
+	if ((avaa_lukko_aani  = PisteSound_LoadSFX("sfx/openlock.wav"))==-1)
+		PK2_virhe = true;
+
+	if ((menu_aani  = PisteSound_LoadSFX("sfx/menu2.wav"))==-1)
+		PK2_virhe = true;
+
+	if ((ammuu_aani  = PisteSound_LoadSFX("sfx/moo.wav"))==-1)
+		PK2_virhe = true;
+
+	if ((kieku_aani  = PisteSound_LoadSFX("sfx/doodle.wav"))==-1)
+		PK2_virhe = true;
+
+	if ((tomahdys_aani  = PisteSound_LoadSFX("sfx/pump.wav"))==-1)
+		PK2_virhe = true;
+
+	if ((pistelaskuri_aani = PisteSound_LoadSFX("sfx/counter.wav"))==-1)
+		PK2_virhe = true;
+
+	PisteDraw2_FadeIn(PD_FADE_SLOW);
+
+	//PisteLog_Kirjoita("  - Calculating tiles. \n");
+	PK_Palikka_Laske_Palikat();
+
+	PK_Esineet_Alusta();
+
+	//PisteLog_Kirjoita("  - Loading background picture \n");
+	PisteDraw2_Image_Delete(kuva_tausta);
+	kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
+
+	PK_Tallennukset_Tyhjenna();
+
+	//PisteLog_Kirjoita("  - Loading saves \n");
+	PK_Tallennukset_Hae_Kaikki("data/saves.dat");
+
+	//PisteLog_Kirjoita("  - PisteSound sounds on \n");
+	//PisteSound_Aanet_Paalla(settings.aanet);
+
+	//PisteLog_Kirjoita("- Initializing basic stuff completed \n");
+}
+void StartTest(const char* arg){
+	if (arg == NULL) return;
+
+	char buffer[_MAX_PATH];
+	int sepindex;
+
+	strcpy(buffer, arg);
+	for (sepindex = 0; sepindex < _MAX_PATH; sepindex++)
+		if(buffer[sepindex]=='/') break;
+
+	strcpy(episodi, buffer); episodi[sepindex] = '\0';
+	strcpy(seuraava_kartta, buffer + sepindex + 1);
+
+	printf("PK2    - testing episode '%s' level '%s'\n", episodi, seuraava_kartta);
+
+	PK_Lataa_Lisainfot();
+	peli_kesken = false;
+	PK_Uusi_Peli();
+
+	siirry_kartasta_peliin = true;
+	musiikin_voimakkuus = 0;
+	peli_kesken = false;
+}
 int UpdateScreen(){
 	if (pelin_seuraava_tila != pelin_tila){
 
 		PisteDraw2_FadeIn(PD_FADE_NORMAL);
 
 		switch (pelin_seuraava_tila){
-			case TILA_PERUSALUSTUS: break;
+			case TILA_PERUSALUSTUS: FirstStart(); break;
 			case TILA_KARTTA: break;
-			case TILA_MENUT: PK_Start_Menu();    break;
-			case TILA_PELI: break;
+			case TILA_MENUT: PK_Start_Menu();     break;
+			case TILA_PELI:  PK_Start_Game();     break;
 			case TILA_PISTELASKU: break;
-			case TILA_INTRO: PK_Start_Intro();   break;
-			case TILA_LOPPU: PK_Start_EndGame(); break;
+			case TILA_INTRO: PK_Start_Intro();    break;
+			case TILA_LOPPU: PK_Start_EndGame();  break;
 			default: break;
 		}
-		// First start
-		if (pelin_seuraava_tila == TILA_PERUSALUSTUS){
-			strcpy(pelaajan_nimi,tekstit->Hae_Teksti(txt_player_default_name));
-			srand((unsigned)time(NULL));
-			strcpy(viesti,"no message");
-			if(!test_level){
-				strcpy(episodi,"");
-				strcpy(seuraava_kartta,"untitle1.map");
-			}
 
-			jakso = 1;
-
-			if (!taulut_laskettu){
-				//PisteLog_Kirjoita("  - Precalculating... \n");
-				PK_Laske_Taulut();
-
-				PK2Kartta_Cos_Sin(cos_table, sin_table);
-				taulut_laskettu = true;
-			}
-
-			PK_Alusta_Fadetekstit();
-
-			if (KARTANPIIRTO_LEVEYS > RUUDUN_LEVEYS)
-				KARTANPIIRTO_LEVEYS = RUUDUN_LEVEYS;
-
-			if (KARTANPIIRTO_KORKEUS > RUUDUN_KORKEUS)
-				KARTANPIIRTO_KORKEUS = RUUDUN_KORKEUS;
-
-			if (!RAJAA_KARTANPIIRTOALUE){
-
-				KARTANPIIRTO_LEVEYS = RUUDUN_LEVEYS;
-				KARTANPIIRTO_KORKEUS = RUUDUN_KORKEUS;
-			}
-
-			PK2Kartta_Aseta_Ruudun_Mitat(KARTANPIIRTO_LEVEYS,KARTANPIIRTO_KORKEUS);
-
-			kartta = new PK2Kartta();
-
-			if (!settings.isFiltered)
-				PisteDraw2_SetFilter(PD_FILTER_NEAREST);
-			if (settings.isFiltered)
-				PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
-			PisteDraw2_FitScreen(settings.isFit);
-			PisteDraw2_FullScreen(settings.isFullScreen);
-
-			PisteDraw2_Image_Delete(kuva_peli); //Delete if there is a image allocated
-			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
-
-			PisteDraw2_Image_Delete(kuva_peli_sysmem);
-			kuva_peli_sysmem = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
-
-			int ind_font = 0,
-				ind_path = 0;
-
-			ind_path = tekstit->Hae_Indeksi("font path");
-
-			ind_font = tekstit->Hae_Indeksi("font small font");
-			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti1 = PisteDraw2_Font_Create("language/fonts/","ScandicSmall.txt")) == -1){
-					PK2_virhe = true;
-				}
-			}
-			else {
-				if ((fontti1 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-					PK2_virhe = true;
-				}
-			}
-
-			ind_font = tekstit->Hae_Indeksi("font big font normal");
-			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
-				PK2_virhe = true;
-				}
-			}
-			else {
-				if ((fontti2 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-				PK2_virhe = true;
-				//PisteLog_Kirjoita("    - Loading font ");
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
-				//PisteLog_Kirjoita(" failed!\n");
-				}
-			}
-
-			ind_font = tekstit->Hae_Indeksi("font big font hilite");
-			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
-				PK2_virhe = true;
-				}
-			}
-			else {
-				if ((fontti3 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-				PK2_virhe = true;
-				//PisteLog_Kirjoita("    - Loading font ");
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
-				//PisteLog_Kirjoita(" failed!\n");
-				}
-			}
-
-			ind_font = tekstit->Hae_Indeksi("font big font shadow");
-			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
-				PK2_virhe = true;
-				}
-			}
-			else {
-				if ((fontti4 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-				PK2_virhe = true;
-				//PisteLog_Kirjoita("    - Loading font ");
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
-				//PisteLog_Kirjoita(" failed!\n");
-				}
-			}
-
-			if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
-				PK2_virhe = true;
-			}
-
-			if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
-				PK2_virhe = true;
-			}
-
-			if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
-				PK2_virhe = true;
-			}
-
-			PK_Sprite_Tyhjenna();
-
-			PK_Episodit_Hae();
-			PK_Jaksot_Alusta();
-			PK_Jaksot_Hae();
-
-			PisteDraw2_ScreenFill(0);
-
-			//PisteLog_Kirjoita("  - Loading basic sound fx \n");
-
-			if ((kytkin_aani = PisteSound_LoadSFX("sfx/switch3.wav"))==-1)
-				PK2_virhe = true;
-
-			if ((hyppy_aani  = PisteSound_LoadSFX("sfx/jump4.wav"))==-1)
-				PK2_virhe = true;
-
-			if ((loiskahdus_aani  = PisteSound_LoadSFX("sfx/splash.wav"))==-1)
-				PK2_virhe = true;
-
-			if ((avaa_lukko_aani  = PisteSound_LoadSFX("sfx/openlock.wav"))==-1)
-				PK2_virhe = true;
-
-			if ((menu_aani  = PisteSound_LoadSFX("sfx/menu2.wav"))==-1)
-				PK2_virhe = true;
-
-			if ((ammuu_aani  = PisteSound_LoadSFX("sfx/moo.wav"))==-1)
-				PK2_virhe = true;
-
-			if ((kieku_aani  = PisteSound_LoadSFX("sfx/doodle.wav"))==-1)
-				PK2_virhe = true;
-
-			if ((tomahdys_aani  = PisteSound_LoadSFX("sfx/pump.wav"))==-1)
-				PK2_virhe = true;
-
-			if ((pistelaskuri_aani = PisteSound_LoadSFX("sfx/counter.wav"))==-1)
-				PK2_virhe = true;
-
-			PisteDraw2_FadeIn(PD_FADE_SLOW);
-
-			//PisteLog_Kirjoita("  - Calculating tiles. \n");
-			PK_Palikka_Laske_Palikat();
-
-			PK_Esineet_Alusta();
-
-			//PisteLog_Kirjoita("  - Loading background picture \n");
-			PisteDraw2_Image_Delete(kuva_tausta);
-			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
-
-			PK_Tallennukset_Tyhjenna();
-
-			//PisteLog_Kirjoita("  - Loading saves \n");
-			PK_Tallennukset_Hae_Kaikki("data/saves.dat");
-
-			//PisteLog_Kirjoita("  - PisteSound sounds on \n");
-			//PisteSound_Aanet_Paalla(settings.aanet);
-
-			//PisteLog_Kirjoita("- Initializing basic stuff completed \n");
-		}
+		pelin_tila = pelin_seuraava_tila;
 
 		// Start map
 		if (pelin_seuraava_tila == TILA_KARTTA){
@@ -292,44 +326,6 @@ int UpdateScreen(){
 			PisteDraw2_FadeIn(PD_FADE_SLOW);
 		}
 
-		// Start game
-		if (pelin_seuraava_tila == TILA_PELI){
-			//PisteLog_Kirjoita("- Initializing a new level \n");
-
-			PisteDraw2_SetXOffset(0);
-			PisteDraw2_ScreenFill(0);
-			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_game_loading),RUUDUN_LEVEYS/2-82,RUUDUN_KORKEUS/2-9);
-
-			if (jaksot[jakso_indeksi_nyt].lapaisty)
-				uusinta = true;
-			else
-				uusinta = false;
-
-			if (!peli_kesken) {
-				jakso_lapaisty = false;
-
-				PK_Sprite_Tyhjenna(); //Reset sprites
-
-				if (PK_Kartta_Lataa(seuraava_kartta) == 1)
-					PK2_virhe = true;
-
-				PK_Palikka_Laske_Palikat();
-
-				PK_Alusta_Fadetekstit(); //Reset fade text
-
-				PK_Esineet_Alusta();
-				peli_kesken = true;
-				musiikin_voimakkuus = musiikin_max_voimakkuus;
-				degree = 0;
-				item_paneeli_x = -215;
-				piste_lisays = 0;
-			}
-			else {
-				degree = degree_temp;
-			}
-
-		}
-
 		// Start pontuation
 		if (pelin_seuraava_tila == TILA_PISTELASKU){
 
@@ -393,7 +389,7 @@ int UpdateScreen(){
 			PisteDraw2_FadeIn(PD_FADE_FAST);
 		}
 
-		pelin_tila = pelin_seuraava_tila;
+
 	}
 	return 0;
 }
@@ -454,11 +450,11 @@ int PK_Main(){
 		default              : lopeta_peli = true;   break;
 	}
 
-	// GET MUSIC
-	bool saada = false;
+	// Update Sounds
+	bool changed = false;
 
 	if (musiikin_voimakkuus != musiikin_voimakkuus_nyt)
-		saada = true;
+		changed = true;
 
 	if (musiikin_max_voimakkuus > 64)
 		musiikin_max_voimakkuus = 64;
@@ -481,7 +477,7 @@ int PK_Main(){
 	if (musiikin_voimakkuus_nyt < 0)
 		musiikin_voimakkuus_nyt = 0;
 
-	if (saada && settings.musiikki)
+	if (changed && settings.musiikki)
 		PisteSound_SetMusicVolume(musiikin_voimakkuus_nyt);
 
 	static bool wasPressed = false;
@@ -569,7 +565,7 @@ int main(int argc, char *argv[]){
 		pelin_seuraava_tila = TILA_MENUT;
 	if (test_level) {
 		pelin_seuraava_tila = TILA_PELI;
-		PK_Start_Test(test_path);
+		StartTest(test_path);
 	}
 
 	Piste_Loop(running, *PK_Main);

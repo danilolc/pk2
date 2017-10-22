@@ -14,13 +14,6 @@ int  kuva_peli = -1;
 int  kuva_peli_sysmem = -1;
 int  kuva_tausta = -1;
 
-int kamera_x = 0;
-int kamera_y = 0;
-double dkamera_x = 0;
-double dkamera_y = 0;
-double dkamera_a = 0;
-double dkamera_b = 0;
-
 int fontti1;
 int fontti2;
 int fontti3;

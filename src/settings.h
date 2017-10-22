@@ -46,6 +46,8 @@ struct PK2SETTINGS {
 
 };
 
+//ASETUKSET
+PK2SETTINGS settings;
 
 int   musiikin_voimakkuus = 64;
 int   musiikin_max_voimakkuus = 64;
