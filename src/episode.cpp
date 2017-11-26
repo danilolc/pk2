@@ -1,3 +1,4 @@
+#include "episode.h"
 
 //PK_EpisodeScore_Start/
 void EpisodeScore_Start(){
@@ -73,7 +74,7 @@ int PK_Episodipisteet_Tallenna(char *filename){
 	return 0;
 }
 
-//PK_Save_Start ?? - Used in first start
+//PK_Save_Start - Used in first start
 void PK_Jaksot_Alusta(){
 	for (int i=0;i<EPISODI_MAX_JAKSOJA;i++){
 		strcpy(jaksot[i].nimi,"");

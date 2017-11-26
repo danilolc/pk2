@@ -1,3 +1,5 @@
+//Defines the controls variables like mouse position and the key set for each action
+
 #ifndef PK2_CONTROLS
 #define PK2_CONTROLS
 

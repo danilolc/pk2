@@ -1,3 +1,7 @@
+//Used to manage the episodes
+
+#ifndef PK2_EPISODE
+#define PK2_EPISODE
 
 const int EPISODI_MAX_JAKSOJA = 100; //= 50;
 const int MAX_EPISODEJA	= 300;
@@ -37,3 +41,5 @@ bool peli_ohi = false;
 DWORD lopetusajastin = 0;
 DWORD jakso_pisteet = 0;
 DWORD fake_pisteet = 0;
+
+#endif
