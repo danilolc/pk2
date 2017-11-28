@@ -21,6 +21,7 @@
 //TODO
 //-Music loop
 //-Set panoramic audio
+//-_MAX_PATH is now PATH_SIZE
 
 #include <sys/stat.h>
 #include <fstream>

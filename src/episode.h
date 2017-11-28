@@ -3,6 +3,8 @@
 #ifndef PK2_EPISODE
 #define PK2_EPISODE
 
+#include "types.h"
+
 const int EPISODI_MAX_JAKSOJA = 100; //= 50;
 const int MAX_EPISODEJA	= 300;
 

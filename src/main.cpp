@@ -5,13 +5,13 @@
 #include "settings.h"
 #include "graphics.h"
 #include "language.h"
-
 #include "game.h"
-#include "manu.h"
-//#include
+#include "menu.h"
 #include "scenes.h"
-
 #include "controls.h" // mouse
+
+#include <string>
+#include <ctime>
 
 #define GAME_NAME   "Pekka Kana 2"
 #define PK2_VERSION "split"
@@ -92,10 +92,6 @@ void FirstStart(){
 	else {
 		if ((fontti2 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
 		PK2_virhe = true;
-		//PisteLog_Kirjoita("    - Loading font ");
-		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
-		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
-		//PisteLog_Kirjoita(" failed!\n");
 		}
 	}
 
@@ -108,10 +104,6 @@ void FirstStart(){
 	else {
 		if ((fontti3 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
 		PK2_virhe = true;
-		//PisteLog_Kirjoita("    - Loading font ");
-		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
-		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
-		//PisteLog_Kirjoita(" failed!\n");
 		}
 	}
 
@@ -124,10 +116,6 @@ void FirstStart(){
 	else {
 		if ((fontti4 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
 		PK2_virhe = true;
-		//PisteLog_Kirjoita("    - Loading font ");
-		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
-		//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
-		//PisteLog_Kirjoita(" failed!\n");
 		}
 	}
 
@@ -150,8 +138,6 @@ void FirstStart(){
 	PK_Jaksot_Hae();
 
 	PisteDraw2_ScreenFill(0);
-
-	//PisteLog_Kirjoita("  - Loading basic sound fx \n");
 
 	if ((kytkin_aani = PisteSound_LoadSFX("sfx/switch3.wav"))==-1)
 		PK2_virhe = true;
@@ -182,24 +168,17 @@ void FirstStart(){
 
 	PisteDraw2_FadeIn(PD_FADE_SLOW);
 
-	//PisteLog_Kirjoita("  - Calculating tiles. \n");
 	PK_Palikka_Laske_Palikat();
 
 	PK_Esineet_Alusta();
 
-	//PisteLog_Kirjoita("  - Loading background picture \n");
 	PisteDraw2_Image_Delete(kuva_tausta);
 	kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
 
 	PK_Tallennukset_Tyhjenna();
 
-	//PisteLog_Kirjoita("  - Loading saves \n");
 	PK_Tallennukset_Hae_Kaikki("data/saves.dat");
 
-	//PisteLog_Kirjoita("  - PisteSound sounds on \n");
-	//PisteSound_Aanet_Paalla(settings.aanet);
-
-	//PisteLog_Kirjoita("- Initializing basic stuff completed \n");
 }
 void StartTest(const char* arg){
 	if (arg == NULL) return;

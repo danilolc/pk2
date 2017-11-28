@@ -94,8 +94,13 @@
     <ClCompile Include="..\engine\PisteLanguage.cpp" />
     <ClCompile Include="..\engine\PisteSound.cpp" />
     <ClCompile Include="..\engine\PisteUtils.cpp" />
+    <ClCompile Include="..\src\episode.cpp" />
+    <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\map.cpp" />
+    <ClCompile Include="..\src\menu.cpp" />
+    <ClCompile Include="..\src\particles.cpp" />
     <ClCompile Include="..\src\pk2.cpp" />
+    <ClCompile Include="..\src\scenes.cpp" />
     <ClCompile Include="..\src\sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -108,7 +113,19 @@
     <ClInclude Include="..\engine\PisteSound.h" />
     <ClInclude Include="..\engine\PisteUtils.h" />
     <ClInclude Include="..\engine\types.h" />
+    <ClInclude Include="..\src\controls.h" />
+    <ClInclude Include="..\src\episode.h" />
+    <ClInclude Include="..\src\game.h" />
+    <ClInclude Include="..\src\graphics.h" />
+    <ClInclude Include="..\src\language.h" />
+    <ClInclude Include="..\src\main.h" />
     <ClInclude Include="..\src\map.h" />
+    <ClInclude Include="..\src\menu.h" />
+    <ClInclude Include="..\src\movement.h" />
+    <ClInclude Include="..\src\particles.h" />
+    <ClInclude Include="..\src\prototypes.h" />
+    <ClInclude Include="..\src\scenes.h" />
+    <ClInclude Include="..\src\settings.h" />
     <ClInclude Include="..\src\sprite.h" />
     <ClInclude Include="include\winlite.h" />
     <ClInclude Include="resource.h" />
