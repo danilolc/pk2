@@ -41,7 +41,7 @@
 using namespace std;
 
 #define GAME_NAME   "Pekka Kana 2"
-#define PK2_VERSION "r1"
+#define PK2_VERSION "r2"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 480
@@ -54,8 +54,6 @@ void ltoa(long n, char s[], int radix){
 	sprintf(s, "%i", (int)n);
 }
 #endif
-
-//#define printf(args) if(dev_mode) printf(args)
 
 //#### Constants
 
@@ -3180,7 +3178,8 @@ int PK_Esineet_Vaihda(){
 	return 0;
 }
 
-//Sprite Movement
+//Collision System --------------------------------
+//SpriteMovement
 
 	double	sprite_x,
 			sprite_y,
@@ -3209,7 +3208,7 @@ int PK_Esineet_Vaihda(){
 
 	BYTE   max_nopeus;
 
-//Colision with the block sprite
+//Collision with the block sprite
 void PK_Tutki_Seina2(PK2Sprite &sprite, PK2BLOCK &palikka){
 
 	//left and right
@@ -3879,6 +3878,7 @@ int PK_Sprite_Liikuta(int i){
 
 	PK2Sprite *sprite2;
 
+	//Compare this sprite with every sprite in the game
 	for (int sprite_index = 0; sprite_index < MAX_SPRITEJA; sprite_index++)
 	{
 		sprite2 = &spritet[sprite_index];
@@ -5820,10 +5820,10 @@ int PK_Kamera(){
 //Draw Functions (Piirra)
 //==================================================
 int PK_Piirra_Info(){
-	int fy, vali;
+	int vali, fy = 35;
 	char lukua[20];
 
-	fy = 35;
+	PisteDraw2_SetXOffset(80);
 
 	vali = PisteDraw2_Font_Write(fontti1,"spriteja: ",10,fy);
 	itoa(info_spriteja,lukua,10);
@@ -5879,6 +5879,7 @@ int PK_Piirra_Info(){
 	itoa(nakymattomyys,lukua,10);
 	PisteDraw2_Font_Write(fontti1,lukua,610,470);
 
+	PisteDraw2_SetXOffset(0);
 	return 0;
 }
 
@@ -6135,41 +6136,10 @@ int PK_Piirra_Peli(){
 
 	PK_Piirra_Peli_Ylaosa();
 
-	/*
-	//////////////
-	// piirr� aika
-	//////////////
-	int min = aika/60,
-		sek = aika%60;
-	vali = PisteDraw2_Font_Write(fontti2,"time ",272,RUUDUN_KORKEUS-20);
-	itoa(min,luku,10);
-	vali += PisteDraw2_Font_Write(fontti2,luku,272+vali,RUUDUN_KORKEUS-20);
-	vali += PisteDraw2_Font_Write(fontti1,":",272+vali,RUUDUN_KORKEUS-15);
-
-	if (sek < 10)
-		vali += PisteDraw2_Font_Write(fontti2,"0",272+vali,RUUDUN_KORKEUS-20);
-
-	itoa(sek,luku,10);
-	vali += PisteDraw2_Font_Write(fontti2,luku,272+vali,RUUDUN_KORKEUS-20);
-
-	/////////////////
-	// piirr� avaimet
-	/////////////////
-	vali = PisteDraw2_Font_Write(fontti2,"keys ",450,RUUDUN_KORKEUS-20);
-	itoa(avaimia,luku,10);
-	PisteDraw2_Font_Write(fontti2,luku,450+vali,RUUDUN_KORKEUS-20);
-
-	/////////////////
-	// piirr� esineet
-	/////////////////
-	PK_Esineet_Piirra();
-	*/
 	if (piirra_infot)
 		PK_Piirra_Info();
 
-	///////////////////
-	// piirr� framerate
-	///////////////////
+	//Draw framerate
 	if (fps_nayta){
 		vali = PisteDraw2_Font_Write(fontti1,"fps: ",570,48);
 		fps = Piste_GetFPS();
@@ -6177,9 +6147,7 @@ int PK_Piirra_Peli(){
 		PisteDraw2_Font_Write(fontti1,luku,570+vali,48);
 	}
 
-	///////////////////
-	// piirr� pause
-	///////////////////
+	//Draw pause
 	if (paused)
 		PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_game_paused),KARTANPIIRTO_LEVEYS/2-82,KARTANPIIRTO_KORKEUS/2-9);
 
@@ -7973,10 +7941,11 @@ int PK_Main_Peli(){
 		}
 		if (PisteInput_Keydown(PI_DELETE))
 			spritet[pelaaja_index].energia = 0;
-		if (PisteInput_Keydown(PI_I)){
-			fps_nayta = !fps_nayta;
-			key_delay = 20;
-		}
+		if(!dev_mode)
+			if (PisteInput_Keydown(PI_I)){
+				fps_nayta = !fps_nayta;
+				key_delay = 20;
+			}
 		if (PisteInput_Keydown(PI_TAB)){
 			PK_Esineet_Vaihda();
 			key_delay = 10;
@@ -8019,6 +7988,7 @@ int PK_Main_Peli(){
 		}
 		if (PisteInput_Keydown(PI_I)){
 			piirra_infot = !piirra_infot;
+			fps_nayta = !fps_nayta;
 			key_delay = 10;
 		}
 		if (PisteInput_Keydown(PI_R)){
@@ -8039,7 +8009,7 @@ int PK_Main_Peli(){
 			jakso++;
 		}
 		if (PisteInput_Keydown(PI_E))
-			spritet[pelaaja_index].energia = 3;
+			spritet[pelaaja_index].energia = spritet[pelaaja_index].tyyppi->energia;
 		if (PisteInput_Keydown(PI_LSHIFT)){
 			for (int r=1;r<6;r++)
 				PK_Partikkeli_Uusi(PARTIKKELI_KIPINA,spritet[pelaaja_index].x+rand()%10-rand()%10, spritet[pelaaja_index].y+rand()%10-rand()%10,0,0,rand()%100,0.1,32);

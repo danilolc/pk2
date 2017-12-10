@@ -42,20 +42,12 @@ struct PK2KARTTA{ // Vanha versio 0.1
 };
 
 bool PK2Kartta_Onko_File(char *filename){
-	struct stat st;
-	bool ret = (stat(filename, &st) == 0);
-	if(!ret && PisteUtils_FindImage(filename) != NULL) ret = true;
-	if(!ret) printf("PK2MAP - asked about non-existing file: %s\n", filename);
-
-
-	if(!ret){
-		for (int i=0 ; filename[i]!='\0' ; i++)
-        	filename[i]=tolower(filename[i]);
-		if(PisteUtils_FindImage(filename) != NULL) ret = true;
+	if(PisteUtils_FindImage(filename) == NULL){
+		printf("PK2MAP - asked about non-existing file: %s\n", filename);
+		PisteUtils_Lower(filename);
+		return PisteUtils_FindImage(filename) != NULL;
 	}
-
-
-	return ret;
+	return true;
 }
 
 void PK2Kartta_Cos_Sin(double *cost, double *sint){

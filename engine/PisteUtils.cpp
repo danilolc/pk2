@@ -33,33 +33,32 @@ void PisteUtils_RemoveSpace(char* string){
 
 char *PisteUtils_FindImage(char *filename){
 	struct stat st;
-  char *ret = strdup(filename);
+	char *ret = strdup(filename);
 
-  // expecting it to be 6+3 dos filename
-  char *ext = strrchr(ret, '.');
-  if(ext == NULL) return NULL;
+	char *ext = strrchr(ret, '.');
+	if(ext == NULL) return NULL;
 
-  // cut up the path and file base components
-  char *base = strrchr(ret, '/');
-  // just a filename without dir
-  if(base == NULL) base = ret;
+	char *base = strrchr(ret, '/');
+	if(base == NULL) base = ret;
 
 	strcpy(ext, ".png");
-  if(stat(ret, &st) == 0)
-    return ret;
-  else{
+	
+	if(stat(ret, &st) == 0)
+		return ret;
+	else {
 		char *c = base;
-  	while(c != ext) *c++ = toupper(*c);
+	
+		while(c != ext) *c++ = toupper(*c);
 
-    if(stat(ret, &st) == 0)
-      return ret;
-    else{
+		if(stat(ret, &st) == 0)
+			return ret;
+		else{
 			strcpy(ext, ".bmp");
-      if(stat(ret, &st) == 0)
-        return ret;
-    }
-  }
-  return NULL;
+			if(stat(ret, &st) == 0)
+				return ret;
+		}
+	}
+	return NULL;
 }
 
 bool PisteUtils_Search_File(char *filename){
