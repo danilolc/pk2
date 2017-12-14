@@ -376,12 +376,20 @@ void PisteDraw2_AdjustScreen(){
 	int w, h;
 	SDL_GetWindowSize(PD_Window, &w, &h);
 
-	float buff_prop = (float)PD_screen_width / PD_screen_height;
-
-	Screen_dest.w = (int) (buff_prop * h);
-	Screen_dest.h = h;
-	Screen_dest.x = (int) ((w - Screen_dest.w) / 2);
-	Screen_dest.y = 0;
+	float screen_prop = (float)w / h;
+	float buff_prop   = (float)PD_screen_width / PD_screen_height;
+	if (buff_prop > screen_prop) {
+		Screen_dest.w = w;
+		Screen_dest.h = (int)(h / buff_prop);
+		Screen_dest.x = 0;
+		Screen_dest.y = (int)((h - Screen_dest.h) / 2);
+	}
+	else {
+		Screen_dest.w = (int)(buff_prop * h);
+		Screen_dest.h = h;
+		Screen_dest.x = (int)((w - Screen_dest.w) / 2);
+		Screen_dest.y = 0;
+	}
 }
 void PisteDraw2_FitScreen(bool fit){
 	ScreenFit = fit;
@@ -391,6 +399,9 @@ void PisteDraw2_GetWindowPosition(int* x, int* y) {
 	SDL_GetWindowPosition(PD_Window, x, y);
 }
 
+int PisteDraw2_GetXOffset() {
+	return XOffset;
+}
 void PisteDraw2_SetXOffset(int x) {
 	XOffset = x;
 }

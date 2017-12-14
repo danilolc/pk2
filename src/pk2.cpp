@@ -8053,7 +8053,7 @@ int PK_Main_Loppu(){
 }
 
 int PK_Main(){
-	static bool window_activated = true;
+	//static bool window_activated = true;
 
 	PK_Alusta_Tilat();
 
@@ -8062,25 +8062,16 @@ int PK_Main(){
 		return 0;
 	}
 
-	if (window_activated) {
-		MOUSE hiiri = PisteInput_UpdateMouse(pelin_tila == TILA_KARTTA);
-		if (hiiri.x < 0) hiiri.x = 0;
-		if (hiiri.y < 0) hiiri.y = 0;
-		if (hiiri.x > 640-19) hiiri.x = 640-19;
-		if (hiiri.y > 480-19) hiiri.y = 480-19;
-
-		hiiri_x = hiiri.x;
-		hiiri_y = hiiri.y;
-	}
-	else {
-		hiiri_x = -30;
-		hiiri_y = -30;
-		if (PisteInput_Hiiri_Oikea() || PisteInput_Hiiri_Vasen()) {
-			PisteInput_ActivateWindow(true);
-			window_activated = true;
-			menu_valittu_id = 0;
-		}
-	}
+	MOUSE hiiri = PisteInput_UpdateMouse(pelin_tila == TILA_KARTTA, settings.isFullScreen);
+	hiiri.x -= PisteDraw2_GetXOffset();
+	
+	if (hiiri.x < 0) hiiri.x = 0;
+	if (hiiri.y < 0) hiiri.y = 0;
+	if (hiiri.x > 640-19) hiiri.x = 640-19;
+	if (hiiri.y > 480-19) hiiri.y = 480-19;
+	
+	hiiri_x = hiiri.x;
+	hiiri_y = hiiri.y;
 
 	switch (pelin_tila){
 		case TILA_PELI       : PK_Main_Peli();       break;
@@ -8139,8 +8130,8 @@ int PK_Main(){
 					PK_Quit();
 				else {
 					menu_valittu_id = menu_valinta_id-1; // Set to "exit" option
-					window_activated = false;
-					PisteInput_ActivateWindow(false);
+					//window_activated = false;
+					//PisteInput_ActivateWindow(false);
 				}
 			}
 		}

@@ -119,7 +119,28 @@ bool PisteInput_Keydown(int key){
 	SDL_PumpEvents();
 	return m_keymap[keylist[key]];
 }
-MOUSE PisteInput_UpdateMouse(bool keyMove){
+
+//TODO - change names - fullscreen uses relative mouse
+MOUSE PisteInput_UpdateMouse(bool keyMove, bool relative){
+	static int was_relative = -1;
+	if (was_relative == -1) { //Was just initialized
+		PisteInput_ActivateWindow(relative);
+		was_relative = (int)relative;
+	}
+	if (was_relative == 1 && !relative) { //Was relative but now it isn't
+		PisteInput_ActivateWindow(false);
+		was_relative = 0;
+	}
+	if (was_relative == 0 && relative) { //Wasn't relative but now it is
+		PisteInput_ActivateWindow(true);
+		was_relative = 1;
+	}
+
+
+	if (!relative) {
+		SDL_GetMouseState(&mouse_pos.x, &mouse_pos.y);
+		return mouse_pos;
+	}
 	static int lastMouseUpdate = 0, dx = 0, dy = 0;
 	if(SDL_GetTicks() - lastMouseUpdate > MOUSE_SPEED) {
 		lastMouseUpdate = SDL_GetTicks();
@@ -154,7 +175,7 @@ int PisteInput_ActivateWindow(bool active) {
 	}
 	else {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
-		SetMousePosition(mouse_pos.x, mouse_pos.y);
+		//SetMousePosition(mouse_pos.x, mouse_pos.y);
 	}
 	return 0;
 }
@@ -186,7 +207,7 @@ if(SDL_NumJoysticks()>0){
 }
 
 int PisteInput_Alusta(){
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+	//SDL_SetRelativeMouseMode(SDL_TRUE);
 	return 0;
 }
 

@@ -63,6 +63,7 @@ char *PisteUtils_FindImage(char *filename){
 
 bool PisteUtils_Search_File(char *filename){
 	//TODO
+	return false;
 }
 
 //This need to receive just the filename, not the path
