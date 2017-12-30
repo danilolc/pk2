@@ -112,9 +112,9 @@ enum{ //BG particles
 	TAUSTAPARTIKKELI_HIUTALE4
 };
 
-const int MAX_PARTIKKELEITA = 300;
-const int MAX_TAUSTAPARTIKKELEITA = 200;
-const int MAX_FADETEKSTEJA  = 40;
+const int MAX_PARTIKKELEITA = 400; //300;
+const int MAX_TAUSTAPARTIKKELEITA = 300; //200;
+const int MAX_FADETEKSTEJA = 50; //40;
 
 
 struct PK2PARTIKKELI{
@@ -242,6 +242,8 @@ struct PK2SETTINGS {
 	bool isFiltered;
 	bool isFit;
 
+	bool isWide;
+
 };
 
 //#### Global Variables
@@ -249,8 +251,8 @@ struct PK2SETTINGS {
 int RUUDUN_LEVEYS  = SCREEN_WIDTH;
 int RUUDUN_KORKEUS = SCREEN_HEIGHT;
 
-int KARTANPIIRTO_LEVEYS     = 800;
-int KARTANPIIRTO_KORKEUS    = 480;
+int KARTANPIIRTO_LEVEYS     = SCREEN_WIDTH;
+int KARTANPIIRTO_KORKEUS    = SCREEN_HEIGHT;
 bool RAJAA_KARTANPIIRTOALUE = true;
 
 bool test_level = false;
@@ -660,6 +662,7 @@ void PK_Asetukset_Alusta(){
 	settings.isFiltered = true;
 	settings.isFit = true;
 	settings.isFullScreen = true;
+	settings.isWide = true;
 
 	PisteUtils_CreateDir("data");
 	PK_Asetukset_Tallenna("data/settings.ini");
@@ -5150,6 +5153,7 @@ int PK_Alusta_Tilat(){
 				PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
 			PisteDraw2_FitScreen(settings.isFit);
 			PisteDraw2_FullScreen(settings.isFullScreen);
+			PisteDraw2_ChangeResolution(settings.isWide ? 800 : 640, 480);
 
 			PisteDraw2_Image_Delete(kuva_peli); //Delete if there is a image allocated
 			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
@@ -5298,7 +5302,6 @@ int PK_Alusta_Tilat(){
 
 			PisteDraw2_SetXOffset(80);
 			PisteDraw2_ScreenFill(0);
-			//PisteDraw2_Font_Write(fontti2,"loading...",RUUDUN_LEVEYS/2-82,RUUDUN_KORKEUS/2-9);
 
 			if (!peli_kesken)
 			{
@@ -5410,9 +5413,8 @@ int PK_Alusta_Tilat(){
 			menu_valittu_id = 1;
 		}
 
-		// Start loading
+		// Start loading scene
 		if (pelin_seuraava_tila == TILA_PELI){
-			//PisteLog_Kirjoita("- Initializing a new level \n");
 
 			PisteDraw2_SetXOffset(0);
 			PisteDraw2_ScreenFill(0);
@@ -6666,7 +6668,7 @@ int PK_Piirra_Menut_Tallenna(){
 }
 
 int PK_Piirra_Menut_Grafiikka(){
-	bool wasFullScreen, wasFiltered, wasFit;
+	bool wasFullScreen, wasFiltered, wasFit, wasWide;
 	int my = 150;
 	static bool moreOptions = false;
 
@@ -6678,6 +6680,7 @@ int PK_Piirra_Menut_Grafiikka(){
 		wasFullScreen = settings.isFullScreen;
 		wasFiltered = settings.isFiltered;
 		wasFit = settings.isFit;
+		wasWide = settings.isWide;
 
 		if (settings.isFullScreen){
 			if (PK_Piirra_Menut_Valinta("fullscreen mode is on",180,my)){
@@ -6722,18 +6725,36 @@ int PK_Piirra_Menut_Grafiikka(){
 		my += 30;
 
 
-		//Can add more options
+		if (settings.isWide) {
+			if (PK_Piirra_Menut_Valinta("resolution 800x480", 180, my)) {
+				settings.isWide = false;
+			}
+		}
+		else {
+			if (PK_Piirra_Menut_Valinta("resolution 640x480", 180, my)) {
+				settings.isWide = true;
+			}
+		}
+		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.isWide)) {
+			settings.isWide = !settings.isWide;
+		}
+		my += 30;
 
-		if(wasFullScreen != settings.isFullScreen)
+		//Can add more options here
+
+		if(wasFullScreen != settings.isFullScreen) // If fullscreen changes
 			PisteDraw2_FullScreen(settings.isFullScreen);
 
-		if(wasFiltered && !settings.isFiltered)
+		if(wasFiltered && !settings.isFiltered) // If filter changes
 			PisteDraw2_SetFilter(PD_FILTER_NEAREST);
 		if(!wasFiltered && settings.isFiltered)
 			PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
 
-		if(wasFit!= settings.isFit)
+		if(wasFit != settings.isFit) // If fit changes
 			PisteDraw2_FitScreen(settings.isFit);
+
+		if (wasWide != settings.isWide)
+			PisteDraw2_ChangeResolution(settings.isWide? 800 : 640, 480);
 
 
 		if (PK_Piirra_Menut_Valinta("back",100,360)){

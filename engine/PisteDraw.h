@@ -8,9 +8,9 @@
 
 #include "types.h"
 
-#define		PD_FADE_FAST		5
-#define		PD_FADE_NORMAL	2
-#define		PD_FADE_SLOW		1
+#define		PD_FADE_FAST   5
+#define		PD_FADE_NORMAL 2
+#define		PD_FADE_SLOW   1
 
 #define		PD_FILTER_NEAREST  "0"
 #define		PD_FILTER_BILINEAR "1"
@@ -61,6 +61,7 @@ int PisteDraw2_SetFilter(const char* filter);
 void PisteDraw2_FullScreen(bool set);
 void PisteDraw2_AdjustScreen();
 void PisteDraw2_FitScreen(bool fit);
+void PisteDraw2_ChangeResolution(int w, int h);
 
 void PisteDraw2_GetWindowPosition(int* x, int* y);
 

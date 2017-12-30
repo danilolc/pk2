@@ -18,13 +18,16 @@
 const int MAX_IMAGES = 2000;
 const int MAX_FONTS = 20;
 
-SDL_Window* 	PD_Window = NULL;
+const char* PD_WindowName;
+
+SDL_Window*   PD_Window = NULL;
 SDL_Renderer* PD_Renderer = NULL;
 
-SDL_Surface*	frameBuffer8 = NULL;
+SDL_Surface*  frameBuffer8 = NULL;
 
-SDL_Surface*	imageList[MAX_IMAGES];
-PisteFont2*		fontList[MAX_FONTS];
+SDL_Surface*  imageList[MAX_IMAGES];
+PisteFont2*   fontList[MAX_FONTS];
+SDL_Palette*  game_palette = NULL;
 
 int  PD_screen_width;
 int  PD_screen_height;
@@ -74,7 +77,7 @@ int  PisteDraw2_FadeIn(int speed){
 }
 void PisteDraw2_RotatePalette(BYTE start, BYTE end){
 	BYTE i;
-	SDL_Color* game_colors = frameBuffer8->format->palette->colors;
+	SDL_Color* game_colors = game_palette->colors;
 	SDL_Color temp_color = game_colors[end];
 
 	for (i=end;i>start;i--)
@@ -93,7 +96,7 @@ int PisteDraw2_Image_New(int w, int h){
 	SDL_FillRect(imageList[index], NULL, 255);
 
 	imageList[index]->userdata = (void*)imageList[index]->format->palette;
-	imageList[index]->format->palette = frameBuffer8->format->palette;
+	imageList[index]->format->palette = game_palette;
 
 	return index;
 }
@@ -122,11 +125,11 @@ int PisteDraw2_Image_Load(const char* filename, bool getPalette){
 	if(getPalette){
 		pal = imageList[index]->format->palette;
 		for(i=0;i<256;i++)
-			frameBuffer8->format->palette->colors[i] = pal->colors[i];
+			game_palette->colors[i] = pal->colors[i];
 	}
 
 	imageList[index]->userdata = (void*)imageList[index]->format->palette; //Put allocated pallete in userdata
-	imageList[index]->format->palette = frameBuffer8->format->palette;
+	imageList[index]->format->palette = game_palette;
 
 	return index;
 }
@@ -158,7 +161,7 @@ int PisteDraw2_Image_Cut(int ImgIndex, PD_RECT area){
 	SDL_FillRect(imageList[index], NULL, 255);
 
 	imageList[index]->userdata = (void*)imageList[index]->format->palette;
-	imageList[index]->format->palette = frameBuffer8->format->palette;
+	imageList[index]->format->palette = game_palette;
 
 	SDL_BlitScaled(imageList[ImgIndex], (SDL_Rect*)&area, imageList[index], NULL);
 
@@ -394,6 +397,18 @@ void PisteDraw2_AdjustScreen(){
 void PisteDraw2_FitScreen(bool fit){
 	ScreenFit = fit;
 }
+void PisteDraw2_ChangeResolution(int w, int h) {
+	if (w == PD_screen_width && h == PD_screen_height)
+		return;
+
+	frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
+	SDL_FreeSurface(frameBuffer8);
+	SDL_DestroyRenderer(PD_Renderer);
+	SDL_DestroyWindow(PD_Window);
+	PD2_loaded = false;
+
+	PisteDraw2_Start(w, h, PD_WindowName);
+}
 
 void PisteDraw2_GetWindowPosition(int* x, int* y) {
 	SDL_GetWindowPosition(PD_Window, x, y);
@@ -405,13 +420,20 @@ int PisteDraw2_GetXOffset() {
 void PisteDraw2_SetXOffset(int x) {
 	XOffset = x;
 }
+
 int PisteDraw2_Start(int width, int height, const char* name) {
 	if (PD2_loaded) return -1;
 
+	if (game_palette == NULL)
+		game_palette = SDL_AllocPalette(256);
+
+	PD_WindowName = name;
 	PD_Window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
 	PD_Renderer = SDL_CreateRenderer(PD_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 	frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+	frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
+	frameBuffer8->format->palette = game_palette;
 	SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
 	SDL_FillRect(frameBuffer8, NULL, 255);
 
@@ -432,21 +454,22 @@ int PisteDraw2_Exit(){
 
   int i,j;
 
-	for (i=0; i<MAX_IMAGES; i++)
-    if (imageList[i] != NULL ){
-			j = i;
+  for (i=0; i<MAX_IMAGES; i++)
+    if (imageList[i] != NULL){
+	  j = i;
       PisteDraw2_Image_Delete(j);
-		}
+    }
 
   for (i=0; i<MAX_FONTS; i++){
-      if (fontList[i] != NULL )
-        delete fontList[i];
-      fontList[i] = NULL;
+    if (fontList[i] != NULL)
+      delete fontList[i];
+    fontList[i] = NULL;
   }
 
-	SDL_FreeSurface(frameBuffer8);
-	SDL_RenderClear(PD_Renderer);
-	SDL_DestroyWindow(PD_Window);
+  frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
+  SDL_FreeSurface(frameBuffer8);
+  SDL_DestroyRenderer(PD_Renderer);
+  SDL_DestroyWindow(PD_Window);
 
   PD2_loaded = false;
   return 0;
