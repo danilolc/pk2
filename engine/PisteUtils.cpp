@@ -8,14 +8,37 @@
 #include <cstring>
 #include <sys/stat.h>
 #include <ctype.h>
+#include <string>
 #ifdef _WIN32
 	#include <io.h>
 	#include "winlite.h"
+	#include <direct.h>
 #else
 	#include <dirent.h>
+	#include <unistd.h>
+	#include <limits.h>
 #endif
 
 #include "PisteUtils.h"
+
+using namespace std;
+
+int PisteUtils_Setcwd() {
+	char exepath[_MAX_PATH];
+	int find;
+
+#ifdef _WIN32
+	string(exepath, GetModuleFileName(NULL, exepath, _MAX_PATH));
+#else
+	int count = readlink("/proc/self/exe", exepath, _MAX_PATH);
+	if (count > 0) exepath[count] = '\0';
+#endif
+
+	find = string(exepath).find_last_of("/\\");
+	exepath[find] = '\0';
+
+	return chdir(exepath);
+}
 
 void PisteUtils_Lower(char* string){
 	int i;

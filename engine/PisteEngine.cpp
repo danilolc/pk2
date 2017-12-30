@@ -57,22 +57,6 @@ int EngineLogic(bool &running){
 	}
 	return 0;
 }
-int Setcwd(){
-	char exepath[_MAX_PATH];
-	int find;
-
-	#ifdef _WIN32
-		string(exepath, GetModuleFileName(NULL, exepath, _MAX_PATH));
-	#else
-		int count = readlink("/proc/self/exe", exepath, _MAX_PATH);
-		if(count > 0) exepath[count] = '\0';
-	#endif
-
-	find = string(exepath).find_last_of("/\\");
-	exepath[find] = '\0';
-
-	return chdir(exepath);
-}
 
 void Piste_IgnoreFrame(){
 	draw = false;
@@ -88,8 +72,6 @@ void Piste_SetDebug(bool set){
 }
 
 int Piste_Init(int width, int height, const char* name){
-
-	Setcwd();
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0){
 		printf("Unable to init SDL: %s\n", SDL_GetError());

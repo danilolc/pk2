@@ -43,9 +43,6 @@ using namespace std;
 #define GAME_NAME   "Pekka Kana 2"
 #define PK2_VERSION "r2"
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 480
-
 #ifndef _WIN32
 void itoa(int n, char s[], int radix){
 	sprintf(s, "%i", n);
@@ -60,7 +57,8 @@ void ltoa(long n, char s[], int radix){
 const int MAX_ESINEITA = 4;
 const int MAX_TALLENNUKSIA = 10;
 
-enum { //Blocks
+enum BLOCKS
+{
 	BLOCK_TAUSTA,
 	BLOCK_SEINA,
 	BLOCK_MAKI_OIKEA_YLOS,
@@ -89,7 +87,8 @@ struct PK2BLOCKMASKI{
 	short int	oikealle[32];
 };
 
-enum {//Particles
+enum PARTICLES
+{
 	PARTIKKELI_EI_MIKAAN,
 	PARTIKKELI_TAHTI,
 	PARTIKKELI_HOYHEN,
@@ -100,7 +99,8 @@ enum {//Particles
 	PARTIKKELI_SAVUPILVI,
 	PARTIKKELI_TAHTI2
 };
-enum{ //BG particles
+enum BG_PARTICLES
+{
 	TAUSTAPARTIKKELI_VESIPISARA,
 	TAUSTAPARTIKKELI_LEHTI1,
 	TAUSTAPARTIKKELI_LEHTI2,
@@ -156,7 +156,8 @@ struct PK2EPISODIPISTEET{
 	char  episodin_top_pelaaja[20];
 };
 
-enum { //Screen
+enum SCREEN
+{
 	TILA_EI_ALUSTETTU,
 	TILA_PERUSALUSTUS,
 	TILA_INTRO,
@@ -166,7 +167,8 @@ enum { //Screen
 	TILA_PISTELASKU,
 	TILA_LOPPU
 };
-enum {//Menu
+enum MENU
+{
 	MENU_PAAVALIKKO,
 	MENU_EPISODIT,
 	MENU_KONTROLLIT,
@@ -247,12 +249,8 @@ struct PK2SETTINGS {
 };
 
 //#### Global Variables
-
-int RUUDUN_LEVEYS  = SCREEN_WIDTH;
-int RUUDUN_KORKEUS = SCREEN_HEIGHT;
-
-int KARTANPIIRTO_LEVEYS     = SCREEN_WIDTH;
-int KARTANPIIRTO_KORKEUS    = SCREEN_HEIGHT;
+int screen_width  = 800;
+int screen_height = 480;
 bool RAJAA_KARTANPIIRTOALUE = true;
 
 bool test_level = false;
@@ -639,8 +637,8 @@ void PK_Asetukset_Alusta(){
 	settings.ladattu = false;
 	strcpy(settings.kieli,"english.txt");
 
-	settings.ruudun_leveys = SCREEN_WIDTH;
-	settings.ruudun_korkeus = SCREEN_HEIGHT;
+	settings.ruudun_leveys = screen_width; //Not used
+	settings.ruudun_korkeus = screen_height; //Not used
 	settings.lapinakyvat_objektit = true;
 	settings.lapinakyvat_menutekstit = false;
 	settings.saa_efektit = true;
@@ -700,12 +698,14 @@ int PK_Asetukset_Lataa(char *filename){
 	kontrolli_hyokkays2		= settings.kontrolli_hyokkays2;
 	kontrolli_kayta_esine	= settings.kontrolli_kayta_esine;
 
+	screen_width = settings.isWide ? 800 : 640;
+
 	return 0;
 }
 //PK_Settings_Save
 int PK_Asetukset_Tallenna(char *filename){
-	settings.ruudun_korkeus	= RUUDUN_KORKEUS;
-	settings.ruudun_leveys		= RUUDUN_LEVEYS;
+	settings.ruudun_korkeus = screen_height; //Not used
+	settings.ruudun_leveys  = screen_width; //Not used
 
 	settings.kontrolli_vasemmalle		= kontrolli_vasemmalle;
 	settings.kontrolli_oikealle		= kontrolli_oikealle;
@@ -839,10 +839,9 @@ bool PK_Lataa_Kieli(){
 
 	strcat(tiedosto,settings.kieli);
 
-	if (!tekstit->Read_File(tiedosto)){
-		//PK2_virhe = true;
+	if (!tekstit->Read_File(tiedosto))
 		return false;
-	}
+
 	// Aloitusikkuna
 	txt_setup_options			= tekstit->Hae_Indeksi("setup options");
 	txt_setup_videomodes		= tekstit->Hae_Indeksi("setup video modes");
@@ -1276,7 +1275,7 @@ int PK_Tallennukset_Tallenna(int i){
 //PK_Play_Sound
 void PK_Soita_Aani(int aani, int voimakkuus, int x, int y, int freq, bool random_freq){
 	if (aani > -1 && aanenvoimakkuus > 0 && voimakkuus > 0){
-		if (x < kamera_x+RUUDUN_LEVEYS && x > kamera_x && y < kamera_y+RUUDUN_KORKEUS && y > kamera_y){
+		if (x < kamera_x+screen_width && x > kamera_x && y < kamera_y+screen_height && y > kamera_y){
 			voimakkuus = voimakkuus / (100 / aanenvoimakkuus);
 
 			if (voimakkuus > 100)
@@ -1285,7 +1284,7 @@ void PK_Soita_Aani(int aani, int voimakkuus, int x, int y, int freq, bool random
 			if (voimakkuus < 0)
 				voimakkuus = 0;
 
-			int pan = kamera_x + (RUUDUN_LEVEYS / 2) - x;
+			int pan = kamera_x + (screen_width / 2) - x;
 			pan *= -2;
 
 			if (random_freq)
@@ -1736,8 +1735,8 @@ void PK_Fadetekstit(){
 			if (fadetekstit[i].ajastin%2 == 0)
 				fadetekstit[i].y--;
 
-			if (fadetekstit[i].x < kamera_x || fadetekstit[i].x > kamera_x + RUUDUN_LEVEYS ||
-				fadetekstit[i].y < kamera_y || fadetekstit[i].y > kamera_y + RUUDUN_KORKEUS)
+			if (fadetekstit[i].x < kamera_x || fadetekstit[i].x > kamera_x + screen_width ||
+				fadetekstit[i].y < kamera_y || fadetekstit[i].y > kamera_y + screen_height)
 				fadetekstit[i].ajastin = 0;
 		}
 	}
@@ -1846,8 +1845,8 @@ int PK_Partikkelit_Tyhjenna(){
 }
 //PK_Particles_New
 void PK_Partikkeli_Uusi(int tyyppi, double x, double y, double a, double b, int aika, double paino, int vari){ //Create particles
-	if (x < kamera_x+RUUDUN_LEVEYS+10 && x > kamera_x-10 &&
-		y < kamera_y+RUUDUN_KORKEUS+10 && y > kamera_y-10){
+	if (x < kamera_x+screen_width+10 && x > kamera_x-10 &&
+		y < kamera_y+screen_height+10 && y > kamera_y-10){
 		if (partikkeli_index >= MAX_PARTIKKELEITA)
 			partikkeli_index = 0;
 
@@ -1870,12 +1869,12 @@ int	PK_Partikkelit_Piirra(){
 	int piirtoleveys, piirtokorkeus;
 
 	if (RAJAA_KARTANPIIRTOALUE){
-		piirtoleveys  = KARTANPIIRTO_LEVEYS;
-		piirtokorkeus = KARTANPIIRTO_KORKEUS;
+		piirtoleveys  = screen_width;
+		piirtokorkeus = screen_height;
 	}
 	else{
-		piirtoleveys  = RUUDUN_LEVEYS;
-		piirtokorkeus = RUUDUN_KORKEUS;
+		piirtoleveys  = screen_width;
+		piirtokorkeus = screen_height;
 	}
 
 	for (int i=0;i<MAX_PARTIKKELEITA;i++){
@@ -1943,8 +1942,8 @@ int PK_Taustapartikkelit_Tyhjenna(){
 		taustapartikkelit[i].anim = rand()%10;
 		taustapartikkelit[i].b = rand()%9+1;
 		taustapartikkelit[i].tyyppi = PARTIKKELI_EI_MIKAAN;
-		taustapartikkelit[i].x = rand()%KARTANPIIRTO_LEVEYS;
-		taustapartikkelit[i].y = rand()%KARTANPIIRTO_KORKEUS;
+		taustapartikkelit[i].x = rand()%screen_width;
+		taustapartikkelit[i].y = rand()%screen_height;
 		taustapartikkelit[i].paino = rand()%10;
 		taustapartikkelit[i].vari = 0;
 		i++;
@@ -2091,17 +2090,17 @@ int	PK_Taustapartikkelit(){
 				default : taustapartikkelit[i].tyyppi = PARTIKKELI_EI_MIKAAN;
 			}
 
-			if (taustapartikkelit[i].x  >  kamera_x + KARTANPIIRTO_LEVEYS)
-				taustapartikkelit[i].x  =  kamera_x + int(taustapartikkelit[i].x - kamera_x + KARTANPIIRTO_LEVEYS) % KARTANPIIRTO_LEVEYS;
+			if (taustapartikkelit[i].x  >  kamera_x + screen_width)
+				taustapartikkelit[i].x  =  kamera_x + int(taustapartikkelit[i].x - kamera_x + screen_width) % screen_width;
 
 			if (taustapartikkelit[i].x  <  kamera_x)
-				taustapartikkelit[i].x  =  kamera_x + KARTANPIIRTO_LEVEYS - int(kamera_x - taustapartikkelit[i].x) % KARTANPIIRTO_LEVEYS;
+				taustapartikkelit[i].x  =  kamera_x + screen_width - int(kamera_x - taustapartikkelit[i].x) % screen_width;
 
-			if (taustapartikkelit[i].y  >  kamera_y + KARTANPIIRTO_KORKEUS)
-				taustapartikkelit[i].y  =  kamera_y + int(taustapartikkelit[i].y - kamera_y + KARTANPIIRTO_KORKEUS) % KARTANPIIRTO_KORKEUS;
+			if (taustapartikkelit[i].y  >  kamera_y + screen_height)
+				taustapartikkelit[i].y  =  kamera_y + int(taustapartikkelit[i].y - kamera_y + screen_height) % screen_height;
 
 			if (taustapartikkelit[i].y  <  kamera_y)
-				taustapartikkelit[i].y  =  kamera_y + KARTANPIIRTO_KORKEUS - int(kamera_y - taustapartikkelit[i].y) % KARTANPIIRTO_KORKEUS;
+				taustapartikkelit[i].y  =  kamera_y + screen_height - int(kamera_y - taustapartikkelit[i].y) % screen_height;
 		}
 	}
 	return 0;
@@ -3047,9 +3046,9 @@ int PK_Piirra_Bonukset(){
 	int px = 0,
 		py = 0;
 
-	for (int x=0;x<RUUDUN_LEVEYS/32;x++)
+	for (int x=0;x<screen_width/32;x++)
 	{
-		for (int y=0;y<RUUDUN_KORKEUS/32;y++)
+		for (int y=0;y<screen_height/32;y++)
 		{
 			bonus = kartta->spritet[x+kamera_x/32+(y+kamera_y/32)*PK2KARTTA_KARTTA_LEVEYS];
 
@@ -3073,7 +3072,7 @@ void PK_Esineet_Alusta(){
 int PK_Esineet_Piirra(){
 	int x,y;
 
-	y = KARTANPIIRTO_KORKEUS-35;//36
+	y = screen_height-35;//36
 	x = item_paneeli_x + 35;//40
 
 	BYTE v1, v2;
@@ -4419,8 +4418,8 @@ int PK_Sprite_Liikuta(int i){
 
 													kamera_x = (int)spritet[pelaaja_index].x;
 													kamera_y = (int)spritet[pelaaja_index].y;
-													dkamera_x = kamera_x-KARTANPIIRTO_LEVEYS/2;
-													dkamera_y = kamera_y-KARTANPIIRTO_KORKEUS/2;
+													dkamera_x = kamera_x-screen_width/2;
+													dkamera_y = kamera_y-screen_height/2;
 													PisteDraw2_FadeIn(PD_FADE_NORMAL);
 													if (sprite.tyyppi->aanet[AANI_HYOKKAYS2] != -1)
 														PK_Soita_Aani_Menu(sprite.tyyppi->aanet[AANI_HYOKKAYS2], 100);
@@ -5131,19 +5130,21 @@ int PK_Alusta_Tilat(){
 
 			PK_Alusta_Fadetekstit();
 
-			if (KARTANPIIRTO_LEVEYS > RUUDUN_LEVEYS)
-				KARTANPIIRTO_LEVEYS = RUUDUN_LEVEYS;
+			/*
+			if (screen_width > screen_width)
+				screen_width = screen_width;
 
-			if (KARTANPIIRTO_KORKEUS > RUUDUN_KORKEUS)
-				KARTANPIIRTO_KORKEUS = RUUDUN_KORKEUS;
+			if (screen_height > screen_height)
+				screen_height = screen_height;
 
 			if (!RAJAA_KARTANPIIRTOALUE){
 
-				KARTANPIIRTO_LEVEYS = RUUDUN_LEVEYS;
-				KARTANPIIRTO_KORKEUS = RUUDUN_KORKEUS;
+				screen_width = screen_width;
+				screen_height = screen_height;
 			}
+			*/
 
-			PK2Kartta_Aseta_Ruudun_Mitat(KARTANPIIRTO_LEVEYS,KARTANPIIRTO_KORKEUS);
+			PK2Kartta_Aseta_Ruudun_Mitat(screen_width,screen_height); //TODO - call when screen change
 
 			kartta = new PK2Kartta();
 
@@ -5300,7 +5301,10 @@ int PK_Alusta_Tilat(){
 		// Start map
 		if (pelin_seuraava_tila == TILA_KARTTA){
 
-			PisteDraw2_SetXOffset(80);
+			if(settings.isWide)
+				PisteDraw2_SetXOffset(80);
+			else
+				PisteDraw2_SetXOffset(0);
 			PisteDraw2_ScreenFill(0);
 
 			if (!peli_kesken)
@@ -5384,7 +5388,10 @@ int PK_Alusta_Tilat(){
 		// Start menu
 		if (pelin_seuraava_tila == TILA_MENUT){
 
-			PisteDraw2_SetXOffset(80);
+			if (settings.isWide)
+				PisteDraw2_SetXOffset(80);
+			else
+				PisteDraw2_SetXOffset(0);
 			PK_Episodit_Hae();
 
 			if (!peli_kesken){
@@ -5396,9 +5403,9 @@ int PK_Alusta_Tilat(){
 			else{
 				int w, h;
 				PisteDraw2_Image_GetSize(kuva_tausta, w, h);
-				if( w != KARTANPIIRTO_LEVEYS ){
+				if( w != screen_width ){
 					PisteDraw2_Image_Delete(kuva_tausta);
-					kuva_tausta = PisteDraw2_Image_New(KARTANPIIRTO_LEVEYS ,KARTANPIIRTO_KORKEUS);
+					kuva_tausta = PisteDraw2_Image_New(screen_width ,screen_height);
 				}
 				PisteDraw2_Image_Snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
 				PK_Sumenna_Kuva(kuva_tausta, 640, 480, 110);
@@ -5418,7 +5425,7 @@ int PK_Alusta_Tilat(){
 
 			PisteDraw2_SetXOffset(0);
 			PisteDraw2_ScreenFill(0);
-			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_game_loading),RUUDUN_LEVEYS/2-82,RUUDUN_KORKEUS/2-9);
+			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_game_loading),screen_width/2-82,screen_height/2-9);
 
 			if (jaksot[jakso_indeksi_nyt].lapaisty)
 				uusinta = true;
@@ -5453,7 +5460,10 @@ int PK_Alusta_Tilat(){
 		// Start pontuation
 		if (pelin_seuraava_tila == TILA_PISTELASKU){
 
-			PisteDraw2_SetXOffset(80);
+			if (settings.isWide)
+				PisteDraw2_SetXOffset(80);
+			else
+				PisteDraw2_SetXOffset(0);
 			PisteDraw2_ScreenFill(0);
 
 			PisteDraw2_Image_Delete(kuva_tausta);
@@ -5517,7 +5527,10 @@ int PK_Alusta_Tilat(){
 		if (pelin_seuraava_tila == TILA_INTRO){
 			//PisteLog_Kirjoita("- Initializing intro screen\n");
 
-			PisteDraw2_SetXOffset(80);
+			if (settings.isWide)
+				PisteDraw2_SetXOffset(80);
+			else
+				PisteDraw2_SetXOffset(0);
 			PisteDraw2_ScreenFill(0);
 
 			//PisteLog_Kirjoita("  - Loading picture: gfx/intro.bmp\n");
@@ -5540,7 +5553,10 @@ int PK_Alusta_Tilat(){
 		// Start ending
 		if (pelin_seuraava_tila == TILA_LOPPU){
 
-			PisteDraw2_SetXOffset(80);
+			if (settings.isWide)
+				PisteDraw2_SetXOffset(80);
+			else
+				PisteDraw2_SetXOffset(0);
 			PisteDraw2_ScreenFill(0);
 			PisteDraw2_Image_Delete(kuva_tausta);
 			kuva_tausta = PisteDraw2_Image_Load("gfx/ending.bmp",true);
@@ -5571,10 +5587,10 @@ int PK_Spritet(){
 	for (i=0;i<MAX_SPRITEJA;i++) //If it is on screen
 	{
 		// Onko sprite l�hell� tapahtumien keskipistett�? Jos on, niin aktivoidaan.
-		if (spritet[i].x < kamera_x+640+320 &&//KARTANPIIRTO_LEVEYS+KARTANPIIRTO_LEVEYS/2 &&
-			spritet[i].x > kamera_x-320 &&//KARTANPIIRTO_LEVEYS/2 &&
-			spritet[i].y < kamera_y+480+240 &&//KARTANPIIRTO_KORKEUS+KARTANPIIRTO_KORKEUS/2 &&
-			spritet[i].y > kamera_y-240)//KARTANPIIRTO_KORKEUS/2)
+		if (spritet[i].x < kamera_x+640+320 &&//screen_width+screen_width/2 &&
+			spritet[i].x > kamera_x-320 &&//screen_width/2 &&
+			spritet[i].y < kamera_y+480+240 &&//screen_height+screen_height/2 &&
+			spritet[i].y > kamera_y-240)//screen_height/2)
 			spritet[i].aktiivinen = true;
 		else
 			spritet[i].aktiivinen = false;
@@ -5619,9 +5635,9 @@ int PK_Spritet_Piirra_Taustat(){
 
 				if (spritet[i].tyyppi->pallarx_kerroin != 0)
 				{
-					xl =  alku_x - kamera_x-KARTANPIIRTO_LEVEYS/2 - spritet[i].tyyppi->leveys/2;
+					xl =  alku_x - kamera_x-screen_width/2 - spritet[i].tyyppi->leveys/2;
 					xl /= spritet[i].tyyppi->pallarx_kerroin;
-					yl =  alku_y - kamera_y-KARTANPIIRTO_KORKEUS/2 - spritet[i].tyyppi->korkeus/2;
+					yl =  alku_y - kamera_y-screen_height/2 - spritet[i].tyyppi->korkeus/2;
 					yk = spritet[i].tyyppi->pallarx_kerroin;///1.5;
 					if (yk != 0)
 						yl /= yk;
@@ -5633,13 +5649,13 @@ int PK_Spritet_Piirra_Taustat(){
 
 				switch(spritet[i].tyyppi->AI[0])
 				{
-				case AI_TAUSTA_KUU					:	yl += KARTANPIIRTO_KORKEUS/3+50; break;
+				case AI_TAUSTA_KUU					:	yl += screen_height/3+50; break;
 				/*case AI_TAUSTA_LIIKKUU_VASEMMALLE	:	if (spritet[i].a == 0)
 															spritet[i].a = rand()%3;
 														spritet[i].alku_x -= spritet[i].a;
 														if (spritet[i].piilossa && spritet[i].alku_x < kamera_x)
 														{
-													  		  spritet[i].alku_x = kamera_x+RUUDUN_LEVEYS+spritet[i].tyyppi->leveys*2;
+													  		  spritet[i].alku_x = kamera_x+screen_width+spritet[i].tyyppi->leveys*2;
 															  spritet[i].a = rand()%3;
 														}
 														break;*/
@@ -5666,9 +5682,9 @@ int PK_Spritet_Piirra_Taustat(){
 				spritet[i].y = alku_y-yl;
 
 				//Tarkistetaanko onko sprite tai osa siit� kuvassa
-				if (spritet[i].x - spritet[i].tyyppi->leveys/2  < kamera_x+RUUDUN_LEVEYS &&
+				if (spritet[i].x - spritet[i].tyyppi->leveys/2  < kamera_x+screen_width &&
 					spritet[i].x + spritet[i].tyyppi->leveys/2  > kamera_x &&
-					spritet[i].y - spritet[i].tyyppi->korkeus/2 < kamera_y+RUUDUN_KORKEUS &&
+					spritet[i].y - spritet[i].tyyppi->korkeus/2 < kamera_y+screen_height &&
 					spritet[i].y + spritet[i].tyyppi->korkeus/2 > kamera_y)
 				{
 					spritet[i].Piirra(kamera_x,kamera_y);
@@ -5703,9 +5719,9 @@ int PK_Spritet_Piirra(){
 		if (!spritet[i].piilota && spritet[i].tyyppi->tyyppi != TYYPPI_TAUSTA)
 		{
 			//Tarkistetaanko onko sprite tai osa siit� kuvassa
-			if (spritet[i].x - spritet[i].tyyppi->leveys/2  < kamera_x+RUUDUN_LEVEYS &&
+			if (spritet[i].x - spritet[i].tyyppi->leveys/2  < kamera_x+screen_width &&
 				spritet[i].x + spritet[i].tyyppi->leveys/2  > kamera_x &&
-				spritet[i].y - spritet[i].tyyppi->korkeus/2 < kamera_y+RUUDUN_KORKEUS &&
+				spritet[i].y - spritet[i].tyyppi->korkeus/2 < kamera_y+screen_height &&
 				spritet[i].y + spritet[i].tyyppi->korkeus/2 > kamera_y)
 			{
 			if (spritet[i].isku > 0 && spritet[i].tyyppi->tyyppi != TYYPPI_BONUS && spritet[i].energia < 1)
@@ -5748,14 +5764,14 @@ int PK_Spritet_Piirra(){
 int PK_Kamera(){
 
 
-	kamera_x = (int)spritet[pelaaja_index].x-KARTANPIIRTO_LEVEYS/2;
-	kamera_y = (int)spritet[pelaaja_index].y-KARTANPIIRTO_KORKEUS/2;
+	kamera_x = (int)spritet[pelaaja_index].x-screen_width/2;
+	kamera_y = (int)spritet[pelaaja_index].y-screen_height/2;
 
 	/*
 	if (!PisteInput_Hiiri_Vasen())
 	{
-		kamera_x = (int)spritet[pelaaja_index].x-KARTANPIIRTO_LEVEYS/2;
-		kamera_y = (int)spritet[pelaaja_index].y-KARTANPIIRTO_KORKEUS/2;
+		kamera_x = (int)spritet[pelaaja_index].x-screen_width/2;
+		kamera_y = (int)spritet[pelaaja_index].y-screen_height/2;
 	}
 	else
 	{
@@ -5809,11 +5825,11 @@ int PK_Kamera(){
 	if (kamera_y < 0)
 		kamera_y = 0;
 
-	if (kamera_x > int(PK2KARTTA_KARTTA_LEVEYS-KARTANPIIRTO_LEVEYS/32)*32)
-		kamera_x = int(PK2KARTTA_KARTTA_LEVEYS-KARTANPIIRTO_LEVEYS/32)*32;
+	if (kamera_x > int(PK2KARTTA_KARTTA_LEVEYS-screen_width/32)*32)
+		kamera_x = int(PK2KARTTA_KARTTA_LEVEYS-screen_width/32)*32;
 
-	if (kamera_y > int(PK2KARTTA_KARTTA_KORKEUS-KARTANPIIRTO_KORKEUS/32)*32)
-		kamera_y = int(PK2KARTTA_KARTTA_KORKEUS-KARTANPIIRTO_KORKEUS/32)*32;
+	if (kamera_y > int(PK2KARTTA_KARTTA_KORKEUS-screen_height/32)*32)
+		kamera_y = int(PK2KARTTA_KARTTA_KORKEUS-screen_height/32)*32;
 
 	return 0;
 }
@@ -5825,7 +5841,10 @@ int PK_Piirra_Info(){
 	int vali, fy = 35;
 	char lukua[20];
 
-	PisteDraw2_SetXOffset(80);
+	if (settings.isWide)
+		PisteDraw2_SetXOffset(80);
+	else
+		PisteDraw2_SetXOffset(0);
 
 	vali = PisteDraw2_Font_Write(fontti1,"spriteja: ",10,fy);
 	itoa(info_spriteja,lukua,10);
@@ -5906,7 +5925,7 @@ int PK_Piirra_Tausta(){
 		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0 - pallarx,0);
 		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640 - pallarx,0);
 
-		if (KARTANPIIRTO_LEVEYS > 640)
+		if (screen_width > 640)
 			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,1280 - pallarx,0);
 	}
 
@@ -5915,7 +5934,7 @@ int PK_Piirra_Tausta(){
 		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,0 - pallary);
 		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,480 - pallary);
 
-		if (KARTANPIIRTO_LEVEYS > 640)
+		if (screen_width > 640)
 		{
 			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640,0 - pallary);
 			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640,480 - pallary);
@@ -5929,7 +5948,7 @@ int PK_Piirra_Tausta(){
 		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0 - pallarx,	480-pallary);
 		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640 - pallarx,480-pallary);
 
-		if (KARTANPIIRTO_LEVEYS > 640)
+		if (screen_width > 640)
 		{
 			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,1280 - pallarx,0-pallary);
 			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,1280 - pallarx,480-pallary);
@@ -5971,10 +5990,10 @@ int PK_Piirra_Alapaneeli(){
 		item_paneeli_x--;
 
 	if (item_paneeli_x > -215)
-		PisteDraw2_Image_CutClip(kuva_peli,item_paneeli_x,KARTANPIIRTO_KORKEUS-60,
+		PisteDraw2_Image_CutClip(kuva_peli,item_paneeli_x,screen_height-60,
 		                        1,216,211,266);
 	if (item_paneeli_x > 5)
-			PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_game_items),15,KARTANPIIRTO_KORKEUS-65);
+			PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_game_items),15,screen_height-65);
 
 
 	char luku[15];
@@ -5991,8 +6010,8 @@ int PK_Piirra_Alapaneeli(){
 			sek = aika%60;
 
 
-		x = RUUDUN_LEVEYS / 2 - 546 / 2 + 342;
-		y = KARTANPIIRTO_KORKEUS-39;
+		x = screen_width / 2 - 546 / 2 + 342;
+		y = screen_height-39;
 		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_game_time),x,y-20);
 
 
@@ -6016,8 +6035,8 @@ int PK_Piirra_Alapaneeli(){
 	/////////////////
 	if (avaimia > 0)
 	{
-		x = RUUDUN_LEVEYS / 2 - 546 / 2 + 483;
-		y = KARTANPIIRTO_KORKEUS-39;
+		x = screen_width / 2 - 546 / 2 + 483;
+		y = screen_height-39;
 		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_game_keys),x,y-20);
 
 		itoa(avaimia,luku,10);
@@ -6050,17 +6069,17 @@ int PK_Piirra_Peli_Ylaosa(){
 	if (spritet[pelaaja_index].ammus2 != -1)
 	{
 		//itoa(ammuksia2,luku,10);
-		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_game_attack1), KARTANPIIRTO_LEVEYS-170,10);
-		protot[spritet[pelaaja_index].ammus2].Piirra(KARTANPIIRTO_LEVEYS-170,20,0);
-		//PisteDraw2_Font_Write(fontti2,luku,RUUDUN_LEVEYS-35,50);
+		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_game_attack1), screen_width-170,10);
+		protot[spritet[pelaaja_index].ammus2].Piirra(screen_width-170,20,0);
+		//PisteDraw2_Font_Write(fontti2,luku,screen_width-35,50);
 	}
 
 	if (spritet[pelaaja_index].ammus1 != -1)
 	{
 		//itoa(ammuksia1,luku,10);
-		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_game_attack2), KARTANPIIRTO_LEVEYS-90,25);
-		protot[spritet[pelaaja_index].ammus1].Piirra(KARTANPIIRTO_LEVEYS-90,35,0);
-		//PisteDraw2_Font_Write(fontti2,luku,RUUDUN_LEVEYS-35,10);
+		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_game_attack2), screen_width-90,25);
+		protot[spritet[pelaaja_index].ammus1].Piirra(screen_width-90,35,0);
+		//PisteDraw2_Font_Write(fontti2,luku,screen_width-35,10);
 	}
 
 
@@ -6068,7 +6087,7 @@ int PK_Piirra_Peli_Ylaosa(){
 	{
 		int ilm_pituus = strlen(ilmoitus) * 8 + 8; // 300
 
-		RECT alue = {RUUDUN_LEVEYS/2-(ilm_pituus/2),60,RUUDUN_LEVEYS/2+(ilm_pituus/2),60+20};
+		RECT alue = {screen_width/2-(ilm_pituus/2),60,screen_width/2+(ilm_pituus/2),60+20};
 
 		if (ilmoitus_ajastin < 20)
 		{
@@ -6151,21 +6170,21 @@ int PK_Piirra_Peli(){
 
 	//Draw pause
 	if (paused)
-		PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_game_paused),KARTANPIIRTO_LEVEYS/2-82,KARTANPIIRTO_KORKEUS/2-9);
+		PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_game_paused),screen_width/2-82,screen_height/2-9);
 
 	////////////////////////
 	// piirr� jakso l�p�isty
 	////////////////////////
 	if (jakso_lapaisty)
 	{
-		PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(txt_game_clear),fontti2,KARTANPIIRTO_LEVEYS/2-120,KARTANPIIRTO_KORKEUS/2-9);
+		PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(txt_game_clear),fontti2,screen_width/2-120,screen_height/2-9);
 
 		/*
 		if (aikaraja)
 		{
-			vali = PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(txt_game_timebonus),fontti2,KARTANPIIRTO_LEVEYS/2-120,KARTANPIIRTO_KORKEUS/2+20);
+			vali = PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(txt_game_timebonus),fontti2,screen_width/2-120,screen_height/2+20);
 			itoa(fake_pisteet,luku,10);
-			PK_Piirra_LaineTeksti(luku,fontti2,KARTANPIIRTO_LEVEYS/2-120+vali,KARTANPIIRTO_KORKEUS/2+20);
+			PK_Piirra_LaineTeksti(luku,fontti2,screen_width/2-120+vali,screen_height/2+20);
 		}*/
 
 	}
@@ -6174,13 +6193,13 @@ int PK_Piirra_Peli(){
 		{
 			if (spritet[pelaaja_index].energia < 1)
 			{
-				PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(txt_game_ko),fontti2,KARTANPIIRTO_LEVEYS/2-90,KARTANPIIRTO_KORKEUS/2-9-10);
+				PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(txt_game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
 			}
 			else
 				if (aika < 1 && aikaraja)
-					PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(txt_game_timeout),fontti2,KARTANPIIRTO_LEVEYS/2-67,KARTANPIIRTO_KORKEUS/2-9-10);
+					PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(txt_game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
 
-			PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(txt_game_tryagain),fontti2,KARTANPIIRTO_LEVEYS/2-75,KARTANPIIRTO_KORKEUS/2-9+10);
+			PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(txt_game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
 		}
 
 
@@ -6753,9 +6772,11 @@ int PK_Piirra_Menut_Grafiikka(){
 		if(wasFit != settings.isFit) // If fit changes
 			PisteDraw2_FitScreen(settings.isFit);
 
-		if (wasWide != settings.isWide)
-			PisteDraw2_ChangeResolution(settings.isWide? 800 : 640, 480);
-
+		if (wasWide != settings.isWide) {
+			screen_width = settings.isWide ? 800 : 640;
+			PK2Kartta_Aseta_Ruudun_Mitat(screen_width, screen_height);
+			PisteDraw2_ChangeResolution(screen_width,screen_height);
+		}
 
 		if (PK_Piirra_Menut_Valinta("back",100,360)){
 			moreOptions = false;
@@ -8247,17 +8268,17 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	if (Piste_Init(RUUDUN_LEVEYS, RUUDUN_KORKEUS, GAME_NAME) < 0) {
+	//Game works in ../res
+	PisteUtils_Setcwd();
+	chdir("../res");
+	strcpy(tyohakemisto,".");
+	
+	PK_Asetukset_Lataa("data/settings.ini");
+
+	if (Piste_Init(screen_width, screen_height, GAME_NAME) < 0) {
 		printf("PK2    - Failed to init PisteEngine.\n");
 		return 0;
 	}
-	//Piste_SetFPS(60);
-
-	//Game works in ../res
-	chdir("../res");
-	strcpy(tyohakemisto,".");
-
-	PK_Asetukset_Lataa("data/settings.ini");
 
 	tekstit = new PisteLanguage();
 

@@ -8,6 +8,7 @@
 
 #include "platform.h"
 
+int PisteUtils_Setcwd();
 void  PisteUtils_Lower(char* string);
 void  PisteUtils_RemoveSpace(char* string);
 char *PisteUtils_FindImage(char *filename);
