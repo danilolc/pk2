@@ -38,42 +38,57 @@ using namespace std;
 //Constants
 //##################################################
 
-const BYTE MENU_EI         = 100;
-const BYTE	MENU_KARTTA    = 0;
-const BYTE	MENU_PALIKAT   = 1;
-const BYTE	MENU_INFO      = 2;
-const BYTE	MENU_SPRITET   = 3;
-const BYTE	MENU_TIEDOSTOT = 4;
-const BYTE	MENU_SAVE      = 5;
-const BYTE	MENU_HELP      = 6;
-const BYTE	MENU_EXIT      = 7;
-const BYTE	MENU_TOOLS     = 8;
-const BYTE	MENU_LOKI      = 9;
+enum MENU
+{
+	MENU_KARTTA;
+	MENU_PALIKAT;
+	MENU_INFO;
+	MENU_SPRITET;
+	MENU_TIEDOSTOT;
+	MENU_SAVE;
+	MENU_HELP;
+	MENU_EXIT;
+	MENU_TOOLS;
+	MENU_LOKI;
+	MENU_EI = 100;
+}
 
-const BYTE N_OF_MENUS = 10;
+const int N_OF_MENUS = 10;
 
-const BYTE EDIT_MAP    = 0;
-const BYTE EDIT_MENU   = 1;
-const BYTE EDIT_SPRITE = 2;
+enum EDIT
+{
+	EDIT_MAP;
+	EDIT_MENU;
+	EDIT_SPRITE;
+}
 
 const int MAX_DIR_FILES = 1000;
 
-const int FILE_DIR = 1;
-const int FILE_MAP = 2;
-const int FILE_BMP = 3;
-const int FILE_SPR = 4;
-const int FILE_MUS = 5;
+enum FILE
+{
+	FILE_DIR;
+	FILE_MAP;
+	FILE_BMP;
+	FILE_SPR;
+	FILE_MUS;
+}
 
-const int EDIT_BACKGROUND      = 0;
-const int EDIT_WALLS           = 1;
-const int EDIT_JUST_BACKGROUND = 2;
+enum EDIT
+{
+	EDIT_BACKGROUND;
+	EDIT_WALLS;
+	EDIT_JUST_BACKGROUND;
+}
 
 const int MAX_SPRITES = 600;
 
-const int KENTTA_FILE     = 1;
-const int KENTTA_NIMI     = 2;
-const int KENTTA_TEKIJA   = 3;
-const int KENTTA_MUSIIKKI = 4;
+enum KENTTA
+{
+	KENTTA_FILE;
+	KENTTA_NIMI;
+	KENTTA_TEKIJA;
+	KENTTA_MUSIIKKI;
+}
 
 const int MAX_LOG_LABEL = 55;
 const BYTE LOG_INFO     = 1;

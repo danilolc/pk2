@@ -65,12 +65,12 @@ char *PisteUtils_FindImage(char *filename){
 	if(base == NULL) base = ret;
 
 	strcpy(ext, ".png");
-	
+
 	if(stat(ret, &st) == 0)
 		return ret;
 	else {
 		char *c = base;
-	
+
 		while(c != ext) *c++ = toupper(*c);
 
 		if(stat(ret, &st) == 0)
