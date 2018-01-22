@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.4.1)
 
 add_definitions("-Wno-write-strings")
 
-include_directories("../../engine ../../src")
+include_directories("../../engine")
+include_directories("../../src")
+include_directories("../../../../../../opt/android-sdk/ndk-bundle/sources/cxx-stl/gnu-libstdc++/4.9/include/")
+include_directories("../sdl/include")
 
 set(
         ENGINE_SRC
@@ -27,10 +30,10 @@ add_library(
              SHARED
              ${ENGINE_SRC})
 
-#add_library(
-#             sdl2
-#             SHARED
-#             src/main/cpp/native-lib.cpp)
+add_library(
+             sdl2
+             STATIC
+             src/main/cpp/native-lib.cpp)
 
 add_library(
              pk2

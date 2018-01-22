@@ -39,6 +39,7 @@
 #include "PisteEngine.h"
 #include "map.h"
 #include "sprite.h"
+#include "../engine/types.h"
 
 using namespace std;
 
