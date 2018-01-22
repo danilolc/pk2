@@ -30,8 +30,10 @@
 #include <cstdlib> //rand
 #ifdef _WIN32
 	#include <direct.h>
-#else
+#elif __linux__
 	#include <unistd.h> //getcwd chdir
+#elif __ANDROID__
+
 #endif
 
 #include "PisteEngine.h"

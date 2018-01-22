@@ -41,15 +41,6 @@ struct PK2KARTTA{ // Vanha versio 0.1
 	BYTE		extrat [640*480];
 };
 
-bool PK2Kartta_Onko_File(char *filename){
-	if(PisteUtils_FindImage(filename) == NULL){
-		printf("PK2MAP - asked about non-existing file: %s\n", filename);
-		PisteUtils_Lower(filename);
-		return PisteUtils_FindImage(filename) != NULL;
-	}
-	return true;
-}
-
 void PK2Kartta_Cos_Sin(double *cost, double *sint){
 	kartta_cos_table = cost;
 	kartta_sin_table = sint;
@@ -1095,11 +1086,11 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 
 	strcat(file,filename);
 
-	if (!PK2Kartta_Onko_File(file)){
+	if (!PisteUtils_Find(file)){
 		strcpy(file,PK2Kartta::pk2_hakemisto);
 		strcat(file,"gfx/scenery/");
 		strcat(file,filename);
-		if (!PK2Kartta_Onko_File(file)) return 1;
+		if (!PisteUtils_Find(file)) return 1;
 	}
 
 	i = PisteDraw2_Image_Load(file,true);
@@ -1138,17 +1129,13 @@ int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
 	char file[_MAX_PATH];
 	strcpy(file,"");
 	strcpy(file,polku);
-
-	for (i=0 ; filename[i]!='\0' ; i++)
-		filename[i]=tolower(filename[i]); //TODO PisteUtils_Lower
-
 	strcat(file,filename);
 
-	if (!PK2Kartta_Onko_File(file)){
+	if (!PisteUtils_Find(file)){
 		strcpy(file,PK2Kartta::pk2_hakemisto);
 		strcat(file,"gfx/tiles/");
 		strcat(file,filename);
-		if (!PK2Kartta_Onko_File(file))
+		if (!PisteUtils_Find(file))
 			return 1;
 	}
 

@@ -11,10 +11,11 @@
 int PisteUtils_Setcwd();
 void  PisteUtils_Lower(char* string);
 void  PisteUtils_RemoveSpace(char* string);
-char *PisteUtils_FindImage(char *filename);
+bool  PisteUtils_Find(char *filename);
 int   PisteUtils_CreateDir(char *directory);
 
 //type:
+// ""  - all files and directories
 // "/" - directory
 // ".exe" - *.exe
 int  PisteUtils_Scandir(const char* type, char* dir, char (*list)[_MAX_PATH], int length);

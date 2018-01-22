@@ -13,10 +13,12 @@
 	#include <io.h>
 	#include "winlite.h"
 	#include <direct.h>
+	#define SEP "\\"
 #else
 	#include <dirent.h>
 	#include <unistd.h>
 	#include <limits.h>
+	#define SEP "/"
 #endif
 
 #include "PisteUtils.h"
@@ -41,9 +43,8 @@ int PisteUtils_Setcwd() {
 }
 
 void PisteUtils_Lower(char* string){
-	int i;
-	for(i=0; string[i]!='\0'; i++)
-		tolower(string[i]);
+	for(int i = 0; string[i]!='\0'; i++)
+		string[i] = tolower(string[i]);
 }
 
 void PisteUtils_RemoveSpace(char* string){
@@ -54,38 +55,44 @@ void PisteUtils_RemoveSpace(char* string){
 	}
 }
 
-char *PisteUtils_FindImage(char *filename){
-	struct stat st;
-	char *ret = strdup(filename);
+bool PisteUtils_Find(char *filename){
 
-	char *ext = strrchr(ret, '.');
-	if(ext == NULL) return NULL;
+	//printf("\n\nFinding %s\n",filename);
 
-	char *base = strrchr(ret, '/');
-	if(base == NULL) base = ret;
+	char dir[_MAX_PATH];
+	char file[_MAX_PATH];
 
-	strcpy(ext, ".png");
+	int find = string(filename).find_last_of("/\\");
+	strcpy(dir, filename);
+	dir[find+1] = '\0';
 
-	if(stat(ret, &st) == 0)
-		return ret;
-	else {
-		char *c = base;
+	strcpy(file, &filename[find+1]);
 
-		while(c != ext) *c++ = toupper(*c);
+	//printf("\nDir %s, File %s\n",dir, file);
 
-		if(stat(ret, &st) == 0)
-			return ret;
-		else{
-			strcpy(ext, ".bmp");
-			if(stat(ret, &st) == 0)
-				return ret;
+	char list[128][_MAX_PATH];
+	char list_lower[128][_MAX_PATH];
+
+	int noffiles = PisteUtils_Scandir("", dir, list, 60);
+
+	memcpy(list_lower, list, noffiles*_MAX_PATH);
+
+	for(int i = 0; i < noffiles; i++)
+		PisteUtils_Lower(list_lower[i]);
+
+	PisteUtils_Lower(file);
+
+	for(int i = 0; i < noffiles; i++){
+		//printf("Is %s, %s?\n",list_lower[i],list[i]);
+		if(strcmp(list_lower[i], file) == 0){
+			strcpy(file, list[i]);
+			strcpy(filename, dir);
+			strcat(filename, file);
+			//printf("GOOD!!\n");
+			return true;
 		}
 	}
-	return NULL;
-}
-
-bool PisteUtils_Search_File(char *filename){
-	//TODO
+	//printf("Not good.\n");
 	return false;
 }
 
@@ -111,10 +118,12 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[_MAX_PATH], int
 
 	int i = 0;
 	char buffer[260];
-	if (type[0] != '/')
-		_snprintf(buffer, sizeof(buffer), "%s/*%s", dir, type);
-	else
+	if (type[0] == '/') //TODO in Windows
 		_snprintf(buffer, sizeof(buffer), "%s/*", dir, type);
+	else if (type[0] == '\0')
+		_snprintf(buffer, sizeof(buffer), "%s/*", dir, type);
+	else
+		_snprintf(buffer, sizeof(buffer), "%s/*%s", dir, type);
 
 	if((hFile = _findfirst(buffer, &map_file )) == -1L )
        return 1;
@@ -153,6 +162,10 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[_MAX_PATH], int
 		strcpy(ext,namelist[i]->d_name);
 		getext(ext);
 		if(type[0] == '/' && namelist[i]->d_type == DT_DIR && i < length){
+			strcpy(list[files], namelist[i]->d_name);
+			files++;
+		}
+		else if(type[0] == '\0'){
 			strcpy(list[files], namelist[i]->d_name);
 			files++;
 		}
