@@ -43,7 +43,7 @@
 using namespace std;
 
 #define GAME_NAME   "Pekka Kana 2"
-#define PK2_VERSION "r2"
+#define PK2_VERSION "r3"
 
 #ifndef _WIN32
 void itoa(int n, char s[], int radix){
