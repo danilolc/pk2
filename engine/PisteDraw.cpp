@@ -319,7 +319,7 @@ BYTE PisteDraw2_BlendColors(BYTE color, BYTE colBack, int alpha){
 	result += colBack%32;
 	if(result>31) result = 31;
 
-	return result;//+32*col
+	return (BYTE)result;//+32*col
 }
 
 int PisteDraw2_Font_Create(int image, int x, int y, int char_w, int char_h, int count){

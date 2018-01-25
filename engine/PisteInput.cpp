@@ -11,6 +11,7 @@
 #include <Windows.h>
 #endif
 #include <cstdio>
+#include <cstring>
 
 #define MOUSE_SPEED 20
 

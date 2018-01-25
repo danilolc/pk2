@@ -73,5 +73,5 @@ target_link_libraries( pk2
                        smpeg2
                        SDL2
                        SDL2_mixer
-                       SDL2_imageeee
+                       SDL2_image
                        ${log-lib})

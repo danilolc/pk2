@@ -19,6 +19,7 @@ using namespace std;
 	#define _MAX_PATH PATH_MAX
 	#include <unistd.h>
 	#include <limits.h>
+    #include <cstdlib>
 #endif
 
 SDL_Event event;

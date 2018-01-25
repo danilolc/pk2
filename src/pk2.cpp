@@ -32,8 +32,9 @@
 	#include <direct.h>
 #elif __linux__
 	#include <unistd.h> //getcwd chdir
-#elif __ANDROID__
-
+#endif
+#ifdef __ANDROID__
+	#define gcvt(...) 0; //TODO - find gcvt()
 #endif
 
 #include "PisteEngine.h"
@@ -6262,7 +6263,12 @@ int PK_Piirra_Menu_Nelio(int vasen, int yla, int oikea, int ala, BYTE pvari){
 	return 0;
 }
 
-bool PK_Piirra_Menut_Valinta(char *teksti, int x, int y){
+bool PK_Draw_Menu_Text(bool active, char *teksti, int x, int y){
+	if(!active){
+		PK_Piirra_LaineTeksti_Hidas(teksti, fontti2, x, y);
+		return false;
+	}
+
 	int pituus = strlen(teksti)*15;
 
 	if ((hiiri_x > x && hiiri_x < x+pituus && hiiri_y > y && hiiri_y < y+15) ||
@@ -6285,21 +6291,26 @@ bool PK_Piirra_Menut_Valinta(char *teksti, int x, int y){
 	}
 	else
 		PK_Piirra_LaineTeksti_Hidas(teksti, fontti2, x, y);
-		//PisteDraw2_Font_Write(fontti2,teksti,x,y);
 
 	menu_valinta_id++;
 
 	return false;
 }
 
-int PK_Piirra_Menut_Valintalaatikko(int x, int y, bool muuttuja){
-	if (!muuttuja)
-		PisteDraw2_Image_CutClip(kuva_peli,x,y,473,124,473+31,124+31);
-	else
-		PisteDraw2_Image_CutClip(kuva_peli,x,y,504,124,504+31,124+31);
+int PK_Draw_GfxMenu_Box(int x, int y, bool muuttuja, bool active){
+	PD_RECT img_src, img_dst = {x,y,0,0};
 
-	if ((hiiri_x > x && hiiri_x < x+30 && hiiri_y > y && hiiri_y < y+31))/* ||
-		(menu_valittu_id == menu_valinta_id))*/
+	if(muuttuja) img_src = {504,124,31,31};
+	else img_src = {473,124,31,31};
+
+	if(active){
+		PisteDraw2_Image_CutClip(kuva_peli,img_src,img_dst);
+	} else{
+		PisteDraw2_Image_CutClipTransparent(kuva_peli,img_src,img_dst,50);
+		return false;
+	}
+
+	if (hiiri_x > x && hiiri_x < x+30 && hiiri_y > y && hiiri_y < y+31)
 	{
 		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
 			&& key_delay == 0)
@@ -6309,8 +6320,6 @@ int PK_Piirra_Menut_Valintalaatikko(int x, int y, bool muuttuja){
 			return true;
 		}
 	}
-
-	//menu_valinta_id++;
 
 	return false;
 }
@@ -6367,7 +6376,7 @@ int PK_Piirra_Menut_PaaValikko(){
 
 	if (peli_kesken)
 	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_continue),180,my))
+		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_continue),180,my))
 		{
 			if ((!peli_ohi && !jakso_lapaisty) || lopetusajastin > 1)
 				pelin_seuraava_tila = TILA_PELI;
@@ -6378,7 +6387,7 @@ int PK_Piirra_Menut_PaaValikko(){
 		my += 20;
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_new_game),180,my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_new_game),180,my))
 	{
 		nimiedit = true;
 		menu_nimi_index = strlen(pelaajan_nimi);//   0;
@@ -6390,44 +6399,44 @@ int PK_Piirra_Menut_PaaValikko(){
 
 	if (peli_kesken)
 	{
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_save_game),180,my))
+		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_save_game),180,my))
 		{
 			menu_nyt = MENU_TALLENNA;
 		}
 		my += 20;
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_load_game),180,my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_load_game),180,my))
 	{
 		menu_nyt = MENU_LATAA;
 	}
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta("load language",180,my))
+	if (PK_Draw_Menu_Text(true,"load language",180,my))
 	{
 		menu_nyt = MENU_LANGUAGE;
 	}
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_controls),180,my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_controls),180,my))
 	{
 		menu_nyt = MENU_KONTROLLIT;
 	}
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_graphics),180,my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_graphics),180,my))
 	{
 		menu_nyt = MENU_GRAFIIKKA;
 	}
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_sounds),180,my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_sounds),180,my))
 	{
 		menu_nyt = MENU_AANET;
 	}
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_exit),180,my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_exit),180,my))
 		PK_Quit();
 	my += 20;
 
@@ -6532,7 +6541,7 @@ int PK_Piirra_Menut_Nimi(){
 	}
 
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_playermenu_continue),180,300)) {
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_playermenu_continue),180,300)) {
 		menu_nyt = MENU_EPISODIT;
 		menu_nimi_index = 0;
 		nimiedit = false;
@@ -6546,12 +6555,12 @@ int PK_Piirra_Menut_Nimi(){
 		}
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_playermenu_clear),340,300)) {
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_playermenu_clear),340,300)) {
 		memset(pelaajan_nimi,'\0',sizeof(pelaajan_nimi));
 		menu_nimi_index = 0;
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_exit),180,400)) {
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_exit),180,400)) {
 		menu_nyt = MENU_PAAVALIKKO;
 		menu_nimi_index = 0;
 		nimiedit = false;
@@ -6579,7 +6588,7 @@ int PK_Piirra_Menut_Lataa(){
 
 		strcat(tpaikka,tallennukset[i].nimi);
 
-		if (PK_Piirra_Menut_Valinta(tpaikka,100,150+my))
+		if (PK_Draw_Menu_Text(true,tpaikka,100,150+my))
 			PK_Load_Records(i);
 
 		if (strcmp(tallennukset[i].episodi," ")!=0) {
@@ -6597,7 +6606,7 @@ int PK_Piirra_Menut_Lataa(){
 
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_return),180,400))
 		menu_nyt = MENU_PAAVALIKKO;
 
 	return 0;
@@ -6623,7 +6632,7 @@ int PK_Piirra_Menut_Tallenna(){
 
 		strcat(tpaikka,tallennukset[i].nimi);
 
-		if (PK_Piirra_Menut_Valinta(tpaikka,100,150+my))
+		if (PK_Draw_Menu_Text(true,tpaikka,100,150+my))
 			PK_Save_Records(i);
 
 		if (strcmp(tallennukset[i].episodi," ")!=0)
@@ -6642,7 +6651,7 @@ int PK_Piirra_Menut_Tallenna(){
 
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_return),180,400))
 		menu_nyt = MENU_PAAVALIKKO;
 
 	return 0;
@@ -6664,59 +6673,60 @@ int PK_Piirra_Menut_Grafiikka(){
 		wasWide = settings.isWide;
 
 		if (settings.isFullScreen){
-			if (PK_Piirra_Menut_Valinta("fullscreen mode is on",180,my)){
+			if (PK_Draw_Menu_Text(true,"fullscreen mode is on",180,my)){
 				settings.isFullScreen = false;
 			}
 		} else{
-			if (PK_Piirra_Menut_Valinta("fullscreen mode is off",180,my)){
+			if (PK_Draw_Menu_Text(true,"fullscreen mode is off",180,my)){
 				settings.isFullScreen = true;
 			}
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.isFullScreen)) {
+		if (PK_Draw_GfxMenu_Box(100, my, settings.isFullScreen, true)) {
 			settings.isFullScreen = !settings.isFullScreen;
 		}
 		my += 30;
 
 		if (settings.isFiltered){
-			if (PK_Piirra_Menut_Valinta("bilinear filter is on",180,my)){
+			if (PK_Draw_Menu_Text(true,"bilinear filter is on",180,my)){
 				settings.isFiltered = false;
 			}
 		} else{
-			if (PK_Piirra_Menut_Valinta("bilinear filter is off",180,my)){
+			if (PK_Draw_Menu_Text(true,"bilinear filter is off",180,my)){
 				settings.isFiltered = true;
 			}
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.isFiltered)) {
+		if (PK_Draw_GfxMenu_Box(100, my, settings.isFiltered, true)) {
 			settings.isFiltered = !settings.isFiltered;
 		}
 		my += 30;
 
 		if (settings.isFit){
-			if (PK_Piirra_Menut_Valinta("screen fit is on",180,my)){
+			if (PK_Draw_Menu_Text(true,"screen fit is on",180,my)){
 				settings.isFit = false;
 			}
 		} else{
-			if (PK_Piirra_Menut_Valinta("screen fit is off",180,my)){
+			if (PK_Draw_Menu_Text(true,"screen fit is off",180,my)){
 				settings.isFit = true;
 			}
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.isFit)) {
+		if (PK_Draw_GfxMenu_Box(100, my, settings.isFit, true)) {
 			settings.isFit = !settings.isFit;
 		}
 		my += 30;
 
+		bool res_active = false;
 
 		if (settings.isWide) {
-			if (PK_Piirra_Menut_Valinta("resolution 800x480", 180, my)) {
+			if (PK_Draw_Menu_Text(res_active,"resolution 800x480", 180, my)) {
 				settings.isWide = false;
 			}
 		}
 		else {
-			if (PK_Piirra_Menut_Valinta("resolution 640x480", 180, my)) {
+			if (PK_Draw_Menu_Text(res_active,"resolution 640x480", 180, my)) {
 				settings.isWide = true;
 			}
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.isWide)) {
+		if (PK_Draw_GfxMenu_Box(100, my, settings.isWide, res_active)) {
 			settings.isWide = !settings.isWide;
 		}
 		my += 30;
@@ -6740,7 +6750,7 @@ int PK_Piirra_Menut_Grafiikka(){
 			PisteDraw2_ChangeResolution(screen_width,screen_height);
 		}
 
-		if (PK_Piirra_Menut_Valinta("back",100,360)){
+		if (PK_Draw_Menu_Text(true,"back",100,360)){
 			moreOptions = false;
 			menu_valittu_id = 0; //Set menu cursor to 0
 		}
@@ -6749,91 +6759,91 @@ int PK_Piirra_Menut_Grafiikka(){
 	else {
 
 		if (settings.lapinakyvat_objektit){
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tfx_on),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_tfx_on),180,my))
 				settings.lapinakyvat_objektit = false;
 		} else{
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tfx_off),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_tfx_off),180,my))
 				settings.lapinakyvat_objektit = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.lapinakyvat_objektit)) {
+		if (PK_Draw_GfxMenu_Box(100, my, settings.lapinakyvat_objektit, true)) {
 			settings.lapinakyvat_objektit = !settings.lapinakyvat_objektit;
 		}
 		my += 30;
 
 
 		if (settings.lapinakyvat_menutekstit){
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tmenus_on),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_tmenus_on),180,my))
 				settings.lapinakyvat_menutekstit = false;
 		} else{
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_tmenus_off),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_tmenus_off),180,my))
 				settings.lapinakyvat_menutekstit = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.lapinakyvat_menutekstit)) {
+		if (PK_Draw_GfxMenu_Box(100, my, settings.lapinakyvat_menutekstit, true)) {
 			settings.lapinakyvat_menutekstit = !settings.lapinakyvat_menutekstit;
 		}
 		my += 30;
 
 
 		if (settings.nayta_tavarat){
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_items_on),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_items_on),180,my))
 				settings.nayta_tavarat = false;
 		} else{
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_items_off),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_items_off),180,my))
 				settings.nayta_tavarat = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.nayta_tavarat)) {
+		if (PK_Draw_GfxMenu_Box(100, my, settings.nayta_tavarat, true)) {
 			settings.nayta_tavarat = !settings.nayta_tavarat;
 		}
 		my += 30;
 
 
 		if (settings.saa_efektit){
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_weather_on),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_weather_on),180,my))
 				settings.saa_efektit = false;
 		} else{
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_weather_off),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_weather_off),180,my))
 				settings.saa_efektit = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.saa_efektit)) {
+		if (PK_Draw_GfxMenu_Box(100, my, settings.saa_efektit, true)) {
 			settings.saa_efektit = !settings.saa_efektit;
 		}
 		my += 30;
 
 
 		if (settings.tausta_spritet){
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_bgsprites_on),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_bgsprites_on),180,my))
 				settings.tausta_spritet = false;
 		} else{
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_bgsprites_off),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_bgsprites_off),180,my))
 				settings.tausta_spritet = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, settings.tausta_spritet)) {
+		if (PK_Draw_GfxMenu_Box(100, my, settings.tausta_spritet, true)) {
 			settings.tausta_spritet = !settings.tausta_spritet;
 		}
 		my += 30;
 
 
 		if (doublespeed){
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_speed_double),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_speed_double),180,my))
 				doublespeed = false;
 		} else{
-			if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_gfx_speed_normal),180,my))
+			if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_gfx_speed_normal),180,my))
 				doublespeed = true;
 		}
-		if (PK_Piirra_Menut_Valintalaatikko(100, my, doublespeed)) {
+		if (PK_Draw_GfxMenu_Box(100, my, doublespeed, true)) {
 			doublespeed = !doublespeed;
 		}
 		my += 30;
 
 
-		if (PK_Piirra_Menut_Valinta("more",100,360)){
+		if (PK_Draw_Menu_Text(true,"more",100,360)){
 			moreOptions = true;
 			menu_valittu_id = 0; //Set menu cursor to 0
 		}
 
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400)){
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_return),180,400)){
 		menu_nyt = MENU_PAAVALIKKO;
 		moreOptions = false;
 	}
@@ -6855,11 +6865,11 @@ int PK_Piirra_Menut_Aanet(){
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_sound_sfx_volume),180,200+my);
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_sound_less),180,200+my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_sound_less),180,200+my))
 		if (aanenvoimakkuus > 0)
 			aanenvoimakkuus -= 5;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_sound_more),180+8*15,200+my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_sound_more),180+8*15,200+my))
 		if (aanenvoimakkuus < 100)
 			aanenvoimakkuus += 5;
 
@@ -6877,11 +6887,11 @@ int PK_Piirra_Menut_Aanet(){
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_sound_music_volume),180,200+my);
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_sound_less),180,200+my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_sound_less),180,200+my))
 		if (musiikin_max_voimakkuus > 0)
 			musiikin_max_voimakkuus -= 4;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_sound_more),180+8*15,200+my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_sound_more),180+8*15,200+my))
 		if (musiikin_max_voimakkuus < 64)
 			musiikin_max_voimakkuus += 4;
 
@@ -6895,7 +6905,7 @@ int PK_Piirra_Menut_Aanet(){
 
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_return),180,400))
 		menu_nyt = MENU_PAAVALIKKO;
 
 	return 0;
@@ -6947,14 +6957,14 @@ int PK_Piirra_Menut_Kontrollit(){
 	}*/
 
 	if (menu_lue_kontrollit == 0){
-		if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_edit),100,90+my))
+		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_controls_edit),100,90+my))
 			menu_lue_kontrollit = 1;
 			menu_valittu_id = 0; //Set menu cursor to 0
 	}
 
 	my += 30;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_kbdef),100,90+my)){
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_controls_kbdef),100,90+my)){
 		kontrolli_vasemmalle	= PI_LEFT;
 		kontrolli_oikealle		= PI_RIGHT;
 		kontrolli_hyppy			= PI_UP;
@@ -6969,7 +6979,7 @@ int PK_Piirra_Menut_Kontrollit(){
 
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_gp4def),100,90+my)){
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_controls_gp4def),100,90+my)){
 		kontrolli_vasemmalle	= PI_OHJAIN1_VASEMMALLE;
 		kontrolli_oikealle		= PI_OHJAIN1_OIKEALLE;
 		kontrolli_hyppy			= PI_OHJAIN1_YLOS;
@@ -6984,7 +6994,7 @@ int PK_Piirra_Menut_Kontrollit(){
 
 	my += 20;
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_controls_gp6def),100,90+my)){
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_controls_gp6def),100,90+my)){
 		kontrolli_vasemmalle	= PI_OHJAIN1_VASEMMALLE;
 		kontrolli_oikealle		= PI_OHJAIN1_OIKEALLE;
 		kontrolli_hyppy			= PI_OHJAIN1_YLOS;//PI_OHJAIN1_NAPPI1;
@@ -6997,7 +7007,7 @@ int PK_Piirra_Menut_Kontrollit(){
 		menu_valittu_id = 0;
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400)){
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_return),180,400)){
 		menu_nyt = MENU_PAAVALIKKO;
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
@@ -7067,7 +7077,7 @@ int PK_Piirra_Menut_Episodit(){
 
 	for (int i=(episodisivu*10)+2;i<(episodisivu*10)+12;i++){
 		if (strcmp(episodit[i],"") != 0){
-			if (PK_Piirra_Menut_Valinta(episodit[i],220,90+my)){
+			if (PK_Draw_Menu_Text(true,episodit[i],220,90+my)){
 				strcpy(episodi,episodit[i]);
 				PK_Load_InfoText();
 				pelin_seuraava_tila = TILA_KARTTA;
@@ -7080,7 +7090,7 @@ int PK_Piirra_Menut_Episodit(){
 	}
 
 	/* sivu / kaikki */
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),180,400)){
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_return),180,400)){
 		menu_nyt = MENU_PAAVALIKKO;
 		my += 20;
 	}
@@ -7100,7 +7110,7 @@ int PK_Piirra_Menut_Language(){
 
 
 	for (i=0;i<10;i++){
-		if(PK_Piirra_Menut_Valinta(langmenulist[i],150,150+my)){
+		if(PK_Draw_Menu_Text(true,langmenulist[i],150,150+my)){
 			//printf("Selected %s\n",langmenulist[i]);
 			strcpy(settings.kieli,langmenulist[i]);
 			PK_Load_Language();
@@ -7113,7 +7123,7 @@ int PK_Piirra_Menut_Language(){
 	char* next = "next";
 
 	if(totallangs>10){
-		if (PK_Piirra_Menut_Valinta("previous",130,my)){
+		if (PK_Draw_Menu_Text(true,"previous",130,my)){
 			if(langlistindex>0){
 
 				for(i=9;i>0;i--)
@@ -7122,7 +7132,7 @@ int PK_Piirra_Menut_Language(){
 				langlistindex--;
 			}
 		}
-		if (PK_Piirra_Menut_Valinta(next,530-(strlen(next)*16/*font weight*/),my)){
+		if (PK_Draw_Menu_Text(true,next,530-(strlen(next)*16/*font weight*/),my)){
 			if(langlistindex<totallangs-10){
 
 				for(i=0;i<9;i++)
@@ -7133,7 +7143,7 @@ int PK_Piirra_Menut_Language(){
 		}
 	}
 	my+=20;
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),130,my)){
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_return),130,my)){
 		menu_nyt = MENU_PAAVALIKKO;
 	}
 
@@ -7239,7 +7249,7 @@ int PK_Piirra_Kartta(){
 		PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_episodes_no_maps),180,290);
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_mainmenu_return),100,430)){
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_return),100,430)){
 		pelin_seuraava_tila = TILA_MENUT;
 		menu_nyt = MENU_PAAVALIKKO;
 	}
@@ -7451,7 +7461,7 @@ int PK_Piirra_Pistelasku(){
 		}
 	}
 
-	if (PK_Piirra_Menut_Valinta(tekstit->Hae_Teksti(txt_score_screen_continue),100,430)){
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_score_screen_continue),100,430)){
 		musiikin_voimakkuus = 0;
 		siirry_pistelaskusta_karttaan = true;
 		PisteDraw2_FadeOut(PD_FADE_SLOW);
@@ -8263,7 +8273,8 @@ int main(int argc, char *argv[]){
 		PK_Start_Test(test_path);
 	}
 
-	Piste_Loop(running, *PK_Main);
+	int (*foo)() = &PK_Main;
+	Piste_Loop(running, foo);
 
 	if(PK2_virhe)
 		printf("PK2    - Error!\n");
