@@ -25,6 +25,18 @@
 
 using namespace std;
 
+
+#ifdef __ANDROID__
+int PisteUtils_Setcwd() {
+	char path[_MAX_PATH];
+
+
+
+	return chdir(path);
+}
+
+
+#else
 int PisteUtils_Setcwd() {
 	char exepath[_MAX_PATH];
 	int find;
@@ -41,6 +53,7 @@ int PisteUtils_Setcwd() {
 
 	return chdir(exepath);
 }
+#endif
 
 void PisteUtils_Lower(char* string){
 	for(int i = 0; string[i]!='\0'; i++)

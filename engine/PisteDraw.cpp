@@ -424,8 +424,10 @@ void PisteDraw2_SetXOffset(int x) {
 int PisteDraw2_Start(int width, int height, const char* name) {
 	if (PD2_loaded) return -1;
 
-	if (game_palette == NULL)
-		game_palette = SDL_AllocPalette(256);
+	if (game_palette == NULL) {
+        game_palette = SDL_AllocPalette(256);
+        for(int i = 0; i < 256; i++) game_palette->colors[i] = {(Uint8)i,(Uint8)i,(Uint8)i,(Uint8)i};
+    }
 
 	PD_WindowName = name;
 	PD_Window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);

@@ -8273,8 +8273,7 @@ int main(int argc, char *argv[]){
 		PK_Start_Test(test_path);
 	}
 
-	int (*foo)() = &PK_Main;
-	Piste_Loop(running, foo);
+	Piste_Loop(running, PK_Main);
 
 	if(PK2_virhe)
 		printf("PK2    - Error!\n");
