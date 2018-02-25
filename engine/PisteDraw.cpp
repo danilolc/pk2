@@ -6,14 +6,11 @@
 #include "PisteDraw.h"
 #include "PisteFont.h"
 
-#include <cstdio>
 #include <fstream>
 #include <algorithm>
 #include <ctime>
 
 #include <SDL2/SDL_image.h>
-
-#include "platform.h"
 
 const int MAX_IMAGES = 2000;
 const int MAX_FONTS = 20;

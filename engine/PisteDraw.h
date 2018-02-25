@@ -6,7 +6,7 @@
 #ifndef P_DRAW
 #define P_DRAW
 
-#include "types.h"
+#include "platform.h"
 
 #define		PD_FADE_FAST   5
 #define		PD_FADE_NORMAL 2

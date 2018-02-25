@@ -2,12 +2,14 @@
 //PisteEngine
 //by Janne Kivilahti from Piste Gamez
 //#########################
+#include "PisteEngine.h"
+
 #include <SDL2/SDL.h>
 #include <string>
+
 #ifdef _WIN32
-#include <direct.h>
+	#include <direct.h>
 #endif
-#include "PisteEngine.h"
 
 using namespace std;
 
@@ -16,10 +18,8 @@ using namespace std;
 	#include "stdlib.h"
 	#include "winlite.h"
 #else
-	#define _MAX_PATH PATH_MAX
 	#include <unistd.h>
 	#include <limits.h>
-    #include <cstdlib>
 #endif
 
 SDL_Event event;

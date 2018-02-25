@@ -577,7 +577,7 @@ int PK2Kartta::Tallenna(char *filename){
 }
 
 int PK2Kartta::Lataa(char *polku, char *nimi){
-	char file[_MAX_PATH];
+	char file[PE_PATH_SIZE];
 	strcpy(file,polku);
 	strcat(file,nimi);
 
@@ -628,7 +628,7 @@ int PK2Kartta::Lataa(char *polku, char *nimi){
 }
 
 int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
-	char file[_MAX_PATH];
+	char file[PE_PATH_SIZE];
 	strcpy(file,polku);
 	strcat(file,nimi);
 
@@ -1077,7 +1077,7 @@ PK2Kartta &PK2Kartta::operator = (const PK2Kartta &kartta){
 
 int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 	int i;
-	char file[_MAX_PATH];
+	char file[PE_PATH_SIZE];
 	strcpy(file,"");
 	strcpy(file,polku);
 
@@ -1126,7 +1126,7 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
 	int i;
 	int img;
-	char file[_MAX_PATH];
+	char file[PE_PATH_SIZE];
 	strcpy(file,"");
 	strcpy(file,polku);
 	strcat(file,filename);

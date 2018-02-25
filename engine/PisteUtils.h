@@ -18,6 +18,6 @@ int   PisteUtils_CreateDir(char *directory);
 // ""  - all files and directories
 // "/" - directory
 // ".exe" - *.exe
-int  PisteUtils_Scandir(const char* type, char* dir, char (*list)[_MAX_PATH], int length);
+int  PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], int length);
 
 #endif

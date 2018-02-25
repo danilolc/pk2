@@ -6,7 +6,7 @@
 #ifndef P_INPUT
 #define P_INPUT
 
-#include "types.h"
+#include "platform.h"
 
 #define		PI_VIRHE -1000
 
@@ -65,11 +65,14 @@ struct MOUSE { //RECT
 	int x, y;
 };
 
+
 const char* PisteInput_KeyName(BYTE key);
 BYTE	PisteInput_GetKey();
 bool	PisteInput_Keydown(int key);
 MOUSE   PisteInput_UpdateMouse(bool keyMove, bool relative);
 int     PisteInput_ActivateWindow(bool active);
+
+void	PisteInput_Vibrate();
 
 int		PisteInput_Alusta();
 int		PisteInput_Lopeta(); //DEP

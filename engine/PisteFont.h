@@ -6,6 +6,7 @@
 #ifndef P_FONT
 #define P_FONT
 
+#include "platform.h"
 #include "PisteDraw.h"
 
 class PisteFont2{

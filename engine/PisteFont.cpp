@@ -6,8 +6,6 @@
 #include "PisteFont.h"
 #include "PisteLanguage.h"
 #include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <fstream>
 #include <iostream>
 #include <string.h>

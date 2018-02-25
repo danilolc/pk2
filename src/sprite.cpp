@@ -629,7 +629,7 @@ PK2Sprite_Prototyyppi13 PK2Sprite_Prototyyppi::GetProto13(){
 int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 	this->Uusi();
 
-	char kuva[_MAX_PATH];
+	char kuva[PE_PATH_SIZE];
 	strcpy(kuva,"");
 	strcpy(kuva,polku);
 

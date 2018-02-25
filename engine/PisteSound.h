@@ -6,6 +6,8 @@
 #ifndef P_SOUND
 #define P_SOUND
 
+#include "platform.h"
+
 int PisteSound_Start();
 int PisteSound_Update();
 int PisteSound_End();

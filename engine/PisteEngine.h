@@ -8,8 +8,6 @@
 
 #include "platform.h"
 
-#include "types.h"
-
 #include "PisteDraw.h"
 #include "PisteInput.h"
 #include "PisteSound.h"

@@ -2,9 +2,8 @@
 //PisteEngine - PisteUtils
 //by Janne Kivilahti from Piste Gamez
 //#########################
+#include "PisteUtils.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <sys/stat.h>
 #include <ctype.h>
@@ -21,30 +20,25 @@
 	#define SEP "/"
 #endif
 
-#include "PisteUtils.h"
-
 using namespace std;
 
 
 #ifdef __ANDROID__
 int PisteUtils_Setcwd() {
-	char path[_MAX_PATH];
-
-
-
+	char path[PE_PATH_SIZE];
+	strcpy(path,"/storage/sdcard0/Pekka Kana 2/");
 	return chdir(path);
 }
 
-
 #else
 int PisteUtils_Setcwd() {
-	char exepath[_MAX_PATH];
+	char exepath[PE_PATH_SIZE];
 	int find;
 
 #ifdef _WIN32
-	string(exepath, GetModuleFileName(NULL, exepath, _MAX_PATH));
+	string(exepath, GetModuleFileName(NULL, exepath, PE_PATH_SIZE));
 #else
-	int count = readlink("/proc/self/exe", exepath, _MAX_PATH);
+	int count = readlink("/proc/self/exe", exepath, PE_PATH_SIZE);
 	if (count > 0) exepath[count] = '\0';
 #endif
 
@@ -72,8 +66,8 @@ bool PisteUtils_Find(char *filename){
 
 	//printf("\n\nFinding %s\n",filename);
 
-	char dir[_MAX_PATH];
-	char file[_MAX_PATH];
+	char dir[PE_PATH_SIZE];
+	char file[PE_PATH_SIZE];
 
 	int find = string(filename).find_last_of("/\\");
 	strcpy(dir, filename);
@@ -83,12 +77,12 @@ bool PisteUtils_Find(char *filename){
 
 	//printf("\nDir %s, File %s\n",dir, file);
 
-	char list[128][_MAX_PATH];
-	char list_lower[128][_MAX_PATH];
+	char list[128][PE_PATH_SIZE];
+	char list_lower[128][PE_PATH_SIZE];
 
 	int noffiles = PisteUtils_Scandir("", dir, list, 60);
 
-	memcpy(list_lower, list, noffiles*_MAX_PATH);
+	memcpy(list_lower, list, noffiles*PE_PATH_SIZE);
 
 	for(int i = 0; i < noffiles; i++)
 		PisteUtils_Lower(list_lower[i]);
@@ -125,7 +119,7 @@ void getext(char* string){
 
 #ifdef _WIN32
 
-int PisteUtils_Scandir(const char* type, char* dir, char (*list)[_MAX_PATH], int length){
+int PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], int length){
     struct _finddata_t map_file;
     long hFile;
 
@@ -163,7 +157,7 @@ int PisteUtils_CreateDir(char *directory){
 
 #else
 
-int PisteUtils_Scandir(const char* type, char* dir, char (*list)[_MAX_PATH], int length){
+int PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], int length){
 	int i, numb = 0, files = 0;
 	char ext[128];
 
@@ -193,7 +187,7 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[_MAX_PATH], int
 	return files;
 }
 int PisteUtils_CreateDir(char *directory){
-	char shell[_MAX_PATH];
+	char shell[PE_PATH_SIZE];
 	strcpy(shell,"mkdir -p ");
 	strcat(shell,directory);
 	system(shell);

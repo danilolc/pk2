@@ -3,16 +3,12 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 
-#include <cstdio>
+#include "PisteSound.h"
+#include "PisteUtils.h"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <cstring>
-
-#include "PisteSound.h"
-#include "PisteUtils.h"
-#include "platform.h"
-#include "types.h"
 
 #define AUDIO_FREQ 44100
 
@@ -26,7 +22,7 @@ Mix_Chunk* indexes[MAX_SOUNDS]; //The original chunks loaded
 Uint8* freq_chunks[MIX_CHANNELS]; //The chunk allocated for each channel
 
 Mix_Music* music = NULL;
-char playingMusic[_MAX_PATH] = "";
+char playingMusic[PE_PATH_SIZE] = "";
 
 //Change the chunk frequency
 int Change_Frequency(int index, int freq){

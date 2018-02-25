@@ -120,7 +120,7 @@ struct MENU
 
 struct LEFILE
 {
-	char		name[_MAX_PATH];
+	char		name[PE_PATH_SIZE];
 	BYTE		type;
 };
 
@@ -140,12 +140,12 @@ struct LOKIMERKINTA
 
 struct ASETUKSET
 {
-	char		tyohakemisto[_MAX_PATH];
-	char		epd_path[_MAX_PATH];
-	char		editor_path[_MAX_PATH];
-	char		bg_path[_MAX_PATH];
-	char		tile_path[_MAX_PATH];
-	char		mapfile[_MAX_PATH];
+	char		tyohakemisto[PE_PATH_SIZE];
+	char		epd_path[PE_PATH_SIZE];
+	char		editor_path[PE_PATH_SIZE];
+	char		bg_path[PE_PATH_SIZE];
+	char		tile_path[PE_PATH_SIZE];
+	char		mapfile[PE_PATH_SIZE];
 	MENU		menut[N_OF_MENUS];
 	int			kartta_x;
 	int			kartta_y;
@@ -179,15 +179,15 @@ int  virt_y;
 bool editing_text = false;
 
 char viesti[60];
-char tyohakemisto[_MAX_PATH];
-char pk2_path[_MAX_PATH] = " ";
-char epd_path[_MAX_PATH] = " ";
-char editor_path[_MAX_PATH] = "";
-char bg_path[_MAX_PATH] = " ";
-char tile_path[_MAX_PATH] = " ";
+char tyohakemisto[PE_PATH_SIZE];
+char pk2_path[PE_PATH_SIZE] = " ";
+char epd_path[PE_PATH_SIZE] = " ";
+char editor_path[PE_PATH_SIZE] = "";
+char bg_path[PE_PATH_SIZE] = " ";
+char tile_path[PE_PATH_SIZE] = " ";
 LEFILE tiedostot[MAX_DIR_FILES];
 
-char mapfile[_MAX_PATH];
+char mapfile[PE_PATH_SIZE];
 
 DWORD tiedostoja = 0;
 
@@ -289,7 +289,7 @@ int Level_Editor_Kartta_Lataa(char *filename);
 int Level_Editor_Get_Settings(){
 	int i;
 
-	char	tiedostonimi[_MAX_PATH];
+	char	tiedostonimi[PE_PATH_SIZE];
 
 	strcpy(tiedostonimi,pk2_path);
 	strcat(tiedostonimi,"/editor/settings.dat");
@@ -331,10 +331,10 @@ int Level_Editor_Get_Settings(){
 	kartta_y = asetukset.kartta_y;
 
 	if (chdir(tyohakemisto) == 0)
-		getcwd(tyohakemisto, _MAX_PATH );
+		getcwd(tyohakemisto, PE_PATH_SIZE );
 
 	//Level_Editor_Kartta_Lataa(mapfile);//TODO
-	char hake[_MAX_PATH] = "";
+	char hake[PE_PATH_SIZE] = "";
 	strcpy(hake,pk2_path);
 	strcat(hake,"/episodes/rooster island 2/level4.map");
 	Level_Editor_Kartta_Lataa(hake);
@@ -368,7 +368,7 @@ void Level_Editor_Save_Settings(){
 	asetukset.kartta_x = kartta_x;
 	asetukset.kartta_y = kartta_y;
 
-	char	tiedostonimi[_MAX_PATH];
+	char	tiedostonimi[PE_PATH_SIZE];
 
 	strcpy(tiedostonimi,pk2_path);
 	strcat(tiedostonimi,"/editor/settings.dat");
@@ -536,7 +536,7 @@ void Level_Editor_Leikepoyta_Piirra(){
 
 //Unused
 int Level_Editor_Set_Episode_Directory(){
-	getcwd(epd_path, _MAX_PATH );
+	getcwd(epd_path, PE_PATH_SIZE );
 	return 0;
 }
 
@@ -555,7 +555,7 @@ int Level_Editor_Start_PK2_Directory(){
 
 //Unused
 int Level_Editor_Tallenna_pk2_path(char *hakemisto){
-	char tal[_MAX_PATH] = "";
+	char tal[PE_PATH_SIZE] = "";
 	strcpy(tal,editor_path);
 	strcat(tal,"//pk2le_dir.ini");
 	//Level_Editor_Log_Write("saving pk2le_dir.ini.", LOG_INFO);
@@ -585,7 +585,7 @@ int Level_Editor_Tallenna_pk2_path(char *hakemisto){
 		strcat(tile_path, "/gfx/tiles/");
 
 		if (chdir(pk2_path) == 0)
-			getcwd(tyohakemisto, _MAX_PATH );
+			getcwd(tyohakemisto, PE_PATH_SIZE );
 
 		//Level_Editor_Start_PK2_Directory();
 		strcpy(viesti,"pk2 directory found");
@@ -767,7 +767,7 @@ int Level_Editor_Load_New_Sprite(char *polku, char *tiedosto){
 	//Level_Editor_Log_Save(tiedosto);
 	//Level_Editor_Log_Save("\n");
 
-	char tiedostopolku[_MAX_PATH];
+	char tiedostopolku[PE_PATH_SIZE];
 
 	strcpy(tiedostopolku,polku);
 	strcat(tiedostopolku,"/");
@@ -801,7 +801,7 @@ int Level_Editor_Load_New_Sprite(char *polku, char *tiedosto){
 }
 
 int Level_Editor_Prototyyppi_Lataa_Kaikki(){
-	char tiedosto[_MAX_PATH];
+	char tiedosto[PE_PATH_SIZE];
 	int spriteja = 0;
 	int viimeinen_proto = 0;
 
@@ -908,7 +908,7 @@ int Level_Editor_Map_Update(){
 }
 
 int Level_Editor_Map_Defaults(){
-	char tiedosto[_MAX_PATH];
+	char tiedosto[PE_PATH_SIZE];
 
 	//Level_Editor_Log_Write("loading map default settings.", LOG_INFO);
 
@@ -963,7 +963,7 @@ int Level_Editor_Map_Save(){
 
 	int virhe;
 
-	char filename[_MAX_PATH];
+	char filename[PE_PATH_SIZE];
 
 	//strcpy(filename,kartta->nimi);
 	strcpy(filename, mapfile);
@@ -992,8 +992,8 @@ int Level_Editor_Map_Save(){
 }
 
 int Level_Editor_Kartta_Lataa(char *filename){
-	char d[_MAX_PATH] = "";
-	getcwd(d, _MAX_PATH);
+	char d[PE_PATH_SIZE] = "";
+	getcwd(d, PE_PATH_SIZE);
 	printf("In %s\nStarts %s\n", d, filename);
 	int virhe;
 
@@ -1061,7 +1061,7 @@ int Level_Editor_Kartta_Lataa(char *filename){
 	else
 		Level_Editor_Remove_All_Sprites();
 /*
-	char polku[_MAX_PATH];
+	char polku[PE_PATH_SIZE];
 	strcpy(polku,pk2_path);
 	strcat(polku,"/");
 
@@ -1368,7 +1368,7 @@ int Level_Editor_Init(){
 	strcpy(pk2_path,tyohakemisto);
 	strcat(pk2_path,"../res");
 
-	char buffer[_MAX_PATH];
+	char buffer[PE_PATH_SIZE];
 	strcpy(buffer, pk2_path);
 	realpath(buffer, pk2_path);
 
@@ -1955,7 +1955,7 @@ int Level_Editor_Menu_Files(int i){
 		linkki_y = 0;
 
 	bool paivita = false;
-	char otsikko[_MAX_PATH];
+	char otsikko[PE_PATH_SIZE];
 
 	if (menu_tiedostot_eka < 0)
 		menu_tiedostot_eka = 0;
@@ -1984,7 +1984,7 @@ int Level_Editor_Menu_Files(int i){
 				//strcat(otsikko,"...");
 				if (Level_Editor_Link(otsikko,x+5+10,y+linkki_y+3,i)){
 					if (chdir(tiedostot[ti].name) == 0){
-						getcwd(tyohakemisto, _MAX_PATH );
+						getcwd(tyohakemisto, PE_PATH_SIZE );
 						paivita = true;
 						strcpy(viesti,"changed directory");
 						menu_tiedostot_eka = 0;
@@ -2054,7 +2054,7 @@ int Level_Editor_Menu_Files(int i){
 
 		if (strcmp(epd_path," ")!=0){
 			if (chdir(epd_path) == 0){
-				getcwd(tyohakemisto, _MAX_PATH );
+				getcwd(tyohakemisto, PE_PATH_SIZE );
 				strcpy(viesti,"moved to last map folder");
 				paivita = true;
 			}
@@ -2069,7 +2069,7 @@ int Level_Editor_Menu_Files(int i){
 
 		if (strcmp(epd_path," ")!=0){
 			if (chdir(epd_path) == 0){
-				getcwd(tyohakemisto, _MAX_PATH );
+				getcwd(tyohakemisto, PE_PATH_SIZE );
 				strcpy(viesti,"moved to last map folder");
 				paivita = true;
 			}
@@ -2085,7 +2085,7 @@ int Level_Editor_Menu_Files(int i){
 
 		if (strcmp(tile_path," ")!=0){
 			if (chdir(tile_path) == 0){
-				getcwd(tyohakemisto, _MAX_PATH );
+				getcwd(tyohakemisto, PE_PATH_SIZE );
 				strcpy(viesti,"moved to last map folder");
 				paivita = true;
 			}
@@ -2097,11 +2097,11 @@ int Level_Editor_Menu_Files(int i){
 		menu_tiedostot_eka = 0;
 
 		if (strcmp(pk2_path," ")!=0){
-			char temp[_MAX_PATH];
+			char temp[PE_PATH_SIZE];
 			strcpy(temp, pk2_path);
 			strcat(temp,"/sprites");
 			if (chdir(temp) == 0){
-				getcwd(tyohakemisto, _MAX_PATH );
+				getcwd(tyohakemisto, PE_PATH_SIZE );
 				strcpy(viesti,"moved to sprites folder");
 				paivita = true;
 			}
@@ -2117,7 +2117,7 @@ int Level_Editor_Menu_Files(int i){
 
 		if (strcmp(bg_path," ")!=0){
 			if (chdir(bg_path) == 0){
-				getcwd(tyohakemisto, _MAX_PATH );
+				getcwd(tyohakemisto, PE_PATH_SIZE );
 				strcpy(viesti,"moved to last map folder");
 				paivita = true;
 			}
@@ -2129,11 +2129,11 @@ int Level_Editor_Menu_Files(int i){
 		menu_tiedostot_eka = 0;
 
 		if (strcmp(pk2_path," ")!=0){
-			char temp[_MAX_PATH];
+			char temp[PE_PATH_SIZE];
 			strcpy(temp, pk2_path);
 			strcat(temp,"/music");
 			if (chdir(temp) == 0){
-				getcwd(tyohakemisto, _MAX_PATH );
+				getcwd(tyohakemisto, PE_PATH_SIZE );
 				strcpy(viesti,"moved to music folder");
 				paivita = true;
 			}

@@ -3,14 +3,12 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 
-#include <cstdlib>
-#include <cstdio>
+#include "PisteLanguage.h"
+
 #include <fstream>
 #include <iostream>
 #include <fcntl.h>
 #include <cstring>
-
-#include "PisteLanguage.h"
 
 using namespace std;
 

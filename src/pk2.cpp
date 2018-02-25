@@ -190,7 +190,7 @@ const int AANET_SAMPLERATE = 22050;
 //#### Structs
 //PK2 Map
 struct PK2JAKSO{
-	char	tiedosto[_MAX_PATH];
+	char	tiedosto[PE_PATH_SIZE];
 	char	nimi[40];
 	int		x,y;
 	int		jarjestys;
@@ -208,7 +208,7 @@ struct PK2FADETEKSTI{
 //PK2RECORDING ??
 struct PK2TALLENNUS{
 	int   jakso;
-	char  episodi[_MAX_PATH];
+	char  episodi[PE_PATH_SIZE];
 	char  nimi[20];
 	bool  kaytossa;
 	bool  jakso_lapaisty[EPISODI_MAX_JAKSOJA];
@@ -282,7 +282,7 @@ char	viesti[60];
 
 //KARTTA
 PK2Kartta *kartta;
-char seuraava_kartta[_MAX_PATH];
+char seuraava_kartta[PE_PATH_SIZE];
 
 //SPRITET JA NIIDEN PROTOTYYPIT
 PK2Sprite_Prototyyppi protot[MAX_PROTOTYYPPEJA];
@@ -346,8 +346,8 @@ int	jakso = 1;
 int jaksoja = 1;
 int episodi_lkm = 0;
 int jakso_indeksi_nyt = 1;
-char episodit[MAX_EPISODEJA][_MAX_PATH];
-char episodi[_MAX_PATH];
+char episodit[MAX_EPISODEJA][PE_PATH_SIZE];
+char episodi[PE_PATH_SIZE];
 int  episodisivu = 0;
 PK2JAKSO jaksot[EPISODI_MAX_JAKSOJA];
 bool jakso_lapaisty = false;
@@ -431,7 +431,7 @@ bool episodi_uusi_ennatys = false;
 bool episodi_uusi_ennatys_naytetty = false;
 
 //PELIN MUUTTUJAT
-char tyohakemisto[_MAX_PATH];
+char tyohakemisto[PE_PATH_SIZE];
 bool paused = false;
 int pelin_tila = TILA_EI_ALUSTETTU;
 int pelin_seuraava_tila = TILA_PERUSALUSTUS;
@@ -468,8 +468,8 @@ bool fps_nayta = false;
 
 //LANGUAGE AND TEXTS OF THE GAME
 PisteLanguage *tekstit;
-char langlist[60][_MAX_PATH];
-char langmenulist[10][_MAX_PATH];
+char langlist[60][PE_PATH_SIZE];
+char langmenulist[10][PE_PATH_SIZE];
 int langlistindex = 0;
 int totallangs = 0;
 int txt_setup_options,
@@ -794,7 +794,7 @@ int PK_EpisodeScore_Save(char *filename){
 }
 void PK_Load_InfoText(){
 	PisteLanguage* temp;
-	char infofile[_MAX_PATH] = "infosign.txt";
+	char infofile[PE_PATH_SIZE] = "infosign.txt";
 	char otsikko[] = "info00";
 	int indeksi1, indeksi2, i;
 
@@ -820,7 +820,7 @@ void PK_Load_InfoText(){
 	delete (temp);
 }
 bool PK_Load_Language(){
-	char tiedosto[_MAX_PATH];
+	char tiedosto[PE_PATH_SIZE];
 	int i;
 
 	strcpy(tiedosto,"language/");
@@ -1043,10 +1043,10 @@ void PK_Start_Saves(){
 //-- PisteUtils_Search_Dir
 void PK_Search_File(){
 	int i=0;
-	char hakemisto[_MAX_PATH];
-	char list[EPISODI_MAX_JAKSOJA][_MAX_PATH];
+	char hakemisto[PE_PATH_SIZE];
+	char list[EPISODI_MAX_JAKSOJA][PE_PATH_SIZE];
 	for (int j = 0; j < EPISODI_MAX_JAKSOJA; j++)
-		memset(list[j], '\0', _MAX_PATH);
+		memset(list[j], '\0', PE_PATH_SIZE);
 
 	PK2Kartta *temp = new PK2Kartta();
 
@@ -1110,18 +1110,17 @@ int PK_Alphabetical_Compare(char *a, char *b){
 	return 0;
 }
 int PK_Order_Episodes(){
-	DWORD i,t;
-	char temp[_MAX_PATH] = "";
+	char temp[PE_PATH_SIZE] = "";
 	bool tehty;
 
 	if (episodi_lkm > 1) {
 
-		for (i=episodi_lkm-1;i>=0;i--) {
+		for (int i = episodi_lkm-1 ; i>=0 ;i--) {
 
 			tehty = true;
 
 			//for (t=0;t<i;t++) {
-			for (t=2;t<i+2;t++) {
+			for (int t=2 ; t<i+2 ; t++) {
 				if (PK_Alphabetical_Compare(episodit[t],episodit[t+1]) == 1) {
 					strcpy(temp, episodit[t]);
 					strcpy(episodit[t], episodit[t+1]);
@@ -1139,7 +1138,7 @@ int PK_Order_Episodes(){
 }
 int PK_Search_Episode(){
 	int i;
-	char hakemisto[_MAX_PATH];
+	char hakemisto[PE_PATH_SIZE];
 
 	for (i=0;i<MAX_EPISODEJA;i++)
 		strcpy(episodit[i],"");
@@ -2333,7 +2332,7 @@ int PK_Prototyyppi_Lataa_Vanha(char *polku, char *tiedosto){
 			else{
 			//if (protot[seuraava_vapaa_proto].aanet[i] == -1) {
 				//strcpy(aanipolku,"sprites/");
-				getcwd(aanipolku, _MAX_PATH);
+				getcwd(aanipolku, PE_PATH_SIZE);
 				strcat(aanipolku,"/sprites/");
 
 				strcpy(testipolku,aanipolku);
@@ -2371,7 +2370,7 @@ void PK_Prototyyppi_Aseta_Muutos_Sprite(int i){
 		}
 
 		if (!loytyi) {
-			char polku[_MAX_PATH];
+			char polku[PE_PATH_SIZE];
 			strcpy(polku,"sprites/");
 			//PK_Load_EpisodeDir(polku);
 
@@ -2398,7 +2397,7 @@ void PK_Prototyyppi_Aseta_Bonus_Sprite(int i){
 		}
 
 		if (!loytyi){
-			char polku[_MAX_PATH];
+			char polku[PE_PATH_SIZE];
 			strcpy(polku,"sprites/");
 			//PK_Load_EpisodeDir(polku);
 
@@ -2425,7 +2424,7 @@ void PK_Prototyyppi_Aseta_Ammus1_Sprite(int i){
 		}
 
 		if (!loytyi){
-			char polku[_MAX_PATH];
+			char polku[PE_PATH_SIZE];
 			strcpy(polku,"sprites/");
 			//PK_Load_EpisodeDir(polku);
 
@@ -2453,7 +2452,7 @@ void PK_Prototyyppi_Aseta_Ammus2_Sprite(int i){
 		}
 
 		if (!loytyi){
-			char polku[_MAX_PATH];
+			char polku[PE_PATH_SIZE];
 			strcpy(polku,"sprites/");
 			//PK_Load_EpisodeDir(polku);
 
@@ -2464,7 +2463,7 @@ void PK_Prototyyppi_Aseta_Ammus2_Sprite(int i){
 }
 
 int PK_Prototyyppi_Lataa_Kaikki(){
-	char polku[_MAX_PATH];
+	char polku[PE_PATH_SIZE];
 	int viimeinen_proto;
 
 	for (int i=0;i < MAX_PROTOTYYPPEJA;i++){
@@ -2542,7 +2541,7 @@ int PK_Kartta_Lataa(char *nimi){
 
 	PK_Prototyyppi_Tyhjenna();
 
-	char polku[_MAX_PATH];
+	char polku[PE_PATH_SIZE];
 	strcpy(polku,"");
 	PK_Load_EpisodeDir(polku);
 
@@ -2571,7 +2570,7 @@ int PK_Kartta_Lataa(char *nimi){
 	PK_Kartta_Laske_Reunat();
 
 	if (strcmp(kartta->musiikki,"")!=0){
-		char biisi[_MAX_PATH] = "";
+		char biisi[PE_PATH_SIZE] = "";
 		PK_Load_EpisodeDir(biisi);
 		strcat(biisi,kartta->musiikki);
 		if (PisteSound_StartMusic(biisi)!=0){
@@ -3786,7 +3785,7 @@ int PK_Sprite_Liikuta(int i){
 		for (y=0;y<palikat_y_lkm;y++){
 			for (x=0;x<palikat_x_lkm;x++) {
 				p = x+y*palikat_x_lkm;
-				if (p<300 && p>=0)//{
+				if (p<300)// && p>=0)//{
 					//if(sprite.pelaaja == 1) printf("%i\n",palikat_lkm);
 					PK_Tutki_Seina(sprite, palikat[p]);
 				//}
@@ -4590,8 +4589,8 @@ int PK_Sprite_Liikuta(int i){
 					if (plk > 299)
 						plk = 299;
 
-					if (plk < 0)
-						plk = 0;
+					//if (plk < 0)
+					//	plk = 0;
 
 					if (!palikat[plk].tausta)
 						color += 32;
@@ -5295,12 +5294,12 @@ int PK_Alusta_Tilat(){
 				}
 
 				//PisteLog_Kirjoita("  - Loading top scores \n");
-				char topscoretiedosto[_MAX_PATH] = "scores.dat";
+				char topscoretiedosto[PE_PATH_SIZE] = "scores.dat";
 				PK_EpisodeScore_Open(topscoretiedosto);
 			}
 
 			/* Ladataan kartan taustakuva ...*/
-			char mapkuva[_MAX_PATH] = "map.bmp";
+			char mapkuva[PE_PATH_SIZE] = "map.bmp";
 			PK_Load_EpisodeDir(mapkuva);
 			//PisteLog_Kirjoita("  - Loading map picture ");
 			//PisteLog_Kirjoita(mapkuva);
@@ -5312,7 +5311,7 @@ int PK_Alusta_Tilat(){
 				kuva_tausta = PisteDraw2_Image_Load("gfx/map.bmp",true);
 
 			/* Ladataan kartan musiikki ...*/
-			char mapmusa[_MAX_PATH] = "map.mp3";
+			char mapmusa[PE_PATH_SIZE] = "map.mp3";
 			do {
 				PK_Load_EpisodeDir(mapmusa);
 				if(PK_Check_File(mapmusa)) break;
@@ -5465,7 +5464,7 @@ int PK_Alusta_Tilat(){
 			esinepisteet = 0,
 			pelastuspisteet = 0;
 
-			char pisteet_tiedosto[_MAX_PATH] = "scores.dat";
+			char pisteet_tiedosto[PE_PATH_SIZE] = "scores.dat";
 			int vertailun_tulos;
 
 			/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
@@ -5855,7 +5854,7 @@ int PK_Piirra_Info(){
 	itoa(spritet[pelaaja_index].hyppy_ajastin,lukua,10);
 	PisteDraw2_Font_Write(fontti1,lukua,270,450);
 
-	char tpolku[_MAX_PATH] = "";
+	char tpolku[PE_PATH_SIZE] = "";
 	PK_Load_EpisodeDir(tpolku);
 
 	PisteDraw2_Font_Write(fontti1,tpolku,10,470);
@@ -6298,7 +6297,7 @@ bool PK_Draw_Menu_Text(bool active, char *teksti, int x, int y){
 }
 
 int PK_Draw_GfxMenu_Box(int x, int y, bool muuttuja, bool active){
-	PD_RECT img_src, img_dst = {x,y,0,0};
+	PD_RECT img_src, img_dst = {(DWORD)x,(DWORD)y,0,0};
 
 	if(muuttuja) img_src = {504,124,31,31};
 	else img_src = {473,124,31,31};
@@ -7700,8 +7699,7 @@ int PK_Main_Pistelasku(){
 				pistelaskudelay = 50;
 			}
 
-		}
-		else if (aika > 0){
+		} else if (aika > 0){
 			pistelaskuvaihe = 2;
 			pistelaskudelay = 0;
 			aikapisteet+=5;
@@ -7713,8 +7711,7 @@ int PK_Main_Pistelasku(){
 			if (aika == 0)
 				pistelaskudelay = 50;
 
-		}
-		else if (spritet[pelaaja_index].energia > 0){
+		} else if (spritet[pelaaja_index].energia > 0){
 			pistelaskuvaihe = 3;
 			pistelaskudelay = 10;
 			energiapisteet+=300;
@@ -7722,8 +7719,7 @@ int PK_Main_Pistelasku(){
 
 			PK_Play_MenuSound(pistelaskuri_aani, 70);
 
-		}
-		else if (esineita > 0){
+		} else if (esineita > 0){
 			pistelaskuvaihe = 4;
 			pistelaskudelay = 30;
 			for (int i=0;i<MAX_ESINEITA;i++)
@@ -8190,11 +8186,11 @@ int PK_Unload(){
 void PK_Start_Test(const char* arg){
 	if (arg == NULL) return;
 
-	char buffer[_MAX_PATH];
+	char buffer[PE_PATH_SIZE];
 	int sepindex;
 
 	strcpy(buffer, arg);
-	for (sepindex = 0; sepindex < _MAX_PATH; sepindex++)
+	for (sepindex = 0; sepindex < PE_PATH_SIZE; sepindex++)
 		if(buffer[sepindex]=='/') break;
 
 	strcpy(episodi, buffer); episodi[sepindex] = '\0';
@@ -8219,6 +8215,7 @@ void PK_Quit(){
 
 int main(int argc, char *argv[]){
 	char* test_path = NULL;
+	printf("PK2 Started!\n");
 
 	for (int i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "dev") == 0) {

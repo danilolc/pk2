@@ -2,43 +2,111 @@ package org.pgnapps.pk2;
 
 import org.libsdl.app.SDLActivity;
 
+import android.util.Log;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.KeyEvent;
+import android.content.res.AssetManager;
 import java.io.File;
-
-/*
-import java.io.IOException;
+import java.io.OutputStream;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.lang.reflect.Method;
-import java.util.Objects;
-
-import android.app.*;
-import android.content.*;
-import android.text.InputType;
-import android.view.*;
-import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.RelativeLayout;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.os.*;
-import android.util.Log;
-import android.util.SparseArray;
-import android.graphics.*;
-import android.graphics.drawable.Drawable;
-import android.hardware.*;
-import android.content.pm.ActivityInfo;
-*/
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
+//import org.apache.commons.io.FileUtils;
+ 
 public class PK2Activity extends SDLActivity {
+	private static final String LOG_TAG = "PK2Activity";
+
+	/*https://developer.android.com/training/data-storage/files.html#java*/
+	/* Checks if external storage is available for read and write */
+	public boolean isExternalStorageWritable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+		    return true;
+		}
+		return false;
+	}
+
+	private List<String> assets_list = new ArrayList<String>();
+	/*https://stackoverflow.com/questions/16234529/list-of-files-in-assets-folder-and-its-subfolders*/
+	private boolean listAssetFiles(String path) {
+		String[] list;
+		try {
+		    list = getAssets().list(path);
+		    if (list.length > 0) {
+		        // This is a folder
+		        for (String file : list) {
+		            if (!listAssetFiles(path + "/" + file))
+		                return false;
+		            else {
+		                assets_list.add(file);
+		            }
+		        }
+		    } 
+		} catch (IOException e) {
+		    return false;
+		}
+
+		return true; 
+	} 
+	/*https://stackoverflow.com/questions/4447477/how-to-copy-files-from-assets-folder-to-sdcard*/
+	private void copyAssets(String to) {
+		AssetManager assetManager = getAssets();
+		String[] files = null;
+		listAssetFiles("");
+		for (String filename : assets_list) {
+			Log.e(LOG_TAG, filename);
+		    InputStream in = null;
+		    OutputStream out = null;
+		    try {
+		      in = assetManager.open(filename);
+		      File outFile = new File(to, filename);
+			  //if(!outFile.exists())
+			  //    outFile.mkdirs()
+		      out = new FileOutputStream(outFile);
+		      copyFile(in, out);
+		    } catch(IOException e) {
+		        Log.e("tag", "Failed to copy asset file: " + filename, e);
+		    }     
+		    finally {
+		        if (in != null) {
+		            try {
+		                in.close();
+		            } catch (IOException e) {
+		                // NOOP
+		            }
+		        }
+		        if (out != null) {
+		            try {
+		                out.close();
+		            } catch (IOException e) {
+		                // NOOP
+		            }
+		        }
+		    }  
+		}
+	}
+	private void copyFile(InputStream in, OutputStream out) throws IOException {
+		byte[] buffer = new byte[1024];
+		int read;
+		while((read = in.read(buffer)) != -1){
+		  out.write(buffer, 0, read);
+		}
+	}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+		if (!isExternalStorageWritable())
+			Log.e(LOG_TAG, "Can't read external storage");
+        File file = new File(Environment.getExternalStorageDirectory(), "Pekka Kana 2");
+		if (!file.exists()){
+			file.mkdirs();
+			copyAssets(file.getAbsolutePath());
+		}
+        System.setProperty("user.dir", file.getAbsolutePath());
+
 		super.onCreate(savedInstanceState);
 	}
     @Override

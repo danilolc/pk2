@@ -2,6 +2,19 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
+#include "types.h"
+
+#include <cstdio>
+#include <cstdlib>
+#ifdef __ANDROID__
+    #include <android/log.h>
+    #undef printf
+    #define printf(...) __android_log_print(ANDROID_LOG_DEBUG, "PK2", __VA_ARGS__)
+    #define main SDL_main
+#endif
+
+#define PE_PATH_SIZE 128
+
 // Win32 redefinitions and stuff to make MSVC happy
 #if defined (_WIN32) && defined (_MSC_VER)
 
@@ -36,10 +49,5 @@
 #endif
 
 #endif // _WIN32 && _MSC_VER
-
-
-#ifndef _MAX_PATH
-#define _MAX_PATH 128
-#endif
 
 #endif // PLATFORM_H
