@@ -6370,13 +6370,14 @@ int PK_Piirra_Menut_Saatolaatikko(int x, int y){
 
 int PK_Piirra_Menut_PaaValikko(){
 	int my = 240;//250;
+	#ifdef __ANDROID__
+	my = 260;
+	#endif
 
 	PK_Piirra_Menu_Nelio(160, 200, 640-180, 410, 224);
 
-	if (peli_kesken)
-	{
-		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_continue),180,my))
-		{
+	if (peli_kesken){
+		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_continue),180,my)){
 			if ((!peli_ohi && !jakso_lapaisty) || lopetusajastin > 1)
 				pelin_seuraava_tila = TILA_PELI;
 			else
@@ -6386,8 +6387,7 @@ int PK_Piirra_Menut_PaaValikko(){
 		my += 20;
 	}
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_new_game),180,my))
-	{
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_new_game),180,my)){
 		nimiedit = true;
 		menu_nimi_index = strlen(pelaajan_nimi);//   0;
 		menu_nimi_ed_merkki = ' ';
@@ -6396,49 +6396,45 @@ int PK_Piirra_Menut_PaaValikko(){
 	}
 	my += 20;
 
-	if (peli_kesken)
-	{
-		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_save_game),180,my))
-		{
+	if (peli_kesken){
+		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_save_game),180,my)){
 			menu_nyt = MENU_TALLENNA;
 		}
 		my += 20;
 	}
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_load_game),180,my))
-	{
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_load_game),180,my)){
 		menu_nyt = MENU_LATAA;
 	}
 	my += 20;
 
-	if (PK_Draw_Menu_Text(true,"load language",180,my))
-	{
+	if (PK_Draw_Menu_Text(true,"load language",180,my)){
 		menu_nyt = MENU_LANGUAGE;
 	}
 	my += 20;
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_controls),180,my))
-	{
+	#ifndef __ANDROID__
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_controls),180,my)){
 		menu_nyt = MENU_KONTROLLIT;
 	}
 	my += 20;
+	#endif
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_graphics),180,my))
-	{
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_graphics),180,my)){
 		menu_nyt = MENU_GRAFIIKKA;
 	}
 	my += 20;
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_sounds),180,my))
-	{
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_sounds),180,my)){
 		menu_nyt = MENU_AANET;
 	}
 	my += 20;
 
+	#ifndef __ANDROID__
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(txt_mainmenu_exit),180,my))
 		PK_Quit();
 	my += 20;
-
+	#endif
 	return 0;
 }
 
@@ -6671,6 +6667,7 @@ int PK_Piirra_Menut_Grafiikka(){
 		wasFit = settings.isFit;
 		wasWide = settings.isWide;
 
+		#ifndef __ANDROID__
 		if (settings.isFullScreen){
 			if (PK_Draw_Menu_Text(true,"fullscreen mode is on",180,my)){
 				settings.isFullScreen = false;
@@ -6684,6 +6681,7 @@ int PK_Piirra_Menut_Grafiikka(){
 			settings.isFullScreen = !settings.isFullScreen;
 		}
 		my += 30;
+		#endif
 
 		if (settings.isFiltered){
 			if (PK_Draw_Menu_Text(true,"bilinear filter is on",180,my)){
@@ -6713,15 +6711,15 @@ int PK_Piirra_Menut_Grafiikka(){
 		}
 		my += 30;
 
-		bool res_active = false;
+		bool res_active = true;
 
 		if (settings.isWide) {
-			if (PK_Draw_Menu_Text(res_active,"resolution 800x480", 180, my)) {
+			if (PK_Draw_Menu_Text(res_active,"screen size 800x480", 180, my)) {
 				settings.isWide = false;
 			}
 		}
 		else {
-			if (PK_Draw_Menu_Text(res_active,"resolution 640x480", 180, my)) {
+			if (PK_Draw_Menu_Text(res_active,"screen size 640x480", 180, my)) {
 				settings.isWide = true;
 			}
 		}
@@ -8213,9 +8211,23 @@ void PK_Quit(){
 	musiikin_voimakkuus = 0;
 }
 
+void PE_Quit(){
+	printf("Exited correctely\n")
+	PK_Settings_Save("data/settings.ini");
+	PK_Unload();
+	Piste_Quit();
+}
+
 int main(int argc, char *argv[]){
 	char* test_path = NULL;
+
+	#ifdef __ANDROID__ //TODO - remove
+
 	printf("PK2 Started!\n");
+	dev_mode = true;
+	Piste_SetDebug(true);
+
+	#endif
 
 	for (int i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "dev") == 0) {
@@ -8237,9 +8249,7 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	//Game works in ../res
 	PisteUtils_Setcwd();
-	chdir("../res");
 	strcpy(tyohakemisto,".");
 
 	PK_Settings_Open("data/settings.ini");
@@ -8248,6 +8258,7 @@ int main(int argc, char *argv[]){
 		printf("PK2    - Failed to init PisteEngine.\n");
 		return 0;
 	}
+	atexit(PE_Quit);
 
 	tekstit = new PisteLanguage();
 

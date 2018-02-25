@@ -10,7 +10,11 @@
     #include <android/log.h>
     #undef printf
     #define printf(...) __android_log_print(ANDROID_LOG_DEBUG, "PK2", __VA_ARGS__)
-    #define main SDL_main
+
+    #ifndef main
+        extern "C" int SDL_main(int argc, char *argv[]);
+        #define main SDL_main
+    #endif
 #endif
 
 #define PE_PATH_SIZE 128

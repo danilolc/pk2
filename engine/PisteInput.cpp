@@ -122,6 +122,10 @@ bool PisteInput_Keydown(int key){
 
 //TODO - change names - fullscreen uses relative mouse
 MOUSE PisteInput_UpdateMouse(bool keyMove, bool relative){
+	#ifdef __ANDROID__
+	relative = false;
+	#endif
+
 	static int was_relative = -1;
 	if (was_relative == -1) { //Was just initialized
 		PisteInput_ActivateWindow(relative);
@@ -292,7 +296,7 @@ char PisteInput_Lue_Nappaimisto(void){
 		if(event.type== SDL_TEXTINPUT) {
 			strcpy(str, event.text.text);
 			c = str[0];
-			if(c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
+			if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
 				|| c == '.' || c == '!' || c == '?' || c == ' ') //Just number, letter, space dot
 				return c;
 		}

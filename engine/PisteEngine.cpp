@@ -89,6 +89,7 @@ int Piste_Init(int width, int height, const char* name){
 	ready = true;
 	return 0;
 }
+
 int Piste_Loop(bool &running, int (*GameLogic)()){
 	int time_1, time_2, time_3;
 

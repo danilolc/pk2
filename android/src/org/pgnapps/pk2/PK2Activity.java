@@ -2,12 +2,15 @@ package org.pgnapps.pk2;
 
 import org.libsdl.app.SDLActivity;
 
+import android.os.Build;
 import android.util.Log;
+import android.view.View;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.KeyEvent;
 import android.content.res.AssetManager;
+import android.view.WindowManager;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.InputStream;
@@ -15,9 +18,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 //import org.apache.commons.io.FileUtils;
- 
+
 public class PK2Activity extends SDLActivity {
 	private static final String LOG_TAG = "PK2Activity";
+
+
+    public void makeFullScreen() {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if(Build.VERSION.SDK_INT < 19){
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        }else {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
 	/*https://developer.android.com/training/data-storage/files.html#java*/
 	/* Checks if external storage is available for read and write */
@@ -44,13 +57,13 @@ public class PK2Activity extends SDLActivity {
 		                assets_list.add(file);
 		            }
 		        }
-		    } 
+		    }
 		} catch (IOException e) {
 		    return false;
 		}
 
-		return true; 
-	} 
+		return true;
+	}
 	/*https://stackoverflow.com/questions/4447477/how-to-copy-files-from-assets-folder-to-sdcard*/
 	private void copyAssets(String to) {
 		AssetManager assetManager = getAssets();
@@ -69,7 +82,7 @@ public class PK2Activity extends SDLActivity {
 		      copyFile(in, out);
 		    } catch(IOException e) {
 		        Log.e("tag", "Failed to copy asset file: " + filename, e);
-		    }     
+		    }
 		    finally {
 		        if (in != null) {
 		            try {
@@ -85,7 +98,7 @@ public class PK2Activity extends SDLActivity {
 		                // NOOP
 		            }
 		        }
-		    }  
+		    }
 		}
 	}
 	private void copyFile(InputStream in, OutputStream out) throws IOException {
@@ -98,6 +111,7 @@ public class PK2Activity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        makeFullScreen();
 		if (!isExternalStorageWritable())
 			Log.e(LOG_TAG, "Can't read external storage");
         File file = new File(Environment.getExternalStorageDirectory(), "Pekka Kana 2");
@@ -116,6 +130,7 @@ public class PK2Activity extends SDLActivity {
 
     @Override
     protected void onResume() {
+        makeFullScreen();
         super.onResume();
     }
 

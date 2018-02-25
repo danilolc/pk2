@@ -44,8 +44,8 @@ int PisteUtils_Setcwd() {
 
 	find = string(exepath).find_last_of("/\\");
 	exepath[find] = '\0';
-
-	return chdir(exepath);
+	chdir(exepath);
+	return chdir("../res");
 }
 #endif
 

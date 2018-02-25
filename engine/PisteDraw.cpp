@@ -364,6 +364,7 @@ int PisteDraw2_SetFilter(const char* filter){
 	return 1;
 }
 void PisteDraw2_FullScreen(bool set){
+	#ifndef __ANDROID__
 	if(set)
 		SDL_SetWindowFullscreen(PD_Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	else {
@@ -371,6 +372,7 @@ void PisteDraw2_FullScreen(bool set){
 		SDL_SetWindowSize(PD_Window, PD_screen_width, PD_screen_height);
 		SDL_SetWindowPosition(PD_Window, SDL_WINDOWPOS_CENTERED , SDL_WINDOWPOS_CENTERED);
 	}
+	#endif
 }
 void PisteDraw2_AdjustScreen(){
 	int w, h;
@@ -427,7 +429,24 @@ int PisteDraw2_Start(int width, int height, const char* name) {
     }
 
 	PD_WindowName = name;
+	#ifdef __ANDROID__
+
+	SDL_DisplayMode DM;
+	SDL_GetCurrentDisplayMode(0, &DM);
+	auto Width = DM.w;
+	auto Height = DM.h;
+	auto x = Height;
+	if(Width < Height){
+		Height = Width;
+		Width = x;
+	}
+
+	PD_Window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_WINDOW_SHOWN);
+
+	#else
 	PD_Window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
+	#endif
+
 	PD_Renderer = SDL_CreateRenderer(PD_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 	frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
