@@ -2193,6 +2193,7 @@ int PK_Kartta_Vaihda_Kallopalikat(){
 		}
 
 	jaristys = 90;//60
+	PisteInput_Vibrate();
 
 	//PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_game_locksopen));
 
@@ -2216,6 +2217,7 @@ int PK_Kartta_Avaa_Lukot(){
 		}
 
 	jaristys = 90;//60
+	PisteInput_Vibrate();
 
 	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_game_locksopen));
 
@@ -8028,6 +8030,40 @@ int PK_Main_Peli(){
 	return 0;
 }
 
+int gui_egg, gui_doodle, gui_arr, gui_up, gui_down, gui_left, gui_right;
+
+int PK_Load_Gui(){
+/*
+	DWORD kontrolli_vasemmalle;
+	DWORD kontrolli_oikealle;
+	DWORD kontrolli_hyppy;
+	DWORD kontrolli_alas;
+	DWORD kontrolli_juoksu;
+	DWORD kontrolli_hyokkays1;
+	DWORD kontrolli_hyokkays2;
+	DWORD kontrolli_kayta_esine;
+*/
+	gui_doodle = PisteInput_CreateGui(1366,800,256,256,180,"android/egg.png", &kontrolli_hyokkays1);
+	gui_egg = PisteInput_CreateGui(1600,700,256,256,180,"android/doodle.png", &kontrolli_hyokkays2);
+
+	int d = 512 / 3;
+	gui_arr =   PisteInput_CreateGui(90    ,512    ,512,512,180,"android/arrow.png", NULL);
+	gui_up =    PisteInput_CreateGui(90    ,512    ,512,d  ,180,"", &kontrolli_hyppy);
+	gui_down =  PisteInput_CreateGui(90    ,512+2*d,512,d  ,180,"", &kontrolli_alas);
+	gui_left =  PisteInput_CreateGui(90    ,512    ,d  ,512,180,"", &kontrolli_vasemmalle);
+	gui_right = PisteInput_CreateGui(90+2*d,512    ,d  ,512,180,"", &kontrolli_oikealle);
+
+	PisteInput_ActiveGui(gui_doodle,true);
+	PisteInput_ActiveGui(gui_egg,   true);
+	PisteInput_ActiveGui(gui_arr,   true);
+	PisteInput_ActiveGui(gui_up,    true);
+	PisteInput_ActiveGui(gui_down,  true);
+	PisteInput_ActiveGui(gui_left,  true);
+	PisteInput_ActiveGui(gui_right, true);
+
+	return 0;
+}
+
 int PK_Main_Loppu(){
 
 	PK_Piirra_Loppu();
@@ -8061,6 +8097,7 @@ int PK_Main_Loppu(){
 }
 
 int PK_Main(){
+
 	//static bool window_activated = true;
 
 	PK_Alusta_Tilat();
@@ -8212,7 +8249,7 @@ void PK_Quit(){
 }
 
 void PE_Quit(){
-	printf("Exited correctely\n")
+	printf("Exited correctely\n");
 	PK_Settings_Save("data/settings.ini");
 	PK_Unload();
 	Piste_Quit();
@@ -8226,6 +8263,7 @@ int main(int argc, char *argv[]){
 	printf("PK2 Started!\n");
 	dev_mode = true;
 	Piste_SetDebug(true);
+	atexit(PE_Quit);
 
 	#endif
 
@@ -8258,7 +8296,6 @@ int main(int argc, char *argv[]){
 		printf("PK2    - Failed to init PisteEngine.\n");
 		return 0;
 	}
-	atexit(PE_Quit);
 
 	tekstit = new PisteLanguage();
 
@@ -8273,6 +8310,10 @@ int main(int argc, char *argv[]){
 
 	PK_Alusta_Tilat();
 
+	#ifdef __ANDROID__
+	PK_Load_Gui();
+	#endif
+
 	pelin_seuraava_tila = TILA_INTRO;
 	if (dev_mode)
 		pelin_seuraava_tila = TILA_MENUT;
@@ -8286,10 +8327,7 @@ int main(int argc, char *argv[]){
 	if(PK2_virhe)
 		printf("PK2    - Error!\n");
 
-	PK_Settings_Save("data/settings.ini");
-
-	PK_Unload();
-	Piste_Quit();
+	PE_Quit();
 
 	return 0;
 }

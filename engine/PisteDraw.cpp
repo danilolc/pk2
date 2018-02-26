@@ -5,6 +5,7 @@
 
 #include "PisteDraw.h"
 #include "PisteFont.h"
+#include "PisteInput.h"
 
 #include <fstream>
 #include <algorithm>
@@ -508,6 +509,9 @@ void PisteDraw2_Update(bool draw){
 			SDL_RenderCopy(PD_Renderer, texture, NULL, NULL);
 		else
 			SDL_RenderCopy(PD_Renderer, texture, NULL, &Screen_dest);
+
+		PisteInput_DrawGui();
+
 		SDL_RenderPresent(PD_Renderer);
 
 		SDL_DestroyTexture(texture);
@@ -523,4 +527,7 @@ void PisteDraw2_Update(bool draw){
 	SDL_FillRect(frameBuffer8, &r, 0);
 	r.x = PD_screen_width - XOffset;
 	SDL_FillRect(frameBuffer8, &r, 0);
+}
+void* PisteDraw_GetRenderer(){
+	return (void*)PD_Renderer;
 }

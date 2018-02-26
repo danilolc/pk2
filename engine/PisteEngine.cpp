@@ -81,7 +81,7 @@ int Piste_Init(int width, int height, const char* name){
 
 	PisteDraw2_Start(width, height, name);
 
-	PisteInput_Alusta();
+	PisteInput_Init();
 
 	PisteSound_Start();
 
@@ -118,6 +118,7 @@ int Piste_Loop(bool &running, int (*GameLogic)()){
 }
 int Piste_Quit(){
 	PisteDraw2_Exit();
+	PisteInput_Exit();
 	PisteSound_End();
 	SDL_Quit();
 	ready = false;

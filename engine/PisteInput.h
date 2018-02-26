@@ -72,10 +72,10 @@ bool	PisteInput_Keydown(int key);
 MOUSE   PisteInput_UpdateMouse(bool keyMove, bool relative);
 int     PisteInput_ActivateWindow(bool active);
 
-void	PisteInput_Vibrate();
+int		PisteInput_Vibrate();
 
-int		PisteInput_Alusta();
-int		PisteInput_Lopeta(); //DEP
+int		PisteInput_Init();
+int		PisteInput_Exit();
 bool	PisteInput_Hae_Hiiri(); //DEP
 bool	PisteInput_Hae_Nappaimet(); //DEP
 bool	PisteInput_Hae_Ohjaimet();
@@ -91,5 +91,9 @@ int		PisteInput_Ohjain_X(int ohjain);
 int		PisteInput_Ohjain_Y(int ohjain);
 bool	PisteInput_Onko_Hiiri();
 bool	PisteInput_Onko_Ohjain(int ohjain);
+
+int PisteInput_CreateGui(int x, int y, int w, int h, BYTE alpha, const char* t_path, int* key);
+int PisteInput_ActiveGui(int id, bool active);
+int PisteInput_DrawGui();
 
 #endif
