@@ -1,11 +1,23 @@
 #!/bin/bash
-
-LASTDIR=$(cwd)
-BASEDIR=$(dirname "$0")
-cd $BASEDIR
 #export ANDROID_SDK=/opt/android-sdk
 #export ANDROID_NDK=$ANDROID_SDK/ndk-bundle
 
+BASEDIR=$(dirname "$0")
+cd $BASEDIR
+
+
+TYPE="debug"
+
+for var in "$@"
+do
+    if [ "$var" == "release" ]
+	then
+		TYPE="release"
+	fi
+done
+
+
+echo Building $TYPE
 $ANDROID_NDK/ndk-build
 retval=$?
 if [ "$retval" == 0 ]
@@ -28,7 +40,7 @@ fi
 
 
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -storepass pekkakana -keypass pekkakana -keystore key.keystore build/outputs/apk/android-debug-unsigned.apk pekka_kana
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -storepass pekkakana -keypass pekkakana -keystore key.keystore build/outputs/apk/android-$TYPE-unsigned.apk pekka_kana
 retval=$?
 if [ "$retval" == 0 ]
 then
@@ -36,11 +48,11 @@ then
 else
 	exit $retval
 fi
-mv build/outputs/apk/android-debug-unsigned.apk build/outputs/apk/pk2-debug.apk
+mv build/outputs/apk/android-$TYPE-unsigned.apk build/outputs/apk/pk2-$TYPE.apk
 
 
 
-$ANDROID_SDK/platform-tools/adb install -r build/outputs/apk/pk2-debug.apk
+$ANDROID_SDK/platform-tools/adb install -r build/outputs/apk/pk2-$TYPE.apk
 if [ "$retval" == 0 ]
 then
 	echo "Installed Ok"
@@ -50,5 +62,3 @@ fi
 
 
 $ANDROID_SDK/platform-tools/adb shell monkey -p org.pgnapps.pk2 -c android.intent.category.LAUNCHER 1
-
-cd $LASTDIR

@@ -1,6 +1,5 @@
 LOCAL_PATH := $(call my-dir)
 
-
 include $(CLEAR_VARS)
 LOCAL_MODULE := mpg123
 LOCAL_SRC_FILES := sdl/$(TARGET_ARCH_ABI)/libmpg123.so
@@ -35,15 +34,10 @@ include $(BUILD_STATIC_LIBRARY)
 
 
 include $(CLEAR_VARS)
-
 SRC_DIR := ../src
-
 LOCAL_MODULE := PK2
 LOCAL_C_INCLUDES := $(SRC_DIR) $(ENG_DIR)
 LOCAL_SRC_FILES := $(SRC_DIR)/map.cpp $(SRC_DIR)/sprite.cpp $(SRC_DIR)/pk2.cpp
-
-#LOCAL_SHARED_LIBRARIES := SDL2 SDL2_image SDL2_mixer mpg123
 LOCAL_STATIC_LIBRARIES := PisteEngine
 LOCAL_LDLIBS := -lGLESv1_CM -lGLESv2 -llog
-
 include $(BUILD_SHARED_LIBRARY)
