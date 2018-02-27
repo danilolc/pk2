@@ -2,3 +2,5 @@ build/
 obj/
 .gradle/
 libs/
+.idea/
+local.properties

@@ -2,10 +2,10 @@ package org.pgnapps.pk2;
 
 import org.libsdl.app.SDLActivity;
 
+import android.app.Dialog;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.KeyEvent;
@@ -36,10 +36,7 @@ public class PK2Activity extends SDLActivity {
 	/* Checks if external storage is available for read and write */
 	public boolean isExternalStorageWritable() {
 		String state = Environment.getExternalStorageState();
-		if (Environment.MEDIA_MOUNTED.equals(state)) {
-		    return true;
-		}
-		return false;
+		return Environment.MEDIA_MOUNTED.equals(state);
 	}
 
 	private List<String> assets_list = new ArrayList<String>();
@@ -154,8 +151,8 @@ public class PK2Activity extends SDLActivity {
 		return super.dispatchKeyEvent(event);
 	}
 
-	//@Override
-    //protected Dialog onCreateDialog(int ignore, Bundle args) {
-	//	return super.onCreateDialog(ignore, args);
-	//}
+	@Override
+    protected Dialog onCreateDialog(int ignore, Bundle args) {
+		return super.onCreateDialog(ignore, args);
+	}
 }

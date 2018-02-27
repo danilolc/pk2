@@ -1,9 +1,10 @@
 buildscript {
 	repositories {
 		jcenter()
+		google()
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:2.3.3'
+		classpath 'com.android.tools.build:gradle:3.0.1'
 
 	}
 }
@@ -12,8 +13,8 @@ apply plugin: 'com.android.application'
 
 allprojects {
     repositories {
-    	jcenter()
-	mavenCentral()
+		jcenter()
+		mavenCentral()
 
     }
 }
@@ -22,15 +23,16 @@ dependencies {
 }
 
 android {
-
+	signingConfigs {
+		debug {
+		}
+	}
 	lintOptions {
 		abortOnError false
 		disable 'MissingTranslation'
 	}
-
 	compileSdkVersion 24
-	buildToolsVersion "26.0.1"
-
+	buildToolsVersion '26.0.2'
 	packagingOptions {
 		exclude 'META-INF/LICENSE'
 		exclude 'META-INF/NOTICE'
@@ -50,18 +52,18 @@ android {
 			java.srcDirs = ['src'
 			]
 			res.srcDirs = [
-				'res'
+					'res'
 			]
 			assets.srcDirs = [
-				'../res'
+					'../res'
 			]
 		}
 		debug.jniLibs.srcDirs = [
-			'libs/'
+				'libs/'
 
 		]
 		release.jniLibs.srcDirs = [
-			'libs/'
+				'libs/'
 
 		]
 	}
