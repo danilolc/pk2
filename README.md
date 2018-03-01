@@ -19,7 +19,7 @@ https://files.fm/f/d6mvf3qr
 If you want to compile it yourself, the win32 directory have the solution files for VisualStudio. It will also need the SDL2, SDL2_mixer and SDL2_image library.
 
 ### Ubuntu:
-To compile PK2 on Ubuntu you will need the SDL2, SDL2_mixer and SDL2_image library instaled on the system. To get them just run the following code:
+To compile PK2 on Ubuntu you will need the SDL2, SDL2_image and SDL2_mixer library instaled on the system. To get them just run the following code:
 ```
 sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
 ```
@@ -41,7 +41,7 @@ This example starts the level13.map on dev mode:
 
 
 # TODOs and FIXMEs:
-* Better port to Android "With resources"
+* Better port to Android (with resources)
 * Consider Sprite in Water when the water is on BG or outside the screen
 * Fix the mikmod music loop
 * Finish the touch UI

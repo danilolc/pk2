@@ -372,6 +372,7 @@ void PisteDraw2_FullScreen(bool set){
 		SDL_SetWindowFullscreen(PD_Window, 0);
 		SDL_SetWindowSize(PD_Window, PD_screen_width, PD_screen_height);
 		SDL_SetWindowPosition(PD_Window, SDL_WINDOWPOS_CENTERED , SDL_WINDOWPOS_CENTERED);
+		//TODO - adjust dst_rect too and turn off filters
 	}
 	#endif
 }
@@ -449,6 +450,7 @@ int PisteDraw2_Start(int width, int height, const char* name) {
 	#endif
 
 	PD_Renderer = SDL_CreateRenderer(PD_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	SDL_RenderClear(PD_Renderer);
 
 	frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
 	frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
@@ -456,9 +458,7 @@ int PisteDraw2_Start(int width, int height, const char* name) {
 	SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
 	SDL_FillRect(frameBuffer8, NULL, 255);
 
-	SDL_RenderClear(PD_Renderer);
-
-	SDL_Rect r = {0, 0, width, height};
+	SDL_Rect r = {.x = 0, .y = 0, .w = width, .h = height};
 	SDL_SetClipRect(frameBuffer8, &r);
 
 	PD_screen_width = width;

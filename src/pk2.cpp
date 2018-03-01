@@ -18,9 +18,6 @@
 //	"./PK2 dev test rooster\ island\ 2/level13.map"
 //	Starts the level13.map on dev mode
 //#########################
-//TODO
-//-Music loop
-//-Set panoramic audio
 
 #include <sys/stat.h>
 #include <fstream>
@@ -28,19 +25,23 @@
 #include <cstdio>
 #include <ctime>
 #include <cstdlib> //rand
+
 #ifdef _WIN32
-	#include <direct.h>
+#include <direct.h>
+
 #elif __linux__
-	#include <unistd.h> //getcwd chdir
+#include <unistd.h> //getcwd chdir
+
 #endif
+
 #ifdef __ANDROID__
-	#define gcvt(...) 0; //TODO - find gcvt()
+#define gcvt(...) 0; //TODO - find gcvt()
+
 #endif
 
 #include "PisteEngine.h"
 #include "map.h"
 #include "sprite.h"
-#include "../engine/types.h"
 
 using namespace std;
 
@@ -58,8 +59,9 @@ void ltoa(long n, char s[], int radix){
 
 //#### Constants
 
-const int MAX_ESINEITA = 4;
-const int MAX_TALLENNUKSIA = 10;
+const int MAX_GIFTS = 4;
+const int MAX_SAVES = 10;
+const BYTE BLOCK_MAX_MASKEJA = 150;
 
 enum BLOCKS
 {
@@ -73,7 +75,6 @@ enum BLOCKS
 	BLOCK_MAKI_ALAS
 };
 
-const BYTE BLOCK_MAX_MASKEJA = 150;
 
 struct PK2BLOCK{
 	BYTE		koodi;
@@ -140,24 +141,20 @@ PK2PARTIKKELI taustapartikkelit[MAX_TAUSTAPARTIKKELEITA];
 int taustapartikkeli_index = 0;
 
 //Episode
-const int EPISODI_MAX_JAKSOJA = 100; //= 50;
+const int EPISODI_MAX_LEVELS = 100; //50;
 const int MAX_EPISODEJA	= 300;
 
 const int MAX_ILMOITUKSENNAYTTOAIKA = 700;
 
 //PK2EPISODESCORES
-struct PK2EPISODIPISTEET{
-	// parhaat pisteet kullekin jaksolle episodissa..
-	DWORD pisteet[EPISODI_MAX_JAKSOJA];
-	// eniten pisteit� ker�nneet pelaajat kussakin jaksossa episodissa..
-	char top_pelaajat[EPISODI_MAX_JAKSOJA][20];
-	// parhaat ajat kullekin jaksolle episodissa..
-	DWORD ajat[EPISODI_MAX_JAKSOJA];
-	// nopeimmat pelaajat kussakin jaksossa episodissa..
-	char nopeimmat_pelaajat[EPISODI_MAX_JAKSOJA][20];
+struct PK2EPISODESCORES{
+	DWORD best_score[EPISODI_MAX_LEVELS];                  // the best score of each level in episode
+	char top_player[EPISODI_MAX_LEVELS][20];          // the name of the player with more score in each level on episode
+	DWORD best_time[EPISODI_MAX_LEVELS];                     // the best time of each level
+	char fastest_player[EPISODI_MAX_LEVELS][20];    // the name of the fastest player in each level
 
-	DWORD episodin_top_pisteet;
-	char  episodin_top_pelaaja[20];
+	DWORD episode_top_score;
+	char  episode_top_player[20];
 };
 
 enum SCREEN
@@ -185,11 +182,10 @@ enum MENU
 };
 
 //Sound
-const int AANET_SAMPLERATE = 22050;
+const int SOUND_SAMPLERATE = 22050;
 
 //#### Structs
-//PK2 Map
-struct PK2JAKSO{
+struct PK2LEVEL{
 	char	tiedosto[PE_PATH_SIZE];
 	char	nimi[40];
 	int		x,y;
@@ -198,20 +194,18 @@ struct PK2JAKSO{
 	int		ikoni;
 };
 
-//PK2FADETEXT
-struct PK2FADETEKSTI{
+struct PK2FADETEXT{
 	char teksti[20];
 	int fontti;
 	int x,y,ajastin;
 };
 
-//PK2RECORDING ??
-struct PK2TALLENNUS{
+struct PK2SAVE{
 	int   jakso;
 	char  episodi[PE_PATH_SIZE];
 	char  nimi[20];
 	bool  kaytossa;
-	bool  jakso_lapaisty[EPISODI_MAX_JAKSOJA];
+	bool  jakso_lapaisty[EPISODI_MAX_LEVELS];
 	DWORD pisteet;
 };
 
@@ -255,30 +249,34 @@ struct PK2SETTINGS {
 //#### Global Variables
 int screen_width  = 800;
 int screen_height = 480;
-bool RAJAA_KARTANPIIRTOALUE = true;
 
 bool test_level = false;
 bool dev_mode = false;
 
-bool PK2_virhe = false;
+bool PK2_error = false;
 
 bool window_closed	= false;
 bool lopeta_peli = false;
 
 bool running = true;
 bool unload = false;
-bool taulut_laskettu = false;
+bool precalculated_sincos = false;
 
-//ASETUKSET
 PK2SETTINGS settings;
 
-//INFO MUUTTUJAT
-bool	piirra_infot = false;
-int		info_spriteja = 0;
-int		info_spriteja_piirretty = 0;
-int		info_spriteja_aktiivisena = 0;
+int gui_egg,
+    gui_doodle,
+	gui_arr,
+	gui_up,
+	gui_down,
+	gui_left,
+	gui_right;
 
-char	viesti[60];
+//Debug info
+bool	draw_dubug_info = false;
+int		debug_sprites = 0;
+int		debug_drawn_sprites = 0;
+int		debug_active_sprites = 0;
 
 //KARTTA
 PK2Kartta *kartta;
@@ -293,7 +291,7 @@ int taustaspritet[MAX_SPRITEJA];
 
 int seuraava_vapaa_proto = 0;
 
-PK2Sprite_Prototyyppi *esineet[MAX_ESINEITA];
+PK2Sprite_Prototyyppi *esineet[MAX_GIFTS];
 int esineita = 0;
 
 //PALIKAT JA MASKIT
@@ -304,7 +302,7 @@ PK2BLOCK	lasketut_palikat[150];//150
 PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
 
 //Fade Text
-PK2FADETEKSTI fadetekstit[MAX_FADETEKSTEJA];
+PK2FADETEXT fadetekstit[MAX_FADETEKSTEJA];
 int fadeteksti_index = 0;
 
 //Screen Buffers
@@ -349,7 +347,7 @@ int jakso_indeksi_nyt = 1;
 char episodit[MAX_EPISODEJA][PE_PATH_SIZE];
 char episodi[PE_PATH_SIZE];
 int  episodisivu = 0;
-PK2JAKSO jaksot[EPISODI_MAX_JAKSOJA];
+PK2LEVEL jaksot[EPISODI_MAX_LEVELS];
 bool jakso_lapaisty = false;
 bool uusinta = false;
 bool peli_ohi = false;
@@ -390,7 +388,7 @@ int   musiikin_max_voimakkuus = 64;
 int   musiikin_voimakkuus_nyt = 64;
 
 //TALLENNUKSET
-PK2TALLENNUS tallennukset[MAX_TALLENNUKSIA];
+PK2SAVE tallennukset[MAX_SAVES];
 int lataa_peli = -1;
 
 //MUUTA
@@ -411,11 +409,11 @@ int kytkin_tarina = 0;
 
 int item_paneeli_x = 10;
 
-int ilmoitus_ajastin = 0;
-char ilmoitus[80] = " ";
+int info_timer = 0;
+char info[80] = " ";
 
 //PISTEIDEN LASKEMINEN
-PK2EPISODIPISTEET episodipisteet;
+PK2EPISODESCORES episodipisteet;
 
 int pistelaskuvaihe = 0;
 int pistelaskudelay = 0;
@@ -725,36 +723,36 @@ int PK_Settings_Save(char *filename){
 	return 0;
 }
 void PK_EpisodeScore_Start(){
-	for (int i=0;i<EPISODI_MAX_JAKSOJA;i++){
-		episodipisteet.pisteet[i] = 0;
-		episodipisteet.ajat[i] = 0;
-		strcpy(episodipisteet.top_pelaajat[i]," ");
-		strcpy(episodipisteet.nopeimmat_pelaajat[i]," ");
+	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
+		episodipisteet.best_score[i] = 0;
+		episodipisteet.best_time[i] = 0;
+		strcpy(episodipisteet.top_player[i]," ");
+		strcpy(episodipisteet.fastest_player[i]," ");
 	}
 
-	episodipisteet.episodin_top_pisteet = 0;
-	strcpy(episodipisteet.episodin_top_pelaaja," ");
+	episodipisteet.episode_top_score = 0;
+	strcpy(episodipisteet.episode_top_player," ");
 }
 int PK_EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupisteet){
 	int paluu = 0;
 	if (!loppupisteet) {
-		if (episteet > episodipisteet.pisteet[jakso]) {
-			strcpy(episodipisteet.top_pelaajat[jakso],pelaajan_nimi);
-			episodipisteet.pisteet[jakso] = episteet;
+		if (episteet > episodipisteet.best_score[jakso]) {
+			strcpy(episodipisteet.top_player[jakso],pelaajan_nimi);
+			episodipisteet.best_score[jakso] = episteet;
 			jakso_uusi_ennatys = true;
 			paluu++;
 		}
-		if ((aika < episodipisteet.ajat[jakso] || episodipisteet.ajat[jakso] == 0) && kartta->aika > 0) {
-			strcpy(episodipisteet.nopeimmat_pelaajat[jakso],pelaajan_nimi);
-			episodipisteet.ajat[jakso] = aika;
+		if ((aika < episodipisteet.best_time[jakso] || episodipisteet.best_time[jakso] == 0) && kartta->aika > 0) {
+			strcpy(episodipisteet.fastest_player[jakso],pelaajan_nimi);
+			episodipisteet.best_time[jakso] = aika;
 			jakso_uusi_ennatysaika = true;
 			paluu++;
 		}
 	}
 	else {
-		if (episteet > episodipisteet.episodin_top_pisteet) {
-		    episodipisteet.episodin_top_pisteet = episteet;
-			strcpy(episodipisteet.episodin_top_pelaaja,pelaajan_nimi);
+		if (episteet > episodipisteet.episode_top_score) {
+		    episodipisteet.episode_top_score = episteet;
+			strcpy(episodipisteet.episode_top_player,pelaajan_nimi);
 			episodi_uusi_ennatys = true;
 			paluu++;
 		}
@@ -1025,12 +1023,12 @@ void PK_New_Save(){
 
 	paused = false;
 
-	ilmoitus_ajastin = 0;
+	info_timer = 0;
 
 	nakymattomyys = 0;
 }
 void PK_Start_Saves(){
-	for (int i=0;i<EPISODI_MAX_JAKSOJA;i++){
+	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
 		strcpy(jaksot[i].nimi,"");
 		strcpy(jaksot[i].tiedosto,"");
 		jaksot[i].x = 0;
@@ -1044,15 +1042,15 @@ void PK_Start_Saves(){
 void PK_Search_File(){
 	int i=0;
 	char hakemisto[PE_PATH_SIZE];
-	char list[EPISODI_MAX_JAKSOJA][PE_PATH_SIZE];
-	for (int j = 0; j < EPISODI_MAX_JAKSOJA; j++)
+	char list[EPISODI_MAX_LEVELS][PE_PATH_SIZE];
+	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
 		memset(list[j], '\0', PE_PATH_SIZE);
 
 	PK2Kartta *temp = new PK2Kartta();
 
 	strcpy(hakemisto,"");
 	PK_Load_EpisodeDir(hakemisto);
-	jaksoja = PisteUtils_Scandir(".map", hakemisto, list, EPISODI_MAX_JAKSOJA);
+	jaksoja = PisteUtils_Scandir(".map", hakemisto, list, EPISODI_MAX_LEVELS);
 
 	for (i=0;i<=jaksoja;i++){
 		strcpy(jaksot[i].tiedosto,list[i]);
@@ -1065,7 +1063,7 @@ void PK_Search_File(){
 		}
 	}
 
-	PK2JAKSO jakso;
+	PK2LEVEL jakso;
 
 	bool lopeta = false;
 
@@ -1152,13 +1150,13 @@ int PK_Search_Episode(){
 	return 0;
 }
 int PK_Empty_Records(){
-	for (int i = 0;i < MAX_TALLENNUKSIA;i++){
+	for (int i = 0;i < MAX_SAVES;i++){
 		tallennukset[i].kaytossa = false;
 		strcpy(tallennukset[i].episodi," ");
 		strcpy(tallennukset[i].nimi,"empty");
 		tallennukset[i].jakso = 0;
 		tallennukset[i].pisteet = 0;
-		for (int j = 0;j < EPISODI_MAX_JAKSOJA;j++)
+		for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
 			tallennukset[i].jakso_lapaisty[j] = false;
 	}
 
@@ -1197,12 +1195,12 @@ int PK_Save_All_Records(char *filename){
 	char versio[2] = "1";
 	char lkm[8];
 
-	itoa(MAX_TALLENNUKSIA,lkm,10);
+	itoa(MAX_SAVES,lkm,10);
 
 	ofstream *tiedosto = new ofstream(filename, ios::binary);
 	tiedosto->write(versio,	sizeof(versio));
 	tiedosto->write(lkm,	sizeof(lkm));
-	for (int i=0;i< MAX_TALLENNUKSIA;i++)
+	for (int i=0;i< MAX_SAVES;i++)
 	{
 		tiedosto->write((char *)&tallennukset[i],	sizeof(tallennukset[i]));
 	}
@@ -1220,7 +1218,7 @@ int PK_Load_Records(int i){
 
 		PK_Start_Saves();
 
-		//for (int j = 0;j < EPISODI_MAX_JAKSOJA;j++)
+		//for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
 		//	jaksot[j].lapaisty = tallennukset[i].jakso_lapaisty[j];
 
 		pelin_seuraava_tila = TILA_KARTTA;
@@ -1237,7 +1235,7 @@ int PK_Save_Records(int i){
 	tallennukset[i].jakso = jakso;
 	tallennukset[i].pisteet = pisteet;
 
-	for (int j = 0;j < EPISODI_MAX_JAKSOJA;j++)
+	for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
 		tallennukset[i].jakso_lapaisty[j] = jaksot[j].lapaisty;
 
 	PK_Save_All_Records("data/saves.dat");
@@ -1638,11 +1636,11 @@ int PK_Draw_Transparent_Object(int lahde_buffer, DWORD lahde_x, DWORD lahde_y, D
 	PisteDraw2_Image_CutClipTransparent(lahde_buffer, src, dst, pros, vari);
 	return 0;
 }
-void PK_Uusi_Ilmoitus(char *teksti){
-	if (strcmp(teksti,ilmoitus) != 0 || ilmoitus_ajastin == 0)
+void PK_Start_Info(char *teksti){
+	if (strcmp(teksti,info) != 0 || info_timer == 0)
 	{
-		strcpy(ilmoitus,teksti);
-		ilmoitus_ajastin = MAX_ILMOITUKSENNAYTTOAIKA;
+		strcpy(info,teksti);
+		info_timer = MAX_ILMOITUKSENNAYTTOAIKA;
 	}
 }
 
@@ -1785,7 +1783,7 @@ void PK_Piirra_Polypilvi(DWORD x, DWORD y, int pros, BYTE vari){
 	PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x,y-kamera_y,226, 2, 18, 19); //Tirar isso
 }
 //PK_Particles_Clear
-int PK_Partikkelit_Tyhjenna(){
+int PK_Particlest_Tyhjenna(){
 	int i = 0;
 
 	partikkeli_index = 0;
@@ -1806,7 +1804,7 @@ int PK_Partikkelit_Tyhjenna(){
 	return 0;
 }
 //PK_Particles_New
-void PK_Partikkeli_Uusi(int tyyppi, double x, double y, double a, double b, int aika, double paino, int vari){ //Create particles
+void PK_Particles_Uusi(int tyyppi, double x, double y, double a, double b, int aika, double paino, int vari){ //Create particles
 	if (x < kamera_x+screen_width+10 && x > kamera_x-10 &&
 		y < kamera_y+screen_height+10 && y > kamera_y-10){
 		if (partikkeli_index >= MAX_PARTIKKELEITA)
@@ -1826,24 +1824,14 @@ void PK_Partikkeli_Uusi(int tyyppi, double x, double y, double a, double b, int 
 	}
 }
 //PK_Particles_Draw
-int	PK_Partikkelit_Piirra(){
+int	PK_Particlest_Piirra(){
 	int pros;
-	int piirtoleveys, piirtokorkeus;
-
-	if (RAJAA_KARTANPIIRTOALUE){
-		piirtoleveys  = screen_width;
-		piirtokorkeus = screen_height;
-	}
-	else{
-		piirtoleveys  = screen_width;
-		piirtokorkeus = screen_height;
-	}
 
 	for (int i=0;i<MAX_PARTIKKELEITA;i++){
 		if (partikkelit[i].aika > 0){
-			if (partikkelit[i].x < kamera_x+piirtoleveys &&
+			if (partikkelit[i].x < kamera_x+screen_width &&
 				partikkelit[i].x > kamera_x &&
-				partikkelit[i].y < kamera_y+piirtokorkeus &&
+				partikkelit[i].y < kamera_y+screen_height &&
 				partikkelit[i].y > kamera_y) {
 				if (partikkelit[i].aika < 100)
 					pros = partikkelit[i].aika;
@@ -1875,7 +1863,7 @@ int	PK_Partikkelit_Piirra(){
 	return 0;
 }
 //PK_Particles_Update
-int	PK_Partikkelit(){
+int	PK_Particlest(){
 	for (int i=0;i<MAX_PARTIKKELEITA;i++){
 		if (partikkelit[i].aika > 0){
 			partikkelit[i].x += partikkelit[i].a;
@@ -2070,74 +2058,74 @@ int	PK_Taustapartikkelit(){
 
 void PK_Tehoste_Hoyhenet(DWORD x, DWORD y){
 	for (int i=0;i<9;i++)//6
-		PK_Partikkeli_Uusi(	PARTIKKELI_HOYHEN,x+rand()%17-rand()%17,y+rand()%20-rand()%10,
+		PK_Particles_Uusi(	PARTIKKELI_HOYHEN,x+rand()%17-rand()%17,y+rand()%20-rand()%10,
 							(rand()%16-rand()%16)/10.0,(45+rand()%45)/100.0,300+rand()%40,0,0);
 }
 
 void PK_Tehoste_Loiskahdus(DWORD x, DWORD y, BYTE vari){
 	/*
 	for (int i=0;i<12;i++)
-		PK_Partikkeli_Uusi(	PARTIKKELI_VALO,x+rand()%17-13,y+rand()%17-13,
+		PK_Particles_Uusi(	PARTIKKELI_VALO,x+rand()%17-13,y+rand()%17-13,
 							(rand()%7-rand()%7)/5,(rand()%7-rand()%7)/3,
 							rand()%50+60,0.025,vari);*/
 	for (int i=0;i<7;i++)
-		PK_Partikkeli_Uusi(	PARTIKKELI_KIPINA,x+rand()%17-13,y+rand()%17-13,
+		PK_Particles_Uusi(	PARTIKKELI_KIPINA,x+rand()%17-13,y+rand()%17-13,
 							(rand()%5-rand()%5)/4.0,(rand()%4-rand()%7)/3.0,
 							rand()%50+40,0.025,vari);//0.015
 
 	for (int i=0;i<20;i++)
-		PK_Partikkeli_Uusi(	PARTIKKELI_PISTE,x+rand()%17-13,y+rand()%17-13,
+		PK_Particles_Uusi(	PARTIKKELI_PISTE,x+rand()%17-13,y+rand()%17-13,
 							(rand()%5-rand()%5)/4.0,(rand()%2-rand()%7)/3.0,
 							rand()%50+40,0.025,vari);//0.015
 
-	PK_Play_Sound(loiskahdus_aani, 100, x, y, AANET_SAMPLERATE, true);
+	PK_Play_Sound(loiskahdus_aani, 100, x, y, SOUND_SAMPLERATE, true);
 }
 
 void PK_Tehoste_Rajahdys(DWORD x, DWORD y, BYTE vari){
 	int i;
 
 	for (i=0;i<3;i++)
-		PK_Partikkeli_Uusi(	PARTIKKELI_SAVUPILVI,x+rand()%17-32,y+rand()%17,
+		PK_Particles_Uusi(	PARTIKKELI_SAVUPILVI,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%4)+3) / -10.0,450,0.0,vari);
 
 	for (i=0;i<9;i++)//12
-		PK_Partikkeli_Uusi(	PARTIKKELI_VALO,x+rand()%17-13,y+rand()%17-13,
+		PK_Particles_Uusi(	PARTIKKELI_VALO,x+rand()%17-13,y+rand()%17-13,
 							(rand()%7-rand()%7)/5.0,(rand()%7-rand()%7)/3.0,
 							rand()%40+60,0.025,vari);
 
 	for (i=0;i<8;i++)//8//10
-		PK_Partikkeli_Uusi(	PARTIKKELI_KIPINA,x+rand()%17-13,y+rand()%17-13,
+		PK_Particles_Uusi(	PARTIKKELI_KIPINA,x+rand()%17-13,y+rand()%17-13,
 							(rand()%3-rand()%3),//(rand()%7-rand()%7)/5,
 							(rand()%7-rand()%7)/3,
 							rand()%20+60,0.015,vari);//50+60
 
 	for (i=0;i<20;i++)//12
-		PK_Partikkeli_Uusi(	PARTIKKELI_PISTE,x+rand()%17-13,y+rand()%17-13,
+		PK_Particles_Uusi(	PARTIKKELI_PISTE,x+rand()%17-13,y+rand()%17-13,
 							(rand()%7-rand()%7)/5.0,(rand()%7-rand()%7)/3.0,
 							rand()%40+60,0.025,vari);
 }
 
 void PK_Tehoste_Savu(DWORD x, DWORD y, BYTE vari){
 	for (int i=0;i<3;i++)
-		PK_Partikkeli_Uusi(	PARTIKKELI_SAVUPILVI,x+rand()%17-32,y+rand()%17,
+		PK_Particles_Uusi(	PARTIKKELI_SAVUPILVI,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%3)+3) / -10.0/*-0.3*/,450,0.0,vari);
 	for (int i=0;i<6;i++)
-		PK_Partikkeli_Uusi(	PARTIKKELI_POLYPILVI,x+rand()%30-rand()%30-10,y+rand()%30-rand()%30+10,
+		PK_Particles_Uusi(	PARTIKKELI_POLYPILVI,x+rand()%30-rand()%30-10,y+rand()%30-rand()%30+10,
 							0,-0.3,rand()%50+60,0,vari);
 }
 
 void PK_Tehoste_Savupilvet(DWORD x, DWORD y){
 	for (int i=0;i<5;i++)
-		PK_Partikkeli_Uusi(	PARTIKKELI_SAVUPILVI,x+rand()%17-32,y+rand()%17,
+		PK_Particles_Uusi(	PARTIKKELI_SAVUPILVI,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%3)+3) / -10.0/*-0.3*/,450,0.0,0);
 }
 
 void PK_Tehoste_Tahdet(DWORD x, DWORD y, BYTE vari){
 	for (int i=0;i<5;i++)
-		PK_Partikkeli_Uusi(PARTIKKELI_TAHTI,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0/* 0.05*/,vari);//300
+		PK_Particles_Uusi(PARTIKKELI_TAHTI,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0/* 0.05*/,vari);//300
 
 	for (int i=0;i<3;i++)//12
-		PK_Partikkeli_Uusi(	PARTIKKELI_PISTE,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0,vari);
+		PK_Particles_Uusi(	PARTIKKELI_PISTE,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0,vari);
 }
 
 void PK_Tehosteet(BYTE tehoste, DWORD x, DWORD y){
@@ -2195,7 +2183,7 @@ int PK_Kartta_Vaihda_Kallopalikat(){
 	jaristys = 90;//60
 	PisteInput_Vibrate();
 
-	//PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_game_locksopen));
+	//PK_Start_Info(tekstit->Hae_Teksti(txt_game_locksopen));
 
 	PK_Kartta_Laske_Reunat();
 
@@ -2219,7 +2207,7 @@ int PK_Kartta_Avaa_Lukot(){
 	jaristys = 90;//60
 	PisteInput_Vibrate();
 
-	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_game_locksopen));
+	PK_Start_Info(tekstit->Hae_Teksti(txt_game_locksopen));
 
 	PK_Kartta_Laske_Reunat();
 
@@ -2567,7 +2555,7 @@ int PK_Kartta_Lataa(char *nimi){
 	PK_Kartta_Etsi_Alku();
 	PK_Sprite_Maaraa_Alkusuunnat();
 	PK_Kartta_Laske_Avaimet();
-	PK_Partikkelit_Tyhjenna();
+	PK_Particlest_Tyhjenna();
 	PK_Taustapartikkelit_Tyhjenna();
 	PK_Kartta_Laske_Reunat();
 
@@ -2581,7 +2569,7 @@ int PK_Kartta_Lataa(char *nimi){
 
 			if (PisteSound_StartMusic(biisi)!=0)
 				if (PisteSound_StartMusic("music/song01.xm")!=0)
-					PK2_virhe = true;
+					PK2_error = true;
 		}
 	}
 	return 0;
@@ -3029,7 +3017,7 @@ int PK_Piirra_Bonukset(){
 }
 //Clean items
 void PK_Esineet_Alusta(){
-	for (int i=0;i<MAX_ESINEITA;i++)
+	for (int i=0;i<MAX_GIFTS;i++)
 		esineet[i] = NULL;
 }
 
@@ -3043,7 +3031,7 @@ int PK_Esineet_Piirra(){
 
 	esineita = 0;
 
-	for (int i=0;i<MAX_ESINEITA;i++)
+	for (int i=0;i<MAX_GIFTS;i++)
 		if (esineet[i] != NULL)
 		{
 			esineita++;
@@ -3099,14 +3087,14 @@ bool PK_Esineet_Lisaa(PK2Sprite_Prototyyppi *proto){
 	char ilmo[80];
 	strcpy(ilmo,tekstit->Hae_Teksti(txt_game_newitem));  //"a new item: ";
 
-	while (i<MAX_ESINEITA && !lisatty)
+	while (i<MAX_GIFTS && !lisatty)
 	{
 		if (esineet[i] == NULL)
 		{
 			lisatty = true;
 			esineet[i] = proto;
 			//strcat(ilmo,proto->nimi);
-			PK_Uusi_Ilmoitus(ilmo);
+			PK_Start_Info(ilmo);
 		}
 		i++;
 	}
@@ -3117,10 +3105,10 @@ int PK_Esineet_Kayta(){
 	if (esineet[0] != NULL)
 		PK_Sprite_Lisaa(*esineet[0],0,spritet[pelaaja_index].x-esineet[0]->leveys,spritet[pelaaja_index].y,MAX_SPRITEJA/*pelaaja_index*/);
 
-	for (int i=0;i<MAX_ESINEITA-1;i++)
+	for (int i=0;i<MAX_GIFTS-1;i++)
 		esineet[i] = esineet[i+1];
 
-	esineet[MAX_ESINEITA-1] = NULL;
+	esineet[MAX_GIFTS-1] = NULL;
 
 	return 0;
 }
@@ -3131,12 +3119,12 @@ int PK_Esineet_Vaihda(){
 
 	PK2Sprite_Prototyyppi *temp = esineet[0];
 
-	for (int i=0;i<MAX_ESINEITA-1;i++)
+	for (int i=0;i<MAX_GIFTS-1;i++)
 		esineet[i] = esineet[i+1];
 
 	int lkm = 0;
 
-	while(lkm < MAX_ESINEITA-1 && esineet[lkm] != NULL)
+	while(lkm < MAX_GIFTS-1 && esineet[lkm] != NULL)
 		lkm++;
 
 	esineet[lkm] = temp;
@@ -3174,8 +3162,7 @@ int PK_Esineet_Vaihda(){
 
 	BYTE   max_nopeus;
 
-//Collision with the block sprite
-void PK_Tutki_Seina2(PK2Sprite &sprite, PK2BLOCK &palikka){
+void PK_Check_Blocks2(PK2Sprite &sprite, PK2BLOCK &palikka){
 
 	//left and right
 	if (sprite_yla < palikka.ala && sprite_ala-1 > palikka.yla){
@@ -3234,8 +3221,7 @@ void PK_Tutki_Seina2(PK2Sprite &sprite, PK2BLOCK &palikka){
 		}
 	}
 }
-//Examine blocks
-void PK_Tutki_Seina(PK2Sprite &sprite, PK2BLOCK &palikka){
+void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka){
 	int mask_index;
 
 	//If sprite is in the block
@@ -3267,7 +3253,7 @@ void PK_Tutki_Seina(PK2Sprite &sprite, PK2BLOCK &palikka){
 		if (palikka.koodi == BLOCK_LOPETUS && sprite.pelaaja != 0){
 			if (!jakso_lapaisty){
 				if (PisteSound_StartMusic("music/hiscore.xm")!=0)
-					PK2_virhe = true;
+					PK2_error = true;
 				jakso_lapaisty = true;
 				jaksot[jakso_indeksi_nyt].lapaisty = true;
 				if (jaksot[jakso_indeksi_nyt].jarjestys >= jakso)
@@ -3326,7 +3312,7 @@ void PK_Tutki_Seina(PK2Sprite &sprite, PK2BLOCK &palikka){
 			}
 
 			PK_Tehoste_Rajahdys(palikka.vasen+16, palikka.yla+10, 0);
-			PK_Play_Sound(avaa_lukko_aani,100, (int)sprite_x, (int)sprite_y, AANET_SAMPLERATE, false);
+			PK_Play_Sound(avaa_lukko_aani,100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 		}
 
 		/**********************************************************************/
@@ -3416,21 +3402,21 @@ void PK_Tutki_Seina(PK2Sprite &sprite, PK2BLOCK &palikka){
 						{
 							kytkin1 = KYTKIN_ALOITUSARVO;
 							kytkin_tarina = 64;
-							PK_Play_Sound(kytkin_aani, 100, (int)sprite_x, (int)sprite_y, AANET_SAMPLERATE, false);
+							PK_Play_Sound(kytkin_aani, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 						}
 
 						if (palikka.koodi == BLOCK_KYTKIN2 && kytkin2 == 0)
 						{
 							kytkin2 = KYTKIN_ALOITUSARVO;
 							kytkin_tarina = 64;
-							PK_Play_Sound(kytkin_aani, 100, (int)sprite_x, (int)sprite_y, AANET_SAMPLERATE, false);
+							PK_Play_Sound(kytkin_aani, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 						}
 
 						if (palikka.koodi == BLOCK_KYTKIN3 && kytkin3 == 0)
 						{
 							kytkin3 = KYTKIN_ALOITUSARVO;
 							kytkin_tarina = 64;
-							PK_Play_Sound(kytkin_aani, 100, (int)sprite_x, (int)sprite_y, AANET_SAMPLERATE, false);
+							PK_Play_Sound(kytkin_aani, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 						}
 
 						//if (sprite_b > 3 && sprite.paino >= 2)
@@ -3469,7 +3455,7 @@ void PK_Tutki_Seina(PK2Sprite &sprite, PK2BLOCK &palikka){
 }
 
 //PK_Move_Sprite
-int PK_Sprite_Liikuta(int i){
+int PK_Sprite_Movement(int i){
 
 	PK2Sprite &sprite = spritet[i]; //address of sprite = address of spritet[i] (if change sprite, change spritet[i])
 
@@ -3574,7 +3560,7 @@ int PK_Sprite_Liikuta(int i){
 			if (lisavauhti)
 			{
 				if (rand()%20 == 1 && sprite.animaatio_index == ANIMAATIO_KAVELY) //rand()%30
-					PK_Partikkeli_Uusi(PARTIKKELI_POLYPILVI,sprite_x-8,sprite_ala-8,0.25,-0.25,40,0,0);
+					PK_Particles_Uusi(PARTIKKELI_POLYPILVI,sprite_x-8,sprite_ala-8,0.25,-0.25,40,0,0);
 
 				a_lisays += 0.09;//0.05
 			}
@@ -3594,7 +3580,7 @@ int PK_Sprite_Liikuta(int i){
 			{
 				if (rand()%20 == 1 && sprite.animaatio_index == ANIMAATIO_KAVELY)
 				{
-					PK_Partikkeli_Uusi(PARTIKKELI_POLYPILVI,sprite_x-8,sprite_ala-8,-0.25,-0.25,40,0,0);
+					PK_Particles_Uusi(PARTIKKELI_POLYPILVI,sprite_x-8,sprite_ala-8,-0.25,-0.25,40,0,0);
 				}
 
 				a_lisays -= 0.09;
@@ -3789,7 +3775,7 @@ int PK_Sprite_Liikuta(int i){
 				p = x+y*palikat_x_lkm;
 				if (p<300)// && p>=0)//{
 					//if(sprite.pelaaja == 1) printf("%i\n",palikat_lkm);
-					PK_Tutki_Seina(sprite, palikat[p]);
+					PK_Check_Blocks(sprite, palikat[p]);
 				//}
 			}
 		}
@@ -3816,7 +3802,7 @@ int PK_Sprite_Liikuta(int i){
 		}
 
 		if (rand()%80 == 1)
-			PK_Partikkeli_Uusi(PARTIKKELI_KIPINA,sprite_x-4,sprite_y,0,-0.5-rand()%2,rand()%30+30,0,32);
+			PK_Particles_Uusi(PARTIKKELI_KIPINA,sprite_x-4,sprite_y,0,-0.5-rand()%2,rand()%30+30,0,32);
 	}
 
 	if (vedessa != sprite.vedessa) // Sprite comes in or out from water
@@ -3908,7 +3894,7 @@ int PK_Sprite_Liikuta(int i){
 					if (sprite2->b > 0)
 						spritepalikka.koodi = BLOCK_HISSI_VERT;
 
-					PK_Tutki_Seina2(sprite, spritepalikka); //Colision sprite and sprite block
+					PK_Check_Blocks2(sprite, spritepalikka); //Colision sprite and sprite block
 				}
 			}
 
@@ -4050,9 +4036,9 @@ int PK_Sprite_Liikuta(int i){
 
 			if (sprite.tyyppi->tyyppi != TYYPPI_AMMUS)
 			{
-				PK_Partikkeli_Uusi(PARTIKKELI_TAHTI,sprite_x,sprite_y,-1,-1,60,0.01,128);
-				PK_Partikkeli_Uusi(PARTIKKELI_TAHTI,sprite_x,sprite_y, 0,-1,60,0.01,128);
-				PK_Partikkeli_Uusi(PARTIKKELI_TAHTI,sprite_x,sprite_y, 1,-1,60,0.01,128);
+				PK_Particles_Uusi(PARTIKKELI_TAHTI,sprite_x,sprite_y,-1,-1,60,0.01,128);
+				PK_Particles_Uusi(PARTIKKELI_TAHTI,sprite_x,sprite_y, 0,-1,60,0.01,128);
+				PK_Particles_Uusi(PARTIKKELI_TAHTI,sprite_x,sprite_y, 1,-1,60,0.01,128);
 			}
 
 			if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
@@ -4161,13 +4147,13 @@ int PK_Sprite_Liikuta(int i){
 					PK_Play_Sound(tomahdys_aani,30,(int)sprite_x, (int)sprite_y,
 				                  int(25050-sprite.paino*3000),true);
 
-					//PK_Partikkeli_Uusi(	PARTIKKELI_POLYPILVI,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
+					//PK_Particles_Uusi(	PARTIKKELI_POLYPILVI,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
 					//			  0,-0.2,rand()%50+20,0,0);
 
 					if (rand()%7 == 1) {
-						PK_Partikkeli_Uusi(PARTIKKELI_SAVUPILVI,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
+						PK_Particles_Uusi(PARTIKKELI_SAVUPILVI,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
 									  	   0.3,-0.1,450,0,0);
-						PK_Partikkeli_Uusi(PARTIKKELI_SAVUPILVI,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
+						PK_Particles_Uusi(PARTIKKELI_SAVUPILVI,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
 									  	   -0.3,-0.1,450,0,0);
 					}
 
@@ -4387,7 +4373,7 @@ int PK_Sprite_Liikuta(int i){
 													PisteDraw2_FadeIn(PD_FADE_NORMAL);
 													if (sprite.tyyppi->aanet[AANI_HYOKKAYS2] != -1)
 														PK_Play_MenuSound(sprite.tyyppi->aanet[AANI_HYOKKAYS2], 100);
-														//PK_Play_Sound(, 100, kamera_x, kamera_y, AANET_SAMPLERATE, false);
+														//PK_Play_Sound(, 100, kamera_x, kamera_y, SOUND_SAMPLERATE, false);
 
 
 												}
@@ -4438,25 +4424,25 @@ int PK_Sprite_Liikuta(int i){
 			case AI_EVIL_ONE:					if (sprite.energia < 1) musiikin_voimakkuus = 0;
 												break;
 
-			case AI_INFO1:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info01));break;
-			case AI_INFO2:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info02));break;
-			case AI_INFO3:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info03));break;
-			case AI_INFO4:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info04));break;
-			case AI_INFO5:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info05));break;
-			case AI_INFO6:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info06));break;
-			case AI_INFO7:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info07));break;
-			case AI_INFO8:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info08));break;
-			case AI_INFO9:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info09));break;
-			case AI_INFO10:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info10));break;
-			case AI_INFO11:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info11));break;
-			case AI_INFO12:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info12));break;
-			case AI_INFO13:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info13));break;
-			case AI_INFO14:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info14));break;
-			case AI_INFO15:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info15));break;
-			case AI_INFO16:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info16));break;
-			case AI_INFO17:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info17));break;
-			case AI_INFO18:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info18));break;
-			case AI_INFO19:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_info19));break;
+			case AI_INFO1:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info01));break;
+			case AI_INFO2:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info02));break;
+			case AI_INFO3:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info03));break;
+			case AI_INFO4:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info04));break;
+			case AI_INFO5:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info05));break;
+			case AI_INFO6:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info06));break;
+			case AI_INFO7:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info07));break;
+			case AI_INFO8:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info08));break;
+			case AI_INFO9:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info09));break;
+			case AI_INFO10:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info10));break;
+			case AI_INFO11:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info11));break;
+			case AI_INFO12:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info12));break;
+			case AI_INFO13:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info13));break;
+			case AI_INFO14:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info14));break;
+			case AI_INFO15:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info15));break;
+			case AI_INFO16:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info16));break;
+			case AI_INFO17:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info17));break;
+			case AI_INFO18:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info18));break;
+			case AI_INFO19:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(txt_info19));break;
 
 			default:							break;
 			}
@@ -4620,7 +4606,7 @@ int PK_Sprite_Liikuta(int i){
 	return 0;
 }
 
-int PK_Sprite_Liikuta_Bonus(int i){
+int PK_Sprite_Movement_Bonus(int i){
 	sprite_x = 0;
 	sprite_y = 0;
 	sprite_a = 0;
@@ -4706,7 +4692,7 @@ int PK_Sprite_Liikuta_Bonus(int i){
 				sprite_b /= 2.0;
 
 			if (rand()%80 == 1)
-				PK_Partikkeli_Uusi(PARTIKKELI_KIPINA,sprite_x-4,sprite_y,0,-0.5-rand()%2,rand()%30+30,0,32);
+				PK_Particles_Uusi(PARTIKKELI_KIPINA,sprite_x-4,sprite_y,0,-0.5-rand()%2,rand()%30+30,0,32);
 		}
 
 		sprite.vedessa = false;
@@ -4752,7 +4738,7 @@ int PK_Sprite_Liikuta_Bonus(int i){
 						spritepalikka.vesi  = false;
 
 						PK_Palikka_Este(spritepalikka);
-						PK_Tutki_Seina2(sprite, spritepalikka); //Colision bonus and sprite block
+						PK_Check_Blocks2(sprite, spritepalikka); //Colision bonus and sprite block
 					}
 				}
 
@@ -4832,9 +4818,9 @@ int PK_Sprite_Liikuta_Bonus(int i){
 
 			for (y=0;y<palikat_y_lkm;y++)
 				for (x=0;x<palikat_x_lkm;x++)
-					PK_Tutki_Seina(sprite, palikat[x+y*palikat_x_lkm]);
+					PK_Check_Blocks(sprite, palikat[x+y*palikat_x_lkm]);
 			/*
-			PK_Tutki_Seina_Debug(sprite, palikat[x+y*palikat_x_lkm],
+			PK_Check_Blocks_Debug(sprite, palikat[x+y*palikat_x_lkm],
 					sprite_x,
 					sprite_y,
 					sprite_a,
@@ -4998,7 +4984,7 @@ int PK_Sprite_Liikuta_Bonus(int i){
 					ay = sprite.alku_y-sprite.tyyppi->korkeus/2.0;
 					PK_Sprite_Lisaa(*sprite.tyyppi,0,ax-17, ay,i);
 					for (int r=1;r<6;r++)
-						PK_Partikkeli_Uusi(PARTIKKELI_KIPINA,ax+rand()%10-rand()%10, ay+rand()%10-rand()%10,0,0,rand()%100,0.1,32);
+						PK_Particles_Uusi(PARTIKKELI_KIPINA,ax+rand()%10-rand()%10, ay+rand()%10-rand()%10,0,0,rand()%100,0.1,32);
 
 				}
 
@@ -5014,20 +5000,20 @@ int PK_Sprite_Liikuta_Bonus(int i){
 						spritet[pelaaja_index].ammus2 = spritet[pelaaja_index].tyyppi->ammus2;
 						spritet[pelaaja_index].alkupaino = spritet[pelaaja_index].tyyppi->paino;
 						spritet[pelaaja_index].y -= spritet[pelaaja_index].tyyppi->korkeus/2;
-						//PK_Uusi_Ilmoitus("pekka has been transformed!");
+						//PK_Start_Info("pekka has been transformed!");
 					}
 				}
 
 				if (sprite.tyyppi->ammus1 != -1)
 				{
 					spritet[pelaaja_index].ammus1 = sprite.tyyppi->ammus1;
-					PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_game_newegg));
+					PK_Start_Info(tekstit->Hae_Teksti(txt_game_newegg));
 				}
 
 				if (sprite.tyyppi->ammus2 != -1)
 				{
 					spritet[pelaaja_index].ammus2 = sprite.tyyppi->ammus2;
-					PK_Uusi_Ilmoitus(tekstit->Hae_Teksti(txt_game_newdoodle));
+					PK_Start_Info(tekstit->Hae_Teksti(txt_game_newdoodle));
 				}
 
 				PK_Play_Sound(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
@@ -5066,8 +5052,7 @@ int PK_Sprite_Liikuta_Bonus(int i){
 
 	return 0;
 }
-//If the screen changes
-int PK_Alusta_Tilat(){
+int PK_Change_Screen(){
 	if (pelin_seuraava_tila != pelin_tila){
 
 		PisteDraw2_FadeIn(PD_FADE_NORMAL);
@@ -5076,7 +5061,6 @@ int PK_Alusta_Tilat(){
 		if (pelin_seuraava_tila == TILA_PERUSALUSTUS){
 			strcpy(pelaajan_nimi,tekstit->Hae_Teksti(txt_player_default_name));
 			srand((unsigned)time(NULL));
-			strcpy(viesti,"no message");
 			if(!test_level){
 				strcpy(episodi,"");
 				strcpy(seuraava_kartta,"untitle1.map");
@@ -5084,34 +5068,19 @@ int PK_Alusta_Tilat(){
 
 			jakso = 1;
 
-			if (!taulut_laskettu){
-				//PisteLog_Kirjoita("  - Precalculating... \n");
+			if (!precalculated_sincos){
 				PK_Precalculate_SinCos();
-
 				PK2Kartta_Cos_Sin(cos_table, sin_table);
-				taulut_laskettu = true;
+				precalculated_sincos = true;
 			}
 
 			PK_Initialize_Fadetext();
-
-			/*
-			if (screen_width > screen_width)
-				screen_width = screen_width;
-
-			if (screen_height > screen_height)
-				screen_height = screen_height;
-
-			if (!RAJAA_KARTANPIIRTOALUE){
-
-				screen_width = screen_width;
-				screen_height = screen_height;
-			}
-			*/
 
 			PK2Kartta_Aseta_Ruudun_Mitat(screen_width,screen_height); //TODO - call when screen change
 
 			kartta = new PK2Kartta();
 
+			//TODO - set correct filter
 			if (!settings.isFiltered)
 				PisteDraw2_SetFilter(PD_FILTER_NEAREST);
 			if (settings.isFiltered)
@@ -5134,24 +5103,24 @@ int PK_Alusta_Tilat(){
 			ind_font = tekstit->Hae_Indeksi("font small font");
 			if (ind_path == -1 || ind_font == -1) {
 				if ((fontti1 = PisteDraw2_Font_Create("language/fonts/","ScandicSmall.txt")) == -1){
-					PK2_virhe = true;
+					PK2_error = true;
 				}
 			}
 			else {
 				if ((fontti1 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-					PK2_virhe = true;
+					PK2_error = true;
 				}
 			}
 
 			ind_font = tekstit->Hae_Indeksi("font big font normal");
 			if (ind_path == -1 || ind_font == -1) {
 				if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
-				PK2_virhe = true;
+				PK2_error = true;
 				}
 			}
 			else {
 				if ((fontti2 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-				PK2_virhe = true;
+				PK2_error = true;
 				//PisteLog_Kirjoita("    - Loading font ");
 				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
 				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
@@ -5162,12 +5131,12 @@ int PK_Alusta_Tilat(){
 			ind_font = tekstit->Hae_Indeksi("font big font hilite");
 			if (ind_path == -1 || ind_font == -1) {
 				if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
-				PK2_virhe = true;
+				PK2_error = true;
 				}
 			}
 			else {
 				if ((fontti3 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-				PK2_virhe = true;
+				PK2_error = true;
 				//PisteLog_Kirjoita("    - Loading font ");
 				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
 				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
@@ -5178,12 +5147,12 @@ int PK_Alusta_Tilat(){
 			ind_font = tekstit->Hae_Indeksi("font big font shadow");
 			if (ind_path == -1 || ind_font == -1) {
 				if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
-				PK2_virhe = true;
+				PK2_error = true;
 				}
 			}
 			else {
 				if ((fontti4 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-				PK2_virhe = true;
+				PK2_error = true;
 				//PisteLog_Kirjoita("    - Loading font ");
 				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
 				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
@@ -5192,15 +5161,15 @@ int PK_Alusta_Tilat(){
 			}
 
 			if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
-				PK2_virhe = true;
+				PK2_error = true;
 			}
 
 			if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
-				PK2_virhe = true;
+				PK2_error = true;
 			}
 
 			if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
-				PK2_virhe = true;
+				PK2_error = true;
 			}
 
 			PK_Sprite_Tyhjenna();
@@ -5214,31 +5183,31 @@ int PK_Alusta_Tilat(){
 			//PisteLog_Kirjoita("  - Loading basic sound fx \n");
 
 			if ((kytkin_aani = PisteSound_LoadSFX("sfx/switch3.wav"))==-1)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			if ((hyppy_aani  = PisteSound_LoadSFX("sfx/jump4.wav"))==-1)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			if ((loiskahdus_aani  = PisteSound_LoadSFX("sfx/splash.wav"))==-1)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			if ((avaa_lukko_aani  = PisteSound_LoadSFX("sfx/openlock.wav"))==-1)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			if ((menu_aani  = PisteSound_LoadSFX("sfx/menu2.wav"))==-1)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			if ((ammuu_aani  = PisteSound_LoadSFX("sfx/moo.wav"))==-1)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			if ((kieku_aani  = PisteSound_LoadSFX("sfx/doodle.wav"))==-1)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			if ((tomahdys_aani  = PisteSound_LoadSFX("sfx/pump.wav"))==-1)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			if ((pistelaskuri_aani = PisteSound_LoadSFX("sfx/counter.wav"))==-1)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			PisteDraw2_FadeIn(PD_FADE_SLOW);
 
@@ -5278,7 +5247,7 @@ int PK_Alusta_Tilat(){
 					//PisteLog_Kirjoita("  - Loading a saved game \n");
 					PK_Search_File();
 
-					for (int j = 0;j < EPISODI_MAX_JAKSOJA;j++)
+					for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
 						 jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
 
 					lataa_peli = -1;
@@ -5402,7 +5371,7 @@ int PK_Alusta_Tilat(){
 				PK_Sprite_Tyhjenna(); //Reset sprites
 
 				if (PK_Kartta_Lataa(seuraava_kartta) == 1)
-					PK2_virhe = true;
+					PK2_error = true;
 
 				PK_Calculate_Tiles();
 
@@ -5435,7 +5404,7 @@ int PK_Alusta_Tilat(){
 			PK_Create_MenuShadow(kuva_tausta, 640, 480, 30);
 
 			//if (PisteSound_StartMusic("music/hiscore.xm")!=0)
-			//	PK2_virhe = true;
+			//	PK2_error = true;
 
 			jakso_uusi_ennatys = false;
 			jakso_uusi_ennatysaika = false;
@@ -5446,7 +5415,7 @@ int PK_Alusta_Tilat(){
 			temp_pisteet += jakso_pisteet;
 			temp_pisteet += aika*5;
 			temp_pisteet += spritet[pelaaja_index].energia * 300;
-			for (int i=0;i<MAX_ESINEITA;i++)
+			for (int i=0;i<MAX_GIFTS;i++)
 				if (esineet[i] != NULL)
 					temp_pisteet += esineet[i]->pisteet + 500;
 
@@ -5504,7 +5473,7 @@ int PK_Alusta_Tilat(){
 			//PisteLog_Kirjoita("  - Loading music: music/INTRO.XM\n");
 
 			if (PisteSound_StartMusic("music/intro.xm")!=0)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			musiikin_voimakkuus = musiikin_max_voimakkuus;
 
@@ -5526,7 +5495,7 @@ int PK_Alusta_Tilat(){
 			kuva_tausta = PisteDraw2_Image_Load("gfx/ending.bmp",true);
 
 			if (PisteSound_StartMusic("music/intro.xm")!=0)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			musiikin_voimakkuus = musiikin_max_voimakkuus;
 
@@ -5542,8 +5511,8 @@ int PK_Alusta_Tilat(){
 	return 0;
 }
 
-int PK_Spritet(){
-	info_spriteja_aktiivisena = 0;
+int PK_Update_Sprites(){
+	debug_active_sprites = 0;
 
 	//bool aktiivinen;
 	int i;
@@ -5568,18 +5537,18 @@ int PK_Spritet(){
 		if (spritet[i].aktiivinen && spritet[i].tyyppi->tyyppi != TYYPPI_TAUSTA)
 		{
 			if (spritet[i].tyyppi->tyyppi == TYYPPI_BONUS)
-				PK_Sprite_Liikuta_Bonus(i);
+				PK_Sprite_Movement_Bonus(i);
 			else
-				PK_Sprite_Liikuta(i);
+				PK_Sprite_Movement(i);
 
-			info_spriteja_aktiivisena++;
+			debug_active_sprites++;
 		}
 	}
 
 	return 0;
 }
 
-int PK_Spritet_Piirra_Taustat(){
+int PK_Draw_Sprites_Taustat(){
 	double xl, yl, alku_x, alku_y, yk;
 	int i;
 
@@ -5654,7 +5623,7 @@ int PK_Spritet_Piirra_Taustat(){
 					spritet[i].Piirra(kamera_x,kamera_y);
 					spritet[i].piilossa = false;
 
-					info_spriteja_piirretty++;
+					debug_drawn_sprites++;
 				}
 				else
 				{
@@ -5663,7 +5632,7 @@ int PK_Spritet_Piirra_Taustat(){
 					spritet[i].piilossa = true;
 				}
 
-				info_spriteja++;
+				debug_sprites++;
 
 			}
 		}
@@ -5671,9 +5640,9 @@ int PK_Spritet_Piirra_Taustat(){
 	return 0;
 }
 
-int PK_Spritet_Piirra(){
-	info_spriteja = 0;
-	info_spriteja_piirretty = 0;
+int PK_Draw_Sprites(){
+	debug_sprites = 0;
+	debug_drawn_sprites = 0;
 	int stars, sx;
 	double star_x, star_y;
 
@@ -5708,7 +5677,7 @@ int PK_Spritet_Piirra(){
 					}
 				}
 
-				info_spriteja_piirretty++;
+				debug_drawn_sprites++;
 			}
 			else
 			{
@@ -5719,13 +5688,13 @@ int PK_Spritet_Piirra(){
 					spritet[i].piilota = true;
 			}
 
-			info_spriteja++;
+			debug_sprites++;
 		}
 	}
 	return 0;
 }
 
-int PK_Kamera(){
+int PK_Update_Camera(){
 
 
 	kamera_x = (int)spritet[pelaaja_index].x-screen_width/2;
@@ -5801,7 +5770,7 @@ int PK_Kamera(){
 //==================================================
 //Draw Functions (Piirra)
 //==================================================
-int PK_Piirra_Info(){
+int PK_Draw_Info(){
 	int vali, fy = 35;
 	char lukua[20];
 
@@ -5811,17 +5780,17 @@ int PK_Piirra_Info(){
 		PisteDraw2_SetXOffset(0);
 
 	vali = PisteDraw2_Font_Write(fontti1,"spriteja: ",10,fy);
-	itoa(info_spriteja,lukua,10);
+	itoa(debug_sprites,lukua,10);
 	PisteDraw2_Font_Write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
 	vali = PisteDraw2_Font_Write(fontti1,"aktiivisia: ",10,fy);
-	itoa(info_spriteja_aktiivisena,lukua,10);
+	itoa(debug_active_sprites,lukua,10);
 	PisteDraw2_Font_Write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
 	vali = PisteDraw2_Font_Write(fontti1,"piirretty: ",10,fy);
-	itoa(info_spriteja_piirretty,lukua,10);
+	itoa(debug_drawn_sprites,lukua,10);
 	PisteDraw2_Font_Write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
@@ -5833,9 +5802,7 @@ int PK_Piirra_Info(){
 		PisteDraw2_Font_Write(fontti1,protot[i].bonus_sprite,545,10+i*10);
 	}
 
-	PisteDraw2_Font_Write(fontti1,viesti,10,80);
-
-	for (int i=0;i<EPISODI_MAX_JAKSOJA;i++)
+	for (int i=0;i<EPISODI_MAX_LEVELS;i++)
 	{
 		if (strcmp(jaksot[i].nimi,"")!=0)
 			PisteDraw2_Font_Write(fontti1,jaksot[i].nimi,0,240+i*10);
@@ -6047,31 +6014,31 @@ int PK_Piirra_Peli_Ylaosa(){
 	}
 
 
-	if (ilmoitus_ajastin > 0)
+	if (info_timer > 0)
 	{
-		int ilm_pituus = strlen(ilmoitus) * 8 + 8; // 300
+		int ilm_pituus = strlen(info) * 8 + 8; // 300
 
 		RECT alue = {screen_width/2-(ilm_pituus/2),60,screen_width/2+(ilm_pituus/2),60+20};
 
-		if (ilmoitus_ajastin < 20)
+		if (info_timer < 20)
 		{
-			alue.top	+= (20 - ilmoitus_ajastin) / 2;
-			alue.bottom -= (20 - ilmoitus_ajastin) / 2;
+			alue.top	+= (20 - info_timer) / 2;
+			alue.bottom -= (20 - info_timer) / 2;
 		}
 
-		if (ilmoitus_ajastin > MAX_ILMOITUKSENNAYTTOAIKA - 20)
+		if (info_timer > MAX_ILMOITUKSENNAYTTOAIKA - 20)
 		{
-			alue.top	+= 10 - (MAX_ILMOITUKSENNAYTTOAIKA - ilmoitus_ajastin) / 2;
-			alue.bottom -= 10 - (MAX_ILMOITUKSENNAYTTOAIKA - ilmoitus_ajastin) / 2;
+			alue.top	+= 10 - (MAX_ILMOITUKSENNAYTTOAIKA - info_timer) / 2;
+			alue.bottom -= 10 - (MAX_ILMOITUKSENNAYTTOAIKA - info_timer) / 2;
 		}
 
 		PisteDraw2_ScreenFill(alue.left-1,alue.top-1,alue.right+1,alue.bottom+1,51);
 		PisteDraw2_ScreenFill(alue.left,alue.top,alue.right,alue.bottom,38);
 
-		if (ilmoitus_ajastin >= 100)
-			PisteDraw2_Font_Write(fontti1,ilmoitus,alue.left+4,alue.top+4);
+		if (info_timer >= 100)
+			PisteDraw2_Font_Write(fontti1,info,alue.left+4,alue.top+4);
 		else
-			PisteDraw2_Font_WriteAlpha(fontti1,ilmoitus,alue.left+4,alue.top+4,ilmoitus_ajastin);
+			PisteDraw2_Font_WriteAlpha(fontti1,info,alue.left+4,alue.top+4,info_timer);
 	}
 
 	return 0;
@@ -6087,7 +6054,7 @@ int PK_Piirra_Peli(){
 
 	if (!skip_frame)
 		if (settings.tausta_spritet)
-			PK_Spritet_Piirra_Taustat();
+			PK_Draw_Sprites_Taustat();
 
 	if (settings.saa_efektit)
 		PK_Taustapartikkelit();
@@ -6097,19 +6064,19 @@ int PK_Piirra_Peli(){
 
 	if (!paused)
 	{
-		PK_Partikkelit();
+		PK_Particlest();
 		if (!jakso_lapaisty && (!aikaraja || aika > 0))
-			PK_Spritet();
+			PK_Update_Sprites();
 		PK_Update_Fadetexts();
 	}
 
 	if (!skip_frame)
-		PK_Spritet_Piirra();
+		PK_Draw_Sprites();
 
 	//PK_Piirra_Bonukset();
 
 	if (!skip_frame)
-		PK_Partikkelit_Piirra();
+		PK_Particlest_Piirra();
 
 	if (!skip_frame)
 		kartta->Piirra_Seinat(kamera_x,kamera_y, false);
@@ -6121,8 +6088,8 @@ int PK_Piirra_Peli(){
 
 	PK_Piirra_Peli_Ylaosa();
 
-	if (piirra_infot)
-		PK_Piirra_Info();
+	if (draw_dubug_info)
+		PK_Draw_Info();
 
 	//Draw framerate
 	if (fps_nayta){
@@ -6177,8 +6144,13 @@ int PK_Piirra_Peli(){
 	return 0;
 }
 
-void PK_Piirra_Kursori(int x,int y){
-	PisteDraw2_Image_CutClip(kuva_peli,x,y,621,461,640,480);
+void PK_Draw_Cursor(int x,int y){
+	#ifndef __ANDROID__
+
+	if(settings.isFullScreen)
+		PisteDraw2_Image_CutClip(kuva_peli,x,y,621,461,640,480);
+
+	#endif
 }
 
 int PK_Piirra_Menu_Nelio(int vasen, int yla, int oikea, int ala, BYTE pvari){
@@ -6325,7 +6297,7 @@ int PK_Draw_GfxMenu_Box(int x, int y, bool muuttuja, bool active){
 	return false;
 }
 
-int PK_Piirra_Menut_Saatolaatikko(int x, int y){
+int PK_Draw_Menu_Saatolaatikko(int x, int y){
 	int val = 45;
 
 	int randx = rand()%3 - rand()%3;
@@ -6370,7 +6342,7 @@ int PK_Piirra_Menut_Saatolaatikko(int x, int y){
 	return 0;
 }
 
-int PK_Piirra_Menut_PaaValikko(){
+int PK_Draw_Menu_Main(){
 	int my = 240;//250;
 	#ifdef __ANDROID__
 	my = 260;
@@ -6440,7 +6412,7 @@ int PK_Piirra_Menut_PaaValikko(){
 	return 0;
 }
 
-int PK_Piirra_Menut_Nimi(){
+int PK_Draw_Menu_Name(){
 	int mx; //Text cursor
 	char merkki;
 	bool hiiri_alueella = false;
@@ -6566,7 +6538,7 @@ int PK_Piirra_Menut_Nimi(){
 	return 0;
 }
 
-int PK_Piirra_Menut_Lataa(){
+int PK_Draw_Menu_Load(){
 	int my = 0, vali = 0;
 	char tpaikka[100];
 	char jaksoc[8];
@@ -6578,7 +6550,7 @@ int PK_Piirra_Menut_Lataa(){
 	PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_loadgame_info),50,110);
 	my = -20;
 
-	for (int i=0;i<MAX_TALLENNUKSIA;i++) {
+	for (int i=0;i<MAX_SAVES;i++) {
 		itoa(i+1,ind,10);
 		strcpy(tpaikka,ind);
 		strcat(tpaikka,". ");
@@ -6609,7 +6581,7 @@ int PK_Piirra_Menut_Lataa(){
 	return 0;
 }
 
-int PK_Piirra_Menut_Tallenna(){
+int PK_Draw_Menu_Save(){
 	int my = 0, vali = 0;
 	char tpaikka[100];
 	char jaksoc[8];
@@ -6621,7 +6593,7 @@ int PK_Piirra_Menut_Tallenna(){
 	PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_savegame_info),50,110);
 	my = -20;
 
-	for (int i=0;i<MAX_TALLENNUKSIA;i++)
+	for (int i=0;i<MAX_SAVES;i++)
 	{
 		itoa(i+1,ind,10);
 		strcpy(tpaikka,ind);
@@ -6654,7 +6626,7 @@ int PK_Piirra_Menut_Tallenna(){
 	return 0;
 }
 
-int PK_Piirra_Menut_Grafiikka(){
+int PK_Draw_Menu_Graphics(){
 	bool wasFullScreen, wasFiltered, wasFit, wasWide;
 	int my = 150;
 	static bool moreOptions = false;
@@ -6850,7 +6822,7 @@ int PK_Piirra_Menut_Grafiikka(){
 	return 0;
 }
 
-int PK_Piirra_Menut_Aanet(){
+int PK_Draw_Menu_Sounds(){
 	int my = 0;
 
 	PK_Piirra_Menu_Nelio(40, 70, 640-40, 410, 224);
@@ -6910,7 +6882,7 @@ int PK_Piirra_Menut_Aanet(){
 	return 0;
 }
 
-int PK_Piirra_Menut_Kontrollit(){
+int PK_Draw_Menu_Controls(){
 	int my = 0;
 
 	PK_Piirra_Menu_Nelio(40, 70, 640-40, 410, 224);
@@ -7045,7 +7017,7 @@ int PK_Piirra_Menut_Kontrollit(){
 	return 0;
 }
 
-int PK_Piirra_Menut_Episodit(){
+int PK_Draw_Menu_Episodes(){
 	int my = 0;
 
 	PK_Piirra_Menu_Nelio(110, 130, 640-110, 450, 224);
@@ -7065,7 +7037,7 @@ int PK_Piirra_Menut_Episodit(){
 		itoa((episodi_lkm/10)+1,luku,10);
 		vali += PisteDraw2_Font_Write(fontti1,luku,x+vali,y+20);
 
-		int nappi = PK_Piirra_Menut_Saatolaatikko(x,y);
+		int nappi = PK_Draw_Menu_Saatolaatikko(x,y);
 
 		if (nappi == 1 && episodisivu > 0)
 			episodisivu--;
@@ -7098,7 +7070,7 @@ int PK_Piirra_Menut_Episodit(){
 	return 0;
 }
 //PK_Draw_Language_Menu
-int PK_Piirra_Menut_Language(){
+int PK_Draw_Menu_Language(){
 	int my = 0;
 	int i;
 	//char temp[10];
@@ -7149,26 +7121,26 @@ int PK_Piirra_Menut_Language(){
 	return 0;
 }
 //PK_Draw_Menu
-int PK_Piirra_Menut(){
+int PK_Draw_Menu(){
 	PisteDraw2_Image_Clip(kuva_tausta, peli_kesken? -80 : 0 ,0);
 
 	menu_valinta_id = 1;
 
 	switch (menu_nyt)
 	{
-	case MENU_PAAVALIKKO : PK_Piirra_Menut_PaaValikko(); break;
-	case MENU_EPISODIT   : PK_Piirra_Menut_Episodit();   break;
-	case MENU_GRAFIIKKA  : PK_Piirra_Menut_Grafiikka();  break;
-	case MENU_AANET      : PK_Piirra_Menut_Aanet();      break;
-	case MENU_KONTROLLIT : PK_Piirra_Menut_Kontrollit(); break;
-	case MENU_NIMI       : PK_Piirra_Menut_Nimi();       break;
-	case MENU_LATAA      : PK_Piirra_Menut_Lataa();      break;
-	case MENU_TALLENNA   : PK_Piirra_Menut_Tallenna();   break;
-	case MENU_LANGUAGE   : PK_Piirra_Menut_Language();   break;
-	default              : PK_Piirra_Menut_PaaValikko(); break;
+	case MENU_PAAVALIKKO : PK_Draw_Menu_Main(); break;
+	case MENU_EPISODIT   : PK_Draw_Menu_Episodes();   break;
+	case MENU_GRAFIIKKA  : PK_Draw_Menu_Graphics();  break;
+	case MENU_AANET      : PK_Draw_Menu_Sounds();      break;
+	case MENU_KONTROLLIT : PK_Draw_Menu_Controls(); break;
+	case MENU_NIMI       : PK_Draw_Menu_Name();       break;
+	case MENU_LATAA      : PK_Draw_Menu_Load();      break;
+	case MENU_TALLENNA   : PK_Draw_Menu_Save();   break;
+	case MENU_LANGUAGE   : PK_Draw_Menu_Language();   break;
+	default              : PK_Draw_Menu_Main(); break;
 	}
 
-	PK_Piirra_Kursori(hiiri_x,hiiri_y);
+	PK_Draw_Cursor(hiiri_x,hiiri_y);
 
 	return 0;
 }
@@ -7213,8 +7185,7 @@ int PK_Piirra_Nuppi(int x, int y, int t){
 
 	return paluu;
 }
-//PK_Draw_Map
-int PK_Piirra_Kartta(){
+int PK_Draw_Map(){
 	char luku[20];
 	int vali = 20;
 
@@ -7230,11 +7201,11 @@ int PK_Piirra_Kartta(){
 	PisteDraw2_Font_Write(fontti4,luku,100+vali+2+15,92+2);
 	PisteDraw2_Font_Write(fontti2,luku,100+vali+15,92);
 
-	if (episodipisteet.episodin_top_pisteet > 0) {
+	if (episodipisteet.episode_top_score > 0) {
 		vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_map_episode_best_player),360,72);
-		PisteDraw2_Font_Write(fontti1,episodipisteet.episodin_top_pelaaja,360+vali+10,72);
+		PisteDraw2_Font_Write(fontti1,episodipisteet.episode_top_player,360+vali+10,72);
 		vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(txt_map_episode_hiscore),360,92);
-		ltoa(episodipisteet.episodin_top_pisteet,luku,10);
+		ltoa(episodipisteet.episode_top_score,luku,10);
 		PisteDraw2_Font_Write(fontti2,luku,360+vali+15,92);
 	}
 
@@ -7242,7 +7213,7 @@ int PK_Piirra_Kartta(){
 	ltoa(jakso,luku,10);
 	PisteDraw2_Font_Write(fontti1,luku,100+vali+15,120);
 
-		//PK_Partikkelit_Piirra();
+		//PK_Particlest_Piirra();
 
 	if (jaksoja == 0) {
 		PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(txt_episodes_no_maps),180,290);
@@ -7323,21 +7294,21 @@ int PK_Piirra_Kartta(){
 				PisteDraw2_Image_CutClip(kuva_peli,info_x-3,info_y+26,473,0,607,121);
 				PisteDraw2_Font_Write(fontti1,jaksot[i].nimi,info_x,info_y+30);
 
-				if (episodipisteet.pisteet[i] > 0) {
+				if (episodipisteet.best_score[i] > 0) {
 					PisteDraw2_Font_WriteAlpha(fontti1,tekstit->Hae_Teksti(txt_map_level_best_player),info_x,info_y+50,75);
-					PisteDraw2_Font_Write(fontti1,episodipisteet.top_pelaajat[i],info_x,info_y+62);
+					PisteDraw2_Font_Write(fontti1,episodipisteet.top_player[i],info_x,info_y+62);
 					vali = 8 + PisteDraw2_Font_WriteAlpha(fontti1,tekstit->Hae_Teksti(txt_map_level_hiscore),info_x,info_y+74,75);
-					ltoa(episodipisteet.pisteet[i],luku,10);
+					ltoa(episodipisteet.best_score[i],luku,10);
 					PisteDraw2_Font_Write(fontti1,luku,info_x+vali,info_y+75);
 				}
 
-				if (episodipisteet.ajat[i] > 0) {
+				if (episodipisteet.best_time[i] > 0) {
 					PisteDraw2_Font_WriteAlpha(fontti1,tekstit->Hae_Teksti(txt_map_level_fastest_player),info_x,info_y+98,75);
-					PisteDraw2_Font_Write(fontti1,episodipisteet.nopeimmat_pelaajat[i],info_x,info_y+110);
+					PisteDraw2_Font_Write(fontti1,episodipisteet.fastest_player[i],info_x,info_y+110);
 
 					vali = 8 + PisteDraw2_Font_WriteAlpha(fontti1,tekstit->Hae_Teksti(txt_map_level_best_time),info_x,info_y+122,75);
-					min = episodipisteet.ajat[i]/60;
-					sek = episodipisteet.ajat[i]%60;
+					min = episodipisteet.best_time[i]/60;
+					sek = episodipisteet.best_time[i]%60;
 
 					itoa(min,luku,10);
 					vali += PisteDraw2_Font_Write(fontti1,luku,info_x+vali,info_y+122);
@@ -7349,12 +7320,12 @@ int PK_Piirra_Kartta(){
 		}
 	}
 
-	PK_Piirra_Kursori(hiiri_x,hiiri_y);
+	PK_Draw_Cursor(hiiri_x,hiiri_y);
 
 	return 0;
 }
 
-int PK_Piirra_Pistelasku(){
+int PK_Draw_ScoreCount(){
 	char luku[20];
 	int vali = 20;
 	int my = 0, x, y;
@@ -7430,7 +7401,7 @@ int PK_Piirra_Pistelasku(){
 	x = 110;
 	y = 192 + my;
 
-	for (int i=0;i<MAX_ESINEITA;i++)
+	for (int i=0;i<MAX_GIFTS;i++)
 		if (esineet[i] != NULL)	{
 			esineet[i]->Piirra(x-esineet[i]->leveys/2,y-esineet[i]->korkeus/2,0);
 			x += 38;
@@ -7467,12 +7438,11 @@ int PK_Piirra_Pistelasku(){
 		//pelin_seuraava_tila = TILA_KARTTA;
 	}
 
-	PK_Piirra_Kursori(hiiri_x,hiiri_y);
+	PK_Draw_Cursor(hiiri_x,hiiri_y);
 
 	return 0;
 }
-//PK_Draw_Intro_Text
-void PK_Piirra_Intro_Teksti(char *teksti, int fontti, int x, int y, DWORD alkuaika, DWORD loppuaika){
+void PK_Draw_Intro_Text(char *teksti, int fontti, int x, int y, DWORD alkuaika, DWORD loppuaika){
 	int pros = 100;
 	if (introlaskuri > alkuaika && introlaskuri < loppuaika) {
 
@@ -7491,8 +7461,7 @@ void PK_Piirra_Intro_Teksti(char *teksti, int fontti, int x, int y, DWORD alkuai
 
 	}
 }
-//PK_Draw_Intro
-int PK_Piirra_Intro(){
+int PK_Draw_Intro(){
 
 	DWORD pistelogo_alku	= 300;
 	DWORD pistelogo_loppu	= pistelogo_alku + 500;
@@ -7521,40 +7490,40 @@ int PK_Piirra_Intro(){
 
 		PisteDraw2_Image_CutClip(kuva_tausta,/*120*/x,230, 37, 230, 194, 442);
 
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_presents), fontti1, 230, 400, pistelogo_alku, pistelogo_loppu-20);
+		PK_Draw_Intro_Text(tekstit->Hae_Teksti(txt_intro_presents), fontti1, 230, 400, pistelogo_alku, pistelogo_loppu-20);
 
 	}
 
 	if (introlaskuri > tekijat_alku) {
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_a_game_by),fontti1, 120, 200, tekijat_alku, tekijat_loppu);
-		PK_Piirra_Intro_Teksti("janne kivilahti 2003",		            fontti1, 120, 220, tekijat_alku+20, tekijat_loppu+20);
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_original), fontti1, 120, 245, tekijat_alku+40, tekijat_loppu+40);
-		PK_Piirra_Intro_Teksti("antti suuronen 1998",		            fontti1, 120, 265, tekijat_alku+50, tekijat_loppu+50);
-		PK_Piirra_Intro_Teksti("sdl porting by",		                fontti1, 120, 290, tekijat_alku+70, tekijat_loppu+70);
-		PK_Piirra_Intro_Teksti("samuli tuomola 2010",		            fontti1, 120, 310, tekijat_alku+80, tekijat_loppu+80);
-		PK_Piirra_Intro_Teksti("sdl2 port and bug fixes",               fontti1, 120, 335, tekijat_alku + 90, tekijat_loppu + 90);
-		PK_Piirra_Intro_Teksti("danilo lemos 2017",                     fontti1, 120, 355, tekijat_alku + 100, tekijat_loppu + 100);
+		PK_Draw_Intro_Text(tekstit->Hae_Teksti(txt_intro_a_game_by),fontti1, 120, 200, tekijat_alku, tekijat_loppu);
+		PK_Draw_Intro_Text("janne kivilahti 2003",		            fontti1, 120, 220, tekijat_alku+20, tekijat_loppu+20);
+		PK_Draw_Intro_Text(tekstit->Hae_Teksti(txt_intro_original), fontti1, 120, 245, tekijat_alku+40, tekijat_loppu+40);
+		PK_Draw_Intro_Text("antti suuronen 1998",		            fontti1, 120, 265, tekijat_alku+50, tekijat_loppu+50);
+		PK_Draw_Intro_Text("sdl porting by",		                fontti1, 120, 290, tekijat_alku+70, tekijat_loppu+70);
+		PK_Draw_Intro_Text("samuli tuomola 2010",		            fontti1, 120, 310, tekijat_alku+80, tekijat_loppu+80);
+		PK_Draw_Intro_Text("sdl2 port and bug fixes",               fontti1, 120, 335, tekijat_alku + 90, tekijat_loppu + 90);
+		PK_Draw_Intro_Text("danilo lemos 2017",                     fontti1, 120, 355, tekijat_alku + 100, tekijat_loppu + 100);
 	}
 
 	if (introlaskuri > testaajat_alku) {
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_tested_by),fontti1, 120, 230, testaajat_alku, testaajat_loppu);
-		PK_Piirra_Intro_Teksti("antti suuronen",			fontti1, 120, 250, testaajat_alku+10, testaajat_loppu+10);
-		PK_Piirra_Intro_Teksti("toni hurskainen",			fontti1, 120, 260, testaajat_alku+20, testaajat_loppu+20);
-		PK_Piirra_Intro_Teksti("juho rytk�nen",				fontti1, 120, 270, testaajat_alku+30, testaajat_loppu+30);
-		PK_Piirra_Intro_Teksti("annukka korja",				fontti1, 120, 280, testaajat_alku+40, testaajat_loppu+40);
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_thanks_to),fontti1, 120, 300, testaajat_alku+70, testaajat_loppu+70);
-		PK_Piirra_Intro_Teksti("oskari raunio",				fontti1, 120, 310, testaajat_alku+70, testaajat_loppu+70);
-		PK_Piirra_Intro_Teksti("assembly organization",		fontti1, 120, 320, testaajat_alku+70, testaajat_loppu+70);
+		PK_Draw_Intro_Text(tekstit->Hae_Teksti(txt_intro_tested_by),fontti1, 120, 230, testaajat_alku, testaajat_loppu);
+		PK_Draw_Intro_Text("antti suuronen",			fontti1, 120, 250, testaajat_alku+10, testaajat_loppu+10);
+		PK_Draw_Intro_Text("toni hurskainen",			fontti1, 120, 260, testaajat_alku+20, testaajat_loppu+20);
+		PK_Draw_Intro_Text("juho rytk�nen",				fontti1, 120, 270, testaajat_alku+30, testaajat_loppu+30);
+		PK_Draw_Intro_Text("annukka korja",				fontti1, 120, 280, testaajat_alku+40, testaajat_loppu+40);
+		PK_Draw_Intro_Text(tekstit->Hae_Teksti(txt_intro_thanks_to),fontti1, 120, 300, testaajat_alku+70, testaajat_loppu+70);
+		PK_Draw_Intro_Text("oskari raunio",				fontti1, 120, 310, testaajat_alku+70, testaajat_loppu+70);
+		PK_Draw_Intro_Text("assembly organization",		fontti1, 120, 320, testaajat_alku+70, testaajat_loppu+70);
 	}
 
 	if (introlaskuri > kaantaja_alku) {
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_translation), fontti1, 120, 230, kaantaja_alku, kaantaja_loppu);
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_intro_translator),  fontti1, 120, 250, kaantaja_alku+20, kaantaja_loppu+20);
+		PK_Draw_Intro_Text(tekstit->Hae_Teksti(txt_intro_translation), fontti1, 120, 230, kaantaja_alku, kaantaja_loppu);
+		PK_Draw_Intro_Text(tekstit->Hae_Teksti(txt_intro_translator),  fontti1, 120, 250, kaantaja_alku+20, kaantaja_loppu+20);
 	}
 	return 0;
 }
 
-int PK_Piirra_Loppu_Hahmo(int x, int y, int tyyppi, int plus, int rapytys){
+int PK_Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 	int frm = 0;
 	int yk = 0;
 
@@ -7620,8 +7589,7 @@ int PK_Piirra_Loppu_Hahmo(int x, int y, int tyyppi, int plus, int rapytys){
 
 	return 0;
 }
-//PK_Draw_EndGame
-int PK_Piirra_Loppu(){
+int PK_Draw_EndGame(){
 
 	DWORD onnittelut_alku	= 300;
 	DWORD onnittelut_loppu	= onnittelut_alku + 1000;
@@ -7631,21 +7599,21 @@ int PK_Piirra_Loppu(){
 	PisteDraw2_ScreenFill(0);
 	PisteDraw2_Image_CutClip(kuva_tausta,320-233/2,240-233/2, 6, 229, 239, 462);
 
-	PK_Piirra_Loppu_Hahmo(345, 244, 3, 30, 2);
-	PK_Piirra_Loppu_Hahmo(276, 230, 2, 50, 3);
-	PK_Piirra_Loppu_Hahmo(217, 254, 4, 0, 4);
+	PK_Draw_EndGame_Image(345, 244, 3, 30, 2);
+	PK_Draw_EndGame_Image(276, 230, 2, 50, 3);
+	PK_Draw_EndGame_Image(217, 254, 4, 0, 4);
 
-	PK_Piirra_Loppu_Hahmo(305, 240, 1, 0, 1);
+	PK_Draw_EndGame_Image(305, 240, 1, 0, 1);
 
-	PK_Piirra_Loppu_Hahmo(270, 284, 2, 20, 1);
-	PK_Piirra_Loppu_Hahmo(360, 284, 5, 60, 2);
+	PK_Draw_EndGame_Image(270, 284, 2, 20, 1);
+	PK_Draw_EndGame_Image(360, 284, 5, 60, 2);
 
 	if (loppulaskuri > onnittelut_alku) {
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_end_congratulations), fontti2, 220, 380, onnittelut_alku, onnittelut_loppu);
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_end_chickens_saved), fontti1, 220, 402, onnittelut_alku+30, onnittelut_loppu+30);
+		PK_Draw_Intro_Text(tekstit->Hae_Teksti(txt_end_congratulations), fontti2, 220, 380, onnittelut_alku, onnittelut_loppu);
+		PK_Draw_Intro_Text(tekstit->Hae_Teksti(txt_end_chickens_saved), fontti1, 220, 402, onnittelut_alku+30, onnittelut_loppu+30);
 	}
 	if (loppulaskuri > the_end_alku) {
-		PK_Piirra_Intro_Teksti(tekstit->Hae_Teksti(txt_end_the_end), fontti2, 280, 190, the_end_alku, the_end_loppu);
+		PK_Draw_Intro_Text(tekstit->Hae_Teksti(txt_end_the_end), fontti2, 280, 190, the_end_alku, the_end_loppu);
 	}
 
 	return 0;
@@ -7656,7 +7624,7 @@ int PK_Piirra_Loppu(){
 //==================================================
 
 int PK_Main_Intro(){
-	PK_Piirra_Intro();
+	PK_Draw_Intro();
 
 	degree = 1 + degree % 360;
 
@@ -7677,7 +7645,7 @@ int PK_Main_Intro(){
 }
 
 int PK_Main_Pistelasku(){
-	PK_Piirra_Pistelasku();
+	PK_Draw_ScoreCount();
 
 	degree = 1 + degree % 360;
 
@@ -7722,7 +7690,7 @@ int PK_Main_Pistelasku(){
 		} else if (esineita > 0){
 			pistelaskuvaihe = 4;
 			pistelaskudelay = 30;
-			for (int i=0;i<MAX_ESINEITA;i++)
+			for (int i=0;i<MAX_GIFTS;i++)
 				if (esineet[i] != NULL)
 				{
 					esinepisteet += esineet[i]->pisteet + 500;
@@ -7739,7 +7707,7 @@ int PK_Main_Pistelasku(){
 	if (siirry_pistelaskusta_karttaan && !PisteDraw2_IsFading()){
 		/*tarkistetaan oliko viimeinen jakso*/
 
-		if (jakso_indeksi_nyt == EPISODI_MAX_JAKSOJA-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
+		if (jakso_indeksi_nyt == EPISODI_MAX_LEVELS-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
 			pelin_seuraava_tila = TILA_LOPPU;
 		}
 		else if (jaksot[jakso_indeksi_nyt+1].jarjestys == -1)
@@ -7770,7 +7738,7 @@ int PK_Main_Pistelasku(){
 			aika = 0;
 			energiapisteet += spritet[pelaaja_index].energia * 300;
 			spritet[pelaaja_index].energia = 0;
-			for (int i=0;i<MAX_ESINEITA;i++)
+			for (int i=0;i<MAX_GIFTS;i++)
 				if (esineet[i] != NULL)
 					esinepisteet += esineet[i]->pisteet + 500;
 			esineita = 0;
@@ -7783,7 +7751,7 @@ int PK_Main_Pistelasku(){
 }
 
 int PK_Main_Kartta(){
-	PK_Piirra_Kartta();
+	PK_Draw_Map();
 
 	degree = 1 + degree % 360;
 
@@ -7834,7 +7802,7 @@ int PK_Main_Menut(){
 	}
 	int menu_ennen = menu_nyt;
 
-	PK_Piirra_Menut();
+	PK_Draw_Menu();
 
 	if (menu_nyt != menu_ennen)
 		menu_valittu_id = 0;
@@ -7851,7 +7819,7 @@ int PK_Main_Menut(){
 }
 
 int PK_Main_Peli(){
-	PK_Kamera();
+	PK_Update_Camera();
 	PK_Piirra_Peli();
 	PK_Calculate_MovableBlocks_Position();
 
@@ -7867,8 +7835,8 @@ int PK_Main_Peli(){
 		if (kytkin3 > 0)
 			kytkin3 --;
 
-		if (ilmoitus_ajastin > 0)
-			ilmoitus_ajastin--;
+		if (info_timer > 0)
+			info_timer--;
 
 		if (piste_lisays > 0)
 		{
@@ -7997,7 +7965,7 @@ int PK_Main_Peli(){
 			key_delay = 20;
 		}
 		if (PisteInput_Keydown(PI_I)){
-			piirra_infot = !piirra_infot;
+			draw_dubug_info = !draw_dubug_info;
 			fps_nayta = !fps_nayta;
 			key_delay = 10;
 		}
@@ -8011,7 +7979,7 @@ int PK_Main_Peli(){
 		}
 		if (PisteInput_Keydown(PI_END)){
 			if (PisteSound_StartMusic("music/hiscore.xm")!=0)
-				PK2_virhe = true;
+				PK2_error = true;
 
 			key_delay = 20;
 			jakso_lapaisty = true;
@@ -8022,7 +7990,7 @@ int PK_Main_Peli(){
 			spritet[pelaaja_index].energia = spritet[pelaaja_index].tyyppi->energia;
 		if (PisteInput_Keydown(PI_LSHIFT)){
 			for (int r=1;r<6;r++)
-				PK_Partikkeli_Uusi(PARTIKKELI_KIPINA,spritet[pelaaja_index].x+rand()%10-rand()%10, spritet[pelaaja_index].y+rand()%10-rand()%10,0,0,rand()%100,0.1,32);
+				PK_Particles_Uusi(PARTIKKELI_KIPINA,spritet[pelaaja_index].x+rand()%10-rand()%10, spritet[pelaaja_index].y+rand()%10-rand()%10,0,0,rand()%100,0.1,32);
 			spritet[pelaaja_index] = PK2Sprite(&protot[PROTOTYYPPI_KANA],1,false,spritet[pelaaja_index].x, spritet[pelaaja_index].y);
 		}
 	}
@@ -8030,19 +7998,7 @@ int PK_Main_Peli(){
 	return 0;
 }
 
-int gui_egg, gui_doodle, gui_arr, gui_up, gui_down, gui_left, gui_right;
-
 int PK_Load_Gui(){
-/*
-	DWORD kontrolli_vasemmalle;
-	DWORD kontrolli_oikealle;
-	DWORD kontrolli_hyppy;
-	DWORD kontrolli_alas;
-	DWORD kontrolli_juoksu;
-	DWORD kontrolli_hyokkays1;
-	DWORD kontrolli_hyokkays2;
-	DWORD kontrolli_kayta_esine;
-*/
 	gui_doodle = PisteInput_CreateGui(1366,800,256,256,180,"android/egg.png", &kontrolli_hyokkays1);
 	gui_egg = PisteInput_CreateGui(1600,700,256,256,180,"android/doodle.png", &kontrolli_hyokkays2);
 
@@ -8066,7 +8022,7 @@ int PK_Load_Gui(){
 
 int PK_Main_Loppu(){
 
-	PK_Piirra_Loppu();
+	PK_Draw_EndGame();
 
 	degree = 1 + degree % 360;
 
@@ -8100,7 +8056,7 @@ int PK_Main(){
 
 	//static bool window_activated = true;
 
-	PK_Alusta_Tilat();
+	PK_Change_Screen();
 
 	if (window_closed/*depr*/){
 		running = false;
@@ -8186,7 +8142,7 @@ int PK_Main(){
 
 	if (lopeta_peli && !PisteDraw2_IsFading())
 		window_closed = true;
-	running = !PK2_virhe;
+	running = !PK2_error;
 	return 0;
 }
 
@@ -8196,12 +8152,12 @@ int PK_Reload(){
 		pelin_seuraava_tila = TILA_PERUSALUSTUS;
 		pelin_tila = TILA_EI_ALUSTETTU;
 
-		if (PK_Alusta_Tilat() != 0)
+		if (PK_Change_Screen() != 0)
 			return 1;
 
 		pelin_seuraava_tila = TILA_MENUT;
 
-		//PK_Alusta_Tilat();
+		//PK_Change_Screen();
 
 		unload = false;
 	}
@@ -8272,9 +8228,8 @@ int main(int argc, char *argv[]){
 			dev_mode = true;
 			Piste_SetDebug(true);
 		}
-		if (strcmp(argv[i], "nolimits") == 0) RAJAA_KARTANPIIRTOALUE = false;
 		if (strcmp(argv[i], "test") == 0) {
-			if (argc <= i + 1) PK2_virhe = true;
+			if (argc <= i + 1) PK2_error = true;
 			else {
 				test_level = true;
 				test_path = argv[i + 1];
@@ -8308,7 +8263,7 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	PK_Alusta_Tilat();
+	PK_Change_Screen();
 
 	#ifdef __ANDROID__
 	PK_Load_Gui();
@@ -8324,7 +8279,7 @@ int main(int argc, char *argv[]){
 
 	Piste_Loop(running, PK_Main);
 
-	if(PK2_virhe)
+	if(PK2_error)
 		printf("PK2    - Error!\n");
 
 	PE_Quit();
