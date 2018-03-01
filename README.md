@@ -54,4 +54,3 @@ This example starts the level13.map on dev mode:
 * Do a better resolution change
 * Set the touch screen mouse in correct area
 * Set energy to update before draw on screen
-* New map to Rooster Island 2

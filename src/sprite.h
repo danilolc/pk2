@@ -593,8 +593,8 @@ class PK2Sprite{
     double		alku_y;				// spriten alkuper�inen y sijainti
     double		x;					// x-kordinaatti pelikent�ll�
     double		y;					// y-kordinaatti pelikent�ll�
-    double		a;					// liike sivusuunnassa
-    double		b;					// liike pystysuunnassa
+    double		a;					// horizontal speed
+    double		b;					// vertical speed
     bool		flip_x;				// true = peilikuva sivusuunnassa
     bool		flip_y;				// true = peilikuva pystysuunnassa
     int			hyppy_ajastin;		// hypyn kesto: 0 = ei hypyss�, > 0 = hypyss�, < 0 = tullut alas
