@@ -10,7 +10,7 @@ Translated and ported to SDL2 by Danilo Lemos (2016/2017)
 http://kiwi.mbnet.fi/pistegamez/pk2/
 
 
-#Runing
+# Runing
 
 ### Windows:
 There is a compiled binary with the "r2" version.
