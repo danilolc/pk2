@@ -34,9 +34,6 @@ PK2_LE_OBJ = $(BUILD_DIR)pk2_le.o
 PK2_SC_SRC = $(SPRITECREATOR_DIR)pk2_sc.cpp
 PK2_SC_OBJ = $(BUILD_DIR)pk2_sc.o
 
-ENGINETEST_SRC = $(SRC_DIR)enginetest.cpp
-ENGINETEST_OBJ = $(BUILD_DIR)enginetest.o
-
 #Defines the destination of each binary file
 GAME_NAME = PK2
 PK2_BIN = $(BIN_DIR)$(GAME_NAME)

@@ -53,4 +53,4 @@ This example starts the level13.map on dev mode:
 * Make the code cleaner (and remove all the Finnish things)
 * Do a better resolution change
 * Set the touch screen mouse in correct area
-* Set energy to update before draw on screen
+* Add link to Discord

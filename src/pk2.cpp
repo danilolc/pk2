@@ -303,8 +303,8 @@ PK2FADETEXT fadetekstit[MAX_FADETEKSTEJA];
 int fadeteksti_index = 0;
 
 //Screen Buffers
-int  kuva_peli = -1;
-int  kuva_peli_sysmem = -1;
+int  kuva_peli  = -1;
+int  kuva_peli2 = -1;
 int  kuva_tausta = -1;
 
 //Fonts
@@ -1582,7 +1582,7 @@ void PK_Particle_Draw_Star(DWORD x, DWORD y, int pros, BYTE vari){
 	if (pros > 99 || !settings.lapinakyvat_objektit)
 		PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x, y-kamera_y,1,1,11,11);
 	else
-		PK_Draw_Transparent_Object(kuva_peli_sysmem, 2, 2, 10, 10, x-kamera_x, y-kamera_y, pros, vari);
+		PK_Draw_Transparent_Object(kuva_peli, 2, 2, 10, 10, x-kamera_x, y-kamera_y, pros, vari);
 }
 void PK_Particle_Draw_Hit(DWORD x, DWORD y){
 	int framex = ((degree%12)/3) * 58;
@@ -1590,7 +1590,7 @@ void PK_Particle_Draw_Hit(DWORD x, DWORD y){
 }
 void PK_Particle_Draw_Light(DWORD x, DWORD y, int pros, BYTE vari){
 	if (settings.lapinakyvat_objektit)
-		PK_Draw_Transparent_Object(kuva_peli_sysmem, 1, 14, 13, 13, x-kamera_x, y-kamera_y, pros, vari);
+		PK_Draw_Transparent_Object(kuva_peli, 1, 14, 13, 13, x-kamera_x, y-kamera_y, pros, vari);
 	else{
 		int vx = (vari/32) * 14;
 		PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x, y-kamera_y,1+vx,14+14,14+vx,27+14);
@@ -1598,7 +1598,7 @@ void PK_Particle_Draw_Light(DWORD x, DWORD y, int pros, BYTE vari){
 }
 void PK_Particle_Draw_Spark(DWORD x, DWORD y, int pros, BYTE vari){
 	if (settings.lapinakyvat_objektit)
-		PK_Draw_Transparent_Object(kuva_peli_sysmem, 99, 14, 7, 7, x-kamera_x, y-kamera_y, pros, vari);
+		PK_Draw_Transparent_Object(kuva_peli, 99, 14, 7, 7, x-kamera_x, y-kamera_y, pros, vari);
 	else{
 		int vx = (vari/32) * 8;
 		PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x, y-kamera_y,99+vx,14+14,106+vx,21+14);
@@ -1632,7 +1632,7 @@ void PK_Particle_Draw_Dust(DWORD x, DWORD y, int pros, BYTE vari){
 	if (pros > 99 || !settings.lapinakyvat_objektit)
 		PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x,y-kamera_y,226,2,224,49);
 	else
-		PK_Draw_Transparent_Object(kuva_peli_sysmem, 226, 2, 18, 19, x-kamera_x, y-kamera_y, pros, vari);
+		PK_Draw_Transparent_Object(kuva_peli, 226, 2, 18, 19, x-kamera_x, y-kamera_y, pros, vari);
 	PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x,y-kamera_y,226, 2, 18, 19); //Tirar isso
 }
 
@@ -4788,8 +4788,12 @@ int PK_Sprite_Bonus_Movement(int i){
 
 			//kartta->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
 
-			if (sprite.tyyppi->vahinko != 0 && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
+			if (sprite.tyyppi->vahinko != 0 && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
 				spritet[pelaaja_index].energia -= sprite.tyyppi->vahinko;
+				if (spritet[pelaaja_index].energia > spritet[pelaaja_index].tyyppi->energia){
+					spritet[pelaaja_index].energia = spritet[pelaaja_index].tyyppi->energia;
+				}
+			}
 
 			tuhoutuminen = sprite.tyyppi->tuhoutuminen;
 
@@ -4891,8 +4895,7 @@ int PK_Update_Sprites(){
 	//bool aktiivinen;
 	int i;
 
-	for (i=0;i<MAX_SPRITEJA;i++) //If it is on screen
-	{
+	for (i=0;i<MAX_SPRITEJA;i++){ //If it is on screen
 		// Onko sprite l�hell� tapahtumien keskipistett�? Jos on, niin aktivoidaan.
 		if (spritet[i].x < kamera_x+640+320 &&//screen_width+screen_width/2 &&
 			spritet[i].x > kamera_x-320 &&//screen_width/2 &&
@@ -4906,10 +4909,8 @@ int PK_Update_Sprites(){
 			spritet[i].aktiivinen = false;
 	}
 
-	for (i=0;i<MAX_SPRITEJA;i++) //1
-	{
-		if (spritet[i].aktiivinen && spritet[i].tyyppi->tyyppi != TYYPPI_TAUSTA)
-		{
+	for (i=0;i<MAX_SPRITEJA;i++){ //1
+		if (spritet[i].aktiivinen && spritet[i].tyyppi->tyyppi != TYYPPI_TAUSTA){
 			if (spritet[i].tyyppi->tyyppi == TYYPPI_BONUS)
 				PK_Sprite_Bonus_Movement(i);
 			else
@@ -6578,17 +6579,17 @@ int PK_Draw_LevelButton(int x, int y, int t){
 		}
 
 		if (t == 25)
-			PK_Draw_Transparent_Object(kuva_peli_sysmem, 247, 1, 25, 25, x-2, y-2, 60, 96);
+			PK_Draw_Transparent_Object(kuva_peli, 247, 1, 25, 25, x-2, y-2, 60, 96);
 		if (t == 0)
-			PK_Draw_Transparent_Object(kuva_peli_sysmem, 247, 1, 25, 25, x-4, y-4, 60, 32);
+			PK_Draw_Transparent_Object(kuva_peli, 247, 1, 25, 25, x-4, y-4, 60, 32);
 		if (t == 50)
-			PK_Draw_Transparent_Object(kuva_peli_sysmem, 247, 1, 25, 25, x-4, y-4, 60, 64);
+			PK_Draw_Transparent_Object(kuva_peli, 247, 1, 25, 25, x-4, y-4, 60, 64);
 
 		paluu = 1;
 	}
 
 	if (t == 25)
-		PK_Draw_Transparent_Object(kuva_peli_sysmem, 247, 1, 25, 25, x-2, y-2, vilkku, 96);
+		PK_Draw_Transparent_Object(kuva_peli, 247, 1, 25, 25, x-2, y-2, vilkku, 96);
 
 	if (((degree/45)+1)%4==0 || t==0)
 		PisteDraw2_Image_CutClip(kuva_peli,x,y,1+t,58,23+t,80);
@@ -6767,7 +6768,7 @@ int PK_Draw_ScoreCount(){
 		if (kuutio > 100) kuutio = 100;
 
 		//PisteDraw2_ScreenFill(320+x,240+y,320+x+kuutio,240+y+kuutio,VARI_TURKOOSI+10);
-		PK_Draw_Transparent_Object(kuva_peli_sysmem, 247, 1, 25, 25, 320+x, 240+y, kuutio, 32);
+		PK_Draw_Transparent_Object(kuva_peli, 247, 1, 25, 25, 320+x, 240+y, kuutio, 32);
 	}
 
 	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_title),100+2,72+2);
@@ -7477,8 +7478,11 @@ int PK_MainScreen_Change(){
 			PisteDraw2_Image_Delete(kuva_peli); //Delete if there is a image allocated
 			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
 
-			PisteDraw2_Image_Delete(kuva_peli_sysmem);
-			kuva_peli_sysmem = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
+			PisteDraw2_Image_Delete(kuva_peli2); //Delete if there is a image allocated
+			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff2.bmp", false);
+
+			PisteDraw2_Image_Delete(kuva_peli);
+			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
 
 			int ind_font = 0,
 				ind_path = 0;

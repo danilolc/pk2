@@ -16,8 +16,6 @@ pk2le: makedirs $(PK2_LE_BIN)
 
 pk2sc: makedirs $(PK2_SC_BIN)
 
-test: makedirs $(ENGINETESTBIN)
-
 ###########################
 #Rules for generate the binaries using the object files
 $(PK2_BIN): $(PK2_OBJ) $(PK2_SPRITE_OBJ) $(PK2_MAP_OBJ) $(ENGINE_OBJ)
@@ -32,10 +30,6 @@ $(PK2_LE_BIN): $(PK2_LE_OBJ) $(PK2_SPRITE_OBJ) $(PK2_MAP_OBJ) $(ENGINE_OBJ)
 #TODO - Don't compile with $(ENGINE_OBJ) and $(LFLAGS)
 $(PK2_SC_BIN): $(PK2_SC_OBJ) $(PK2_SPRITE_OBJ) $(ENGINE_OBJ)
 	@echo -Linking PK2_SC
-	@$(CPP) $^ $(LFLAGS) -o $@
-
-$(ENGINETESTBIN): $(ENGINETEST_OBJ) $(ENGINE_OBJ)
-	@echo -Linking EngineTest
 	@$(CPP) $^ $(LFLAGS) -o $@
 ###########################
 
