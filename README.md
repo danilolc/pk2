@@ -44,13 +44,10 @@ This example starts the level13.map on dev mode:
 * Better port to Android (with resources)
 * Consider Sprite in Water when the water is on BG or outside the screen
 * Fix the mikmod music loop
-* Finish the touch UI
 * Recover the rain
 * Recover the original physics
 * Find a solution to change sfx frequency without delay
 * Increase txt buttons area
-* Fix the time counting to the real time
 * Make the code cleaner (and remove all the Finnish things)
 * Do a better resolution change
-* Set the touch screen mouse in correct area
 * Add link to Discord

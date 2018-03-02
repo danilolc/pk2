@@ -106,6 +106,8 @@ MOUSE mouse_pos;
 
 SDL_Renderer* PI_Renderer = NULL;
 
+SDL_Haptic *PI_haptic;
+
 /* METHODS -----------------------------------------------------------------------------------*/
 
 
@@ -211,8 +213,6 @@ int PisteInput_DrawGui(int pd_alpha){
 }
 
 
-SDL_Haptic *PI_haptic;
-
 int PisteInput_Vibrate(){
 	if(PI_haptic == NULL)
 		return -1;
@@ -248,6 +248,21 @@ BYTE PisteInput_GetKey(){
 		if(m_keymap[keylist[key]]) return key;
 	return 0;
 }
+int PisteInput_GetTouchPos(float& x, float& y){
+	SDL_Finger* finger = NULL;
+	SDL_TouchID id = SDL_GetTouchDevice(0);
+	int fingers = SDL_GetNumTouchFingers(id);
+	if (fingers == 0)
+		return 1;
+
+	finger = SDL_GetTouchFinger(id, 0);
+
+	x = finger->x;
+	y = finger->y;
+
+	return 0;
+}
+
 bool PisteInput_Keydown(int key){
 	UpdateGui();
 	for(int i = 0; i < PI_MAX_GUI; i++)
@@ -262,10 +277,6 @@ bool PisteInput_Keydown(int key){
 
 //TODO - change names - fullscreen uses relative mouse
 MOUSE PisteInput_UpdateMouse(bool keyMove, bool relative){
-	#ifdef __ANDROID__
-	relative = false;
-	#endif
-
 	static int was_relative = -1;
 	if (was_relative == -1) { //Was just initialized
 		PisteInput_ActivateWindow(relative);

@@ -1076,7 +1076,7 @@ void PK_New_Save(){
 
 	lopetusajastin = 0;
 
-	sekunti = 1000;
+	sekunti = 60;
 	jakso_pisteet = 0;
 	peli_ohi = false;
 	jakso_lapaisty = false;
@@ -5501,8 +5501,7 @@ int PK_Draw_InGame(){
 	if (!skip_frame)
 		kartta->Piirra_Taustat(kamera_x,kamera_y,false);
 
-	if (!paused)
-	{
+	if (!paused){
 		PK_Particles_Update();
 		if (!jakso_lapaisty && (!aikaraja || aika > 0))
 			PK_Update_Sprites();
@@ -5544,25 +5543,11 @@ int PK_Draw_InGame(){
 	// piirr� jakso l�p�isty
 	////////////////////////
 	if (jakso_lapaisty)
-	{
 		PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
-
-		/*
-		if (aikaraja)
-		{
-			vali = PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_timebonus),fontti2,screen_width/2-120,screen_height/2+20);
-			itoa(fake_pisteet,luku,10);
-			PK_Piirra_LaineTeksti(luku,fontti2,screen_width/2-120+vali,screen_height/2+20);
-		}*/
-
-	}
 	else
-		if (peli_ohi)
-		{
+		if (peli_ohi){
 			if (spritet[pelaaja_index].energia < 1)
-			{
 				PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
-			}
 			else
 				if (aika < 1 && aikaraja)
 					PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
@@ -5582,12 +5567,12 @@ int PK_Draw_InGame(){
 }
 
 int PK_Draw_Cursor(int x,int y){
-//	#ifndef __ANDROID__ //TODO - set correct cursor
+	#ifndef __ANDROID__
 
 	if(settings.isFullScreen)
 		PisteDraw2_Image_CutClip(kuva_peli,x,y,621,461,640,480);
 
-//	#endif
+	#endif
 
 	return 0;
 }
@@ -7054,6 +7039,8 @@ void PK_UI_Activate(bool set){
 	PisteInput_ActiveGui(gui_down, set);
 	PisteInput_ActiveGui(gui_doodle, set);
 	PisteInput_ActiveGui(gui_egg, set);
+	PisteInput_ActiveGui(gui_gift, set);
+	PisteInput_ActiveGui(gui_tab, set);
 }
 void PK_UI_Change(int ui_mode){
 	switch(ui_mode){
@@ -7089,6 +7076,8 @@ void PK_UI_Load(){
 	gui_down = PisteInput_CreateGui(1420,700,circ_size,circ_size,alpha,"android/down.png", &kontrolli_alas);
 	gui_doodle = PisteInput_CreateGui(1630,450,circ_size,circ_size,alpha,"android/doodle.png", &kontrolli_hyokkays2);
 	gui_egg = PisteInput_CreateGui(1420,500,circ_size,circ_size,alpha,"android/egg.png", &kontrolli_hyokkays1);
+	gui_gift = PisteInput_CreateGui(1630,250,circ_size,circ_size,alpha,"android/gift.png", &kontrolli_kayta_esine);
+	gui_tab = PisteInput_CreateGui(0,930,530,150,alpha,"", &tab);
 }
 
 //==================================================
@@ -7306,37 +7295,26 @@ int PK_MainScreen_InGame(){
 		if (info_timer > 0)
 			info_timer--;
 
-		if (piste_lisays > 0)
-		{
+		if (piste_lisays > 0){
 			jakso_pisteet++;
 			piste_lisays--;
 		}
 
-		if (aikaraja && !jakso_lapaisty)
-		{
+		if (aikaraja && !jakso_lapaisty){
 			if (sekunti > 0)
-			{
-				sekunti -= 10;
-			}
-			else
-			{
-				sekunti = 1000;
-
+				sekunti -= 1;
+			else{
+				sekunti = 60;
+				printf("%i\n", aika);
 				if (aika > 0)
-				{
 					aika--;
-				}
 				else
-				{
 					peli_ohi = true;
-					//PisteDraw2_FadeOut(PD_FADE_SLOW);
-				}
 			}
 		}
 
 		if (nakymattomyys > 0)
 			nakymattomyys--;
-
 	}
 
 	if (spritet[pelaaja_index].energia < 1 && !peli_ohi){
@@ -7960,9 +7938,6 @@ int PK_MainScreen_Change(){
 	return 0;
 }
 int PK_MainScreen(){
-
-	//static bool window_activated = true;
-
 	PK_MainScreen_Change();
 
 	if (window_closed/*depr*/){
@@ -7970,16 +7945,24 @@ int PK_MainScreen(){
 		return 0;
 	}
 
-	MOUSE hiiri = PisteInput_UpdateMouse(pelin_tila == TILA_KARTTA, settings.isFullScreen);
-	hiiri.x -= PisteDraw2_GetXOffset();
+	#ifndef __ANDROID__
+		MOUSE hiiri = PisteInput_UpdateMouse(pelin_tila == TILA_KARTTA, settings.isFullScreen);
+		hiiri.x -= PisteDraw2_GetXOffset();
 
-	if (hiiri.x < 0) hiiri.x = 0;
-	if (hiiri.y < 0) hiiri.y = 0;
-	if (hiiri.x > 640-19) hiiri.x = 640-19;
-	if (hiiri.y > 480-19) hiiri.y = 480-19;
+		if (hiiri.x < 0) hiiri.x = 0;
+		if (hiiri.y < 0) hiiri.y = 0;
+		if (hiiri.x > 640-19) hiiri.x = 640-19;
+		if (hiiri.y > 480-19) hiiri.y = 480-19;
 
-	hiiri_x = hiiri.x;
-	hiiri_y = hiiri.y;
+		hiiri_x = hiiri.x;
+		hiiri_y = hiiri.y;
+	#else
+		float x, y;
+		PisteInput_GetTouchPos(x, y);
+
+		hiiri_x = screen_width * x - PisteDraw2_GetXOffset();
+		hiiri_y = screen_height * y;
+	#endif
 
 	switch (pelin_tila){
 		case TILA_PELI       : PK_MainScreen_InGame();       break;
@@ -8137,6 +8120,9 @@ int main(int argc, char *argv[]){
 
 	PK_Settings_Open("data/settings.ini");
 
+	#ifdef __ANDROID__
+	screen_width = 800;
+	#endif
 	if (Piste_Init(screen_width, screen_height, GAME_NAME) < 0) {
 		printf("PK2    - Failed to init PisteEngine.\n");
 		return 0;
@@ -8155,9 +8141,9 @@ int main(int argc, char *argv[]){
 
 	PK_MainScreen_Change();
 
-	//#ifdef __ANDROID__
+	#ifdef __ANDROID__
 	PK_UI_Load();
-	//#endif
+	#endif
 
 	pelin_seuraava_tila = TILA_INTRO;
 	if (dev_mode)
