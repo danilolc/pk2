@@ -407,7 +407,8 @@ int degree = 0,
 
 int avaimia = 0;
 
-DWORD aika = 0;
+const int TIME_FPS = 100;
+DWORD timeout = 0;
 int sekunti = 0;
 bool aikaraja = false;
 
@@ -1067,16 +1068,16 @@ void PK_New_Game(){
 	jakso = 1;
 }
 void PK_New_Save(){
-	aika = kartta->aika;
+	timeout = kartta->aika;
 
-	if (aika > 0)
+	if (timeout > 0)
 		aikaraja = true;
 	else
 		aikaraja = false;
 
 	lopetusajastin = 0;
 
-	sekunti = 60;
+	sekunti = TIME_FPS;
 	jakso_pisteet = 0;
 	peli_ohi = false;
 	jakso_lapaisty = false;
@@ -4790,7 +4791,7 @@ int PK_Sprite_Bonus_Movement(int i){
 			}
 
 			if (sprite.Onko_AI(AI_BONUS_AIKA))
-				aika += sprite.tyyppi->latausaika;
+				timeout += sprite.tyyppi->latausaika;
 
 			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
 				nakymattomyys = sprite.tyyppi->latausaika;
@@ -5374,12 +5375,12 @@ int PK_Draw_InGame_Gifts_Menu(){
 	int x, y;
 
 	//////////////
-	// piirr� aika
+	// Draw time
 	//////////////
-	if (aika > 0)
-	{
-		int min = aika/60,
-			sek = aika%60;
+	if (timeout > 0){
+		int shown_sec = (timeout * TIME_FPS + sekunti) / 60;
+		int min = shown_sec/60,
+			sek = shown_sec%60;
 
 
 		x = screen_width / 2 - 546 / 2 + 342;
@@ -5503,7 +5504,7 @@ int PK_Draw_InGame(){
 
 	if (!paused){
 		PK_Particles_Update();
-		if (!jakso_lapaisty && (!aikaraja || aika > 0))
+		if (!jakso_lapaisty && (!aikaraja || timeout > 0))
 			PK_Update_Sprites();
 		PK_Update_Fadetexts();
 	}
@@ -5549,7 +5550,7 @@ int PK_Draw_InGame(){
 			if (spritet[pelaaja_index].energia < 1)
 				PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
 			else
-				if (aika < 1 && aikaraja)
+				if (timeout < 1 && aikaraja)
 					PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
 
 			PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
@@ -7127,16 +7128,16 @@ int PK_MainScreen_ScoreCount(){
 				pistelaskudelay = 50;
 			}
 
-		} else if (aika > 0){
+		} else if (timeout > 0){
 			pistelaskuvaihe = 2;
 			pistelaskudelay = 0;
 			aikapisteet+=5;
-			aika--;
+			timeout--;
 
 			if (degree%10==1)
 				PK_Play_MenuSound(pistelaskuri_aani, 70);
 
-			if (aika == 0)
+			if (timeout == 0)
 				pistelaskudelay = 50;
 
 		} else if (spritet[pelaaja_index].energia > 0){
@@ -7194,8 +7195,8 @@ int PK_MainScreen_ScoreCount(){
 		if (PisteInput_Keydown(PI_RETURN) && pistelaskuvaihe < 5){
 			pistelaskuvaihe = 5;
 			bonuspisteet = jakso_pisteet;
-			aikapisteet += aika*5;
-			aika = 0;
+			aikapisteet += timeout*5;
+			timeout = 0;
 			energiapisteet += spritet[pelaaja_index].energia * 300;
 			spritet[pelaaja_index].energia = 0;
 			for (int i=0;i<MAX_GIFTS;i++)
@@ -7302,12 +7303,11 @@ int PK_MainScreen_InGame(){
 
 		if (aikaraja && !jakso_lapaisty){
 			if (sekunti > 0)
-				sekunti -= 1;
+				sekunti --;
 			else{
-				sekunti = 60;
-				printf("%i\n", aika);
-				if (aika > 0)
-					aika--;
+				sekunti = TIME_FPS;
+				if (timeout > 0)
+					timeout--;
 				else
 					peli_ohi = true;
 			}
@@ -7840,7 +7840,7 @@ int PK_MainScreen_Change(){
 			// Lasketaan pelaajan kokonaispisteet etuk�teen
 			DWORD temp_pisteet = 0;
 			temp_pisteet += jakso_pisteet;
-			temp_pisteet += aika*5;
+			temp_pisteet += timeout*5;
 			temp_pisteet += spritet[pelaaja_index].energia * 300;
 			for (int i=0;i<MAX_GIFTS;i++)
 				if (esineet[i] != NULL)
@@ -7866,7 +7866,7 @@ int PK_MainScreen_Change(){
 			int vertailun_tulos;
 
 			/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
-			vertailun_tulos = PK_EpisodeScore_Compare(jakso_indeksi_nyt,temp_pisteet,kartta->aika-aika,false);
+			vertailun_tulos = PK_EpisodeScore_Compare(jakso_indeksi_nyt,temp_pisteet,kartta->aika - timeout,false);
 			if (vertailun_tulos > 0) {
 				PK_EpisodeScore_Save(pisteet_tiedosto);
 			}
