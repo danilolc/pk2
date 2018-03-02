@@ -4778,8 +4778,7 @@ int PK_Sprite_Bonus_Movement(int i){
 	{
 		if (sprite.energia > 0 && spritet[pelaaja_index].energia > 0)
 		{
-			if (sprite.tyyppi->pisteet != 0)
-			{
+			if (sprite.tyyppi->pisteet != 0){
 				piste_lisays += sprite.tyyppi->pisteet;
 				char luku[6];
 				itoa(sprite.tyyppi->pisteet,luku,10);
@@ -4800,9 +4799,9 @@ int PK_Sprite_Bonus_Movement(int i){
 
 			if (sprite.tyyppi->vahinko != 0 && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
 				spritet[pelaaja_index].energia -= sprite.tyyppi->vahinko;
-				if (spritet[pelaaja_index].energia > spritet[pelaaja_index].tyyppi->energia){
-					spritet[pelaaja_index].energia = spritet[pelaaja_index].tyyppi->energia;
-				}
+				//if (spritet[pelaaja_index].energia > spritet[pelaaja_index].tyyppi->energia){ //TODO - set correct energy
+				//	spritet[pelaaja_index].energia = spritet[pelaaja_index].tyyppi->energia;
+				//}
 			}
 
 			tuhoutuminen = sprite.tyyppi->tuhoutuminen;
@@ -7078,7 +7077,7 @@ void PK_UI_Load(){
 	static int enter = PI_RETURN;
 
 	int circ_size = 200;
-	int alpha = 155;
+	int alpha = 170;
 
 	gui_touch = PisteInput_CreateGui(0,0,1920,1080,alpha,"", &enter);
 
