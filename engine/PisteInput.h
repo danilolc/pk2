@@ -94,6 +94,6 @@ bool	PisteInput_Onko_Ohjain(int ohjain);
 
 int PisteInput_CreateGui(int x, int y, int w, int h, BYTE alpha, const char* t_path, int* key);
 int PisteInput_ActiveGui(int id, bool active);
-int PisteInput_DrawGui();
+int PisteInput_DrawGui(int pd_alpha);
 
 #endif

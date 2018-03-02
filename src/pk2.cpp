@@ -63,6 +63,12 @@ const int MAX_GIFTS = 4;
 const int MAX_SAVES = 10;
 const BYTE BLOCK_MAX_MASKEJA = 150;
 
+enum UI_MODE{
+	UI_TOUCH_TO_START,
+	UI_CURSOR,
+	UI_GAME_BUTTONS
+};
+
 enum BLOCKS{
 	BLOCK_TAUSTA,
 	BLOCK_SEINA,
@@ -261,13 +267,17 @@ bool precalculated_sincos = false;
 
 PK2SETTINGS settings;
 
-int gui_egg,
+int gui_touch,
+	gui_egg,
     gui_doodle,
 	gui_arr,
 	gui_up,
 	gui_down,
 	gui_left,
-	gui_right;
+	gui_right,
+	gui_menu,
+	gui_gift,
+	gui_tab;
 
 //Debug info
 bool	draw_dubug_info = false;
@@ -5573,12 +5583,12 @@ int PK_Draw_InGame(){
 }
 
 int PK_Draw_Cursor(int x,int y){
-	#ifndef __ANDROID__
+//	#ifndef __ANDROID__ //TODO - set correct cursor
 
 	if(settings.isFullScreen)
 		PisteDraw2_Image_CutClip(kuva_peli,x,y,621,461,640,480);
 
-	#endif
+//	#endif
 
 	return 0;
 }
@@ -7033,6 +7043,56 @@ int PK_Draw_EndGame(){
 }
 
 //==================================================
+//UI
+//==================================================
+
+void PK_UI_Activate(bool set){
+	PisteInput_ActiveGui(gui_menu, set);
+	PisteInput_ActiveGui(gui_arr, set);
+	PisteInput_ActiveGui(gui_left, set);
+	PisteInput_ActiveGui(gui_right, set);
+	PisteInput_ActiveGui(gui_up, set);
+	PisteInput_ActiveGui(gui_down, set);
+	PisteInput_ActiveGui(gui_doodle, set);
+	PisteInput_ActiveGui(gui_egg, set);
+}
+void PK_UI_Change(int ui_mode){
+	switch(ui_mode){
+		case UI_TOUCH_TO_START:
+			PisteInput_ActiveGui(gui_touch, true);
+			PK_UI_Activate(false);
+		break;
+		case UI_CURSOR:
+			PisteInput_ActiveGui(gui_touch, false);
+			PK_UI_Activate(false);
+		break;
+		case UI_GAME_BUTTONS:
+			PisteInput_ActiveGui(gui_touch, false);
+			PK_UI_Activate(true);
+		break;
+	}
+}
+void PK_UI_Load(){
+	static int escape = PI_ESCAPE;
+	static int tab = PI_TAB;
+	static int enter = PI_RETURN;
+
+	int circ_size = 200;
+	int alpha = 155;
+
+	gui_touch = PisteInput_CreateGui(0,0,1920,1080,alpha,"", &enter);
+
+	gui_menu = PisteInput_CreateGui(50,90,circ_size,circ_size,alpha,"android/menu.png", &escape);
+	gui_arr = PisteInput_CreateGui(50,650,388,256,alpha,"android/arrow.png", NULL);
+	gui_left = PisteInput_CreateGui(50,650,388/2,256,alpha,"", &kontrolli_vasemmalle);
+	gui_right = PisteInput_CreateGui(50+388/2,650,388/2,256,alpha,"",  &kontrolli_oikealle);
+	gui_up = PisteInput_CreateGui(1630,650,circ_size,circ_size,alpha,"android/up.png", &kontrolli_hyppy);
+	gui_down = PisteInput_CreateGui(1420,700,circ_size,circ_size,alpha,"android/down.png", &kontrolli_alas);
+	gui_doodle = PisteInput_CreateGui(1630,450,circ_size,circ_size,alpha,"android/doodle.png", &kontrolli_hyokkays2);
+	gui_egg = PisteInput_CreateGui(1420,500,circ_size,circ_size,alpha,"android/egg.png", &kontrolli_hyokkays1);
+}
+
+//==================================================
 //Main frames
 //==================================================
 
@@ -7445,6 +7505,7 @@ int PK_MainScreen_Change(){
 
 		// First start
 		if (pelin_seuraava_tila == TILA_PERUSALUSTUS){
+			PK_UI_Change(UI_TOUCH_TO_START);
 			strcpy(pelaajan_nimi,tekstit->Hae_Teksti(PK_txt.player_default_name));
 			srand((unsigned)time(NULL));
 			if(!test_level){
@@ -7622,7 +7683,7 @@ int PK_MainScreen_Change(){
 
 		// Start map
 		if (pelin_seuraava_tila == TILA_KARTTA){
-
+			PK_UI_Change(UI_CURSOR);
 			if(settings.isWide)
 				PisteDraw2_SetXOffset(80);
 			else
@@ -7709,7 +7770,7 @@ int PK_MainScreen_Change(){
 
 		// Start menu
 		if (pelin_seuraava_tila == TILA_MENUT){
-
+			PK_UI_Change(UI_CURSOR);
 			if (settings.isWide)
 				PisteDraw2_SetXOffset(80);
 			else
@@ -7744,7 +7805,7 @@ int PK_MainScreen_Change(){
 
 		// Start loading scene
 		if (pelin_seuraava_tila == TILA_PELI){
-
+			PK_UI_Change(UI_GAME_BUTTONS);
 			PisteDraw2_SetXOffset(0);
 			PisteDraw2_ScreenFill(0);
 			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.game_loading),screen_width/2-82,screen_height/2-9);
@@ -7781,7 +7842,7 @@ int PK_MainScreen_Change(){
 
 		// Start pontuation
 		if (pelin_seuraava_tila == TILA_PISTELASKU){
-
+			PK_UI_Change(UI_CURSOR);
 			if (settings.isWide)
 				PisteDraw2_SetXOffset(80);
 			else
@@ -7848,7 +7909,7 @@ int PK_MainScreen_Change(){
 		// Start intro
 		if (pelin_seuraava_tila == TILA_INTRO){
 			//PisteLog_Kirjoita("- Initializing intro screen\n");
-
+			PK_UI_Change(UI_TOUCH_TO_START);
 			if (settings.isWide)
 				PisteDraw2_SetXOffset(80);
 			else
@@ -7874,7 +7935,7 @@ int PK_MainScreen_Change(){
 
 		// Start ending
 		if (pelin_seuraava_tila == TILA_LOPPU){
-
+			PK_UI_Change(UI_TOUCH_TO_START);
 			if (settings.isWide)
 				PisteDraw2_SetXOffset(80);
 			else
@@ -7993,28 +8054,6 @@ int PK_MainScreen(){
 	return 0;
 }
 
-int PK_Load_Gui(){
-	gui_doodle = PisteInput_CreateGui(1366,800,256,256,180,"android/egg.png", &kontrolli_hyokkays1);
-	gui_egg = PisteInput_CreateGui(1600,700,256,256,180,"android/doodle.png", &kontrolli_hyokkays2);
-
-	int d = 512 / 3;
-	gui_arr =   PisteInput_CreateGui(90    ,512    ,512,512,180,"android/arrow.png", NULL);
-	gui_up =    PisteInput_CreateGui(90    ,512    ,512,d  ,180,"", &kontrolli_hyppy);
-	gui_down =  PisteInput_CreateGui(90    ,512+2*d,512,d  ,180,"", &kontrolli_alas);
-	gui_left =  PisteInput_CreateGui(90    ,512    ,d  ,512,180,"", &kontrolli_vasemmalle);
-	gui_right = PisteInput_CreateGui(90+2*d,512    ,d  ,512,180,"", &kontrolli_oikealle);
-
-	PisteInput_ActiveGui(gui_doodle,true);
-	PisteInput_ActiveGui(gui_egg,   true);
-	PisteInput_ActiveGui(gui_arr,   true);
-	PisteInput_ActiveGui(gui_up,    true);
-	PisteInput_ActiveGui(gui_down,  true);
-	PisteInput_ActiveGui(gui_left,  true);
-	PisteInput_ActiveGui(gui_right, true);
-
-	return 0;
-}
-
 //==================================================
 //Process Functions
 //==================================================
@@ -8069,8 +8108,8 @@ int main(int argc, char *argv[]){
 	#ifdef __ANDROID__ //TODO - remove
 
 	printf("PK2 Started!\n");
-	dev_mode = true;
-	Piste_SetDebug(true);
+	//dev_mode = true;
+	//Piste_SetDebug(true);
 	atexit(quit);
 
 	#endif
@@ -8117,9 +8156,9 @@ int main(int argc, char *argv[]){
 
 	PK_MainScreen_Change();
 
-	#ifdef __ANDROID__
-	PK_Load_Gui();
-	#endif
+	//#ifdef __ANDROID__
+	PK_UI_Load();
+	//#endif
 
 	pelin_seuraava_tila = TILA_INTRO;
 	if (dev_mode)

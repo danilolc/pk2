@@ -155,10 +155,8 @@ int PisteInput_CreateGui(int x, int y, int w, int h, BYTE alpha, const char* t_p
 
 	PI_GUI& gui = gui_list[gui_id];
 
-
 	float prop_x = (float)screen_w / 1920;
 	float prop_y = (float)screen_h / 1080;
-	printf("%i,%i", screen_w, screen_h);
 
 	gui.pos_x = x * prop_x;
 	gui.pos_y = y * prop_y;
@@ -194,7 +192,7 @@ int PisteInput_ActiveGui(int id, bool active){
 	return 0;
 }
 
-int PisteInput_DrawGui(){
+int PisteInput_DrawGui(int pd_alpha){
 	PI_GUI* gui;
 	SDL_Rect rect;
 	for(int i = 0; i < PI_MAX_GUI; i++){
@@ -205,7 +203,7 @@ int PisteInput_DrawGui(){
 			rect.y = gui->pos_y;
 			rect.w = gui->width;
 			rect.h = gui->height;
-			SDL_SetTextureAlphaMod(gui->texture,gui->alpha);
+			SDL_SetTextureAlphaMod(gui->texture,(gui->alpha * pd_alpha) / 256);
 			SDL_RenderCopy(PI_Renderer, gui->texture, NULL, &rect);
 		}
 	}

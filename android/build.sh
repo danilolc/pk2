@@ -40,7 +40,7 @@ fi
 
 
 
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -storepass pekkakana -keypass pekkakana -keystore key.keystore build/outputs/apk/android-$TYPE-unsigned.apk pekka_kana
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -storepass pekkakana -keypass pekkakana -keystore key.keystore build/outputs/apk/$TYPE/android-$TYPE-unsigned.apk pekka_kana
 retval=$?
 if [ "$retval" == 0 ]
 then
@@ -48,11 +48,11 @@ then
 else
 	exit $retval
 fi
-mv build/outputs/apk/android-$TYPE-unsigned.apk build/outputs/apk/pk2-$TYPE.apk
+mv build/outputs/apk/$TYPE/android-$TYPE-unsigned.apk build/outputs/apk/$TYPE/pk2-$TYPE.apk
 
 
 
-$ANDROID_SDK/platform-tools/adb install -r build/outputs/apk/pk2-$TYPE.apk
+$ANDROID_SDK/platform-tools/adb install -r build/outputs/apk/$TYPE/pk2-$TYPE.apk
 if [ "$retval" == 0 ]
 then
 	echo "Installed Ok"

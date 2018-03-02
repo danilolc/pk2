@@ -510,7 +510,7 @@ void PisteDraw2_Update(bool draw){
 		else
 			SDL_RenderCopy(PD_Renderer, texture, NULL, &Screen_dest);
 
-		PisteInput_DrawGui();
+		PisteInput_DrawGui(alpha);
 
 		SDL_RenderPresent(PD_Renderer);
 
