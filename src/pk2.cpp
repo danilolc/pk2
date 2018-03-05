@@ -1313,8 +1313,8 @@ void PK_Play_MenuSound(int aani, int voimakkuus){
 
 void PK_Precalculate_SinCos(){
 	int i;
-	for (i=0; i<360; i++) cos_table[i] = cos(3.1415*2* (i%360)/180)*33;
-	for (i=0; i<360; i++) sin_table[i] = sin(3.1415*2* (i%360)/180)*33;
+	for (i=0; i<360; i++) cos_table[i] = cos(M_PI*2* (i%360)/180)*33;
+	for (i=0; i<360; i++) sin_table[i] = sin(M_PI*2* (i%360)/180)*33;
 }
 
 int PK_Palikka_Tee_Maskit(){
@@ -1359,7 +1359,7 @@ int PK_Clean_TileBuffer(){
 
 	return 0;
 }
-int PK_Create_MenuShadow(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
+int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 	BYTE *buffer = NULL;
 	DWORD leveys;
 	BYTE vari,/* vari2, vari3,*/ vari32;
@@ -1480,16 +1480,14 @@ void PK_Start_Info(char *teksti){
 //Text
 //==================================================
 
-int PK_Piirra_LaineTeksti(char *teksti, int fontti, int x, int y){
+int PK_Wavetext_Draw(char *teksti, int fontti, int x, int y){
 	int pituus = strlen(teksti);
 	int vali = 0;
 	char kirjain[3] = " \0";
 	int ys, xs;
 
-	if (pituus > 0)
-	{
-		for (int i=0;i<pituus;i++)
-		{
+	if (pituus > 0){
+		for (int i=0;i<pituus;i++){
 			ys = (int)(sin_table[((i+degree)*8)%360])/7;
 			xs = (int)(cos_table[((i+degree)*8)%360])/9;
 			kirjain[0] = teksti[i];
@@ -1499,7 +1497,7 @@ int PK_Piirra_LaineTeksti(char *teksti, int fontti, int x, int y){
 	}
 	return vali;
 }
-int PK_Piirra_LaineTeksti_Hidas(char *teksti, int fontti, int x, int y){
+int PK_WavetextSlow_Draw(char *teksti, int fontti, int x, int y){
 	int pituus = strlen(teksti);
 	int vali = 0;
 	char kirjain[3] = " \0";
@@ -1524,11 +1522,11 @@ int PK_Piirra_LaineTeksti_Hidas(char *teksti, int fontti, int x, int y){
 	return vali;
 }
 
-void PK_Initialize_Fadetext(){
+void PK_Fadetext_Init(){
 	for (int i=0;i<MAX_FADETEKSTEJA;i++)
 		fadetekstit[i].ajastin = 0;
 }
-void PK_New_Fadetext(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin){
+void PK_Fadetext_New(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin){
 	fadetekstit[fadeteksti_index].fontti = fontti;
 	strcpy(fadetekstit[fadeteksti_index].teksti,teksti);
 	fadetekstit[fadeteksti_index].x = x;
@@ -1539,7 +1537,7 @@ void PK_New_Fadetext(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin){
 	if (fadeteksti_index >= MAX_FADETEKSTEJA)
 		fadeteksti_index = 0;
 }
-int  PK_Draw_Fadetexts(){
+int  PK_Fadetext_Draw(){
 	int pros;
 
 	for (int i=0;i<MAX_FADETEKSTEJA;i++)
@@ -1565,7 +1563,7 @@ int  PK_Draw_Fadetexts(){
 	}
 	return 0;
 }
-void PK_Update_Fadetexts(){
+void PK_Fadetext_Update(){
 	for (int i=0;i<MAX_FADETEKSTEJA;i++)
 	{
 		if (fadetekstit[i].ajastin > 0)
@@ -1689,16 +1687,12 @@ void PK_Particles_Draw(){
 
 	for (int i=0;i<MAX_PARTIKKELEITA;i++){
 		if (partikkelit[i].aika > 0){
-			if (partikkelit[i].x < kamera_x+screen_width &&
-				partikkelit[i].x > kamera_x &&
-				partikkelit[i].y < kamera_y+screen_height &&
-				partikkelit[i].y > kamera_y) {
-				if (partikkelit[i].aika < 100)
-					pros = partikkelit[i].aika;
-				else
-					pros = 100;
+			if (partikkelit[i].aika < 100)
+				pros = partikkelit[i].aika;
+			else
+				pros = 100;
 
-				switch (partikkelit[i].tyyppi){
+			switch (partikkelit[i].tyyppi){
 				case PARTIKKELI_TAHTI		:	PK_Particle_Draw_Star((int)partikkelit[i].x,(int)partikkelit[i].y,pros,partikkelit[i].vari);
 												break; //Star
 				case PARTIKKELI_HOYHEN		:	PK_Particle_Draw_Feather((int)partikkelit[i].x,(int)partikkelit[i].y,partikkelit[i].anim);
@@ -1714,10 +1708,8 @@ void PK_Particles_Draw(){
 				case PARTIKKELI_PISTE		:	PK_Particle_Draw_Dot((int)partikkelit[i].x,(int)partikkelit[i].y,pros,partikkelit[i].vari);
 												break; //Score
 				default						:	break;
-				}
 			}
-		}
-		else
+		} else
 			partikkelit[i].aika = 0;
 	}
 }
@@ -3942,7 +3934,7 @@ int PK_Sprite_Movement(int i){
 				{
 					char luku[10];
 					itoa(sprite.tyyppi->pisteet,luku,10);
-					PK_New_Fadetext(fontti2,luku,(int)spritet[i].x-8,(int)spritet[i].y-8,80);
+					PK_Fadetext_New(fontti2,luku,(int)spritet[i].x-8,(int)spritet[i].y-8,80);
 					piste_lisays += sprite.tyyppi->pisteet;
 				}
 			}
@@ -4784,9 +4776,9 @@ int PK_Sprite_Bonus_Movement(int i){
 				char luku[6];
 				itoa(sprite.tyyppi->pisteet,luku,10);
 				if (sprite.tyyppi->pisteet >= 50)
-					PK_New_Fadetext(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,100);
+					PK_Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,100);
 				else
-					PK_New_Fadetext(fontti1,luku,(int)sprite.x-8,(int)sprite.y-8,100);
+					PK_Fadetext_New(fontti1,luku,(int)sprite.x-8,(int)sprite.y-8,100);
 
 			}
 
@@ -5506,7 +5498,7 @@ int PK_Draw_InGame(){
 		PK_Particles_Update();
 		if (!jakso_lapaisty && (!aikaraja || timeout > 0))
 			PK_Update_Sprites();
-		PK_Update_Fadetexts();
+		PK_Fadetext_Update();
 	}
 
 	if (!skip_frame)
@@ -5518,7 +5510,7 @@ int PK_Draw_InGame(){
 	if (!skip_frame)
 		kartta->Piirra_Seinat(kamera_x,kamera_y, false);
 
-	PK_Draw_Fadetexts();
+	PK_Fadetext_Draw();
 
 	if (settings.nayta_tavarat)
 		PK_Draw_InGame_Gifts_Menu();
@@ -5544,16 +5536,16 @@ int PK_Draw_InGame(){
 	// piirr� jakso l�p�isty
 	////////////////////////
 	if (jakso_lapaisty)
-		PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
+		PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
 	else
 		if (peli_ohi){
 			if (spritet[pelaaja_index].energia < 1)
-				PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
+				PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
 			else
 				if (timeout < 1 && aikaraja)
-					PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
+					PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
 
-			PK_Piirra_LaineTeksti(tekstit->Hae_Teksti(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
+			PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
 		}
 
 
@@ -5662,7 +5654,7 @@ int  PK_Draw_Menu_Square(int vasen, int yla, int oikea, int ala, BYTE pvari){
 }
 bool PK_Draw_Menu_Text(bool active, char *teksti, int x, int y){
 	if(!active){
-		PK_Piirra_LaineTeksti_Hidas(teksti, fontti2, x, y);
+		PK_WavetextSlow_Draw(teksti, fontti2, x, y);
 		return false;
 	}
 
@@ -5682,10 +5674,10 @@ bool PK_Draw_Menu_Text(bool active, char *teksti, int x, int y){
 			return true;
 		}
 
-		PK_Piirra_LaineTeksti(teksti, fontti3, x, y);
+		PK_Wavetext_Draw(teksti, fontti3, x, y);
 	}
 	else
-		PK_Piirra_LaineTeksti_Hidas(teksti, fontti2, x, y);
+		PK_WavetextSlow_Draw(teksti, fontti2, x, y);
 
 	menu_valinta_id++;
 
@@ -5879,7 +5871,7 @@ int PK_Draw_Menu_Name(){
 		PisteDraw2_ScreenFill(mx+4, 254, mx+6, 254+20, 96+8);
 	}
 
-	PK_Piirra_LaineTeksti_Hidas(pelaajan_nimi,fontti2,180,255);
+	PK_WavetextSlow_Draw(pelaajan_nimi,fontti2,180,255);
 	PisteDraw2_Font_WriteAlpha(fontti3,pelaajan_nimi,180,255,15);
 
 	merkki = PisteInput_Lue_Nappaimisto();
@@ -7498,7 +7490,7 @@ int PK_MainScreen_Change(){
 				precalculated_sincos = true;
 			}
 
-			PK_Initialize_Fadetext();
+			PK_Fadetext_Init();
 
 			PK2Kartta_Aseta_Ruudun_Mitat(screen_width,screen_height); //TODO - call when screen change
 
@@ -7768,7 +7760,7 @@ int PK_MainScreen_Change(){
 					kuva_tausta = PisteDraw2_Image_New(screen_width ,screen_height);
 				}
 				PisteDraw2_Image_Snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
-				PK_Create_MenuShadow(kuva_tausta, 640, 480, 110);
+				PK_MenuShadow_Create(kuva_tausta, 640, 480, 110);
 			}
 
 			menunelio.left = 320-5;
@@ -7802,7 +7794,7 @@ int PK_MainScreen_Change(){
 
 				PK_Calculate_Tiles();
 
-				PK_Initialize_Fadetext(); //Reset fade text
+				PK_Fadetext_Init(); //Reset fade text
 
 				PK_Gift_Clean();
 				peli_kesken = true;
@@ -7828,7 +7820,7 @@ int PK_MainScreen_Change(){
 
 			PisteDraw2_Image_Delete(kuva_tausta);
 			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
-			PK_Create_MenuShadow(kuva_tausta, 640, 480, 30);
+			PK_MenuShadow_Create(kuva_tausta, 640, 480, 30);
 
 			//if (PisteSound_StartMusic("music/hiscore.xm")!=0)
 			//	PK2_error = true;

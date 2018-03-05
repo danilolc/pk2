@@ -213,6 +213,8 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 
 	if (alpha > 100) alpha = 100;
 	if (alpha < 0) alpha = 0;
+	if (x_start < 0) x_start = 0;
+	if (y_start < 0) y_start = 0;
 	if (x_end > PD_screen_width) x_end = PD_screen_width;
 	if (y_end > PD_screen_height) y_end = PD_screen_height;
 	if (x_start > x_end || y_start > y_end) return -1;
