@@ -37,9 +37,9 @@
 
 #endif
 
-#include "PisteEngine.h"
-#include "map.h"
-#include "sprite.h"
+#include "PisteEngine.hpp"
+#include "map.hpp"
+#include "sprite.hpp"
 
 using namespace std;
 

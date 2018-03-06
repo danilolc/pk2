@@ -3,9 +3,9 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 
-#include "PisteDraw.h"
-#include "PisteFont.h"
-#include "PisteInput.h"
+#include "PisteDraw.hpp"
+#include "PisteFont.hpp"
+#include "PisteInput.hpp"
 
 #include <fstream>
 #include <algorithm>

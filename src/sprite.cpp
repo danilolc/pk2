@@ -7,10 +7,10 @@
 #include <fstream>
 #include <cstring>
 
-#include "sprite.h"
+#include "sprite.hpp"
 
-#include "PisteDraw.h"
-#include "platform.h"
+#include "PisteDraw.hpp"
+#include "platform.hpp"
 
 using namespace std;
 

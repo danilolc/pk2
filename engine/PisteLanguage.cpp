@@ -3,7 +3,7 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 
-#include "PisteLanguage.h"
+#include "PisteLanguage.hpp"
 
 #include <fstream>
 #include <iostream>

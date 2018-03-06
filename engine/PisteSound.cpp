@@ -3,8 +3,8 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 
-#include "PisteSound.h"
-#include "PisteUtils.h"
+#include "PisteSound.hpp"
+#include "PisteUtils.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>

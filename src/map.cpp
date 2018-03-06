@@ -9,9 +9,9 @@
 #include <inttypes.h>
 #include <fstream>
 
-#include "map.h"
-#include "PisteDraw.h"
-#include "PisteUtils.h"
+#include "map.hpp"
+#include "PisteDraw.hpp"
+#include "PisteUtils.hpp"
 
 using namespace std;
 

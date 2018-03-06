@@ -6,7 +6,7 @@
 #ifndef PISTELANGUAGE
 #define PISTELANGUAGE
 
-#include "platform.h"
+#include "platform.hpp"
 
 const int MAX_TEXTS = 200;
 const int MAX_TEXT_LENGTH = 80;

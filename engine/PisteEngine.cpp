@@ -2,7 +2,7 @@
 //PisteEngine
 //by Janne Kivilahti from Piste Gamez
 //#########################
-#include "PisteEngine.h"
+#include "PisteEngine.hpp"
 
 #include <SDL2/SDL.h>
 #include <string>

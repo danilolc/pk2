@@ -6,8 +6,8 @@
 #ifndef P_FONT
 #define P_FONT
 
-#include "platform.h"
-#include "PisteDraw.h"
+#include "platform.hpp"
+#include "PisteDraw.hpp"
 
 class PisteFont2{
 private:

@@ -6,13 +6,13 @@
 #ifndef P_ENGINE
 #define P_ENGINE
 
-#include "platform.h"
+#include "platform.hpp"
 
-#include "PisteDraw.h"
-#include "PisteInput.h"
-#include "PisteSound.h"
-#include "PisteUtils.h"
-#include "PisteLanguage.h"
+#include "PisteDraw.hpp"
+#include "PisteInput.hpp"
+#include "PisteSound.hpp"
+#include "PisteUtils.hpp"
+#include "PisteLanguage.hpp"
 
 void Piste_IgnoreFrame();
 void Piste_SetFPS(int fps);

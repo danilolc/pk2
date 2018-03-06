@@ -24,9 +24,9 @@
 #include <unistd.h>
 #include <dirent.h>
 
-#include "PisteEngine.h"
-#include "map.h"
-#include "sprite.h"
+#include "PisteEngine.hpp"
+#include "map.hpp"
+#include "sprite.hpp"
 
 #define GAME_NAME "PK2 Level Editor"
 

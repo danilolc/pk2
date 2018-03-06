@@ -6,7 +6,7 @@
 #ifndef PISTELUTILS
 #define PISTELUTILS
 
-#include "platform.h"
+#include "platform.hpp"
 
 int PisteUtils_Setcwd();
 void  PisteUtils_Lower(char* string);

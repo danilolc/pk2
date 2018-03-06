@@ -6,7 +6,7 @@
 //Doesn't working yet
 //#########################
 
-#include "sprite.h"
+#include "sprite.hpp"
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>

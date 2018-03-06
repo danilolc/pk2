@@ -6,7 +6,7 @@
 #ifndef PK2SPRITE
 #define PK2SPRITE
 
-#include "types.h"
+#include "types.hpp"
 
 #define PK2SPRITE_VIIMEISIN_VERSIO "1.3"
 

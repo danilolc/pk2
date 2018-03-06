@@ -6,7 +6,7 @@
 #ifndef P_INPUT
 #define P_INPUT
 
-#include "platform.h"
+#include "platform.hpp"
 
 #define		PI_VIRHE -1000
 

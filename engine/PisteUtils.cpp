@@ -2,7 +2,7 @@
 //PisteEngine - PisteUtils
 //by Janne Kivilahti from Piste Gamez
 //#########################
-#include "PisteUtils.h"
+#include "PisteUtils.hpp"
 
 #include <cstring>
 #include <sys/stat.h>

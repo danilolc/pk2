@@ -2,7 +2,7 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
-#include "types.h"
+#include "types.hpp"
 
 #include <cstdio>
 #include <cstdlib>

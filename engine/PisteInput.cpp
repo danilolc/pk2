@@ -3,8 +3,8 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 
-#include "PisteInput.h"
-#include "PisteDraw.h"
+#include "PisteInput.hpp"
+#include "PisteDraw.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
