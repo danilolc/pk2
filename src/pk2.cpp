@@ -22,9 +22,7 @@
 #include <sys/stat.h>
 #include <fstream>
 #include <cmath> //sin cos
-#include <cstdio>
 #include <ctime>
-#include <cstdlib> //rand
 
 #ifdef _WIN32
 #include <direct.h>

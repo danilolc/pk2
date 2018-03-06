@@ -8,8 +8,6 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <fstream>
-#include <cstdlib>
-#include <cstdio>
 
 #include "map.h"
 #include "PisteDraw.h"

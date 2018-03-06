@@ -6,7 +6,6 @@
 #ifndef PK2MAP
 #define PK2MAP
 
-#include "types.h"
 #include "platform.h"
 
 #include <string.h>

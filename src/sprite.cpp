@@ -5,13 +5,11 @@
 
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
-#include <cstdio>
 #include <cstring>
 
 #include "sprite.h"
-#include "PisteDraw.h"
 
+#include "PisteDraw.h"
 #include "platform.h"
 
 using namespace std;
