@@ -44,7 +44,6 @@ This example starts the level13.map on dev mode:
 * Better port to Android (with resources)
 * Consider Sprite in Water when the water is on BG or outside the screen
 * Fix the mikmod music loop
-* Recover the rain
 * Recover the original physics
 * Find a solution to change sfx frequency without delay
 * Increase txt buttons area

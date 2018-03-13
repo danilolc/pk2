@@ -107,6 +107,7 @@ enum PARTICLES{
 	PARTIKKELI_TAHTI2
 };
 enum BG_PARTICLES{
+	BGPARTICLE_EI_MIKAAN,
 	BGPARTICLE_WATERDROP,
 	BGPARTICLE_LEAF1,
 	BGPARTICLE_LEAF2,
@@ -1727,7 +1728,7 @@ void PK_Particles_Update(){
 
 void PK_BGParticle_WaterDrop(PK2PARTIKKELI &p){
 	p.y += p.b / 3.0 + 2.0;
-
+	
 	int kx = (int)(p.x-kamera_x);
 	int ky = (int)(p.y-kamera_y);
 
@@ -1812,20 +1813,17 @@ void PK_BGParticle_Flake4(PK2PARTIKKELI &p){
 	PisteDraw2_ScreenFill(kx,ky,kx+2,ky+2,20+(int)p.b);
 };
 
-int  PK_BGParticles_Clear(){
+int  PK_BGParticles_Load(){
 	int i = 0;
 
 	taustapartikkeli_index = 0;
 
-	//kartta->ilma = ILMA_SADE;
-
-	while (i < MAX_TAUSTAPARTIKKELEITA)
-	{
+	while (i < MAX_TAUSTAPARTIKKELEITA){
 		taustapartikkelit[i].a = rand()%10-rand()%10;
 		taustapartikkelit[i].aika = 1;
 		taustapartikkelit[i].anim = rand()%10;
 		taustapartikkelit[i].b = rand()%9+1;
-		taustapartikkelit[i].tyyppi = PARTIKKELI_EI_MIKAAN;
+		taustapartikkelit[i].tyyppi = BGPARTICLE_EI_MIKAAN;
 		taustapartikkelit[i].x = rand()%screen_width;
 		taustapartikkelit[i].y = rand()%screen_height;
 		taustapartikkelit[i].paino = rand()%10;
@@ -1835,33 +1833,24 @@ int  PK_BGParticles_Clear(){
 
 	if (kartta->ilma == ILMA_SADE || kartta->ilma == ILMA_SADEMETSA)
 		for(i=0;i < MAX_TAUSTAPARTIKKELEITA;i++)
-		{
 			taustapartikkelit[i].tyyppi = BGPARTICLE_WATERDROP;
-		}
 
 	if (kartta->ilma == ILMA_METSA || kartta->ilma == ILMA_SADEMETSA)
 		for(i=0;i < MAX_TAUSTAPARTIKKELEITA/8;i++)
-		{
 			taustapartikkelit[i].tyyppi = BGPARTICLE_LEAF1 + rand()%4;
-		}
 
 	if (kartta->ilma == ILMA_LUMISADE){
-
 		for(i=0;i < MAX_TAUSTAPARTIKKELEITA/2;i++)
-		{
 			taustapartikkelit[i].tyyppi = BGPARTICLE_FLAKE4;
-		}
 		for(i=0;i < MAX_TAUSTAPARTIKKELEITA/3;i++)
-		{
 			taustapartikkelit[i].tyyppi = BGPARTICLE_FLAKE1 + rand()%2+1;//3
-		}
 	}
 	return 0;
 }
 int  PK_BGParticles_Update(){
 
 	for (int i=0;i<MAX_TAUSTAPARTIKKELEITA;i++){
-		if (taustapartikkelit[i].tyyppi != PARTIKKELI_EI_MIKAAN){
+		if (taustapartikkelit[i].tyyppi != BGPARTICLE_EI_MIKAAN){
 			switch(taustapartikkelit[i].tyyppi){
 				case BGPARTICLE_WATERDROP : PK_BGParticle_WaterDrop(taustapartikkelit[i]); break;
 				case BGPARTICLE_LEAF1     : PK_BGParticle_Leaf1(taustapartikkelit[i]); break;
@@ -1872,7 +1861,7 @@ int  PK_BGParticles_Update(){
 				case BGPARTICLE_FLAKE2    : PK_BGParticle_Flake2(taustapartikkelit[i]); break;
 				case BGPARTICLE_FLAKE3    : PK_BGParticle_Flake3(taustapartikkelit[i]); break;
 				case BGPARTICLE_FLAKE4    : PK_BGParticle_Flake4(taustapartikkelit[i]); break;
-				default : taustapartikkelit[i].tyyppi = PARTIKKELI_EI_MIKAAN;
+				default : taustapartikkelit[i].tyyppi = BGPARTICLE_EI_MIKAAN;
 			}
 
 			if (taustapartikkelit[i].x  >  kamera_x + screen_width)
@@ -2551,7 +2540,7 @@ int PK_Map_Open(char *nimi){
 	PK_Sprites_Start_Directions();
 	PK_Map_Count_Keys();
 	PK_Particles_Clear();
-	PK_BGParticles_Clear();
+	PK_BGParticles_Load();
 	PK_Kartta_Laske_Reunat();
 
 	if (strcmp(kartta->musiikki,"")!=0){
@@ -7044,7 +7033,7 @@ void PK_UI_Change(int ui_mode){
 			PK_UI_Activate(false);
 		break;
 		case UI_GAME_BUTTONS:
-			PisteInput_ActiveGui(gui_touch, false);
+			PisteInput_ActiveGui(gui_touch, true);
 			PK_UI_Activate(true);
 		break;
 	}
@@ -7104,7 +7093,7 @@ int PK_MainScreen_ScoreCount(){
 
 	int energia = spritet[pelaaja_index].energia;
 
-	if (pistelaskudelay == 0)
+	if (pistelaskudelay == 0){ // TODO - Changed
 		if (bonuspisteet < jakso_pisteet){
 			pistelaskuvaihe = 1;
 			pistelaskudelay = 0;
@@ -7151,6 +7140,7 @@ int PK_MainScreen_ScoreCount(){
 				}
 		}
 		else pistelaskuvaihe = 5;
+	}
 
 	if (pistelaskudelay > 0)
 		pistelaskudelay--;

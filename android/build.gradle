@@ -55,7 +55,7 @@ android {
 					'res'
 			]
 			assets.srcDirs = [
-					'../res'
+			 		'../res'
 			]
 		}
 		debug.jniLibs.srcDirs = [

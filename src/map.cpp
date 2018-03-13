@@ -271,15 +271,15 @@ RECT PK2Kartta::LaskeTallennusAlue(BYTE *alue){
 
 void PK2Kartta::LueTallennusAlue(BYTE *lahde, RECT alue, int kohde){
 	int x,y;
-	int kartan_vasen = alue.left,
-		kartan_oikea = alue.right,
-		kartan_yla	 = alue.top,
-		kartan_ala	 = alue.bottom,
+	int kartan_vasen   = alue.left,
+		kartan_oikea   = alue.right,
+		kartan_yla     = alue.top,
+		kartan_ala     = alue.bottom,
 		kartan_korkeus = kartan_oikea - kartan_vasen,
-		kartan_leveys = kartan_ala - kartan_yla;
+		kartan_leveys  = kartan_ala - kartan_yla;
 
 	BYTE tile;
-	if (&lahde != NULL && kohde != 0)	{
+	if (lahde != NULL && kohde != 0)	{
 		for (y=0;y<kartan_korkeus;y++) {
 			for (x=0;x<kartan_leveys;x++) {
 				tile = lahde[x+y*kartan_leveys];
@@ -481,88 +481,6 @@ int PK2Kartta::Tallenna(char *filename){
 			tiedosto->write(tile, sizeof(tile));
 		}
 	}
-	/*
-
-	alue = LaskeTallennusAlue(this->seinat);
-	koko = (alue.right - alue.left) * (alue.bottom - alue.top);
-	aloituskohta = alue.left+alue.top*PK2KARTTA_KARTTA_LEVEYS;
-	ltoa(aloituskohta,luku,10);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-	ltoa(koko,luku,10);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-	for (i=0;i<koko;i++){
-		tile[0] = this->seinat[aloituskohta+i];
-		tiedosto->write(tile, sizeof(tile));
-	}
-
-	alue = LaskeTallennusAlue(this->spritet);
-	koko = (alue.right - alue.left) * (alue.bottom - alue.top);
-	aloituskohta = alue.left+alue.top*PK2KARTTA_KARTTA_LEVEYS;
-	ltoa(aloituskohta,luku,10);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-	ltoa(koko,luku,10);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-	for (i=0;i<koko;i++){
-		tile[0] = this->spritet[aloituskohta+i];
-		tiedosto->write(tile, sizeof(tile));
-	}
-	/*
-	alue = LaskeTallennusAlue(this->seinat);
-	koko = (alue.right - alue.left) * (alue.bottom - alue.top);
-	ltoa(alue.left,luku,10); tiedosto->write(luku, sizeof(luku));
-	ltoa(alue.right,luku,10); tiedosto->write(luku, sizeof(luku));
-	ltoa(koko,luku,10); tiedosto->write(luku, sizeof(luku));
-	for (i=0;i<koko;i++){
-		tile = (char *)this->seinat[(alue.left+alue.top*PK2KARTTA_KARTTA_LEVEYS)+i];
-		tiedosto->write(tile, sizeof(tile));
-	}
-
-	alue = LaskeTallennusAlue(this->spritet);
-	koko = (alue.right - alue.left) * (alue.bottom - alue.top);
-	ltoa(alue.left,luku,10); tiedosto->write(luku, sizeof(luku));
-	ltoa(alue.right,luku,10); tiedosto->write(luku, sizeof(luku));
-	ltoa(koko,luku,10); tiedosto->write(luku, sizeof(luku));
-	for (i=0;i<koko;i++){
-		tile = (char *)this->spritet[(alue.left+alue.top*PK2KARTTA_KARTTA_LEVEYS)+i];
-		tiedosto->write(tile, sizeof(tile));
-	}
-	/*
-	alue = LaskeTallennusAlue(this->seinat, *&alue_seinat);
-	if (alue_seinat != NULL) {
-		ltoa(alue.left,luku,10); tiedosto->write(luku, sizeof(luku));
-		ltoa(alue.right,luku,10); tiedosto->write(luku, sizeof(luku));
-		ltoa(alue.bottom,luku,10); tiedosto->write(luku, sizeof(luku));
-		ltoa(alue.top,luku,10); tiedosto->write(luku, sizeof(luku));
-		tiedosto->write(alue_seinat, sizeof(alue_seinat));
-	}
-
-	alue = LaskeTallennusAlue(this->taustat, *&alue_taustat);
-	if (alue_taustat != NULL) {
-		ltoa(alue.left,luku,10); tiedosto->write(luku, sizeof(luku));
-		ltoa(alue.right,luku,10); tiedosto->write(luku, sizeof(luku));
-		ltoa(alue.bottom,luku,10); tiedosto->write(luku, sizeof(luku));
-		ltoa(alue.top,luku,10); tiedosto->write(luku, sizeof(luku));
-		tiedosto->write(alue_taustat, sizeof(alue_taustat));
-	}
-
-	alue = LaskeTallennusAlue(this->spritet, *&alue_spritet);
-	if (alue_spritet != NULL) {
-		ltoa(alue.left,luku,10); tiedosto->write(luku, sizeof(luku));
-		ltoa(alue.right,luku,10); tiedosto->write(luku, sizeof(luku));
-		ltoa(alue.bottom,luku,10); tiedosto->write(luku, sizeof(luku));
-		ltoa(alue.top,luku,10); tiedosto->write(luku, sizeof(luku));
-		tiedosto->write(alue_spritet, sizeof(alue_spritet));
-	}
-	/*
-
-	tiedosto->write(this->taustat,		sizeof(taustat));
-	tiedosto->write(this->seinat,		sizeof(seinat));
-	tiedosto->write(this->spritet,		sizeof(spritet));
-	*/
 
 	if (tiedosto->fail()){
 		delete (tiedosto);

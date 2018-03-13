@@ -1258,12 +1258,10 @@ int PK2Sprite::AI_Pakenee_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 	return 0;
 }
 int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
-	if (energia > 0  && pelaaja.energia > 0)
-	{
+	if (energia > 0  && pelaaja.energia > 0){
 		double max = tyyppi->max_nopeus / 3.5;
 
-		if (pelaaja_x != -1)
-		{
+		if (pelaaja_x != -1){
 			if (a > -max && x > pelaaja_x)
 				a -= 0.1;
 
@@ -1271,18 +1269,17 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 				a += 0.1;
 		}
 
-		if ((pelaaja.x < x && flip_x) || (pelaaja.x > x && ! flip_x))
+		if ((pelaaja.x < x && flip_x) || (pelaaja.x > x && ! flip_x)){
 			if ((pelaaja.x - x < 300 && pelaaja.x - x > -300) &&
-				(pelaaja.y - y < tyyppi->korkeus && pelaaja.y - y > -tyyppi->korkeus))
-			{
+				(pelaaja.y - y < tyyppi->korkeus && pelaaja.y - y > -tyyppi->korkeus)){
 				pelaaja_x = (int)(pelaaja.x+pelaaja.a);
 				pelaaja_y = (int)(pelaaja.y+pelaaja.b);
 			}
-			else
-			{
+			else{
 				pelaaja_x = -1;
-				pelaaja_y = -1;
+				pelaaja_y = -1; // TODO - Changed
 			}
+		}
 	}
 
 
@@ -1371,12 +1368,10 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Vert_Hori(PK2Sprite &pelaaja){
 	return 0;
 }
 int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(PK2Sprite &pelaaja){
-	if (energia > 0  && pelaaja.energia > 0)
-	{
+	if (energia > 0  && pelaaja.energia > 0){
 		double max = tyyppi->max_nopeus / 3.5;
 
-		if (pelaaja_x != -1)
-		{
+		if (pelaaja_x != -1){
 			if (a > -max && x > pelaaja_x)
 				a -= 0.1;
 
@@ -1390,18 +1385,17 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(PK2Sprite &pelaaja){
 				b += 0.4;
 		}
 
-		if ((pelaaja.x < x && flip_x) || (pelaaja.x > x && ! flip_x))
+		if ((pelaaja.x < x && flip_x) || (pelaaja.x > x && ! flip_x)){
 			if ((pelaaja.x - x < 300 && pelaaja.x - x > -300) &&
-				(pelaaja.y - y < 80 && pelaaja.y - y > -80))
-			{
+				(pelaaja.y - y < 80 && pelaaja.y - y > -80)){
 				pelaaja_x = (int)(pelaaja.x+pelaaja.a);
 				pelaaja_y = (int)(pelaaja.y+pelaaja.b);
 			}
-			else
-			{
+			else{
 				pelaaja_x = -1;
-				pelaaja_y = -1;
+				pelaaja_y = -1; // TODO - Changed
 			}
+		}
 	}
 
 
