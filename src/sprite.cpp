@@ -923,21 +923,17 @@ int PK2Sprite::Piirra(int kamera_x, int kamera_y){
 
 	frame = Animoi();
 
-	if (tyyppi->tarisee)
-	{
+	if (tyyppi->tarisee){
 		x+= rand()%2 - rand()%2;
 		y+= rand()%2 - rand()%2;
 	}
 
-	if (flip_x)
-	{
+	if (flip_x){
 		if (!flip_y)
 			PisteDraw2_Image_Clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);
 		else
 			PisteDraw2_Image_Clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);//, false, true);//TODO-Fix
-	}
-	else
-	{
+	} else{
 		if (!flip_y)
 			PisteDraw2_Image_Clip(tyyppi->framet[frame], x-l-1, y-h);
 		else
@@ -1277,7 +1273,7 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 			}
 			else{
 				pelaaja_x = -1;
-				pelaaja_y = -1; // TODO - Changed
+				pelaaja_y = -1;
 			}
 		}
 	}
@@ -1393,7 +1389,7 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(PK2Sprite &pelaaja){
 			}
 			else{
 				pelaaja_x = -1;
-				pelaaja_y = -1; // TODO - Changed
+				pelaaja_y = -1;
 			}
 		}
 	}

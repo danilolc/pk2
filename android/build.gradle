@@ -31,7 +31,7 @@ android {
 		abortOnError false
 		disable 'MissingTranslation'
 	}
-	compileSdkVersion 24
+	compileSdkVersion 27
 	buildToolsVersion '26.0.2'
 	packagingOptions {
 		exclude 'META-INF/LICENSE'
@@ -39,7 +39,7 @@ android {
 	}
 	defaultConfig {
 		minSdkVersion 16
-		targetSdkVersion 24
+		targetSdkVersion 27
 
 	}
 	buildTypes.all { buildType ->

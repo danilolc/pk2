@@ -62,7 +62,7 @@ void Piste_IgnoreFrame(){
 	draw = false;
 }
 void Piste_SetFPS(int fps){
-	FPS_ms = (float)1000.f/fps;
+	FPS_ms = 1000.f / fps;
 }
 int  Piste_GetFPS(){
 	return real_fps;

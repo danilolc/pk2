@@ -38,12 +38,12 @@ int Change_Frequency(int index, int freq){
 
 		cvt.len = indexes[index]->alen;
 		cvt.buf = (Uint8*)SDL_malloc(cvt.len * cvt.len_mult);
-		if (cvt.buf == NULL) return -1;
+		if (cvt.buf == NULL) return -2;
 
 		SDL_memcpy(cvt.buf, indexes[index]->abuf, indexes[index]->alen);
 		if(SDL_ConvertAudio(&cvt) < 0){
 			SDL_free(cvt.buf);
-			return -1;
+			return -3;
 		}
 
 		indexes[index]->abuf = cvt.buf;
@@ -54,7 +54,7 @@ int Change_Frequency(int index, int freq){
 
 		return channel;
 	}
-	else return -1;
+	else return 1; // Dont need to change frequency
 }
 
 int PisteSound_LoadSFX(char* filename){
@@ -66,14 +66,14 @@ int PisteSound_LoadSFX(char* filename){
 		}
 	return i;
 }
-void PisteSound_PlaySFX(int index){
-	PisteSound_PlaySFX(index, sfx_volume, 0, def_freq);
+int PisteSound_PlaySFX(int index){
+	return PisteSound_PlaySFX(index, sfx_volume, 0, def_freq);
 }
-void PisteSound_PlaySFX(int index, int volume, int panoramic, int freq){
-	//panoramic -10000 -> 10000
+int PisteSound_PlaySFX(int index, int volume, int panoramic, int freq){
+	//panoramic from -10000 to 10000
 
-	if(index == -1) return;
-	if(indexes[index] == NULL) return;
+	if(index == -1) return 1;
+	if(indexes[index] == NULL) return 2;
 
 	volume = volume * 128 / 100;
 	indexes[index]->volume = volume;
@@ -85,12 +85,22 @@ void PisteSound_PlaySFX(int index, int volume, int panoramic, int freq){
 	Uint8* bkp_buf = indexes[index]->abuf;
 	Uint32 bkp_len = indexes[index]->alen;
 
-	int channel = Change_Frequency(index, freq);
+	int channel;
+	if (freq != def_freq){
+		channel = Change_Frequency(index, freq);
+		if (channel < 0) // Error changing frequency
+			return channel;
+	} else channel = -1;
+
 	Mix_SetPanning(channel, pan_left, pan_right);
-	Mix_PlayChannel(channel, indexes[index], 0);
+
+	if(Mix_PlayChannel(channel, indexes[index], 0) == -1)
+		return -1;
 
 	indexes[index]->abuf = bkp_buf;
 	indexes[index]->alen = bkp_len;
+
+	return 0;
 }
 void PisteSound_SetSFXVolume(int volume){
 	sfx_volume = volume;
@@ -134,7 +144,7 @@ void PisteSound_StopMusic(){
 }
 
 int PisteSound_Start(){
-	if( Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, 4096) < 0){
+	if(Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, 4096) < 0){
 		printf("PS     - Unable to init Mixer: %s\n", Mix_GetError());
 		return -1;
 	}
