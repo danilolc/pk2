@@ -2,8 +2,6 @@
 //PisteEngine - PisteUtils
 //by Janne Kivilahti from Piste Gamez
 //#########################
-#include "PisteUtils.hpp"
-
 #include <cstring>
 #include <sys/stat.h>
 #include <ctype.h>
@@ -12,16 +10,15 @@
 	#include <io.h>
 	#include "winlite.h"
 	#include <direct.h>
-	#define SEP "\\"
 #else
 	#include <dirent.h>
 	#include <unistd.h>
 	#include <limits.h>
-	#define SEP "/"
 #endif
 
-using namespace std;
+#include "PisteUtils.hpp"
 
+using namespace std;
 
 #ifdef __ANDROID__
 int PisteUtils_Setcwd() {
@@ -126,9 +123,9 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], 
 	int i = 0;
 	char buffer[260];
 	if (type[0] == '/') //TODO in Windows
-		_snprintf(buffer, sizeof(buffer), "%s/*", dir, type);
+		_snprintf(buffer, sizeof(buffer), "%s/*", dir);
 	else if (type[0] == '\0')
-		_snprintf(buffer, sizeof(buffer), "%s/*", dir, type);
+		_snprintf(buffer, sizeof(buffer), "%s/*", dir);
 	else
 		_snprintf(buffer, sizeof(buffer), "%s/*%s", dir, type);
 

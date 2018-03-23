@@ -460,7 +460,7 @@ int PisteDraw2_Start(int width, int height, const char* name) {
 	SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
 	SDL_FillRect(frameBuffer8, NULL, 255);
 
-	SDL_Rect r = {.x = 0, .y = 0, .w = width, .h = height};
+	SDL_Rect r = {0, 0, width, height};
 	SDL_SetClipRect(frameBuffer8, &r);
 
 	PD_screen_width = width;

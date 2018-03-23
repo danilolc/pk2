@@ -22,6 +22,9 @@
 #include <sys/stat.h>
 #include <fstream>
 #include <cmath> //sin cos
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 #include <ctime>
 
 #ifdef _WIN32
@@ -1466,8 +1469,8 @@ void PK_Kartta_Laske_Reunat(){
 
 int PK_Draw_Transparent_Object(int lahde_buffer, DWORD lahde_x, DWORD lahde_y, DWORD lahde_leveys, DWORD lahde_korkeus,
 						 DWORD kohde_x, DWORD kohde_y, int pros, BYTE vari){
-	PD_RECT src = {.x = lahde_x, .y = lahde_y, .w = lahde_leveys, .h = lahde_korkeus};
-	PD_RECT dst = {.x = kohde_x, .y = kohde_y, .w = lahde_leveys, .h = lahde_korkeus};
+	PD_RECT src = {lahde_x, lahde_y, lahde_leveys, lahde_korkeus};
+	PD_RECT dst = {kohde_x, kohde_y, lahde_leveys, lahde_korkeus};
 	PisteDraw2_Image_CutClipTransparent(lahde_buffer, src, dst, pros, vari);
 	return 0;
 }
@@ -5099,7 +5102,7 @@ int PK_Draw_InGame_Sprites(){
 }
 
 int PK_Draw_InGame_DebugInfo(){
-	int vali, fy = 35;
+	int vali, fy = 70;
 	char lukua[20];
 
 	if (settings.isWide)

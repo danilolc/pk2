@@ -74,6 +74,7 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>include;../src;../engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -99,17 +100,17 @@
     <ClCompile Include="..\src\sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\engine\PisteDraw.h" />
-    <ClInclude Include="..\engine\PisteEngine.h" />
-    <ClInclude Include="..\engine\PisteFont.h" />
-    <ClInclude Include="..\engine\PisteInput.h" />
-    <ClInclude Include="..\engine\PisteLanguage.h" />
-    <ClInclude Include="..\engine\platform.h" />
-    <ClInclude Include="..\engine\PisteSound.h" />
-    <ClInclude Include="..\engine\PisteUtils.h" />
-    <ClInclude Include="..\engine\types.h" />
-    <ClInclude Include="..\src\map.h" />
-    <ClInclude Include="..\src\sprite.h" />
+    <ClInclude Include="..\engine\PisteDraw.hpp" />
+    <ClInclude Include="..\engine\PisteEngine.hpp" />
+    <ClInclude Include="..\engine\PisteFont.hpp" />
+    <ClInclude Include="..\engine\PisteInput.hpp" />
+    <ClInclude Include="..\engine\PisteLanguage.hpp" />
+    <ClInclude Include="..\engine\platform.hpp" />
+    <ClInclude Include="..\engine\PisteSound.hpp" />
+    <ClInclude Include="..\engine\PisteUtils.hpp" />
+    <ClInclude Include="..\engine\types.hpp" />
+    <ClInclude Include="..\src\map.hpp" />
+    <ClInclude Include="..\src\sprite.hpp" />
     <ClInclude Include="include\winlite.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
