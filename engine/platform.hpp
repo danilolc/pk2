@@ -50,10 +50,6 @@
 #define getcwd _getcwd
 #endif
 
-#ifndef gcvt
-#define gcvt _gcvt
-#endif
-
 #ifndef chdir
 #define chdir _chdir
 #endif

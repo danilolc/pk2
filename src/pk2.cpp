@@ -35,11 +35,6 @@
 
 #endif
 
-#ifdef __ANDROID__
-#define gcvt(...) 0; //TODO - find gcvt()
-
-#endif
-
 #include "PisteEngine.hpp"
 #include "map.hpp"
 #include "sprite.hpp"
@@ -151,7 +146,6 @@ const int MAX_EPISODEJA	= 300;
 
 const int MAX_ILMOITUKSENNAYTTOAIKA = 700;
 
-//PK2EPISODESCORES
 struct PK2EPISODESCORES{
 	DWORD best_score[EPISODI_MAX_LEVELS];                  // the best score of each level in episode
 	char top_player[EPISODI_MAX_LEVELS][20];          // the name of the player with more score in each level on episode
@@ -5136,20 +5130,24 @@ int PK_Draw_InGame_DebugInfo(){
 		if (strcmp(jaksot[i].nimi,"")!=0)
 			PisteDraw2_Font_Write(fontti1,jaksot[i].nimi,0,240+i*10);
 
-	PisteDraw2_Font_Write(fontti1,seuraava_kartta,10,450);
-
-
 	char dluku[50];
 
-	gcvt(spritet[pelaaja_index].x,7,dluku);
-	PisteDraw2_Font_Write(fontti1,dluku,10,420);
-	gcvt(spritet[pelaaja_index].y,7,dluku);
-	PisteDraw2_Font_Write(fontti1,dluku,10,430);
-	gcvt(spritet[pelaaja_index].b,7,dluku);
-	PisteDraw2_Font_Write(fontti1,dluku,10,440);
+	sprintf(dluku, "%.7f", spritet[pelaaja_index].x); //Player x
+	PisteDraw2_Font_Write(fontti1, dluku, 10, 410);
+	
+	sprintf(dluku, "%.7f", spritet[pelaaja_index].y); //Player y
+	PisteDraw2_Font_Write(fontti1, dluku, 10, 420);
+	
+	sprintf(dluku, "%.7f", spritet[pelaaja_index].b); //Player v-speed
+	PisteDraw2_Font_Write(fontti1, dluku, 10, 430);
+	
+	sprintf(dluku, "%.7f", spritet[pelaaja_index].a); //Player h-speed
+	PisteDraw2_Font_Write(fontti1, dluku, 10, 440);
 
-	itoa(spritet[pelaaja_index].hyppy_ajastin,lukua,10);
-	PisteDraw2_Font_Write(fontti1,lukua,270,450);
+	PisteDraw2_Font_Write(fontti1, seuraava_kartta, 10, 460);
+
+	itoa(spritet[pelaaja_index].hyppy_ajastin, lukua, 10);
+	PisteDraw2_Font_Write(fontti1, lukua, 270, 460);
 
 	char tpolku[PE_PATH_SIZE] = "";
 	PK_Load_EpisodeDir(tpolku);
@@ -5159,7 +5157,45 @@ int PK_Draw_InGame_DebugInfo(){
 	itoa(nakymattomyys,lukua,10);
 	PisteDraw2_Font_Write(fontti1,lukua,610,470);
 
+	itoa(kytkin1, lukua, 10);
+	PisteDraw2_Font_Write(fontti1, lukua, 610, 460);
+	itoa(kytkin2, lukua, 10);
+	PisteDraw2_Font_Write(fontti1, lukua, 610, 450);
+	itoa(kytkin3, lukua, 10);
+	PisteDraw2_Font_Write(fontti1, lukua, 610, 440);
+
 	PisteDraw2_SetXOffset(0);
+	return 0;
+}
+int PK_Draw_InGame_DevKeys() {
+	const char* txt0 = "dev mode";
+	int char_w = PisteDraw2_Font_Write(fontti1, txt0, 0, 480 - 10) / strlen(txt0);
+	
+	const char* txt1  = "z: press buttons";
+	const char* txt2  = "x: release buttons";
+	const char* txt3  = "l: open locks";
+	const char* txt4  = "k: open skull blocks";
+	const char* txt5  = "t: toggle speed";
+	const char* txt6  = "g: toggle transparency";
+	const char* txt7  = "f: toggle fullscreen";
+	const char* txt8  = "i: toggle debug info";
+	const char* txt9  = "u: go up";
+	const char* txt10 = "r: back to start";
+	const char* txt11 = "v: set invisible";
+	const char* txt12 = "e: set energy to max";
+	const char* txt13 = "end: end level";
+	const char* txt14 = "lshift: set rooster";
+
+	const char* txts[] = { txt14,txt13,txt12,txt11,txt10,txt9,txt8,txt7,txt6,txt5,txt4,txt3,txt2,txt1 };
+
+	int last_size = 0;
+	for (int i = 0; i < sizeof(txts) / sizeof(const char*); i++)
+		if (strlen(txts[i]) > last_size) last_size = strlen(txts[i]);
+
+	int posx = screen_width - last_size * char_w;
+	for (int i = 0; i < sizeof(txts) / sizeof(const char*); i++)
+		PisteDraw2_Font_Write(fontti1, txts[i], posx, screen_height - (i+1)*10);
+
 	return 0;
 }
 int PK_Draw_InGame_BG(){
@@ -5323,7 +5359,6 @@ int PK_Draw_InGame_UI(){
 		PisteDraw2_Font_Write(fontti2,luku,40 + vali,40);
 	}
 
-
 	/////////////////
 	// Draw Score
 	/////////////////
@@ -5416,6 +5451,13 @@ int PK_Draw_InGame(){
 
 	if (draw_dubug_info)
 		PK_Draw_InGame_DebugInfo();
+	else {
+		if (dev_mode)
+			PK_Draw_InGame_DevKeys();
+		if (test_level)
+			PisteDraw2_Font_Write(fontti1, "testing level", 0, 480 - 20);
+	}
+
 
 	if (show_fps){
 		vali = PisteDraw2_Font_Write(fontti1,"fps: ",570,48);
@@ -7265,72 +7307,73 @@ int PK_MainScreen_InGame(){
 		}
 	}
 
-	if (key_delay == 0 && dev_mode){ //Debug
-		if (PisteInput_Keydown(PI_Z)){
-			kytkin1 = KYTKIN_ALOITUSARVO;
-			kytkin2 = KYTKIN_ALOITUSARVO;
-			kytkin3 = KYTKIN_ALOITUSARVO;
-			key_delay = 10;
-		}
-		if (PisteInput_Keydown(PI_X)) {
-			kytkin1 = 64;
-			kytkin2 = 64;
-			kytkin3 = 64;
-			key_delay = 10;
-		}
-		if (PisteInput_Keydown(PI_T)) {
-			doublespeed = !doublespeed;
-			key_delay = 20;
-		}
-		if (PisteInput_Keydown(PI_G)){
-			settings.lapinakyvat_objektit = !settings.lapinakyvat_objektit;
-			key_delay = 20;
-		}
-		if (PisteInput_Keydown(PI_L)){
-			PK_Map_Open_Locks();
-			key_delay = 20;
-		}
-		if (PisteInput_Keydown(PI_K)){
-			PK_Map_Change_SkullBlocks();
-			key_delay = 20;
-		}
-		if (PisteInput_Keydown(PI_F)){
-			settings.isFullScreen = !settings.isFullScreen;
-			PisteDraw2_FullScreen(settings.isFullScreen);
-			key_delay = 20;
-		}
-		if (PisteInput_Keydown(PI_I)){
-			draw_dubug_info = !draw_dubug_info;
-			show_fps = !show_fps;
-			key_delay = 10;
-		}
-		if (PisteInput_Keydown(PI_R)){
-			PK_Map_Search_Start();
-			spritet[pelaaja_index].energia = 10;
-			key_delay = 10;
-		}
-		if (PisteInput_Keydown(PI_U)){
-			spritet[pelaaja_index].b = -10;
-		}
-		if (PisteInput_Keydown(PI_END)){
-			if (PisteSound_StartMusic("music/hiscore.xm")!=0)
-				PK2_error = true;
+	if (dev_mode){ //Debug
+		if (key_delay == 0) {
+			if (PisteInput_Keydown(PI_Z)) {
+				if (kytkin1 < KYTKIN_ALOITUSARVO - 64) kytkin1 = KYTKIN_ALOITUSARVO;
+				if (kytkin2 < KYTKIN_ALOITUSARVO - 64) kytkin2 = KYTKIN_ALOITUSARVO;
+				if (kytkin3 < KYTKIN_ALOITUSARVO - 64) kytkin3 = KYTKIN_ALOITUSARVO;
+				key_delay = 20;
+			}
+			if (PisteInput_Keydown(PI_X)) {
+				if (kytkin1 > 64) kytkin1 = 64;
+				if (kytkin2 > 64) kytkin2 = 64;
+				if (kytkin3 > 64) kytkin3 = 64;
+				key_delay = 20;
+			}
+			if (PisteInput_Keydown(PI_T)) {
+				doublespeed = !doublespeed;
+				key_delay = 20;
+			}
+			if (PisteInput_Keydown(PI_G)) {
+				settings.lapinakyvat_objektit = !settings.lapinakyvat_objektit;
+				key_delay = 20;
+			}
+			if (PisteInput_Keydown(PI_L)) {
+				PK_Map_Open_Locks();
+				key_delay = 20;
+			}
+			if (PisteInput_Keydown(PI_K)) {
+				PK_Map_Change_SkullBlocks();
+				key_delay = 20;
+			}
+			if (PisteInput_Keydown(PI_F)) {
+				settings.isFullScreen = !settings.isFullScreen;
+				PisteDraw2_FullScreen(settings.isFullScreen);
+				key_delay = 20;
+			}
+			if (PisteInput_Keydown(PI_I)) {
+				draw_dubug_info = !draw_dubug_info;
+				show_fps = !show_fps;
+				key_delay = 20;
+			}
+			if (PisteInput_Keydown(PI_R)) {
+				PK_Map_Search_Start();
+				spritet[pelaaja_index].energia = 10;
+				key_delay = 20;
+			}
+			if (PisteInput_Keydown(PI_END)) {
+				if (PisteSound_StartMusic("music/hiscore.xm") != 0)
+					PK2_error = true;
 
-			key_delay = 20;
-			jakso_lapaisty = true;
-			jaksot[jakso_indeksi_nyt].lapaisty = true;
-			jakso++;
+				key_delay = 20;
+				jakso_lapaisty = true;
+				jaksot[jakso_indeksi_nyt].lapaisty = true;
+				jakso++;
+			}
+			if (PisteInput_Keydown(PI_LSHIFT) && key_delay == 0) {
+				key_delay = 20;
+				for (int r = 1; r<6; r++)
+					PK_Particles_New(PARTIKKELI_KIPINA, spritet[pelaaja_index].x + rand() % 10 - rand() % 10, spritet[pelaaja_index].y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
+				spritet[pelaaja_index] = PK2Sprite(&protot[PROTOTYYPPI_KANA], 1, false, spritet[pelaaja_index].x, spritet[pelaaja_index].y);
+			}
 		}
+		if (PisteInput_Keydown(PI_U))
+			spritet[pelaaja_index].b = -10;
 		if (PisteInput_Keydown(PI_E))
 			spritet[pelaaja_index].energia = spritet[pelaaja_index].tyyppi->energia;
-		if (PisteInput_Keydown(PI_LSHIFT)){
-			for (int r=1;r<6;r++)
-				PK_Particles_New(PARTIKKELI_KIPINA,spritet[pelaaja_index].x+rand()%10-rand()%10, spritet[pelaaja_index].y+rand()%10-rand()%10,0,0,rand()%100,0.1,32);
-			spritet[pelaaja_index] = PK2Sprite(&protot[PROTOTYYPPI_KANA],1,false,spritet[pelaaja_index].x, spritet[pelaaja_index].y);
-		}
-		if (PisteInput_Keydown(PI_V)){
+		if (PisteInput_Keydown(PI_V))
 			nakymattomyys = 3000;
-		}
 	}
 
 	return 0;
