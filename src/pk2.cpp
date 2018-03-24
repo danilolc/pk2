@@ -5169,8 +5169,15 @@ int PK_Draw_InGame_DebugInfo(){
 }
 int PK_Draw_InGame_DevKeys() {
 	const char* txt0 = "dev mode";
-	int char_w = PisteDraw2_Font_Write(fontti1, txt0, 0, 480 - 10) / strlen(txt0);
+	int char_w = PisteDraw2_Font_Write(fontti1, txt0, 0, screen_height - 10) / strlen(txt0);
 	
+	const char* help = "h: help";
+
+	if (!PisteInput_Keydown(PI_H)) {
+		PisteDraw2_Font_Write(fontti1, help, screen_width - strlen(help) * char_w, screen_height - 10);
+		return 0;
+	}
+
 	const char* txt1  = "z: press buttons";
 	const char* txt2  = "x: release buttons";
 	const char* txt3  = "l: open locks";
