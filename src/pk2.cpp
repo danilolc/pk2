@@ -197,6 +197,7 @@ struct PK2FADETEXT{
 	char teksti[20];
 	int fontti;
 	int x,y,ajastin;
+	bool ui;
 };
 
 struct PK2SAVE{
@@ -404,8 +405,10 @@ int degree = 0,
 
 int avaimia = 0;
 
+// Time
 const int TIME_FPS = 100;
 DWORD timeout = 0;
+int increase_time = 0;
 int sekunti = 0;
 bool aikaraja = false;
 
@@ -1527,12 +1530,13 @@ void PK_Fadetext_Init(){
 	for (int i=0;i<MAX_FADETEKSTEJA;i++)
 		fadetekstit[i].ajastin = 0;
 }
-void PK_Fadetext_New(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin){
+void PK_Fadetext_New(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin, bool ui){
 	fadetekstit[fadeteksti_index].fontti = fontti;
 	strcpy(fadetekstit[fadeteksti_index].teksti,teksti);
 	fadetekstit[fadeteksti_index].x = x;
 	fadetekstit[fadeteksti_index].y = y;
 	fadetekstit[fadeteksti_index].ajastin = ajastin;
+	fadetekstit[fadeteksti_index].ui = ui;
 	fadeteksti_index++;
 
 	if (fadeteksti_index >= MAX_FADETEKSTEJA)
@@ -1540,21 +1544,22 @@ void PK_Fadetext_New(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin){
 }
 int  PK_Fadetext_Draw(){
 	int pros;
+	int x, y;
 
-	for (int i=0;i<MAX_FADETEKSTEJA;i++)
+	for (int i=0; i<MAX_FADETEKSTEJA; i++)
 		if (fadetekstit[i].ajastin > 0){
 			if (fadetekstit[i].ajastin > 50)
 				pros = 100;
 			else
 				pros = fadetekstit[i].ajastin * 2;
 
-			if (settings.lapinakyvat_objektit && pros < 100){
-				if (PisteDraw2_Font_WriteAlpha(fadetekstit[i].fontti,fadetekstit[i].teksti,
-														fadetekstit[i].x-kamera_x, fadetekstit[i].y-kamera_y, pros)==-1)
-					return 1;
-			} else
-				PisteDraw2_Font_Write(fadetekstit[i].fontti,fadetekstit[i].teksti,
-									 fadetekstit[i].x-kamera_x, fadetekstit[i].y-kamera_y);
+			x = fadetekstit[i].ui ? fadetekstit[i].x : fadetekstit[i].x - kamera_x;
+			y = fadetekstit[i].ui ? fadetekstit[i].y : fadetekstit[i].y - kamera_y;
+
+			if (settings.lapinakyvat_objektit && pros < 100)
+				PisteDraw2_Font_WriteAlpha(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y, pros);
+			else
+				PisteDraw2_Font_Write(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y);
 
 		}
 	return 0;
@@ -1569,7 +1574,7 @@ void PK_Fadetext_Update(){
 
 			if (fadetekstit[i].x < kamera_x || fadetekstit[i].x > kamera_x + screen_width ||
 				fadetekstit[i].y < kamera_y || fadetekstit[i].y > kamera_y + screen_height)
-				fadetekstit[i].ajastin = 0;
+				if(!fadetekstit[i].ui) fadetekstit[i].ajastin = 0;
 		}
 }
 
@@ -3851,7 +3856,7 @@ int PK_Sprite_Movement(int i){
 				if (sprite.tyyppi->tyyppi == TYYPPI_PELIHAHMO && sprite.tyyppi->pisteet != 0){
 					char luku[10];
 					itoa(sprite.tyyppi->pisteet,luku,10);
-					PK_Fadetext_New(fontti2,luku,(int)spritet[i].x-8,(int)spritet[i].y-8,80);
+					PK_Fadetext_New(fontti2,luku,(int)spritet[i].x-8,(int)spritet[i].y-8,80,false);
 					piste_lisays += sprite.tyyppi->pisteet;
 				}
 			} else
@@ -4666,14 +4671,14 @@ int PK_Sprite_Bonus_Movement(int i){
 				char luku[6];
 				itoa(sprite.tyyppi->pisteet,luku,10);
 				if (sprite.tyyppi->pisteet >= 50)
-					PK_Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,100);
+					PK_Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,100,false);
 				else
-					PK_Fadetext_New(fontti1,luku,(int)sprite.x-8,(int)sprite.y-8,100);
+					PK_Fadetext_New(fontti1,luku,(int)sprite.x-8,(int)sprite.y-8,100,false);
 
 			}
 
 			if (sprite.Onko_AI(AI_BONUS_AIKA))
-				timeout += sprite.tyyppi->latausaika;
+				increase_time += sprite.tyyppi->latausaika;
 
 			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
 				nakymattomyys = sprite.tyyppi->latausaika;
@@ -5215,27 +5220,33 @@ int PK_Draw_InGame_Gifts(){
 int PK_Draw_InGame_Lower_Menu(){
 	char luku[15];
 	int vali = 0;
-
+	
 	int x, y;
 
 	//////////////
 	// Draw time
 	//////////////
 	if (timeout > 0){
-		int shown_sec = (timeout * TIME_FPS + sekunti) / 60;
-		int min = shown_sec/60,
-			sek = shown_sec%60;
-
+		timeout += increase_time;
+		float shown_sec = (float)(timeout * TIME_FPS + sekunti) / 60;
+		int min = (int)shown_sec/60,
+			sek = (int)shown_sec%60;
 
 		x = screen_width / 2 - 546 / 2 + 342;
 		y = screen_height-39;
 		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_time),x,y-20);
 
-
 		itoa(min,luku,10);
 		PisteDraw2_Font_Write(        fontti4,luku,x+1,y+1);
 		vali += PisteDraw2_Font_Write(fontti2,luku,x,y);
 		vali += PisteDraw2_Font_Write(fontti1,":",x+vali,y);
+		
+		if (increase_time > 0) {
+			itoa((int)(increase_time * TIME_FPS) / 60, luku, 10);
+			PK_Fadetext_New(fontti2, luku, x + vali, y, 49, true);
+			increase_time = 0;
+		}
+
 		if (sek < 10){
 			PisteDraw2_Font_Write(        fontti4,"0",x+vali+1,y+1);
 			vali += PisteDraw2_Font_Write(fontti2,"0",x+vali,y);
@@ -5384,10 +5395,10 @@ int PK_Draw_InGame(){
 	if (!skip_frame)
 		kartta->Piirra_Seinat(kamera_x,kamera_y, false);
 
-	PK_Fadetext_Draw();
-
 	if (settings.nayta_tavarat)
 		PK_Draw_InGame_Lower_Menu();
+
+	PK_Fadetext_Draw();
 
 	PK_Draw_InGame_UI();
 
