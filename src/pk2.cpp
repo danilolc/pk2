@@ -253,6 +253,7 @@ bool test_level = false;
 bool dev_mode = false;
 
 bool PK2_error = false;
+const char* PK2_error_msg = NULL;
 
 bool window_closed	= false;
 bool lopeta_peli = false;
@@ -2545,8 +2546,10 @@ int PK_Map_Open(char *nimi){
 			strcat(biisi,kartta->musiikki);
 
 			if (PisteSound_StartMusic(biisi)!=0)
-				if (PisteSound_StartMusic("music/song01.xm")!=0)
+				if (PisteSound_StartMusic("music/song01.xm")!=0){
 					PK2_error = true;
+					PK2_error_msg = "Can't find song01.xm";
+				}
 		}
 	}
 	return 0;
@@ -3068,8 +3071,10 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka){
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_LOPETUS && sprite.pelaaja != 0){
 			if (!jakso_lapaisty){
-				if (PisteSound_StartMusic("music/hiscore.xm") != 0)
+				if (PisteSound_StartMusic("music/hiscore.xm") != 0){
 					PK2_error = true;
+					PK2_error_msg = "Can't find hiscore.xm";
+				}
 				jakso_lapaisty = true;
 				jaksot[jakso_indeksi_nyt].lapaisty = true;
 				if (jaksot[jakso_indeksi_nyt].jarjestys == jakso)
@@ -5989,7 +5994,6 @@ int PK_Draw_Menu_Graphics(){
 		wasFit = settings.isFit;
 		wasWide = settings.isWide;
 
-		#ifndef __ANDROID__
 		if (settings.isFullScreen){
 			if (PK_Draw_Menu_Text(true,"fullscreen mode is on",180,my)){
 				settings.isFullScreen = false;
@@ -6003,7 +6007,6 @@ int PK_Draw_Menu_Graphics(){
 			settings.isFullScreen = !settings.isFullScreen;
 		}
 		my += 30;
-		#endif
 
 		if (settings.isFiltered){
 			if (PK_Draw_Menu_Text(true,"bilinear filter is on",180,my)){
@@ -6154,11 +6157,12 @@ int PK_Draw_Menu_Graphics(){
 		}
 		my += 30;
 
-
+		#ifndef __ANDROID__
 		if (PK_Draw_Menu_Text(true,"more",100,360)){
 			moreOptions = true;
 			menu_valittu_id = 0; //Set menu cursor to 0
 		}
+		#endif
 
 	}
 
@@ -7358,8 +7362,10 @@ int PK_MainScreen_InGame(){
 			}
 			if (PisteInput_Keydown(PI_END)) {
 				key_delay = 20;
-				if (PisteSound_StartMusic("music/hiscore.xm") != 0)
+				if (PisteSound_StartMusic("music/hiscore.xm") != 0){
 					PK2_error = true;
+					PK2_error_msg = "Can't find hiscore.xm";
+				}
 				jakso_lapaisty = true;
 				jaksot[jakso_indeksi_nyt].lapaisty = true;
 				if (jaksot[jakso_indeksi_nyt].jarjestys == jakso)
@@ -7472,72 +7478,71 @@ int PK_MainScreen_Change(){
 			if (ind_path == -1 || ind_font == -1) {
 				if ((fontti1 = PisteDraw2_Font_Create("language/fonts/","ScandicSmall.txt")) == -1){
 					PK2_error = true;
+					PK2_error_msg = "Can't create font 1 from ScandicSmall.txt";
 				}
 			}
 			else {
 				if ((fontti1 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
 					PK2_error = true;
+					PK2_error_msg = "Can't create font 1";
 				}
 			}
 
 			ind_font = tekstit->Hae_Indeksi("font big font normal");
 			if (ind_path == -1 || ind_font == -1) {
 				if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
-				PK2_error = true;
+					PK2_error = true;
+					PK2_error_msg = "Can't create font 1 from ScandicBig1.txt";
 				}
 			}
 			else {
 				if ((fontti2 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-				PK2_error = true;
-				//PisteLog_Kirjoita("    - Loading font ");
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
-				//PisteLog_Kirjoita(" failed!\n");
+					PK2_error = true;
+					PK2_error_msg = "Can't create font 2";
 				}
 			}
 
 			ind_font = tekstit->Hae_Indeksi("font big font hilite");
 			if (ind_path == -1 || ind_font == -1) {
 				if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
-				PK2_error = true;
+					PK2_error = true;
+					PK2_error_msg = "Can't create font 3 from ScandicBig2.txt";
 				}
 			}
 			else {
 				if ((fontti3 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-				PK2_error = true;
-				//PisteLog_Kirjoita("    - Loading font ");
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
-				//PisteLog_Kirjoita(" failed!\n");
+					PK2_error = true;
+					PK2_error_msg = "Can't create font 3";
 				}
 			}
 
 			ind_font = tekstit->Hae_Indeksi("font big font shadow");
 			if (ind_path == -1 || ind_font == -1) {
 				if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
-				PK2_error = true;
+					PK2_error = true;
+					PK2_error_msg = "Can't create font 4 from ScandicBig3.txt";
 				}
 			}
 			else {
 				if ((fontti4 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-				PK2_error = true;
-				//PisteLog_Kirjoita("    - Loading font ");
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_path));
-				//PisteLog_Kirjoita(tekstit->Hae_Teksti(ind_font));
-				//PisteLog_Kirjoita(" failed!\n");
+					PK2_error = true;
+					PK2_error_msg = "Can't create font 4";
 				}
 			}
 
 			if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
 				PK2_error = true;
+				PK2_error_msg = "Can't create font 2 from ScandicBig1.txt";
 			}
 
 			if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
 				PK2_error = true;
+				PK2_error_msg = "Can't create font 3 from ScandicBig2.txt";
 			}
 
 			if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
 				PK2_error = true;
+				PK2_error_msg = "Can't create font 4 from ScandicBig3.txt";
 			}
 
 			PK_Sprites_Clean();
@@ -7550,32 +7555,50 @@ int PK_MainScreen_Change(){
 
 			//PisteLog_Kirjoita("  - Loading basic sound fx \n");
 
-			if ((kytkin_aani = PisteSound_LoadSFX("sfx/switch3.wav"))==-1)
+			if ((kytkin_aani = PisteSound_LoadSFX("sfx/switch3.wav"))==-1){
 				PK2_error = true;
+				PK2_error_msg = "Can't find switch3.wav";
+			}
 
-			if ((hyppy_aani  = PisteSound_LoadSFX("sfx/jump4.wav"))==-1)
+			if ((hyppy_aani  = PisteSound_LoadSFX("sfx/jump4.wav"))==-1){
 				PK2_error = true;
+				PK2_error_msg = "Can't find jump4.wav";
+			}
 
-			if ((loiskahdus_aani  = PisteSound_LoadSFX("sfx/splash.wav"))==-1)
+			if ((loiskahdus_aani  = PisteSound_LoadSFX("sfx/splash.wav"))==-1){
 				PK2_error = true;
+				PK2_error_msg = "Can't find splash.wav";
+			}
 
-			if ((avaa_lukko_aani  = PisteSound_LoadSFX("sfx/openlock.wav"))==-1)
+			if ((avaa_lukko_aani  = PisteSound_LoadSFX("sfx/openlock.wav"))==-1){
 				PK2_error = true;
+				PK2_error_msg = "Can't find openlock.wav";
+			}
 
-			if ((menu_aani  = PisteSound_LoadSFX("sfx/menu2.wav"))==-1)
+			if ((menu_aani  = PisteSound_LoadSFX("sfx/menu2.wav"))==-1){
 				PK2_error = true;
+				PK2_error_msg = "Can't find menu2.wav";
+			}
 
-			if ((ammuu_aani  = PisteSound_LoadSFX("sfx/moo.wav"))==-1)
+			if ((ammuu_aani  = PisteSound_LoadSFX("sfx/moo.wav"))==-1){
 				PK2_error = true;
+				PK2_error_msg = "Can't find moo.wav";
+			}
 
-			if ((kieku_aani  = PisteSound_LoadSFX("sfx/doodle.wav"))==-1)
+			if ((kieku_aani  = PisteSound_LoadSFX("sfx/doodle.wav"))==-1){
 				PK2_error = true;
+				PK2_error_msg = "Can't find doodle.wav";
+			}
 
-			if ((tomahdys_aani  = PisteSound_LoadSFX("sfx/pump.wav"))==-1)
+			if ((tomahdys_aani  = PisteSound_LoadSFX("sfx/pump.wav"))==-1){
 				PK2_error = true;
+				PK2_error_msg = "Can't find pump.wav";
+			}
 
-			if ((pistelaskuri_aani = PisteSound_LoadSFX("sfx/counter.wav"))==-1)
+			if ((pistelaskuri_aani = PisteSound_LoadSFX("sfx/counter.wav"))==-1){
 				PK2_error = true;
+				PK2_error_msg = "Can't find counter.wav";
+			}
 
 			PisteDraw2_FadeIn(PD_FADE_SLOW);
 
@@ -7729,8 +7752,10 @@ int PK_MainScreen_Change(){
 
 				PK_Sprites_Clean(); //Reset sprites
 
-				if (PK_Map_Open(seuraava_kartta) == 1)
+				if (PK_Map_Open(seuraava_kartta) == 1){
 					PK2_error = true;
+					PK2_error_msg = "Can't load map";
+				}
 
 				PK_Calculate_Tiles();
 
@@ -7761,9 +7786,6 @@ int PK_MainScreen_Change(){
 			PisteDraw2_Image_Delete(kuva_tausta);
 			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
 			PK_MenuShadow_Create(kuva_tausta, 640, 480, 30);
-
-			//if (PisteSound_StartMusic("music/hiscore.xm")!=0)
-			//	PK2_error = true;
 
 			jakso_uusi_ennatys = false;
 			jakso_uusi_ennatysaika = false;
@@ -7831,8 +7853,10 @@ int PK_MainScreen_Change(){
 
 			//PisteLog_Kirjoita("  - Loading music: music/INTRO.XM\n");
 
-			if (PisteSound_StartMusic("music/intro.xm")!=0)
+			if (PisteSound_StartMusic("music/intro.xm") !=0 ){
 				PK2_error = true;
+				PK2_error_msg = "Can't load intro.xm";
+			}
 
 			musiikin_voimakkuus = musiikin_max_voimakkuus;
 
@@ -7853,8 +7877,10 @@ int PK_MainScreen_Change(){
 			PisteDraw2_Image_Delete(kuva_tausta);
 			kuva_tausta = PisteDraw2_Image_Load("gfx/ending.bmp",true);
 
-			if (PisteSound_StartMusic("music/intro.xm")!=0)
+			if (PisteSound_StartMusic("music/intro.xm")!=0){
 				PK2_error = true;
+				PK2_error_msg = "Can't load intro.xm";
+			}
 
 			musiikin_voimakkuus = musiikin_max_voimakkuus;
 
@@ -8034,7 +8060,10 @@ int main(int argc, char *argv[]){
 			Piste_SetDebug(true);
 		}
 		if (strcmp(argv[i], "test") == 0) {
-			if (argc <= i + 1) PK2_error = true;
+			if (argc <= i + 1) {
+				printf("Please set a level to test");
+				exit(1);
+			}
 			else {
 				test_level = true;
 				test_path = argv[i + 1];
@@ -8087,9 +8116,10 @@ int main(int argc, char *argv[]){
 
 	Piste_Loop(running, PK_MainScreen);
 
-	if(PK2_error)
+	if(PK2_error){
 		printf("PK2    - Error!\n");
-
+		PisteUtils_Show_Error(PK2_error_msg);
+	}
 	quit();
 	return 0;
 }

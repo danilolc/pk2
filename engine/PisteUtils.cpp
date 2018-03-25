@@ -18,6 +18,13 @@
 
 #include "PisteUtils.hpp"
 
+#ifdef USE_LOCAL_SDL
+#include "SDL.h"
+#else
+#include <SDL2/SDL.h>
+#endif
+#include <cstring>
+
 using namespace std;
 
 #ifdef __ANDROID__
@@ -190,6 +197,13 @@ int PisteUtils_CreateDir(char *directory){
 	strcat(shell,directory);
 	system(shell);
 	return 0;
+}
+
+void PisteUtils_Show_Error(const char* txt){
+	//const SDL_MessageBoxButtonData buttons[] = {{ 0, 0, "ok" }};
+
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", txt, NULL);
+
 }
 
 #endif

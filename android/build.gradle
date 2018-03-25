@@ -24,7 +24,11 @@ dependencies {
 
 android {
 	signingConfigs {
-		debug {
+		release {
+			storeFile file("key.keystore")
+			storePassword 'pekkakana'
+			keyAlias 'pekka_kana'
+			keyPassword 'pekkakana'
 		}
 	}
 	lintOptions {
@@ -42,10 +46,19 @@ android {
 		targetSdkVersion 27
 
 	}
-	buildTypes.all { buildType ->
-		buildType.zipAlignEnabled false
-		buildType.signingConfig null
-	}
+
+	buildTypes {
+				debug {
+					signingConfig signingConfigs.release
+				}
+	            release {
+	                minifyEnabled true
+	                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+	                zipAlignEnabled true
+					signingConfig signingConfigs.release
+	            }
+	        }
+
 	sourceSets {
 		main {
 			manifest.srcFile 'AndroidManifest.xml'

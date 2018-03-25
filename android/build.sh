@@ -5,7 +5,6 @@
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
-
 TYPE="debug"
 
 for var in "$@"
@@ -15,7 +14,6 @@ do
 		TYPE="release"
 	fi
 done
-
 
 echo Building $TYPE
 $ANDROID_NDK/ndk-build
@@ -27,8 +25,6 @@ else
 	exit $retval
 fi
 
-
-
 ./gradlew build
 retval=$?
 if [ "$retval" == 0 ]
@@ -38,27 +34,7 @@ else
 	exit $retval
 fi
 
-#rm build/outputs/apk/$TYPE/android-$TYPE-unsigned-al.apk
-#zipalign -v 4 build/outputs/apk/$TYPE/android-$TYPE-unsigned.apk build/outputs/apk/$TYPE/android-$TYPE-unsigned-al.apk
-#retval=$?
-#if [ "$retval" == 0 ]
-#then
-#	echo "Align Ok"
-#else
-#	exit $retval
-#fi
-
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -storepass pekkakana -keypass pekkakana -keystore key.keystore build/outputs/apk/$TYPE/android-$TYPE-unsigned-al.apk pekka_kana
-retval=$?
-if [ "$retval" == 0 ]
-then
-	echo "Signed Ok"
-else
-	exit $retval
-fi
-mv build/outputs/apk/$TYPE/android-$TYPE-unsigned-al.apk build/outputs/apk/$TYPE/pk2-$TYPE.apk
-
-
+mv build/outputs/apk/$TYPE/android-$TYPE.apk build/outputs/apk/$TYPE/pk2-$TYPE.apk
 
 $ANDROID_SDK/platform-tools/adb install -r build/outputs/apk/$TYPE/pk2-$TYPE.apk
 if [ "$retval" == 0 ]

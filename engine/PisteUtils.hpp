@@ -13,6 +13,7 @@ void  PisteUtils_Lower(char* string);
 void  PisteUtils_RemoveSpace(char* string);
 bool  PisteUtils_Find(char *filename);
 int   PisteUtils_CreateDir(char *directory);
+void  PisteUtils_Show_Error(const char* txt);
 
 //type:
 // ""  - all files and directories
