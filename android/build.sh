@@ -25,7 +25,13 @@ else
 	exit $retval
 fi
 
-./gradlew build
+arg=
+if [ "$TYPE" == "debug" ]
+then
+	arg=-d
+fi
+
+./gradlew build $arg
 retval=$?
 if [ "$retval" == 0 ]
 then
