@@ -199,11 +199,11 @@ int PisteUtils_CreateDir(char *directory){
 	return 0;
 }
 
-void PisteUtils_Show_Error(const char* txt){
+#endif
+
+void PisteUtils_Show_Error(const char* txt) {
 	//const SDL_MessageBoxButtonData buttons[] = {{ 0, 0, "ok" }};
 
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", txt, NULL);
 
 }
-
-#endif
