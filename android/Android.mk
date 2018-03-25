@@ -1,23 +1,25 @@
 LOCAL_PATH := $(call my-dir)
 
-include $(CLEAR_VARS)
-LOCAL_MODULE := mpg123
-LOCAL_SRC_FILES := sdl/$(TARGET_ARCH_ABI)/libmpg123.so
-include $(PREBUILT_SHARED_LIBRARY)
+sdl_libs=../external/SDL/build/android/lib
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := SDL2
-LOCAL_SRC_FILES := sdl/$(TARGET_ARCH_ABI)/libSDL2.so
+LOCAL_SRC_FILES := $(sdl_libs)/$(TARGET_ARCH_ABI)/libSDL2.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := SDL2_image
-LOCAL_SRC_FILES := sdl/$(TARGET_ARCH_ABI)/libSDL2_image.so
+LOCAL_SRC_FILES := $(sdl_libs)/$(TARGET_ARCH_ABI)/libSDL2_image.so
+include $(PREBUILT_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := mpg123
+LOCAL_SRC_FILES := $(sdl_libs)/$(TARGET_ARCH_ABI)/libmpg123.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := SDL2_mixer
-LOCAL_SRC_FILES := sdl/$(TARGET_ARCH_ABI)/libSDL2_mixer.so
+LOCAL_SRC_FILES := $(sdl_libs)/$(TARGET_ARCH_ABI)/libSDL2_mixer.so
 include $(PREBUILT_SHARED_LIBRARY)
 
 
@@ -25,9 +27,10 @@ include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 ENG_DIR := ../engine
 LOCAL_MODULE := PisteEngine
-LOCAL_C_INCLUDES := include
+LOCAL_C_INCLUDES := ../external/SDL/include ../external/SDL_image ../external/SDL_mixer
 LOCAL_SRC_FILES := $(wildcard $(ENG_DIR)/*.cpp)
 LOCAL_SHARED_LIBRARIES := SDL2 SDL2_image SDL2_mixer mpg123
+LOCAL_CFLAGS += -DUSE_LOCAL_SDL
 include $(BUILD_STATIC_LIBRARY)
 
 

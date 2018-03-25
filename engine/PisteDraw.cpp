@@ -11,7 +11,11 @@
 #include <algorithm>
 #include <ctime>
 
+#ifdef USE_LOCAL_SDL
+#include "SDL_image.h"
+#else
 #include <SDL2/SDL_image.h>
+#endif
 
 const int MAX_IMAGES = 2000;
 const int MAX_FONTS = 20;

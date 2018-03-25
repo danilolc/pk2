@@ -21,6 +21,7 @@
 using namespace std;
 
 #ifdef __ANDROID__
+
 int PisteUtils_Setcwd() {
 	char path[PE_PATH_SIZE];
 	strcpy(path,"/storage/sdcard0/Pekka Kana 2/");

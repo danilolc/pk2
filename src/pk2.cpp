@@ -3068,11 +3068,11 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka){
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_LOPETUS && sprite.pelaaja != 0){
 			if (!jakso_lapaisty){
-				if (PisteSound_StartMusic("music/hiscore.xm")!=0)
+				if (PisteSound_StartMusic("music/hiscore.xm") != 0)
 					PK2_error = true;
 				jakso_lapaisty = true;
 				jaksot[jakso_indeksi_nyt].lapaisty = true;
-				if (jaksot[jakso_indeksi_nyt].jarjestys >= jakso)
+				if (jaksot[jakso_indeksi_nyt].jarjestys == jakso)
 					jakso++; //Increase level
 				musiikin_voimakkuus = musiikin_max_voimakkuus;
 				musiikin_voimakkuus_nyt = musiikin_max_voimakkuus-1;
@@ -5134,13 +5134,13 @@ int PK_Draw_InGame_DebugInfo(){
 
 	sprintf(dluku, "%.7f", spritet[pelaaja_index].x); //Player x
 	PisteDraw2_Font_Write(fontti1, dluku, 10, 410);
-	
+
 	sprintf(dluku, "%.7f", spritet[pelaaja_index].y); //Player y
 	PisteDraw2_Font_Write(fontti1, dluku, 10, 420);
-	
+
 	sprintf(dluku, "%.7f", spritet[pelaaja_index].b); //Player v-speed
 	PisteDraw2_Font_Write(fontti1, dluku, 10, 430);
-	
+
 	sprintf(dluku, "%.7f", spritet[pelaaja_index].a); //Player h-speed
 	PisteDraw2_Font_Write(fontti1, dluku, 10, 440);
 
@@ -5170,7 +5170,7 @@ int PK_Draw_InGame_DebugInfo(){
 int PK_Draw_InGame_DevKeys() {
 	const char* txt0 = "dev mode";
 	int char_w = PisteDraw2_Font_Write(fontti1, txt0, 0, screen_height - 10) / strlen(txt0);
-	
+
 	const char* help = "h: help";
 
 	if (!PisteInput_Keydown(PI_H)) {
@@ -5348,43 +5348,45 @@ int PK_Draw_InGame_Lower_Menu(){
 int PK_Draw_InGame_UI(){
 	char luku[15];
 	int vali = 20;
+	int my = 8;
 
 	/////////////////
 	// Draw Energy
 	/////////////////
-	vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_energy),40,10);
+	vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_energy),40,my);
 	ltoa(spritet[pelaaja_index].energia,luku,10);
-	PisteDraw2_Font_Write(fontti4,luku,40+vali+1,10+1);
-	PisteDraw2_Font_Write(fontti2,luku,40+vali,10);
+	PisteDraw2_Font_Write(fontti4,luku,40+vali+1,my+1);
+	PisteDraw2_Font_Write(fontti2,luku,40+vali,my);
 
 	/////////////////
 	// Draw Invisible
 	/////////////////
 	if(nakymattomyys > 0){
-		vali = PisteDraw2_Font_Write(fontti1,"invisible:",40,40);
+		vali = PisteDraw2_Font_Write(fontti1,"invisible:",40,my+27);
 		ltoa(nakymattomyys/60,luku,10);
-		PisteDraw2_Font_Write(fontti2,luku,40 + vali,40);
+		PisteDraw2_Font_Write(fontti2,luku,40+vali+1,my+27+1);
+		PisteDraw2_Font_Write(fontti2,luku,40+vali,my+27);
 	}
 
 	/////////////////
 	// Draw Score
 	/////////////////
-	vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_score),230,10);
+	vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_score),230,my);
 	ltoa(jakso_pisteet,luku,10);
-	PisteDraw2_Font_Write(fontti4,luku,230+vali+1,10+1);
-	PisteDraw2_Font_Write(fontti2,luku,230+vali,10);
+	PisteDraw2_Font_Write(fontti4,luku,230+vali+1,my+1);
+	PisteDraw2_Font_Write(fontti2,luku,230+vali,my);
 
 	/////////////////
 	// Draw Ammunition
 	/////////////////
 	if (spritet[pelaaja_index].ammus2 != -1){
-		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack1), screen_width-170,10);
-		protot[spritet[pelaaja_index].ammus2].Piirra(screen_width-170,20,0);
+		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack1), screen_width-170,my);
+		protot[spritet[pelaaja_index].ammus2].Piirra(screen_width-170,my+10,0);
 	}
 
 	if (spritet[pelaaja_index].ammus1 != -1){
-		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack2), screen_width-90,25);
-		protot[spritet[pelaaja_index].ammus1].Piirra(screen_width-90,35,0);
+		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack2), screen_width-90,my+15);
+		protot[spritet[pelaaja_index].ammus1].Piirra(screen_width-90,my+25,0);
 	}
 
 	/////////////////
@@ -6486,7 +6488,7 @@ int PK_Draw_Menu(){
 	return 0;
 }
 
-int PK_Draw_LevelButton(int x, int y, int t){
+int PK_Draw_Map_Button(int x, int y, int t){
 	int paluu = 0;
 
 	t = t * 25;
@@ -6496,13 +6498,9 @@ int PK_Draw_LevelButton(int x, int y, int t){
 	if (vilkku < 0)
 		vilkku = 0;
 
-	//PisteDraw2_Image_Clip(kuva_peli,x,y,1+t,58,23+t,80);
-
-	if (hiiri_x > x && hiiri_x < x+17 && hiiri_y > y && hiiri_y < y+17)
-	{
+	if (hiiri_x > x && hiiri_x < x+17 && hiiri_y > y && hiiri_y < y+17){
 		if (key_delay == 0 && (PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE)
-													    || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)))
-		{
+													    || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))){
 			key_delay = 30;
 			return 2;
 		}
@@ -6553,7 +6551,7 @@ int PK_Draw_Map(){
 	ltoa(jakso,luku,10);
 	PisteDraw2_Font_Write(fontti1,luku,100+vali+15,120);
 
-		//PK_Particles_Draw();
+	//PK_Particles_Draw();
 
 	if (jaksoja == 0) {
 		PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.episodes_no_maps),180,290);
@@ -6572,6 +6570,12 @@ int PK_Draw_Map(){
 	int sinx = 0, cosy = 0;
 	int pekkaframe = 0;
 
+	int njakso = jaksoja;
+	for (int i=1;i<=jaksoja;i++)
+		if (!jaksot[i].lapaisty && jaksot[i].jarjestys < njakso)
+			njakso = jaksot[i].jarjestys; // Find the first unclear level
+	if(jakso < njakso)
+		jakso = njakso;
 
 	for (int i=0;i<=jaksoja;i++) {
 		if (strcmp(jaksot[i].nimi,"")!=0 && jaksot[i].jarjestys > 0) {
@@ -6595,20 +6599,18 @@ int PK_Draw_Map(){
 			PisteDraw2_Image_CutClip(kuva_peli,jaksot[i].x-9,jaksot[i].y-14,1+(ikoni*28),452,28+(ikoni*28),479);
 
 			if (tyyppi==1) {
-				//PisteDraw2_Image_Clip(kuva_peli,jaksot[i].x-30,jaksot[i].y-4,157,46,181,79);
 				sinx = (int)(sin_table[degree%360]/2);
 				cosy = (int)(cos_table[degree%360]/2);
 				pekkaframe = 28*((degree%360)/120);
 				PisteDraw2_Image_CutClip(kuva_peli,jaksot[i].x+sinx-12,jaksot[i].y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
 			}
 
-			paluu = PK_Draw_LevelButton(jaksot[i].x-5, jaksot[i].y-10, tyyppi);
+			paluu = PK_Draw_Map_Button(jaksot[i].x-5, jaksot[i].y-10, tyyppi);
 
 			// jos klikattu
 			if (paluu == 2) {
-				if (tyyppi < 2 || (dev_mode && tyyppi > 0)) {
+				if (tyyppi != 2 || dev_mode) {
 					strcpy(seuraava_kartta,jaksot[i].tiedosto);
-					//jakso = i;
 					jakso_indeksi_nyt = i;
 					siirry_kartasta_peliin = true;
 					PisteDraw2_FadeOut(PD_FADE_SLOW);
@@ -6621,16 +6623,11 @@ int PK_Draw_Map(){
 
 			itoa(jaksot[i].jarjestys,luku,10);
 			PisteDraw2_Font_Write(fontti1,luku,jaksot[i].x-12+2,jaksot[i].y-29+2);
-			//PisteDraw2_Font_Write(fontti2,luku,jaksot[i].x+3,jaksot[i].y-27);
-
 
 			if (paluu > 0) {
 
 				int info_x = 489+3, info_y = 341-26;
-				/*
-				PisteDraw2_ScreenFill(jaksot[i].x-3, jaksot[i].y+26,jaksot[i].x + 130, jaksot[i].y+26+120,1);
-				PisteDraw2_ScreenFill(jaksot[i].x-2, jaksot[i].y+27,jaksot[i].x + 129, jaksot[i].y+25+120,43);
-				PisteDraw2_ScreenFill(jaksot[i].x-1, jaksot[i].y+28,jaksot[i].x + 128, jaksot[i].y+24+120,38);*/
+
 				PisteDraw2_Image_CutClip(kuva_peli,info_x-3,info_y+26,473,0,607,121);
 				PisteDraw2_Font_Write(fontti1,jaksot[i].nimi,info_x,info_y+30);
 
@@ -7360,13 +7357,15 @@ int PK_MainScreen_InGame(){
 				key_delay = 20;
 			}
 			if (PisteInput_Keydown(PI_END)) {
+				key_delay = 20;
 				if (PisteSound_StartMusic("music/hiscore.xm") != 0)
 					PK2_error = true;
-
-				key_delay = 20;
 				jakso_lapaisty = true;
 				jaksot[jakso_indeksi_nyt].lapaisty = true;
-				jakso++;
+				if (jaksot[jakso_indeksi_nyt].jarjestys == jakso)
+					jakso++;
+				musiikin_voimakkuus = musiikin_max_voimakkuus;
+				musiikin_voimakkuus_nyt = musiikin_max_voimakkuus-1;
 			}
 			if (PisteInput_Keydown(PI_LSHIFT) && key_delay == 0) {
 				key_delay = 20;

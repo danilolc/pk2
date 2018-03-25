@@ -4,7 +4,12 @@
 //#########################
 #include "PisteEngine.hpp"
 
+#ifdef USE_LOCAL_SDL
+#include "SDL.h"
+#else
 #include <SDL2/SDL.h>
+#endif
+
 #include <string>
 
 #ifdef _WIN32

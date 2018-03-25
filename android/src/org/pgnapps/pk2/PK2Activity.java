@@ -106,6 +106,13 @@ public class PK2Activity extends SDLActivity {
 		}
 	}
 
+	@Override
+	protected String[] getLibraries() {
+		return new String[] {
+			"PK2"
+		};
+	}
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         makeFullScreen();
@@ -113,17 +120,19 @@ public class PK2Activity extends SDLActivity {
 			Log.e(LOG_TAG, "Can't read external storage");
         File file = new File(Environment.getExternalStorageDirectory(), "Pekka Kana 2");
 		if (!file.exists()){
-			file.mkdirs();
-			copyAssets(file.getAbsolutePath());
+			Log.e(LOG_TAG, "Please, copy the assets to 'storage/Pekka Kana 2'");
+			//file.mkdirs();
+			//copyAssets(file.getAbsolutePath());
 		}
         System.setProperty("user.dir", file.getAbsolutePath());
 
 		super.onCreate(savedInstanceState);
 	}
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
+
+	//@Override
+    //protected void onPause() {
+    //    super.onPause();
+    //}
 
     @Override
     protected void onResume() {
@@ -131,28 +140,28 @@ public class PK2Activity extends SDLActivity {
         super.onResume();
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-    }
+    //@Override
+    //public void onWindowFocusChanged(boolean hasFocus) {
+    //    super.onWindowFocusChanged(hasFocus);
+    //}
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-    }
+    //@Override
+    //public void onLowMemory() {
+    //    super.onLowMemory();
+    //}
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
+    //@Override
+    //protected void onDestroy() {
+    //    super.onDestroy();
+    //}
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-		return super.dispatchKeyEvent(event);
-	}
+    //@Override
+    //public boolean dispatchKeyEvent(KeyEvent event) {
+	//	return super.dispatchKeyEvent(event);
+	//}
 
-	@Override
-    protected Dialog onCreateDialog(int ignore, Bundle args) {
-		return super.onCreateDialog(ignore, args);
-	}
+	//@Override
+    //protected Dialog onCreateDialog(int ignore, Bundle args) {
+	//	return super.onCreateDialog(ignore, args);
+	//}
 }

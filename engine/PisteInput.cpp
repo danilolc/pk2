@@ -6,8 +6,14 @@
 #include "PisteInput.hpp"
 #include "PisteDraw.hpp"
 
+#ifdef USE_LOCAL_SDL
+#include "SDL.h"
+#include "SDL_image.h"
+#else
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#endif
+
 #ifdef _WIN32
 #include <Windows.h>
 #endif
