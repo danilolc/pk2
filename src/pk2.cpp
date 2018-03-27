@@ -5220,7 +5220,7 @@ int PK_Draw_InGame_Gifts(){
 int PK_Draw_InGame_Lower_Menu(){
 	char luku[15];
 	int vali = 0;
-	
+
 	int x, y;
 
 	//////////////
@@ -5240,7 +5240,7 @@ int PK_Draw_InGame_Lower_Menu(){
 		PisteDraw2_Font_Write(        fontti4,luku,x+1,y+1);
 		vali += PisteDraw2_Font_Write(fontti2,luku,x,y);
 		vali += PisteDraw2_Font_Write(fontti1,":",x+vali,y);
-		
+
 		if (increase_time > 0) {
 			itoa((int)(increase_time * TIME_FPS) / 60, luku, 10);
 			PK_Fadetext_New(fontti2, luku, x + vali, y, 49, true);
@@ -6943,7 +6943,7 @@ void PK_UI_Load(){
 
 	gui_touch = PisteInput_CreateGui(0,0,1920,1080,alpha,"", &enter);
 
-	gui_menu = PisteInput_CreateGui(50,90,circ_size,circ_size,alpha,"android/menu.png", &escape);
+	gui_menu = PisteInput_CreateGui(50,130,circ_size,circ_size,alpha,"android/menu.png", &escape);
 	gui_arr = PisteInput_CreateGui(50,650,388,256,alpha,"android/arrow.png", NULL);
 	gui_left = PisteInput_CreateGui(50,650,388/2,256,alpha,"", &kontrolli_vasemmalle);
 	gui_right = PisteInput_CreateGui(50+388/2,650,388/2,256,alpha,"",  &kontrolli_oikealle);
@@ -7983,6 +7983,7 @@ void quit(){
 }
 int main(int argc, char *argv[]){
 	char* test_path = NULL;
+	bool path_set = false;
 
 	#ifdef __ANDROID__ //TODO - remove
 
@@ -8008,6 +8009,17 @@ int main(int argc, char *argv[]){
 				test_path = argv[i + 1];
 			}
 		}
+		if (strcmp(argv[i], "path") == 0) {
+			if (argc <= i + 1) {
+				printf("Please set a path");
+				exit(1);
+			}
+			else {
+				printf("PK2    - Path set to %s\n", argv[i + 1]);
+				chdir(argv[i + 1]);
+				path_set = true;
+			}
+		}
 		if (strcmp(argv[i], "version") == 0) {
 			printf(PK2_VERSION);
 			printf("\n");
@@ -8015,7 +8027,8 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	PisteUtils_Setcwd();
+	if(!path_set)
+		PisteUtils_Setcwd();
 	strcpy(tyohakemisto,".");
 
 	PK_Settings_Open("data/settings.ini");

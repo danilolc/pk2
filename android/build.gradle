@@ -20,7 +20,7 @@ allprojects {
 }
 
 dependencies {
-    compile "commons-io:commons-io:+"
+    //compile "commons-io:commons-io:+"
 }
 
 android {
@@ -42,46 +42,27 @@ android {
 		exclude 'META-INF/LICENSE'
 		exclude 'META-INF/NOTICE'
 	}
-	defaultConfig {
-		minSdkVersion 14
-		targetSdkVersion 27
 
-	}
-
-	buildTypes {
-				debug {
-					signingConfig signingConfigs.release
-				}
-	            release {
-	                minifyEnabled true
-	                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-	                zipAlignEnabled true
-					signingConfig signingConfigs.release
-					debuggable false
-					jniDebuggable false
-					renderscriptDebuggable false
-	            }
-	        }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
+        release {
+            signingConfig signingConfigs.release
+            debuggable false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+        }
+    }
 
 	sourceSets {
 		main {
 			manifest.srcFile 'AndroidManifest.xml'
-			java.srcDirs = ['src', '../external/SDL/android-project/app/src/main/java'
-			]
-			res.srcDirs = [
-					'res'
-			]
-			//assets.srcDirs = [
-			// 		'../res'
-			//]
+            jniLibs.srcDirs = [ 'libs' ]
+            jni.srcDirs = [ ]
+            java.srcDirs = [ 'src', '../external/SDL/android-project/app/src/main/java']
+			res.srcDirs = [ 'res' ]
+			assets.srcDirs = [ '../res/pack' ]
 		}
-		debug.jniLibs.srcDirs = [
-				'libs/'
-
-		]
-		release.jniLibs.srcDirs = [
-				'libs/'
-
-		]
 	}
 }
