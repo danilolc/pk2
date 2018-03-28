@@ -2,8 +2,14 @@ package org.pgnapps.pk2;
 
 import org.libsdl.app.SDLActivity;
 
+import android.Manifest;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
@@ -13,6 +19,7 @@ import android.view.WindowManager;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
@@ -22,13 +29,14 @@ import java.util.zip.ZipInputStream;
 
 public class PK2Activity extends SDLActivity {
 	private static final String LOG_TAG = "PK2Activity";
-    private final String external_dir = Environment.getExternalStorageDirectory().getAbsolutePath();
+    private final String external_dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
 
     public void makeFullScreen() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if(Build.VERSION.SDK_INT < 19){
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-        }else {
+        } else {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
@@ -85,7 +93,30 @@ public class PK2Activity extends SDLActivity {
         return true;
     }
 
+    boolean Permitted = false;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            Permitted = true;
+        else finish();
+    }
+
     public boolean isExternalStorageWritable() {
+        if (Build.VERSION.SDK_INT > 22) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        1);
+                while(!Permitted);
+            } else {
+                Permitted = true;
+            }
+        }
+
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }
@@ -105,15 +136,17 @@ public class PK2Activity extends SDLActivity {
         try {
             AssetManager assetManager = getAssets();
             is = assetManager.open("res.zip");
-            os = new FileOutputStream(external_dir + "/res.zip");
-            os.flush();
-            copyFile(is,os);
+            Log.d(LOG_TAG, external_dir + "res.zip");
+            os = new FileOutputStream(external_dir + "res.zip");
+            copyFile(is, os);
         } catch (IOException e) {
+            Log.e(LOG_TAG, e.toString() + e.getMessage());
             e.printStackTrace();
             return false;
         }
 
-        unpackZip(external_dir + "/", "res.zip");
+
+        unpackZip(external_dir, "res.zip");
         new File(external_dir,"res.zip").delete();
 
         return directory.exists();
@@ -121,20 +154,21 @@ public class PK2Activity extends SDLActivity {
 
 	@Override
     protected String[] getArguments() {
-	    if(Check_Assets()) { // This is here just to call on SDL_main thread before call SDL_main
-            String[] args = new String[2];
-            args[0] = "path";
-            args[1] = external_dir + "/Pekka Kana 2";
-            return args;
-        }
+	    Log.d(LOG_TAG, "Checking " + external_dir + "Pekka Kana 2");
+	    if(Check_Assets()) // This is here just to call on SDL_main thread before call SDL_main
+            return new String[] {"path", external_dir + "Pekka Kana 2"};
+        Log.e(LOG_TAG, "Can't find assets");
         return new String[0];
     }
 
 	@Override
 	protected String[] getLibraries() {
 		return new String[] {
-			"PK2"
-		};
+		        "SDL2",
+                "SDL2_image",
+                "mpg123",
+                "SDL2_mixer",
+                "PK2"};
 	}
 
     @Override

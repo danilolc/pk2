@@ -169,6 +169,7 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], 
 	struct dirent **namelist;
 
 	numb = scandir(dir, &namelist, 0, alphasort);
+	if(numb < 1) return -1;
 
 	for(i=0; i<numb; i++){
 		strcpy(ext,namelist[i]->d_name);
