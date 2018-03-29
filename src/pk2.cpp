@@ -49,7 +49,7 @@ void itoa(int n, char s[], int radix){
 	sprintf(s, "%i", n);
 }
 void ltoa(long n, char s[], int radix){
-	sprintf(s, "%i", (int)n);
+	sprintf(s, "%ld", n);
 }
 #endif
 
@@ -147,10 +147,10 @@ const int MAX_EPISODEJA	= 300;
 const int MAX_ILMOITUKSENNAYTTOAIKA = 700;
 
 struct PK2EPISODESCORES{
-	DWORD best_score[EPISODI_MAX_LEVELS];                  // the best score of each level in episode
-	char top_player[EPISODI_MAX_LEVELS][20];          // the name of the player with more score in each level on episode
-	DWORD best_time[EPISODI_MAX_LEVELS];                     // the best time of each level
-	char fastest_player[EPISODI_MAX_LEVELS][20];    // the name of the fastest player in each level
+	DWORD best_score[EPISODI_MAX_LEVELS];        // the best score of each level in episode
+	char top_player[EPISODI_MAX_LEVELS][20];     // the name of the player with more score in each level on episode
+	DWORD best_time[EPISODI_MAX_LEVELS];         // the best time of each level
+	char fastest_player[EPISODI_MAX_LEVELS][20]; // the name of the fastest player in each level
 
 	DWORD episode_top_score;
 	char  episode_top_player[20];
@@ -183,6 +183,9 @@ enum MENU
 //Sound
 const int SOUND_SAMPLERATE = 22050;
 
+int music_volume = 64;
+int music_volume_now = 64;
+
 //#### Structs
 struct PK2LEVEL{
 	char	tiedosto[PE_PATH_SIZE];
@@ -210,13 +213,13 @@ struct PK2SAVE{
 };
 
 struct PK2SETTINGS {
-	double versio;
+	char versio[4];
 	bool ladattu; // if it was started here
 	char kieli[128]; // language
 
 	// grafiikka
-	DWORD ruudun_korkeus;
-	DWORD ruudun_leveys;
+	DWORD ruudun_korkeus; //Not used
+	DWORD ruudun_leveys; //Not used
 	bool  lapinakyvat_objektit;
 	bool  lapinakyvat_menutekstit;
 	bool  saa_efektit;
@@ -224,14 +227,14 @@ struct PK2SETTINGS {
 	bool  tausta_spritet;
 
 	// kontrollit
-	DWORD kontrolli_vasemmalle;
-	DWORD kontrolli_oikealle;
-	DWORD kontrolli_hyppy;
-	DWORD kontrolli_alas;
-	DWORD kontrolli_juoksu;
-	DWORD kontrolli_hyokkays1;
-	DWORD kontrolli_hyokkays2;
-	DWORD kontrolli_kayta_esine;
+	DWORD control_left;
+	DWORD control_right;
+	DWORD control_jump;
+	DWORD control_down;
+	DWORD control_walk_slow;
+	DWORD control_attack1;
+	DWORD control_attack2;
+	DWORD control_open_gift;
 
 	// audio
 	bool musiikki;
@@ -243,6 +246,10 @@ struct PK2SETTINGS {
 	bool isFit;
 
 	bool isWide;
+
+	//Version 1.2
+	BYTE music_max_volume;
+	BYTE sfx_max_volume;
 
 };
 
@@ -325,16 +332,7 @@ int fontti5;
 //Controls
 int hiiri_x = 10;
 int hiiri_y = 10;
-
-int  kontrolli_vasemmalle		= PI_LEFT;
-int  kontrolli_oikealle			= PI_RIGHT;
-int  kontrolli_hyppy			= PI_UP;
-int  kontrolli_alas				= PI_DOWN;
-int  kontrolli_juoksu			= PI_RALT;
-int  kontrolli_hyokkays1		= PI_RCONTROL;
-int  kontrolli_hyokkays2		= PI_RSHIFT;
-int  kontrolli_kayta_esine		= PI_SPACE;
-int  key_delay = 0;
+int key_delay = 0;
 
 //KAMERAN KORDINAATIT
 int kamera_x = 0;
@@ -360,7 +358,7 @@ DWORD lopetusajastin = 0;
 DWORD jakso_pisteet = 0;
 DWORD fake_pisteet = 0;
 
-//PELAAJA
+//Player
 int pelaaja_index = 0;
 DWORD pisteet = 0;
 DWORD piste_lisays = 0;
@@ -384,13 +382,6 @@ int kytkin_aani,
 	pistelaskuri_aani;
 
 int sprite_aanet[50]; // spritejen k�ytt�m�t ��nibufferit
-
-int aanenvoimakkuus = 90;
-
-//MUSIIKKI
-int   musiikin_voimakkuus = 64;
-int   musiikin_max_voimakkuus = 64;
-int   musiikin_voimakkuus_nyt = 64;
 
 //TALLENNUKSET
 PK2SAVE tallennukset[MAX_SAVES];
@@ -641,8 +632,7 @@ void PK_Quit();
 //Filesystem
 //==================================================
 
-bool PK_Check_File(char *filename){
-	//TODO - If isn't Windows - List directory, set lower case, test, and change "char *filename".
+bool PK_Check_File(char *filename){ //TODO - If isn't Windows - List directory, set lower case, test, and change "char *filename".
 	struct stat st;
 	bool ret = (stat(filename, &st) == 0);
 	if(!ret) printf("PK2    - asked about non-existing file: %s\n", filename);
@@ -650,10 +640,9 @@ bool PK_Check_File(char *filename){
 }
 void PK_Settings_Start(){
 	settings.ladattu = false;
+
 	strcpy(settings.kieli,"english.txt");
 
-	settings.ruudun_leveys = screen_width; //Not used
-	settings.ruudun_korkeus = screen_height; //Not used
 	settings.lapinakyvat_objektit = true;
 	settings.lapinakyvat_menutekstit = false;
 	settings.saa_efektit = true;
@@ -663,19 +652,25 @@ void PK_Settings_Start(){
 	settings.aanet = true;
 	settings.musiikki = true;
 
-	settings.kontrolli_vasemmalle	= PI_LEFT;
-	settings.kontrolli_oikealle		= PI_RIGHT;
-	settings.kontrolli_hyppy		= PI_UP;
-	settings.kontrolli_alas			= PI_DOWN;
-	settings.kontrolli_juoksu		= PI_RALT;
-	settings.kontrolli_hyokkays1	= PI_RCONTROL;
-	settings.kontrolli_hyokkays2	= PI_RSHIFT;
-	settings.kontrolli_kayta_esine	= PI_SPACE;
+	settings.control_left      = PI_LEFT;
+	settings.control_right     = PI_RIGHT;
+	settings.control_jump      = PI_UP;
+	settings.control_down      = PI_DOWN;
+	settings.control_walk_slow = PI_RALT;
+	settings.control_attack1   = PI_RCONTROL;
+	settings.control_attack2   = PI_RSHIFT;
+	settings.control_open_gift = PI_SPACE;
 
 	settings.isFiltered = true;
 	settings.isFit = true;
 	settings.isFullScreen = true;
 	settings.isWide = true;
+
+	settings.music_max_volume = 64;
+	settings.sfx_max_volume = 90;
+
+	music_volume = settings.music_max_volume;
+	music_volume_now = settings.music_max_volume - 1;
 
 	PisteUtils_CreateDir("data");
 	PK_Settings_Save("data/settings.ini");
@@ -683,7 +678,6 @@ void PK_Settings_Start(){
 
 int PK_Settings_Open(char *filename){
 	ifstream *file = new ifstream(filename, ios::binary);
-	char versio[4];
 
 	if (file->fail()){
 		delete file;
@@ -691,51 +685,30 @@ int PK_Settings_Open(char *filename){
 		return 1;
 	}
 
-	file->read((char*)versio, 4);
+	file->read(settings.versio, 4); // Read the version from settings file
 
-	if (strcmp(versio, "1.0") == 0) {
+	if (strcmp(settings.versio, "1.2") != 0) { // If settings version isn't 1.2
 		delete file;
 		PK_Settings_Start();
 		return 2;
 	}
-	if (strcmp(versio, "1.1") == 0)
-		file->read((char*)&settings, sizeof(settings));
-
+	file->read((char*)&settings, sizeof(settings));
 	delete file;
 
-	settings.ladattu = true;
-	kontrolli_vasemmalle	= settings.kontrolli_vasemmalle;
-	kontrolli_oikealle		= settings.kontrolli_oikealle;
-	kontrolli_hyppy			= settings.kontrolli_hyppy;
-	kontrolli_alas			= settings.kontrolli_alas;
-	kontrolli_juoksu		= settings.kontrolli_juoksu;
-	kontrolli_hyokkays1		= settings.kontrolli_hyokkays1;
-	kontrolli_hyokkays2		= settings.kontrolli_hyokkays2;
-	kontrolli_kayta_esine	= settings.kontrolli_kayta_esine;
+	music_volume = settings.music_max_volume;
+	music_volume_now = settings.music_max_volume - 1;
 
+	settings.ladattu = true;
 	screen_width = settings.isWide ? 800 : 640;
 
 	return 0;
 }
 int PK_Settings_Save(char *filename){
-	settings.ruudun_korkeus = screen_height; //Not used
-	settings.ruudun_leveys  = screen_width; //Not used
-
-	settings.kontrolli_vasemmalle		= kontrolli_vasemmalle;
-	settings.kontrolli_oikealle		= kontrolli_oikealle;
-	settings.kontrolli_hyppy			= kontrolli_hyppy;
-	settings.kontrolli_alas			= kontrolli_alas;
-	settings.kontrolli_juoksu			= kontrolli_juoksu;
-	settings.kontrolli_hyokkays1		= kontrolli_hyokkays1;
-	settings.kontrolli_hyokkays2		= kontrolli_hyokkays2;
-	settings.kontrolli_kayta_esine		= kontrolli_kayta_esine;
-
 	ofstream *tiedosto = new ofstream(filename, ios::binary);
-	tiedosto->write ("1.1", 4);
+	tiedosto->write ("1.2", 4);
 	tiedosto->write ((char *)&settings, sizeof (settings));
 
 	delete (tiedosto);
-
 	return 0;
 }
 
@@ -808,7 +781,7 @@ int  PK_EpisodeScore_Save(char *filename){
 	return 0;
 }
 
-void PK_Load_InfoText(){
+void PK_Load_InfoText() { //TODO - Load info from different languages
 	PisteLanguage* temp;
 	char infofile[PE_PATH_SIZE] = "infosign.txt";
 	char otsikko[] = "info00";
@@ -1272,9 +1245,9 @@ int PK_Save_Records(int i){
 //==================================================
 
 void PK_Play_Sound(int aani, int voimakkuus, int x, int y, int freq, bool random_freq){
-	if (aani > -1 && aanenvoimakkuus > 0 && voimakkuus > 0){
+	if (aani > -1 && settings.sfx_max_volume > 0 && voimakkuus > 0){
 		if (x < kamera_x+screen_width && x > kamera_x && y < kamera_y+screen_height && y > kamera_y){
-			voimakkuus = voimakkuus / (100 / aanenvoimakkuus);
+			voimakkuus = voimakkuus / (100 / settings.sfx_max_volume);
 
 			if (voimakkuus > 100)
 				voimakkuus = 100;
@@ -1288,15 +1261,15 @@ void PK_Play_Sound(int aani, int voimakkuus, int x, int y, int freq, bool random
 			if (random_freq)
 				freq = freq + rand()%4000 - rand()%2000;
 
-			int err = PisteSound_PlaySFX(aani,aanenvoimakkuus, pan, freq);
+			int err = PisteSound_PlaySFX(aani,settings.sfx_max_volume, pan, freq);
 			if (err)
 				printf("PK2     - Error playing sound. Error %i\n", err);
 		}
 	}
 }
 void PK_Play_MenuSound(int aani, int voimakkuus){
-	if (aani > -1 && aanenvoimakkuus > 0 && voimakkuus > 0){
-		voimakkuus = voimakkuus / (100 / aanenvoimakkuus);
+	if (aani > -1 && settings.sfx_max_volume > 0 && voimakkuus > 0){
+		voimakkuus = voimakkuus / (100 / settings.sfx_max_volume);
 
 		if (voimakkuus > 100)
 			voimakkuus = 100;
@@ -1306,7 +1279,7 @@ void PK_Play_MenuSound(int aani, int voimakkuus){
 
 		int freq = 22050 + rand()%5000 - rand()%5000;
 
-		int err = PisteSound_PlaySFX(aani, aanenvoimakkuus, 0, freq);
+		int err = PisteSound_PlaySFX(aani, settings.sfx_max_volume, 0, freq);
 		if (err)
 			printf("PK2     - Error playing sound. Error %i\n", err);
 	}
@@ -3084,8 +3057,8 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka){
 				jaksot[jakso_indeksi_nyt].lapaisty = true;
 				if (jaksot[jakso_indeksi_nyt].jarjestys == jakso)
 					jakso++; //Increase level
-				musiikin_voimakkuus = musiikin_max_voimakkuus;
-				musiikin_voimakkuus_nyt = musiikin_max_voimakkuus-1;
+				music_volume = settings.music_max_volume;
+				music_volume_now = settings.music_max_volume - 1;
 			}
 		}
 	}
@@ -3328,19 +3301,19 @@ int PK_Sprite_Movement(int i){
 	PisteInput_Lue_Eventti();
 	if (sprite.pelaaja != 0 && sprite.energia > 0){
 		/* SLOW WALK */
-		if (PisteInput_Keydown(kontrolli_juoksu))
+		if (PisteInput_Keydown(settings.control_walk_slow))
 			lisavauhti = false;
 
 		/* ATTACK 1 */
-		if (PisteInput_Keydown(kontrolli_hyokkays1) && sprite.lataus == 0 && sprite.ammus1 != -1)
+		if (PisteInput_Keydown(settings.control_attack1) && sprite.lataus == 0 && sprite.ammus1 != -1)
 			sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
 		/* ATTACK 2 */
-		else if (PisteInput_Keydown(kontrolli_hyokkays2) && sprite.lataus == 0 && sprite.ammus2 != -1)
+		else if (PisteInput_Keydown(settings.control_attack2) && sprite.lataus == 0 && sprite.ammus2 != -1)
 				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
 
 		/* CROUCH */
 		sprite.kyykky = false;
-		if (PisteInput_Keydown(kontrolli_alas) && !sprite.alas) {
+		if (PisteInput_Keydown(settings.control_down) && !sprite.alas) {
 			sprite.kyykky = true;
 			sprite_yla += sprite_korkeus/1.5;
 		}
@@ -3348,7 +3321,7 @@ int PK_Sprite_Movement(int i){
 		double a_lisays = 0;
 
 		/* NAVIGATING TO RIGHT */
-		if (PisteInput_Keydown(kontrolli_oikealle)) {
+		if (PisteInput_Keydown(settings.control_right)) {
 			a_lisays = 0.04;//0.08;
 
 			if (lisavauhti) {
@@ -3365,7 +3338,7 @@ int PK_Sprite_Movement(int i){
 		}
 
 		/* NAVIGATING TO LEFT */
-		if (PisteInput_Keydown(kontrolli_vasemmalle)) {
+		if (PisteInput_Keydown(settings.control_left)) {
 			a_lisays = -0.04;
 
 			if (lisavauhti) {
@@ -3389,7 +3362,7 @@ int PK_Sprite_Movement(int i){
 
 		/* JUMPING */
 		if (sprite.tyyppi->paino > 0) {
-			if (PisteInput_Keydown(kontrolli_hyppy)) {
+			if (PisteInput_Keydown(settings.control_jump)) {
 				if (!sprite.kyykky) {
 					if (sprite.hyppy_ajastin == 0)
 						PK_Play_Sound(hyppy_aani, 100, (int)sprite_x, (int)sprite_y,
@@ -3404,17 +3377,17 @@ int PK_Sprite_Movement(int i){
 			}
 
 			/* tippuminen hiljaa alasp�in */
-			if (PisteInput_Keydown(kontrolli_hyppy) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
+			if (PisteInput_Keydown(settings.control_jump) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
 				sprite.tyyppi->liitokyky)
 				hidastus = true;
 		}
 		/* MOVING UP AND DOWN */
 		else { // if the player sprite-weight is 0 - like birds
 
-			if (PisteInput_Keydown(kontrolli_hyppy))
+			if (PisteInput_Keydown(settings.control_jump))
 				sprite_b -= 0.15;
 
-			if (PisteInput_Keydown(kontrolli_alas))
+			if (PisteInput_Keydown(settings.control_down))
 				sprite_b += 0.15;
 
 			sprite.hyppy_ajastin = 0;
@@ -4163,7 +4136,7 @@ int PK_Sprite_Movement(int i){
 													break;
 				case AI_KAANTYY_JOS_OSUTTU:			sprite.AI_Kaantyy_Jos_Osuttu();
 													break;
-				case AI_EVIL_ONE:					if (sprite.energia < 1) musiikin_voimakkuus = 0;
+				case AI_EVIL_ONE:					if (sprite.energia < 1) music_volume = 0;
 													break;
 
 				case AI_INFO1:						if (sprite.AI_Info(spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info01));break;
@@ -6120,49 +6093,49 @@ int PK_Draw_Menu_Sounds(){
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_title),50,90);
 	my += 20;
 
-	PisteDraw2_ScreenFill(404,224+my,404+aanenvoimakkuus,244+my,0);
-	PisteDraw2_ScreenFill(400,220+my,400+aanenvoimakkuus,240+my,81);
+	PisteDraw2_ScreenFill(404,224+my,404+settings.sfx_max_volume,244+my,0);
+	PisteDraw2_ScreenFill(400,220+my,400+settings.sfx_max_volume,240+my,81);
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_sfx_volume),180,200+my);
 	my += 20;
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_less),180,200+my))
-		if (aanenvoimakkuus > 0)
-			aanenvoimakkuus -= 5;
+		if (settings.sfx_max_volume > 0)
+			settings.sfx_max_volume -= 5;
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_more),180+8*15,200+my))
-		if (aanenvoimakkuus < 100)
-			aanenvoimakkuus += 5;
+		if (settings.sfx_max_volume < 100)
+			settings.sfx_max_volume += 5;
 
-	if (aanenvoimakkuus < 0)
-		aanenvoimakkuus = 0;
+	if (settings.sfx_max_volume < 0)
+		settings.sfx_max_volume = 0;
 
-	if (aanenvoimakkuus > 100)
-		aanenvoimakkuus = 100;
+	if (settings.sfx_max_volume > 100)
+		settings.sfx_max_volume = 100;
 
 	my+=40;
 
-	PisteDraw2_ScreenFill(404,224+my,404+int(musiikin_max_voimakkuus*1.56),244+my,0);
-	PisteDraw2_ScreenFill(400,220+my,400+int(musiikin_max_voimakkuus*1.56),240+my,112);
+	PisteDraw2_ScreenFill(404,224+my,404+int(settings.music_max_volume*1.56),244+my,0);
+	PisteDraw2_ScreenFill(400,220+my,400+int(settings.music_max_volume*1.56),240+my,112);
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_music_volume),180,200+my);
 	my += 20;
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_less),180,200+my))
-		if (musiikin_max_voimakkuus > 0)
-			musiikin_max_voimakkuus -= 4;
+		if (settings.music_max_volume > 0)
+			settings.music_max_volume -= 4;
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_more),180+8*15,200+my))
-		if (musiikin_max_voimakkuus < 64)
-			musiikin_max_voimakkuus += 4;
+		if (settings.music_max_volume < 64)
+			settings.music_max_volume += 4;
 
-	if (musiikin_max_voimakkuus < 0)
-		musiikin_max_voimakkuus = 0;
+	if (settings.music_max_volume < 0)
+		settings.music_max_volume = 0;
 
-	if (musiikin_max_voimakkuus > 64)
-		musiikin_max_voimakkuus = 64;
+	if (settings.music_max_volume > 64)
+		settings.music_max_volume = 64;
 
-	musiikin_voimakkuus = musiikin_max_voimakkuus;
+	music_volume = settings.music_max_volume;
 
 	my += 20;
 
@@ -6195,14 +6168,14 @@ int PK_Draw_Menu_Controls(){
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_useitem),100,90+my);my+=20;
 
 	my = 40;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_vasemmalle),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_oikealle),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_hyppy),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_alas),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_juoksu),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_hyokkays1),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_hyokkays2),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(kontrolli_kayta_esine),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_left),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_right),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_jump),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_down),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_walk_slow),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_attack1),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_attack2),310,90+my);my+=20;
+	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_open_gift),310,90+my);my+=20;
 
 	/*
 	if (hiiri_x > 310 && hiiri_x < 580 && hiiri_y > 130 && hiiri_y < my-20){
@@ -6225,14 +6198,14 @@ int PK_Draw_Menu_Controls(){
 	my += 30;
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.controls_kbdef),100,90+my)){
-		kontrolli_vasemmalle	= PI_LEFT;
-		kontrolli_oikealle		= PI_RIGHT;
-		kontrolli_hyppy			= PI_UP;
-		kontrolli_alas			= PI_DOWN;
-		kontrolli_juoksu		= PI_RALT;
-		kontrolli_hyokkays1		= PI_RCONTROL;
-		kontrolli_hyokkays2		= PI_RSHIFT;
-		kontrolli_kayta_esine	= PI_SPACE;
+		settings.control_left      = PI_LEFT;
+		settings.control_right     = PI_RIGHT;
+		settings.control_jump      = PI_UP;
+		settings.control_down      = PI_DOWN;
+		settings.control_walk_slow = PI_RALT;
+		settings.control_attack1   = PI_RCONTROL;
+		settings.control_attack2   = PI_RSHIFT;
+		settings.control_open_gift = PI_SPACE;
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
 	}
@@ -6240,14 +6213,14 @@ int PK_Draw_Menu_Controls(){
 	my += 20;
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.controls_gp4def),100,90+my)){
-		kontrolli_vasemmalle	= PI_OHJAIN1_VASEMMALLE;
-		kontrolli_oikealle		= PI_OHJAIN1_OIKEALLE;
-		kontrolli_hyppy			= PI_OHJAIN1_YLOS;
-		kontrolli_alas			= PI_OHJAIN1_ALAS;
-		kontrolli_juoksu		= PI_OHJAIN1_NAPPI2;
-		kontrolli_hyokkays1		= PI_OHJAIN1_NAPPI1;
-		kontrolli_hyokkays2		= PI_OHJAIN1_NAPPI3;
-		kontrolli_kayta_esine	= PI_OHJAIN1_NAPPI4;
+		settings.control_left      = PI_OHJAIN1_VASEMMALLE;
+		settings.control_right     = PI_OHJAIN1_OIKEALLE;
+		settings.control_jump      = PI_OHJAIN1_YLOS;
+		settings.control_down      = PI_OHJAIN1_ALAS;
+		settings.control_walk_slow = PI_OHJAIN1_NAPPI2;
+		settings.control_attack1   = PI_OHJAIN1_NAPPI1;
+		settings.control_attack2   = PI_OHJAIN1_NAPPI3;
+		settings.control_open_gift = PI_OHJAIN1_NAPPI4;
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
 	}
@@ -6255,14 +6228,14 @@ int PK_Draw_Menu_Controls(){
 	my += 20;
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.controls_gp6def),100,90+my)){
-		kontrolli_vasemmalle	= PI_OHJAIN1_VASEMMALLE;
-		kontrolli_oikealle		= PI_OHJAIN1_OIKEALLE;
-		kontrolli_hyppy			= PI_OHJAIN1_YLOS;//PI_OHJAIN1_NAPPI1;
-		kontrolli_alas			= PI_OHJAIN1_ALAS;
-		kontrolli_juoksu		= PI_OHJAIN1_NAPPI2;
-		kontrolli_hyokkays1		= PI_OHJAIN1_NAPPI1;
-		kontrolli_hyokkays2		= PI_OHJAIN1_NAPPI4;
-		kontrolli_kayta_esine	= PI_OHJAIN1_NAPPI6;
+		settings.control_left      = PI_OHJAIN1_VASEMMALLE;
+		settings.control_right     = PI_OHJAIN1_OIKEALLE;
+		settings.control_jump      = PI_OHJAIN1_YLOS;//PI_OHJAIN1_NAPPI1;
+		settings.control_down      = PI_OHJAIN1_ALAS;
+		settings.control_walk_slow = PI_OHJAIN1_NAPPI2;
+		settings.control_attack1   = PI_OHJAIN1_NAPPI1;
+		settings.control_attack2   = PI_OHJAIN1_NAPPI4;
+		settings.control_open_gift = PI_OHJAIN1_NAPPI6;
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
 	}
@@ -6280,14 +6253,14 @@ int PK_Draw_Menu_Controls(){
 
 		if (k != 0){
 			switch(menu_lue_kontrollit){
-				case 1 : kontrolli_vasemmalle  = k; break;
-				case 2 : kontrolli_oikealle    = k; break;
-				case 3 : kontrolli_hyppy       = k; break;
-				case 4 : kontrolli_alas        = k; break;
-				case 5 : kontrolli_juoksu      = k; break;
-				case 6 : kontrolli_hyokkays1   = k; break;
-				case 7 : kontrolli_hyokkays2   = k; break;
-				case 8 : kontrolli_kayta_esine = k; break;
+				case 1 : settings.control_left      = k; break;
+				case 2 : settings.control_right     = k; break;
+				case 3 : settings.control_jump      = k; break;
+				case 4 : settings.control_down      = k; break;
+				case 5 : settings.control_walk_slow = k; break;
+				case 6 : settings.control_attack1   = k; break;
+				case 7 : settings.control_attack2   = k; break;
+				case 8 : settings.control_open_gift = k; break;
 				default: PK_Play_MenuSound(ammuu_aani,100); break;
 			}
 
@@ -6557,7 +6530,7 @@ int PK_Draw_Map(){
 					jakso_indeksi_nyt = i;
 					siirry_kartasta_peliin = true;
 					PisteDraw2_FadeOut(PD_FADE_SLOW);
-					musiikin_voimakkuus = 0;
+					music_volume = 0;
 					PK_Play_MenuSound(kieku_aani,90);
 				}
 				else
@@ -6712,7 +6685,7 @@ int PK_Draw_ScoreCount(){
 	}
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.score_screen_continue),100,430)){
-		musiikin_voimakkuus = 0;
+		music_volume = 0;
 		siirry_pistelaskusta_karttaan = true;
 		PisteDraw2_FadeOut(PD_FADE_SLOW);
 		//pelin_seuraava_tila = TILA_KARTTA;
@@ -6934,9 +6907,9 @@ void PK_UI_Change(int ui_mode){
 	}
 }
 void PK_UI_Load(){
-	static int escape = PI_ESCAPE;
-	static int tab = PI_TAB;
-	static int enter = PI_RETURN;
+	static DWORD escape = PI_ESCAPE;
+	static DWORD tab    = PI_TAB;
+	static DWORD enter  = PI_RETURN;
 
 	int circ_size = 200;
 	int alpha = 170;
@@ -6945,13 +6918,13 @@ void PK_UI_Load(){
 
 	gui_menu = PisteInput_CreateGui(50,130,circ_size,circ_size,alpha,"android/menu.png", &escape);
 	gui_arr = PisteInput_CreateGui(50,650,388,256,alpha,"android/arrow.png", NULL);
-	gui_left = PisteInput_CreateGui(50,650,388/2,256,alpha,"", &kontrolli_vasemmalle);
-	gui_right = PisteInput_CreateGui(50+388/2,650,388/2,256,alpha,"",  &kontrolli_oikealle);
-	gui_up = PisteInput_CreateGui(1630,650,circ_size,circ_size,alpha,"android/up.png", &kontrolli_hyppy);
-	gui_down = PisteInput_CreateGui(1420,700,circ_size,circ_size,alpha,"android/down.png", &kontrolli_alas);
-	gui_doodle = PisteInput_CreateGui(1630,450,circ_size,circ_size,alpha,"android/doodle.png", &kontrolli_hyokkays2);
-	gui_egg = PisteInput_CreateGui(1420,500,circ_size,circ_size,alpha,"android/egg.png", &kontrolli_hyokkays1);
-	gui_gift = PisteInput_CreateGui(1630,250,circ_size,circ_size,alpha,"android/gift.png", &kontrolli_kayta_esine);
+	gui_left = PisteInput_CreateGui(50,650,388/2,256,alpha,"", &settings.control_left);
+	gui_right = PisteInput_CreateGui(50+388/2,650,388/2,256,alpha,"",  &settings.control_right);
+	gui_up = PisteInput_CreateGui(1630,650,circ_size,circ_size,alpha,"android/up.png", &settings.control_jump);
+	gui_down = PisteInput_CreateGui(1420,700,circ_size,circ_size,alpha,"android/down.png", &settings.control_down);
+	gui_doodle = PisteInput_CreateGui(1630,450,circ_size,circ_size,alpha,"android/doodle.png", &settings.control_attack2);
+	gui_egg = PisteInput_CreateGui(1420,500,circ_size,circ_size,alpha,"android/egg.png", &settings.control_attack1);
+	gui_gift = PisteInput_CreateGui(1630,250,circ_size,circ_size,alpha,"android/gift.png", &settings.control_open_gift);
 	gui_tab = PisteInput_CreateGui(0,930,530,150,alpha,"", &tab);
 }
 
@@ -7062,7 +7035,7 @@ int PK_MainScreen_ScoreCount(){
 	if (key_delay == 0){
 		if (PisteInput_Keydown(PI_RETURN) && pistelaskuvaihe == 5){
 			siirry_pistelaskusta_karttaan = true;
-			musiikin_voimakkuus = 0;
+			music_volume = 0;
 			PisteDraw2_FadeOut(PD_FADE_SLOW);
 			key_delay = 20;
 		}
@@ -7210,15 +7183,15 @@ int PK_MainScreen_InGame(){
 		if (lopetusajastin == 0)
 			lopetusajastin = 800;//2000;
 
-		if (PisteInput_Keydown(kontrolli_hyokkays1) || PisteInput_Keydown(kontrolli_hyokkays2) ||
-			PisteInput_Keydown(kontrolli_hyppy) || PisteInput_Keydown(PI_RETURN))
+		if (PisteInput_Keydown(settings.control_attack1) || PisteInput_Keydown(settings.control_attack2) ||
+			PisteInput_Keydown(settings.control_jump) || PisteInput_Keydown(PI_RETURN))
 			if (lopetusajastin > 2 && lopetusajastin < 600/*1900*/ && key_delay == 0)
 				lopetusajastin = 2;
 
 		if (lopetusajastin == 2)
 		{
 			PisteDraw2_FadeOut(PD_FADE_NORMAL);
-			//musiikin_voimakkuus = 0;
+			//music_volume = 0;
 		}
 	}
 	if (lopetusajastin == 1 && !PisteDraw2_IsFading()){
@@ -7233,7 +7206,7 @@ int PK_MainScreen_InGame(){
 	}
 
 	if (key_delay == 0){
-		if (PisteInput_Keydown(kontrolli_kayta_esine) && spritet[pelaaja_index].energia > 0){
+		if (PisteInput_Keydown(settings.control_open_gift) && spritet[pelaaja_index].energia > 0){
 			PK_Gift_Use();
 			key_delay = 10;
 		}
@@ -7309,8 +7282,8 @@ int PK_MainScreen_InGame(){
 				jaksot[jakso_indeksi_nyt].lapaisty = true;
 				if (jaksot[jakso_indeksi_nyt].jarjestys == jakso)
 					jakso++;
-				musiikin_voimakkuus = musiikin_max_voimakkuus;
-				musiikin_voimakkuus_nyt = musiikin_max_voimakkuus-1;
+				music_volume = settings.music_max_volume;
+				music_volume_now = settings.music_max_volume - 1;
 			}
 			if (PisteInput_Keydown(PI_LSHIFT) && key_delay == 0) {
 				key_delay = 20;
@@ -7353,7 +7326,7 @@ int PK_MainScreen_End(){
 		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE))
 		{
 			siirry_lopusta_menuun = true;
-			musiikin_voimakkuus = 0;
+			music_volume = 0;
 			PisteDraw2_FadeOut(PD_FADE_SLOW);
 		}
 	}
@@ -7633,7 +7606,7 @@ int PK_MainScreen_Change(){
 
 			PisteSound_StartMusic(mapmusa);
 
-			musiikin_voimakkuus = musiikin_max_voimakkuus;
+			music_volume = settings.music_max_volume;
 
 			siirry_kartasta_peliin = false;
 
@@ -7653,7 +7626,7 @@ int PK_MainScreen_Change(){
 				PisteDraw2_Image_Delete(kuva_tausta);
 				kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
 				PisteSound_StartMusic("music/song09.xm");//theme.xm
-				musiikin_voimakkuus = musiikin_max_voimakkuus;
+				music_volume = settings.music_max_volume;
 			} else{
 				int w, h;
 				PisteDraw2_Image_GetSize(kuva_tausta, w, h);
@@ -7702,7 +7675,7 @@ int PK_MainScreen_Change(){
 
 				PK_Gift_Clean();
 				peli_kesken = true;
-				musiikin_voimakkuus = musiikin_max_voimakkuus;
+				music_volume = settings.music_max_volume;
 				degree = 0;
 				item_paneeli_x = -215;
 				piste_lisays = 0;
@@ -7769,7 +7742,7 @@ int PK_MainScreen_Change(){
 			if (vertailun_tulos > 0)
 				PK_EpisodeScore_Save(pisteet_tiedosto);
 
-			musiikin_voimakkuus = musiikin_max_voimakkuus;
+			music_volume = settings.music_max_volume;
 
 			siirry_pistelaskusta_karttaan = false;
 
@@ -7797,7 +7770,7 @@ int PK_MainScreen_Change(){
 				PK2_error_msg = "Can't load intro.xm";
 			}
 
-			musiikin_voimakkuus = musiikin_max_voimakkuus;
+			music_volume = settings.music_max_volume;
 
 			introlaskuri = 0;
 			siirry_pistelaskusta_karttaan = false;
@@ -7821,7 +7794,7 @@ int PK_MainScreen_Change(){
 				PK2_error_msg = "Can't load intro.xm";
 			}
 
-			musiikin_voimakkuus = musiikin_max_voimakkuus;
+			music_volume = settings.music_max_volume;
 
 			loppulaskuri = 0;
 			siirry_lopusta_menuun = false;
@@ -7871,35 +7844,35 @@ int PK_MainScreen(){
 		default              : lopeta_peli = true;   break;
 	}
 
-	// GET MUSIC
-	bool saada = false;
+	// Update music volume
+	bool update = false;
+	if (music_volume != music_volume_now)
+		update = true;
 
-	if (musiikin_voimakkuus != musiikin_voimakkuus_nyt)
-		saada = true;
+	if (update) {
+		if (settings.music_max_volume > 64)
+			settings.music_max_volume = 64;
 
-	if (musiikin_max_voimakkuus > 64)
-		musiikin_max_voimakkuus = 64;
+		if (settings.music_max_volume < 0)
+			settings.music_max_volume = 0;
 
-	if (musiikin_max_voimakkuus < 0)
-		musiikin_max_voimakkuus = 0;
+		if (music_volume > settings.music_max_volume)
+			music_volume = settings.music_max_volume;
 
-	if (musiikin_voimakkuus > musiikin_max_voimakkuus)
-		musiikin_voimakkuus = musiikin_max_voimakkuus;
+		if (music_volume_now < music_volume)
+			music_volume_now++;
 
-	if (musiikin_voimakkuus_nyt < musiikin_voimakkuus)
-		musiikin_voimakkuus_nyt++;
+		if (music_volume_now > music_volume)
+			music_volume_now--;
 
-	if (musiikin_voimakkuus_nyt > musiikin_voimakkuus)
-		musiikin_voimakkuus_nyt--;
+		if (music_volume_now > 64)
+			music_volume_now = 64;
 
-	if (musiikin_voimakkuus_nyt > 64)
-		musiikin_voimakkuus_nyt = 64;
+		if (music_volume_now < 0)
+			music_volume_now = 0;
 
-	if (musiikin_voimakkuus_nyt < 0)
-		musiikin_voimakkuus_nyt = 0;
-
-	if (saada && settings.musiikki)
-		PisteSound_SetMusicVolume(musiikin_voimakkuus_nyt);
+		PisteSound_SetMusicVolume(music_volume_now);
+	}
 
 	static bool wasPressed = false;
 
@@ -7957,7 +7930,7 @@ void PK_Start_Test(const char* arg){
 	PK_New_Game();
 
 	siirry_kartasta_peliin = true;
-	musiikin_voimakkuus = 0;
+	music_volume = 0;
 	peli_kesken = false;
 }
 
@@ -7972,7 +7945,7 @@ void PK_Unload(){
 void PK_Quit(){
 	if(!lopeta_peli) PisteDraw2_FadeOut(PD_FADE_FAST);
 	lopeta_peli = true;
-	musiikin_voimakkuus = 0;
+	music_volume = 0;
 }
 
 void quit(){
@@ -7985,14 +7958,8 @@ int main(int argc, char *argv[]){
 	char* test_path = NULL;
 	bool path_set = false;
 
-	#ifdef __ANDROID__ //TODO - remove
-
 	printf("PK2 Started!\n");
-	//dev_mode = true;
-	//Piste_SetDebug(true);
 	atexit(quit);
-
-	#endif
 
 	for (int i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "dev") == 0) {

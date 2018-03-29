@@ -29,7 +29,7 @@ struct PI_GUI{
 	int width, height;
 	BYTE alpha;
 	SDL_Texture* texture;
-	int* key;
+	DWORD* key;
 	bool pressed;
 };
 
@@ -156,7 +156,7 @@ int UpdateGui(){
 	return 0;
 }
 
-int PisteInput_CreateGui(int x, int y, int w, int h, BYTE alpha, const char* t_path, int* key){
+int PisteInput_CreateGui(int x, int y, int w, int h, BYTE alpha, const char* t_path, DWORD* key){
 	int gui_id = Alloc_GuiId();
 	if(gui_id == -1)
 		return gui_id;
