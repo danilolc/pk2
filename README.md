@@ -41,7 +41,6 @@ This example starts the level13.map on dev mode:
 
 
 # TODOs and FIXMEs:
-* Better port to Android (with resources)
 * Consider Sprite in Water when the water is on BG or outside the screen
 * Fix the mikmod music loop
 * Find a solution to change sfx frequency without delay
@@ -50,3 +49,4 @@ This example starts the level13.map on dev mode:
 * Do a better resolution change
 * Add link to Discord
 * Recover the loading scene
+* Jump frames when FPS is slow
