@@ -50,3 +50,4 @@ This example starts the level13.map on dev mode:
 * Add link to Discord
 * Recover the loading scene
 * Jump frames when FPS is slow
+* Start on language select on first start
