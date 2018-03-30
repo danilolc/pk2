@@ -808,6 +808,87 @@ void PK_Load_InfoText() { //TODO - Load info from different languages
 
 	delete (temp);
 }
+int PK_Load_Font() {
+	int ind_font = 0,
+		ind_path = 0;
+
+	PisteDraw2_Clear_Fonts();
+	ind_path = tekstit->Hae_Indeksi("font path");
+
+	ind_font = tekstit->Hae_Indeksi("font small font");
+	if (ind_path == -1 || ind_font == -1) {
+		if ((fontti1 = PisteDraw2_Font_Create("language/fonts/", "ScandicSmall.txt")) == -1) {
+			PK2_error = true;
+			PK2_error_msg = "Can't create font 1 from ScandicSmall.txt";
+		}
+	}
+	else {
+		if ((fontti1 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
+			PK2_error = true;
+			PK2_error_msg = "Can't create font 1";
+		}
+	}
+
+	ind_font = tekstit->Hae_Indeksi("font big font normal");
+	if (ind_path == -1 || ind_font == -1) {
+		if ((fontti2 = PisteDraw2_Font_Create("language/fonts/", "ScandicBig1.txt")) == -1) {
+			PK2_error = true;
+			PK2_error_msg = "Can't create font 1 from ScandicBig1.txt";
+		}
+	}
+	else {
+		if ((fontti2 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
+			PK2_error = true;
+			PK2_error_msg = "Can't create font 2";
+		}
+	}
+
+	ind_font = tekstit->Hae_Indeksi("font big font hilite");
+	if (ind_path == -1 || ind_font == -1) {
+		if ((fontti3 = PisteDraw2_Font_Create("language/fonts/", "ScandicBig2.txt")) == -1) {
+			PK2_error = true;
+			PK2_error_msg = "Can't create font 3 from ScandicBig2.txt";
+		}
+	}
+	else {
+		if ((fontti3 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
+			PK2_error = true;
+			PK2_error_msg = "Can't create font 3";
+		}
+	}
+
+	ind_font = tekstit->Hae_Indeksi("font big font shadow");
+	if (ind_path == -1 || ind_font == -1) {
+		if ((fontti4 = PisteDraw2_Font_Create("language/fonts/", "ScandicBig3.txt")) == -1) {
+			PK2_error = true;
+			PK2_error_msg = "Can't create font 4 from ScandicBig3.txt";
+		}
+	}
+	else {
+		if ((fontti4 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
+			PK2_error = true;
+			PK2_error_msg = "Can't create font 4";
+		}
+	}
+
+	/*
+	if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
+	PK2_error = true;
+	PK2_error_msg = "Can't create font 2 from ScandicBig1.txt";
+	}
+
+	if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
+	PK2_error = true;
+	PK2_error_msg = "Can't create font 3 from ScandicBig2.txt";
+	}
+
+	if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
+	PK2_error = true;
+	PK2_error_msg = "Can't create font 4 from ScandicBig3.txt";
+	}*/
+
+	return 0;
+}
 bool PK_Load_Language(){
 	char tiedosto[PE_PATH_SIZE];
 	int i;
@@ -825,12 +906,14 @@ bool PK_Load_Language(){
 	if (!tekstit->Read_File(tiedosto))
 		return false;
 
+	PK_Load_Font();
+
 	// Aloitusikkuna
 	PK_txt.setup_options			= tekstit->Hae_Indeksi("setup options");
-	PK_txt.setup_videomodes		= tekstit->Hae_Indeksi("setup video modes");
+	PK_txt.setup_videomodes			= tekstit->Hae_Indeksi("setup video modes");
 	PK_txt.setup_music_and_sounds	= tekstit->Hae_Indeksi("setup music & sounds");
 	PK_txt.setup_music				= tekstit->Hae_Indeksi("setup music");
-	PK_txt.setup_sounds			= tekstit->Hae_Indeksi("setup sounds");
+	PK_txt.setup_sounds				= tekstit->Hae_Indeksi("setup sounds");
 	PK_txt.setup_language			= tekstit->Hae_Indeksi("setup language");
 	PK_txt.setup_play				= tekstit->Hae_Indeksi("setup play");
 	PK_txt.setup_exit				= tekstit->Hae_Indeksi("setup exit");
@@ -842,7 +925,7 @@ bool PK_Load_Language(){
 	PK_txt.intro_tested_by			= tekstit->Hae_Indeksi("intro tested by");
 	PK_txt.intro_thanks_to			= tekstit->Hae_Indeksi("intro thanks to");
 	PK_txt.intro_translation		= tekstit->Hae_Indeksi("intro translation");
-	PK_txt.intro_translator		= tekstit->Hae_Indeksi("intro translator");
+	PK_txt.intro_translator			= tekstit->Hae_Indeksi("intro translator");
 
 	// P��valikko
 	PK_txt.mainmenu_new_game		= tekstit->Hae_Indeksi("main menu new game");
@@ -859,13 +942,13 @@ bool PK_Load_Language(){
 	// Lataus
 	PK_txt.loadgame_title			= tekstit->Hae_Indeksi("load menu title");
 	PK_txt.loadgame_info			= tekstit->Hae_Indeksi("load menu info");
-	PK_txt.loadgame_episode		= tekstit->Hae_Indeksi("load menu episode");
+	PK_txt.loadgame_episode			= tekstit->Hae_Indeksi("load menu episode");
 	PK_txt.loadgame_level			= tekstit->Hae_Indeksi("load menu level");
 
 	// Tallennus
 	PK_txt.savegame_title			= tekstit->Hae_Indeksi("save menu title");
 	PK_txt.savegame_info			= tekstit->Hae_Indeksi("save menu info");
-	PK_txt.savegame_episode		= tekstit->Hae_Indeksi("save menu episode");
+	PK_txt.savegame_episode			= tekstit->Hae_Indeksi("save menu episode");
 	PK_txt.savegame_level			= tekstit->Hae_Indeksi("save menu level");
 
 	// Kontrollit
@@ -877,7 +960,7 @@ bool PK_Load_Language(){
 	PK_txt.controls_walkslow		= tekstit->Hae_Indeksi("controls menu walk slow");
 	PK_txt.controls_eggattack		= tekstit->Hae_Indeksi("controls menu egg attack");
 	PK_txt.controls_doodleattack	= tekstit->Hae_Indeksi("controls menu doodle attack");
-	PK_txt.controls_useitem		= tekstit->Hae_Indeksi("controls menu use item");
+	PK_txt.controls_useitem			= tekstit->Hae_Indeksi("controls menu use item");
 	PK_txt.controls_edit			= tekstit->Hae_Indeksi("controls menu edit");
 	PK_txt.controls_kbdef			= tekstit->Hae_Indeksi("controls menu keyboard def");
 	PK_txt.controls_gp4def			= tekstit->Hae_Indeksi("controls menu gamepad4");
@@ -888,28 +971,28 @@ bool PK_Load_Language(){
 	PK_txt.gfx_tfx_off				= tekstit->Hae_Indeksi("graphics menu transparency fx off");
 	PK_txt.gfx_tmenus_on			= tekstit->Hae_Indeksi("graphics menu menus are transparent");
 	PK_txt.gfx_tmenus_off			= tekstit->Hae_Indeksi("graphics menu menus are not transparent");
-	PK_txt.gfx_items_on			= tekstit->Hae_Indeksi("graphics menu item bar is visible");
+	PK_txt.gfx_items_on				= tekstit->Hae_Indeksi("graphics menu item bar is visible");
 	PK_txt.gfx_items_off			= tekstit->Hae_Indeksi("graphics menu item bar is not visible");
 	PK_txt.gfx_weather_on			= tekstit->Hae_Indeksi("graphics menu weather fx on");
 	PK_txt.gfx_weather_off			= tekstit->Hae_Indeksi("graphics menu weather fx off");
-	PK_txt.gfx_bgsprites_on		= tekstit->Hae_Indeksi("graphics menu bg sprites on");
+	PK_txt.gfx_bgsprites_on			= tekstit->Hae_Indeksi("graphics menu bg sprites on");
 	PK_txt.gfx_bgsprites_off		= tekstit->Hae_Indeksi("graphics menu bg sprites off");
-	PK_txt.gfx_speed_normal		= tekstit->Hae_Indeksi("graphics menu game speed normal");
-	PK_txt.gfx_speed_double		= tekstit->Hae_Indeksi("graphics menu game speed double");
+	PK_txt.gfx_speed_normal			= tekstit->Hae_Indeksi("graphics menu game speed normal");
+	PK_txt.gfx_speed_double			= tekstit->Hae_Indeksi("graphics menu game speed double");
 
 	PK_txt.sound_title				= tekstit->Hae_Indeksi("sounds menu title");
-	PK_txt.sound_sfx_volume		= tekstit->Hae_Indeksi("sounds menu sfx volume");
+	PK_txt.sound_sfx_volume			= tekstit->Hae_Indeksi("sounds menu sfx volume");
 	PK_txt.sound_music_volume		= tekstit->Hae_Indeksi("sounds menu music volume");
 	PK_txt.sound_more				= tekstit->Hae_Indeksi("sounds menu more");
 	PK_txt.sound_less				= tekstit->Hae_Indeksi("sounds menu less");
 
-	PK_txt.playermenu_type_name	= tekstit->Hae_Indeksi("player screen type your name");
+	PK_txt.playermenu_type_name		= tekstit->Hae_Indeksi("player screen type your name");
 	PK_txt.playermenu_continue		= tekstit->Hae_Indeksi("player screen continue");
-	PK_txt.playermenu_clear		= tekstit->Hae_Indeksi("player screen clear");
+	PK_txt.playermenu_clear			= tekstit->Hae_Indeksi("player screen clear");
 	PK_txt.player_default_name		= tekstit->Hae_Indeksi("player default name");
 
 	PK_txt.episodes_choose_episode	= tekstit->Hae_Indeksi("episode menu choose episode");
-	PK_txt.episodes_no_maps		= tekstit->Hae_Indeksi("episode menu no maps");
+	PK_txt.episodes_no_maps			= tekstit->Hae_Indeksi("episode menu no maps");
 	PK_txt.episodes_get_more		= tekstit->Hae_Indeksi("episode menu get more episodes at");
 
 	PK_txt.map_total_score			= tekstit->Hae_Indeksi("map screen total score");
@@ -918,15 +1001,15 @@ bool PK_Load_Language(){
 	PK_txt.map_episode_hiscore		= tekstit->Hae_Indeksi("episode hiscore");
 	PK_txt.map_level_best_player	= tekstit->Hae_Indeksi("level best player");
 	PK_txt.map_level_hiscore		= tekstit->Hae_Indeksi("level hiscore");
-	PK_txt.map_level_fastest_player= tekstit->Hae_Indeksi("level fastest player");
+	PK_txt.map_level_fastest_player = tekstit->Hae_Indeksi("level fastest player");
 	PK_txt.map_level_best_time		= tekstit->Hae_Indeksi("level best time");
 
-	PK_txt.score_screen_title			= tekstit->Hae_Indeksi("score screen title");
+	PK_txt.score_screen_title		= tekstit->Hae_Indeksi("score screen title");
 	PK_txt.score_screen_level_score	= tekstit->Hae_Indeksi("score screen level score");
 	PK_txt.score_screen_bonus_score	= tekstit->Hae_Indeksi("score screen bonus score");
-	PK_txt.score_screen_time_score		= tekstit->Hae_Indeksi("score screen time score");
-	PK_txt.score_screen_energy_score	= tekstit->Hae_Indeksi("score screen energy score");
-	PK_txt.score_screen_item_score		= tekstit->Hae_Indeksi("score screen item score");
+	PK_txt.score_screen_time_score	= tekstit->Hae_Indeksi("score screen time score");
+	PK_txt.score_screen_energy_score= tekstit->Hae_Indeksi("score screen energy score");
+	PK_txt.score_screen_item_score	= tekstit->Hae_Indeksi("score screen item score");
 	PK_txt.score_screen_total_score	= tekstit->Hae_Indeksi("score screen total score");
 	PK_txt.score_screen_new_level_hiscore	= tekstit->Hae_Indeksi("score screen new level hiscore");
 	PK_txt.score_screen_new_level_best_time= tekstit->Hae_Indeksi("score screen new level best time");
@@ -937,19 +1020,19 @@ bool PK_Load_Language(){
 	PK_txt.game_time				= tekstit->Hae_Indeksi("game time");
 	PK_txt.game_energy				= tekstit->Hae_Indeksi("energy");
 	PK_txt.game_items				= tekstit->Hae_Indeksi("items");
-	PK_txt.game_attack1			= tekstit->Hae_Indeksi("attack 1");
-	PK_txt.game_attack2			= tekstit->Hae_Indeksi("attack 2");
+	PK_txt.game_attack1				= tekstit->Hae_Indeksi("attack 1");
+	PK_txt.game_attack2				= tekstit->Hae_Indeksi("attack 2");
 	PK_txt.game_keys				= tekstit->Hae_Indeksi("keys");
 	PK_txt.game_clear				= tekstit->Hae_Indeksi("level clear");
 	PK_txt.game_timebonus			= tekstit->Hae_Indeksi("time bonus");
 	PK_txt.game_ko					= tekstit->Hae_Indeksi("knocked out");
-	PK_txt.game_timeout			= tekstit->Hae_Indeksi("time out");
+	PK_txt.game_timeout				= tekstit->Hae_Indeksi("time out");
 	PK_txt.game_tryagain			= tekstit->Hae_Indeksi("try again");
 	PK_txt.game_locksopen			= tekstit->Hae_Indeksi("locks open");
 	PK_txt.game_newdoodle			= tekstit->Hae_Indeksi("new doodle attack");
 	PK_txt.game_newegg				= tekstit->Hae_Indeksi("new egg attack");
-	PK_txt.game_newitem			= tekstit->Hae_Indeksi("new item");
-	PK_txt.game_loading			= tekstit->Hae_Indeksi("loading");
+	PK_txt.game_newitem				= tekstit->Hae_Indeksi("new item");
+	PK_txt.game_loading				= tekstit->Hae_Indeksi("loading");
 	PK_txt.game_paused				= tekstit->Hae_Indeksi("game paused");
 
 	PK_txt.end_congratulations	= tekstit->Hae_Indeksi("end congratulations");
@@ -4874,22 +4957,16 @@ int PK_Draw_InGame_BGSprites(){
 	double xl, yl, alku_x, alku_y, yk;
 	int i;
 
-
-	for (int in=0;in<MAX_SPRITEJA;in++)
-	{
+	for (int in=0; in<MAX_SPRITEJA; in++) {
 		i = taustaspritet[in];
-		// Onko sprite n�kyv�
-		if (spritet[i].tyyppi != NULL && i != -1)
-		{
-			if (!spritet[i].piilota && spritet[i].tyyppi->tyyppi == TYYPPI_TAUSTA)
-			{
+		if (spritet[i].tyyppi != NULL && i != -1) {
+			if (!spritet[i].piilota && spritet[i].tyyppi->tyyppi == TYYPPI_TAUSTA) {
 				//Tarkistetaanko onko sprite tai osa siit� kuvassa
 
 				alku_x = spritet[i].alku_x;
 				alku_y = spritet[i].alku_y;
 
-				if (spritet[i].tyyppi->pallarx_kerroin != 0)
-				{
+				if (spritet[i].tyyppi->pallarx_kerroin != 0) {
 					xl =  alku_x - kamera_x-screen_width/2 - spritet[i].tyyppi->leveys/2;
 					xl /= spritet[i].tyyppi->pallarx_kerroin;
 					yl =  alku_y - kamera_y-screen_height/2 - spritet[i].tyyppi->korkeus/2;
@@ -4902,8 +4979,7 @@ int PK_Draw_InGame_BGSprites(){
 				else
 					xl = yl = 0;
 
-				switch(spritet[i].tyyppi->AI[0])
-				{
+				switch(spritet[i].tyyppi->AI[0]) {
 				case AI_TAUSTA_KUU					:	yl += screen_height/3+50; break;
 				/*case AI_TAUSTA_LIIKKUU_VASEMMALLE	:	if (spritet[i].a == 0)
 															spritet[i].a = rand()%3;
@@ -4946,9 +5022,7 @@ int PK_Draw_InGame_BGSprites(){
 					spritet[i].piilossa = false;
 
 					debug_drawn_sprites++;
-				}
-				else
-				{
+				} else {
 					if (!paused)
 						spritet[i].Animoi();
 					spritet[i].piilossa = true;
@@ -5080,6 +5154,7 @@ int PK_Draw_InGame_DebugInfo(){
 int PK_Draw_InGame_DevKeys() {
 	const char* txt0 = "dev mode";
 	int char_w = PisteDraw2_Font_Write(fontti1, txt0, 0, screen_height - 10) / strlen(txt0);
+	int char_h = 10;
 
 	const char* help = "h: help";
 
@@ -5105,13 +5180,19 @@ int PK_Draw_InGame_DevKeys() {
 	const char* txt15 = "lshift: set rooster";
 
 	const char* txts[] = { txt15,txt14,txt13,txt12,txt11,txt10,txt9,txt8,txt7,txt6,txt5,txt4,txt3,txt2,txt1 };
+	int nof_txt = sizeof(txts) / sizeof(const char*);
 
 	int last_size = 0;
-	for (int i = 0; i < sizeof(txts) / sizeof(const char*); i++)
+	for (int i = 0; i < nof_txt; i++)
 		if (strlen(txts[i]) > last_size) last_size = strlen(txts[i]);
 
 	int posx = screen_width - last_size * char_w;
-	for (int i = 0; i < sizeof(txts) / sizeof(const char*); i++)
+	int posy = screen_height - char_h * nof_txt;
+
+	PisteDraw2_ScreenFill(posx - 4, posy - 4, screen_width, screen_height, 0);
+	PisteDraw2_ScreenFill(posx - 2, posy - 2, screen_width, screen_height, 38);
+	
+	for (int i = 0; i < nof_txt; i++)
 		PisteDraw2_Font_Write(fontti1, txts[i], posx, screen_height - (i+1)*10);
 
 	return 0;
@@ -7381,81 +7462,7 @@ int PK_MainScreen_Change(){
 			PisteDraw2_Image_Delete(kuva_peli);
 			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
 
-			int ind_font = 0,
-				ind_path = 0;
-
-			ind_path = tekstit->Hae_Indeksi("font path");
-
-			ind_font = tekstit->Hae_Indeksi("font small font");
-			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti1 = PisteDraw2_Font_Create("language/fonts/","ScandicSmall.txt")) == -1){
-					PK2_error = true;
-					PK2_error_msg = "Can't create font 1 from ScandicSmall.txt";
-				}
-			}
-			else {
-				if ((fontti1 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-					PK2_error = true;
-					PK2_error_msg = "Can't create font 1";
-				}
-			}
-
-			ind_font = tekstit->Hae_Indeksi("font big font normal");
-			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
-					PK2_error = true;
-					PK2_error_msg = "Can't create font 1 from ScandicBig1.txt";
-				}
-			}
-			else {
-				if ((fontti2 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-					PK2_error = true;
-					PK2_error_msg = "Can't create font 2";
-				}
-			}
-
-			ind_font = tekstit->Hae_Indeksi("font big font hilite");
-			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
-					PK2_error = true;
-					PK2_error_msg = "Can't create font 3 from ScandicBig2.txt";
-				}
-			}
-			else {
-				if ((fontti3 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-					PK2_error = true;
-					PK2_error_msg = "Can't create font 3";
-				}
-			}
-
-			ind_font = tekstit->Hae_Indeksi("font big font shadow");
-			if (ind_path == -1 || ind_font == -1) {
-				if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
-					PK2_error = true;
-					PK2_error_msg = "Can't create font 4 from ScandicBig3.txt";
-				}
-			}
-			else {
-				if ((fontti4 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path),tekstit->Hae_Teksti(ind_font))) == -1){
-					PK2_error = true;
-					PK2_error_msg = "Can't create font 4";
-				}
-			}
-
-			if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
-				PK2_error = true;
-				PK2_error_msg = "Can't create font 2 from ScandicBig1.txt";
-			}
-
-			if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
-				PK2_error = true;
-				PK2_error_msg = "Can't create font 3 from ScandicBig2.txt";
-			}
-
-			if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
-				PK2_error = true;
-				PK2_error_msg = "Can't create font 4 from ScandicBig3.txt";
-			}
+			PK_Load_Font();
 
 			PK_Sprites_Clean();
 

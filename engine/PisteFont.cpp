@@ -15,63 +15,63 @@
 int PisteFont2::InitCharList(){
 	int font_index[256], i;
 
-	for (i=0;i<256;i++) charList[i]=-1;
-	for (i=0;i<char_count;i++) font_index[i] = i * char_w;
+	for (i=0;i<256;i++) charList[i] = -1;
+	for (i=0;i<char_count;i++) font_index[i] = i * char_w; //The x position of the char
 
-	charList[(BYTE)'A'] = font_index[0];
-	charList[(BYTE)'B'] = font_index[1];
-	charList[(BYTE)'C'] = font_index[2];
-	charList[(BYTE)'D'] = font_index[3];
-	charList[(BYTE)'E'] = font_index[4];
-	charList[(BYTE)'F'] = font_index[5];
-	charList[(BYTE)'G'] = font_index[6];
-	charList[(BYTE)'H'] = font_index[7];
-	charList[(BYTE)'I'] = font_index[8];
-	charList[(BYTE)'J'] = font_index[9];
-	charList[(BYTE)'K'] = font_index[10];
-	charList[(BYTE)'L'] = font_index[11];
-	charList[(BYTE)'M'] = font_index[12];
-	charList[(BYTE)'N'] = font_index[13];
-	charList[(BYTE)'O'] = font_index[14];
-	charList[(BYTE)'P'] = font_index[15];
-	charList[(BYTE)'Q'] = font_index[16];
-	charList[(BYTE)'R'] = font_index[17];
-	charList[(BYTE)'S'] = font_index[18];
-	charList[(BYTE)'T'] = font_index[19];
-	charList[(BYTE)'U'] = font_index[20];
-	charList[(BYTE)'V'] = font_index[21];
-	charList[(BYTE)'W'] = font_index[22];
-	charList[(BYTE)'X'] = font_index[23];
-	charList[(BYTE)'Y'] = font_index[24];
-	charList[(BYTE)'Z'] = font_index[25];
-	//charList[(BYTE)toupper('�')] = font_index[26];
-	//charList[(BYTE)toupper('�')] = font_index[27];
-	//charList[(BYTE)toupper('�')] = font_index[28];
-	charList[(BYTE)'0'] = font_index[29];
-	charList[(BYTE)'1'] = font_index[30];
-	charList[(BYTE)'2'] = font_index[31];
-	charList[(BYTE)'3'] = font_index[32];
-	charList[(BYTE)'4'] = font_index[33];
-	charList[(BYTE)'5'] = font_index[34];
-	charList[(BYTE)'6'] = font_index[35];
-	charList[(BYTE)'7'] = font_index[36];
-	charList[(BYTE)'8'] = font_index[37];
-	charList[(BYTE)'9'] = font_index[38];
-	charList[(BYTE)'.'] = font_index[39];
-	charList[(BYTE)'!'] = font_index[40];
-	charList[(BYTE)'?'] = font_index[41];
-	charList[(BYTE)':'] = font_index[42];
-	charList[(BYTE)'-'] = font_index[43];
-	charList[(BYTE)','] = font_index[44];
-	charList[(BYTE)'+'] = font_index[45];
-	charList[(BYTE)'='] = font_index[46];
-	charList[(BYTE)'('] = font_index[47];
-	charList[(BYTE)')'] = font_index[48];
-	charList[(BYTE)'/'] = font_index[49];
-	charList[(BYTE)'#'] = font_index[50];
-	charList[(BYTE)'\\']= font_index[51];
-	charList[(BYTE)'_']= font_index[52];
-	charList[(BYTE)'%']= font_index[53];
+	charList['A'] = font_index[0];
+	charList['B'] = font_index[1];
+	charList['C'] = font_index[2];
+	charList['D'] = font_index[3];
+	charList['E'] = font_index[4];
+	charList['F'] = font_index[5];
+	charList['G'] = font_index[6];
+	charList['H'] = font_index[7];
+	charList['I'] = font_index[8];
+	charList['J'] = font_index[9];
+	charList['K'] = font_index[10];
+	charList['L'] = font_index[11];
+	charList['M'] = font_index[12];
+	charList['N'] = font_index[13];
+	charList['O'] = font_index[14];
+	charList['P'] = font_index[15];
+	charList['Q'] = font_index[16];
+	charList['R'] = font_index[17];
+	charList['S'] = font_index[18];
+	charList['T'] = font_index[19];
+	charList['U'] = font_index[20];
+	charList['V'] = font_index[21];
+	charList['W'] = font_index[22];
+	charList['X'] = font_index[23];
+	charList['Y'] = font_index[24];
+	charList['Z'] = font_index[25];
+	charList[(BYTE)'Å'] = font_index[26];
+	charList[(BYTE)'Ä'] = font_index[27];
+	charList[(BYTE)'Ö'] = font_index[28];
+	charList['0'] = font_index[29];
+	charList['1'] = font_index[30];
+	charList['2'] = font_index[31];
+	charList['3'] = font_index[32];
+	charList['4'] = font_index[33];
+	charList['5'] = font_index[34];
+	charList['6'] = font_index[35];
+	charList['7'] = font_index[36];
+	charList['8'] = font_index[37];
+	charList['9'] = font_index[38];
+	charList['.'] = font_index[39];
+	charList['!'] = font_index[40];
+	charList['?'] = font_index[41];
+	charList[':'] = font_index[42];
+	charList['-'] = font_index[43];
+	charList[','] = font_index[44];
+	charList['+'] = font_index[45];
+	charList['='] = font_index[46];
+	charList['('] = font_index[47];
+	charList[')'] = font_index[48];
+	charList['/'] = font_index[49];
+	charList['#'] = font_index[50];
+	charList['\\']= font_index[51];
+	charList['_'] = font_index[52];
+	charList['%'] = font_index[53];
 
 	return 0;
 }
@@ -151,17 +151,17 @@ int PisteFont2::Write_Text(int posx, int posy, const char *text){
 	srcrect.h = char_h;
 	dstrect.y = posy;
 
-	do{
+	do {
 		curr_char = text[i];
 		ix = charList[(BYTE)toupper(curr_char)];
 		i2 = i * char_w + posx;
-		if (ix > -1){
+		if (ix > -1) {
 			srcrect.x = ix;
 			dstrect.x = i2;
 			PisteDraw2_Image_CutClip(ImageIndex,srcrect,dstrect);
 		}
 		i++;
-	}while(curr_char != '\0');
+	} while(curr_char != '\0');
 
 	return((i-1)*char_w);
 }
@@ -182,7 +182,7 @@ int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int a
 	PisteDraw2_DrawScreen_Start(*&back_buffer, (DWORD &)back_w);
 	PisteDraw2_DrawImage_Start(ImageIndex, *&txt_buffer, (DWORD &)txt_w);
 
-	do{
+	do {
 		curr_char = text[i];
 		ix = charList[(BYTE)toupper(curr_char)];
 		if (ix > -1){
@@ -208,7 +208,7 @@ int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int a
 			}
 		}
 		i++;
-	}while(curr_char != '\0');
+	} while(curr_char != '\0');
 
 	PisteDraw2_DrawScreen_End();
 	PisteDraw2_DrawImage_End(ImageIndex);

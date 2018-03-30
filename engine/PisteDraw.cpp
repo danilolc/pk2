@@ -330,7 +330,7 @@ int PisteDraw2_Font_Create(int image, int x, int y, int char_w, int char_h, int 
 	int index;
 
 	index = findfreefont();
-	if (index==-1){
+	if (index==-1) {
 		printf("PD    - PisteDraw has run out of free fonts!");
 		return -1;
 	}
@@ -343,21 +343,22 @@ int PisteDraw2_Font_Create(char* path, char* file){
 	int index;
 
 	index = findfreefont();
-	if (index==-1){
-		printf("PD    - PisteDraw has run out of free fonts!");
+	if (index == -1){
+		printf("PD     - PisteDraw has run out of free fonts!");
 		return -1;
 	}
 
 	fontList[index] = new PisteFont2();
-  if (fontList[index]->LoadFile(path,file) == -1){
-    printf("PD    - PisteDraw can't load a font from file!");
+	if (fontList[index]->LoadFile(path,file) == -1){
+		printf("PD     - PisteDraw can't load a font from file!");
 		delete fontList[index];
-    return -1;
-  }
+		return -1;
+	}
 
   return index;
 }
 int PisteDraw2_Font_Write(int font_index, const char* text, int x, int y){
+	if (font_index < 0) return 1;
 	return fontList[font_index]->Write_Text(x, y, text);
 }
 int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha){
@@ -474,30 +475,33 @@ int PisteDraw2_Start(int width, int height, const char* name) {
 	PD2_loaded = true;
 	return 0;
 }
+void PisteDraw2_Clear_Fonts() {
+	for (int i = 0; i<MAX_FONTS; i++) {
+		if (fontList[i] != NULL)
+			delete fontList[i];
+		fontList[i] = NULL;
+	}
+}
 int PisteDraw2_Exit(){
-  if (!PD2_loaded) return -1;
+	if (!PD2_loaded) return -1;
 
-  int i,j;
+	int i, j;
 
-  for (i=0; i<MAX_IMAGES; i++)
-    if (imageList[i] != NULL){
-	  j = i;
-      PisteDraw2_Image_Delete(j);
-    }
+	for (i = 0; i<MAX_IMAGES; i++)
+		if (imageList[i] != NULL) {
+			j = i;
+			PisteDraw2_Image_Delete(j);
+		}
 
-  for (i=0; i<MAX_FONTS; i++){
-    if (fontList[i] != NULL)
-      delete fontList[i];
-    fontList[i] = NULL;
-  }
+	PisteDraw2_Clear_Fonts();
 
-  frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
-  SDL_FreeSurface(frameBuffer8);
-  SDL_DestroyRenderer(PD_Renderer);
-  SDL_DestroyWindow(PD_Window);
+	frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
+	SDL_FreeSurface(frameBuffer8);
+	SDL_DestroyRenderer(PD_Renderer);
+	SDL_DestroyWindow(PD_Window);
 
-  PD2_loaded = false;
-  return 0;
+	PD2_loaded = false;
+	return 0;
 }
 void PisteDraw2_Update(bool draw){
 	if(!PD2_loaded) return;
@@ -534,6 +538,6 @@ void PisteDraw2_Update(bool draw){
 	r.x = PD_screen_width - XOffset;
 	SDL_FillRect(frameBuffer8, &r, 0);
 }
-void* PisteDraw_GetRenderer(){
+void* PisteDraw2_GetRenderer(){
 	return (void*)PD_Renderer;
 }

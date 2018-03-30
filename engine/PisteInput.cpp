@@ -379,7 +379,7 @@ int PisteInput_Init(){
 		screen_w = x;
 	}
 
-	PI_Renderer = (SDL_Renderer*) PisteDraw_GetRenderer();
+	PI_Renderer = (SDL_Renderer*) PisteDraw2_GetRenderer();
 	for(int i = 0; i < PI_MAX_GUI; i++)
 		gui_list[i].set = false;
 
