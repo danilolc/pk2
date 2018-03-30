@@ -6,6 +6,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+
 #ifdef __ANDROID__
     #include <android/log.h>
     #undef printf

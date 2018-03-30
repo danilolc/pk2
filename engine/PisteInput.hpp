@@ -75,7 +75,7 @@ int     PisteInput_ActivateWindow(bool active);
 
 int		PisteInput_Vibrate();
 
-int		PisteInput_Init();
+int		PisteInput_Start();
 int		PisteInput_Exit();
 bool	PisteInput_Hae_Hiiri(); //DEP
 bool	PisteInput_Hae_Nappaimet(); //DEP

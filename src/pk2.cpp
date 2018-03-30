@@ -460,7 +460,7 @@ int menu_valinta_id = 1;
 RECT menunelio;
 
 //Framerate
-int  fps = 0;
+float fps = 0;
 bool show_fps = false;
 
 //LANGUAGE AND TEXTS OF THE GAME
@@ -5170,9 +5170,9 @@ int PK_Draw_InGame_DevKeys() {
 	const char* txt5  = "k: open skull blocks";
 	const char* txt6  = "t: toggle speed";
 	const char* txt7  = "g: toggle transparency";
-	const char* txt8  = "f: toggle fullscreen";
+	const char* txt8  = "w: toggle window mode";
 	const char* txt9  = "i: toggle debug info";
-	const char* txt10  = "u: go up";
+	const char* txt10 = "u: go up";
 	const char* txt11 = "r: back to start";
 	const char* txt12 = "v: set invisible";
 	const char* txt13 = "e: set energy to max";
@@ -5463,14 +5463,15 @@ int PK_Draw_InGame(){
 			PK_Draw_InGame_DevKeys();
 		if (test_level)
 			PisteDraw2_Font_Write(fontti1, "testing level", 0, 480 - 20);
-	}
-
-
-	if (show_fps){
-		vali = PisteDraw2_Font_Write(fontti1,"fps: ",570,48);
-		fps = Piste_GetFPS();
-		itoa(fps,luku,10);
-		PisteDraw2_Font_Write(fontti1,luku,570+vali,48);
+		if (show_fps) {
+			if (fps >= 100)
+				vali = PisteDraw2_Font_Write(fontti1, "fps:", 570, 48);
+			else
+				vali = PisteDraw2_Font_Write(fontti1, "fps: ", 570, 48);
+			fps = Piste_GetFPS();
+			itoa((int)fps, luku, 10);
+			PisteDraw2_Font_Write(fontti1, luku, 570 + vali, 48);
+		}
 	}
 
 	if (paused)
@@ -7297,14 +7298,18 @@ int PK_MainScreen_InGame(){
 		}
 		if (PisteInput_Keydown(PI_DELETE))
 			spritet[pelaaja_index].energia = 0;
-		if(!dev_mode)
-			if (PisteInput_Keydown(PI_I)){
-				show_fps = !show_fps;
-				key_delay = 20;
-			}
 		if (PisteInput_Keydown(PI_TAB)){
 			PK_Gift_ChangeOrder();
 			key_delay = 10;
+		}
+		if (!dev_mode)
+			if (PisteInput_Keydown(PI_I)) {
+				show_fps = !show_fps;
+				key_delay = 20;
+			}
+		if (PisteInput_Keydown(PI_F)) {
+			show_fps = !show_fps;
+			key_delay = 20;
 		}
 	}
 
@@ -7338,14 +7343,13 @@ int PK_MainScreen_InGame(){
 				PK_Map_Change_SkullBlocks();
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_F)) {
+			if (PisteInput_Keydown(PI_W)) {
 				settings.isFullScreen = !settings.isFullScreen;
 				PisteDraw2_FullScreen(settings.isFullScreen);
 				key_delay = 20;
 			}
 			if (PisteInput_Keydown(PI_I)) {
 				draw_dubug_info = !draw_dubug_info;
-				show_fps = !show_fps;
 				key_delay = 20;
 			}
 			if (PisteInput_Keydown(PI_R)) {
@@ -7994,11 +7998,14 @@ int main(int argc, char *argv[]){
 				path_set = true;
 			}
 		}
+		if (strcmp(argv[i], "fps") == 0)
+			show_fps = true;
 		if (strcmp(argv[i], "version") == 0) {
 			printf(PK2_VERSION);
 			printf("\n");
 			exit(0);
 		}
+
 	}
 
 	if(!path_set)

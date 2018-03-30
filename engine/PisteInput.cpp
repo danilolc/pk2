@@ -367,7 +367,7 @@ if(SDL_NumJoysticks()>0){
 	return true;
 }
 
-int PisteInput_Init(){
+int PisteInput_Start(){
 	SDL_DisplayMode DM;
 	SDL_GetCurrentDisplayMode(0, &DM);
 
