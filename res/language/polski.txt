@@ -1,29 +1,29 @@
 Setup 
 ------------------------------------------------------------------------------------
 *setup options:				Ustawienia
-*setup video modes:			Tryb video
-*setup music & sounds:			Muzyka i efekty
+*setup video modes:			Tryb graficzny
+*setup music & sounds:			Muzyka i efekty dzwiekowe
 *setup music:				Muzyka
-*setup sounds:				Efekty
+*setup sounds:				Efekty dzwiekowe
 *setup language:			Wybierz jezyk
 *setup play:				Graj
 *setup exit:				Wyjscie
 
 Intro
 ------------------------------------------------------------------------------------
-*intro presents:			prezentacja 2003
-*intro a game by:			gra jest wlasnoscia
-*intro original character design:	orginalne napisy zaprojektowala
-*intro tested by:			przetestowano z udzialem
+*intro presents:			prezentuje (2003)
+*intro a game by:			gre stworzona przez
+*intro original character design:	projekt oryginalnych postaci
+*intro tested by:			przetestowana przez
 *intro thanks to:			podziekowania
 *intro translation:			polskie tlumaczenie
-*intro translator:			Pawel Gicala
+*intro translator:			wielu autorow
 
 Main Menu
 ------------------------------------------------------------------------------------
 *main menu new game:			Nowa gra
 *main menu continue:			Kontynuuj
-*main menu load game:			Wgraj gre
+*main menu load game:			Wczytaj gre
 *main menu save game:			Zapisz gre
 *main menu controls:			Sterowanie
 *main menu graphics:			Grafika
@@ -34,15 +34,15 @@ Main Menu
 
 Load Game
 ------------------------------------------------------------------------------------
-*load menu title:			wgraj gre
-*load menu info:			kliknij i zapisz gre potem mozesz ja wgrac
+*load menu title:			wczytaj gre
+*load menu info:			kliknij stan gry ktory chcesz wczytac
 *load menu episode:			epizod: 
 *load menu level:			poziom: 
 
 Save Game
 ------------------------------------------------------------------------------------
 *save menu title:			zapisz gre
-*save menu info:			kliknij pozycje gdzie mam zapisac gre
+*save menu info:			kliknij pozycje gdzie chcesz zapisac stan gry
 *save menu episode:			epizod: 
 *save menu level:			poziom: 
 
@@ -51,77 +51,78 @@ Game Controls
 *controls menu title:			sterowanie
 *controls menu move left:		ruch w lewo
 *controls menu move right:		ruch w prawo
-*controls menu jump:			podskok
-*controls menu duck:			kaczka
-*controls menu walk slow:		powolne chodzenie
+*controls menu jump:			skok
+*controls menu duck:			kucanie
+*controls menu walk slow:		wolne chodzenie
 *controls menu egg attack:		atak jajkiem
-*controls menu doodle attack:		atak trabka
-*controls menu use item:		uzyj pozycji
+*controls menu doodle attack:		atak megafonem
+*controls menu use item:		uzycie przedmiotu
 *controls menu edit:			edycja
-*controls menu keyboard def:		klawiatura domyslnie
-*controls menu gamepad4:		gamepad domyslnie 4 przyciski 
-*controls menu gamepad6:		gamepad domyslnie 6 przyciskow
+*controls menu keyboard def:		klawiatura
+*controls menu gamepad4:		gamepad 4 przyciski
+*controls menu gamepad6:		gamepad 6 przyciskow
 
 Sounds
 ------------------------------------------------------------------------------------
-*sounds menu title:			dzwiek i efekty
-*sounds menu sfx volume:		glosnosc efektow
+*sounds menu title:			muzyka i efekty dzwiekowe
+*sounds menu sfx volume:		glosnosc efektow dzwiekowych
 *sounds menu music volume:		glosnosc muzyki
 *sounds menu more:			glosniej
 *sounds menu less:			ciszej
 
 Graphics
 ------------------------------------------------------------------------------------
-*graphics menu title:				grafika
-*graphics menu transparency fx on:		przezroczystosc fx wl
-*graphics menu transparency fx off:		przezroczystosc fx wyl
-*graphics menu menus are transparent:		przezroczysty tekst menu wl
-*graphics menu menus are not transparent:	przezroczysty tekst menu wyl 
-*graphics menu item bar is visible:		pozycja jest widoczna
-*graphics menu item bar is not visible:		pozycja nie jest widoczna
-*graphics menu weather fx on:			woda fx wl
-*graphics menu weather fx off:			woda fx wyl
-*graphics menu bg sprites on:			podstawowe sprity wl
-*graphics menu bg sprites off:			podstawowe sprity wyl
-*graphics menu game speed normal:		szybkosc gry jest normalna 
-*graphics menu game speed double:		szybkosc gry jest podwojna
+*graphics menu title:				ustawienia grafiki
+*graphics menu transparency fx on:		przezroczystosc wl
+*graphics menu transparency fx off:		przezroczystosc wyl
+*graphics menu menus are transparent:		przezroczysty tekst wl
+*graphics menu menus are not transparent:	przezroczysty tekst wyl
+*graphics menu item bar is visible:		pasek przedmiotow widoczny
+*graphics menu item bar is not visible:		pasek przedmiotow niewidoczny
+*graphics menu weather fx on:			efekty pogodowe wl
+*graphics menu weather fx off:			efekty pogodowe wyl
+*graphics menu bg sprites on:			detale tla wlaczone
+*graphics menu bg sprites off:			detale tla wylaczone
+*graphics menu game speed normal:		szybkosc gry: normalna
+*graphics menu game speed double:		szybkosc gry: podwojna
 
 Player's name
 ------------------------------------------------------------------------------------
-*player screen type your name:		zapisz swoje imie
-*player screen continue:		gotowe
-*player screen clear:			czysc
+*player screen type your name:		wpisz swoje imie
+*player screen continue:		kontynuuj
+*player screen clear:			wyczysc
 *player default name:			pekka
 
 Episodes
 ------------------------------------------------------------------------------------
 *episode menu choose episode:		wybierz epizod
-*episode menu get more episodes at:	wiecej epizodow na http://pistegamez.cjb.net
-*episode menu no maps:			reszty epizodow nie ma na mapie!?
+*episode menu get more episodes at:	wiecej epizodow na http://www.pistegamez.net
+*episode menu no maps:			epizod nie ma map!?
 
 Map
 ------------------------------------------------------------------------------------
-*map screen total score:		punkty
-*map screen next level:			dostepny poziom
-*episode best player:			epizod mistrza:
-*episode hiscore:			maksymalne punkty
-*level best player:			najlepszy gracz
-*level hiscore:				punkty:
-*level fastest player:			silny test gracza
-*level best time:			czas:
+*map screen total score:		wynik
+*map screen next level:			nastepny poziom
+*episode best player:			najlepszy gracz epizodu:
+*episode hiscore:			najlepszy wynik epizodu:
+*level best player:			najlepszy gracz poziomu:
+*level hiscore:				najlepszy wynik poziomu:
+*level fastest player:			najszybszy gracz:
+*level best time:			najlepszy czas:
 
 Scores
 ------------------------------------------------------------------------------------
-*score screen title:			calosc punktow
+*score screen title:			wynik
 *score screen level score:		wynik poziomu
-*score screen bonus score:		wynik bonusu
-*score screen time score:		dodatek za czas
-*score screen energy score:		dodatek za energie
-*score screen item score:		dodatek za punkty
+*score screen bonus score:		punkty bonusowe
+
+*score screen time score:		premia za czas
+*score screen energy score:		premia za energie
+*score screen item score:		premia za przedmioty
 *score screen continue:			mapa
-*score screen total score:		suma punktow
-*score screen new level hiscore:	twoj wynik jest dolujacy!
-*score screen new level best time:	jestes mocnym graczem!
+*score screen total score:		calkowity wynik
+*score screen new level hiscore:	pobilesz najlepszy wynik!
+*score screen new level best time:	jestes najszybszym graczem!
 *score screen new episode hiscore:	jestes mistrzem tego epizodu!
 
 Game
@@ -130,47 +131,47 @@ Game
 *game time:				czas:
 *energy:				energia:
 *items:					pozycja:
-*attack 1:				trabka:
+*attack 1:				megafon:
 *attack 2:				jajka:
 *keys:					klucze:
 *level clear:				poziom zakonczony!
 *time bonus:			
 *game paused:				pauza...
-*knocked out:				popelniles blad!
-*time out:				czas jest wysoki!
+*knocked out:				nokaut, sproboj ponownie!
+*time out:				czas sie skonczyl!
 *try again:				sproboj jeszcze raz!
 *locks open:				wszystkie zamki otwarte!
-*new doodle attack:			nowa trabka!
+*new doodle attack:			nowy megafon!
 *new egg attack:			nowe jajko!
-*new item:				nowa pozycja!
+*new item:				nowy przedmiot!
 
-*loading:				wgrywam...
+*loading:				wczytywanie...
 
 The End
 ------------------------------------------------------------------------------------
-*end congratulations:			gartulacje!
-*end chickens saved:			jestes zmuszony uratowac kurczaka!
+*end congratulations:			gratulacje!
+*end chickens saved:			uratowales kurczaki!
 *end the end:				KONIEC
 
 Info Signs
 ------------------------------------------------------------------------------------
-*info01:			uzyj megafony przy wrogu!
-*info02:			uzyj przy wrogu bomby z jajka!
+*info01:			uzyj megafonu przy wrogu!
+*info02:			bombarduj wroga jajkami!
 *info03:			szukaj znaku wyjscia!
-*info04:			otwarte gdy posiadasz wszystkie klucze.
-*info05:			wcisnij przycisk podskoku przy nich.
-*info06:			zielony przycisk porusza sciany z zileona strzalka.
+*info04:			zamki zostana otwarte gdy zbierzesz wszystkie klucze.
+*info05:			skocz na przycisk aby go wcisnac.
+*info06:			zielony przycisk porusza sciany z zielona strzalka.
 *info07:			niebieki przycisk porusza sciany z niebieska strzalka.
-*info08:			pomaranczowy przycisk odwraca strzelanie.
-*info09:			mozesz uzywac daru pozycji kiedy potrzebujesz.
-*info10:			piorko dodaje energie.
-*info11:			teleportacja wszystkich trickow! nie mozesz przegrac!
-*info12:			idz do wyjscia bonus dolozy twoje punkty.
-*info13:			zawsze szukaj poniewaz jest ukryty bonus!
-*info14:			jezeli to poruszysz, zamek zostanie otwarty.
-*info15:			pilnuj sie przed pulapka! hee hee...
+*info08:			pomaranczowy przycisk wylacza ogien.
+*info09:			mozesz uzywac uzywac przedmiotow kiedy potrzebujesz.
+*info10:			piora dodaja energie.
+*info11:			teleportery bywaja zdradliwe! nie zgub sie!
+*info12:			nokauty przeciwnikow i bonusy polepszaja twoj wynik.
+*info13:			zawsze szukaj ukrytych bonusow!
+*info14:			zamek zostanie otwarty, gdy dotknie go klucz.
+*info15:			uwazaj na pulapki! hee hee...
 *info16:			spiesz sie! czas ucieka!
-*info17:			pilnuj sie przed zlymi zwierzetami!
-*info18:			pilnuj sie przed mocnym wiatrem!
+*info17:			uwazaj na wrogie zwierzeta!
+*info18:			uwazaj na silny wiatr!
 *info19:			uratuj kurczaki!
 		
