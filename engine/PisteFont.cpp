@@ -44,9 +44,9 @@ int PisteFont2::InitCharList(){
 	charList['X'] = font_index[23];
 	charList['Y'] = font_index[24];
 	charList['Z'] = font_index[25];
-	charList[(BYTE)'Å'] = font_index[26];
-	charList[(BYTE)'Ä'] = font_index[27];
-	charList[(BYTE)'Ö'] = font_index[28];
+	charList[(BYTE)197] = font_index[26];
+	charList[(BYTE)196] = font_index[27];
+	charList[(BYTE)214] = font_index[28];
 	charList['0'] = font_index[29];
 	charList['1'] = font_index[30];
 	charList['2'] = font_index[31];

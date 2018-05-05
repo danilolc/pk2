@@ -30,7 +30,7 @@
 #ifdef _WIN32
 #include <direct.h>
 
-#elif __linux__
+#elif __linux__ || __APPLE__
 #include <unistd.h> //getcwd chdir
 
 #endif

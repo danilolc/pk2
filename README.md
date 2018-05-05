@@ -10,18 +10,30 @@ Translated and ported to SDL2 by Danilo Lemos (2016/2017)
 http://kiwi.mbnet.fi/pistegamez/pk2/
 
 
-# Running
+# Binary distibution
 
-### Windows:
+### Windows
 There is a compiled binary with the "r2" version.
 https://files.fm/f/d6mvf3qr
 
+
+# Compiling
+
+### Windows
 If you want to compile it yourself, the win32 directory have the solution files for VisualStudio. It will also need the SDL2, SDL2_mixer and SDL2_image library.
 
-### Ubuntu:
+### Ubuntu
 To compile PK2 on Ubuntu you will need the SDL2, SDL2_image and SDL2_mixer library instaled on the system. To get them just run the following code:
 ```
 sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+make
+```
+Now just clone the code and run `make` on pk2 directory, the PK2 binary will be in bin/ directory.
+
+### macOS
+Use [Homebrew](https://brew.sh/) to install SDL2 packages:
+```
+brew install sdl2 sdl2_gfx sdl2_image sdl2_mixer
 ```
 Now just clone the code and run `make` on pk2 directory, the PK2 binary will be in bin/ directory.
 
