@@ -26,7 +26,6 @@ If you want to compile it yourself, the win32 directory have the solution files 
 To compile PK2 on Ubuntu you will need the SDL2, SDL2_image and SDL2_mixer library instaled on the system. To get them just run the following code:
 ```
 sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
-make
 ```
 Now just clone the code and run `make` on pk2 directory, the PK2 binary will be in bin/ directory.
 
