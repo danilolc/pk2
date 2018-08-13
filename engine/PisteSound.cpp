@@ -156,12 +156,13 @@ int PisteSound_Start(){
 	return 0;
 }
 int PisteSound_Update(){
-	for(int i=0;i<MIX_CHANNELS;i++)
+	for(int i=0;i<MIX_CHANNELS;i++) {
 		if(!Mix_Playing(i) && freq_chunks[i] != nullptr){
 				SDL_free(freq_chunks[i]); //Make sure that all allocated chunks will be deleted after playing
 				freq_chunks[i] = nullptr;
 		}
-		return 0;
+	}
+	return 0;
 }
 int PisteSound_End(){
 	PisteSound_ResetSFX();

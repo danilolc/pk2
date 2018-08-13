@@ -4817,18 +4817,23 @@ int PK_Sprite_Bonus_Movement(int i){
 
 		switch (sprite.tyyppi->AI[i])
 		{
-		case AI_BONUS:				sprite.AI_Bonus();break;
+		case AI_BONUS:
+			sprite.AI_Bonus();
+			break;
 
-		case AI_PERUS:				sprite.AI_Perus();break;
+		case AI_PERUS:
+			sprite.AI_Perus();
+			break;
 
-		case AI_MUUTOS_AJASTIN:		if (sprite.tyyppi->muutos > -1)
-									sprite.AI_Muutos_Ajastin(protot[sprite.tyyppi->muutos]);
-									break;
+		case AI_MUUTOS_AJASTIN:
+			if (sprite.tyyppi->muutos > -1) {
+				sprite.AI_Muutos_Ajastin(protot[sprite.tyyppi->muutos]);
+			}
+			break;
 
-		case AI_TIPPUU_TARINASTA:	sprite.AI_Tippuu_Tarinasta(jaristys + kytkin_tarina);
-									break;
-
-		default:					break;
+		case AI_TIPPUU_TARINASTA:
+			sprite.AI_Tippuu_Tarinasta(jaristys + kytkin_tarina);
+			break;
 		}
 	}
 
@@ -6258,9 +6263,10 @@ int PK_Draw_Menu_Controls(){
 	}*/
 
 	if (menu_lue_kontrollit == 0){
-		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.controls_edit),100,90+my))
+		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.controls_edit),100,90+my)) {
 			menu_lue_kontrollit = 1;
 			menu_valittu_id = 0; //Set menu cursor to 0
+		}
 	}
 
 	my += 30;
