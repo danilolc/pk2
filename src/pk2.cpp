@@ -248,8 +248,8 @@ struct PK2SETTINGS {
 	bool isWide;
 
 	//Version 1.2
-	BYTE music_max_volume;
-	BYTE sfx_max_volume;
+	int music_max_volume;
+	int sfx_max_volume;
 
 };
 
