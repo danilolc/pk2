@@ -152,7 +152,7 @@ int PisteSound_Start(){
 		return -1;
 	}
 
-	Mix_Init(MIX_INIT_MOD || MIX_INIT_MP3 || MIX_INIT_OGG);
+	Mix_Init(MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG);
 	return 0;
 }
 int PisteSound_Update(){
