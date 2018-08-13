@@ -84,7 +84,6 @@ bool	PisteInput_Hiiri_Oikea();
 bool	PisteInput_Hiiri_Vasen();
 bool	PisteInput_Lue_Eventti();
 
-char*	PisteInput_Lue_Kontrollin_Nimi(unsigned char kontrolli);
 char	PisteInput_Lue_Nappaimisto(void);
 bool	PisteInput_Ohjain_Nappi(int ohjain, int index);
 char*	PisteInput_Ohjain_Nimi(int ohjain);

@@ -129,7 +129,6 @@ class PK2Kartta
 	void LueTallennusAlue(BYTE *lahde, RECT alue, int kohde);
 	int Lataa_Taustakuva(char *polku, char *filename);
 	int Lataa_PalikkaPaletti(char *polku, char *filename);
-	int Lataa_TaustaMusiikki(char *filename);
 	int Piirra_Taustat(int, int, bool);
 	int Piirra_Seinat (int, int, bool);
 	void Kopioi(PK2Kartta &kartta);

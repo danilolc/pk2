@@ -227,20 +227,6 @@ int PisteInput_Vibrate(){
 	return 0;
 }
 
-#ifdef _WIN32
-void SetMousePosition(int x, int y) {
-	int wx, wy;
-	PisteDraw2_GetWindowPosition(&wx, &wy);
-
-	SetCursorPos(x + wx, y+wy);
-}
-#else
-void SetMousePosition(int x, int y) {
-	//TODO
-}
-#endif
-
-
 const char* PisteInput_KeyName(BYTE key){
 	if(key >= sizeof(keynames) / 15) return keynames[0];
 	return keynames[key+1];
@@ -336,37 +322,9 @@ int PisteInput_ActivateWindow(bool active) {
 	}
 	else {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
-		//SetMousePosition(mouse_pos.x, mouse_pos.y);
 	}
 	return 0;
 }
-
-bool PisteInput_Alusta_Ohjaimet(){
-/*
-SDL_InitSubSystem(SDL_INIT_JOYSTICK);
-
-// Check for joystick
-if(SDL_NumJoysticks()>0){
-  // Open joystick
-  joy=SDL_JoystickOpen(0);
-
-  if(joy)
-  {
-    printf("Opened Joystick 0\n");
-    printf("Name: %s\n", SDL_JoystickName(0));
-    printf("Number of Axes: %d\n", SDL_JoystickNumAxes(joy));
-    printf("Number of Buttons: %d\n", SDL_JoystickNumButtons(joy));
-    printf("Number of Balls: %d\n", SDL_JoystickNumBalls(joy));
-  }
-  else
-    printf("Couldn't open Joystick 0\n");
-
-  if(SDL_JoystickOpened(0))
-    SDL_JoystickClose(joy);
-	*/
-	return true;
-}
-
 int PisteInput_Start(){
 	SDL_DisplayMode DM;
 	SDL_GetCurrentDisplayMode(0, &DM);
@@ -495,11 +453,6 @@ bool PisteInput_Lue_Eventti(){
 	}
 */
 	return false;
-}
-
-char* PisteInput_Lue_Kontrollin_Nimi(unsigned char k){
-//	SDL_GetKeyName( key->keysym.sym )
-	return " ";
 }
 
 int PisteInput_Exit(){

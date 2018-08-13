@@ -1066,11 +1066,6 @@ int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
 	return 0;
 }
 
-int PK2Kartta::Lataa_TaustaMusiikki(char *filename){
-
-	return 0;
-}
-
 void PK2Kartta::Kopioi(PK2Kartta &kartta){
 	if (this != &kartta){
 		strcpy(this->versio,		kartta.versio);
