@@ -45,10 +45,10 @@ using namespace std;
 #define PK2_VERSION "r3"
 
 #ifndef _WIN32
-void itoa(int n, char s[], int radix){
+void itoa(int n, char s[], int /*radix*/){
 	sprintf(s, "%i", n);
 }
-void ltoa(long n, char s[], int radix){
+void ltoa(long n, char s[], int /*radix*/){
 	sprintf(s, "%ld", n);
 }
 #endif
@@ -1638,7 +1638,7 @@ void PK_Fadetext_Update(){
 //Particle System
 //==================================================
 
-void PK_Particle_Draw_Dot(DWORD x, DWORD y, int pros, BYTE vari){
+void PK_Particle_Draw_Dot(DWORD x, DWORD y, int /*pros*/, BYTE vari){
 	PisteDraw2_ScreenFill(x-kamera_x, y-kamera_y,x-kamera_x+1,y-kamera_y+1,vari+25);
 }
 void PK_Particle_Draw_Star(DWORD x, DWORD y, int pros, BYTE vari){

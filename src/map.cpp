@@ -1321,7 +1321,7 @@ void PK2Kartta::Animoi_Virta_Ylos(void){
 	PisteDraw2_DrawImage_End(palikat_buffer);
 }
 
-int PK2Kartta::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
+int PK2Kartta::Piirra_Taustat(int kamera_x, int kamera_y, bool /*editor*/){
 	int palikka;
 	int px = 0,
 		py = 0,

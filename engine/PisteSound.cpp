@@ -72,7 +72,7 @@ int PisteSound_LoadSFX(char* filename){
 int PisteSound_PlaySFX(int index){
 	return PisteSound_PlaySFX(index, sfx_volume, 0, def_freq);
 }
-int PisteSound_PlaySFX(int index, int volume, int panoramic, int freq){
+int PisteSound_PlaySFX(int index, int volume, int /*panoramic*/, int freq){
 	//panoramic from -10000 to 10000
 
 	if(index == -1) return 1;
