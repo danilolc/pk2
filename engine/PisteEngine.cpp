@@ -36,7 +36,7 @@ GDB_Break()
 	//Empty function called when press Q to use in GDB ("break GDB_Break()")
 }
 
-void
+static void
 EngineLogic(bool &running)
 {
 	SDL_Event event;

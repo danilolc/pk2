@@ -109,7 +109,7 @@ bool PisteUtils_Find(char *filename){
 }
 
 //This need to receive just the filename, not the path
-void getext(char* string){
+static void getext(char* string){
 	int i, b = -1, len;
 	for(i=0; string[i]!='\0'; i++)
 		if(string[i]=='.') b = i;

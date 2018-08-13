@@ -119,14 +119,14 @@ SDL_Haptic *PI_haptic;
 
 
 
-int Alloc_GuiId(){
+static int Alloc_GuiId(){
 	int gui_id = -1;
 	for(int i = 0; i < PI_MAX_GUI; i++)
 		if (!gui_list[i].set)
 			gui_id = i;
 	return gui_id;
 }
-int UpdateGui(){
+static int UpdateGui(){
 	PI_GUI* gui;
 	SDL_Finger* finger = nullptr;
 	SDL_TouchID id = SDL_GetTouchDevice(0);

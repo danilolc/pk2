@@ -28,7 +28,7 @@ Mix_Music* music = nullptr;
 char playingMusic[PE_PATH_SIZE] = "";
 
 //Change the chunk frequency
-int Change_Frequency(int index, int freq){
+static int Change_Frequency(int index, int freq){
 	int channel;
 	SDL_AudioCVT cvt;
 
