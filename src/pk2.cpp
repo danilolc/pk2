@@ -3342,9 +3342,9 @@ int PK_Sprite_Movement(int i){
 	x = 0;
 	y = 0;
 
-	oikealle	 = true,
-	vasemmalle	 = true,
-	ylos		 = true,
+	oikealle	 = true;
+	vasemmalle	 = true;
+	ylos		 = true;
 	alas		 = true;
 
 	kartta_vasen = 0;
@@ -4420,9 +4420,9 @@ int PK_Sprite_Bonus_Movement(int i){
 
 	x = 0;
 	y = 0;
-	oikealle	= true,
-	vasemmalle	= true,
-	ylos		= true,
+	oikealle	= true;
+	vasemmalle	= true;
+	ylos		= true;
 	alas		= true;
 
 	vedessa = sprite.vedessa;
@@ -7715,10 +7715,10 @@ int PK_MainScreen_Change(){
 			fake_pisteet = 0;
 			pistelaskuvaihe = 0;
 			pistelaskudelay = 30;
-			bonuspisteet = 0,
-			aikapisteet = 0,
-			energiapisteet = 0,
-			esinepisteet = 0,
+			bonuspisteet = 0;
+			aikapisteet = 0;
+			energiapisteet = 0;
+			esinepisteet = 0;
 			pelastuspisteet = 0;
 
 			char pisteet_tiedosto[PE_PATH_SIZE] = "scores.dat";
