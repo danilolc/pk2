@@ -3584,8 +3584,7 @@ int PK_Sprite_Movement(int i){
 	/*****************************************************************************************/
 
 	int palikat_x_lkm,
-	    palikat_y_lkm,
-	    palikat_lkm;
+	    palikat_y_lkm;
 	DWORD p;
 
 	if (sprite.tyyppi->tiletarkistus){ //Find the tiles that the sprite occupies
@@ -3604,12 +3603,10 @@ int PK_Sprite_Movement(int i){
 		/* Going through the blocks around the sprite.                                           */
 		/*****************************************************************************************/
 
-		palikat_lkm = palikat_y_lkm*palikat_x_lkm;
 		for (y=0;y<palikat_y_lkm;y++){
 			for (x=0;x<palikat_x_lkm;x++) {
 				p = x+y*palikat_x_lkm;
 				if (p<300)// && p>=0)//{
-					//if(sprite.pelaaja == 1) printf("%i\n",palikat_lkm);
 					PK_Check_Blocks(sprite, palikat[p]);
 				//}
 			}
@@ -5247,22 +5244,11 @@ int PK_Draw_InGame_Gifts(){
 	y = screen_height-35;//36
 	x = item_paneeli_x + 35;//40
 
-	BYTE v1, v2;
-
 	esineita = 0;
 
 	for (int i=0;i<MAX_GIFTS;i++)
 		if (esineet[i] != NULL){
 			esineita++;
-
-			if (i == 0){
-				v1 = 31;
-				v2 = 16+128;
-			}
-			else{
-				v1 = 0;
-				v2 = 16;
-			}
 
 			esineet[i]->Piirra(x-esineet[i]->leveys/2,y-esineet[i]->korkeus/2,0);
 			x += 38;
@@ -6560,7 +6546,6 @@ int PK_Draw_Map(){
 		menu_nyt = MENU_PAAVALIKKO;
 	}
 
-	int nuppi_x = 0, nuppi_y = 0;
 	int tyyppi = 0;
 	int paluu;
 	int min = 0, sek = 0;
@@ -6662,10 +6647,9 @@ int PK_Draw_Map(){
 
 int PK_Draw_ScoreCount(){
 	char luku[20];
-	int vali = 20;
 	int my = 0, x, y;
 	int kuutio, aste;
-	int	vari = 0, kerroin;
+	int kerroin;
 
 	PisteDraw2_ScreenFill(0);
 	PisteDraw2_Image_Clip(kuva_tausta,0,0);
@@ -6698,7 +6682,7 @@ int PK_Draw_ScoreCount(){
 	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_title),100+2,72+2);
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_title),100,72);
 	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_level_score),100+2,102+2);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_level_score),100,102);//250,80
+	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_level_score),100,102);//250,80
 	fake_pisteet = bonuspisteet + aikapisteet + energiapisteet + esinepisteet + pelastuspisteet;
 	ltoa(fake_pisteet,luku,10);
 	PisteDraw2_Font_Write(fontti4,luku,400+2,102+2);
@@ -6706,28 +6690,28 @@ int PK_Draw_ScoreCount(){
 	my = 0;
 
 	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_bonus_score),100+2,192+2+my);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_bonus_score),100,192+my);
+	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_bonus_score),100,192+my);
 	ltoa(bonuspisteet,luku,10);
 	PisteDraw2_Font_Write(fontti4,luku,400+2,192+2+my);
 	PisteDraw2_Font_Write(fontti2,luku,400,192+my);
 	my += 30;
 
 	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_time_score),100+2,192+2+my);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_time_score),100,192+my);
+	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_time_score),100,192+my);
 	ltoa(aikapisteet,luku,10);
 	PisteDraw2_Font_Write(fontti4,luku,400+2,192+2+my);
 	PisteDraw2_Font_Write(fontti2,luku,400,192+my);
 	my += 30;
 
 	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_energy_score),100+2,192+2+my);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_energy_score),100,192+my);
+	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_energy_score),100,192+my);
 	ltoa(energiapisteet,luku,10);
 	PisteDraw2_Font_Write(fontti4,luku,400+2,192+2+my);
 	PisteDraw2_Font_Write(fontti2,luku,400,192+my);
 	my += 30;
 
 	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_item_score),100+2,192+2+my);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_item_score),100,192+my);
+	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_item_score),100,192+my);
 	ltoa(esinepisteet,luku,10);
 	PisteDraw2_Font_Write(fontti4,luku,400+2,192+2+my);
 	PisteDraw2_Font_Write(fontti2,luku,400,192+my);
@@ -6746,7 +6730,7 @@ int PK_Draw_ScoreCount(){
 
 	if (pistelaskuvaihe >= 4){
 		PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100+2,192+2+my);
-		vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100,192+my);//250,80
+		PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100,192+my);//250,80
 		ltoa(pisteet,luku,10);
 		PisteDraw2_Font_Write(fontti4,luku,400+2,192+2+my);
 		PisteDraw2_Font_Write(fontti2,luku,400,192+my);
@@ -7040,8 +7024,6 @@ int PK_MainScreen_ScoreCount(){
 	degree = 1 + degree % 360;
 
 	// PISTELASKU
-
-	int energia = spritet[pelaaja_index].energia;
 
 	if (pistelaskudelay == 0){
 		if (bonuspisteet < jakso_pisteet){

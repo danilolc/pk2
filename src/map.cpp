@@ -1040,7 +1040,6 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 }
 
 int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
-	int i;
 	int img;
 	char file[PE_PATH_SIZE];
 	strcpy(file,"");
@@ -1360,7 +1359,6 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		py = 0,
 		ay = 0,
 		ax = 0,
-		by = 0, bx = 0,
 		kartta_x = kamera_x/32,
 		kartta_y = kamera_y/32;
 

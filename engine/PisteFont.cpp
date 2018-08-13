@@ -83,7 +83,7 @@ int PisteFont2::LoadFile(const char* file_path, const char* file){
 	char path[128];
 	int i = 0;
 	int temp_image;
-	int buf_x, buf_y, buf_width;
+	int buf_x, buf_y;
 	int font_index[256];
 	char chars[256];
 
@@ -96,9 +96,6 @@ int PisteFont2::LoadFile(const char* file_path, const char* file){
 		delete param_file;
 		return -1;
 	}
-
-	i = param_file->Hae_Indeksi("image width");
-	buf_width = atoi(param_file->Hae_Teksti(i));
 
 	i = param_file->Hae_Indeksi("image x");
 	buf_x = atoi(param_file->Hae_Teksti(i));
