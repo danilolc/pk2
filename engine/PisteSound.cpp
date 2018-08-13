@@ -24,7 +24,7 @@ int sfx_volume = 100;
 Mix_Chunk* indexes[MAX_SOUNDS]; //The original chunks loaded
 Uint8* freq_chunks[MIX_CHANNELS]; //The chunk allocated for each channel
 
-Mix_Music* music = NULL;
+Mix_Music* music = nullptr;
 char playingMusic[PE_PATH_SIZE] = "";
 
 //Change the chunk frequency
@@ -41,7 +41,7 @@ int Change_Frequency(int index, int freq){
 
 		cvt.len = indexes[index]->alen;
 		cvt.buf = (Uint8*)SDL_malloc(cvt.len * cvt.len_mult);
-		if (cvt.buf == NULL) return -2;
+		if (cvt.buf == nullptr) return -2;
 
 		SDL_memcpy(cvt.buf, indexes[index]->abuf, indexes[index]->alen);
 		if(SDL_ConvertAudio(&cvt) < 0){
@@ -52,7 +52,7 @@ int Change_Frequency(int index, int freq){
 		indexes[index]->abuf = cvt.buf;
 		indexes[index]->alen = cvt.len_cvt;
 
-		if(freq_chunks[channel] != NULL) SDL_free(freq_chunks[channel]); //Don't ovewrite a allocated pointer
+		if(freq_chunks[channel] != nullptr) SDL_free(freq_chunks[channel]); //Don't ovewrite a allocated pointer
 		freq_chunks[channel] = cvt.buf; //Save the buffer to delete it after play
 
 		return channel;
@@ -63,7 +63,7 @@ int Change_Frequency(int index, int freq){
 int PisteSound_LoadSFX(char* filename){
 	int i = -1;
 	for(i=0;i<MAX_SOUNDS;i++)
-		if (indexes[i] == NULL){
+		if (indexes[i] == nullptr){
 			indexes[i] = Mix_LoadWAV(filename);
 			break;
 		}
@@ -76,7 +76,7 @@ int PisteSound_PlaySFX(int index, int volume, int panoramic, int freq){
 	//panoramic from -10000 to 10000
 
 	if(index == -1) return 1;
-	if(indexes[index] == NULL) return 2;
+	if(indexes[index] == nullptr) return 2;
 
 	volume = volume * 128 / 100;
 	indexes[index]->volume = volume;
@@ -109,9 +109,9 @@ void PisteSound_SetSFXVolume(int volume){
 	sfx_volume = volume;
 }
 int PisteSound_FreeSFX(int index){
-	if(indexes[index] != NULL)
+	if(indexes[index] != nullptr)
 		Mix_FreeChunk(indexes[index]);
-	indexes[index] = NULL;
+	indexes[index] = nullptr;
 	return 0;
 }
 void PisteSound_ResetSFX(){
@@ -125,7 +125,7 @@ int PisteSound_StartMusic(char* filename){
 	if(!strcmp(playingMusic,filename)) return 0;
 
 	music = Mix_LoadMUS(filename);
-	if (music == NULL){
+	if (music == nullptr){
 		printf("PS     - Music load error: %s\n",Mix_GetError());
 		return -1;
 	}
@@ -157,15 +157,15 @@ int PisteSound_Start(){
 }
 int PisteSound_Update(){
 	for(int i=0;i<MIX_CHANNELS;i++)
-		if(!Mix_Playing(i) && freq_chunks[i] != NULL){
+		if(!Mix_Playing(i) && freq_chunks[i] != nullptr){
 				SDL_free(freq_chunks[i]); //Make sure that all allocated chunks will be deleted after playing
-				freq_chunks[i] = NULL;
+				freq_chunks[i] = nullptr;
 		}
 		return 0;
 }
 int PisteSound_End(){
 	PisteSound_ResetSFX();
-	if(music != NULL) Mix_FreeMusic(music);
+	if(music != nullptr) Mix_FreeMusic(music);
 	Mix_CloseAudio();
 	return 0;
 }

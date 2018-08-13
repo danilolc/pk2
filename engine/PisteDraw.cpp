@@ -22,14 +22,14 @@ const int MAX_FONTS = 20;
 
 const char* PD_WindowName;
 
-SDL_Window*   PD_Window = NULL;
-SDL_Renderer* PD_Renderer = NULL;
+SDL_Window*   PD_Window = nullptr;
+SDL_Renderer* PD_Renderer = nullptr;
 
-SDL_Surface*  frameBuffer8 = NULL;
+SDL_Surface*  frameBuffer8 = nullptr;
 
 SDL_Surface*  imageList[MAX_IMAGES];
 PisteFont2*   fontList[MAX_FONTS];
-SDL_Palette*  game_palette = NULL;
+SDL_Palette*  game_palette = nullptr;
 
 int  PD_screen_width;
 int  PD_screen_height;
@@ -46,14 +46,14 @@ int XOffset = 0;
 int findfreeimage(){
 	int i;
 	for(i=0;i<MAX_IMAGES;i++)
-		if(imageList[i]==NULL)
+		if(imageList[i]==nullptr)
 			return i;
 	return -1;
 }
 int findfreefont(){
 	int i;
 	for(i=0;i<MAX_FONTS;i++)
-		if(fontList[i]==NULL)
+		if(fontList[i]==nullptr)
 			return i;
 	return -1;
 }
@@ -95,7 +95,7 @@ int PisteDraw2_Image_New(int w, int h){
 	imageList[index] = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
 
 	SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
-	SDL_FillRect(imageList[index], NULL, 255);
+	SDL_FillRect(imageList[index], nullptr, 255);
 
 	imageList[index]->userdata = (void*)imageList[index]->format->palette;
 	imageList[index]->format->palette = game_palette;
@@ -113,7 +113,7 @@ int PisteDraw2_Image_Load(const char* filename, bool getPalette){
 	}
 
 	imageList[index] = SDL_LoadBMP(filename);
-	if(imageList[index]==NULL){
+	if(imageList[index]==nullptr){
 		printf("PD     - Error loading %s\n",filename);
 		return -1;
 	}
@@ -137,8 +137,8 @@ int PisteDraw2_Image_Load(const char* filename, bool getPalette){
 }
 int PisteDraw2_Image_Copy(int src_i, int dst_i){
 	if(src_i < 0 || dst_i < 0) return -1;
-	SDL_FillRect(imageList[dst_i], NULL, 255);
-	SDL_BlitSurface(imageList[src_i], NULL, imageList[dst_i], NULL);
+	SDL_FillRect(imageList[dst_i], nullptr, 255);
+	SDL_BlitSurface(imageList[src_i], nullptr, imageList[dst_i], nullptr);
 	return 0;
 }
 int PisteDraw2_Image_Cut(int ImgIndex, int x, int y, int w, int h){ //Create a new image from a existing image
@@ -160,12 +160,12 @@ int PisteDraw2_Image_Cut(int ImgIndex, PD_RECT area){
 	imageList[index] = SDL_CreateRGBSurface(0, area.w, area.h, 8, 0, 0, 0, 0);
 
 	SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
-	SDL_FillRect(imageList[index], NULL, 255);
+	SDL_FillRect(imageList[index], nullptr, 255);
 
 	imageList[index]->userdata = (void*)imageList[index]->format->palette;
 	imageList[index]->format->palette = game_palette;
 
-	SDL_BlitScaled(imageList[ImgIndex], (SDL_Rect*)&area, imageList[index], NULL);
+	SDL_BlitScaled(imageList[ImgIndex], (SDL_Rect*)&area, imageList[index], nullptr);
 
 	return index;
 }
@@ -175,7 +175,7 @@ int PisteDraw2_Image_Clip(int index, int x, int y){
 	dstrect.x = x + XOffset;
 	dstrect.y = y;
 
-	SDL_BlitSurface(imageList[index], NULL, frameBuffer8, &dstrect);
+	SDL_BlitSurface(imageList[index], nullptr, frameBuffer8, &dstrect);
 
 	return 0;
 }
@@ -204,8 +204,8 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha, 0);
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum){
-	BYTE *imagePix = NULL;
-	BYTE *screenPix = NULL;
+	BYTE *imagePix = nullptr;
+	BYTE *screenPix = nullptr;
 	BYTE color1, color2;
 	DWORD imagePitch, screenPitch;
 	int posx, posy;
@@ -262,15 +262,15 @@ int PisteDraw2_Image_FlipHori(int index){
 	return 0;
 }
 int PisteDraw2_Image_Snapshot(int index){
-	SDL_FillRect(imageList[index], NULL, 0);
-	return SDL_BlitSurface(frameBuffer8, NULL, imageList[index], NULL);
+	SDL_FillRect(imageList[index], nullptr, 0);
+	return SDL_BlitSurface(frameBuffer8, nullptr, imageList[index], nullptr);
 }
 int PisteDraw2_Image_Delete(int& index){
 	if(index < 0) return -1;
-	if (imageList[index] == NULL) return -1;
+	if (imageList[index] == nullptr) return -1;
 	imageList[index]->format->palette = (SDL_Palette*)imageList[index]->userdata; //Return to the original pallete
 	SDL_FreeSurface(imageList[index]);
-	imageList[index] = NULL;
+	imageList[index] = nullptr;
 	index = -1;
 	return 0;
 }
@@ -283,7 +283,7 @@ int PisteDraw2_ImageFill(int index, int posx, int posy, int oikea, int ala, BYTE
 	return SDL_FillRect(imageList[index], &r, color);
 }
 int PisteDraw2_ScreenFill(BYTE color){
-	return SDL_FillRect(frameBuffer8, NULL, color);
+	return SDL_FillRect(frameBuffer8, nullptr, color);
 }
 int PisteDraw2_ScreenFill(int posx, int posy, int oikea, int ala, BYTE color){
 	SDL_Rect r = {posx + XOffset, posy, oikea-posx, ala-posy};
@@ -432,7 +432,7 @@ void PisteDraw2_SetXOffset(int x) {
 int PisteDraw2_Start(int width, int height, const char* name) {
 	if (PD2_loaded) return -1;
 
-	if (game_palette == NULL) {
+	if (game_palette == nullptr) {
         game_palette = SDL_AllocPalette(256);
         for(int i = 0; i < 256; i++) game_palette->colors[i] = {(Uint8)i,(Uint8)i,(Uint8)i,(Uint8)i};
     }
@@ -463,7 +463,7 @@ int PisteDraw2_Start(int width, int height, const char* name) {
 	frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
 	frameBuffer8->format->palette = game_palette;
 	SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
-	SDL_FillRect(frameBuffer8, NULL, 255);
+	SDL_FillRect(frameBuffer8, nullptr, 255);
 
 	SDL_Rect r = {0, 0, width, height};
 	SDL_SetClipRect(frameBuffer8, &r);
@@ -477,9 +477,9 @@ int PisteDraw2_Start(int width, int height, const char* name) {
 }
 void PisteDraw2_Clear_Fonts() {
 	for (int i = 0; i<MAX_FONTS; i++) {
-		if (fontList[i] != NULL)
+		if (fontList[i] != nullptr)
 			delete fontList[i];
-		fontList[i] = NULL;
+		fontList[i] = nullptr;
 	}
 }
 int PisteDraw2_Exit(){
@@ -488,7 +488,7 @@ int PisteDraw2_Exit(){
 	int i, j;
 
 	for (i = 0; i<MAX_IMAGES; i++)
-		if (imageList[i] != NULL) {
+		if (imageList[i] != nullptr) {
 			j = i;
 			PisteDraw2_Image_Delete(j);
 		}
@@ -516,9 +516,9 @@ void PisteDraw2_Update(bool draw){
 		SDL_RenderClear(PD_Renderer);
 
 		if(ScreenFit)
-			SDL_RenderCopy(PD_Renderer, texture, NULL, NULL);
+			SDL_RenderCopy(PD_Renderer, texture, nullptr, nullptr);
 		else
-			SDL_RenderCopy(PD_Renderer, texture, NULL, &Screen_dest);
+			SDL_RenderCopy(PD_Renderer, texture, nullptr, &Screen_dest);
 
 		PisteInput_DrawGui(alpha);
 

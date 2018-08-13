@@ -261,7 +261,7 @@ bool test_level = false;
 bool dev_mode = false;
 
 bool PK2_error = false;
-const char* PK2_error_msg = NULL;
+const char* PK2_error_msg = nullptr;
 
 bool window_closed	= false;
 bool lopeta_peli = false;
@@ -1378,7 +1378,7 @@ void PK_Precalculate_SinCos(){
 }
 
 int PK_Palikka_Tee_Maskit(){
-	BYTE *buffer = NULL;
+	BYTE *buffer = nullptr;
 	DWORD leveys;
 	int x,y;
 	BYTE color;
@@ -1406,7 +1406,7 @@ int PK_Palikka_Tee_Maskit(){
 	return 0;
 }
 int PK_Clean_TileBuffer(){
-	BYTE *buffer = NULL;
+	BYTE *buffer = nullptr;
 	DWORD leveys;
 	int x,y;
 
@@ -1420,7 +1420,7 @@ int PK_Clean_TileBuffer(){
 	return 0;
 }
 int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
-	BYTE *buffer = NULL;
+	BYTE *buffer = nullptr;
 	DWORD leveys;
 	BYTE vari,/* vari2, vari3,*/ vari32;
 	DWORD x, mx, my;
@@ -2959,7 +2959,7 @@ int      PK_Calculate_Tiles(){
 
 void PK_Gift_Clean(){
 	for (int i=0;i<MAX_GIFTS;i++)
-		esineet[i] = NULL;
+		esineet[i] = nullptr;
 }
 bool PK_Gift_Add(PK2Sprite_Prototyyppi *proto){
 	int i=0;
@@ -2970,7 +2970,7 @@ bool PK_Gift_Add(PK2Sprite_Prototyyppi *proto){
 
 	while (i<MAX_GIFTS && !lisatty)
 	{
-		if (esineet[i] == NULL)
+		if (esineet[i] == nullptr)
 		{
 			lisatty = true;
 			esineet[i] = proto;
@@ -2982,18 +2982,18 @@ bool PK_Gift_Add(PK2Sprite_Prototyyppi *proto){
 	return lisatty;
 }
 int  PK_Gift_Use(){
-	if (esineet[0] != NULL)
+	if (esineet[0] != nullptr)
 		PK_Sprites_Add(*esineet[0],0,spritet[pelaaja_index].x-esineet[0]->leveys,spritet[pelaaja_index].y,MAX_SPRITEJA, false);
 
 	for (int i=0;i<MAX_GIFTS-1;i++)
 		esineet[i] = esineet[i+1];
 
-	esineet[MAX_GIFTS-1] = NULL;
+	esineet[MAX_GIFTS-1] = nullptr;
 
 	return 0;
 }
 int  PK_Gift_ChangeOrder(){
-	if (esineet[0] == NULL)
+	if (esineet[0] == nullptr)
 		return 0;
 
 	PK2Sprite_Prototyyppi *temp = esineet[0];
@@ -3003,7 +3003,7 @@ int  PK_Gift_ChangeOrder(){
 
 	int lkm = 0;
 
-	while(lkm < MAX_GIFTS-1 && esineet[lkm] != NULL)
+	while(lkm < MAX_GIFTS-1 && esineet[lkm] != nullptr)
 		lkm++;
 
 	esineet[lkm] = temp;
@@ -4956,7 +4956,7 @@ int PK_Draw_InGame_BGSprites(){
 
 	for (int in=0; in<MAX_SPRITEJA; in++) {
 		i = taustaspritet[in];
-		if (spritet[i].tyyppi != NULL && i != -1) {
+		if (spritet[i].tyyppi != nullptr && i != -1) {
 			if (!spritet[i].piilota && spritet[i].tyyppi->tyyppi == TYYPPI_TAUSTA) {
 				//Tarkistetaanko onko sprite tai osa siit� kuvassa
 
@@ -5247,7 +5247,7 @@ int PK_Draw_InGame_Gifts(){
 	esineita = 0;
 
 	for (int i=0;i<MAX_GIFTS;i++)
-		if (esineet[i] != NULL){
+		if (esineet[i] != nullptr){
 			esineita++;
 
 			esineet[i]->Piirra(x-esineet[i]->leveys/2,y-esineet[i]->korkeus/2,0);
@@ -6721,7 +6721,7 @@ int PK_Draw_ScoreCount(){
 	y = 192 + my;
 
 	for (int i=0;i<MAX_GIFTS;i++)
-		if (esineet[i] != NULL)	{
+		if (esineet[i] != nullptr)	{
 			esineet[i]->Piirra(x-esineet[i]->leveys/2,y-esineet[i]->korkeus/2,0);
 			x += 38;
 		}
@@ -6983,7 +6983,7 @@ void PK_UI_Load(){
 	gui_touch = PisteInput_CreateGui(0,0,1920,1080,alpha,"", &enter);
 
 	gui_menu = PisteInput_CreateGui(50,130,circ_size,circ_size,alpha,"android/menu.png", &escape);
-	gui_arr = PisteInput_CreateGui(50,650,388,256,alpha,"android/arrow.png", NULL);
+	gui_arr = PisteInput_CreateGui(50,650,388,256,alpha,"android/arrow.png", nullptr);
 	gui_left = PisteInput_CreateGui(50,650,388/2,256,alpha,"", &settings.control_left);
 	gui_right = PisteInput_CreateGui(50+388/2,650,388/2,256,alpha,"",  &settings.control_right);
 	gui_up = PisteInput_CreateGui(1630,650,circ_size,circ_size,alpha,"android/up.png", &settings.control_jump);
@@ -7063,10 +7063,10 @@ int PK_MainScreen_ScoreCount(){
 			pistelaskuvaihe = 4;
 			pistelaskudelay = 30;
 			for (int i=0;i<MAX_GIFTS;i++)
-				if (esineet[i] != NULL)
+				if (esineet[i] != nullptr)
 				{
 					esinepisteet += esineet[i]->pisteet + 500;
-					esineet[i] = NULL;
+					esineet[i] = nullptr;
 					PK_Play_MenuSound(hyppy_aani, 100);
 					break;
 				}
@@ -7112,7 +7112,7 @@ int PK_MainScreen_ScoreCount(){
 			energiapisteet += spritet[pelaaja_index].energia * 300;
 			spritet[pelaaja_index].energia = 0;
 			for (int i=0;i<MAX_GIFTS;i++)
-				if (esineet[i] != NULL)
+				if (esineet[i] != nullptr)
 					esinepisteet += esineet[i]->pisteet + 500;
 			esineita = 0;
 
@@ -7410,7 +7410,7 @@ int PK_MainScreen_Change(){
 		if (pelin_seuraava_tila == TILA_PERUSALUSTUS){
 			PK_UI_Change(UI_TOUCH_TO_START);
 			strcpy(pelaajan_nimi,tekstit->Hae_Teksti(PK_txt.player_default_name));
-			srand((unsigned)time(NULL));
+			srand((unsigned)time(nullptr));
 			if(!test_level){
 				strcpy(episodi,"");
 				strcpy(seuraava_kartta,"untitle1.map");
@@ -7702,7 +7702,7 @@ int PK_MainScreen_Change(){
 			temp_pisteet += timeout*5;
 			temp_pisteet += spritet[pelaaja_index].energia * 300;
 			for (int i=0;i<MAX_GIFTS;i++)
-				if (esineet[i] != NULL)
+				if (esineet[i] != nullptr)
 					temp_pisteet += esineet[i]->pisteet + 500;
 
 			//if (jaksot[jakso_indeksi_nyt].lapaisty)
@@ -7904,7 +7904,7 @@ int PK_MainScreen(){
 //==================================================
 
 void PK_Start_Test(const char* arg){
-	if (arg == NULL) return;
+	if (arg == nullptr) return;
 
 	char buffer[PE_PATH_SIZE];
 	int sepindex;
@@ -7948,7 +7948,7 @@ void quit(){
 	Piste_Quit();
 }
 int main(int argc, char *argv[]){
-	char* test_path = NULL;
+	char* test_path = nullptr;
 	bool path_set = false;
 
 	printf("PK2 Started!\n");

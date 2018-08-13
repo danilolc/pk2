@@ -41,7 +41,7 @@ int PisteUtils_Setcwd() {
 	int find;
 
 #ifdef _WIN32
-	string(exepath, GetModuleFileName(NULL, exepath, PE_PATH_SIZE));
+	string(exepath, GetModuleFileName(nullptr, exepath, PE_PATH_SIZE));
 #else
 	int count = readlink("/proc/self/exe", exepath, PE_PATH_SIZE);
 	if (count > 0) exepath[count] = '\0';
@@ -156,7 +156,7 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], 
 	return i;
 }
 int PisteUtils_CreateDir(char *directory){
-	CreateDirectory(directory, NULL);
+	CreateDirectory(directory, nullptr);
 	return 0;
 }
 
@@ -168,7 +168,7 @@ int PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], 
 
 	struct dirent **namelist;
 
-	numb = scandir(dir, &namelist, 0, alphasort);
+	numb = scandir(dir, &namelist, nullptr, alphasort);
 	if(numb < 1) return -1;
 
 	for(i=0; i<numb; i++){
@@ -205,6 +205,6 @@ int PisteUtils_CreateDir(char *directory){
 void PisteUtils_Show_Error(const char* txt) {
 	//const SDL_MessageBoxButtonData buttons[] = {{ 0, 0, "ok" }};
 
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", txt, NULL);
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", txt, nullptr);
 
 }

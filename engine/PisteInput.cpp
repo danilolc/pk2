@@ -107,10 +107,10 @@ int						PI_joystick_index = 0;
 bool					PI_unload = true;
 
 //Uint8 *m_keymap;
-const Uint8 *m_keymap = SDL_GetKeyboardState(NULL);
+const Uint8 *m_keymap = SDL_GetKeyboardState(nullptr);
 MOUSE mouse_pos;
 
-SDL_Renderer* PI_Renderer = NULL;
+SDL_Renderer* PI_Renderer = nullptr;
 
 SDL_Haptic *PI_haptic;
 
@@ -128,7 +128,7 @@ int Alloc_GuiId(){
 }
 int UpdateGui(){
 	PI_GUI* gui;
-	SDL_Finger* finger = NULL;
+	SDL_Finger* finger = nullptr;
 	SDL_TouchID id = SDL_GetTouchDevice(0);
 
 	int fingers = SDL_GetNumTouchFingers(id);
@@ -141,7 +141,7 @@ int UpdateGui(){
 			for(int j = 0; j < fingers; j++){
 
 				finger = SDL_GetTouchFinger(id, j);
-				if(finger == NULL){
+				if(finger == nullptr){
 					printf("Can't find finger %i - %s", j, SDL_GetError());
 					SDL_ClearError();
 				} else{
@@ -174,13 +174,13 @@ int PisteInput_CreateGui(int x, int y, int w, int h, BYTE alpha, const char* t_p
 	gui.alpha = alpha;
 	gui.key = key;
 
-	if(gui.texture != NULL){
+	if(gui.texture != nullptr){
 		SDL_DestroyTexture(gui.texture);
 	}
-	gui.texture = NULL;
+	gui.texture = nullptr;
 	if(strcmp(t_path, "") != 0){
 		SDL_Surface* surface = IMG_Load(t_path);
-		if(surface == NULL){
+		if(surface == nullptr){
 			printf("Can't load image. SDL Image: %s\n",IMG_GetError());
 			gui.set = false;
 			return -1;
@@ -206,13 +206,13 @@ int PisteInput_DrawGui(int pd_alpha){
 	for(int i = 0; i < PI_MAX_GUI; i++){
 		gui = gui_list + i;
 
-		if(gui->set && gui->active && gui->texture != NULL){
+		if(gui->set && gui->active && gui->texture != nullptr){
 			rect.x = gui->pos_x;
 			rect.y = gui->pos_y;
 			rect.w = gui->width;
 			rect.h = gui->height;
 			SDL_SetTextureAlphaMod(gui->texture,(gui->alpha * pd_alpha) / 256);
-			SDL_RenderCopy(PI_Renderer, gui->texture, NULL, &rect);
+			SDL_RenderCopy(PI_Renderer, gui->texture, nullptr, &rect);
 		}
 	}
 	return 0;
@@ -220,7 +220,7 @@ int PisteInput_DrawGui(int pd_alpha){
 
 
 int PisteInput_Vibrate(){
-	if(PI_haptic == NULL)
+	if(PI_haptic == nullptr)
 		return -1;
 	if (SDL_HapticRumblePlay(PI_haptic,0.5,2000) != 0)
 		return -1;
@@ -255,7 +255,7 @@ BYTE PisteInput_GetKey(){
 	return 0;
 }
 int PisteInput_GetTouchPos(float& x, float& y){
-	SDL_Finger* finger = NULL;
+	SDL_Finger* finger = nullptr;
 	SDL_TouchID id = SDL_GetTouchDevice(0);
 	int fingers = SDL_GetNumTouchFingers(id);
 	if (fingers == 0)
@@ -272,7 +272,7 @@ int PisteInput_GetTouchPos(float& x, float& y){
 bool PisteInput_Keydown(int key){
 	UpdateGui();
 	for(int i = 0; i < PI_MAX_GUI; i++)
-		if(gui_list[i].set && gui_list[i].active && gui_list[i].pressed && gui_list[i].key != NULL){
+		if(gui_list[i].set && gui_list[i].active && gui_list[i].pressed && gui_list[i].key != nullptr){
 			if(*gui_list[i].key == key)
 				return true;
 		}
@@ -330,7 +330,7 @@ MOUSE PisteInput_UpdateMouse(bool keyMove, bool relative){
 }
 int PisteInput_ActivateWindow(bool active) {
 	if (active) {
-		SDL_GetRelativeMouseState(NULL, NULL);
+		SDL_GetRelativeMouseState(nullptr, nullptr);
 		SDL_GetMouseState(&mouse_pos.x, &mouse_pos.y);
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
@@ -384,7 +384,7 @@ int PisteInput_Start(){
 		gui_list[i].set = false;
 
 	PI_haptic = SDL_HapticOpen(0);
-	if (PI_haptic == NULL)
+	if (PI_haptic == nullptr)
 		return -1;
 	if (SDL_HapticRumbleInit(PI_haptic) != 0)
 		return -1;
@@ -393,12 +393,12 @@ int PisteInput_Start(){
 
 bool PisteInput_Hiiri_Vasen(){
 	SDL_PumpEvents();
-	return SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(SDL_BUTTON_LEFT);
+	return SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(SDL_BUTTON_LEFT);
 }
 
 bool PisteInput_Hiiri_Oikea(){
 	SDL_PumpEvents();
-	return SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(SDL_BUTTON_RIGHT);
+	return SDL_GetMouseState(nullptr, nullptr)&SDL_BUTTON(SDL_BUTTON_RIGHT);
 }
 
 int PisteInput_Ohjain_X(int ohjain){
@@ -484,7 +484,7 @@ char PisteInput_Lue_Nappaimisto(void){
 
 bool PisteInput_Lue_Eventti(){
 	SDL_PumpEvents();
-	//m_keymap = SDL_GetKeyState(NULL);
+	//m_keymap = SDL_GetKeyState(nullptr);
 /*
 	m_event.key.keysym.sym = SDLK_UNKNOWN;
 	while(SDL_PollEvent(&m_event)) {

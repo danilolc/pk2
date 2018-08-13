@@ -697,7 +697,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 		return 1;
 
 	//Set diferent colors
-	BYTE *buffer = NULL;
+	BYTE *buffer = nullptr;
 	DWORD leveys;
 	BYTE vari;
 	int x,y,w,h;
@@ -765,7 +765,7 @@ bool PK2Sprite_Prototyyppi::Onko_AI(int ai){
 /* -------- PK2Sprite  ------------------------------------------------------------------ */
 
 PK2Sprite::PK2Sprite(){
-	this->tyyppi		= NULL;
+	this->tyyppi		= nullptr;
 	this->pelaaja		= 0;
 	this->piilota		= true;
 	this->x				= 0;
@@ -1905,7 +1905,7 @@ int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &
 
 			// etsitaan SAMANTYYPPISET teleportit
 			for (i=0;i<max;i++)
-				if (spritet[i].tyyppi != NULL)
+				if (spritet[i].tyyppi != nullptr)
 					if (spritet[i].tyyppi->tyyppi == TYYPPI_TELEPORTTI &&
 						tyyppi->indeksi == spritet[i].tyyppi->indeksi)
 					{
@@ -1922,7 +1922,7 @@ int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &
 				porttien_maara = 0;
 
 				for (i=0;i<max;i++)
-					if (spritet[i].tyyppi != NULL)
+					if (spritet[i].tyyppi != nullptr)
 						if (spritet[i].tyyppi->tyyppi == TYYPPI_TELEPORTTI)
 						{
 							portit[portti_index] = i;
@@ -1944,7 +1944,7 @@ int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &
 			while(i == oma_i || i == -1)
 				i = portit[rand()%porttien_maara];
 
-			if (spritet[i].tyyppi != NULL)
+			if (spritet[i].tyyppi != nullptr)
 			{
 				sprite.x = spritet[i].x;
 				sprite.y = spritet[i].y;

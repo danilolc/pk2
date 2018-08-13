@@ -279,7 +279,7 @@ void PK2Kartta::LueTallennusAlue(BYTE *lahde, RECT alue, int kohde){
 		kartan_leveys  = kartan_ala - kartan_yla;
 
 	BYTE tile;
-	if (lahde != NULL && kohde != 0)	{
+	if (lahde != nullptr && kohde != 0)	{
 		for (y=0;y<kartan_korkeus;y++) {
 			for (x=0;x<kartan_leveys;x++) {
 				tile = lahde[x+y*kartan_leveys];
@@ -388,7 +388,7 @@ int PK2Kartta::Tallenna(char *filename){
 
 	// laske alue
 
-	//BYTE *alue_taustat = NULL, *alue_seinat = NULL, *alue_spritet = NULL;
+	//BYTE *alue_taustat = nullptr, *alue_seinat = nullptr, *alue_spritet = nullptr;
 	RECT alue = {0,0,0,0};
 	DWORD /*koko, aloituskohta,*/ leveys, korkeus, x, y;
 	DWORD aloitus_x,aloitus_y;
@@ -591,7 +591,7 @@ int PK2Kartta::LataaVersio01(char *filename){
 
 	PK2KARTTA kartta;
 
-	if ((tiedosto = fopen(filename, "r")) == NULL){
+	if ((tiedosto = fopen(filename, "r")) == nullptr){
 		return(1);
 	}
 
@@ -625,7 +625,7 @@ int PK2Kartta::LataaVersio10(char *filename){
 
 	PK2Kartta *kartta = new PK2Kartta();
 
-	if ((tiedosto = fopen(filename, "r")) == NULL)
+	if ((tiedosto = fopen(filename, "r")) == nullptr)
 	{
 		return(1);
 	}
@@ -668,7 +668,7 @@ int PK2Kartta::LataaVersio11(char *filename){
 	int virhe = 0;
 
 
-	if ((tiedosto = fopen(filename, "r")) == NULL)
+	if ((tiedosto = fopen(filename, "r")) == nullptr)
 	{
 		return(1);
 	}
@@ -1016,7 +1016,7 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 
 	strcpy(this->taustakuva,filename);
 
-	BYTE *buffer = NULL;
+	BYTE *buffer = nullptr;
 	DWORD leveys;
 	int x,y;
 	int color;
@@ -1119,7 +1119,7 @@ void PK2Kartta::Kopioi(PK2Kartta &kartta){
 /* Kartanpiirtorutiineja ----------------------------------------------------------------*/
 //Anim Fire
 void PK2Kartta::Animoi_Tuli(void){
-	BYTE *buffer = NULL;
+	BYTE *buffer = nullptr;
 	DWORD leveys;
 	int x,y;
 	int color;
@@ -1163,7 +1163,7 @@ void PK2Kartta::Animoi_Tuli(void){
 }
 //Anim
 void PK2Kartta::Animoi_Vesiputous(void){
-	BYTE *buffer = NULL;
+	BYTE *buffer = nullptr;
 	DWORD leveys;
 	int x,y,plus;
 	int color,color2;
@@ -1205,7 +1205,7 @@ void PK2Kartta::Animoi_Vesiputous(void){
 }
 //Anim
 void PK2Kartta::Animoi_Vedenpinta(void){
-	BYTE *buffer = NULL;
+	BYTE *buffer = nullptr;
 	DWORD leveys;
 	int x,y;
 
@@ -1231,7 +1231,7 @@ void PK2Kartta::Animoi_Vedenpinta(void){
 }
 //Anim water
 void PK2Kartta::Animoi_Vesi(void){
-	BYTE *buffer_lahde = NULL, *buffer_kohde = NULL;
+	BYTE *buffer_lahde = nullptr, *buffer_kohde = nullptr;
 	DWORD leveys_lahde, leveys_kohde;
 	int x, y, color1, color2,
 		d1 = vesiaste / 2, d2;
@@ -1296,7 +1296,7 @@ void PK2Kartta::Animoi_Vesi(void){
 }
 
 void PK2Kartta::Animoi_Virta_Ylos(void){
-	BYTE *buffer = NULL;
+	BYTE *buffer = nullptr;
 	DWORD leveys;
 	int x,y;
 
