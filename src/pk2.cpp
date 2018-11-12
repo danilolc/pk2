@@ -7419,407 +7419,445 @@ int PK_MainScreen_End(){
 	return 0;
 }
 
-int PK_MainScreen_Change(){
-	if (pelin_seuraava_tila != pelin_tila){
+int PK_MainScreen_Change() {
 
-		PisteDraw2_FadeIn(PD_FADE_NORMAL);
+	PisteDraw2_FadeIn(PD_FADE_NORMAL);
 
-		// First start
-		if (pelin_seuraava_tila == TILA_PERUSALUSTUS){
-			PK_UI_Change(UI_TOUCH_TO_START);
-			strcpy(pelaajan_nimi,tekstit->Hae_Teksti(PK_txt.player_default_name));
-			srand((unsigned)time(NULL));
-			if(!test_level){
-				strcpy(episodi,"");
-				strcpy(seuraava_kartta,"untitle1.map");
+	// First start
+	if (pelin_seuraava_tila == TILA_PERUSALUSTUS)
+	{
+		PK_UI_Change(UI_TOUCH_TO_START);
+		strcpy(pelaajan_nimi, tekstit->Hae_Teksti(PK_txt.player_default_name));
+		srand((unsigned)time(NULL));
+		if (!test_level)
+		{
+			strcpy(episodi, "");
+			strcpy(seuraava_kartta, "untitle1.map");
+		}
+
+		jakso = 1;
+
+		if (!precalculated_sincos)
+		{
+			PK_Precalculate_SinCos();
+			PK2Kartta_Cos_Sin(cos_table, sin_table);
+			precalculated_sincos = true;
+		}
+
+		PK_Fadetext_Init();
+
+		PK2Kartta_Aseta_Ruudun_Mitat(screen_width, screen_height); //TODO - call when screen change
+
+		kartta = new PK2Kartta();
+
+		//TODO - set correct filter
+		if (!settings.isFiltered)
+			PisteDraw2_SetFilter(PD_FILTER_NEAREST);
+		if (settings.isFiltered)
+			PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
+		PisteDraw2_FitScreen(settings.isFit);
+		PisteDraw2_FullScreen(settings.isFullScreen);
+		PisteDraw2_ChangeResolution(settings.isWide ? 800 : 640, 480);
+
+		PisteDraw2_Image_Delete(kuva_peli); //Delete if there is a image allocated
+		kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
+
+		PisteDraw2_Image_Delete(kuva_peli2); //Delete if there is a image allocated
+		kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff2.bmp", false);
+
+		PisteDraw2_Image_Delete(kuva_peli);
+		kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
+
+		PK_Load_Font();
+
+		PK_Sprites_Clean();
+
+		PK_Search_Episode();
+		PK_Start_Saves();
+		PK_Search_File();
+
+		PisteDraw2_ScreenFill(0);
+
+		//PisteLog_Kirjoita("  - Loading basic sound fx \n");
+
+		if ((kytkin_aani = PisteSound_LoadSFX("sfx/switch3.wav")) == -1)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't find switch3.wav";
+		}
+
+		if ((hyppy_aani = PisteSound_LoadSFX("sfx/jump4.wav")) == -1)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't find jump4.wav";
+		}
+
+		if ((loiskahdus_aani = PisteSound_LoadSFX("sfx/splash.wav")) == -1)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't find splash.wav";
+		}
+
+		if ((avaa_lukko_aani = PisteSound_LoadSFX("sfx/openlock.wav")) == -1)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't find openlock.wav";
+		}
+
+		if ((menu_aani = PisteSound_LoadSFX("sfx/menu2.wav")) == -1)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't find menu2.wav";
+		}
+
+		if ((ammuu_aani = PisteSound_LoadSFX("sfx/moo.wav")) == -1)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't find moo.wav";
+		}
+
+		if ((kieku_aani = PisteSound_LoadSFX("sfx/doodle.wav")) == -1)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't find doodle.wav";
+		}
+
+		if ((tomahdys_aani = PisteSound_LoadSFX("sfx/pump.wav")) == -1)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't find pump.wav";
+		}
+
+		if ((pistelaskuri_aani = PisteSound_LoadSFX("sfx/counter.wav")) == -1)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't find counter.wav";
+		}
+
+		PisteDraw2_FadeIn(PD_FADE_SLOW);
+
+		//PisteLog_Kirjoita("  - Calculating tiles. \n");
+		PK_Calculate_Tiles();
+
+		PK_Gift_Clean();
+
+		//PisteLog_Kirjoita("  - Loading background picture \n");
+		PisteDraw2_Image_Delete(kuva_tausta);
+		kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp", true);
+
+		PK_Empty_Records();
+
+		//PisteLog_Kirjoita("  - Loading saves \n");
+		PK_Search_Records("data/saves.dat");
+
+		//PisteLog_Kirjoita("  - PisteSound sounds on \n");
+		//PisteSound_Aanet_Paalla(settings.aanet);
+
+		//PisteLog_Kirjoita("- Initializing basic stuff completed \n");
+	}
+
+	// Start map
+	if (pelin_seuraava_tila == TILA_KARTTA)
+	{
+		PK_UI_Change(UI_CURSOR);
+		if (settings.isWide)
+			PisteDraw2_SetXOffset(80);
+		else
+			PisteDraw2_SetXOffset(0);
+		PisteDraw2_ScreenFill(0);
+
+		if (!peli_kesken)
+		{
+			if (lataa_peli != -1)
+			{
+				PK_Search_File();
+
+				for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
+					jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
+
+				lataa_peli = -1;
+				peli_kesken = true;
+				peli_ohi = true;
+				jakso_lapaisty = true;
+				lopetusajastin = 0;
 			}
-
-			jakso = 1;
-
-			if (!precalculated_sincos){
-				PK_Precalculate_SinCos();
-				PK2Kartta_Cos_Sin(cos_table, sin_table);
-				precalculated_sincos = true;
+			else
+			{
+				PK_Start_Saves(); // jos ladataan peli, asetetaan l�p�istyarvot jaksoille aikaisemmin
+				PK_Search_File();
 			}
+			char topscoretiedosto[PE_PATH_SIZE] = "scores.dat";
+			PK_EpisodeScore_Open(topscoretiedosto);
+		}
 
-			PK_Fadetext_Init();
+		/* Ladataan kartan taustakuva ...*/
+		char mapkuva[PE_PATH_SIZE] = "map.bmp";
+		PK_Load_EpisodeDir(mapkuva);
+		//PisteLog_Kirjoita("  - Loading map picture ");
+		//PisteLog_Kirjoita(mapkuva);
+		//PisteLog_Kirjoita(" from episode folder \n");
 
-			PK2Kartta_Aseta_Ruudun_Mitat(screen_width,screen_height); //TODO - call when screen change
+		PisteDraw2_Image_Delete(kuva_tausta);
+		kuva_tausta = PisteDraw2_Image_Load(mapkuva, true);
+		if (kuva_tausta == -1)
+			kuva_tausta = PisteDraw2_Image_Load("gfx/map.bmp", true);
 
-			kartta = new PK2Kartta();
+		/* Ladataan kartan musiikki ...*/
+		char mapmusa[PE_PATH_SIZE] = "map.mp3";
+		do
+		{
+			PK_Load_EpisodeDir(mapmusa);
+			if (PK_Check_File(mapmusa))
+				break;
+			strcpy(mapmusa, "map.ogg");
+			PK_Load_EpisodeDir(mapmusa);
+			if (PK_Check_File(mapmusa))
+				break;
+			strcpy(mapmusa, "map.xm");
+			PK_Load_EpisodeDir(mapmusa);
+			if (PK_Check_File(mapmusa))
+				break;
+			strcpy(mapmusa, "map.mod");
+			PK_Load_EpisodeDir(mapmusa);
+			if (PK_Check_File(mapmusa))
+				break;
+			strcpy(mapmusa, "map.it");
+			PK_Load_EpisodeDir(mapmusa);
+			if (PK_Check_File(mapmusa))
+				break;
+			strcpy(mapmusa, "map.s3m");
+			PK_Load_EpisodeDir(mapmusa);
+			if (PK_Check_File(mapmusa))
+				break;
+			strcpy(mapmusa, "music/map.mp3");
+			if (PK_Check_File(mapmusa))
+				break;
+			strcpy(mapmusa, "music/map.ogg");
+			if (PK_Check_File(mapmusa))
+				break;
+			strcpy(mapmusa, "music/map.xm");
+			break;
+		} while (0);
 
-			//TODO - set correct filter
-			if (!settings.isFiltered)
-				PisteDraw2_SetFilter(PD_FILTER_NEAREST);
-			if (settings.isFiltered)
-				PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
-			PisteDraw2_FitScreen(settings.isFit);
-			PisteDraw2_FullScreen(settings.isFullScreen);
-			PisteDraw2_ChangeResolution(settings.isWide ? 800 : 640, 480);
+		PisteSound_StartMusic(mapmusa);
 
-			PisteDraw2_Image_Delete(kuva_peli); //Delete if there is a image allocated
-			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
+		music_volume = settings.music_max_volume;
 
-			PisteDraw2_Image_Delete(kuva_peli2); //Delete if there is a image allocated
-			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff2.bmp", false);
+		siirry_kartasta_peliin = false;
 
-			PisteDraw2_Image_Delete(kuva_peli);
-			kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
+		PisteDraw2_FadeIn(PD_FADE_SLOW);
+	}
 
-			PK_Load_Font();
+	// Start menu
+	if (pelin_seuraava_tila == TILA_MENUT)
+	{
+		PK_UI_Change(UI_CURSOR);
+		if (settings.isWide)
+			PisteDraw2_SetXOffset(80);
+		else
+			PisteDraw2_SetXOffset(0);
+		PK_Search_Episode();
 
-			PK_Sprites_Clean();
+		if (!peli_kesken)
+		{
+			PisteDraw2_Image_Delete(kuva_tausta);
+			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp", true);
+			PisteSound_StartMusic("music/song09.xm"); //theme.xm
+			music_volume = settings.music_max_volume;
+		}
+		else
+		{
+			int w, h;
+			PisteDraw2_Image_GetSize(kuva_tausta, w, h);
+			if (w != screen_width)
+			{
+				PisteDraw2_Image_Delete(kuva_tausta);
+				kuva_tausta = PisteDraw2_Image_New(screen_width, screen_height);
+			}
+			PisteDraw2_Image_Snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
+			PK_MenuShadow_Create(kuva_tausta, 640, 480, 110);
+		}
 
-			PK_Search_Episode();
-			PK_Start_Saves();
-			PK_Search_File();
+		menunelio.left = 320 - 5;
+		menunelio.top = 240 - 5;
+		menunelio.right = 320 + 5;
+		menunelio.bottom = 240 + 5;
 
-			PisteDraw2_ScreenFill(0);
+		PisteDraw2_ScreenFill(0);
+		menu_valittu_id = 1;
+	}
 
-			//PisteLog_Kirjoita("  - Loading basic sound fx \n");
+	// Start loading scene
+	if (pelin_seuraava_tila == TILA_PELI)
+	{
+		PK_UI_Change(UI_GAME_BUTTONS);
+		PisteDraw2_SetXOffset(0);
+		PisteDraw2_ScreenFill(0);
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.game_loading), screen_width / 2 - 82, screen_height / 2 - 9);
 
-			if ((kytkin_aani = PisteSound_LoadSFX("sfx/switch3.wav"))==-1){
+		if (jaksot[jakso_indeksi_nyt].lapaisty)
+			uusinta = true;
+		else
+			uusinta = false;
+
+		if (!peli_kesken)
+		{
+			jakso_lapaisty = false;
+
+			PK_Sprites_Clean(); //Reset sprites
+
+			if (PK_Map_Open(seuraava_kartta) == 1)
+			{
 				PK2_error = true;
-				PK2_error_msg = "Can't find switch3.wav";
+				PK2_error_msg = "Can't load map";
 			}
 
-			if ((hyppy_aani  = PisteSound_LoadSFX("sfx/jump4.wav"))==-1){
-				PK2_error = true;
-				PK2_error_msg = "Can't find jump4.wav";
-			}
-
-			if ((loiskahdus_aani  = PisteSound_LoadSFX("sfx/splash.wav"))==-1){
-				PK2_error = true;
-				PK2_error_msg = "Can't find splash.wav";
-			}
-
-			if ((avaa_lukko_aani  = PisteSound_LoadSFX("sfx/openlock.wav"))==-1){
-				PK2_error = true;
-				PK2_error_msg = "Can't find openlock.wav";
-			}
-
-			if ((menu_aani  = PisteSound_LoadSFX("sfx/menu2.wav"))==-1){
-				PK2_error = true;
-				PK2_error_msg = "Can't find menu2.wav";
-			}
-
-			if ((ammuu_aani  = PisteSound_LoadSFX("sfx/moo.wav"))==-1){
-				PK2_error = true;
-				PK2_error_msg = "Can't find moo.wav";
-			}
-
-			if ((kieku_aani  = PisteSound_LoadSFX("sfx/doodle.wav"))==-1){
-				PK2_error = true;
-				PK2_error_msg = "Can't find doodle.wav";
-			}
-
-			if ((tomahdys_aani  = PisteSound_LoadSFX("sfx/pump.wav"))==-1){
-				PK2_error = true;
-				PK2_error_msg = "Can't find pump.wav";
-			}
-
-			if ((pistelaskuri_aani = PisteSound_LoadSFX("sfx/counter.wav"))==-1){
-				PK2_error = true;
-				PK2_error_msg = "Can't find counter.wav";
-			}
-
-			PisteDraw2_FadeIn(PD_FADE_SLOW);
-
-			//PisteLog_Kirjoita("  - Calculating tiles. \n");
 			PK_Calculate_Tiles();
 
+			PK_Fadetext_Init(); //Reset fade text
+
 			PK_Gift_Clean();
-
-			//PisteLog_Kirjoita("  - Loading background picture \n");
-			PisteDraw2_Image_Delete(kuva_tausta);
-			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
-
-			PK_Empty_Records();
-
-			//PisteLog_Kirjoita("  - Loading saves \n");
-			PK_Search_Records("data/saves.dat");
-
-			//PisteLog_Kirjoita("  - PisteSound sounds on \n");
-			//PisteSound_Aanet_Paalla(settings.aanet);
-
-			//PisteLog_Kirjoita("- Initializing basic stuff completed \n");
-		}
-
-		// Start map
-		if (pelin_seuraava_tila == TILA_KARTTA){
-			PK_UI_Change(UI_CURSOR);
-			if(settings.isWide)
-				PisteDraw2_SetXOffset(80);
-			else
-				PisteDraw2_SetXOffset(0);
-			PisteDraw2_ScreenFill(0);
-
-			if (!peli_kesken){
-				if (lataa_peli != -1){
-					PK_Search_File();
-
-					for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
-						 jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
-
-					lataa_peli = -1;
-					peli_kesken = true;
-					peli_ohi = true;
-					jakso_lapaisty = true;
-					lopetusajastin = 0;
-
-				} else{
-					PK_Start_Saves();	// jos ladataan peli, asetetaan l�p�istyarvot jaksoille aikaisemmin
-					PK_Search_File();
-				}
-				char topscoretiedosto[PE_PATH_SIZE] = "scores.dat";
-				PK_EpisodeScore_Open(topscoretiedosto);
-			}
-
-			/* Ladataan kartan taustakuva ...*/
-			char mapkuva[PE_PATH_SIZE] = "map.bmp";
-			PK_Load_EpisodeDir(mapkuva);
-			//PisteLog_Kirjoita("  - Loading map picture ");
-			//PisteLog_Kirjoita(mapkuva);
-			//PisteLog_Kirjoita(" from episode folder \n");
-
-			PisteDraw2_Image_Delete(kuva_tausta);
-			kuva_tausta = PisteDraw2_Image_Load(mapkuva,true);
-			if (kuva_tausta == -1)
-				kuva_tausta = PisteDraw2_Image_Load("gfx/map.bmp",true);
-
-			/* Ladataan kartan musiikki ...*/
-			char mapmusa[PE_PATH_SIZE] = "map.mp3";
-			do {
-				PK_Load_EpisodeDir(mapmusa);
-				if(PK_Check_File(mapmusa)) break;
-				strcpy(mapmusa,"map.ogg");
-				PK_Load_EpisodeDir(mapmusa);
-				if(PK_Check_File(mapmusa)) break;
-				strcpy(mapmusa,"map.xm");
-				PK_Load_EpisodeDir(mapmusa);
-				if(PK_Check_File(mapmusa)) break;
-				strcpy(mapmusa,"map.mod");
-				PK_Load_EpisodeDir(mapmusa);
-				if (PK_Check_File(mapmusa)) break;
-				strcpy(mapmusa,"map.it");
-				PK_Load_EpisodeDir(mapmusa);
-				if (PK_Check_File(mapmusa)) break;
-				strcpy(mapmusa,"map.s3m");
-				PK_Load_EpisodeDir(mapmusa);
-				if (PK_Check_File(mapmusa)) break;
-				strcpy(mapmusa,"music/map.mp3");
-				if (PK_Check_File(mapmusa)) break;
-				strcpy(mapmusa,"music/map.ogg");
-				if (PK_Check_File(mapmusa)) break;
-				strcpy(mapmusa,"music/map.xm");
-				break;
-			} while(0);
-
-			PisteSound_StartMusic(mapmusa);
-
+			peli_kesken = true;
 			music_volume = settings.music_max_volume;
-
-			siirry_kartasta_peliin = false;
-
-			PisteDraw2_FadeIn(PD_FADE_SLOW);
+			degree = 0;
+			item_paneeli_x = -215;
+			piste_lisays = 0;
 		}
-
-		// Start menu
-		if (pelin_seuraava_tila == TILA_MENUT){
-			PK_UI_Change(UI_CURSOR);
-			if (settings.isWide)
-				PisteDraw2_SetXOffset(80);
-			else
-				PisteDraw2_SetXOffset(0);
-			PK_Search_Episode();
-
-			if (!peli_kesken){
-				PisteDraw2_Image_Delete(kuva_tausta);
-				kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
-				PisteSound_StartMusic("music/song09.xm");//theme.xm
-				music_volume = settings.music_max_volume;
-			} else{
-				int w, h;
-				PisteDraw2_Image_GetSize(kuva_tausta, w, h);
-				if( w != screen_width ){
-					PisteDraw2_Image_Delete(kuva_tausta);
-					kuva_tausta = PisteDraw2_Image_New(screen_width ,screen_height);
-				}
-				PisteDraw2_Image_Snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
-				PK_MenuShadow_Create(kuva_tausta, 640, 480, 110);
-			}
-
-			menunelio.left = 320-5;
-			menunelio.top = 240-5;
-			menunelio.right = 320+5;
-			menunelio.bottom = 240+5;
-
-			PisteDraw2_ScreenFill(0);
-			menu_valittu_id = 1;
+		else
+		{
+			degree = degree_temp;
 		}
-
-		// Start loading scene
-		if (pelin_seuraava_tila == TILA_PELI){
-			PK_UI_Change(UI_GAME_BUTTONS);
-			PisteDraw2_SetXOffset(0);
-			PisteDraw2_ScreenFill(0);
-			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.game_loading),screen_width/2-82,screen_height/2-9);
-
-			if (jaksot[jakso_indeksi_nyt].lapaisty)
-				uusinta = true;
-			else
-				uusinta = false;
-
-			if (!peli_kesken) {
-				jakso_lapaisty = false;
-
-				PK_Sprites_Clean(); //Reset sprites
-
-				if (PK_Map_Open(seuraava_kartta) == 1){
-					PK2_error = true;
-					PK2_error_msg = "Can't load map";
-				}
-
-				PK_Calculate_Tiles();
-
-				PK_Fadetext_Init(); //Reset fade text
-
-				PK_Gift_Clean();
-				peli_kesken = true;
-				music_volume = settings.music_max_volume;
-				degree = 0;
-				item_paneeli_x = -215;
-				piste_lisays = 0;
-			}
-			else {
-				degree = degree_temp;
-			}
-
-		}
-
-		// Start pontuation
-		if (pelin_seuraava_tila == TILA_PISTELASKU){
-			PK_UI_Change(UI_CURSOR);
-			if (settings.isWide)
-				PisteDraw2_SetXOffset(80);
-			else
-				PisteDraw2_SetXOffset(0);
-			PisteDraw2_ScreenFill(0);
-
-			PisteDraw2_Image_Delete(kuva_tausta);
-			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp",true);
-			PK_MenuShadow_Create(kuva_tausta, 640, 480, 30);
-
-			jakso_uusi_ennatys = false;
-			jakso_uusi_ennatysaika = false;
-			episodi_uusi_ennatys = false;
-
-			// Lasketaan pelaajan kokonaispisteet etuk�teen
-			DWORD temp_pisteet = 0;
-			temp_pisteet += jakso_pisteet;
-			temp_pisteet += timeout*5;
-			temp_pisteet += spritet[pelaaja_index].energia * 300;
-			for (int i=0;i<MAX_GIFTS;i++)
-				if (esineet[i] != NULL)
-					temp_pisteet += esineet[i]->pisteet + 500;
-
-			//if (jaksot[jakso_indeksi_nyt].lapaisty)
-			//if (jaksot[jakso_indeksi_nyt].jarjestys == jakso-1)
-			pisteet += temp_pisteet;
-
-			if (uusinta)
-				pisteet -= temp_pisteet;
-
-			fake_pisteet = 0;
-			pistelaskuvaihe = 0;
-			pistelaskudelay = 30;
-			bonuspisteet = 0,
-			aikapisteet = 0,
-			energiapisteet = 0,
-			esinepisteet = 0,
-			pelastuspisteet = 0;
-
-			char pisteet_tiedosto[PE_PATH_SIZE] = "scores.dat";
-			int vertailun_tulos;
-
-			/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
-			vertailun_tulos = PK_EpisodeScore_Compare(jakso_indeksi_nyt,temp_pisteet,kartta->aika - timeout,false);
-			if (vertailun_tulos > 0) {
-				PK_EpisodeScore_Save(pisteet_tiedosto);
-			}
-
-			/* Tutkitaan onko pelaaja rikkonut episodin piste-enn�tyksen */
-			vertailun_tulos = PK_EpisodeScore_Compare(0,pisteet,0,true);
-			if (vertailun_tulos > 0)
-				PK_EpisodeScore_Save(pisteet_tiedosto);
-
-			music_volume = settings.music_max_volume;
-
-			siirry_pistelaskusta_karttaan = false;
-
-			PisteDraw2_FadeIn(PD_FADE_FAST);
-		}
-
-		// Start intro
-		if (pelin_seuraava_tila == TILA_INTRO){
-			//PisteLog_Kirjoita("- Initializing intro screen\n");
-			PK_UI_Change(UI_TOUCH_TO_START);
-			if (settings.isWide)
-				PisteDraw2_SetXOffset(80);
-			else
-				PisteDraw2_SetXOffset(0);
-			PisteDraw2_ScreenFill(0);
-
-			//PisteLog_Kirjoita("  - Loading picture: gfx/intro.bmp\n");
-			PisteDraw2_Image_Delete(kuva_tausta);
-			kuva_tausta = PisteDraw2_Image_Load("gfx/intro.bmp",true);
-
-			//PisteLog_Kirjoita("  - Loading music: music/INTRO.XM\n");
-
-			if (PisteSound_StartMusic("music/intro.xm") !=0 ){
-				PK2_error = true;
-				PK2_error_msg = "Can't load intro.xm";
-			}
-
-			music_volume = settings.music_max_volume;
-
-			introlaskuri = 0;
-			siirry_pistelaskusta_karttaan = false;
-
-			PisteDraw2_FadeIn(PD_FADE_FAST);
-		}
-
-		// Start ending
-		if (pelin_seuraava_tila == TILA_LOPPU){
-			PK_UI_Change(UI_TOUCH_TO_START);
-			if (settings.isWide)
-				PisteDraw2_SetXOffset(80);
-			else
-				PisteDraw2_SetXOffset(0);
-			PisteDraw2_ScreenFill(0);
-			PisteDraw2_Image_Delete(kuva_tausta);
-			kuva_tausta = PisteDraw2_Image_Load("gfx/ending.bmp",true);
-
-			if (PisteSound_StartMusic("music/intro.xm")!=0){
-				PK2_error = true;
-				PK2_error_msg = "Can't load intro.xm";
-			}
-
-			music_volume = settings.music_max_volume;
-
-			loppulaskuri = 0;
-			siirry_lopusta_menuun = false;
-			peli_kesken = false;
-
-			PisteDraw2_FadeIn(PD_FADE_FAST);
-		}
-
-		pelin_tila = pelin_seuraava_tila;
 	}
+
+	// Start pontuation
+	if (pelin_seuraava_tila == TILA_PISTELASKU)
+	{
+		PK_UI_Change(UI_CURSOR);
+		if (settings.isWide)
+			PisteDraw2_SetXOffset(80);
+		else
+			PisteDraw2_SetXOffset(0);
+		PisteDraw2_ScreenFill(0);
+
+		PisteDraw2_Image_Delete(kuva_tausta);
+		kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp", true);
+		PK_MenuShadow_Create(kuva_tausta, 640, 480, 30);
+
+		jakso_uusi_ennatys = false;
+		jakso_uusi_ennatysaika = false;
+		episodi_uusi_ennatys = false;
+
+		// Lasketaan pelaajan kokonaispisteet etuk�teen
+		DWORD temp_pisteet = 0;
+		temp_pisteet += jakso_pisteet;
+		temp_pisteet += timeout * 5;
+		temp_pisteet += spritet[pelaaja_index].energia * 300;
+		for (int i = 0; i < MAX_GIFTS; i++)
+			if (esineet[i] != NULL)
+				temp_pisteet += esineet[i]->pisteet + 500;
+
+		//if (jaksot[jakso_indeksi_nyt].lapaisty)
+		//if (jaksot[jakso_indeksi_nyt].jarjestys == jakso-1)
+		pisteet += temp_pisteet;
+
+		if (uusinta)
+			pisteet -= temp_pisteet;
+
+		fake_pisteet = 0;
+		pistelaskuvaihe = 0;
+		pistelaskudelay = 30;
+		bonuspisteet = 0,
+		aikapisteet = 0,
+		energiapisteet = 0,
+		esinepisteet = 0,
+		pelastuspisteet = 0;
+
+		char pisteet_tiedosto[PE_PATH_SIZE] = "scores.dat";
+		int vertailun_tulos;
+
+		/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
+		vertailun_tulos = PK_EpisodeScore_Compare(jakso_indeksi_nyt, temp_pisteet, kartta->aika - timeout, false);
+		if (vertailun_tulos > 0)
+		{
+			PK_EpisodeScore_Save(pisteet_tiedosto);
+		}
+
+		/* Tutkitaan onko pelaaja rikkonut episodin piste-enn�tyksen */
+		vertailun_tulos = PK_EpisodeScore_Compare(0, pisteet, 0, true);
+		if (vertailun_tulos > 0)
+			PK_EpisodeScore_Save(pisteet_tiedosto);
+
+		music_volume = settings.music_max_volume;
+
+		siirry_pistelaskusta_karttaan = false;
+
+		PisteDraw2_FadeIn(PD_FADE_FAST);
+	}
+
+	// Start intro
+	if (pelin_seuraava_tila == TILA_INTRO)
+	{
+		//PisteLog_Kirjoita("- Initializing intro screen\n");
+		PK_UI_Change(UI_TOUCH_TO_START);
+		if (settings.isWide)
+			PisteDraw2_SetXOffset(80);
+		else
+			PisteDraw2_SetXOffset(0);
+		PisteDraw2_ScreenFill(0);
+
+		//PisteLog_Kirjoita("  - Loading picture: gfx/intro.bmp\n");
+		PisteDraw2_Image_Delete(kuva_tausta);
+		kuva_tausta = PisteDraw2_Image_Load("gfx/intro.bmp", true);
+
+		//PisteLog_Kirjoita("  - Loading music: music/INTRO.XM\n");
+
+		if (PisteSound_StartMusic("music/intro.xm") != 0)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't load intro.xm";
+		}
+
+		music_volume = settings.music_max_volume;
+
+		introlaskuri = 0;
+		siirry_pistelaskusta_karttaan = false;
+
+		PisteDraw2_FadeIn(PD_FADE_FAST);
+	}
+
+	// Start ending
+	if (pelin_seuraava_tila == TILA_LOPPU)
+	{
+		PK_UI_Change(UI_TOUCH_TO_START);
+		if (settings.isWide)
+			PisteDraw2_SetXOffset(80);
+		else
+			PisteDraw2_SetXOffset(0);
+		PisteDraw2_ScreenFill(0);
+		PisteDraw2_Image_Delete(kuva_tausta);
+		kuva_tausta = PisteDraw2_Image_Load("gfx/ending.bmp", true);
+
+		if (PisteSound_StartMusic("music/intro.xm") != 0)
+		{
+			PK2_error = true;
+			PK2_error_msg = "Can't load intro.xm";
+		}
+
+		music_volume = settings.music_max_volume;
+
+		loppulaskuri = 0;
+		siirry_lopusta_menuun = false;
+		peli_kesken = false;
+
+		PisteDraw2_FadeIn(PD_FADE_FAST);
+	}
+
+	pelin_tila = pelin_seuraava_tila;
+
 	return 0;
 }
 int PK_MainScreen(){
-	PK_MainScreen_Change();
+	if (pelin_seuraava_tila != pelin_tila) PK_MainScreen_Change();
 
 	if (window_closed/*depr*/){
 		running = false;
@@ -7960,10 +7998,10 @@ void PK_Quit(){
 }
 
 void quit(){
-	printf("Exited correctely\n");
 	PK_Settings_Save("data/settings.ini");
 	PK_Unload();
 	Piste_Quit();
+	printf("Exited correctely\n");
 }
 int main(int argc, char *argv[]){
 	char* test_path = NULL;
@@ -8047,12 +8085,13 @@ int main(int argc, char *argv[]){
 		PK_Start_Test(test_path);
 	}
 
-	Piste_Loop(running, PK_MainScreen);
+	Piste_Loop(running, PK_MainScreen); //The game loop calls PK_MainScreen().
 
 	if(PK2_error){
 		printf("PK2    - Error!\n");
 		PisteUtils_Show_Error(PK2_error_msg);
 	}
-	quit();
+	
+	//quit(); Will be called by atexit()
 	return 0;
 }

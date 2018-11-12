@@ -10,6 +10,9 @@ res/data/
 res/editor/settings.dat
 res/episodes/*/scores.dat
 
+.vscode/
+.directory
+
 # Win32 stuff
 *.obj
 *.ilk

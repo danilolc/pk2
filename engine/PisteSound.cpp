@@ -165,7 +165,10 @@ int PisteSound_Update(){
 }
 int PisteSound_End(){
 	PisteSound_ResetSFX();
+	
 	if(music != NULL) Mix_FreeMusic(music);
+	music = NULL;
+	
 	Mix_CloseAudio();
 	return 0;
 }
