@@ -381,6 +381,8 @@ void PisteDraw2_FullScreen(bool set){
 		SDL_SetWindowPosition(PD_Window, SDL_WINDOWPOS_CENTERED , SDL_WINDOWPOS_CENTERED);
 		//TODO - adjust dst_rect too and turn off filters
 	}
+
+	PisteDraw2_AdjustScreen();
 	#endif
 }
 void PisteDraw2_AdjustScreen(){
@@ -411,11 +413,25 @@ void PisteDraw2_ChangeResolution(int w, int h) {
 
 	frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
 	SDL_FreeSurface(frameBuffer8);
-	SDL_DestroyRenderer(PD_Renderer);
-	SDL_DestroyWindow(PD_Window);
-	PD2_loaded = false;
 
-	PisteDraw2_Start(w, h, PD_WindowName);
+	
+	frameBuffer8 = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
+	frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
+	frameBuffer8->format->palette = game_palette;
+	SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
+	SDL_FillRect(frameBuffer8, NULL, 255);
+
+	SDL_Rect r = {0, 0, w, h};
+	SDL_SetClipRect(frameBuffer8, &r);
+
+	PD_screen_width = w;
+	PD_screen_height = h;
+	SDL_SetWindowSize(PD_Window, w, h);
+	SDL_SetWindowPosition(PD_Window, SDL_WINDOWPOS_CENTERED , SDL_WINDOWPOS_CENTERED);
+	
+	PisteDraw2_AdjustScreen();
+	SDL_RenderClear(PD_Renderer);
+
 }
 
 void PisteDraw2_GetWindowPosition(int* x, int* y) {

@@ -30,15 +30,11 @@ bool debug = false;
 bool draw = true;
 bool ready = false;
 
-void
-GDB_Break()
-{
+void GDB_Break() {
 	//Empty function called when press Q to use in GDB ("break GDB_Break()")
 }
 
-void
-EngineLogic(bool &running)
-{
+void EngineLogic(bool &running) {
 	SDL_Event event;
 
 	while(SDL_PollEvent(&event)) {
@@ -57,27 +53,19 @@ EngineLogic(bool &running)
 	}
 }
 
-void
-Piste_IgnoreFrame()
-{
+void Piste_IgnoreFrame() {
 	draw = false;
 }
 
-float
-Piste_GetFPS()
-{
+float Piste_GetFPS() {
 	return avrg_fps;
 }
 
-void
-Piste_SetDebug(bool set)
-{
+void Piste_SetDebug(bool set) {
 	debug = set;
 }
 
-int
-Piste_Init(int width, int height, const char* name)
-{
+int Piste_Init(int width, int height, const char* name) {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 		printf("Unable to init SDL: %s\n", SDL_GetError());
 		return -1;
@@ -91,9 +79,7 @@ Piste_Init(int width, int height, const char* name)
 	return 0;
 }
 
-int
-Piste_Loop(bool &running, int (*GameLogic)())
-{
+int Piste_Loop(bool &running, int (*GameLogic)()) {
 	int last_time = 0;
 	int count = 0; // Count how much frames elapsed
 	float real_fps = 0;
@@ -118,9 +104,7 @@ Piste_Loop(bool &running, int (*GameLogic)())
 	return 0;
 }
 
-int
-Piste_Quit()
-{
+int Piste_Quit() {
 	PisteDraw2_Exit();
 	PisteInput_Exit();
 	PisteSound_End();

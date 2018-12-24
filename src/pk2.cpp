@@ -1474,7 +1474,7 @@ int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 	return 0;
 }
 
-void PK_Kartta_Laske_Reunat(){
+void PK_Kartta_Laske_Reunat(){ //TODO
 	BYTE tile1, tile2, tile3;
 	bool reuna = false;
 
@@ -2474,8 +2474,8 @@ int PK_Map_Open_Locks(){
 	DWORD x,y;
 
 	avaimia = 0;
-	for (x=0; x<PK2KARTTA_KARTTA_LEVEYS; x++)
-		for (y=0; y<PK2KARTTA_KARTTA_KORKEUS; y++){
+	for (x=0; x < PK2KARTTA_KARTTA_LEVEYS; x++)
+		for (y=0; y < PK2KARTTA_KARTTA_KORKEUS; y++){
 			palikka = kartta->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
 			if (palikka == BLOCK_LUKKO){
 				kartta->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
@@ -3310,8 +3310,6 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka){
 		}
 	}
 }
-
-//PK_Move_Sprite
 
 int PK_Sprite_Movement(int i){
 	PK2Sprite &sprite = spritet[i]; //address of sprite = address of spritet[i] (if change sprite, change spritet[i])
@@ -4346,7 +4344,7 @@ int PK_Sprite_Movement(int i){
 	BYTE color;
 	DWORD plk;
 
-	if (PisteInput_Keydown(PI_B) && dev_mode) { // Drawo bounding box
+	if (PisteInput_Keydown(PI_B) && dev_mode) { // Draw bounding box
 
 		if (i == pelaaja_index) {
 
@@ -4835,7 +4833,7 @@ int PK_Sprite_Bonus_Movement(int i){
 		}
 	}
 
-	/* Ei k�y p�ins�, ett� pelaaja on bonusesine */
+	/* The energy doesn't matter that the player is a bonus item */
 	if (sprite.pelaaja != 0)
 		sprite.energia = 0;
 
@@ -6064,6 +6062,8 @@ int PK_Draw_Menu_Graphics(){
 			screen_width = settings.isWide ? 800 : 640;
 			PK2Kartta_Aseta_Ruudun_Mitat(screen_width, screen_height);
 			PisteDraw2_ChangeResolution(screen_width,screen_height);
+			if (settings.isWide) PisteDraw2_SetXOffset(80);
+			else PisteDraw2_SetXOffset(0);
 		}
 
 		if (PK_Draw_Menu_Text(true,"back",100,360)){
@@ -6957,7 +6957,7 @@ int PK_Draw_EndGame(){
 }
 
 //==================================================
-//UI
+//Android UI
 //==================================================
 
 void PK_UI_Activate(bool set){
