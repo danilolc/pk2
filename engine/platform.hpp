@@ -6,6 +6,20 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <ctime>
+#include <sys/stat.h>
+#include <fstream>
+
+#include <cmath> //sin cos
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
+#ifdef _WIN32
+    #include <direct.h>
+#elif __linux__ || __APPLE__
+    #include <unistd.h> //getcwd chdir
+#endif
 
 #ifdef __ANDROID__
     #include <android/log.h>
@@ -19,9 +33,9 @@
 #endif
 
 #ifdef _WIN32
-#define PE_SEP "\\"
+    #define PE_SEP "\\"
 #else
-#define PE_SEP "/"
+    #define PE_SEP "/"
 #endif
 
 #define PE_PATH_SIZE 128

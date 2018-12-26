@@ -19,27 +19,9 @@
 //	Starts the level13.map on dev mode
 //#########################
 
-#include <sys/stat.h>
-#include <fstream>
-#include <cmath> //sin cos
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-#include <ctime>
-
-#ifdef _WIN32
-#include <direct.h>
-
-#elif __linux__ || __APPLE__
-#include <unistd.h> //getcwd chdir
-
-#endif
-
 #include "PisteEngine.hpp"
 #include "map.hpp"
 #include "sprite.hpp"
-
-using namespace std;
 
 #define GAME_NAME   "Pekka Kana 2"
 #define PK2_VERSION "r3"
@@ -78,12 +60,12 @@ enum BLOCKS{
 
 
 struct PK2BLOCK{
-	BYTE		koodi;
-	bool		tausta;
-	BYTE		vasemmalle, oikealle, ylos, alas;
-	int			vasen, oikea, yla, ala;
-	bool		vesi;
-	bool		reuna;
+	BYTE	koodi;
+	bool	tausta;
+	BYTE	vasemmalle, oikealle, ylos, alas;
+	int 	vasen, oikea, yla, ala;
+	bool	vesi;
+	bool	reuna;
 };
 
 struct PK2BLOCKMASKI{

@@ -57,7 +57,6 @@ This example starts the level13.map on dev mode:
 * Find a solution to change sfx frequency without delay
 * Increase txt buttons area
 * Make the code cleaner (and remove all the Finnish things)
-* Do a better resolution change
 * Add link to Discord
 * Recover the loading scene
 * Jump frames when FPS is slow
