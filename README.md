@@ -58,6 +58,5 @@ This example starts the level13.map on dev mode:
 * Increase txt buttons area
 * Make the code cleaner (and remove all the Finnish things)
 * Add link to Discord
-* Recover the loading scene
 * Jump frames when FPS is slow
 * Start on language select on first start
