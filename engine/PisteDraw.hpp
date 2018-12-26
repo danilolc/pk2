@@ -67,7 +67,7 @@ void PisteDraw2_GetWindowPosition(int* x, int* y);
 
 int PisteDraw2_GetXOffset();
 void PisteDraw2_SetXOffset(int x);
-int PisteDraw2_Start(int width, int height, const char* name);
+int PisteDraw2_Start(int width, int height, const char* name, const char* icon);
 void PisteDraw2_Clear_Fonts();
 int PisteDraw2_Exit();
 void PisteDraw2_Update(bool draw);

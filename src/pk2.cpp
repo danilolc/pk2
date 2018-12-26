@@ -8055,7 +8055,7 @@ int main(int argc, char *argv[]){
 	#ifdef __ANDROID__
 	screen_width = 800;
 	#endif
-	if (Piste_Init(screen_width, screen_height, GAME_NAME) < 0) {
+	if (Piste_Init(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp") < 0) {
 		printf("PK2    - Failed to init PisteEngine.\n");
 		return 0;
 	}

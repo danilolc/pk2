@@ -25,6 +25,8 @@ const char* PD_WindowName;
 SDL_Window*   PD_Window = NULL;
 SDL_Renderer* PD_Renderer = NULL;
 
+SDL_Surface* window_icon; 
+
 SDL_Surface*  frameBuffer8 = NULL;
 
 SDL_Surface*  imageList[MAX_IMAGES];
@@ -445,7 +447,7 @@ void PisteDraw2_SetXOffset(int x) {
 	XOffset = x;
 }
 
-int PisteDraw2_Start(int width, int height, const char* name) {
+int PisteDraw2_Start(int width, int height, const char* name, const char* icon) {
 	if (PD2_loaded) return -1;
 
 	if (game_palette == NULL) {
@@ -469,7 +471,12 @@ int PisteDraw2_Start(int width, int height, const char* name) {
 	PD_Window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_WINDOW_SHOWN);
 
 	#else
+
 	PD_Window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
+
+	window_icon = SDL_LoadBMP(icon);
+	SDL_SetWindowIcon(PD_Window, window_icon);
+
 	#endif
 
 	PD_Renderer = SDL_CreateRenderer(PD_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -515,6 +522,8 @@ int PisteDraw2_Exit(){
 	SDL_FreeSurface(frameBuffer8);
 	SDL_DestroyRenderer(PD_Renderer);
 	SDL_DestroyWindow(PD_Window);
+
+	if(window_icon != NULL) SDL_FreeSurface(window_icon);
 
 	PD2_loaded = false;
 	return 0;

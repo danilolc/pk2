@@ -65,13 +65,13 @@ void Piste_SetDebug(bool set) {
 	debug = set;
 }
 
-int Piste_Init(int width, int height, const char* name) {
+int Piste_Init(int width, int height, const char* name, const char* icon) {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 		printf("Unable to init SDL: %s\n", SDL_GetError());
 		return -1;
 	}
 
-	PisteDraw2_Start(width, height, name);
+	PisteDraw2_Start(width, height, name, icon);
 	PisteInput_Start();
 	PisteSound_Start();
 
