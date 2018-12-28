@@ -13,7 +13,7 @@ class PisteFont2{
 private:
 	int charList[256];
 	int char_w, char_h, char_count;
-	int ImageIndex;
+	int ImageIndex = -1;
 	int InitCharList();
 	int GetImage(int x,int y,int img_source);
 

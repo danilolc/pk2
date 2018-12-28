@@ -180,4 +180,4 @@ font information
 *font big font normal:		cyrillicsbig1.txt
 *font big font hilite:		cyrillicsbig2.txt
 *font big font shadow:		cyrillicsbig3.txt
-*font path:			language\\fonts\\
+*font path:			language/fonts/

@@ -341,7 +341,7 @@ int PisteDraw2_Font_Create(int image, int x, int y, int char_w, int char_h, int 
   return index;
 }
 int PisteDraw2_Font_Create(char* path, char* file){
-	printf("PD     - Created font with path %s e file %s\n",path,file);
+	printf("PD     - Creating font with path %s e file %s\n",path,file);
 	int index;
 
 	index = findfreefont();
@@ -352,7 +352,7 @@ int PisteDraw2_Font_Create(char* path, char* file){
 
 	fontList[index] = new PisteFont2();
 	if (fontList[index]->LoadFile(path,file) == -1){
-		printf("PD     - PisteDraw can't load a font from file!");
+		printf("PD     - PisteDraw can't load a font from file!\n");
 		delete fontList[index];
 		return -1;
 	}

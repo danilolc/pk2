@@ -1,6 +1,6 @@
 Font attributes
 ---------------
-*image:		CYRILLIC.bmp
+*image:		cyrillic.bmp
 *image width:	900
 *image x:	0
 *image y:	22

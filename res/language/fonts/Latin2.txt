@@ -3,8 +3,8 @@ Font attributes
 *image:		Latin.bmp
 *image width:	900
 *image x:	0
-*image y:	0
-*letters:	áãàâäßçèéêëíóõùôöúüûÿabcdefghijklmnopqrstuvwxyz0123456789.!?
+*image y:	22
+*letters:	áãàâäßçèéêëíóõôöùúüûÿabcdefghijklmnopqrstuvwxyz0123456789.!?
 *letter width:	15
 *letter height:	21
 

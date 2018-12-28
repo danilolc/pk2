@@ -230,5 +230,6 @@ PisteFont2::PisteFont2(){
 	char_count = 0;
 }
 PisteFont2::~PisteFont2(){
-	PisteDraw2_Image_Delete(ImageIndex);
+	if(ImageIndex != -1)
+		PisteDraw2_Image_Delete(ImageIndex);
 }

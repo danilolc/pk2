@@ -180,5 +180,5 @@ Font Information
 *font big font normal:		Latin1.txt
 *font big font hilite:		Latin2.txt
 *font big font shadow:		Latin3.txt
-*font path:			language\\fonts\\
+*font path:			language/fonts/
 		
