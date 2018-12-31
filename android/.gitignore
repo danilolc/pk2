@@ -4,3 +4,4 @@ obj/
 libs/
 .idea/
 local.properties
+.project
