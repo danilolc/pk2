@@ -416,8 +416,8 @@ char tyohakemisto[PE_PATH_SIZE];
 bool paused = false;
 int game_screen = SCREEN_NOT_SET;
 int game_next_screen = SCREEN_BASIC_FORMAT;
-bool peli_kesken = false;
-bool go_to_the_game = false;
+bool game_started = false;
+bool going_to_game = false;
 bool siirry_pistelaskusta_karttaan = false;
 
 int nakymattomyys = 0;
@@ -1287,7 +1287,7 @@ int PK_Load_Records(int i){
 
 		game_next_screen = SCREEN_MAP;
 		lataa_peli = i;
-		peli_kesken = false;
+		game_started = false;
 	}
 
 	return 0;
@@ -1353,6 +1353,26 @@ void PK_Play_MenuSound(int aani, int voimakkuus){
 }
 
 
+void PK_Updade_Mouse(){
+	#ifdef __ANDROID__
+    	float x, y;
+		PisteInput_GetTouchPos(x, y);
+
+		hiiri_x = screen_width * x - PisteDraw2_GetXOffset();
+		hiiri_y = screen_height * y;
+	#else
+		MOUSE hiiri = PisteInput_UpdateMouse(game_screen == SCREEN_MAP, settings.isFullScreen);
+		hiiri.x -= PisteDraw2_GetXOffset();
+
+		if (hiiri.x < 0) hiiri.x = 0;
+		if (hiiri.y < 0) hiiri.y = 0;
+		if (hiiri.x > 640-19) hiiri.x = 640-19;
+		if (hiiri.y > 480-19) hiiri.y = 480-19;
+
+		hiiri_x = hiiri.x;
+		hiiri_y = hiiri.y;
+	#endif
+}
 
 
 void PK_Precalculate_SinCos(){
@@ -1458,15 +1478,15 @@ int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 	return 0;
 }
 
-void PK_Kartta_Laske_Reunat(){ //TODO
+void PK_Map_Calculate_Edges(){ //TODO
 	BYTE tile1, tile2, tile3;
-	bool reuna = false;
+	bool edge = false;
 
 	memset(kartta->reunat, false, sizeof(kartta->reunat));
 
 	for (int x=1;x<PK2KARTTA_KARTTA_LEVEYS-1;x++)
 		for (int y=0;y<PK2KARTTA_KARTTA_KORKEUS-1;y++){
-			reuna = false;
+			edge = false;
 
 			tile1 = kartta->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
@@ -1488,18 +1508,18 @@ void PK_Kartta_Laske_Reunat(){ //TODO
 				if (tile1 == 1){
 					tile3 = kartta->seinat[x+1+y*PK2KARTTA_KARTTA_LEVEYS];
 					if (tile3 > 79 || (tile3 < 60 && tile3 > 49) || tile3 == BLOCK_ESTO_ALAS)
-						reuna = true;
+						edge = true;
 				}
 
 				if (tile2 == 1){
 					tile3 = kartta->seinat[x-1+y*PK2KARTTA_KARTTA_LEVEYS];
 					if (tile3 > 79 || (tile3 < 60 && tile3 > 49) || tile3 == BLOCK_ESTO_ALAS)
-						reuna = true;
+						edge = true;
 				}
 
-				if (reuna){
+				if (edge){
 					kartta->reunat[x+y*PK2KARTTA_KARTTA_LEVEYS] = true;
-					//kartta->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 49;
+					//kartta->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 49; //Debug
 				}
 			}
 		}
@@ -2447,7 +2467,7 @@ int PK_Map_Change_SkullBlocks(){
 
 	//PK_Start_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
 
-	PK_Kartta_Laske_Reunat();
+	PK_Map_Calculate_Edges();
 
 	return 0;
 }
@@ -2470,7 +2490,7 @@ int PK_Map_Open_Locks(){
 
 	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
 
-	PK_Kartta_Laske_Reunat();
+	PK_Map_Calculate_Edges();
 
 	return 0;
 }
@@ -2578,7 +2598,7 @@ int PK_Map_Open(char *nimi){
 	PK_Map_Count_Keys();
 	PK_Particles_Clear();
 	PK_BGParticles_Load();
-	PK_Kartta_Laske_Reunat();
+	PK_Map_Calculate_Edges();
 
 	if (strcmp(kartta->musiikki,"")!=0){
 		char biisi[PE_PATH_SIZE] = "";
@@ -3164,7 +3184,7 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka){
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_LUKKO && sprite.tyyppi->avain){
 			kartta->seinat[palikka.vasen/32+(palikka.yla/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
-			PK_Kartta_Laske_Reunat();
+			PK_Map_Calculate_Edges();
 
 			sprite.piilota = true;
 
@@ -3778,22 +3798,22 @@ int PK_Sprite_Movement(int i){
 							sprite2->hyppy_ajastin = 1;
 						}
 
-						// Is there another sprite damaging
-
+						// If there is another sprite damaging
 						if (sprite.tyyppi->vahinko > 0 && sprite2->tyyppi->tyyppi != TYYPPI_BONUS) {
-							sprite2->saatu_vahinko		  = sprite.tyyppi->vahinko;
+							
+							sprite2->saatu_vahinko        = sprite.tyyppi->vahinko;
 							sprite2->saatu_vahinko_tyyppi = sprite.tyyppi->vahinko_tyyppi;
-							sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
+							
+							if ( !(sprite2->pelaaja && nakymattomyys) ) //If sprite2 isn't a invisible player
+								sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika; //Then sprite attack
 
-							// Ammukset hajoavat t�rm�yksest�
-
+							// The projectiles are shattered by shock
 							if (sprite2->tyyppi->tyyppi == TYYPPI_AMMUS) {
 								sprite.saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
 								sprite.saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
 							}
 
-							if (sprite.tyyppi->tyyppi == TYYPPI_AMMUS)
-							{
+							if (sprite.tyyppi->tyyppi == TYYPPI_AMMUS) {
 								sprite.saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
 								sprite.saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
 							}
@@ -5400,79 +5420,63 @@ int PK_Draw_InGame(){
 	char luku[15];
 	int vali = 20;
 
-	if (!skip_frame)
+	if (!skip_frame){
+
 		PK_Draw_InGame_BG();
 
-	if (!skip_frame)
 		if (settings.tausta_spritet)
 			PK_Draw_InGame_BGSprites();
 
-	if (settings.saa_efektit)
-		PK_BGParticles_Update();
-
-	if (!skip_frame)
 		kartta->Piirra_Taustat(kamera_x,kamera_y,false);
 
-	if (!paused){
-		PK_Particles_Update();
-		if (!jakso_lapaisty && (!aikaraja || timeout > 0))
-			PK_Update_Sprites();
-		PK_Fadetext_Update();
-	}
-
-	if (!skip_frame)
 		PK_Draw_InGame_Sprites();
 
-	if (!skip_frame)
 		PK_Particles_Draw();
 
-	if (!skip_frame)
 		kartta->Piirra_Seinat(kamera_x,kamera_y, false);
 
-	if (settings.nayta_tavarat)
-		PK_Draw_InGame_Lower_Menu();
+		if (settings.nayta_tavarat)
+			PK_Draw_InGame_Lower_Menu();
 
-	PK_Fadetext_Draw();
+		PK_Fadetext_Draw();
 
-	PK_Draw_InGame_UI();
+		PK_Draw_InGame_UI();
 
-	if (draw_dubug_info)
-		PK_Draw_InGame_DebugInfo();
-	else {
-		if (dev_mode)
-			PK_Draw_InGame_DevKeys();
-		if (test_level)
-			PisteDraw2_Font_Write(fontti1, "testing level", 0, 480 - 20);
-		if (show_fps) {
-			if (fps >= 100)
-				vali = PisteDraw2_Font_Write(fontti1, "fps:", 570, 48);
-			else
-				vali = PisteDraw2_Font_Write(fontti1, "fps: ", 570, 48);
-			fps = Piste_GetFPS();
-			itoa((int)fps, luku, 10);
-			PisteDraw2_Font_Write(fontti1, luku, 570 + vali, 48);
+		if (draw_dubug_info)
+			PK_Draw_InGame_DebugInfo();
+		else {
+			if (dev_mode)
+				PK_Draw_InGame_DevKeys();
+			if (test_level)
+				PisteDraw2_Font_Write(fontti1, "testing level", 0, 480 - 20);
+			if (show_fps) {
+				if (fps >= 100)
+					vali = PisteDraw2_Font_Write(fontti1, "fps:", 570, 48);
+				else
+					vali = PisteDraw2_Font_Write(fontti1, "fps: ", 570, 48);
+				fps = Piste_GetFPS();
+				itoa((int)fps, luku, 10);
+				PisteDraw2_Font_Write(fontti1, luku, 570 + vali, 48);
+			}
 		}
+
+		if (paused)
+			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.game_paused),screen_width/2-82,screen_height/2-9);
+
+		if (jakso_lapaisty)
+			PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
+		else
+			if (peli_ohi){
+				if (spritet[pelaaja_index].energia < 1)
+					PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
+				else
+					if (timeout < 1 && aikaraja)
+						PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
+
+				PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
+			}
 	}
-
-	if (paused)
-		PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.game_paused),screen_width/2-82,screen_height/2-9);
-
-	////////////////////////
-	// Draw Transition Text (Game clear, KO, Timeout, Try Again)
-	////////////////////////
-	if (jakso_lapaisty)
-		PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
-	else
-		if (peli_ohi){
-			if (spritet[pelaaja_index].energia < 1)
-				PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
-			else
-				if (timeout < 1 && aikaraja)
-					PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
-
-			PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
-		}
-
+	
 	if (skip_frame) Piste_IgnoreFrame();
 
 	if (doublespeed) skip_frame = !skip_frame;
@@ -5495,7 +5499,7 @@ int PK_Draw_Cursor(int x,int y){
 }
 
 int  PK_Draw_Menu_Square(int vasen, int yla, int oikea, int ala, BYTE pvari){
-	if (peli_kesken)
+	if (game_started)
 		return 0;
 
 	//pvari = 224;
@@ -5681,7 +5685,7 @@ int PK_Draw_Menu_Main(){
 
 	PK_Draw_Menu_Square(160, 200, 640-180, 410, 224);
 
-	if (peli_kesken){
+	if (game_started){
 		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_continue),180,my)){
 			if ((!peli_ohi && !jakso_lapaisty) || lopetusajastin > 1)
 				game_next_screen = SCREEN_GAME;
@@ -5701,7 +5705,7 @@ int PK_Draw_Menu_Main(){
 	}
 	my += 20;
 
-	if (peli_kesken){
+	if (game_started){
 		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_save_game),180,my)){
 			menu_nyt = MENU_TALLENNA;
 		}
@@ -5849,7 +5853,7 @@ int PK_Draw_Menu_Name(){
 		if (episodi_lkm == 1) {
 			strcpy(episodi,episodit[2]);
 			game_next_screen = SCREEN_MAP;
-			peli_kesken = false;
+			game_started = false;
 			PK_New_Game();
 		}
 	}
@@ -6377,7 +6381,7 @@ int PK_Draw_Menu_Episodes(){
 				strcpy(episodi,episodit[i]);
 				PK_Load_InfoText();
 				game_next_screen = SCREEN_MAP;
-				peli_kesken = false;
+				game_started = false;
 				PK_New_Game();
 				//PisteDraw2_FadeIn(PD_FADE_NORMAL);
 			}
@@ -6445,7 +6449,8 @@ int PK_Draw_Menu_Language(){
 }
 
 int PK_Draw_Menu(){
-	PisteDraw2_Image_Clip(kuva_tausta, peli_kesken? -80 : 0 ,0);
+	//PisteDraw2_Image_Clip(kuva_tausta, game_started? -80 : 0 ,0);
+	PisteDraw2_Image_Clip(kuva_tausta, (game_started && settings.isWide)? -80 : 0, 0);
 
 	menu_valinta_id = 1;
 
@@ -6587,12 +6592,12 @@ int PK_Draw_Map(){
 
 			paluu = PK_Draw_Map_Button(jaksot[i].x-5, jaksot[i].y-10, tyyppi);
 
-			// jos klikattu
+			// if clicked
 			if (paluu == 2) {
 				if (tyyppi != 2 || dev_mode) {
 					strcpy(seuraava_kartta,jaksot[i].tiedosto);
 					jakso_indeksi_nyt = i;
-					go_to_the_game = true;
+					going_to_game = true;
 					PisteDraw2_FadeOut(PD_FADE_SLOW);
 					music_volume = 0;
 					PK_Play_MenuSound(kieku_aani,90);
@@ -7005,7 +7010,7 @@ int PK_MainScreen_Intro(){
 
 	if (siirry_introsta_menuun && !PisteDraw2_IsFading()){
 		game_next_screen = SCREEN_MENU;
-		peli_kesken = false;
+		game_started = false;
 	}
 	if (key_delay > 0) key_delay--;
 	if (key_delay == 0)
@@ -7088,7 +7093,7 @@ int PK_MainScreen_ScoreCount(){
 		else // jos ei niin palataan karttaan...
 		{
 			game_next_screen = SCREEN_MAP;
-			//peli_kesken = false;
+			//game_started = false;
 			menu_nyt = MENU_MAIN;
 		}
 	}
@@ -7127,12 +7132,10 @@ int PK_MainScreen_Map(){
 
 	degree = 1 + degree % 360;
 
-	if (go_to_the_game && !PisteDraw2_IsFading()) {
+	if (going_to_game && !PisteDraw2_IsFading()) {
 		game_next_screen = SCREEN_GAME;
-		//strcpy(seuraava_kartta,jaksot[i].tiedosto);
-		peli_kesken = false;//true;
-		//PisteDraw2_FadeIn(PD_FADE_NORMAL);
 		
+		//Draw "loading" text
 		PisteDraw2_SetXOffset(0);
 		PisteDraw2_ScreenFill(0);
 		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.game_loading), screen_width / 2 - 82, screen_height / 2 - 9);
@@ -7194,8 +7197,18 @@ int PK_MainScreen_Menu(){
 	return 0;
 }
 int PK_MainScreen_InGame(){
+
 	PK2Kartta_Animoi(degree,palikka_animaatio/7,kytkin1,kytkin2,kytkin3,false);
 	PK_Update_Camera();
+
+	if (settings.saa_efektit)
+		PK_BGParticles_Update();
+	if (!paused){
+		PK_Particles_Update();
+		if (!jakso_lapaisty && (!aikaraja || timeout > 0))
+			PK_Update_Sprites();
+		PK_Fadetext_Update();
+	}
 
 	PK_Draw_InGame();
 
@@ -7387,7 +7400,7 @@ int PK_MainScreen_End(){
 	{
 		game_next_screen = SCREEN_MENU;
 		menu_nyt = MENU_MAIN;
-		peli_kesken = false;
+		game_started = false;
 	}
 
 	if (key_delay > 0)
@@ -7553,7 +7566,7 @@ int PK_MainScreen_Change() {
 			PisteDraw2_SetXOffset(0);
 		PisteDraw2_ScreenFill(0);
 
-		if (!peli_kesken)
+		if (!game_started)
 		{
 			if (lataa_peli != -1)
 			{
@@ -7563,7 +7576,7 @@ int PK_MainScreen_Change() {
 					jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
 
 				lataa_peli = -1;
-				peli_kesken = true;
+				game_started = true;
 				peli_ohi = true;
 				jakso_lapaisty = true;
 				lopetusajastin = 0;
@@ -7630,7 +7643,7 @@ int PK_MainScreen_Change() {
 
 		music_volume = settings.music_max_volume;
 
-		go_to_the_game = false;
+		going_to_game = false;
 
 		PisteDraw2_FadeIn(PD_FADE_SLOW);
 	}
@@ -7645,7 +7658,7 @@ int PK_MainScreen_Change() {
 			PisteDraw2_SetXOffset(0);
 		PK_Search_Episode();
 
-		if (!peli_kesken)
+		if (!game_started)
 		{
 			PisteDraw2_Image_Delete(kuva_tausta);
 			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp", true);
@@ -7674,7 +7687,7 @@ int PK_MainScreen_Change() {
 		menu_valittu_id = 1;
 	}
 
-	// Start loading scene
+	// Start game
 	if (game_next_screen == SCREEN_GAME)
 	{
 		PK_UI_Change(UI_GAME_BUTTONS);
@@ -7685,7 +7698,7 @@ int PK_MainScreen_Change() {
 		else
 			uusinta = false;
 
-		if (!peli_kesken)
+		if (!game_started)
 		{
 			jakso_lapaisty = false;
 
@@ -7702,7 +7715,7 @@ int PK_MainScreen_Change() {
 			PK_Fadetext_Init(); //Reset fade text
 
 			PK_Gift_Clean();
-			peli_kesken = true;
+			game_started = true;
 			music_volume = settings.music_max_volume;
 			degree = 0;
 			item_paneeli_x = -215;
@@ -7832,7 +7845,7 @@ int PK_MainScreen_Change() {
 
 		loppulaskuri = 0;
 		siirry_lopusta_menuun = false;
-		peli_kesken = false;
+		game_started = false;
 
 		PisteDraw2_FadeIn(PD_FADE_FAST);
 	}
@@ -7842,27 +7855,8 @@ int PK_MainScreen_Change() {
 	return 0;
 }
 
-void PK_Updade_Mouse(){
-	#ifdef __ANDROID__
-    	float x, y;
-		PisteInput_GetTouchPos(x, y);
 
-		hiiri_x = screen_width * x - PisteDraw2_GetXOffset();
-		hiiri_y = screen_height * y;
-	#else
-		MOUSE hiiri = PisteInput_UpdateMouse(game_screen == SCREEN_MAP, settings.isFullScreen);
-		hiiri.x -= PisteDraw2_GetXOffset();
-
-		if (hiiri.x < 0) hiiri.x = 0;
-		if (hiiri.y < 0) hiiri.y = 0;
-		if (hiiri.x > 640-19) hiiri.x = 640-19;
-		if (hiiri.y > 480-19) hiiri.y = 480-19;
-
-		hiiri_x = hiiri.x;
-		hiiri_y = hiiri.y;
-	#endif
-}
-
+//The game loop
 int PK_MainScreen(){
 	if (game_next_screen != game_screen) PK_MainScreen_Change();
 
@@ -7874,13 +7868,13 @@ int PK_MainScreen(){
 	PK_Updade_Mouse();
 	
 	switch (game_screen){
-		case SCREEN_GAME       : PK_MainScreen_InGame();       break;
-		case SCREEN_MENU      : PK_MainScreen_Menu();      break;
-		case SCREEN_MAP     : PK_MainScreen_Map();     break;
+		case SCREEN_GAME    : PK_MainScreen_InGame();     break;
+		case SCREEN_MENU    : PK_MainScreen_Menu();       break;
+		case SCREEN_MAP     : PK_MainScreen_Map();        break;
 		case SCREEN_SCORING : PK_MainScreen_ScoreCount(); break;
-		case SCREEN_INTRO      : PK_MainScreen_Intro();      break;
-		case SCREEN_END      : PK_MainScreen_End();      break;
-		default              : lopeta_peli = true;   break;
+		case SCREEN_INTRO   : PK_MainScreen_Intro();      break;
+		case SCREEN_END     : PK_MainScreen_End();        break;
+		default             : lopeta_peli = true;         break;
 	}
 
 	// Update music volume
@@ -7965,12 +7959,7 @@ void PK_Start_Test(const char* arg){
 	printf("PK2    - testing episode '%s' level '%s'\n", episodi, seuraava_kartta);
 
 	PK_Load_InfoText();
-	peli_kesken = false;
 	PK_New_Game();
-
-	go_to_the_game = true;
-	music_volume = 0;
-	peli_kesken = false;
 }
 
 void PK_Unload(){
