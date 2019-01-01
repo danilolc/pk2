@@ -52,6 +52,10 @@ This example starts the level13.map on dev mode:
 
 
 # TODOs and FIXMEs:
+* Fix intro screen
+* Update health before draw
+* Draw dust outside screen
+
 * Consider Sprite in Water when the water is on BG or outside the screen
 * Fix the mikmod music loop
 * Find a solution to change sfx frequency without delay

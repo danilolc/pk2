@@ -3314,10 +3314,10 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka){
 }
 
 int PK_Sprite_Movement(int i){
-	PK2Sprite &sprite = spritet[i]; //address of sprite = address of spritet[i] (if change sprite, change spritet[i])
-
 	if (i >= MAX_SPRITEJA || i < 0)
 		return -1;
+
+	PK2Sprite &sprite = spritet[i]; //address of sprite = address of spritet[i] (if change sprite, change spritet[i])
 
 	if (!sprite.tyyppi)
 		return -1;
@@ -4265,6 +4265,8 @@ int PK_Sprite_Movement(int i){
 	if (sprite.x > PK2KARTTA_KARTTA_LEVEYS*32)
 		sprite.x = PK2KARTTA_KARTTA_LEVEYS*32;
 
+	if(sprite.x != sprite_x) printf("%f, %f\n", sprite.x, sprite_x);
+
 	// If the sprite falls under the lower edge of the map
 	if (sprite.y > PK2KARTTA_KARTTA_KORKEUS*32 + sprite_korkeus) {
 
@@ -4844,12 +4846,9 @@ int PK_Sprite_Bonus_Movement(int i){
 
 int PK_Update_Sprites(){
 	debug_active_sprites = 0;
-
-	//bool aktiivinen;
 	int i;
 
-	for (i=0;i<MAX_SPRITEJA;i++){ //If it is on screen
-		// Onko sprite l�hell� tapahtumien keskipistett�? Jos on, niin aktivoidaan.
+	for (i = 0; i < MAX_SPRITEJA; i++){ //Activate sprite if it is on screen
 		if (spritet[i].x < kamera_x+640+320 &&//screen_width+screen_width/2 &&
 			spritet[i].x > kamera_x-320 &&//screen_width/2 &&
 			spritet[i].y < kamera_y+480+240 &&//screen_height+screen_height/2 &&
@@ -4862,7 +4861,7 @@ int PK_Update_Sprites(){
 			spritet[i].aktiivinen = false;
 	}
 
-	for (i=0;i<MAX_SPRITEJA;i++){ //1
+	for (i = 0; i < MAX_SPRITEJA; i++){
 		if (spritet[i].aktiivinen && spritet[i].tyyppi->tyyppi != TYYPPI_TAUSTA){
 			if (spritet[i].tyyppi->tyyppi == TYYPPI_BONUS)
 				PK_Sprite_Bonus_Movement(i);
