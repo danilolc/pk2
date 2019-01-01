@@ -186,9 +186,9 @@ int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int a
 		curr_char = text[i];
 		ix = charList[(BYTE)toupper(curr_char)];
 		if (ix > -1){
-			for (x=0;x<char_w;x++){
+			for (x = 0; x < char_w; x++){
 				fx = posx + x + i * char_w;
-				if(fx >= 800) break; //Screen weight
+				if(fx >= back_w) break; //Screen weight
 
 				for (y=0;y<char_h;y++){
 					color1 = txt_buffer[ix+x+y*txt_w];

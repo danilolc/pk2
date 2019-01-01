@@ -6048,6 +6048,10 @@ int PK_Draw_Menu_Graphics(){
 			screen_width = settings.isWide ? 800 : 640;
 			PK2Kartta_Aseta_Ruudun_Mitat(screen_width, screen_height);
 			PisteDraw2_ChangeResolution(screen_width,screen_height);
+			
+			if(game_started)
+				PisteDraw2_ImageFill(kuva_tausta, 0);
+			
 			if (settings.isWide) PisteDraw2_SetXOffset(80);
 			else PisteDraw2_SetXOffset(0);
 		}
@@ -6450,6 +6454,7 @@ int PK_Draw_Menu_Language(){
 
 int PK_Draw_Menu(){
 	//PisteDraw2_Image_Clip(kuva_tausta, game_started? -80 : 0 ,0);
+	PisteDraw2_ScreenFill(0);
 	PisteDraw2_Image_Clip(kuva_tausta, (game_started && settings.isWide)? -80 : 0, 0);
 
 	menu_valinta_id = 1;
@@ -6513,7 +6518,7 @@ int PK_Draw_Map(){
 	int vali = 20;
 
 	PisteDraw2_ScreenFill(0);
-	PisteDraw2_Image_Clip(kuva_tausta,0,0);
+	PisteDraw2_Image_Clip(kuva_tausta, 0, 0);
 
 	PisteDraw2_Font_Write(fontti4,episodi,100+2,72+2);
 	PisteDraw2_Font_Write(fontti2,episodi,100,72);
@@ -6655,7 +6660,7 @@ int PK_Draw_ScoreCount(){
 	int	vari = 0, kerroin;
 
 	PisteDraw2_ScreenFill(0);
-	PisteDraw2_Image_Clip(kuva_tausta,0,0);
+	PisteDraw2_Image_Clip(kuva_tausta, 0, 0);
 
 	for (aste=0;aste<18;aste++) {
 
@@ -6797,8 +6802,7 @@ int PK_Draw_Intro(){
 	DWORD kaantaja_loppu	= kaantaja_alku + 300;
 
 	PisteDraw2_ScreenFill(0);
-
-	PisteDraw2_Image_CutClip(kuva_tausta,280,80, 280, 80, 640, 480);
+	PisteDraw2_Image_CutClip(kuva_tausta, 280, 80, 280, 80, 640, 480);
 
 	if ((introlaskuri / 10) % 50 == 0)
 		PisteDraw2_Image_CutClip(kuva_tausta,353, 313, 242, 313, 275, 432);
@@ -7675,7 +7679,7 @@ int PK_MainScreen_Change() {
 				kuva_tausta = PisteDraw2_Image_New(screen_width, screen_height);
 			}
 			PisteDraw2_Image_Snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
-			PK_MenuShadow_Create(kuva_tausta, 640, 480, 110);
+			PK_MenuShadow_Create(kuva_tausta, 640, 480, settings.isWide? 110 : 30);
 		}
 
 		menunelio.left = 320 - 5;
