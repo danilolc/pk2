@@ -416,7 +416,7 @@ char tyohakemisto[PE_PATH_SIZE];
 bool paused = false;
 int game_screen = SCREEN_NOT_SET;
 int game_next_screen = SCREEN_BASIC_FORMAT;
-bool game_started = false;
+bool episode_started = false;
 bool going_to_game = false;
 bool siirry_pistelaskusta_karttaan = false;
 
@@ -1287,7 +1287,7 @@ int PK_Load_Records(int i){
 
 		game_next_screen = SCREEN_MAP;
 		lataa_peli = i;
-		game_started = false;
+		episode_started = false;
 	}
 
 	return 0;
@@ -5498,7 +5498,7 @@ int PK_Draw_Cursor(int x,int y){
 }
 
 int  PK_Draw_Menu_Square(int vasen, int yla, int oikea, int ala, BYTE pvari){
-	if (game_started)
+	if (episode_started)
 		return 0;
 
 	//pvari = 224;
@@ -5684,7 +5684,7 @@ int PK_Draw_Menu_Main(){
 
 	PK_Draw_Menu_Square(160, 200, 640-180, 410, 224);
 
-	if (game_started){
+	if (episode_started){
 		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_continue),180,my)){
 			if ((!peli_ohi && !jakso_lapaisty) || lopetusajastin > 1)
 				game_next_screen = SCREEN_GAME;
@@ -5704,7 +5704,7 @@ int PK_Draw_Menu_Main(){
 	}
 	my += 20;
 
-	if (game_started){
+	if (episode_started){
 		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_save_game),180,my)){
 			menu_nyt = MENU_TALLENNA;
 		}
@@ -5852,7 +5852,7 @@ int PK_Draw_Menu_Name(){
 		if (episodi_lkm == 1) {
 			strcpy(episodi,episodit[2]);
 			game_next_screen = SCREEN_MAP;
-			game_started = false;
+			episode_started = false;
 			PK_New_Game();
 		}
 	}
@@ -6048,7 +6048,7 @@ int PK_Draw_Menu_Graphics(){
 			PK2Kartta_Aseta_Ruudun_Mitat(screen_width, screen_height);
 			PisteDraw2_ChangeResolution(screen_width,screen_height);
 			
-			if(game_started)
+			if(episode_started)
 				PisteDraw2_ImageFill(kuva_tausta, 0);
 			
 			if (settings.isWide) PisteDraw2_SetXOffset(80);
@@ -6384,7 +6384,7 @@ int PK_Draw_Menu_Episodes(){
 				strcpy(episodi,episodit[i]);
 				PK_Load_InfoText();
 				game_next_screen = SCREEN_MAP;
-				game_started = false;
+				episode_started = false;
 				PK_New_Game();
 				//PisteDraw2_FadeIn(PD_FADE_NORMAL);
 			}
@@ -6452,9 +6452,8 @@ int PK_Draw_Menu_Language(){
 }
 
 int PK_Draw_Menu(){
-	//PisteDraw2_Image_Clip(kuva_tausta, game_started? -80 : 0 ,0);
 	PisteDraw2_ScreenFill(0);
-	PisteDraw2_Image_Clip(kuva_tausta, (game_started && settings.isWide)? -80 : 0, 0);
+	PisteDraw2_Image_Clip(kuva_tausta, (episode_started && settings.isWide)? -80 : 0, 0);
 
 	menu_valinta_id = 1;
 
@@ -7013,7 +7012,7 @@ int PK_MainScreen_Intro(){
 
 	if (siirry_introsta_menuun && !PisteDraw2_IsFading()){
 		game_next_screen = SCREEN_MENU;
-		game_started = false;
+		episode_started = false;
 	}
 	if (key_delay > 0) key_delay--;
 	if (key_delay == 0)
@@ -7096,7 +7095,7 @@ int PK_MainScreen_ScoreCount(){
 		else // jos ei niin palataan karttaan...
 		{
 			game_next_screen = SCREEN_MAP;
-			//game_started = false;
+			//episode_started = false;
 			menu_nyt = MENU_MAIN;
 		}
 	}
@@ -7138,6 +7137,8 @@ int PK_MainScreen_Map(){
 	if (going_to_game && !PisteDraw2_IsFading()) {
 		game_next_screen = SCREEN_GAME;
 		
+		episode_started = false;
+
 		//Draw "loading" text
 		PisteDraw2_SetXOffset(0);
 		PisteDraw2_ScreenFill(0);
@@ -7403,7 +7404,7 @@ int PK_MainScreen_End(){
 	{
 		game_next_screen = SCREEN_MENU;
 		menu_nyt = MENU_MAIN;
-		game_started = false;
+		episode_started = false;
 	}
 
 	if (key_delay > 0)
@@ -7569,7 +7570,7 @@ int PK_MainScreen_Change() {
 			PisteDraw2_SetXOffset(0);
 		PisteDraw2_ScreenFill(0);
 
-		if (!game_started)
+		if (!episode_started)
 		{
 			if (lataa_peli != -1)
 			{
@@ -7579,7 +7580,7 @@ int PK_MainScreen_Change() {
 					jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
 
 				lataa_peli = -1;
-				game_started = true;
+				episode_started = true;
 				peli_ohi = true;
 				jakso_lapaisty = true;
 				lopetusajastin = 0;
@@ -7661,7 +7662,7 @@ int PK_MainScreen_Change() {
 			PisteDraw2_SetXOffset(0);
 		PK_Search_Episode();
 
-		if (!game_started)
+		if (!episode_started)
 		{
 			PisteDraw2_Image_Delete(kuva_tausta);
 			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp", true);
@@ -7701,7 +7702,7 @@ int PK_MainScreen_Change() {
 		else
 			uusinta = false;
 
-		if (!game_started)
+		if (!episode_started)
 		{
 			jakso_lapaisty = false;
 
@@ -7718,7 +7719,7 @@ int PK_MainScreen_Change() {
 			PK_Fadetext_Init(); //Reset fade text
 
 			PK_Gift_Clean();
-			game_started = true;
+			episode_started = true;
 			music_volume = settings.music_max_volume;
 			degree = 0;
 			item_paneeli_x = -215;
@@ -7848,7 +7849,7 @@ int PK_MainScreen_Change() {
 
 		loppulaskuri = 0;
 		siirry_lopusta_menuun = false;
-		game_started = false;
+		episode_started = false;
 
 		PisteDraw2_FadeIn(PD_FADE_FAST);
 	}
