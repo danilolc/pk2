@@ -1374,7 +1374,6 @@ void PK_Updade_Mouse(){
 	#endif
 }
 
-
 void PK_Precalculate_SinCos(){
 	int i;
 	for (i=0; i<360; i++) cos_table[i] = cos(M_PI*2* (i%360)/180)*33;
@@ -1478,7 +1477,7 @@ int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 	return 0;
 }
 
-void PK_Map_Calculate_Edges(){ //TODO
+void PK_Map_Calculate_Edges(){
 	BYTE tile1, tile2, tile3;
 	bool edge = false;
 
@@ -4037,6 +4036,8 @@ int PK_Sprite_Movement(int i){
 	/* AI                                                                                    */
 	/*****************************************************************************************/
 
+	//TODO run sprite lua script
+	
 	if (sprite.pelaaja == 0) {
 		for (int ai=0;ai < SPRITE_MAX_AI; ai++)
 			switch (sprite.tyyppi->AI[ai]) {
@@ -6459,16 +6460,16 @@ int PK_Draw_Menu(){
 
 	switch (menu_nyt)
 	{
-	case MENU_MAIN : PK_Draw_Menu_Main(); break;
-	case MENU_EPISODES   : PK_Draw_Menu_Episodes();   break;
-	case MENU_GRAPHICS  : PK_Draw_Menu_Graphics();  break;
-	case MENU_SOUNDS      : PK_Draw_Menu_Sounds();      break;
+	case MENU_MAIN     : PK_Draw_Menu_Main();     break;
+	case MENU_EPISODES : PK_Draw_Menu_Episodes(); break;
+	case MENU_GRAPHICS : PK_Draw_Menu_Graphics(); break;
+	case MENU_SOUNDS   : PK_Draw_Menu_Sounds();   break;
 	case MENU_CONTROLS : PK_Draw_Menu_Controls(); break;
-	case MENU_NAME       : PK_Draw_Menu_Name();       break;
-	case MENU_LOAD      : PK_Draw_Menu_Load();      break;
-	case MENU_TALLENNA   : PK_Draw_Menu_Save();   break;
-	case MENU_LANGUAGE   : PK_Draw_Menu_Language();   break;
-	default              : PK_Draw_Menu_Main(); break;
+	case MENU_NAME     : PK_Draw_Menu_Name();     break;
+	case MENU_LOAD     : PK_Draw_Menu_Load();     break;
+	case MENU_TALLENNA : PK_Draw_Menu_Save();     break;
+	case MENU_LANGUAGE : PK_Draw_Menu_Language(); break;
+	default            : PK_Draw_Menu_Main();     break;
 	}
 
 	PK_Draw_Cursor(hiiri_x,hiiri_y);
@@ -7450,11 +7451,10 @@ int PK_MainScreen_Change() {
 
 		PK_Fadetext_Init();
 
-		PK2Kartta_Aseta_Ruudun_Mitat(screen_width, screen_height); //TODO - call when screen change
+		PK2Kartta_Aseta_Ruudun_Mitat(screen_width, screen_height);
 
 		kartta = new PK2Kartta();
 
-		//TODO - set correct filter
 		if (!settings.isFiltered)
 			PisteDraw2_SetFilter(PD_FILTER_NEAREST);
 		if (settings.isFiltered)
