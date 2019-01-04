@@ -3,8 +3,7 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 
-#ifndef P_ENGINE
-#define P_ENGINE
+#pragma once
 
 #include "platform.hpp"
 
@@ -14,12 +13,34 @@
 #include "PisteUtils.hpp"
 #include "PisteLanguage.hpp"
 
-void Piste_IgnoreFrame();
-void Piste_SetDebug(bool set);
-float Piste_GetFPS();
+namespace Piste {
 
-int Piste_Init(int width, int height, const char* name, const char* icon);
-int Piste_Loop(bool &running, int (*GameLogic)());
-int Piste_Quit();
+class Game {
 
-#endif
+public:
+    
+    Game(int width, int height, const char* name, const char* icon);
+    ~Game();
+
+    void loop(int (*GameLogic)());
+    void stop();
+    float get_fps();
+
+    void set_debug(bool set);
+    void ignore_frame();
+    bool is_ready();
+    
+private:
+    
+    bool ready = false;
+    bool running = false;
+
+    float avrg_fps = 0;
+
+    bool debug = false;
+    bool draw = true;
+    
+    void logic();
+};
+
+}

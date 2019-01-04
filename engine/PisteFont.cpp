@@ -3,14 +3,15 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 
-#include "PisteFont.hpp"
-#include "PisteLanguage.hpp"
 #include <math.h>
 #include <fstream>
 #include <iostream>
 #include <string.h>
 
 #include "platform.hpp"
+#include "PisteFont.hpp"
+#include "PisteDraw.hpp"
+#include "PisteLanguage.hpp"
 
 int PisteFont2::InitCharList(){
 	int font_index[256], i;

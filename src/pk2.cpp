@@ -35,6 +35,11 @@ void ltoa(long n, char s[], int radix){
 }
 #endif
 
+
+//#### Classes
+Piste::Game* Engine;
+
+
 //#### Constants
 
 const int MAX_GIFTS = 4;
@@ -75,54 +80,6 @@ struct PK2BLOCKMASKI{
 	short int	oikealle[32];
 };
 
-//Particle ID
-enum PARTICLES{
-	PARTICLE_NOTHING,
-	PARTICLE_STAR,
-	PARTICLE_FEATHER,
-	PARTICLE_DUST_CLOUDS,
-	PARTICLE_LIGHT,
-	PARTICLE_SPARK,
-	PARTICLE_POINT,
-	PARTICLE_SMOKE,
-	PARTICLE_STAR2
-};
-//BGParticle ID - weather
-enum BG_PARTICLES{
-	BGPARTICLE_NOTHING,
-	BGPARTICLE_WATERDROP,
-	BGPARTICLE_LEAF1,
-	BGPARTICLE_LEAF2,
-	BGPARTICLE_LEAF3,
-	BGPARTICLE_LEAF4,
-	BGPARTICLE_FLAKE1,
-	BGPARTICLE_FLAKE2,
-	BGPARTICLE_FLAKE3,
-	BGPARTICLE_FLAKE4
-};
-
-const int MAX_PARTIKKELEITA = 400; //300;
-const int MAX_TAUSTAPARTIKKELEITA = 300; //200;
-const int MAX_FADETEKSTEJA = 50; //40;
-
-
-struct PK2PARTIKKELI{
-	int			tyyppi;
-	double		x;
-	double		y;
-	double		a;
-	double		b;
-	int			anim;
-	int			aika;
-	double		paino;
-	int			vari;
-};
-
-PK2PARTIKKELI partikkelit[MAX_PARTIKKELEITA];
-int partikkeli_index = 0;
-
-PK2PARTIKKELI taustapartikkelit[MAX_TAUSTAPARTIKKELEITA];
-int taustapartikkeli_index = 0;
 
 //Episode
 const int EPISODI_MAX_LEVELS = 100; //50;
@@ -179,6 +136,8 @@ struct PK2LEVEL{
 	bool	lapaisty;
 	int		ikoni;
 };
+
+const int MAX_FADETEKSTEJA = 50; //40;
 
 struct PK2FADETEXT{
 	char teksti[20];
@@ -250,7 +209,6 @@ const char* PK2_error_msg = NULL;
 bool window_closed	= false;
 bool lopeta_peli = false;
 
-bool running = true;
 bool unload = false;
 bool precalculated_sincos = false;
 
@@ -1641,43 +1599,227 @@ void PK_Fadetext_Update(){
 //(#5) Particle System
 //==================================================
 
-void PK_Particle_Draw_Dot(DWORD x, DWORD y, int pros, BYTE vari){
-	PisteDraw2_ScreenFill(x-kamera_x, y-kamera_y,x-kamera_x+1,y-kamera_y+1,vari+25);
+//Particle ID
+enum PARTICLES{
+	PARTICLE_NOTHING,
+	PARTICLE_STAR,
+	PARTICLE_FEATHER,
+	PARTICLE_DUST_CLOUDS,
+	PARTICLE_LIGHT,
+	PARTICLE_SPARK,
+	PARTICLE_POINT,
+	PARTICLE_SMOKE,
+	
+	BGPARTICLE_NOTHING,
+	BGPARTICLE_WATERDROP,
+	BGPARTICLE_LEAF1,
+	BGPARTICLE_LEAF2,
+	BGPARTICLE_LEAF3,
+	BGPARTICLE_LEAF4,
+	BGPARTICLE_FLAKE1,
+	BGPARTICLE_FLAKE2,
+	BGPARTICLE_FLAKE3,
+	BGPARTICLE_FLAKE4
+};
+
+namespace PK2 {
+
+class Particle {
+
+	public:
+
+		Particle(int type, double x, double y, double a, double b, int anim, int time, double weight, int color);
+		~Particle();
+		void draw();
+		void update();
+
+		void set_type(int type);
+		bool time_over();
+
+	private:
+
+		int	type;
+		int	time;
+
+		double x, y, a, b;
+		int anim;
+		
+		double weight;
+		int color;
+		int alpha;
+
+		//Draw FG
+		void draw_dot();
+		void draw_star();
+		void draw_hit();
+		void draw_light();
+		void draw_spark();
+		void draw_feather();
+		void draw_smoke();
+		void draw_dust();
+
+		//Draw BG
+		void draw_waterdrop();
+		void draw_leaf1();
+		void draw_leaf2();
+		void draw_leaf3();
+		void draw_leaf4();
+		void draw_flake1();
+		void draw_flake2();
+		void draw_flake3();
+		void draw_flake4();
+
+		//Update FG
+		void update_fg();
+
+		//Update BG
+		void update_bg();
+		void update_waterdrop();
+		void update_leaf1();
+		void update_leaf2();
+		void update_leaf3();
+		void update_leaf4();
+		void update_flake1();
+		void update_flake2();
+		void update_flake3();
+		void update_flake4();
+
+};
+
 }
-void PK_Particle_Draw_Star(DWORD x, DWORD y, int pros, BYTE vari){
-	if (pros > 99 || !settings.lapinakyvat_objektit)
-		PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x, y-kamera_y,1,1,11,11);
+
+PK2::Particle::Particle(int type, double x, double y, double a, double b, int anim, int time, double weight, int color) {
+	this->type = type;
+	this->x = x;
+	this->y = y;
+	this->a = a;
+	this->b = b;
+	this->anim = anim;
+	this->time = time;
+	this->weight = weight;
+	this->color = color;
+}
+
+PK2::Particle::~Particle() {}
+
+void PK2::Particle::draw() {
+
+	alpha = time;
+	if (alpha > 100) alpha = 100;
+
+	if (time > 0)
+		switch (this->type) {
+			case PARTICLE_STAR:        draw_star();      break;
+			case PARTICLE_FEATHER:     draw_feather();   break;
+			case PARTICLE_DUST_CLOUDS: draw_dust();      break;
+			case PARTICLE_LIGHT:       draw_light();     break;
+			case PARTICLE_SPARK:       draw_spark();     break;
+			case PARTICLE_POINT:       draw_dot();       break;
+			case PARTICLE_SMOKE:       draw_smoke();     break;
+
+			case BGPARTICLE_WATERDROP: draw_waterdrop(); break;
+			case BGPARTICLE_LEAF1:     draw_leaf1();     break;
+			case BGPARTICLE_LEAF2:     draw_leaf2();     break;
+			case BGPARTICLE_LEAF3:     draw_leaf3();     break;
+			case BGPARTICLE_LEAF4:     draw_leaf4();     break;
+			case BGPARTICLE_FLAKE1:    draw_flake1();    break;
+			case BGPARTICLE_FLAKE2:    draw_flake2();    break;
+			case BGPARTICLE_FLAKE3:    draw_flake3();    break;
+			case BGPARTICLE_FLAKE4:    draw_flake4();    break;
+		}
+}
+
+void PK2::Particle::update() {
+
+	switch (this->type) {
+		case PARTICLE_STAR:
+		case PARTICLE_FEATHER:
+		case PARTICLE_DUST_CLOUDS:
+		case PARTICLE_LIGHT:
+		case PARTICLE_SPARK:
+		case PARTICLE_POINT:
+		case PARTICLE_SMOKE: 
+			update_fg(); break;
+		case BGPARTICLE_WATERDROP: update_waterdrop(); update_bg(); break;
+		case BGPARTICLE_LEAF1:     update_leaf1();     update_bg(); break;
+		case BGPARTICLE_LEAF2:     update_leaf2();     update_bg(); break;
+		case BGPARTICLE_LEAF3:     update_leaf3();     update_bg(); break;
+		case BGPARTICLE_LEAF4:     update_leaf4();     update_bg(); break;
+		case BGPARTICLE_FLAKE1:    update_flake1();    update_bg(); break;
+		case BGPARTICLE_FLAKE2:    update_flake2();    update_bg(); break;
+		case BGPARTICLE_FLAKE3:    update_flake3();    update_bg(); break;
+		case BGPARTICLE_FLAKE4:    update_flake4();    update_bg(); break;
+		default: break;
+	}
+}
+
+void PK2::Particle::set_type(int type){
+
+	this->type = type;
+
+}
+
+bool PK2::Particle::time_over() {
+
+	return (time == 0);
+
+}
+
+void PK2::Particle::draw_dot() {
+
+	PisteDraw2_ScreenFill(x-kamera_x, y-kamera_y, x-kamera_x+1, y-kamera_y+1, color+25);
+
+}
+
+void PK2::Particle::draw_star() {
+
+	if (color > 99 || !settings.lapinakyvat_objektit)
+		PisteDraw2_Image_CutClip(kuva_peli, x-kamera_x, y-kamera_y, 1, 1, 11, 11);
 	else
-		PK_Draw_Transparent_Object(kuva_peli, 2, 2, 10, 10, x-kamera_x, y-kamera_y, pros, vari);
+		PK_Draw_Transparent_Object(kuva_peli, 2, 2, 10, 10, x-kamera_x, y-kamera_y, alpha, color);
+
 }
-void PK_Particle_Draw_Hit(DWORD x, DWORD y){
+
+void PK2::Particle::draw_hit() {
+
 	int framex = ((degree%12)/3) * 58;
-	PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x-28+8, y-kamera_y-27+8,1+framex,83,1+57+framex,83+55);//140<-83
+	PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x-28+8, y-kamera_y-27+8,1+framex,83,1+57+framex,83+55);
 }
-void PK_Particle_Draw_Light(DWORD x, DWORD y, int pros, BYTE vari){
+
+void PK2::Particle::draw_light() {
+
 	if (settings.lapinakyvat_objektit)
-		PK_Draw_Transparent_Object(kuva_peli, 1, 14, 13, 13, x-kamera_x, y-kamera_y, pros, vari);
+		PK_Draw_Transparent_Object(kuva_peli, 1, 14, 13, 13, x-kamera_x, y-kamera_y, alpha, color);
 	else{
-		int vx = (vari/32) * 14;
+		int vx = (color/32) * 14;
 		PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x, y-kamera_y,1+vx,14+14,14+vx,27+14);
 	}
+
 }
-void PK_Particle_Draw_Spark(DWORD x, DWORD y, int pros, BYTE vari){
+
+void PK2::Particle::draw_spark() {
+
 	if (settings.lapinakyvat_objektit)
-		PK_Draw_Transparent_Object(kuva_peli, 99, 14, 7, 7, x-kamera_x, y-kamera_y, pros, vari);
+		PK_Draw_Transparent_Object(kuva_peli, 99, 14, 7, 7, x-kamera_x, y-kamera_y, alpha, color);
 	else{
-		int vx = (vari/32) * 8;
+		int vx = (color/32) * 8;
 		PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x, y-kamera_y,99+vx,14+14,106+vx,21+14);
 	}
+
 }
-void PK_Particle_Draw_Feather(int x, int y, int &anim){
+
+void PK2::Particle::draw_feather() {
+
 	int xplus = (anim/7) * 21;
 	PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x,y-kamera_y,14+xplus,1,34+xplus,12);
 	anim++;
 	if (anim > 63)
 		anim = 0;
+
 }
-void PK_Particle_Draw_Smoke(int x, int y, int &anim){
+
+void PK2::Particle::draw_smoke() {
+
 	int frame = (anim/7);
 	int xplus = (frame%17) * 36;
 	int yplus = 0;
@@ -1691,252 +1833,322 @@ void PK_Particle_Draw_Smoke(int x, int y, int &anim){
 		anim++;
 	}
 
-	//if (anim > 63)
-	//	anim = 0;
 }
-void PK_Particle_Draw_Dust(DWORD x, DWORD y, int pros, BYTE vari){
-	if (pros > 99 || !settings.lapinakyvat_objektit)
+
+void PK2::Particle::draw_dust() {
+
+	if (alpha > 99 || !settings.lapinakyvat_objektit)
 		PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x,y-kamera_y,226,2,224,49);
 	else
-		PK_Draw_Transparent_Object(kuva_peli, 226, 2, 18, 19, x-kamera_x, y-kamera_y, pros, vari);
-	PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x,y-kamera_y,226, 2, 18, 19); //Tirar isso
+		PK_Draw_Transparent_Object(kuva_peli, 226, 2, 18, 19, x-kamera_x, y-kamera_y, alpha, color);
+	PisteDraw2_Image_CutClip(kuva_peli,x-kamera_x,y-kamera_y,226, 2, 18, 19);
+
 }
 
-void PK_Particles_Clear(){
-	int i = 0;
+void PK2::Particle::draw_waterdrop() {
 
-	partikkeli_index = 0;
+	int kx = (int)(x-kamera_x);
+	int ky = (int)(y-kamera_y);
 
-	while (i < MAX_PARTIKKELEITA){
-		partikkelit[i].a = 0;
-		partikkelit[i].aika = 0;
-		partikkelit[i].anim = 0;
-		partikkelit[i].b = 0;
-		partikkelit[i].tyyppi = PARTICLE_NOTHING;
-		partikkelit[i].x = 0;
-		partikkelit[i].y = 0;
-		partikkelit[i].paino = 0;
-		partikkelit[i].vari = 0;
-		i++;
-	}
-}
-void PK_Particles_New(int tyyppi, double x, double y, double a, double b, int aika, double paino, int vari){
-	if (x < kamera_x+screen_width+10 && x > kamera_x-10 &&
-		y < kamera_y+screen_height+10 && y > kamera_y-10){
-		if (partikkeli_index >= MAX_PARTIKKELEITA)
-			partikkeli_index = 0;
+	PisteDraw2_ScreenFill(kx,ky,kx+1,ky+4,40+(int)b);
 
-		partikkelit[partikkeli_index].a = a;
-		partikkelit[partikkeli_index].aika = aika;
-		partikkelit[partikkeli_index].anim = rand()%63;
-		partikkelit[partikkeli_index].b = b;
-		partikkelit[partikkeli_index].tyyppi = tyyppi;
-		partikkelit[partikkeli_index].x = x;
-		partikkelit[partikkeli_index].y = y;
-		partikkelit[partikkeli_index].paino = paino;
-		partikkelit[partikkeli_index].vari = vari;
-
-		partikkeli_index++;
-	}
-}
-void PK_Particles_Draw(){
-	int pros;
-
-	for (int i=0;i<MAX_PARTIKKELEITA;i++){
-		if (partikkelit[i].aika > 0){
-			if (partikkelit[i].aika < 100)
-				pros = partikkelit[i].aika;
-			else
-				pros = 100;
-
-			switch (partikkelit[i].tyyppi){
-				case PARTICLE_STAR		:	PK_Particle_Draw_Star((int)partikkelit[i].x,(int)partikkelit[i].y,pros,partikkelit[i].vari);
-												break; //Star
-				case PARTICLE_FEATHER		:	PK_Particle_Draw_Feather((int)partikkelit[i].x,(int)partikkelit[i].y,partikkelit[i].anim);
-												break; //Feather
-				case PARTICLE_DUST_CLOUDS	:	PK_Particle_Draw_Dust((int)partikkelit[i].x,(int)partikkelit[i].y,pros,partikkelit[i].vari);
-												break; //Dust
-				case PARTICLE_SMOKE	:	PK_Particle_Draw_Smoke((int)partikkelit[i].x,(int)partikkelit[i].y, partikkelit[i].anim);
-												break; //Smoke
-				case PARTICLE_LIGHT		:	PK_Particle_Draw_Light((int)partikkelit[i].x,(int)partikkelit[i].y,pros,partikkelit[i].vari);
-												break; //Light
-				case PARTICLE_SPARK		:	PK_Particle_Draw_Spark((int)partikkelit[i].x,(int)partikkelit[i].y,pros,partikkelit[i].vari);
-												break; //Spark
-				case PARTICLE_POINT		:	PK_Particle_Draw_Dot((int)partikkelit[i].x,(int)partikkelit[i].y,pros,partikkelit[i].vari);
-												break; //Score
-				default						:	break;
-			}
-		} else
-			partikkelit[i].aika = 0;
-	}
-}
-void PK_Particles_Update(){
-	for (int i=0;i<MAX_PARTIKKELEITA;i++){
-		if (partikkelit[i].aika > 0){
-			partikkelit[i].x += partikkelit[i].a;
-			partikkelit[i].y += partikkelit[i].b;
-
-			if (partikkelit[i].paino > 0)
-				partikkelit[i].b += partikkelit[i].paino;
-
-			partikkelit[i].aika--;
-		}
-	}
 }
 
-void PK_BGParticle_WaterDrop(PK2PARTIKKELI &p){
-	p.y += p.b / 3.0 + 2.0;
+void PK2::Particle::draw_leaf1() {
 
-	int kx = (int)(p.x-kamera_x);
-	int ky = (int)(p.y-kamera_y);
+	int kx = (int)(x-kamera_x),
+		ky = (int)(y-kamera_y);
 
-	PisteDraw2_ScreenFill(kx,ky,kx+1,ky+4,40+(int)p.b);
-};
-void PK_BGParticle_Leaf1(PK2PARTIKKELI &p){
-	p.x += p.a / 9.0;
-	p.y += p.b / 9.0;
+	PisteDraw2_ScreenFill(kx,ky,kx+2,ky+2,96+6+(int)b+(int)(x+y)%10);
 
-	int kx = (int)(p.x-kamera_x),
-		ky = (int)(p.y-kamera_y);
+}
 
-	PisteDraw2_ScreenFill(kx,ky,kx+2,ky+2,96+6+(int)p.b+(int)(p.x+p.y)%10);
-};
-void PK_BGParticle_Leaf2(PK2PARTIKKELI &p){
-	p.x += p.a / 14.0;
-	p.y += p.b / 9.0;
+void PK2::Particle::draw_leaf2() {
 
-	int kx = (int)(p.x-kamera_x),
-		ky = (int)(p.y-kamera_y),
-		frame = (int(p.y/10)%4)*23;
+	int kx = (int)(x-kamera_x),
+		ky = (int)(y-kamera_y),
+		frame = (int(y/10)%4)*23;
 
 	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,1+frame,141,21+frame,152);
-};
-void PK_BGParticle_Leaf3(PK2PARTIKKELI &p){
-	p.x += p.a / 12.0;
-	p.y += p.b / 9.0;
 
-	int kx = (int)(p.x-kamera_x),
-		ky = (int)(p.y-kamera_y),
-		frame = (int(p.y/5)%4)*20;
+}
+
+void PK2::Particle::draw_leaf3() {
+
+	int kx = (int)(x-kamera_x),
+		ky = (int)(y-kamera_y),
+		frame = (int(y/5)%4)*20;
 
 	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,93+frame,141,109+frame,150);
 
-};
-void PK_BGParticle_Leaf4(PK2PARTIKKELI &p){
-	p.x += p.a / 11.0;
-	p.y += p.b / 9.0;
+}
 
-	int kx = (int)(p.x-kamera_x),
-		ky = (int)(p.y-kamera_y),
-		frame = (int(p.y/5)%2)*14;
+void PK2::Particle::draw_leaf4() {
+
+	int kx = (int)(x-kamera_x),
+		ky = (int)(y-kamera_y),
+		frame = (int(y/5)%2)*14;
 
 	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,173+frame,141,183+frame,150);
-};
-void PK_BGParticle_Flake1(PK2PARTIKKELI &p){
-	//p.x += p.a / 11.0;
-	p.x += sin_table[int(p.y)%360]/50.0;
-	p.y += p.b / 7.0;
 
-	int kx = (int)(p.x-kamera_x),
-		ky = (int)(p.y-kamera_y);
+}
+
+void PK2::Particle::draw_flake1() {
+
+	int kx = (int)(x-kamera_x),
+		ky = (int)(y-kamera_y);
 
 	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,1,155,8,162);
-};
-void PK_BGParticle_Flake2(PK2PARTIKKELI &p){
-	//p.x += p.a / 11.0;
-	p.x += sin_table[int(p.y)%360]/100.0;
-	p.y += p.b / 8.0;
 
-	int kx = (int)(p.x-kamera_x),
-		ky = (int)(p.y-kamera_y);
+}
+
+void PK2::Particle::draw_flake2() {
+
+	int kx = (int)(x-kamera_x),
+		ky = (int)(y-kamera_y);
 
 	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,11,155,16,160);
-};
-void PK_BGParticle_Flake3(PK2PARTIKKELI &p){
-	//p.x += p.a / 11.0;
-	p.y += p.b / 8.0;
 
-	int kx = (int)(p.x-kamera_x),
-		ky = (int)(p.y-kamera_y);
+}
+
+void PK2::Particle::draw_flake3() {
+
+	int kx = (int)(x-kamera_x),
+		ky = (int)(y-kamera_y);
 
 	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,19,155,22,158);
+
+}
+
+void PK2::Particle::draw_flake4() {
+
+	int kx = (int)(x-kamera_x),
+		ky = (int)(y-kamera_y);
+
+	PisteDraw2_ScreenFill(kx,ky,kx+2,ky+2,20+(int)b);
+
+}
+
+void PK2::Particle::update_waterdrop() {
+
+	y += b / 3.0 + 2.0;
+
+}
+
+void PK2::Particle::update_leaf1() {
+
+	x += a / 9.0;
+	y += b / 9.0;
+
+}
+
+void PK2::Particle::update_leaf2() {
+
+	x += a / 14.0;
+	y += b / 9.0;
+
+}
+
+void PK2::Particle::update_leaf3() {
+
+	x += a / 12.0;
+	y += b / 9.0;
+
+}
+
+void PK2::Particle::update_leaf4() {
+
+	x += a / 11.0;
+	y += b / 9.0;
+
+}
+
+void PK2::Particle::update_flake1() {
+
+	x += sin_table[int(y)%360]/50.0;
+	y += b / 7.0;
+
+}
+
+void PK2::Particle::update_flake2() {
+
+	x += sin_table[int(y)%360]/100.0;
+	y += b / 8.0;
+
+}
+
+void PK2::Particle::update_flake3() {
+
+	y += b / 8.0;
+
+}
+
+void PK2::Particle::update_flake4() {
+
+	y += b / 9.0;
+
+}
+
+void PK2::Particle::update_fg() {
+	if (this->time > 0){
+		this->x += this->a;
+		this->y += this->b;
+
+		if (this->weight > 0)
+			this->b += this->weight;
+
+		this->time--;
+	}
+}
+
+void PK2::Particle::update_bg() {
+
+	if ( x  >  kamera_x + screen_width )
+		x  =  kamera_x + int(x - kamera_x + screen_width) % screen_width;
+	if ( x  <  kamera_x )
+		x  =  kamera_x + screen_width - int(kamera_x - x) % screen_width;
+	if ( y  >  kamera_y + screen_height )
+		y  =  kamera_y + int(y - kamera_y + screen_height) % screen_height;
+	if ( y  <  kamera_y )
+		y  =  kamera_y + screen_height - int(kamera_y - y) % screen_height;
+	
+}
+
+
+
+
+namespace PK2 {
+
+class Particle_System {
+
+	public:
+
+	Particle_System();
+	~Particle_System();
+
+	void update();
+	void new_particle(int type, double x, double y, double a, double b, int time, double weight, int color);
+
+	void draw_front_particles();
+	void draw_bg_particles();
+
+	void load_bg_particles(PK2Kartta* map);
+
+	void clear_particles();
+
+	private:
+
+	std::vector<Particle*> Particles;
+	std::vector<Particle*> BGParticles;
+
+	const int nof_bg_particles = 300;
+
 };
-void PK_BGParticle_Flake4(PK2PARTIKKELI &p){
-	//p.x += p.a / 9.0;
-	p.y += p.b / 9.0;
 
-	int kx = (int)(p.x-kamera_x),
-		ky = (int)(p.y-kamera_y);
+}
 
-	PisteDraw2_ScreenFill(kx,ky,kx+2,ky+2,20+(int)p.b);
-};
+PK2::Particle_System::Particle_System() {}
 
-int  PK_BGParticles_Load(){
+PK2::Particle_System::~Particle_System() {
+
+	clear_particles();
+
+}
+
+void PK2::Particle_System::update() {
+	
+	if (!paused)
+		for (Particle* particle : Particles)
+			particle->update();
+
+	//Todo - clean "time_over" particles - use deque on Particles
+
+	if (settings.saa_efektit)
+		for (Particle* particle : BGParticles)
+			particle->update();
+
+}
+
+void PK2::Particle_System::new_particle(int type, double x, double y, double a, double b, int time, double weight, int color) {
+
+	PK2::Particle* particle = new PK2::Particle(type, x, y, a, b, rand()%63, time, weight, color);
+	Particles.push_back(particle);
+
+}
+
+void PK2::Particle_System::draw_front_particles() {
+
+	for (Particle* particle : Particles)
+		particle->draw();
+
+}
+
+void PK2::Particle_System::draw_bg_particles() {
+
+	if (!settings.saa_efektit) return;
+
+	for (Particle* particle : BGParticles)
+		particle->draw();
+
+}
+
+void PK2::Particle_System::load_bg_particles(PK2Kartta* map) {
 	int i = 0;
+	PK2::Particle* particle;
 
-	taustapartikkeli_index = 0;
-
-	while (i < MAX_TAUSTAPARTIKKELEITA){
-		taustapartikkelit[i].a = rand()%10-rand()%10;
-		taustapartikkelit[i].aika = 1;
-		taustapartikkelit[i].anim = rand()%10;
-		taustapartikkelit[i].b = rand()%9+1;
-		taustapartikkelit[i].tyyppi = BGPARTICLE_NOTHING;
-		taustapartikkelit[i].x = rand()%screen_width;
-		taustapartikkelit[i].y = rand()%screen_height;
-		taustapartikkelit[i].paino = rand()%10;
-		taustapartikkelit[i].vari = 0;
+	while (i < nof_bg_particles){
+		PK2::Particle* particle = new PK2::Particle(
+			BGPARTICLE_NOTHING,   //type
+			rand()%screen_width,  //x
+			rand()%screen_height, //y
+			rand()%10-rand()%10,  //a
+			rand()%9+1,           //b
+			rand()%63,            //anim
+			1,                    //time -- unused
+			rand()%10,            //weight
+			0);                   //color
+		BGParticles.push_back(particle);
+		//taustapartikkelit[i].a = rand()%10-rand()%10;
+		//taustapartikkelit[i].aika = 1;
+		//taustapartikkelit[i].anim = rand()%10;
+		//taustapartikkelit[i].b = rand()%9+1;
+		//taustapartikkelit[i].tyyppi = BGPARTICLE_NOTHING;
+		//taustapartikkelit[i].x = rand()%screen_width;
+		//taustapartikkelit[i].y = rand()%screen_height;
+		//taustapartikkelit[i].paino = rand()%10;
+		//taustapartikkelit[i].vari = 0;
 		i++;
 	}
 
-	if (kartta->ilma == ILMA_SADE || kartta->ilma == ILMA_SADEMETSA)
-		for(i=0;i < MAX_TAUSTAPARTIKKELEITA;i++)
-			taustapartikkelit[i].tyyppi = BGPARTICLE_WATERDROP;
+	if (map->ilma == ILMA_SADE || map->ilma == ILMA_SADEMETSA)
+		for( i = 0; i < nof_bg_particles; i++)
+			BGParticles[i]->set_type(BGPARTICLE_WATERDROP);
 
-	if (kartta->ilma == ILMA_METSA || kartta->ilma == ILMA_SADEMETSA)
-		for(i=0;i < MAX_TAUSTAPARTIKKELEITA/8;i++)
-			taustapartikkelit[i].tyyppi = BGPARTICLE_LEAF1 + rand()%4;
+	if (map->ilma == ILMA_METSA || map->ilma == ILMA_SADEMETSA)
+		for( i = 0; i < nof_bg_particles / 8; i++)
+			BGParticles[i]->set_type(BGPARTICLE_LEAF1 + rand()%4);
 
-	if (kartta->ilma == ILMA_LUMISADE){
-		for(i=0;i < MAX_TAUSTAPARTIKKELEITA/2;i++)
-			taustapartikkelit[i].tyyppi = BGPARTICLE_FLAKE4;
-		for(i=0;i < MAX_TAUSTAPARTIKKELEITA/3;i++)
-			taustapartikkelit[i].tyyppi = BGPARTICLE_FLAKE1 + rand()%2+1;//3
+	if (map->ilma == ILMA_LUMISADE){
+		for( i = 0; i < nof_bg_particles / 2; i++)
+			BGParticles[i]->set_type(BGPARTICLE_FLAKE4);
+		for( i = 0; i < nof_bg_particles / 3; i++)
+			BGParticles[i]->set_type(BGPARTICLE_FLAKE1 + rand()%2+1);//3
 	}
-	return 0;
+
 }
-int  PK_BGParticles_Update(){
 
-	for (int i=0;i<MAX_TAUSTAPARTIKKELEITA;i++){
-		if (taustapartikkelit[i].tyyppi != BGPARTICLE_NOTHING){
-			switch(taustapartikkelit[i].tyyppi){
-				case BGPARTICLE_WATERDROP : PK_BGParticle_WaterDrop(taustapartikkelit[i]); break;
-				case BGPARTICLE_LEAF1     : PK_BGParticle_Leaf1(taustapartikkelit[i]); break;
-				case BGPARTICLE_LEAF2     : PK_BGParticle_Leaf2(taustapartikkelit[i]); break;
-				case BGPARTICLE_LEAF3     : PK_BGParticle_Leaf3(taustapartikkelit[i]); break;
-				case BGPARTICLE_LEAF4     : PK_BGParticle_Leaf4(taustapartikkelit[i]); break;
-				case BGPARTICLE_FLAKE1    : PK_BGParticle_Flake1(taustapartikkelit[i]); break;
-				case BGPARTICLE_FLAKE2    : PK_BGParticle_Flake2(taustapartikkelit[i]); break;
-				case BGPARTICLE_FLAKE3    : PK_BGParticle_Flake3(taustapartikkelit[i]); break;
-				case BGPARTICLE_FLAKE4    : PK_BGParticle_Flake4(taustapartikkelit[i]); break;
-				default : taustapartikkelit[i].tyyppi = BGPARTICLE_NOTHING;
-			}
-
-			if (taustapartikkelit[i].x  >  kamera_x + screen_width)
-				taustapartikkelit[i].x  =  kamera_x + int(taustapartikkelit[i].x - kamera_x + screen_width) % screen_width;
-
-			if (taustapartikkelit[i].x  <  kamera_x)
-				taustapartikkelit[i].x  =  kamera_x + screen_width - int(kamera_x - taustapartikkelit[i].x) % screen_width;
-
-			if (taustapartikkelit[i].y  >  kamera_y + screen_height)
-				taustapartikkelit[i].y  =  kamera_y + int(taustapartikkelit[i].y - kamera_y + screen_height) % screen_height;
-
-			if (taustapartikkelit[i].y  <  kamera_y)
-				taustapartikkelit[i].y  =  kamera_y + screen_height - int(kamera_y - taustapartikkelit[i].y) % screen_height;
-		}
+void PK2::Particle_System::clear_particles() {
+	while (Particles.size() > 0) {
+		delete Particles.back();
+		Particles.pop_back();
 	}
-	return 0;
+	while (BGParticles.size() > 0) {
+		delete BGParticles.back();
+		BGParticles.pop_back();
+	}
 }
+
+PK2::Particle_System* Game_Particles = new PK2::Particle_System();
 
 //==================================================
 //(#6) Effects
@@ -1944,22 +2156,22 @@ int  PK_BGParticles_Update(){
 
 void PK_Effect_Feathers(DWORD x, DWORD y){
 	for (int i=0;i<9;i++)//6
-		PK_Particles_New(PARTICLE_FEATHER,x+rand()%17-rand()%17,y+rand()%20-rand()%10,
+		Game_Particles->new_particle(PARTICLE_FEATHER,x+rand()%17-rand()%17,y+rand()%20-rand()%10,
 							(rand()%16-rand()%16)/10.0,(45+rand()%45)/100.0,300+rand()%40,0,0);
 }
 void PK_Effect_Splash(DWORD x, DWORD y, BYTE vari){
 	/*
 	for (int i=0;i<12;i++)
-		PK_Particles_New(	PARTICLE_LIGHT,x+rand()%17-13,y+rand()%17-13,
+		Game_Particles->new_particle(	PARTICLE_LIGHT,x+rand()%17-13,y+rand()%17-13,
 							(rand()%7-rand()%7)/5,(rand()%7-rand()%7)/3,
 							rand()%50+60,0.025,vari);*/
 	for (int i=0;i<7;i++)
-		PK_Particles_New(	PARTICLE_SPARK,x+rand()%17-13,y+rand()%17-13,
+		Game_Particles->new_particle(	PARTICLE_SPARK,x+rand()%17-13,y+rand()%17-13,
 							(rand()%5-rand()%5)/4.0,(rand()%4-rand()%7)/3.0,
 							rand()%50+40,0.025,vari);//0.015
 
 	for (int i=0;i<20;i++)
-		PK_Particles_New(	PARTICLE_POINT,x+rand()%17-13,y+rand()%17-13,
+		Game_Particles->new_particle(	PARTICLE_POINT,x+rand()%17-13,y+rand()%17-13,
 							(rand()%5-rand()%5)/4.0,(rand()%2-rand()%7)/3.0,
 							rand()%50+40,0.025,vari);//0.015
 
@@ -1969,44 +2181,44 @@ void PK_Effect_Explosion(DWORD x, DWORD y, BYTE vari){
 	int i;
 
 	for (i=0;i<3;i++)
-		PK_Particles_New(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
+		Game_Particles->new_particle(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%4)+3) / -10.0,450,0.0,vari);
 
 	for (i=0;i<9;i++)//12
-		PK_Particles_New(	PARTICLE_LIGHT,x+rand()%17-13,y+rand()%17-13,
+		Game_Particles->new_particle(	PARTICLE_LIGHT,x+rand()%17-13,y+rand()%17-13,
 							(rand()%7-rand()%7)/5.0,(rand()%7-rand()%7)/3.0,
 							rand()%40+60,0.025,vari);
 
 	for (i=0;i<8;i++)//8//10
-		PK_Particles_New(	PARTICLE_SPARK,x+rand()%17-13,y+rand()%17-13,
+		Game_Particles->new_particle(	PARTICLE_SPARK,x+rand()%17-13,y+rand()%17-13,
 							(rand()%3-rand()%3),//(rand()%7-rand()%7)/5,
 							(rand()%7-rand()%7)/3,
 							rand()%20+60,0.015,vari);//50+60
 
 	for (i=0;i<20;i++)//12
-		PK_Particles_New(	PARTICLE_POINT,x+rand()%17-13,y+rand()%17-13,
+		Game_Particles->new_particle(	PARTICLE_POINT,x+rand()%17-13,y+rand()%17-13,
 							(rand()%7-rand()%7)/5.0,(rand()%7-rand()%7)/3.0,
 							rand()%40+60,0.025,vari);
 }
 void PK_Effect_Smoke(DWORD x, DWORD y, BYTE vari){
 	for (int i=0;i<3;i++)
-		PK_Particles_New(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
+		Game_Particles->new_particle(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%3)+3) / -10.0/*-0.3*/,450,0.0,vari);
 	for (int i=0;i<6;i++)
-		PK_Particles_New(	PARTICLE_DUST_CLOUDS,x+rand()%30-rand()%30-10,y+rand()%30-rand()%30+10,
+		Game_Particles->new_particle(	PARTICLE_DUST_CLOUDS,x+rand()%30-rand()%30-10,y+rand()%30-rand()%30+10,
 							0,-0.3,rand()%50+60,0,vari);
 }
 void PK_Effect_SmokeClouds(DWORD x, DWORD y){
 	for (int i=0;i<5;i++)
-		PK_Particles_New(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
+		Game_Particles->new_particle(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%3)+3) / -10.0/*-0.3*/,450,0.0,0);
 }
 void PK_Effect_Stars(DWORD x, DWORD y, BYTE vari){
 	for (int i=0;i<5;i++)
-		PK_Particles_New(PARTICLE_STAR,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0/* 0.05*/,vari);//300
+		Game_Particles->new_particle(PARTICLE_STAR,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0/* 0.05*/,vari);//300
 
 	for (int i=0;i<3;i++)//12
-		PK_Particles_New(	PARTICLE_POINT,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0,vari);
+		Game_Particles->new_particle(	PARTICLE_POINT,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0,vari);
 }
 
 void PK_Effect_Start(BYTE tehoste, DWORD x, DWORD y){
@@ -2595,8 +2807,10 @@ int PK_Map_Open(char *nimi){
 	PK_Map_Search_Start();
 	PK_Sprites_Start_Directions();
 	PK_Map_Count_Keys();
-	PK_Particles_Clear();
-	PK_BGParticles_Load();
+	
+	Game_Particles->clear_particles();
+	Game_Particles->load_bg_particles(kartta);
+
 	PK_Map_Calculate_Edges();
 
 	if (strcmp(kartta->musiikki,"")!=0){
@@ -3408,7 +3622,7 @@ int PK_Sprite_Movement(int i){
 
 			if (lisavauhti) {
 				if (rand()%20 == 1 && sprite.animaatio_index == ANIMAATIO_KAVELY) // Draw dust
-					PK_Particles_New(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,0.25,-0.25,40,0,0);
+					Game_Particles->new_particle(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,0.25,-0.25,40,0,0);
 
 				a_lisays += 0.09;//0.05
 			}
@@ -3425,7 +3639,7 @@ int PK_Sprite_Movement(int i){
 
 			if (lisavauhti) {
 				if (rand()%20 == 1 && sprite.animaatio_index == ANIMAATIO_KAVELY) { // Draw dust
-					PK_Particles_New(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,-0.25,-0.25,40,0,0);
+					Game_Particles->new_particle(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,-0.25,-0.25,40,0,0);
 				}
 
 				a_lisays -= 0.09;
@@ -3634,7 +3848,7 @@ int PK_Sprite_Movement(int i){
 		}
 
 		if (rand()%80 == 1)
-			PK_Particles_New(PARTICLE_SPARK,sprite_x-4,sprite_y,0,-0.5-rand()%2,rand()%30+30,0,32);
+			Game_Particles->new_particle(PARTICLE_SPARK,sprite_x-4,sprite_y,0,-0.5-rand()%2,rand()%30+30,0,32);
 	}
 
 	if (vedessa != sprite.vedessa) { // Sprite comes in or out from water
@@ -3854,9 +4068,9 @@ int PK_Sprite_Movement(int i){
 				PK_Effect_Start(TUHOUTUMINEN_HOYHENET, (DWORD)sprite.x, (DWORD)sprite.y);
 
 			if (sprite.tyyppi->tyyppi != TYYPPI_AMMUS){
-				PK_Particles_New(PARTICLE_STAR,sprite_x,sprite_y,-1,-1,60,0.01,128);
-				PK_Particles_New(PARTICLE_STAR,sprite_x,sprite_y, 0,-1,60,0.01,128);
-				PK_Particles_New(PARTICLE_STAR,sprite_x,sprite_y, 1,-1,60,0.01,128);
+				Game_Particles->new_particle(PARTICLE_STAR,sprite_x,sprite_y,-1,-1,60,0.01,128);
+				Game_Particles->new_particle(PARTICLE_STAR,sprite_x,sprite_y, 0,-1,60,0.01,128);
+				Game_Particles->new_particle(PARTICLE_STAR,sprite_x,sprite_y, 1,-1,60,0.01,128);
 			}
 
 			if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
@@ -3950,13 +4164,13 @@ int PK_Sprite_Movement(int i){
 					PK_Play_Sound(tomahdys_aani,30,(int)sprite_x, (int)sprite_y,
 				                  int(25050-sprite.paino*3000),true);
 
-					//PK_Particles_New(	PARTICLE_DUST_CLOUDS,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
+					//Game_Particles->new_particle(	PARTICLE_DUST_CLOUDS,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
 					//			  0,-0.2,rand()%50+20,0,0);
 
 					if (rand()%7 == 1) {
-						PK_Particles_New(PARTICLE_SMOKE,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
+						Game_Particles->new_particle(PARTICLE_SMOKE,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
 									  	   0.3,-0.1,450,0,0);
-						PK_Particles_New(PARTICLE_SMOKE,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
+						Game_Particles->new_particle(PARTICLE_SMOKE,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
 									  	   -0.3,-0.1,450,0,0);
 					}
 
@@ -4483,7 +4697,7 @@ int PK_Sprite_Bonus_Movement(int i){
 				sprite_b /= 2.0;
 
 			if (rand()%80 == 1)
-				PK_Particles_New(PARTICLE_SPARK,sprite_x-4,sprite_y,0,-0.5-rand()%2,rand()%30+30,0,32);
+				Game_Particles->new_particle(PARTICLE_SPARK,sprite_x-4,sprite_y,0,-0.5-rand()%2,rand()%30+30,0,32);
 		}
 
 		sprite.vedessa = false;
@@ -4776,7 +4990,7 @@ int PK_Sprite_Bonus_Movement(int i){
 					ay = sprite.alku_y-sprite.tyyppi->korkeus/2.0;
 					PK_Sprites_Add(*sprite.tyyppi,0,ax-17, ay,i, false);
 					for (int r=1;r<6;r++)
-						PK_Particles_New(PARTICLE_SPARK,ax+rand()%10-rand()%10, ay+rand()%10-rand()%10,0,0,rand()%100,0.1,32);
+						Game_Particles->new_particle(PARTICLE_SPARK,ax+rand()%10-rand()%10, ay+rand()%10-rand()%10,0,0,rand()%100,0.1,32);
 
 				}
 
@@ -5049,8 +5263,12 @@ int PK_Draw_InGame_Sprites(){
 				spritet[i].x + spritet[i].tyyppi->leveys/2  > kamera_x &&
 				spritet[i].y - spritet[i].tyyppi->korkeus/2 < kamera_y+screen_height &&
 				spritet[i].y + spritet[i].tyyppi->korkeus/2 > kamera_y){
-				if (spritet[i].isku > 0 && spritet[i].tyyppi->tyyppi != TYYPPI_BONUS && spritet[i].energia < 1)
-					PK_Particle_Draw_Hit((DWORD)spritet[i].x-8,(DWORD)spritet[i].y-8);
+
+				if (spritet[i].isku > 0 && spritet[i].tyyppi->tyyppi != TYYPPI_BONUS && spritet[i].energia < 1){
+					int framex = ((degree%12)/3) * 58;
+					DWORD hit_x = spritet[i].x-8, hit_y = spritet[i].y-8;
+					PisteDraw2_Image_CutClip(kuva_peli,hit_x-kamera_x-28+8, hit_y-kamera_y-27+8,1+framex,83,1+57+framex,83+55);
+				}
 
 				if (nakymattomyys == 0 || (!doublespeed && nakymattomyys%2 == 0) || (doublespeed && nakymattomyys%4 <= 1) || i != pelaaja_index)
 					spritet[i].Piirra(kamera_x,kamera_y);
@@ -5060,7 +5278,7 @@ int PK_Draw_InGame_Sprites(){
 					for (stars=0; stars<3; stars++){
 						star_x = spritet[i].x-8 + (sin_table[((stars*120+degree)*2)%359])/3;
 						star_y = spritet[i].y-18 + (cos_table[((stars*120+degree)*2+sx)%359])/8;
-						PK_Particle_Draw_Star((DWORD)star_x,(DWORD)star_y,100,128);
+						PisteDraw2_Image_CutClip(kuva_peli,star_x-kamera_x, star_y-kamera_y,1,1,11,11);
 					}
 				}
 
@@ -5427,11 +5645,14 @@ int PK_Draw_InGame(){
 		if (settings.tausta_spritet)
 			PK_Draw_InGame_BGSprites();
 
+		Game_Particles->draw_bg_particles();
+
 		kartta->Piirra_Taustat(kamera_x,kamera_y,false);
 
 		PK_Draw_InGame_Sprites();
 
-		PK_Particles_Draw();
+		//PK_Particles_Draw();
+		Game_Particles->draw_front_particles();
 
 		kartta->Piirra_Seinat(kamera_x,kamera_y, false);
 
@@ -5454,7 +5675,7 @@ int PK_Draw_InGame(){
 					vali = PisteDraw2_Font_Write(fontti1, "fps:", 570, 48);
 				else
 					vali = PisteDraw2_Font_Write(fontti1, "fps: ", 570, 48);
-				fps = Piste_GetFPS();
+				fps = Engine->get_fps();
 				itoa((int)fps, luku, 10);
 				PisteDraw2_Font_Write(fontti1, luku, 570 + vali, 48);
 			}
@@ -5477,7 +5698,7 @@ int PK_Draw_InGame(){
 			}
 	}
 	
-	if (skip_frame) Piste_IgnoreFrame();
+	if (skip_frame) Engine->ignore_frame();
 
 	if (doublespeed) skip_frame = !skip_frame;
 	else skip_frame = false;
@@ -7203,13 +7424,12 @@ int PK_MainScreen_Menu(){
 }
 int PK_MainScreen_InGame(){
 
-	PK2Kartta_Animoi(degree,palikka_animaatio/7,kytkin1,kytkin2,kytkin3,false);
+	PK2Kartta_Animoi(degree, palikka_animaatio/7, kytkin1, kytkin2, kytkin3, false);
 	PK_Update_Camera();
 
-	if (settings.saa_efektit)
-		PK_BGParticles_Update();
+	Game_Particles->update();
+
 	if (!paused){
-		PK_Particles_Update();
 		if (!jakso_lapaisty && (!aikaraja || timeout > 0))
 			PK_Update_Sprites();
 		PK_Fadetext_Update();
@@ -7375,10 +7595,11 @@ int PK_MainScreen_InGame(){
 				music_volume = settings.music_max_volume;
 				music_volume_now = settings.music_max_volume - 1;
 			}
-			if (PisteInput_Keydown(PI_LSHIFT) && key_delay == 0) {
-				key_delay = 20;
+			if (PisteInput_Keydown(PI_LSHIFT)/* && key_delay == 0*/) {
+				//key_delay = 20;
 				for (int r = 1; r<6; r++)
-					PK_Particles_New(PARTICLE_SPARK, spritet[pelaaja_index].x + rand() % 10 - rand() % 10, spritet[pelaaja_index].y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
+					//Game_Particles->new_particle(PARTICLE_SPARK, spritet[pelaaja_index].x + rand() % 10 - rand() % 10, spritet[pelaaja_index].y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
+					Game_Particles->new_particle(PARTICLE_SPARK, spritet[pelaaja_index].x + rand() % 10 - rand() % 10, spritet[pelaaja_index].y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
 				spritet[pelaaja_index] = PK2Sprite(&protot[PROTOTYYPPI_KANA], 1, false, spritet[pelaaja_index].x, spritet[pelaaja_index].y);
 			}
 		}
@@ -7865,7 +8086,7 @@ int PK_MainScreen(){
 	if (game_next_screen != game_screen) PK_MainScreen_Change();
 
 	if (window_closed/*depr*/){
-		running = false;
+		Engine->stop();
 		return 0;
 	}
 	
@@ -7939,7 +8160,9 @@ int PK_MainScreen(){
 
 	if (lopeta_peli && !PisteDraw2_IsFading())
 		window_closed = true;
-	running = !PK2_error;
+	
+	if (PK2_error) Engine->stop();
+	
 	return 0;
 }
 
@@ -7983,7 +8206,7 @@ void PK_Quit(){
 void quit(){
 	PK_Settings_Save("data/settings.ini");
 	PK_Unload();
-	Piste_Quit();
+	delete Engine;
 	printf("Exited correctely\n");
 }
 int main(int argc, char *argv[]){
@@ -7996,7 +8219,6 @@ int main(int argc, char *argv[]){
 	for (int i = 0; i < argc; i++) {
 		if (strcmp(argv[i], "dev") == 0) {
 			dev_mode = true;
-			Piste_SetDebug(true);
 		}
 		if (strcmp(argv[i], "test") == 0) {
 			if (argc <= i + 1) {
@@ -8038,10 +8260,15 @@ int main(int argc, char *argv[]){
 	#ifdef __ANDROID__
 	screen_width = 800;
 	#endif
-	if (Piste_Init(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp") < 0) {
+
+	Engine = new Piste::Game(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp");
+
+	if (!Engine->is_ready()) {
 		printf("PK2    - Failed to init PisteEngine.\n");
 		return 0;
 	}
+
+	if (dev_mode) Engine->set_debug(true);
 
 	tekstit = new PisteLanguage();
 
@@ -8068,7 +8295,7 @@ int main(int argc, char *argv[]){
 		PK_Start_Test(test_path);
 	}
 
-	Piste_Loop(running, PK_MainScreen); //The game loop calls PK_MainScreen().
+	Engine->loop(PK_MainScreen); //The game loop calls PK_MainScreen().
 
 	if(PK2_error){
 		printf("PK2    - Error!\n");
