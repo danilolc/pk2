@@ -288,7 +288,6 @@ DWORD jakso_pisteet = 0;
 DWORD fake_pisteet = 0;
 
 //Player
-int pelaaja_index = 0;
 DWORD pisteet = 0;
 DWORD piste_lisays = 0;
 char pelaajan_nimi[20] = " ";
@@ -2503,7 +2502,9 @@ int  PK2::SpriteSystem::PK_Prototype_LoadAll() {
 }
 
 
-PK2::SpriteSystem::SpriteSystem() {}
+PK2::SpriteSystem::SpriteSystem() {
+	PK_Sprites_Clean();
+}
 PK2::SpriteSystem::~SpriteSystem() {}
 
 
@@ -2549,8 +2550,8 @@ void PK2::SpriteSystem::PK_BGSprites_Sort() {
 }
 
 void PK2::SpriteSystem::PK_Sprites_Start_Directions() {
-	for (int i=0;i<MAX_SPRITEJA;i++){
-		if (pelaaja_index >= 0 && pelaaja_index < MAX_SPRITEJA && !spritet[i].piilota){
+	for (int i = 0; i < MAX_SPRITEJA; i++){
+		if (/*pelaaja_index >= 0 && pelaaja_index < MAX_SPRITEJA && */!spritet[i].piilota){
 			spritet[i].a = 0;
 
 			if (spritet[i].tyyppi->Onko_AI(AI_RANDOM_ALOITUSSUUNTA_HORI)){
@@ -2567,19 +2568,19 @@ void PK2::SpriteSystem::PK_Sprites_Start_Directions() {
 
 			if (spritet[i].tyyppi->Onko_AI(AI_ALOITUSSUUNTA_PELAAJAA_KOHTI)){
 
-				if (spritet[i].x < spritet[pelaaja_index].x)
+				if (spritet[i].x < player->x)
 					spritet[i].a = spritet[i].tyyppi->max_nopeus / 3.5;
 
-				if (spritet[i].x > spritet[pelaaja_index].x)
+				if (spritet[i].x > player->x)
 					spritet[i].a = (spritet[i].tyyppi->max_nopeus * -1) / 3.5;
 			}
 
 			if (spritet[i].tyyppi->Onko_AI(AI_ALOITUSSUUNTA_PELAAJAA_KOHTI_VERT)){
 
-				if (spritet[i].y < spritet[pelaaja_index].y)
+				if (spritet[i].y < player->y)
 					spritet[i].b = spritet[i].tyyppi->max_nopeus / -3.5;
 
-				if (spritet[i].y > spritet[pelaaja_index].y)
+				if (spritet[i].y > player->y)
 					spritet[i].b = spritet[i].tyyppi->max_nopeus / 3.5;
 			}
 		}
@@ -2705,6 +2706,8 @@ void PK2::SpriteSystem::PK_Sprites_Clean() {
 		taustaspritet[i] = -1;
 		i++;
 	}
+
+	player = NULL;
 }
 
 namespace Game {
@@ -2810,11 +2813,11 @@ int PK_Map_Search_Start(){
 				}
 	}
 
-	Game::Sprites->spritet[pelaaja_index].x = alku_x + Game::Sprites->spritet[pelaaja_index].tyyppi->leveys/2;
-	Game::Sprites->spritet[pelaaja_index].y = alku_y - Game::Sprites->spritet[pelaaja_index].tyyppi->korkeus/2;
+	Game::Sprites->player->x = alku_x + Game::Sprites->player->tyyppi->leveys/2;
+	Game::Sprites->player->y = alku_y - Game::Sprites->player->tyyppi->korkeus/2;
 
-	kamera_x = (int)Game::Sprites->spritet[pelaaja_index].x;
-	kamera_y = (int)Game::Sprites->spritet[pelaaja_index].y;
+	kamera_x = (int)Game::Sprites->player->x;
+	kamera_y = (int)Game::Sprites->player->y;
 	dkamera_x = kamera_x;
 	dkamera_y = kamera_y;
 
@@ -3318,8 +3321,8 @@ int  PK2::GiftSystem::PK_Gift_Use() {
 	if (gift_count > 0) {
 		Game::Sprites->PK_Sprites_Add(
 			list[0], 0,
-			Game::Sprites->spritet[pelaaja_index].x - Game::Sprites->protot[list[0]].leveys,
-			Game::Sprites->spritet[pelaaja_index].y,
+			Game::Sprites->player->x - Game::Sprites->protot[list[0]].leveys,
+			Game::Sprites->player->y,
 			MAX_SPRITEJA, false);
 
 		for (int i = 0; i < MAX_GIFTS - 1; i++)
@@ -4175,7 +4178,7 @@ int PK_Sprite_Movement(int i){
 
 				// lis�t��n spriten painoon sit� koskettavan toisen spriten paino
 				if (sprite.paino > 0)
-					sprite.kytkinpaino += Game::Sprites->spritet[sprite_index].tyyppi->paino;
+					sprite.kytkinpaino += sprite2->tyyppi->paino;
 
 			}
 		}
@@ -4187,7 +4190,7 @@ int PK_Sprite_Movement(int i){
 
 	// Just fire can damage a invisible player
 	if (nakymattomyys > 0 && sprite.saatu_vahinko != 0 && sprite.saatu_vahinko_tyyppi != VAHINKO_TULI &&
-		i == pelaaja_index) {
+		&sprite == Game::Sprites->player /*i == pelaaja_index*/) {
 		sprite.saatu_vahinko = 0;
 		sprite.saatu_vahinko_tyyppi = VAHINKO_EI;
 	}
@@ -4347,7 +4350,7 @@ int PK_Sprite_Movement(int i){
 		sprite_y += sprite_b;
 	}
 
-	if (i == pelaaja_index || sprite.energia < 1) {
+	if (&sprite == Game::Sprites->player || sprite.energia < 1) {
 		double kitka = 1.04;
 
 		if (kartta->ilma == ILMA_SADE || kartta->ilma == ILMA_SADEMETSA)
@@ -4429,20 +4432,20 @@ int PK_Sprite_Movement(int i){
 				case AI_RANDOM_HYPPY:				sprite.AI_Random_Hyppy();
 													break;
 				case AI_SEURAA_PELAAJAA:			if (nakymattomyys == 0)
-														sprite.AI_Seuraa_Pelaajaa(Game::Sprites->spritet[pelaaja_index]);
+														sprite.AI_Seuraa_Pelaajaa(*Game::Sprites->player);
 													break;
 				case AI_SEURAA_PELAAJAA_JOS_NAKEE:	if (nakymattomyys == 0)
-														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee(Game::Sprites->spritet[pelaaja_index]);
+														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee(*Game::Sprites->player);
 													break;
 				case AI_SEURAA_PELAAJAA_VERT_HORI:	if (nakymattomyys == 0)
-														sprite.AI_Seuraa_Pelaajaa_Vert_Hori(Game::Sprites->spritet[pelaaja_index]);
+														sprite.AI_Seuraa_Pelaajaa_Vert_Hori(*Game::Sprites->player);
 													break;
 				case AI_SEURAA_PELAAJAA_JOS_NAKEE_VERT_HORI:
 													if (nakymattomyys == 0)
-														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(Game::Sprites->spritet[pelaaja_index]);
+														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(*Game::Sprites->player);
 													break;
 				case AI_PAKENEE_PELAAJAA_JOS_NAKEE:	if (nakymattomyys == 0)
-														sprite.AI_Pakenee_Pelaajaa_Jos_Nakee(Game::Sprites->spritet[pelaaja_index]);
+														sprite.AI_Pakenee_Pelaajaa_Jos_Nakee(*Game::Sprites->player);
 													break;
 				case AI_POMMI:						sprite.AI_Pommi();
 													break;
@@ -4456,19 +4459,19 @@ int PK_Sprite_Movement(int i){
 													break;
 				case AI_HYOKKAYS_1_JOS_PELAAJA_EDESSA:
 													if (nakymattomyys == 0)
-														sprite.AI_Hyokkays_1_Jos_Pelaaja_Edessa(Game::Sprites->spritet[pelaaja_index]);
+														sprite.AI_Hyokkays_1_Jos_Pelaaja_Edessa(*Game::Sprites->player);
 													break;
 				case AI_HYOKKAYS_2_JOS_PELAAJA_EDESSA:
 													if (nakymattomyys == 0)
-														sprite.AI_Hyokkays_2_Jos_Pelaaja_Edessa(Game::Sprites->spritet[pelaaja_index]);
+														sprite.AI_Hyokkays_2_Jos_Pelaaja_Edessa(*Game::Sprites->player);
 													break;
 				case AI_HYOKKAYS_1_JOS_PELAAJA_ALAPUOLELLA:
 													if (nakymattomyys == 0)
-														sprite.AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(Game::Sprites->spritet[pelaaja_index]);
+														sprite.AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(*Game::Sprites->player);
 													break;
 				case AI_HYPPY_JOS_PELAAJA_YLAPUOLELLA:
 													if (nakymattomyys == 0)
-														sprite.AI_Hyppy_Jos_Pelaaja_Ylapuolella(Game::Sprites->spritet[pelaaja_index]);
+														sprite.AI_Hyppy_Jos_Pelaaja_Ylapuolella(*Game::Sprites->player);
 													break;
 				case AI_VAHINGOITTUU_VEDESTA:		sprite.AI_Vahingoittuu_Vedesta();
 													break;
@@ -4515,11 +4518,11 @@ int PK_Sprite_Movement(int i){
 														sprite.AI_Muutos_Jos_Osuttu(Game::Sprites->protot[sprite.tyyppi->muutos]);
 													}
 													break;
-				case AI_TELEPORTTI:					if (sprite.AI_Teleportti(i, Game::Sprites->spritet, MAX_SPRITEJA, Game::Sprites->spritet[pelaaja_index])==1)
+				case AI_TELEPORTTI:					if (sprite.AI_Teleportti(i, Game::Sprites->spritet, MAX_SPRITEJA, *Game::Sprites->player)==1)
 													{
 
-														kamera_x = (int)Game::Sprites->spritet[pelaaja_index].x;
-														kamera_y = (int)Game::Sprites->spritet[pelaaja_index].y;
+														kamera_x = (int)Game::Sprites->player->x;
+														kamera_y = (int)Game::Sprites->player->y;
 														dkamera_x = kamera_x-screen_width/2;
 														dkamera_y = kamera_y-screen_height/2;
 														PisteDraw2_FadeIn(PD_FADE_NORMAL);
@@ -4576,25 +4579,25 @@ int PK_Sprite_Movement(int i){
 				case AI_EVIL_ONE:					if (sprite.energia < 1) music_volume = 0;
 													break;
 
-				case AI_INFO1:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info01));break;
-				case AI_INFO2:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info02));break;
-				case AI_INFO3:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info03));break;
-				case AI_INFO4:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info04));break;
-				case AI_INFO5:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info05));break;
-				case AI_INFO6:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info06));break;
-				case AI_INFO7:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info07));break;
-				case AI_INFO8:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info08));break;
-				case AI_INFO9:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info09));break;
-				case AI_INFO10:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info10));break;
-				case AI_INFO11:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info11));break;
-				case AI_INFO12:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info12));break;
-				case AI_INFO13:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info13));break;
-				case AI_INFO14:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info14));break;
-				case AI_INFO15:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info15));break;
-				case AI_INFO16:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info16));break;
-				case AI_INFO17:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info17));break;
-				case AI_INFO18:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info18));break;
-				case AI_INFO19:						if (sprite.AI_Info(Game::Sprites->spritet[pelaaja_index]))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info19));break;
+				case AI_INFO1:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info01));break;
+				case AI_INFO2:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info02));break;
+				case AI_INFO3:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info03));break;
+				case AI_INFO4:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info04));break;
+				case AI_INFO5:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info05));break;
+				case AI_INFO6:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info06));break;
+				case AI_INFO7:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info07));break;
+				case AI_INFO8:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info08));break;
+				case AI_INFO9:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info09));break;
+				case AI_INFO10:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info10));break;
+				case AI_INFO11:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info11));break;
+				case AI_INFO12:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info12));break;
+				case AI_INFO13:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info13));break;
+				case AI_INFO14:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info14));break;
+				case AI_INFO15:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info15));break;
+				case AI_INFO16:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info16));break;
+				case AI_INFO17:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info17));break;
+				case AI_INFO18:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info18));break;
+				case AI_INFO19:						if (sprite.AI_Info(*Game::Sprites->player))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info19));break;
 
 				default:							break;
 			}
@@ -4703,8 +4706,8 @@ int PK_Sprite_Movement(int i){
 	DWORD plk;
 
 	if (PisteInput_Keydown(PI_B) && dev_mode) { // Draw bounding box
-
-		if (i == pelaaja_index) {
+		
+		if (i == 0/*pelaaja_index*/) {
 
 			char lukua[50];
 			itoa(palikat[1].yla,lukua,10);
@@ -4847,35 +4850,34 @@ int PK_Sprite_Bonus_Movement(int i){
 
 		PK2BLOCK spritepalikka; 
 
-		for (int sprite_index = 0; sprite_index < MAX_SPRITEJA; sprite_index++)
-		{
-			if (sprite_index != i && !Game::Sprites->spritet[sprite_index].piilota) //TODO set &sprite = &Game::Sprites->spritet[sprite_index]
-			{
-				if (Game::Sprites->spritet[sprite_index].tyyppi->este && sprite.tyyppi->tiletarkistus)
-				{
-					if (sprite_x-sprite_leveys/2 +sprite_a <= Game::Sprites->spritet[sprite_index].x + Game::Sprites->spritet[sprite_index].tyyppi->leveys /2 &&
-						sprite_x+sprite_leveys/2 +sprite_a >= Game::Sprites->spritet[sprite_index].x - Game::Sprites->spritet[sprite_index].tyyppi->leveys /2 &&
-						sprite_y-sprite_korkeus/2+sprite_b <= Game::Sprites->spritet[sprite_index].y + Game::Sprites->spritet[sprite_index].tyyppi->korkeus/2 &&
-						sprite_y+sprite_korkeus/2+sprite_b >= Game::Sprites->spritet[sprite_index].y - Game::Sprites->spritet[sprite_index].tyyppi->korkeus/2)
+		for (int sprite_index = 0; sprite_index < MAX_SPRITEJA; sprite_index++) {
+
+			PK2Sprite* sprite2 = &Game::Sprites->spritet[sprite_index];
+			if (sprite_index != i && !sprite2->piilota) {
+				if (sprite2->tyyppi->este && sprite.tyyppi->tiletarkistus) {
+					if (sprite_x-sprite_leveys/2 +sprite_a <= sprite2->x + sprite2->tyyppi->leveys /2 &&
+						sprite_x+sprite_leveys/2 +sprite_a >= sprite2->x - sprite2->tyyppi->leveys /2 &&
+						sprite_y-sprite_korkeus/2+sprite_b <= sprite2->y + sprite2->tyyppi->korkeus/2 &&
+						sprite_y+sprite_korkeus/2+sprite_b >= sprite2->y - sprite2->tyyppi->korkeus/2)
 					{
 						spritepalikka.koodi = 0;
-						spritepalikka.ala   = (int)Game::Sprites->spritet[sprite_index].y + Game::Sprites->spritet[sprite_index].tyyppi->korkeus/2;
-						spritepalikka.oikea = (int)Game::Sprites->spritet[sprite_index].x + Game::Sprites->spritet[sprite_index].tyyppi->leveys/2;
-						spritepalikka.vasen = (int)Game::Sprites->spritet[sprite_index].x - Game::Sprites->spritet[sprite_index].tyyppi->leveys/2;
-						spritepalikka.yla   = (int)Game::Sprites->spritet[sprite_index].y - Game::Sprites->spritet[sprite_index].tyyppi->korkeus/2;
+						spritepalikka.ala   = (int)sprite2->y + sprite2->tyyppi->korkeus/2;
+						spritepalikka.oikea = (int)sprite2->x + sprite2->tyyppi->leveys/2;
+						spritepalikka.vasen = (int)sprite2->x - sprite2->tyyppi->leveys/2;
+						spritepalikka.yla   = (int)sprite2->y - sprite2->tyyppi->korkeus/2;
 
 						spritepalikka.alas       = BLOCK_SEINA;
 						spritepalikka.ylos       = BLOCK_SEINA;
 						spritepalikka.oikealle   = BLOCK_SEINA;
 						spritepalikka.vasemmalle = BLOCK_SEINA;
 
-						if (!Game::Sprites->spritet[sprite_index].tyyppi->este_alas)
+						if (!sprite2->tyyppi->este_alas)
 							spritepalikka.alas		 = BLOCK_TAUSTA;
-						if (!Game::Sprites->spritet[sprite_index].tyyppi->este_ylos)
+						if (!sprite2->tyyppi->este_ylos)
 							spritepalikka.ylos		 = BLOCK_TAUSTA;
-						if (!Game::Sprites->spritet[sprite_index].tyyppi->este_oikealle)
+						if (!sprite2->tyyppi->este_oikealle)
 							spritepalikka.oikealle   = BLOCK_TAUSTA;
-						if (!Game::Sprites->spritet[sprite_index].tyyppi->este_vasemmalle)
+						if (!sprite2->tyyppi->este_vasemmalle)
 							spritepalikka.vasemmalle = BLOCK_TAUSTA;
 
 
@@ -4886,29 +4888,29 @@ int PK_Sprite_Bonus_Movement(int i){
 					}
 				}
 
-				if (sprite_x < Game::Sprites->spritet[sprite_index].x + Game::Sprites->spritet[sprite_index].tyyppi->leveys/2 &&
-					sprite_x > Game::Sprites->spritet[sprite_index].x - Game::Sprites->spritet[sprite_index].tyyppi->leveys/2 &&
-					sprite_y < Game::Sprites->spritet[sprite_index].y + Game::Sprites->spritet[sprite_index].tyyppi->korkeus/2 &&
-					sprite_y > Game::Sprites->spritet[sprite_index].y - Game::Sprites->spritet[sprite_index].tyyppi->korkeus/2 &&
+				if (sprite_x < sprite2->x + sprite2->tyyppi->leveys/2 &&
+					sprite_x > sprite2->x - sprite2->tyyppi->leveys/2 &&
+					sprite_y < sprite2->y + sprite2->tyyppi->korkeus/2 &&
+					sprite_y > sprite2->y - sprite2->tyyppi->korkeus/2 &&
 					sprite.isku == 0)
 				{
-					if (Game::Sprites->spritet[sprite_index].tyyppi->tyyppi != TYYPPI_BONUS &&
-						!(sprite_index == pelaaja_index && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU))
-						sprite_a += Game::Sprites->spritet[sprite_index].a*(rand()%4);
+					if (sprite2->tyyppi->tyyppi != TYYPPI_BONUS &&
+						!(sprite2 == Game::Sprites->player && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU))
+						sprite_a += sprite2->a*(rand()%4);
 
 					// lis�t��n spriten painoon sit� koskettavan toisen spriten paino
-					sprite.kytkinpaino += Game::Sprites->spritet[sprite_index].tyyppi->paino;
+					sprite.kytkinpaino += sprite2->tyyppi->paino;
 
 					// samanmerkkiset spritet vaihtavat suuntaa t�rm�tess��n
-					if (sprite.tyyppi->indeksi == Game::Sprites->spritet[sprite_index].tyyppi->indeksi &&
-						Game::Sprites->spritet[sprite_index].energia > 0)
+					if (sprite.tyyppi->indeksi == sprite2->tyyppi->indeksi &&
+						sprite2->energia > 0)
 					{
-						if (sprite.x < Game::Sprites->spritet[sprite_index].x) {
-							Game::Sprites->spritet[sprite_index].a += sprite.a / 3.0;
+						if (sprite.x < sprite2->x) {
+							sprite2->a += sprite.a / 3.0;
 							oikealle = false;
 						}
-						if (sprite.x > Game::Sprites->spritet[sprite_index].x) {
-							Game::Sprites->spritet[sprite_index].a += sprite.a / 3.0;
+						if (sprite.x > sprite2->x) {
+							sprite2->a += sprite.a / 3.0;
 							vasemmalle = false;
 						}
 						/*
@@ -5070,13 +5072,13 @@ int PK_Sprite_Bonus_Movement(int i){
 	int tuhoutuminen;
 
 	// Test if player touches bonus
-	if (sprite_x < Game::Sprites->spritet[pelaaja_index].x + Game::Sprites->spritet[pelaaja_index].tyyppi->leveys/2 &&
-		sprite_x > Game::Sprites->spritet[pelaaja_index].x - Game::Sprites->spritet[pelaaja_index].tyyppi->leveys/2 &&
-		sprite_y < Game::Sprites->spritet[pelaaja_index].y + Game::Sprites->spritet[pelaaja_index].tyyppi->korkeus/2 &&
-		sprite_y > Game::Sprites->spritet[pelaaja_index].y - Game::Sprites->spritet[pelaaja_index].tyyppi->korkeus/2 &&
+	if (sprite_x < Game::Sprites->player->x + Game::Sprites->player->tyyppi->leveys/2 &&
+		sprite_x > Game::Sprites->player->x - Game::Sprites->player->tyyppi->leveys/2 &&
+		sprite_y < Game::Sprites->player->y + Game::Sprites->player->tyyppi->korkeus/2 &&
+		sprite_y > Game::Sprites->player->y - Game::Sprites->player->tyyppi->korkeus/2 &&
 		sprite.isku == 0)
 	{
-		if (sprite.energia > 0 && Game::Sprites->spritet[pelaaja_index].energia > 0)
+		if (sprite.energia > 0 && Game::Sprites->player->energia > 0)
 		{
 			if (sprite.tyyppi->pisteet != 0){
 				piste_lisays += sprite.tyyppi->pisteet;
@@ -5098,9 +5100,9 @@ int PK_Sprite_Bonus_Movement(int i){
 			//kartta->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
 
 			if (sprite.tyyppi->vahinko != 0 && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
-				Game::Sprites->spritet[pelaaja_index].energia -= sprite.tyyppi->vahinko;
-				//if (spritet[pelaaja_index].energia > spritet[pelaaja_index].tyyppi->energia){ //TODO - set correct energy
-				//	spritet[pelaaja_index].energia = spritet[pelaaja_index].tyyppi->energia;
+				Game::Sprites->player->energia -= sprite.tyyppi->vahinko;
+				//if (player->energia > player->tyyppi->energia){ //TODO - set correct energy
+				//	player->energia = player->tyyppi->energia;
 				//}
 			}
 
@@ -5140,24 +5142,24 @@ int PK_Sprite_Bonus_Movement(int i){
 				{
 					if (Game::Sprites->protot[sprite.tyyppi->muutos].AI[0] != AI_BONUS)
 					{
-						Game::Sprites->spritet[pelaaja_index].tyyppi = &Game::Sprites->protot[sprite.tyyppi->muutos];
-						Game::Sprites->spritet[pelaaja_index].ammus1 = Game::Sprites->spritet[pelaaja_index].tyyppi->ammus1;
-						Game::Sprites->spritet[pelaaja_index].ammus2 = Game::Sprites->spritet[pelaaja_index].tyyppi->ammus2;
-						Game::Sprites->spritet[pelaaja_index].alkupaino = Game::Sprites->spritet[pelaaja_index].tyyppi->paino;
-						Game::Sprites->spritet[pelaaja_index].y -= Game::Sprites->spritet[pelaaja_index].tyyppi->korkeus/2;
+						Game::Sprites->player->tyyppi = &Game::Sprites->protot[sprite.tyyppi->muutos];
+						Game::Sprites->player->ammus1 = Game::Sprites->player->tyyppi->ammus1;
+						Game::Sprites->player->ammus2 = Game::Sprites->player->tyyppi->ammus2;
+						Game::Sprites->player->alkupaino = Game::Sprites->player->tyyppi->paino;
+						Game::Sprites->player->y -= Game::Sprites->player->tyyppi->korkeus/2;
 						//PK_Start_Info("pekka has been transformed!");
 					}
 				}
 
 				if (sprite.tyyppi->ammus1 != -1)
 				{
-					Game::Sprites->spritet[pelaaja_index].ammus1 = sprite.tyyppi->ammus1;
+					Game::Sprites->player->ammus1 = sprite.tyyppi->ammus1;
 					PK_Start_Info(tekstit->Hae_Teksti(PK_txt.game_newegg));
 				}
 
 				if (sprite.tyyppi->ammus2 != -1)
 				{
-					Game::Sprites->spritet[pelaaja_index].ammus2 = sprite.tyyppi->ammus2;
+					Game::Sprites->player->ammus2 = sprite.tyyppi->ammus2;
 					PK_Start_Info(tekstit->Hae_Teksti(PK_txt.game_newdoodle));
 				}
 
@@ -5235,14 +5237,14 @@ int PK_Update_Sprites(){
 int PK_Update_Camera(){
 
 
-	kamera_x = (int)Game::Sprites->spritet[pelaaja_index].x-screen_width/2;
-	kamera_y = (int)Game::Sprites->spritet[pelaaja_index].y-screen_height/2;
+	kamera_x = (int)Game::Sprites->player->x-screen_width/2;
+	kamera_y = (int)Game::Sprites->player->y-screen_height/2;
 
 	/*
 	if (!PisteInput_Hiiri_Vasen())
 	{
-		kamera_x = (int)spritet[pelaaja_index].x-screen_width/2;
-		kamera_y = (int)spritet[pelaaja_index].y-screen_height/2;
+		kamera_x = (int)player->x-screen_width/2;
+		kamera_y = (int)player->y-screen_height/2;
 	}
 	else
 	{
@@ -5414,7 +5416,7 @@ int PK_Draw_InGame_Sprites(){
 					PisteDraw2_Image_CutClip(kuva_peli,hit_x-kamera_x-28+8, hit_y-kamera_y-27+8,1+framex,83,1+57+framex,83+55);
 				}
 
-				if (nakymattomyys == 0 || (!doublespeed && nakymattomyys%2 == 0) || (doublespeed && nakymattomyys%4 <= 1) || i != pelaaja_index)
+				if (nakymattomyys == 0 || (!doublespeed && nakymattomyys%2 == 0) || (doublespeed && nakymattomyys%4 <= 1) || sprite != Game::Sprites->player/*i != pelaaja_index*/)
 					sprite->Piirra(kamera_x,kamera_y);
 
 				if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYYPPI_AMMUS){
@@ -5478,21 +5480,21 @@ int PK_Draw_InGame_DebugInfo(){
 
 	char dluku[50];
 
-	sprintf(dluku, "%.7f", Game::Sprites->spritet[pelaaja_index].x); //Player x
+	sprintf(dluku, "%.7f", Game::Sprites->player->x); //Player x
 	PisteDraw2_Font_Write(fontti1, dluku, 10, 410);
 
-	sprintf(dluku, "%.7f", Game::Sprites->spritet[pelaaja_index].y); //Player y
+	sprintf(dluku, "%.7f", Game::Sprites->player->y); //Player y
 	PisteDraw2_Font_Write(fontti1, dluku, 10, 420);
 
-	sprintf(dluku, "%.7f", Game::Sprites->spritet[pelaaja_index].b); //Player v-speed
+	sprintf(dluku, "%.7f", Game::Sprites->player->b); //Player v-speed
 	PisteDraw2_Font_Write(fontti1, dluku, 10, 430);
 
-	sprintf(dluku, "%.7f", Game::Sprites->spritet[pelaaja_index].a); //Player h-speed
+	sprintf(dluku, "%.7f", Game::Sprites->player->a); //Player h-speed
 	PisteDraw2_Font_Write(fontti1, dluku, 10, 440);
 
 	PisteDraw2_Font_Write(fontti1, seuraava_kartta, 10, 460);
 
-	itoa(Game::Sprites->spritet[pelaaja_index].hyppy_ajastin, lukua, 10);
+	itoa(Game::Sprites->player->hyppy_ajastin, lukua, 10);
 	PisteDraw2_Font_Write(fontti1, lukua, 270, 460);
 
 	char tpolku[PE_PATH_SIZE] = "";
@@ -5712,7 +5714,7 @@ int PK_Draw_InGame_UI(){
 	// Draw Energy
 	/////////////////
 	vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_energy),40,my);
-	ltoa(Game::Sprites->spritet[pelaaja_index].energia,luku,10);
+	ltoa(Game::Sprites->player->energia,luku,10);
 	PisteDraw2_Font_Write(fontti4,luku,40+vali+1,my+1);
 	PisteDraw2_Font_Write(fontti2,luku,40+vali,my);
 
@@ -5737,14 +5739,14 @@ int PK_Draw_InGame_UI(){
 	/////////////////
 	// Draw Ammunition
 	/////////////////
-	if (Game::Sprites->spritet[pelaaja_index].ammus2 != -1){
+	if (Game::Sprites->player->ammus2 != -1){
 		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack1), screen_width-170,my);
-		Game::Sprites->protot[Game::Sprites->spritet[pelaaja_index].ammus2].Piirra(screen_width-170,my+10,0);
+		Game::Sprites->protot[Game::Sprites->player->ammus2].Piirra(screen_width-170,my+10,0);
 	}
 
-	if (Game::Sprites->spritet[pelaaja_index].ammus1 != -1){
+	if (Game::Sprites->player->ammus1 != -1){
 		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack2), screen_width-90,my+15);
-		Game::Sprites->protot[Game::Sprites->spritet[pelaaja_index].ammus1].Piirra(screen_width-90,my+25,0);
+		Game::Sprites->protot[Game::Sprites->player->ammus1].Piirra(screen_width-90,my+25,0);
 	}
 
 	/////////////////
@@ -5830,7 +5832,7 @@ int PK_Draw_InGame(){
 			PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
 		else
 			if (peli_ohi){
-				if (Game::Sprites->spritet[pelaaja_index].energia < 1)
+				if (Game::Sprites->player->energia < 1)
 					PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
 				else
 					if (timeout < 1 && aikaraja)
@@ -7396,7 +7398,7 @@ int PK_MainScreen_ScoreCount(){
 
 	// PISTELASKU
 
-	int energia = Game::Sprites->spritet[pelaaja_index].energia;
+	int energia = Game::Sprites->player->energia;
 
 	if (pistelaskudelay == 0){
 		if (bonuspisteet < jakso_pisteet){
@@ -7424,11 +7426,11 @@ int PK_MainScreen_ScoreCount(){
 			if (timeout == 0)
 				pistelaskudelay = 50;
 
-		} else if (Game::Sprites->spritet[pelaaja_index].energia > 0){
+		} else if (Game::Sprites->player->energia > 0){
 			pistelaskuvaihe = 3;
 			pistelaskudelay = 10;
 			energiapisteet+=300;
-			Game::Sprites->spritet[pelaaja_index].energia--;
+			Game::Sprites->player->energia--;
 
 			PK_Play_MenuSound(pistelaskuri_aani, 70);
 
@@ -7481,8 +7483,8 @@ int PK_MainScreen_ScoreCount(){
 			bonuspisteet = jakso_pisteet;
 			aikapisteet += timeout*5;
 			timeout = 0;
-			energiapisteet += Game::Sprites->spritet[pelaaja_index].energia * 300;
-			Game::Sprites->spritet[pelaaja_index].energia = 0;
+			energiapisteet += Game::Sprites->player->energia * 300;
+			Game::Sprites->player->energia = 0;
 			for (int i=0;i<MAX_GIFTS;i++)
 				if (Game::Gifts->get(i) != -1)
 					esinepisteet += Game::Gifts->get_protot(i)->pisteet + 500;
@@ -7619,7 +7621,7 @@ int PK_MainScreen_InGame(){
 			nakymattomyys--;
 	}
 
-	if (Game::Sprites->spritet[pelaaja_index].energia < 1 && !peli_ohi){
+	if (Game::Sprites->player->energia < 1 && !peli_ohi){
 		peli_ohi = true;
 		key_delay = 50;
 	}
@@ -7657,7 +7659,7 @@ int PK_MainScreen_InGame(){
 	}
 
 	if (key_delay == 0){
-		if (PisteInput_Keydown(settings.control_open_gift) && Game::Sprites->spritet[pelaaja_index].energia > 0){
+		if (PisteInput_Keydown(settings.control_open_gift) && Game::Sprites->player->energia > 0){
 			Game::Gifts->PK_Gift_Use();
 			key_delay = 10;
 		}
@@ -7666,7 +7668,7 @@ int PK_MainScreen_InGame(){
 			key_delay = 20;
 		}
 		if (PisteInput_Keydown(PI_DELETE))
-			Game::Sprites->spritet[pelaaja_index].energia = 0;
+			Game::Sprites->player->energia = 0;
 		if (PisteInput_Keydown(PI_TAB)){
 			Game::Gifts->PK_Gift_ChangeOrder();
 			key_delay = 10;
@@ -7723,7 +7725,7 @@ int PK_MainScreen_InGame(){
 			}
 			if (PisteInput_Keydown(PI_R)) {
 				PK_Map_Search_Start();
-				Game::Sprites->spritet[pelaaja_index].energia = 10;
+				Game::Sprites->player->energia = 10;
 				key_delay = 20;
 			}
 			if (PisteInput_Keydown(PI_END)) {
@@ -7742,15 +7744,15 @@ int PK_MainScreen_InGame(){
 			if (PisteInput_Keydown(PI_LSHIFT)/* && key_delay == 0*/) {
 				//key_delay = 20;
 				for (int r = 1; r<6; r++)
-					//Game::Particles->new_particle(PARTICLE_SPARK, spritet[pelaaja_index].x + rand() % 10 - rand() % 10, spritet[pelaaja_index].y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
-					Game::Particles->new_particle(PARTICLE_SPARK, Game::Sprites->spritet[pelaaja_index].x + rand() % 10 - rand() % 10, Game::Sprites->spritet[pelaaja_index].y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
-				Game::Sprites->spritet[pelaaja_index] = PK2Sprite(&Game::Sprites->protot[PROTOTYYPPI_KANA], 1, false, Game::Sprites->spritet[pelaaja_index].x, Game::Sprites->spritet[pelaaja_index].y);
+					//Game::Particles->new_particle(PARTICLE_SPARK, player->x + rand() % 10 - rand() % 10, player->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
+					Game::Particles->new_particle(PARTICLE_SPARK, Game::Sprites->player->x + rand() % 10 - rand() % 10, Game::Sprites->player->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
+				*Game::Sprites->player = PK2Sprite(&Game::Sprites->protot[PROTOTYYPPI_KANA], 1, false, Game::Sprites->player->x, Game::Sprites->player->y);
 			}
 		}
 		if (PisteInput_Keydown(PI_U))
-			Game::Sprites->spritet[pelaaja_index].b = -10;
+			Game::Sprites->player->b = -10;
 		if (PisteInput_Keydown(PI_E))
-			Game::Sprites->spritet[pelaaja_index].energia = Game::Sprites->spritet[pelaaja_index].tyyppi->energia;
+			Game::Sprites->player->energia = Game::Sprites->player->tyyppi->energia;
 		if (PisteInput_Keydown(PI_V))
 			nakymattomyys = 3000;
 	}
@@ -8120,7 +8122,7 @@ int PK_MainScreen_Change() {
 		DWORD temp_pisteet = 0;
 		temp_pisteet += jakso_pisteet;
 		temp_pisteet += timeout * 5;
-		temp_pisteet += Game::Sprites->spritet[pelaaja_index].energia * 300;
+		temp_pisteet += Game::Sprites->player->energia * 300;
 		for (int i = 0; i < MAX_GIFTS; i++)
 			if (Game::Gifts->get(i) != -1)
 				temp_pisteet += Game::Gifts->get_protot(i)->pisteet + 500;
