@@ -205,8 +205,7 @@ bool dev_mode = false;
 bool PK2_error = false;
 const char* PK2_error_msg = NULL;
 
-bool window_closed	= false;
-bool lopeta_peli = false;
+bool closing_game = false;
 
 bool unload = false;
 bool precalculated_sincos = false;
@@ -553,7 +552,7 @@ LANGUAGE PK_txt;
 int  PK_Settings_Save(char *filename);
 int  PK_Map_Place_Sprites();
 void PK_Load_EpisodeDir(char *tiedosto);
-void PK_Quit();
+void PK_Fade_Quit();
 
 //==================================================
 //(#1) Filesystem
@@ -2255,16 +2254,15 @@ class SpriteSystem {
 	int next_free_prototype = 0;
 
 
-	int  PK_Prototype_LoadSound(char *polku, char *tiedosto);
-	int  PK_Prototype_Load(char *polku, char *tiedosto);
-	void PK_Prototype_Load_ChangeTo(int i);
-	void PK_Prototype_Load_Bonus(int i);
-	void PK_Prototype_Load_Ammo1(int i);
-	void PK_Prototype_Load_Ammo2(int i);
+	int  protot_get(char *polku, char *tiedosto);
+	
+	int  protot_get_sound(char *polku, char *tiedosto);
+	void protot_get_transformation(int i);
+	void protot_get_bonus(int i);
+	void protot_get_ammo1(int i);
+	void protot_get_ammo2(int i);
 
-	void PK_BGSprites_Add(int index);
-	
-	
+	void add_bg(int index);
 	
 
 	public:
@@ -2275,25 +2273,24 @@ class SpriteSystem {
 	PK2Sprite* player;
 
 	PK2Sprite_Prototyyppi protot[MAX_PROTOTYYPPEJA];
-	//PK2Sprite_Prototyyppi *esineet[MAX_GIFTS];
 	PK2Sprite spritet[MAX_SPRITEJA];
 	int taustaspritet[MAX_SPRITEJA];
 
 
-	int  PK_Prototype_LoadAll();
-	void PK_Prototype_Clear();
+	int  protot_get_all();
+	void protot_clear_all();
 
-	void PK_Sprites_Clean();
-	void PK_Sprites_Add(int protoype_id, int pelaaja, double x, double y, int emo, bool isbonus);
-	void PK_Sprites_Add_Ammo(int protoype_id, int pelaaja, double x, double y, int emo);
-	void PK_BGSprites_Sort();
-	void PK_Sprites_Start_Directions();
+	void clear();
+	void add(int protoype_id, int pelaaja, double x, double y, int emo, bool isbonus);
+	void add_ammo(int protoype_id, int pelaaja, double x, double y, int emo);
+	void sort_bg();
+	void start_directions();
 	
 };
 
 }
 
-void PK2::SpriteSystem::PK_Prototype_Clear() {
+void PK2::SpriteSystem::protot_clear_all() {
 	for (int i=0; i<MAX_PROTOTYYPPEJA; i++){
 		for (int j=0;j<MAX_AANIA;j++)
 			if (protot[i].aanet[j] > -1)
@@ -2305,7 +2302,7 @@ void PK2::SpriteSystem::PK_Prototype_Clear() {
 	next_free_prototype = 0;
 }
 
-int  PK2::SpriteSystem::PK_Prototype_LoadSound(char *polku, char *tiedosto) {
+int  PK2::SpriteSystem::protot_get_sound(char *polku, char *tiedosto) {
 	char aanitiedosto[255];
 	if (strcmp(tiedosto,"")!=0){
 		strcpy(aanitiedosto,polku);
@@ -2316,7 +2313,7 @@ int  PK2::SpriteSystem::PK_Prototype_LoadSound(char *polku, char *tiedosto) {
 	return -1;
 }
 
-int  PK2::SpriteSystem::PK_Prototype_Load(char *polku, char *tiedosto) {
+int  PK2::SpriteSystem::protot_get(char *polku, char *tiedosto) {
 	char aanipolku[255];
 	char testipolku[255];
 	strcpy(aanipolku,polku);
@@ -2341,7 +2338,7 @@ int  PK2::SpriteSystem::PK_Prototype_Load(char *polku, char *tiedosto) {
 			strcat(testipolku,protot[next_free_prototype].aanitiedostot[i]);
 
 			if (PK_Check_File(testipolku))
-				protot[next_free_prototype].aanet[i] = PK_Prototype_LoadSound(aanipolku,protot[next_free_prototype].aanitiedostot[i]);
+				protot[next_free_prototype].aanet[i] = protot_get_sound(aanipolku,protot[next_free_prototype].aanitiedostot[i]);
 			else{
 				getcwd(aanipolku, PE_PATH_SIZE);
 				strcat(aanipolku,"/sprites/");
@@ -2351,7 +2348,7 @@ int  PK2::SpriteSystem::PK_Prototype_Load(char *polku, char *tiedosto) {
 				strcat(testipolku,protot[next_free_prototype].aanitiedostot[i]);
 
 				if (PK_Check_File(testipolku))
-					protot[next_free_prototype].aanet[i] = PK_Prototype_LoadSound(aanipolku,protot[next_free_prototype].aanitiedostot[i]);
+					protot[next_free_prototype].aanet[i] = protot_get_sound(aanipolku,protot[next_free_prototype].aanitiedostot[i]);
 			}
 		}
 	}
@@ -2361,7 +2358,7 @@ int  PK2::SpriteSystem::PK_Prototype_Load(char *polku, char *tiedosto) {
 	return 0;
 }
 
-void PK2::SpriteSystem::PK_Prototype_Load_ChangeTo(int i) {
+void PK2::SpriteSystem::protot_get_transformation(int i) {
 	int j = 0;
 	bool loaded = false;
 
@@ -2381,13 +2378,13 @@ void PK2::SpriteSystem::PK_Prototype_Load_ChangeTo(int i) {
 			strcpy(polku,"sprites/");
 			//PK_Load_EpisodeDir(polku);
 
-			if (PK_Prototype_Load(polku, protot[i].muutos_sprite)==0)
+			if (protot_get(polku, protot[i].muutos_sprite)==0)
 				protot[i].muutos = next_free_prototype-1; // jokainen lataus kasvattaa next_free_prototype:a
 		}
 	}
 }
 
-void PK2::SpriteSystem::PK_Prototype_Load_Bonus(int i) {
+void PK2::SpriteSystem::protot_get_bonus(int i) {
 	int j = 0;
 	bool loaded = false;
 
@@ -2408,13 +2405,13 @@ void PK2::SpriteSystem::PK_Prototype_Load_Bonus(int i) {
 			strcpy(polku,"sprites/");
 			//PK_Load_EpisodeDir(polku);
 
-			if (PK_Prototype_Load(polku, protot[i].bonus_sprite)==0)
+			if (protot_get(polku, protot[i].bonus_sprite)==0)
 				protot[i].bonus = next_free_prototype-1;
 		}
 	}
 }
 
-void PK2::SpriteSystem::PK_Prototype_Load_Ammo1(int i) {
+void PK2::SpriteSystem::protot_get_ammo1(int i) {
 	int j = 0;
 	bool loaded = false;
 
@@ -2435,13 +2432,13 @@ void PK2::SpriteSystem::PK_Prototype_Load_Ammo1(int i) {
 			strcpy(polku,"sprites/");
 
 
-			if (PK_Prototype_Load(polku, protot[i].ammus1_sprite)==0)
+			if (protot_get(polku, protot[i].ammus1_sprite)==0)
 				protot[i].ammus1 = next_free_prototype-1;
 		}
 	}
 }
 
-void PK2::SpriteSystem::PK_Prototype_Load_Ammo2(int i) {
+void PK2::SpriteSystem::protot_get_ammo2(int i) {
 	int j = 0;
 	bool loaded = false;
 
@@ -2461,13 +2458,13 @@ void PK2::SpriteSystem::PK_Prototype_Load_Ammo2(int i) {
 			char polku[PE_PATH_SIZE];
 			strcpy(polku,"sprites/");
 
-			if (PK_Prototype_Load(polku, protot[i].ammus2_sprite)==0)
+			if (protot_get(polku, protot[i].ammus2_sprite)==0)
 				protot[i].ammus2 = next_free_prototype-1;
 		}
 	}
 }
 
-int  PK2::SpriteSystem::PK_Prototype_LoadAll() {
+int  PK2::SpriteSystem::protot_get_all() {
 	char polku[PE_PATH_SIZE];
 	int viimeinen_proto;
 
@@ -2477,9 +2474,9 @@ int  PK2::SpriteSystem::PK_Prototype_LoadAll() {
 			strcpy(polku,"");
 			PK_Load_EpisodeDir(polku);
 
-			if (PK_Prototype_Load(polku,kartta->protot[i])!=0){
+			if (protot_get(polku,kartta->protot[i])!=0){
 				strcpy(polku,"sprites/");
-				if (PK_Prototype_Load(polku,kartta->protot[i])!=0){
+				if (protot_get(polku,kartta->protot[i])!=0){
 					printf("PK2     - Can't load sprite %s. It will not appear.", kartta->protot[i]);
 					next_free_prototype++;
 				}
@@ -2492,10 +2489,10 @@ int  PK2::SpriteSystem::PK_Prototype_LoadAll() {
 	next_free_prototype = viimeinen_proto+1;
 
 	for (int i=0;i<MAX_PROTOTYYPPEJA;i++){
-		PK_Prototype_Load_ChangeTo(i);
-		PK_Prototype_Load_Bonus(i);
-		PK_Prototype_Load_Ammo1(i);
-		PK_Prototype_Load_Ammo2(i);
+		protot_get_transformation(i);
+		protot_get_bonus(i);
+		protot_get_ammo1(i);
+		protot_get_ammo2(i);
 	}
 
 	return 0;
@@ -2503,8 +2500,9 @@ int  PK2::SpriteSystem::PK_Prototype_LoadAll() {
 
 
 PK2::SpriteSystem::SpriteSystem() {
-	PK_Sprites_Clean();
+	clear();
 }
+
 PK2::SpriteSystem::~SpriteSystem() {}
 
 
@@ -2512,7 +2510,7 @@ PK2::SpriteSystem::~SpriteSystem() {}
 //(#8) Sprites
 //==================================================
 
-void PK2::SpriteSystem::PK_BGSprites_Add(int index) {
+void PK2::SpriteSystem::add_bg(int index) {
 	for (int i=0;i<MAX_SPRITEJA;i++){
 		if (taustaspritet[i] == -1){
 			taustaspritet[i] = index;
@@ -2521,7 +2519,7 @@ void PK2::SpriteSystem::PK_BGSprites_Add(int index) {
 	}
 }
 
-void PK2::SpriteSystem::PK_BGSprites_Sort() {
+void PK2::SpriteSystem::sort_bg() {
 	bool lopeta = false;
 	int l = 1;
 	int vali;
@@ -2549,7 +2547,7 @@ void PK2::SpriteSystem::PK_BGSprites_Sort() {
 	}
 }
 
-void PK2::SpriteSystem::PK_Sprites_Start_Directions() {
+void PK2::SpriteSystem::start_directions() {
 	for (int i = 0; i < MAX_SPRITEJA; i++){
 		if (/*pelaaja_index >= 0 && pelaaja_index < MAX_SPRITEJA && */!spritet[i].piilota){
 			spritet[i].a = 0;
@@ -2587,7 +2585,7 @@ void PK2::SpriteSystem::PK_Sprites_Start_Directions() {
 	}
 }
 
-void PK2::SpriteSystem::PK_Sprites_Add(int protoype_id, int is_player, double x, double y, int emo, bool isbonus) {
+void PK2::SpriteSystem::add(int protoype_id, int is_player, double x, double y, int emo, bool isbonus) {
 	PK2Sprite_Prototyyppi& proto = protot[protoype_id];
 	bool lisatty = false;
 	int i = 0;
@@ -2614,7 +2612,7 @@ void PK2::SpriteSystem::PK_Sprites_Add(int protoype_id, int is_player, double x,
 			}
 
 			if (proto.tyyppi == TYYPPI_TAUSTA)
-				PK_BGSprites_Add(i);
+				add_bg(i);
 
 			if (emo != MAX_SPRITEJA)
 				spritet[i].emosprite = emo;
@@ -2628,7 +2626,7 @@ void PK2::SpriteSystem::PK_Sprites_Add(int protoype_id, int is_player, double x,
 	}
 }
 
-void PK2::SpriteSystem::PK_Sprites_Add_Ammo(int protoype_id, int is_player, double x, double y, int emo) {
+void PK2::SpriteSystem::add_ammo(int protoype_id, int is_player, double x, double y, int emo) {
 	PK2Sprite_Prototyyppi& proto = protot[protoype_id];
 	bool lisatty = false;
 	int i = 0;
@@ -2689,7 +2687,7 @@ void PK2::SpriteSystem::PK_Sprites_Add_Ammo(int protoype_id, int is_player, doub
 			}
 
 			if (proto.tyyppi == TYYPPI_TAUSTA)
-				PK_BGSprites_Add(i);
+				add_bg(i);
 
 			lisatty = true;
 		}
@@ -2698,7 +2696,7 @@ void PK2::SpriteSystem::PK_Sprites_Add_Ammo(int protoype_id, int is_player, doub
 	}
 }
 
-void PK2::SpriteSystem::PK_Sprites_Clean() {
+void PK2::SpriteSystem::clear() {
 	int i = 0;
 
 	while (i < MAX_SPRITEJA){
@@ -2825,9 +2823,9 @@ int PK_Map_Search_Start(){
 }
 
 int PK_Map_Place_Sprites(){
-	Game::Sprites->PK_Sprites_Clean();
+	Game::Sprites->clear();
 
-	Game::Sprites->PK_Sprites_Add(kartta->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
+	Game::Sprites->add(kartta->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
 
 	int sprite;
 
@@ -2836,12 +2834,12 @@ int PK_Map_Place_Sprites(){
 			sprite = kartta->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
 			if (sprite != 255 && Game::Sprites->protot[sprite].korkeus > 0){
-				Game::Sprites->PK_Sprites_Add(sprite, 0, x*32, y*32 - Game::Sprites->protot[sprite].korkeus+32, MAX_SPRITEJA, false);
+				Game::Sprites->add(sprite, 0, x*32, y*32 - Game::Sprites->protot[sprite].korkeus+32, MAX_SPRITEJA, false);
 			}
 		}
 	}
 
-	Game::Sprites->PK_BGSprites_Sort();
+	Game::Sprites->sort_bg();
 
 	return 0;
 }
@@ -2859,7 +2857,7 @@ int PK_Map_Open(char *nimi){
 	PK_New_Save();
 
 	if (strcmp(kartta->versio,"1.2") == 0 || strcmp(kartta->versio,"1.3") == 0)
-		if (Game::Sprites->PK_Prototype_LoadAll() == 1)
+		if (Game::Sprites->protot_get_all() == 1)
 			return 1;
 
 	PK_Palikka_Tee_Maskit();
@@ -2871,7 +2869,7 @@ int PK_Map_Open(char *nimi){
 	PK_Map_Search_Start();
 	PK_Map_Count_Keys();
 	
-	Game::Sprites->PK_Sprites_Start_Directions();
+	Game::Sprites->start_directions();
 	
 	Game::Particles->clear_particles();
 	Game::Particles->load_bg_particles(kartta);
@@ -3253,10 +3251,10 @@ class GiftSystem {
 
 	void draw(int i, int x, int y);
 
-	void PK_Gift_Clean();
-	bool PK_Gift_Add(int prototype_id);
-	int  PK_Gift_Use();
-	int  PK_Gift_ChangeOrder();
+	void clean();
+	bool add(int prototype_id);
+	int  use();
+	int  change_order();
 
 	GiftSystem();
 	~GiftSystem();
@@ -3281,20 +3279,20 @@ void PK2::GiftSystem::draw(int i, int x, int y) {
 }
 
 PK2::GiftSystem::GiftSystem() {
-	PK_Gift_Clean();
+	clean();
 }
 
 PK2::GiftSystem::~GiftSystem() {
 	
 }
 
-void PK2::GiftSystem::PK_Gift_Clean() {
+void PK2::GiftSystem::clean() {
 	for (int i=0;i<MAX_GIFTS;i++)
 		list[i] = -1;
 	gift_count = 0;
 }
 
-bool PK2::GiftSystem::PK_Gift_Add(int prototype_id) {
+bool PK2::GiftSystem::add(int prototype_id) {
 	int i=0;
 	bool lisatty = false;
 
@@ -3317,9 +3315,9 @@ bool PK2::GiftSystem::PK_Gift_Add(int prototype_id) {
 	return lisatty;
 }
 
-int  PK2::GiftSystem::PK_Gift_Use() {
+int  PK2::GiftSystem::use() {
 	if (gift_count > 0) {
-		Game::Sprites->PK_Sprites_Add(
+		Game::Sprites->add(
 			list[0], 0,
 			Game::Sprites->player->x - Game::Sprites->protot[list[0]].leveys,
 			Game::Sprites->player->y,
@@ -3336,7 +3334,7 @@ int  PK2::GiftSystem::PK_Gift_Use() {
 	return 0;
 }
 
-int  PK2::GiftSystem::PK_Gift_ChangeOrder() {
+int  PK2::GiftSystem::change_order() {
 	if (list[0] == -1)
 		return 0;
 
@@ -3356,7 +3354,7 @@ int  PK2::GiftSystem::PK_Gift_ChangeOrder() {
 }
 
 namespace Game {
-	PK2::GiftSystem* Gifts = new PK2::GiftSystem();
+PK2::GiftSystem* Gifts = new PK2::GiftSystem();
 }
 
 //==================================================
@@ -4245,7 +4243,7 @@ int PK_Sprite_Movement(int i){
 				if (sprite.tyyppi->bonus > -1 && sprite.tyyppi->bonusten_lkm > 0)
 					if (sprite.tyyppi->bonus_aina || rand()%4 == 1)
 						for (int bi=0; bi<sprite.tyyppi->bonusten_lkm; bi++)
-							Game::Sprites->PK_Sprites_Add(sprite.tyyppi->bonus,0,sprite_x-11+(10-rand()%20),
+							Game::Sprites->add(sprite.tyyppi->bonus,0,sprite_x-11+(10-rand()%20),
 											  sprite_ala-16-(10+rand()%20), i, true);
 
 				if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_TYRMATTY) && !sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
@@ -4261,7 +4259,7 @@ int PK_Sprite_Movement(int i){
 							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 				if (sprite.Onko_AI(AI_UUSI_JOS_TUHOUTUU)) {
-					Game::Sprites->PK_Sprites_Add(sprite.tyyppi->indeksi,0,sprite.alku_x-sprite.tyyppi->leveys, sprite.alku_y-sprite.tyyppi->korkeus,i, false);
+					Game::Sprites->add(sprite.tyyppi->indeksi,0,sprite.alku_x-sprite.tyyppi->leveys, sprite.alku_y-sprite.tyyppi->korkeus,i, false);
 				} //TODO - does sprite.tyyppi->indeksi work
 
 				if (sprite.tyyppi->tyyppi == TYYPPI_PELIHAHMO && sprite.tyyppi->pisteet != 0){
@@ -4664,7 +4662,7 @@ int PK_Sprite_Movement(int i){
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 			if (sprite.ammus1 > -1) {
-				Game::Sprites->PK_Sprites_Add_Ammo(sprite.ammus1,0,sprite_x, sprite_y, i);
+				Game::Sprites->add_ammo(sprite.ammus1,0,sprite_x, sprite_y, i);
 
 		//		if (Game::Sprites->protot[sprite.ammus1].aanet[AANI_HYOKKAYS1] > -1)
 		//			PK_Play_Sound(Game::Sprites->protot[sprite.ammus1].aanet[AANI_HYOKKAYS1],100, (int)sprite_x, (int)sprite_y,
@@ -4684,7 +4682,7 @@ int PK_Sprite_Movement(int i){
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 			if (sprite.ammus2 > -1) {
-				Game::Sprites->PK_Sprites_Add_Ammo(sprite.ammus2,0,sprite_x, sprite_y, i);
+				Game::Sprites->add_ammo(sprite.ammus2,0,sprite_x, sprite_y, i);
 
 		//		if (Game::Sprites->protot[sprite.ammus2].aanet[AANI_HYOKKAYS1] > -1)
 		//			PK_Play_Sound(Game::Sprites->protot[sprite.ammus2].aanet[AANI_HYOKKAYS1],100, (int)sprite_x, (int)sprite_y,
@@ -5129,14 +5127,14 @@ int PK_Sprite_Bonus_Movement(int i){
 					double ax, ay;
 					ax = sprite.alku_x;//-sprite.tyyppi->leveys;
 					ay = sprite.alku_y-sprite.tyyppi->korkeus/2.0;
-					Game::Sprites->PK_Sprites_Add(sprite.tyyppi->indeksi,0,ax-17, ay,i, false);
+					Game::Sprites->add(sprite.tyyppi->indeksi,0,ax-17, ay,i, false);
 					for (int r=1;r<6;r++)
 						Game::Particles->new_particle(PARTICLE_SPARK,ax+rand()%10-rand()%10, ay+rand()%10-rand()%10,0,0,rand()%100,0.1,32);
 
 				}
 
 				if (sprite.tyyppi->bonus  != -1)
-					Game::Gifts->PK_Gift_Add(sprite.tyyppi->bonus);
+					Game::Gifts->add(sprite.tyyppi->bonus);
 
 				if (sprite.tyyppi->muutos != -1)
 				{
@@ -6106,7 +6104,7 @@ int PK_Draw_Menu_Main(){
 
 	#ifndef __ANDROID__
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_exit),180,my))
-		PK_Quit();
+		PK_Fade_Quit();
 	my += 20;
 	#endif
 	return 0;
@@ -7489,7 +7487,7 @@ int PK_MainScreen_ScoreCount(){
 				if (Game::Gifts->get(i) != -1)
 					esinepisteet += Game::Gifts->get_protot(i)->pisteet + 500;
 			
-			Game::Gifts->PK_Gift_Clean(); //TODO esineita = 0;
+			Game::Gifts->clean(); //TODO esineita = 0;
 
 			key_delay = 20;
 		}
@@ -7648,11 +7646,8 @@ int PK_MainScreen_InGame(){
 		}
 	}
 	if (lopetusajastin == 1 && !PisteDraw2_IsFading()){
-		if(test_level){
-			lopeta_peli = true;
-			PK_Quit();
-		}
-		else{
+		if(test_level) PK_Fade_Quit();
+		else {
 			if (jakso_lapaisty) game_next_screen = SCREEN_SCORING;
 			else game_next_screen = SCREEN_MAP;
 		}
@@ -7660,7 +7655,7 @@ int PK_MainScreen_InGame(){
 
 	if (key_delay == 0){
 		if (PisteInput_Keydown(settings.control_open_gift) && Game::Sprites->player->energia > 0){
-			Game::Gifts->PK_Gift_Use();
+			Game::Gifts->use();
 			key_delay = 10;
 		}
 		if (PisteInput_Keydown(PI_P) && !jakso_lapaisty){
@@ -7670,7 +7665,7 @@ int PK_MainScreen_InGame(){
 		if (PisteInput_Keydown(PI_DELETE))
 			Game::Sprites->player->energia = 0;
 		if (PisteInput_Keydown(PI_TAB)){
-			Game::Gifts->PK_Gift_ChangeOrder();
+			Game::Gifts->change_order();
 			key_delay = 10;
 		}
 		if (!dev_mode)
@@ -7841,7 +7836,7 @@ int PK_MainScreen_Change() {
 
 		PK_Load_Font();
 
-		Game::Sprites->PK_Sprites_Clean();
+		Game::Sprites->clear();
 
 		PK_Search_Episode();
 		PK_Start_Saves();
@@ -7910,7 +7905,7 @@ int PK_MainScreen_Change() {
 		//PisteLog_Kirjoita("  - Calculating tiles. \n");
 		PK_Calculate_Tiles();
 
-		Game::Gifts->PK_Gift_Clean();
+		Game::Gifts->clean();
 
 		//PisteLog_Kirjoita("  - Loading background picture \n");
 		PisteDraw2_Image_Delete(kuva_tausta);
@@ -8073,9 +8068,9 @@ int PK_MainScreen_Change() {
 		{
 			jakso_lapaisty = false;
 
-			Game::Gifts->PK_Gift_Clean(); //Reset gifts
-			Game::Sprites->PK_Sprites_Clean(); //Reset sprites
-			Game::Sprites->PK_Prototype_Clear(); //Reset prototypes
+			Game::Gifts->clean(); //Reset gifts
+			Game::Sprites->clear(); //Reset sprites
+			Game::Sprites->protot_clear_all(); //Reset prototypes
 
 			if (PK_Map_Open(seuraava_kartta) == 1)
 			{
@@ -8087,7 +8082,7 @@ int PK_MainScreen_Change() {
 
 			PK_Fadetext_Init(); //Reset fade text
 
-			Game::Gifts->PK_Gift_Clean();
+			Game::Gifts->clean();
 			episode_started = true;
 			music_volume = settings.music_max_volume;
 			degree = 0;
@@ -8230,13 +8225,9 @@ int PK_MainScreen_Change() {
 
 
 //The game loop
-int PK_MainScreen(){
-	if (game_next_screen != game_screen) PK_MainScreen_Change();
+int PK_MainScreen() {
 
-	if (window_closed/*depr*/){
-		Engine->stop();
-		return 0;
-	}
+	if (game_next_screen != game_screen) PK_MainScreen_Change();
 	
 	PK_Updade_Mouse();
 	
@@ -8247,7 +8238,7 @@ int PK_MainScreen(){
 		case SCREEN_SCORING : PK_MainScreen_ScoreCount(); break;
 		case SCREEN_INTRO   : PK_MainScreen_Intro();      break;
 		case SCREEN_END     : PK_MainScreen_End();        break;
-		default             : lopeta_peli = true;         break;
+		default             : PK_Fade_Quit();                  break;
 	}
 
 	// Update music volume
@@ -8285,7 +8276,7 @@ int PK_MainScreen(){
 	bool skipped = !skip_frame && doublespeed; // If is in double speed and don't skip this frame, so the last frame was skipped, and it wasn't drawn
 	if (PisteInput_Keydown(PI_ESCAPE) && key_delay == 0 && !skipped){ //Don't activate menu whith a not drawn screen
 		if(test_level)
-			PK_Quit();
+			PK_Fade_Quit();
 		else{
 			if (menu_nyt != MENU_MAIN || game_screen != SCREEN_MENU){
 				game_next_screen = SCREEN_MENU;
@@ -8294,7 +8285,7 @@ int PK_MainScreen(){
 			}
 			else if (game_screen == SCREEN_MENU && !wasPressed && PisteInput_Keydown(PI_ESCAPE) && menu_lue_kontrollit == 0){ // Just pressed escape in menu
 				if(menu_valittu_id == menu_valinta_id-1)
-					PK_Quit();
+					PK_Fade_Quit();
 				else {
 					menu_valittu_id = menu_valinta_id-1; // Set to "exit" option
 					//window_activated = false;
@@ -8306,10 +8297,8 @@ int PK_MainScreen(){
 
 	wasPressed = PisteInput_Keydown(PI_ESCAPE);
 
-	if (lopeta_peli && !PisteDraw2_IsFading())
-		window_closed = true;
-	
-	if (PK2_error) Engine->stop();
+	if (closing_game && !PisteDraw2_IsFading() || PK2_error)
+		Engine->stop();
 	
 	return 0;
 }
@@ -8345,59 +8334,66 @@ void PK_Unload(){
 		unload = true;
 	}
 }
-void PK_Quit(){
-	if(!lopeta_peli) PisteDraw2_FadeOut(PD_FADE_FAST);
-	lopeta_peli = true;
+
+void PK_Fade_Quit() {
+	if(!closing_game) PisteDraw2_FadeOut(PD_FADE_FAST);
+	closing_game = true;
 	music_volume = 0;
 }
 
-void quit(){
+void quit(int ret) {
 	PK_Settings_Save("data/settings.ini");
 	PK_Unload();
 	delete Engine;
-	printf("Exited correctely\n");
+	if (!ret) printf("Exited correctely\n");
+	exit(ret);
 }
-int main(int argc, char *argv[]){
+
+int main(int argc, char *argv[]) {
 	char* test_path = NULL;
 	bool path_set = false;
 
-	printf("PK2 Started!\n");
-	atexit(quit);
-
-	for (int i = 0; i < argc; i++) {
+	for (int i = 1; i < argc; i++) {
+		if (strcmp(argv[i], "version") == 0) {
+			printf(PK2_VERSION);
+			printf("\n");
+			exit(0);
+		}
 		if (strcmp(argv[i], "dev") == 0) {
 			dev_mode = true;
+			continue;
 		}
 		if (strcmp(argv[i], "test") == 0) {
 			if (argc <= i + 1) {
-				printf("Please set a level to test");
+				printf("Please set a level to test\n");
 				exit(1);
 			}
 			else {
 				test_level = true;
 				test_path = argv[i + 1];
+				continue;
 			}
 		}
 		if (strcmp(argv[i], "path") == 0) {
 			if (argc <= i + 1) {
-				printf("Please set a path");
+				printf("Please set a path\n");
 				exit(1);
 			}
 			else {
 				printf("PK2    - Path set to %s\n", argv[i + 1]);
 				chdir(argv[i + 1]);
 				path_set = true;
+				continue;
 			}
 		}
-		if (strcmp(argv[i], "fps") == 0)
+		if (strcmp(argv[i], "fps") == 0) {
 			show_fps = true;
-		if (strcmp(argv[i], "version") == 0) {
-			printf(PK2_VERSION);
-			printf("\n");
-			exit(0);
+			continue;
 		}
 
 	}
+
+	printf("PK2 Started!\n");
 
 	if(!path_set)
 		PisteUtils_Setcwd();
@@ -8448,8 +8444,8 @@ int main(int argc, char *argv[]){
 	if(PK2_error){
 		printf("PK2    - Error!\n");
 		PisteUtils_Show_Error(PK2_error_msg);
+		quit(1);
 	}
 	
-	//quit(); Will be called by atexit()
-	return 0;
+	quit(0);
 }
