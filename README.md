@@ -54,7 +54,6 @@ This example starts the level13.map on dev mode:
 # TODOs and FIXMEs:
 * Fix intro screen
 * Update health before draw
-* Draw dust outside screen
 
 * Consider Sprite in Water when the water is on BG or outside the screen
 * Fix the mikmod music loop
@@ -64,3 +63,4 @@ This example starts the level13.map on dev mode:
 * Add link to Discord
 * Jump frames when FPS is slow
 * Start on language select on first start
+* Super mode - energy = 0 on touch Pekka

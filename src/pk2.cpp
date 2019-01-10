@@ -2134,21 +2134,22 @@ void PK2::Particle_System::clear_particles() {
 }
 
 
-namespace Game{
+namespace Game {
 PK2::Particle_System* Particles = new PK2::Particle_System();
 }
 
 //==================================================
 //(#6) Effects
 //==================================================
+namespace Effect {
 
-void PK_Effect_Feathers(DWORD x, DWORD y) {
+void Feathers(DWORD x, DWORD y) {
 	for (int i=0;i<9;i++)//6
 		Game::Particles->new_particle(PARTICLE_FEATHER,x+rand()%17-rand()%17,y+rand()%20-rand()%10,
 							(rand()%16-rand()%16)/10.0,(45+rand()%45)/100.0,300+rand()%40,0,0);
 }
 
-void PK_Effect_Splash(DWORD x, DWORD y, BYTE color) {
+void Splash(DWORD x, DWORD y, BYTE color) {
 	/*
 	for (int i=0;i<12;i++)
 		Game::Particles->new_particle(	PARTICLE_LIGHT,x+rand()%17-13,y+rand()%17-13,
@@ -2167,7 +2168,7 @@ void PK_Effect_Splash(DWORD x, DWORD y, BYTE color) {
 	PK_Play_Sound(loiskahdus_aani, 100, x, y, SOUND_SAMPLERATE, true);
 }
 
-void PK_Effect_Explosion(DWORD x, DWORD y, BYTE color) {
+void Explosion(DWORD x, DWORD y, BYTE color) {
 	int i;
 
 	for (i=0;i<3;i++)
@@ -2191,7 +2192,7 @@ void PK_Effect_Explosion(DWORD x, DWORD y, BYTE color) {
 							rand()%40+60,0.025,color);
 }
 
-void PK_Effect_Smoke(DWORD x, DWORD y, BYTE color) {
+void Smoke(DWORD x, DWORD y, BYTE color) {
 	for (int i=0;i<3;i++)
 		Game::Particles->new_particle(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%3)+3) / -10.0/*-0.3*/,450,0.0,color);
@@ -2200,13 +2201,13 @@ void PK_Effect_Smoke(DWORD x, DWORD y, BYTE color) {
 							0,-0.3,rand()%50+60,0,color);
 }
 
-void PK_Effect_SmokeClouds(DWORD x, DWORD y) {
+void SmokeClouds(DWORD x, DWORD y) {
 	for (int i=0;i<5;i++)
 		Game::Particles->new_particle(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%3)+3) / -10.0/*-0.3*/,450,0.0,0);
 }
 
-void PK_Effect_Stars(DWORD x, DWORD y, BYTE color) {
+void Stars(DWORD x, DWORD y, BYTE color) {
 	for (int i=0;i<5;i++)
 		Game::Particles->new_particle(PARTICLE_STAR,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0/* 0.05*/,color);//300
 
@@ -2214,33 +2215,35 @@ void PK_Effect_Stars(DWORD x, DWORD y, BYTE color) {
 		Game::Particles->new_particle(	PARTICLE_POINT,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0,color);
 }
 
-void PK_Effect_Destruction(BYTE tehoste, DWORD x, DWORD y) {
+void Destruction(BYTE tehoste, DWORD x, DWORD y) {
 	switch (tehoste){
-		case TUHOUTUMINEN_HOYHENET			: PK_Effect_Feathers(x, y); break;
-		case TUHOUTUMINEN_TAHDET_HARMAA		: PK_Effect_Stars(x,y,0); break;
-		case TUHOUTUMINEN_TAHDET_SININEN	: PK_Effect_Stars(x,y,32); break;
-		case TUHOUTUMINEN_TAHDET_PUNAINEN	: PK_Effect_Stars(x,y,64); break;
-		case TUHOUTUMINEN_TAHDET_VIHREA		: PK_Effect_Stars(x,y,96); break;
-		case TUHOUTUMINEN_TAHDET_ORANSSI	: PK_Effect_Stars(x,y,128); break;
-		case TUHOUTUMINEN_TAHDET_VIOLETTI	: PK_Effect_Stars(x,y,160); break;
-		case TUHOUTUMINEN_TAHDET_TURKOOSI	: PK_Effect_Stars(x,y,192); break;
-		case TUHOUTUMINEN_RAJAHDYS_HARMAA	: PK_Effect_Explosion(x,y,0); break;
-		case TUHOUTUMINEN_RAJAHDYS_SININEN	: PK_Effect_Explosion(x,y,32); break;
-		case TUHOUTUMINEN_RAJAHDYS_PUNAINEN	: PK_Effect_Explosion(x,y,64); break;
-		case TUHOUTUMINEN_RAJAHDYS_VIHREA	: PK_Effect_Explosion(x,y,96); break;
-		case TUHOUTUMINEN_RAJAHDYS_ORANSSI	: PK_Effect_Explosion(x,y,128); break;
-		case TUHOUTUMINEN_RAJAHDYS_VIOLETTI	: PK_Effect_Explosion(x,y,160); break;
-		case TUHOUTUMINEN_RAJAHDYS_TURKOOSI	: PK_Effect_Explosion(x,y,192); break;
-		case TUHOUTUMINEN_SAVU_HARMAA		: PK_Effect_Smoke(x,y,0); break;
-		case TUHOUTUMINEN_SAVU_SININEN		: PK_Effect_Smoke(x,y,32); break;
-		case TUHOUTUMINEN_SAVU_PUNAINEN		: PK_Effect_Smoke(x,y,64); break;
-		case TUHOUTUMINEN_SAVU_VIHREA		: PK_Effect_Smoke(x,y,96); break;
-		case TUHOUTUMINEN_SAVU_ORANSSI		: PK_Effect_Smoke(x,y,128); break;
-		case TUHOUTUMINEN_SAVU_VIOLETTI		: PK_Effect_Smoke(x,y,160); break;
-		case TUHOUTUMINEN_SAVU_TURKOOSI		: PK_Effect_Smoke(x,y,192); break;
-		case TUHOUTUMINEN_SAVUPILVET		: PK_Effect_SmokeClouds(x,y); break;
+		case TUHOUTUMINEN_HOYHENET			: Effect::Feathers(x, y); break;
+		case TUHOUTUMINEN_TAHDET_HARMAA		: Effect::Stars(x,y,0); break;
+		case TUHOUTUMINEN_TAHDET_SININEN	: Effect::Stars(x,y,32); break;
+		case TUHOUTUMINEN_TAHDET_PUNAINEN	: Effect::Stars(x,y,64); break;
+		case TUHOUTUMINEN_TAHDET_VIHREA		: Effect::Stars(x,y,96); break;
+		case TUHOUTUMINEN_TAHDET_ORANSSI	: Effect::Stars(x,y,128); break;
+		case TUHOUTUMINEN_TAHDET_VIOLETTI	: Effect::Stars(x,y,160); break;
+		case TUHOUTUMINEN_TAHDET_TURKOOSI	: Effect::Stars(x,y,192); break;
+		case TUHOUTUMINEN_RAJAHDYS_HARMAA	: Effect::Explosion(x,y,0); break;
+		case TUHOUTUMINEN_RAJAHDYS_SININEN	: Effect::Explosion(x,y,32); break;
+		case TUHOUTUMINEN_RAJAHDYS_PUNAINEN	: Effect::Explosion(x,y,64); break;
+		case TUHOUTUMINEN_RAJAHDYS_VIHREA	: Effect::Explosion(x,y,96); break;
+		case TUHOUTUMINEN_RAJAHDYS_ORANSSI	: Effect::Explosion(x,y,128); break;
+		case TUHOUTUMINEN_RAJAHDYS_VIOLETTI	: Effect::Explosion(x,y,160); break;
+		case TUHOUTUMINEN_RAJAHDYS_TURKOOSI	: Effect::Explosion(x,y,192); break;
+		case TUHOUTUMINEN_SAVU_HARMAA		: Effect::Smoke(x,y,0); break;
+		case TUHOUTUMINEN_SAVU_SININEN		: Effect::Smoke(x,y,32); break;
+		case TUHOUTUMINEN_SAVU_PUNAINEN		: Effect::Smoke(x,y,64); break;
+		case TUHOUTUMINEN_SAVU_VIHREA		: Effect::Smoke(x,y,96); break;
+		case TUHOUTUMINEN_SAVU_ORANSSI		: Effect::Smoke(x,y,128); break;
+		case TUHOUTUMINEN_SAVU_VIOLETTI		: Effect::Smoke(x,y,160); break;
+		case TUHOUTUMINEN_SAVU_TURKOOSI		: Effect::Smoke(x,y,192); break;
+		case TUHOUTUMINEN_SAVUPILVET		: Effect::SmokeClouds(x,y); break;
 		default	: break;
 	}
+}
+
 }
 
 //==================================================
@@ -2498,17 +2501,13 @@ int  PK2::SpriteSystem::protot_get_all() {
 	return 0;
 }
 
-
 PK2::SpriteSystem::SpriteSystem() {
+
 	clear();
+
 }
 
 PK2::SpriteSystem::~SpriteSystem() {}
-
-
-//==================================================
-//(#8) Sprites
-//==================================================
 
 void PK2::SpriteSystem::add_bg(int index) {
 	for (int i=0;i<MAX_SPRITEJA;i++){
@@ -2716,23 +2715,23 @@ PK2::SpriteSystem* Sprites = new PK2::SpriteSystem();
 //(#9) Map
 //==================================================
 
-int PK_Map_Change_SkullBlocks(){
-	BYTE seina, tausta;
+int PK_Map_Change_SkullBlocks() {
+	BYTE front, back;
 	DWORD x,y;
 
 	for (x=0; x<PK2KARTTA_KARTTA_LEVEYS; x++)
 		for (y=0; y<PK2KARTTA_KARTTA_KORKEUS; y++){
-			seina =  kartta->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
-			tausta = kartta->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+			front = kartta->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+			back  = kartta->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
-			if (seina == BLOCK_KALLOSEINA){
+			if (front == BLOCK_KALLOSEINA){
 				kartta->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
-				if (tausta != BLOCK_KALLOSEINA)
-					PK_Effect_SmokeClouds(x*32+6,y*32+6);
+				if (back != BLOCK_KALLOSEINA)
+					Effect::SmokeClouds(x*32+24,y*32+6);
 
 			}
 
-			if (tausta == BLOCK_KALLOTAUSTA && seina == 255)
+			if (back == BLOCK_KALLOTAUSTA && front == 255)
 				kartta->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = BLOCK_KALLOSEINA;
 		}
 
@@ -2745,7 +2744,8 @@ int PK_Map_Change_SkullBlocks(){
 
 	return 0;
 }
-int PK_Map_Open_Locks(){
+
+int PK_Map_Open_Locks() {
 	BYTE palikka;
 	DWORD x,y;
 
@@ -2755,7 +2755,7 @@ int PK_Map_Open_Locks(){
 			palikka = kartta->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
 			if (palikka == BLOCK_LUKKO){
 				kartta->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
-				PK_Effect_SmokeClouds(x*32+6,y*32+6);
+				Effect::SmokeClouds(x*32+6,y*32+6);
 			}
 		}
 
@@ -2768,7 +2768,8 @@ int PK_Map_Open_Locks(){
 
 	return 0;
 }
-int PK_Map_Count_Keys(){
+
+int PK_Map_Count_Keys() {
 	BYTE sprite;
 	DWORD x;
 
@@ -2785,7 +2786,8 @@ int PK_Map_Count_Keys(){
 
 	return 0;
 }
-int PK_Map_Search_Start(){
+
+int PK_Map_Search_Start() {
 	double  alku_x = 320,
 			alku_y = 196;
 	int		alkujen_maara = 0, alku = 0,
@@ -2822,7 +2824,7 @@ int PK_Map_Search_Start(){
 	return 0;
 }
 
-int PK_Map_Place_Sprites(){
+int PK_Map_Place_Sprites() {
 	Game::Sprites->clear();
 
 	Game::Sprites->add(kartta->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
@@ -2843,7 +2845,8 @@ int PK_Map_Place_Sprites(){
 
 	return 0;
 }
-int PK_Map_Open(char *nimi){
+
+int PK_Map_Open(char *nimi) {
 	
 	char polku[PE_PATH_SIZE];
 	strcpy(polku,"");
@@ -2898,7 +2901,7 @@ int PK_Map_Open(char *nimi){
 //(#10) Blocks
 //==================================================
 
-void     PK_Block_Set_Barriers(PK2BLOCK &palikka){
+void     PK_Block_Set_Barriers(PK2BLOCK &palikka) {
 	palikka.tausta = false;
 
 	palikka.oikealle	= BLOCK_SEINA;
@@ -3030,7 +3033,8 @@ void     PK_Block_Set_Barriers(PK2BLOCK &palikka){
 	}
 
 }
-PK2BLOCK PK_Block_Get(int x, int y){
+
+PK2BLOCK PK_Block_Get(int x, int y) {
 	PK2BLOCK palikka;
 
 	if (x < 0 || x > PK2KARTTA_KARTTA_LEVEYS || y < 0 || y > PK2KARTTA_KARTTA_LEVEYS) {
@@ -3079,7 +3083,8 @@ PK2BLOCK PK_Block_Get(int x, int y){
 
 	return palikka;
 }
-void     PK_Calculate_MovableBlocks_Position(){
+
+void     PK_Calculate_MovableBlocks_Position() {
 	lasketut_palikat[BLOCK_HISSI_HORI].vasen = (int)cos_table[degree%360];
 	lasketut_palikat[BLOCK_HISSI_HORI].oikea = (int)cos_table[degree%360];
 
@@ -3150,7 +3155,8 @@ void     PK_Calculate_MovableBlocks_Position(){
 	lasketut_palikat[BLOCK_KYTKIN3].ala = kytkin3_x;
 	lasketut_palikat[BLOCK_KYTKIN3].yla = kytkin3_x;
 }
-int      PK_Calculate_Tiles(){
+
+int      PK_Calculate_Tiles() {
 	PK2BLOCK palikka;
 
 	for (int i=0;i<150;i++){
@@ -3282,9 +3288,7 @@ PK2::GiftSystem::GiftSystem() {
 	clean();
 }
 
-PK2::GiftSystem::~GiftSystem() {
-	
-}
+PK2::GiftSystem::~GiftSystem() {}
 
 void PK2::GiftSystem::clean() {
 	for (int i=0;i<MAX_GIFTS;i++)
@@ -3539,7 +3543,7 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 					PK_Map_Open_Locks();
 			}
 
-			PK_Effect_Explosion(palikka.vasen+16, palikka.yla+10, 0);
+			Effect::Explosion(palikka.vasen+16, palikka.yla+10, 0);
 			PK_Play_Sound(avaa_lukko_aani,100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 		}
 
@@ -3833,7 +3837,7 @@ int PK_Sprite_Movement(int i){
 			case AI_MUUTOS_JOS_ENERGIAA_YLI_1:
 			if (sprite.tyyppi->muutos > -1)
 				if (sprite.AI_Muutos_Jos_Energiaa_Yli_1(Game::Sprites->protot[sprite.tyyppi->muutos])==1)
-					PK_Effect_Destruction(TUHOUTUMINEN_SAVU_HARMAA, (DWORD)sprite.x, (DWORD)sprite.y);
+					Effect::Destruction(TUHOUTUMINEN_SAVU_HARMAA, (DWORD)sprite.x, (DWORD)sprite.y);
 			break;
 			
 			case AI_MUUTOS_AJASTIN:
@@ -3992,7 +3996,7 @@ int PK_Sprite_Movement(int i){
 	}
 
 	if (vedessa != sprite.vedessa) { // Sprite comes in or out from water
-		PK_Effect_Splash((int)sprite_x,(int)sprite_y,32);
+		Effect::Splash((int)sprite_x,(int)sprite_y,32);
 	}
 
 	/*****************************************************************************************/
@@ -4205,7 +4209,7 @@ int PK_Sprite_Movement(int i){
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 			if (sprite.tyyppi->tuhoutuminen%100 == TUHOUTUMINEN_HOYHENET)
-				PK_Effect_Destruction(TUHOUTUMINEN_HOYHENET, (DWORD)sprite.x, (DWORD)sprite.y);
+				Effect::Destruction(TUHOUTUMINEN_HOYHENET, (DWORD)sprite.x, (DWORD)sprite.y);
 
 			if (sprite.tyyppi->tyyppi != TYYPPI_AMMUS){
 				Game::Particles->new_particle(PARTICLE_STAR,sprite_x,sprite_y,-1,-1,60,0.01,128);
@@ -4254,7 +4258,7 @@ int PK_Sprite_Movement(int i){
 				else
 					sprite.piilota = true;
 
-				PK_Effect_Destruction(tuhoutuminen, (DWORD)sprite.x, (DWORD)sprite.y);
+				Effect::Destruction(tuhoutuminen, (DWORD)sprite.x, (DWORD)sprite.y);
 				PK_Play_Sound(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
 							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
@@ -4506,7 +4510,7 @@ int PK_Sprite_Movement(int i){
 													break;
 				case AI_MUUTOS_JOS_ENERGIAA_YLI_1:	if (sprite.tyyppi->muutos > -1)
 														if (sprite.AI_Muutos_Jos_Energiaa_Yli_1(Game::Sprites->protot[sprite.tyyppi->muutos])==1)
-															PK_Effect_Destruction(TUHOUTUMINEN_SAVU_HARMAA, (DWORD)sprite.x, (DWORD)sprite.y);
+															Effect::Destruction(TUHOUTUMINEN_SAVU_HARMAA, (DWORD)sprite.x, (DWORD)sprite.y);
 													break;
 				case AI_MUUTOS_AJASTIN:				if (sprite.tyyppi->muutos > -1) {
 														sprite.AI_Muutos_Ajastin(Game::Sprites->protot[sprite.tyyppi->muutos]);
@@ -4984,7 +4988,7 @@ int PK_Sprite_Bonus_Movement(int i){
 		}
 
 		if (vedessa != sprite.vedessa)
-			PK_Effect_Splash((int)sprite_x,(int)sprite_y,32);
+			Effect::Splash((int)sprite_x,(int)sprite_y,32);
 
 
 		if (!oikealle)
@@ -5164,7 +5168,7 @@ int PK_Sprite_Bonus_Movement(int i){
 				PK_Play_Sound(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
 							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
-				PK_Effect_Destruction(tuhoutuminen, (DWORD)sprite_x, (DWORD)sprite_y);
+				Effect::Destruction(tuhoutuminen, (DWORD)sprite_x, (DWORD)sprite_y);
 			}
 		}
 	}
