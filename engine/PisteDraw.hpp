@@ -43,7 +43,7 @@ private:
 
 	int screen_width;
 	int screen_height;
-	Piste::RECT Screen_dest = {0, 0, 0, 0};
+	Piste::RECT screen_dest = {0, 0, 0, 0};
 	bool screenfit = false;
 
 	bool ready = false;
