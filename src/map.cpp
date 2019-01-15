@@ -9,9 +9,11 @@
 #include <inttypes.h>
 #include <fstream>
 
+#include "game.hpp"
 #include "map.hpp"
 #include "PisteDraw.hpp"
 #include "PisteUtils.hpp"
+#include "PisteInput.hpp"
 
 using namespace std;
 
@@ -58,7 +60,7 @@ void PK2Kartta_Aseta_Ruudun_Mitat(int leveys, int korkeus){
 	ruudun_korkeus_palikoina = korkeus/32+1;
 }
 
-char PK2Kartta::pk2_hakemisto[256] = "";
+//char PK2Kartta::pk2_hakemisto[256] = "";
 
 PK2Kartta::PK2Kartta(){
 
@@ -1003,8 +1005,8 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 	strcat(file,filename);
 
 	if (!PisteUtils_Find(file)){
-		strcpy(file,PK2Kartta::pk2_hakemisto);
-		strcat(file,"gfx/scenery/");
+		//strcpy(file,PK2Kartta::pk2_hakemisto);
+		strcpy(file,"gfx/scenery/");
 		strcat(file,filename);
 		if (!PisteUtils_Find(file)) return 1;
 	}
@@ -1048,8 +1050,8 @@ int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
 	strcat(file,filename);
 
 	if (!PisteUtils_Find(file)){
-		strcpy(file,PK2Kartta::pk2_hakemisto);
-		strcat(file,"gfx/tiles/");
+		//strcpy(file,PK2Kartta::pk2_hakemisto);
+		strcpy(file,"gfx/tiles/");
 		strcat(file,filename);
 		if (!PisteUtils_Find(file))
 			return 1;
@@ -1115,7 +1117,182 @@ void PK2Kartta::Kopioi(PK2Kartta &kartta){
 	}
 }
 
+/* Pekka Kana 2 funcitons ---------------------------------------------------------------*/
 
+
+
+void PK2Kartta::Place_Sprites() {
+
+	Game::Sprites->clear();
+	Game::Sprites->add(this->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
+
+	int sprite;
+
+	for (int x = 0; x < PK2KARTTA_KARTTA_LEVEYS; x++){
+		for (int y = 0; y < PK2KARTTA_KARTTA_KORKEUS; y++){
+			sprite = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
+
+			if (sprite != 255 && Game::Sprites->protot[sprite].korkeus > 0){
+				Game::Sprites->add(sprite, 0, x*32, y*32 - Game::Sprites->protot[sprite].korkeus+32, MAX_SPRITEJA, false);
+			}
+		}
+	}
+
+	Game::Sprites->sort_bg();
+
+}
+
+void PK2Kartta::Select_Start() {
+	double  pos_x = 320,
+			pos_y = 196;
+	int		alkujen_maara = 0, alku = 0,
+			x, y;
+
+	for (x=0; x<PK2KARTTA_KARTTA_KOKO; x++)
+		if (this->seinat[x] == BLOCK_ALOITUS)
+			alkujen_maara ++;
+
+	if (alkujen_maara > 0){
+		alku = rand()%alkujen_maara + 1;
+		alkujen_maara = 1;
+
+		for (x=0; x < PK2KARTTA_KARTTA_LEVEYS; x++)
+			for (y=0; y < PK2KARTTA_KARTTA_KORKEUS; y++)
+				if (this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] == BLOCK_ALOITUS){
+					if (alkujen_maara == alku){
+						pos_x = x*32;
+						pos_y = y*32;
+					}
+
+					alkujen_maara ++;
+				}
+	}
+
+	Game::Sprites->player->x = pos_x + Game::Sprites->player->tyyppi->leveys/2;
+	Game::Sprites->player->y = pos_y - Game::Sprites->player->tyyppi->korkeus/2;
+
+	Game::camera_x = (int)Game::Sprites->player->x;
+	Game::camera_y = (int)Game::Sprites->player->y;
+	Game::dcamera_x = Game::camera_x;
+	Game::dcamera_y = Game::camera_y;
+
+}
+
+
+int PK2Kartta::Count_Keys() {
+	BYTE sprite;
+	DWORD x;
+
+	int keys = 0;
+
+	for (x=0; x < PK2KARTTA_KARTTA_KOKO; x++){
+		sprite = this->spritet[x];
+		if (sprite != 255)
+			if (Game::Sprites->protot[sprite].avain && 
+				Game::Sprites->protot[sprite].tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
+
+				keys++;
+	}
+
+	return keys;
+}
+
+void PK2Kartta::Change_SkullBlocks() {
+	BYTE front, back;
+	DWORD x,y;
+
+	for (x=0; x<PK2KARTTA_KARTTA_LEVEYS; x++)
+		for (y=0; y<PK2KARTTA_KARTTA_KORKEUS; y++){
+			front = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+			back  = this->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+
+			if (front == BLOCK_KALLOSEINA){
+				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
+				if (back != BLOCK_KALLOSEINA)
+					Effect::SmokeClouds(x*32+24,y*32+6);
+
+			}
+
+			if (back == BLOCK_KALLOTAUSTA && front == 255)
+				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = BLOCK_KALLOSEINA;
+		}
+
+	Game::vibration = 90;//60
+	PisteInput_Vibrate();
+
+	//PK_Start_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
+
+	Calculate_Edges();
+}
+
+void PK2Kartta::Open_Locks() {
+	BYTE palikka;
+	DWORD x,y;
+
+	for (x=0; x < PK2KARTTA_KARTTA_LEVEYS; x++)
+		for (y=0; y < PK2KARTTA_KARTTA_KORKEUS; y++){
+			palikka = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+			if (palikka == BLOCK_LUKKO){
+				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
+				Effect::SmokeClouds(x*32+6,y*32+6);
+			}
+		}
+
+	Game::vibration = 90;//60
+	PisteInput_Vibrate();
+
+	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
+
+	Calculate_Edges();
+
+}
+
+void PK2Kartta::Calculate_Edges(){
+	BYTE tile1, tile2, tile3;
+	bool edge = false;
+
+	memset(this->reunat, false, sizeof(this->reunat));
+
+	for (int x=1;x<PK2KARTTA_KARTTA_LEVEYS-1;x++)
+		for (int y=0;y<PK2KARTTA_KARTTA_KORKEUS-1;y++){
+			edge = false;
+
+			tile1 = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+
+			if (tile1 > BLOCK_LOPETUS)
+				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
+
+			tile2 = this->seinat[x+(y+1)*PK2KARTTA_KARTTA_LEVEYS];
+
+			if (tile1 > 79 || tile1 == BLOCK_ESTO_ALAS) tile1 = 1; else tile1 = 0;
+			if (tile2 > 79) tile2 = 1; else tile2 = 0;
+
+			if (tile1 == 1 && tile2 == 1){
+				tile1 = this->seinat[x+1+(y+1)*PK2KARTTA_KARTTA_LEVEYS];
+				tile2 = this->seinat[x-1+(y+1)*PK2KARTTA_KARTTA_LEVEYS];
+
+				if (tile1 < 80  && !(tile1 < 60 && tile1 > 49)) tile1 = 1; else tile1 = 0;
+				if (tile2 < 80  && !(tile2 < 60 && tile2 > 49)) tile2 = 1; else tile2 = 0;
+
+				if (tile1 == 1){
+					tile3 = this->seinat[x+1+y*PK2KARTTA_KARTTA_LEVEYS];
+					if (tile3 > 79 || (tile3 < 60 && tile3 > 49) || tile3 == BLOCK_ESTO_ALAS)
+						edge = true;
+				}
+
+				if (tile2 == 1){
+					tile3 = this->seinat[x-1+y*PK2KARTTA_KARTTA_LEVEYS];
+					if (tile3 > 79 || (tile3 < 60 && tile3 > 49) || tile3 == BLOCK_ESTO_ALAS)
+						edge = true;
+				}
+
+				if (edge){
+					this->reunat[x+y*PK2KARTTA_KARTTA_LEVEYS] = true;
+					//this->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 49; //Debug
+				}
+			}
+		}
+}
 
 /* Kartanpiirtorutiineja ----------------------------------------------------------------*/
 //Anim Fire

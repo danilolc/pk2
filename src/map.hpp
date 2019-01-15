@@ -74,38 +74,38 @@ class PK2Kartta
 
 	/* Atributs ------------------------*/
 
-	char		versio[5];			// kartan versio esim. "12.3"
-	char		palikka_bmp[13];	// .BMP -tiedosto, jossa on palikkapaletti
-	char		taustakuva[13];		// .BMP -tiedosto, josta ladataan kartan taustakuva.
-	char		musiikki[13];		// tiedoston nimi, jossa on taustamusiikki
+	char		versio[5];			// map version. eg "1.3"
+	char		palikka_bmp[13];	// path of block palette .bmp
+	char		taustakuva[13];		// path of map bg .bmp
+	char		musiikki[13];		// path of map music
 
-	char		nimi[40];			// kartan nimi
-	char		tekija[40];			// kartan tekij�
+	char		nimi[40];			// map name
+	char		tekija[40];			// map author
 
-	int			jakso;				// monesko jakso episodissa
-	int			ilma;				// kartan ilmasto
-	int			aika;				// aikaraja
-	BYTE		extra;				// erikoisasetus. ei m��ritelty
-	BYTE		tausta;				// tieto miten taustakuva esitet��n. ei m��ritelty
-	DWORD		kytkin1_aika;		// kuinka pitk��n kytkin 1 pysyy alhaalla
-	DWORD		kytkin2_aika;		// kuinka pitk��n kytkin 2 pysyy alhaalla
-	DWORD		kytkin3_aika;		// kuinka pitk��n kytkin 3 pysyy alhaalla
-	int			pelaaja_sprite;		// mist� prototyypist� tehd��n pelaajasprite
+	int			jakso;				// level of the episode
+	int			ilma;				// map climate
+	int			aika;				// map time
+	BYTE		extra;				// extra config - not used
+	BYTE		tausta;				// bg movemant type
+	DWORD		kytkin1_aika;		// button 1 time - not used
+	DWORD		kytkin2_aika;		// button 2 time - not used
+	DWORD		kytkin3_aika;		// button 3 time - not used
+	int			pelaaja_sprite;		// player prototype
 
-	BYTE		taustat[PK2KARTTA_KARTTA_KOKO];	// kartan kaikki taustat 256*224
-	BYTE		seinat [PK2KARTTA_KARTTA_KOKO];	// kartan kaikki seinat  256*224
-	BYTE		spritet[PK2KARTTA_KARTTA_KOKO];	// kartan kaikki spritet 256*224
-	char		protot [PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA][13]; // karttaan liittyv�t spritejen prototyypit (tiedosto.spr)
-	bool		reunat [PK2KARTTA_KARTTA_KOKO];
+	BYTE		taustat[PK2KARTTA_KARTTA_KOKO];	// map bg tiles 256*224
+	BYTE		seinat [PK2KARTTA_KARTTA_KOKO];	// map fg tiles 256*224
+	BYTE		spritet[PK2KARTTA_KARTTA_KOKO];	// map sprites 256*224
+	char		protot [PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA][13]; // map prototype list .spr
+	bool		reunat [PK2KARTTA_KARTTA_KOKO]; // map edges - calculated during game
 
-	int			palikat_buffer;		// indeksi bufferiin, jossa on kartassa k�ytett�v�t palikat.
-	int			taustakuva_buffer;	// indeksi bufferiin, jossa on kartan taustakuva.
-	int			palikat_vesi_buffer; // indeksi bufferiin, jossa on vesipalikoiden alkuper�iset kuvat
+	int			palikat_buffer;		// index of block palette
+	int			taustakuva_buffer;	// index of bg image
+	int			palikat_vesi_buffer; // index of water palette
 
-	int	  x,y;						// Kartan ikonin sijainti karttaruudulla.
-	int	  ikoni;					// Ikonin numero, joka n�kyy karttaruudulla (icons.bmp kuvasta)
+	int	  x,y;						// map icon pos
+	int	  ikoni;					// map icon id
 
-	static char	pk2_hakemisto[256]; // PK2.exe:n sis�lt�v� hakemisto
+	//static char	pk2_hakemisto[256]; // PK2.exe:n sis�lt�v� hakemisto
 
 	/* Metodit --------------------------*/
 
@@ -117,27 +117,42 @@ class PK2Kartta
 
 	int Lataa(char *polku, char *nimi);		// Lataa kartta
 	int Lataa_Pelkat_Tiedot(char *polku, char *nimi);	// Lataa kartta ilman grafiikoita
+
+	int Tallenna(char *filename);	// Save map
+	void Tyhjenna();				// clean map
+	RECT LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde);
+	RECT LaskeTallennusAlue(BYTE *alue);
+	void LueTallennusAlue(BYTE *lahde, RECT alue, int kohde);
+	int Piirra_Taustat(int, int, bool);
+	int Piirra_Seinat (int, int, bool);
+	void Kopioi(PK2Kartta &kartta);
+
+	//PK2 functions
+	int Count_Keys();
+	void Change_SkullBlocks();
+	void Open_Locks();
+	void Calculate_Edges();
+	void Select_Start();
+	void Place_Sprites();
+
+	private:
+
 	int LataaVersio01(char *filename);	// Lataa kartta versio 0.1
 	int LataaVersio10(char *filename);	// Lataa kartta versio 1.0
 	int LataaVersio11(char *filename);	// Lataa kartta versio 1.1
 	int LataaVersio12(char *filename);  // Lataa kartta versio 1.2
 	int LataaVersio13(char *filename);  // Lataa kartta versio 1.3
-	int Tallenna(char *filename);	// Save map
-	void Tyhjenna();				// Tyhjenna kartta
-	RECT LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde);
-	RECT LaskeTallennusAlue(BYTE *alue);
-	void LueTallennusAlue(BYTE *lahde, RECT alue, int kohde);
+	
 	int Lataa_Taustakuva(char *polku, char *filename);
 	int Lataa_PalikkaPaletti(char *polku, char *filename);
 	int Lataa_TaustaMusiikki(char *filename);
-	int Piirra_Taustat(int, int, bool);
-	int Piirra_Seinat (int, int, bool);
-	void Kopioi(PK2Kartta &kartta);
+
 	void Animoi_Tuli(void);
 	void Animoi_Vesiputous(void);
 	void Animoi_Virta_Ylos(void);
 	void Animoi_Vedenpinta(void);
 	void Animoi_Vesi(void);
+	
 };
 
 #endif
