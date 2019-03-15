@@ -53,5 +53,6 @@ Ported to SDL by Samuli Tuomola (2010)
 https://github.com/stt/pk2
 
 Translated and ported to SDL2 by Danilo Lemos (2016/2017)
+https://github.com/danilolc/pk2
 
 Community Edition started by Deta (2019)
