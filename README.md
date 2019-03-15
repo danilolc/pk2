@@ -6,7 +6,7 @@ http://kiwi.mbnet.fi/pistegamez/pk2/
 # Download
 
 ### Windows
-
+(coming soon)
 
 # Depencies
 
@@ -14,6 +14,12 @@ The game relies on the following depencies:
 * SDL2
 * SDL2_mixer
 * SDL2_image
+
+# Discord
+(coming soon)
+
+# Forum thread
+(coming soon)
 
 # User made episodes:
 http://mapstore.the.cz/
@@ -49,9 +55,3 @@ https://github.com/stt/pk2
 Translated and ported to SDL2 by Danilo Lemos (2016/2017)
 
 Community Edition started by Deta (2019)
-
-# Discord
-(coming soon)
-
-# Forum thread
-(coming soon)
