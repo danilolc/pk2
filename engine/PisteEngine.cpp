@@ -7,27 +7,30 @@
 #ifdef USE_LOCAL_SDL
 #include "SDL.h"
 #else
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #endif
+
+#include <SDL_mixer.h>
 
 #include <string>
 
 #ifdef _WIN32
 	#include <direct.h>
-	#include "stdio.h"
-	#include "stdlib.h"
-	#include "winlite.h"
+	#include <cstdio>
+	#include <cstdlib>
+	#include "../include/winlite.h"
 #else
 	#include <unistd.h>
 	#include <limits.h>
 #endif
 
-using namespace Piste;
+#include <iostream>
 
+using namespace Piste;
 
 Game::Game(int width, int height, const char* name, const char* icon) {
 	
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER) < 0) {
 		printf("Unable to init SDL: %s\n", SDL_GetError());
 		return;
 	}
@@ -45,6 +48,8 @@ Game::~Game() {
 	PisteDraw2_Exit();
 	PisteInput_Exit();
 	PisteSound_End();
+
+	Mix_Quit();
 	SDL_Quit();
 	ready = false;
 
@@ -59,19 +64,17 @@ void Game::loop(int (*GameLogic)()) {
 	running = true;
 
 	while(running) {
-
-		count++;
-
 		GameLogic();
 		logic();
 
+		/*
 		if (draw) {
 			real_fps = 1000.f / (SDL_GetTicks() - last_time);
 			real_fps *= count;
-			avrg_fps = avrg_fps*0.8 + real_fps*0.2;
+			avrg_fps = avrg_fps * 0.8 + real_fps * 0.2;
 			last_time = SDL_GetTicks();
 			count = 0;
-		}
+		}*/
 
 		draw = true; // TODO - Set false if the game gets slow
 	}
@@ -122,9 +125,10 @@ void Game::logic() {
 	PisteSound_Update();
 	PisteDraw2_Update(draw);
 
+	/*
 	if (debug) {
 		//if ( PisteInput_Keydown(PI_Q) ) GDB_Break();
 		fflush(stdout);
-	}
+	}*/
 
 }

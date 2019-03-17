@@ -8,7 +8,8 @@
 
 #include "platform.hpp"
 
-#include <string.h>
+#include <cstring>
+#include <string>
 
 typedef struct {
 	int left, top, right, bottom;
@@ -115,7 +116,7 @@ class PK2Kartta
 
 	PK2Kartta &operator = (const PK2Kartta &kartta);	//Sijoitusoperaattori
 
-	int Lataa(char *polku, char *nimi);		// Lataa kartta
+	int Load(std::string filename, std::string episode);		// Lataa kartta
 	int Lataa_Pelkat_Tiedot(char *polku, char *nimi);	// Lataa kartta ilman grafiikoita
 
 	int Tallenna(char *filename);	// Save map
@@ -141,9 +142,9 @@ class PK2Kartta
 	int LataaVersio10(char *filename);	// Lataa kartta versio 1.0
 	int LataaVersio11(char *filename);	// Lataa kartta versio 1.1
 	int LataaVersio12(char *filename);  // Lataa kartta versio 1.2
-	int LataaVersio13(char *filename);  // Lataa kartta versio 1.3
+	int LoadVersion13(std::string filename);  // Lataa kartta versio 1.3
 	
-	int Lataa_Taustakuva(char *polku, char *filename);
+	int Load_Background(std::string filename, std::string episode);
 	int Lataa_PalikkaPaletti(char *polku, char *filename);
 	int Lataa_TaustaMusiikki(char *filename);
 

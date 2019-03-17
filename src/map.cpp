@@ -8,12 +8,14 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <fstream>
+#include <sstream>
 
 #include "game.hpp"
 #include "map.hpp"
 #include "PisteDraw.hpp"
 #include "PisteUtils.hpp"
 #include "PisteInput.hpp"
+#include "PisteLog.hpp"
 
 using namespace std;
 
@@ -494,55 +496,67 @@ int PK2Kartta::Tallenna(char *filename){
 	return 0;
 }
 
-int PK2Kartta::Lataa(char *polku, char *nimi){
-	char file[PE_PATH_SIZE];
-	strcpy(file,polku);
-	strcat(file,nimi);
+int PK2Kartta::Load(std::string filename, std::string episode) {
+	std::stringstream ss;
+	ss << "episodes/" << episode << "/" << filename;
 
-	ifstream *tiedosto = new ifstream(file, ios::binary);
+	ifstream ifs(ss.str(), ios::binary);
 	char versio[8] = "\0";
 
-	if (tiedosto->fail()){
-		delete (tiedosto);
+	if (ifs.fail()){
+		std::cerr << "PK2Map\t- Couldn't open map file \"" << ss.str() << "\"" << std::endl;
+
+		ifs.close();
+
 		return 1;
 	}
 
-	tiedosto->read ((char *)versio, sizeof (versio));
+	ifs.read((char *) versio, sizeof(versio));
 
-	if (tiedosto->fail()){
-		delete (tiedosto);
+	if (ifs.fail()) {
+		std::cout << "PK2Map\t- Error reading map file \"" << filename << "\"" << std::endl;
+
+		ifs.close();
+
 		return 1;
 	}
-
-	delete (tiedosto);
 
 	int ok = 2;
 
-	if (strcmp(versio,"1.3")==0){
-		this->LataaVersio13(file);
-		ok = 0;
+	if (strcmp(versio,"1.3") == 0){
+		ok = this->LoadVersion13(ss.str());
 	}
+	
+	char str[255];
+	strcpy(str, ss.str().c_str());
+
 	if (strcmp(versio,"1.2")==0){
-		this->LataaVersio12(file);
+		this->LataaVersio12(str);
 		ok = 0;
 	}
+
 	if (strcmp(versio,"1.1")==0){
-		this->LataaVersio11(file);
+		this->LataaVersio11(str);
 		ok = 0;
 	}
 	if (strcmp(versio,"1.0")==0){
-		this->LataaVersio10(file);
+		this->LataaVersio10(str);
 		ok = 0;
 	}
 	if (strcmp(versio,"0.1")==0){
-		this->LataaVersio01(file);
+		this->LataaVersio01(str);
 		ok = 0;
 	}
 
-	Lataa_PalikkaPaletti(polku, this->palikka_bmp);
-	Lataa_Taustakuva(polku,this->taustakuva);
+	char strr[255];
+	strcpy(strr, ss.str().c_str());
 
-	return(ok);
+	Lataa_PalikkaPaletti(strr, this->palikka_bmp);
+	Load_Background(taustakuva, episode);
+
+	ifs.close();
+
+	return ok;
 }
 
 int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
@@ -570,7 +584,7 @@ int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
 	delete (tiedosto);
 
 	if (strcmp(versio,"1.3")==0)
-		this->LataaVersio13(file);
+		this->LoadVersion13(file);
 
 	if (strcmp(versio,"1.2")==0)
 		this->LataaVersio12(file);
@@ -787,15 +801,17 @@ int PK2Kartta::LataaVersio12(char *filename){
 
 	return 0;
 }
-int PK2Kartta::LataaVersio13(char *filename){
+int PK2Kartta::LoadVersion13(std::string filename){
+	ifstream ifs(filename.c_str(), ios::binary);
 
-	ifstream *tiedosto = new ifstream(filename, ios::binary);
 	char luku[8];
 	DWORD i;
 
-	if (tiedosto->fail())
-	{
-		delete (tiedosto);
+	if (ifs.fail()) {
+		std::cerr << "PK2Map\t- Couldn't open map file \"" << filename << "\"" << std::endl;
+
+		ifs.close();
+
 		return 1;
 	}
 
@@ -806,71 +822,70 @@ int PK2Kartta::LataaVersio13(char *filename){
 	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 		strcpy(this->protot[i],"");
 
-	//tiedosto->read ((char *)this, sizeof (*this));
-	tiedosto->read(this->versio,		sizeof(versio));
-	tiedosto->read(this->palikka_bmp,	sizeof(palikka_bmp));
-	tiedosto->read(this->taustakuva,	sizeof(taustakuva));
-	tiedosto->read(this->musiikki,		sizeof(musiikki));
-	tiedosto->read(this->nimi,			sizeof(nimi));
-	tiedosto->read(this->tekija,		sizeof(tekija));
+	ifs.read(this->versio,		sizeof(versio));
+	ifs.read(this->palikka_bmp,	sizeof(palikka_bmp));
+	ifs.read(this->taustakuva,	sizeof(taustakuva));
+	ifs.read(this->musiikki,		sizeof(musiikki));
+	ifs.read(this->nimi,			sizeof(nimi));
+	ifs.read(this->tekija,		sizeof(tekija));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->jakso = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->ilma = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->kytkin1_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->kytkin2_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->kytkin3_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->extra = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->tausta = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->pelaaja_sprite = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->x = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->y = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	this->ikoni = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
 	DWORD lkm;
-	tiedosto->read(luku, sizeof(luku));
+	ifs.read(luku, sizeof(luku));
 	lkm = (int)atoi(luku);
 
 	//for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 	//	itoa(lkm,protot[i],10);//strcpy(protot[i],"");
 
 	for (i=0;i<lkm/*PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA*/;i++)
-		tiedosto->read(protot[i],sizeof(protot[i]));
+		ifs.read(protot[i],sizeof(protot[i]));
 
 	DWORD leveys, korkeus,
 		  aloitus_x,aloitus_y,
@@ -878,123 +893,120 @@ int PK2Kartta::LataaVersio13(char *filename){
 	char tile[1];
 
 	// taustat
-	tiedosto->read(luku, sizeof(luku)); aloitus_x = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); aloitus_y = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); leveys    = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); korkeus   = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); aloitus_x = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); aloitus_y = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); leveys    = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); korkeus   = atol(luku); memset(luku, 0, sizeof(luku));
 	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Luetaan alue tile by tile
 		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
-			tiedosto->read(tile, sizeof(tile));
+			ifs.read(tile, sizeof(tile));
 			this->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS] = tile[0];
 		}
 	}
 
 	// seinat
-	tiedosto->read(luku, sizeof(luku)); aloitus_x = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); aloitus_y = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); leveys    = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); korkeus   = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); aloitus_x = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); aloitus_y = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); leveys    = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); korkeus   = atol(luku); memset(luku, 0, sizeof(luku));
 	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Luetaan alue tile by tile
 		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
-			tiedosto->read(tile, sizeof(tile));
+			ifs.read(tile, sizeof(tile));
 			this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = tile[0];
 		}
 	}
 
 	//spritet
-	tiedosto->read(luku, sizeof(luku)); aloitus_x = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); aloitus_y = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); leveys    = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); korkeus   = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); aloitus_x = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); aloitus_y = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); leveys    = atol(luku); memset(luku, 0, sizeof(luku));
+	ifs.read(luku, sizeof(luku)); korkeus   = atol(luku); memset(luku, 0, sizeof(luku));
 	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Luetaan alue tile by tile
 		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
-			tiedosto->read(tile, sizeof(tile));
+			ifs.read(tile, sizeof(tile));
 			this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS] = tile[0];
 		}
 	}
 
-	if (tiedosto->fail())
-	{
-		delete (tiedosto);
-		return 1;
+	if (ifs.fail()) {
+		ifs.close();
+
+return 1;
 	}
 
-	delete (tiedosto);
-
-	//Lataa_PalikkaPaletti(this->palikka_bmp);
-	//Lataa_Taustakuva(this->taustakuva);
+	ifs.close();
 
 	return 0;
 }
 
-void PK2Kartta::Tyhjenna(){
+void PK2Kartta::Tyhjenna() {
 	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
-	strcpy(this->palikka_bmp,"blox.bmp");
+	strcpy(this->palikka_bmp, "blox.bmp");
 	strcpy(this->taustakuva, "default.bmp");
-	strcpy(this->musiikki,   "default.xm");
+	strcpy(this->musiikki, "default.xm");
 
-	strcpy(this->nimi,  "untitled");
-	strcpy(this->tekija,"unknown");
+	strcpy(this->nimi, "untitled");
+	strcpy(this->tekija, "unknown");
 
-	this->jakso			= 0;
-	this->ilma			= ILMA_NORMAALI;
-	this->kytkin1_aika	= KYTKIN_ALOITUSARVO;
-	this->kytkin2_aika	= KYTKIN_ALOITUSARVO;
-	this->kytkin3_aika	= KYTKIN_ALOITUSARVO;
+	this->jakso = 0;
+	this->ilma = ILMA_NORMAALI;
+	this->kytkin1_aika = KYTKIN_ALOITUSARVO;
+	this->kytkin2_aika = KYTKIN_ALOITUSARVO;
+	this->kytkin3_aika = KYTKIN_ALOITUSARVO;
 	this->pelaaja_sprite = 0;
-	this->aika		= 0;
-	this->extra		= PK2KARTTA_EXTRA_EI;
-	this->tausta	= PK2KARTTA_TAUSTAKUVA_EI;
+	this->aika = 0;
+	this->extra = PK2KARTTA_EXTRA_EI;
+	this->tausta = PK2KARTTA_TAUSTAKUVA_EI;
 
 	this->x = 0;
 	this->y = 0;
 	this->ikoni = 0;
 
 	memset(this->taustat, 255, sizeof(taustat));
-	memset(this->seinat,  255, sizeof(seinat));
+	memset(this->seinat, 255, sizeof(seinat));
 	memset(this->spritet, 255, sizeof(spritet));
 
-	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-		strcpy(this->protot[i],"");
+	for (int i = 0; i < PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
+		strcpy(this->protot[i], "");
 
 	//PisteDraw2_ImageFill(this->palikat_buffer,255);
 	//PisteDraw2_ImageFill(this->taustakuva_buffer,255);
 }
 
-PK2Kartta &PK2Kartta::operator = (const PK2Kartta &kartta){
+PK2Kartta &PK2Kartta::operator = (const PK2Kartta &kartta) {
 	if (this == &kartta) return *this;
 
-	strcpy(this->versio,		kartta.versio);
-	strcpy(this->palikka_bmp,	kartta.palikka_bmp);
-	strcpy(this->taustakuva,	kartta.taustakuva);
-	strcpy(this->musiikki,		kartta.musiikki);
+	strcpy(this->versio, kartta.versio);
+	strcpy(this->palikka_bmp, kartta.palikka_bmp);
+	strcpy(this->taustakuva, kartta.taustakuva);
+	strcpy(this->musiikki, kartta.musiikki);
 
-	strcpy(this->nimi,			kartta.nimi);
-	strcpy(this->tekija,		kartta.tekija);
+	strcpy(this->nimi, kartta.nimi);
+	strcpy(this->tekija, kartta.tekija);
 
-	this->aika		= kartta.aika;
-	this->extra		= kartta.extra;
-	this->tausta	= kartta.tausta;
+	this->aika = kartta.aika;
+	this->extra = kartta.extra;
+	this->tausta = kartta.tausta;
 
 	int i;
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (i = 0; i < PK2KARTTA_KARTTA_KOKO; i++)
 		this->seinat[i] = kartta.seinat[i];
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (i = 0; i < PK2KARTTA_KARTTA_KOKO; i++)
 		this->taustat[i] = kartta.taustat[i];
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (i = 0; i < PK2KARTTA_KARTTA_KOKO; i++)
 		this->spritet[i] = kartta.spritet[i];
 
-	PisteDraw2_Image_Copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
-	PisteDraw2_Image_Copy(kartta.palikat_buffer,this->palikat_buffer);
+	PisteDraw2_Image_Copy(kartta.taustakuva_buffer, this->taustakuva_buffer);
+	PisteDraw2_Image_Copy(kartta.palikat_buffer, this->palikat_buffer);
 
 	return *this;
 }
 
-int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
-	int i;
+int PK2Kartta::Load_Background(std::string filename, std::string episode) {
+	/*int i;
 	char file[PE_PATH_SIZE];
 	strcpy(file,"");
 	strcpy(file,polku);
@@ -1009,14 +1021,28 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 		strcpy(file,"gfx/scenery/");
 		strcat(file,filename);
 		if (!PisteUtils_Find(file)) return 1;
+	}*/
+
+	int bgIndex = -1;
+
+	std::stringstream ss;
+	ss << "episodes/" + episode + "/gfx/scenery/" << filename;
+
+	if ((bgIndex = PisteDraw2_Image_Load(ss.str().c_str(), true)) == -1) {
+		ss.str("");
+		ss << "gfx/scenery/" << filename;
+
+		if ((bgIndex = PisteDraw2_Image_Load(ss.str().c_str(), true)) == -1) {
+			PisteLog_Write("PK2Map", "Failed to load background " + ss.str(), TYPE::T_ERROR);
+
+			return 2;
+		}
 	}
 
-	i = PisteDraw2_Image_Load(file,true);
-	if(i == -1) return 2;
-	PisteDraw2_Image_Copy(i,this->taustakuva_buffer);
-	PisteDraw2_Image_Delete(i);
+	PisteDraw2_Image_Copy(bgIndex, this->taustakuva_buffer);
+	PisteDraw2_Image_Delete(bgIndex);
 
-	strcpy(this->taustakuva,filename);
+	strcpy(this->taustakuva, filename.c_str());
 
 	BYTE *buffer = NULL;
 	DWORD leveys;

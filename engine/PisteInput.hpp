@@ -7,6 +7,7 @@
 #define P_INPUT
 
 #include "platform.hpp"
+#include <SDL.h>
 
 #define		PI_VIRHE -1000
 
@@ -61,10 +62,26 @@ enum PI_KEY{
 	PI_Y,	PI_Z
 };
 
+enum CONTROLLER_BUTTONS {
+	CONTROLLER_A = SDL_CONTROLLER_BUTTON_A,
+	CONTROLLER_B = SDL_CONTROLLER_BUTTON_B,
+	CONTROLLER_X = SDL_CONTROLLER_BUTTON_X,
+	CONTROLLER_Y = SDL_CONTROLLER_BUTTON_Y,
+
+	CONTROLLER_LEFT = SDL_CONTROLLER_BUTTON_DPAD_LEFT,
+	CONTROLLER_RIGHT = SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
+	CONTROLLER_UP = SDL_CONTROLLER_BUTTON_DPAD_UP,
+	CONTROLLER_DOWN = SDL_CONTROLLER_BUTTON_DPAD_DOWN,
+
+	CONTROLLER_START = SDL_CONTROLLER_BUTTON_START,
+	CONTROLLER_SELECT = SDL_CONTROLLER_BUTTON_BACK,
+	CONTROLLER_SHOULDER_LEFT = SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+	CONTROLLER_SHOULDER_RIGHT = SDL_CONTROLLER_BUTTON_RIGHTSHOULDER
+};
+
 struct MOUSE { //RECT
 	int x, y;
 };
-
 
 const char* PisteInput_KeyName(BYTE key);
 int PisteInput_GetTouchPos(float& x, float& y);
@@ -83,6 +100,8 @@ bool	PisteInput_Hae_Ohjaimet();
 bool	PisteInput_Hiiri_Oikea();
 bool	PisteInput_Hiiri_Vasen();
 bool	PisteInput_Lue_Eventti();
+
+bool PisteInput_GamepadButtonDown(DWORD button);
 
 char*	PisteInput_Lue_Kontrollin_Nimi(unsigned char kontrolli);
 char	PisteInput_Lue_Nappaimisto(void);

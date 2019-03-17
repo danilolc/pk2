@@ -17,17 +17,26 @@
 //	Exemple:
 //	"./PK2 dev test rooster\ island\ 2/level13.map"
 //	Starts the level13.map on dev mode
+//
+// (Deta):
+// You can now also start the game in windowed mode, by starting it with the "windowed" argument
+// Also, you can start it without sound and music, by starting it with the "nosound" argument
+// Example:
+// ./PK2 windowed nosound
 //#########################
 
 #include "PisteEngine.hpp"
+#include "PisteLog.hpp"
 #include "map.hpp"
 #include "sprite.hpp"
 #include "game.hpp"
 
+#include <iostream>
 #include <array>
+#include <sstream>
 
-#define GAME_NAME   "Pekka Kana 2"
-#define PK2_VERSION "r3"
+#define GAME_NAME   "Pekka Kana 2: Community Edition"
+#define PK2_VERSION "CE0.1.1"
 
 #ifndef _WIN32
 void itoa(int n, char s[], int radix){
@@ -179,6 +188,15 @@ struct PK2SETTINGS {
 	DWORD control_attack2;
 	DWORD control_open_gift;
 
+	DWORD gamepad_left;
+	DWORD gamepad_right;
+	DWORD gamepad_jump;
+	DWORD gamepad_down;
+	DWORD gamepad_walk_slow;
+	DWORD gamepad_attack1;
+	DWORD gamepad_attack2;
+	DWORD gamepad_open_gift;
+
 	// audio
 	bool musiikki;
 	bool aanet;
@@ -202,6 +220,8 @@ int screen_height = 480;
 
 bool test_level = false;
 bool dev_mode = false;
+bool test_windowed = false;
+bool test_mute = false;
 
 bool PK2_error = false;
 const char* PK2_error_msg = NULL;
@@ -232,9 +252,6 @@ int		debug_drawn_sprites = 0;
 int		debug_active_sprites = 0;
 
 //KARTTA
-
-
-
 PK2Kartta *kartta;
 char seuraava_kartta[PE_PATH_SIZE];
 
@@ -341,7 +358,7 @@ int degree = 0,
 int avaimia = 0;
 
 // Time
-const int TIME_FPS = 100;
+const int TIME_FPS = 60;
 DWORD timeout = 0;
 int increase_time = 0;
 int sekunti = 0;
@@ -408,6 +425,8 @@ bool show_fps = false;
 
 //LANGUAGE AND TEXTS OF THE GAME
 PisteLanguage *tekstit;
+bool customHudText = false;
+
 char langlist[60][PE_PATH_SIZE];
 char langmenulist[10][PE_PATH_SIZE];
 int langlistindex = 0;
@@ -427,11 +446,17 @@ void PK_Fade_Quit();
 //(#1) Filesystem
 //==================================================
 
-bool PK_Check_File(char *filename){ //TODO - If isn't Windows - List directory, set lower case, test, and change "char *filename".
-	struct stat st;
-	bool ret = (stat(filename, &st) == 0);
-	if(!ret) printf("PK2    - asked about non-existing file: %s\n", filename);
-	return ret;
+bool PK_Check_File(std::string filename) {
+	bool ok = true;
+
+	std::ifstream ifs(filename.c_str());
+	
+	if (ifs.fail())
+		ok = false;
+	
+	ifs.close();
+
+	return ok;
 }
 void PK_Settings_Start(){
 	settings.ladattu = false;
@@ -455,6 +480,15 @@ void PK_Settings_Start(){
 	settings.control_attack1   = PI_RCONTROL;
 	settings.control_attack2   = PI_RSHIFT;
 	settings.control_open_gift = PI_SPACE;
+
+	settings.gamepad_left		= CONTROLLER_LEFT;
+	settings.gamepad_right		= CONTROLLER_RIGHT;
+	settings.gamepad_jump		= CONTROLLER_B;
+	settings.gamepad_down		= CONTROLLER_DOWN;
+	settings.gamepad_walk_slow	= CONTROLLER_SHOULDER_LEFT;
+	settings.gamepad_attack1	= CONTROLLER_A;
+	settings.gamepad_attack2	= CONTROLLER_X;
+	settings.gamepad_open_gift	= CONTROLLER_Y;
 
 	settings.isFiltered = true;
 	settings.isFit = true;
@@ -499,11 +533,13 @@ int PK_Settings_Open(char *filename){
 	return 0;
 }
 int PK_Settings_Save(char *filename){
-	ofstream *tiedosto = new ofstream(filename, ios::binary);
-	tiedosto->write ("1.2", 4);
-	tiedosto->write ((char *)&settings, sizeof (settings));
+	std::ofstream ifs(filename, ios::binary);
+	ifs.write ("1.2", 4);
+	ifs.write ((char *)&settings, sizeof (settings));
 
-	delete (tiedosto);
+	ifs.flush();
+	ifs.close();
+
 	return 0;
 }
 
@@ -684,6 +720,30 @@ int PK_Load_Font() {
 
 	return 0;
 }
+
+void PK_Load_Custom_Hud_Text() {
+	std::string file = "episodes/" + std::string(episodi) + "/game.txt";
+	
+	if (PK_Check_File(file)) {
+		PisteLanguage hudLang;
+
+		if (hudLang.Read_File(file)) {
+			customHudText = true;
+
+			tekstit->Korvaa_Teksti(PK_txt.game_score, hudLang.Hae_Teksti(hudLang.Hae_Indeksi("score")));
+			tekstit->Korvaa_Teksti(PK_txt.game_time, hudLang.Hae_Teksti(hudLang.Hae_Indeksi("game time")));
+			tekstit->Korvaa_Teksti(PK_txt.game_energy, hudLang.Hae_Teksti(hudLang.Hae_Indeksi("energy")));
+			tekstit->Korvaa_Teksti(PK_txt.game_items, hudLang.Hae_Teksti(hudLang.Hae_Indeksi("items")));
+			tekstit->Korvaa_Teksti(PK_txt.game_attack1, hudLang.Hae_Teksti(hudLang.Hae_Indeksi("attack 1")));
+			tekstit->Korvaa_Teksti(PK_txt.game_attack2, hudLang.Hae_Teksti(hudLang.Hae_Indeksi("attack 2")));
+			tekstit->Korvaa_Teksti(PK_txt.game_keys, hudLang.Hae_Teksti(hudLang.Hae_Indeksi("keys")));
+			tekstit->Korvaa_Teksti(PK_txt.game_newdoodle, hudLang.Hae_Teksti(hudLang.Hae_Indeksi("new doodle attack")));
+			tekstit->Korvaa_Teksti(PK_txt.game_newegg, hudLang.Hae_Teksti(hudLang.Hae_Indeksi("new egg attack")));
+			tekstit->Korvaa_Teksti(PK_txt.game_newitem, hudLang.Hae_Teksti(hudLang.Hae_Indeksi("new item")));
+		}
+	}
+}
+
 bool PK_Load_Language(){
 	char tiedosto[PE_PATH_SIZE];
 	int i;
@@ -917,6 +977,8 @@ void PK_Search_File(){
 void PK_New_Game(){
 	pisteet = 0;
 	jakso = 1;
+
+	PK_Load_Language();
 }
 void PK_New_Save(){
 	timeout = kartta->aika;
@@ -1096,6 +1158,13 @@ int PK_Load_Records(int i){
 		//for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
 		//	jaksot[j].lapaisty = tallennukset[i].jakso_lapaisty[j];
 
+		if (PK_Check_File("episodes/" + std::string(episodi) + "/gfx/pk2stuff.bmp")) {
+			PisteDraw2_Image_Delete(kuva_peli);
+			kuva_peli = PisteDraw2_Image_Load(("episodes/" + std::string(episodi) + "/gfx/pk2stuff.bmp").c_str(), false);
+		}
+
+		PK_Load_Custom_Hud_Text();
+
 		game_next_screen = SCREEN_MAP;
 		lataa_peli = i;
 		episode_started = false;
@@ -1124,7 +1193,7 @@ int PK_Save_Records(int i){
 //==================================================
 
 void PK_Play_Sound(int aani, int voimakkuus, int x, int y, int freq, bool random_freq){
-	if (aani > -1 && settings.sfx_max_volume > 0 && voimakkuus > 0){
+	if (!test_mute && aani > -1 && settings.sfx_max_volume > 0 && voimakkuus > 0){
 		if (x < Game::camera_x+screen_width && x > Game::camera_x && y < Game::camera_y+screen_height && y > Game::camera_y){
 			voimakkuus = voimakkuus / (100 / settings.sfx_max_volume);
 
@@ -1147,7 +1216,7 @@ void PK_Play_Sound(int aani, int voimakkuus, int x, int y, int freq, bool random
 	}
 }
 void PK_Play_MenuSound(int aani, int voimakkuus){
-	if (aani > -1 && settings.sfx_max_volume > 0 && voimakkuus > 0){
+	if (!test_mute && aani > -1 && settings.sfx_max_volume > 0 && voimakkuus > 0){
 		voimakkuus = voimakkuus / (100 / settings.sfx_max_volume);
 
 		if (voimakkuus > 100)
@@ -1176,10 +1245,12 @@ void PK_Updade_Mouse(){
 		MOUSE hiiri = PisteInput_UpdateMouse(game_screen == SCREEN_MAP, settings.isFullScreen);
 		hiiri.x -= PisteDraw2_GetXOffset();
 
+		/*
 		if (hiiri.x < 0) hiiri.x = 0;
 		if (hiiri.y < 0) hiiri.y = 0;
 		if (hiiri.x > 640-19) hiiri.x = 640-19;
 		if (hiiri.y > 480-19) hiiri.y = 480-19;
+		*/
 
 		hiiri_x = hiiri.x;
 		hiiri_y = hiiri.y;
@@ -1967,53 +2038,85 @@ void PK2::SpriteSystem::protot_clear_all() {
 	next_free_prototype = 0;
 }
 
-int  PK2::SpriteSystem::protot_get_sound(char *polku, char *tiedosto) {
-	char aanitiedosto[255];
-	if (strcmp(tiedosto,"")!=0){
-		strcpy(aanitiedosto,polku);
-		strcat(aanitiedosto,tiedosto);
-		return PisteSound_LoadSFX(aanitiedosto);
-	}
-
-	return -1;
+int  PK2::SpriteSystem::protot_get_sound(std::string path) {
+	// TODO: Change LoadSFX paramter to std::string
+	return PisteSound_LoadSFX(path);
 }
 
-int  PK2::SpriteSystem::protot_get(char *polku, char *tiedosto) {
-	char aanipolku[255];
-	char testipolku[255];
-	strcpy(aanipolku,polku);
-
+/*
+int  PK2::SpriteSystem::protot_get(char *path, char *file_name) {
+	char sound_path[255];
+	char test_path[255];
+	strcpy(test_path, path);
+	
 	//Check if have space
 	if(next_free_prototype >= MAX_PROTOTYYPPEJA)
 		return 2;
 
 	//Check if it can be loaded
-	if (protot[next_free_prototype].Lataa(polku, tiedosto) == 1)
+	if (protot[next_free_prototype].Lataa(path, file_name, episodi) == 1)
 		return 1;
 
 	protot[next_free_prototype].indeksi = next_free_prototype;
 
 	//Load sounds
-	for (int i=0;i<MAX_AANIA;i++){
+	for (int i = 0; i < MAX_AANIA; i++){
+		if (strcmp(protot[next_free_prototype].aanitiedostot[i], "") != 0){
 
-		if (strcmp(protot[next_free_prototype].aanitiedostot[i],"")!=0){
+			strcpy(test_path, "./episodes/");
+			strcat(test_path, episodi);
+			strcat(test_path, "/sprites/");
+			strcat(test_path, protot[next_free_prototype].aanitiedostot[i]);
 
-			strcpy(testipolku,aanipolku);
-			strcat(testipolku,"/");
-			strcat(testipolku,protot[next_free_prototype].aanitiedostot[i]);
+			if (PK_Check_File(test_path)) {
+				protot[next_free_prototype].aanet[i] = protot_get_sound(test_path, protot[next_free_prototype].aanitiedostot[i]);
+			} else {
+				strcpy(test_path, "");
+				strcpy(test_path, "sprites/");
+				strcat(test_path, protot[next_free_prototype].aanitiedostot[i]);
 
-			if (PK_Check_File(testipolku))
-				protot[next_free_prototype].aanet[i] = protot_get_sound(aanipolku,protot[next_free_prototype].aanitiedostot[i]);
-			else{
-				getcwd(aanipolku, PE_PATH_SIZE);
-				strcat(aanipolku,"/sprites/");
+				if (PK_Check_File(test_path))
+					protot[next_free_prototype].aanet[i] = protot_get_sound(test_path, protot[next_free_prototype].aanitiedostot[i]);
+			}
+		}
+	}
 
-				strcpy(testipolku,aanipolku);
-				strcat(testipolku,"/");
-				strcat(testipolku,protot[next_free_prototype].aanitiedostot[i]);
+	next_free_prototype++;
 
-				if (PK_Check_File(testipolku))
-					protot[next_free_prototype].aanet[i] = protot_get_sound(aanipolku,protot[next_free_prototype].aanitiedostot[i]);
+	return 0;
+}*/
+
+int PK2::SpriteSystem::Get_Prototype(std::string filename) {
+	if (next_free_prototype >= MAX_PROTOTYYPPEJA) {
+		return 2;
+	}
+
+	if (protot[next_free_prototype].Load(filename, episodi) == 1) {
+		return 1;
+	}
+
+	protot[next_free_prototype].indeksi = next_free_prototype;
+
+	std::stringstream ss;
+
+	char test_path[255];
+
+	//Load sounds
+	for (int i = 0; i < MAX_AANIA; i++) {
+		if (strcmp(protot[next_free_prototype].aanitiedostot[i], "") != 0) {
+			ss.str("");
+			ss << "./episodes/" << episodi << "/sprites/" << protot[next_free_prototype].aanitiedostot[i];
+
+			int sndIndex = -1;
+			if ((sndIndex = PisteSound_LoadSFX(ss.str())) != -1) {
+				protot[next_free_prototype].aanet[i] = sndIndex;
+			} else {
+				ss.str("");
+				ss << "sprites/" << protot[next_free_prototype].aanitiedostot[i];
+
+				if ((sndIndex = PisteSound_LoadSFX(ss.str())) != -1) {
+					protot[next_free_prototype].aanet[i] = sndIndex;
+				}
 			}
 		}
 	}
@@ -2039,11 +2142,7 @@ void PK2::SpriteSystem::protot_get_transformation(int i) {
 		}
 
 		if (!loaded) {
-			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites/");
-			//PK_Load_EpisodeDir(polku);
-
-			if (protot_get(polku, protot[i].muutos_sprite)==0)
+			if (Get_Prototype(protot[i].muutos_sprite) == 0)
 				protot[i].muutos = next_free_prototype-1; // jokainen lataus kasvattaa next_free_prototype:a
 		}
 	}
@@ -2066,12 +2165,8 @@ void PK2::SpriteSystem::protot_get_bonus(int i) {
 		}
 
 		if (!loaded){
-			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites/");
-			//PK_Load_EpisodeDir(polku);
-
-			if (protot_get(polku, protot[i].bonus_sprite)==0)
-				protot[i].bonus = next_free_prototype-1;
+			if (Get_Prototype(protot[i].bonus_sprite) == 0)
+				protot[i].bonus = next_free_prototype - 1;
 		}
 	}
 }
@@ -2097,7 +2192,7 @@ void PK2::SpriteSystem::protot_get_ammo1(int i) {
 			strcpy(polku,"sprites/");
 
 
-			if (protot_get(polku, protot[i].ammus1_sprite)==0)
+			if (Get_Prototype(protot[i].ammus1_sprite) == 0)
 				protot[i].ammus1 = next_free_prototype-1;
 		}
 	}
@@ -2120,40 +2215,34 @@ void PK2::SpriteSystem::protot_get_ammo2(int i) {
 		}
 
 		if (!loaded){
-			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites/");
-
-			if (protot_get(polku, protot[i].ammus2_sprite)==0)
-				protot[i].ammus2 = next_free_prototype-1;
+			if (Get_Prototype(protot[i].ammus2_sprite) == 0)
+				protot[i].ammus2 = next_free_prototype - 1;
 		}
 	}
 }
 
 int  PK2::SpriteSystem::protot_get_all() {
-	char polku[PE_PATH_SIZE];
+	char path[PE_PATH_SIZE];
 	int viimeinen_proto;
 
 	for (int i=0;i < MAX_PROTOTYYPPEJA;i++){
-		if (strcmp(kartta->protot[i],"") != 0){
+		if (strcmp(kartta->protot[i], "") != 0) {
 			viimeinen_proto = i;
-			strcpy(polku,"");
-			PK_Load_EpisodeDir(polku);
+			strcpy(path, "");
+			//PK_Load_EpisodeDir(path);
 
-			if (protot_get(polku,kartta->protot[i])!=0){
-				strcpy(polku,"sprites/");
-				if (protot_get(polku,kartta->protot[i])!=0){
-					printf("PK2     - Can't load sprite %s. It will not appear.", kartta->protot[i]);
-					next_free_prototype++;
-				}
+			if (Get_Prototype(kartta->protot[i]) != 0) {
+				std:cerr << "PK2Main\t- Can't load sprite " << kartta->protot[i] << ". It will not appear." << std::endl;
+				//next_free_prototype++;
+			} else {
+				//next_free_prototype++;
 			}
 		}
-		else
-			next_free_prototype++;
 	}
 
-	next_free_prototype = viimeinen_proto+1;
+	next_free_prototype = viimeinen_proto + 1;
 
-	for (int i=0;i<MAX_PROTOTYYPPEJA;i++){
+	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++){
 		protot_get_transformation(i);
 		protot_get_bonus(i);
 		protot_get_ammo1(i);
@@ -2379,8 +2468,8 @@ int PK_Map_Open(char *nimi) {
 	strcpy(polku,"");
 	PK_Load_EpisodeDir(polku);
 
-	if (kartta->Lataa(polku, nimi) == 1){
-		printf("PK2    - Error loading map '%s' at '%s'\n", seuraava_kartta, polku);
+	if (kartta->Load(nimi, episodi) == 1){
+		printf("PK2Main\t- Error loading map '%s' at '%s'\n", seuraava_kartta, polku);
 		return 1;
 	}
 
@@ -3239,7 +3328,7 @@ int PK_Sprite_Movement(int i){
 	PisteInput_Lue_Eventti();
 	if (sprite.pelaaja != 0 && sprite.energia > 0){
 		/* SLOW WALK */
-		if (PisteInput_Keydown(settings.control_walk_slow))
+		if (PisteInput_Keydown(settings.control_walk_slow) || PisteInput_GamepadButtonDown(settings.gamepad_walk_slow))
 			lisavauhti = false;
 
 		/* ATTACK 1 */
@@ -3259,7 +3348,7 @@ int PK_Sprite_Movement(int i){
 		double a_lisays = 0;
 
 		/* NAVIGATING TO RIGHT */
-		if (PisteInput_Keydown(settings.control_right)) {
+		if (PisteInput_Keydown(settings.control_right) || PisteInput_GamepadButtonDown(settings.gamepad_right)) {
 			a_lisays = 0.04;//0.08;
 
 			if (lisavauhti) {
@@ -3276,7 +3365,7 @@ int PK_Sprite_Movement(int i){
 		}
 
 		/* NAVIGATING TO LEFT */
-		if (PisteInput_Keydown(settings.control_left)) {
+		if (PisteInput_Keydown(settings.control_left) || PisteInput_GamepadButtonDown(settings.gamepad_left)) {
 			a_lisays = -0.04;
 
 			if (lisavauhti) {
@@ -4821,7 +4910,7 @@ int PK_Update_Camera(){
 
 int PK_Draw_InGame_BGSprites(){
 	double xl, yl, alku_x, alku_y, yk;
-	int i;
+	int i = 0;
 
 	for (int in=0; in<MAX_SPRITEJA; in++) {
 		PK2Sprite* sprite = &Game::Sprites->spritet[Game::Sprites->taustaspritet[in]];
@@ -5167,7 +5256,7 @@ int PK_Draw_InGame_Lower_Menu(){
 
 		if (increase_time > 0) {
 			itoa((int)(increase_time * TIME_FPS) / 60, luku, 10);
-			PK_Fadetext_New(fontti2, luku, x + vali, y, 49, true);
+			//PK_Fadetext_New(fontti2, luku, x + vali, y, 49, true);
 			increase_time = 0;
 		}
 
@@ -5236,10 +5325,9 @@ int PK_Draw_InGame_UI(){
 		PisteDraw2_Font_Write(fontti2,luku,40+vali,my+27);
 	}
 
-	/////////////////
 	// Draw Score
-	/////////////////
-	vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_score),230,my);
+	vali = PisteDraw2_Font_Write(fontti1, tekstit->Hae_Teksti(PK_txt.game_score), 230, my);
+
 	ltoa(jakso_pisteet,luku,10);
 	PisteDraw2_Font_Write(fontti4,luku,230+vali+1,my+1);
 	PisteDraw2_Font_Write(fontti2,luku,230+vali,my);
@@ -5453,32 +5541,36 @@ int  PK_Draw_Menu_Square(int vasen, int yla, int oikea, int ala, BYTE pvari){
 
 	return 0;
 }
-bool PK_Draw_Menu_Text(bool active, char *teksti, int x, int y){
+bool PK_Draw_Menu_Text(bool active, char *text, int x, int y, int kd = 20) {
 	if(!active){
-		PK_WavetextSlow_Draw(teksti, fontti2, x, y);
+		PK_WavetextSlow_Draw(text, fontti2, x, y);
+
 		return false;
 	}
 
-	int pituus = strlen(teksti)*15;
+	int length = strlen(text) * 15;
 
-	if ((hiiri_x > x && hiiri_x < x+pituus && hiiri_y > y && hiiri_y < y+15) ||
-		(menu_valittu_id == menu_valinta_id)){
+	// hiiri = mouse
+	if ((hiiri_x > x && hiiri_x < x + length && hiiri_y > y && hiiri_y < y + 20) ||
+		(menu_valittu_id == menu_valinta_id)) {
 		menu_valittu_id = menu_valinta_id;
 
-		if ((
-			(PisteInput_Hiiri_Vasen() && hiiri_x > x && hiiri_x < x+pituus && hiiri_y > y && hiiri_y < y+15)
+		if (((PisteInput_Hiiri_Vasen() && hiiri_x > x && hiiri_x < x + length && hiiri_y > y - 2 && hiiri_y < y + 22)
 			|| PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
-			&& key_delay == 0){
-			PK_Play_MenuSound(menu_aani, 100);
-			key_delay = 20;
-			menu_valinta_id++;
-			return true;
+			&& key_delay == 0) {
+				PK_Play_MenuSound(menu_aani, 100);
+				
+				key_delay = kd;
+				
+				menu_valinta_id++;
+
+				return true;
 		}
 
-		PK_Wavetext_Draw(teksti, fontti3, x, y);
+		PK_Wavetext_Draw(text, fontti3, x, y);
+	} else {
+		PK_WavetextSlow_Draw(text, fontti2, x, y);
 	}
-	else
-		PK_WavetextSlow_Draw(teksti, fontti2, x, y);
 
 	menu_valinta_id++;
 
@@ -6044,13 +6136,21 @@ int PK_Draw_Menu_Sounds(){
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_sfx_volume),180,200+my);
 	my += 20;
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_less),180,200+my))
-		if (settings.sfx_max_volume > 0)
-			settings.sfx_max_volume -= 5;
+	if (settings.sfx_max_volume == 0) {
+		if (PK_Draw_Menu_Text(true, "Unmute", 80, 200 + my))
+			settings.sfx_max_volume = 64;
+	} else {
+		if (PK_Draw_Menu_Text(true, "Mute", 80, 200 + my))
+			settings.sfx_max_volume = 0;
+	}
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_more),180+8*15,200+my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_less),180,200+my, 5))
+		if (settings.sfx_max_volume > 0)
+			settings.sfx_max_volume -= 4;
+
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_more),180+8*15,200+my, 5))
 		if (settings.sfx_max_volume < 100)
-			settings.sfx_max_volume += 5;
+			settings.sfx_max_volume += 4;
 
 	if (settings.sfx_max_volume < 0)
 		settings.sfx_max_volume = 0;
@@ -6060,19 +6160,27 @@ int PK_Draw_Menu_Sounds(){
 
 	my+=40;
 
-	PisteDraw2_ScreenFill(404,224+my,404+int(settings.music_max_volume*1.56),244+my,0);
-	PisteDraw2_ScreenFill(400,220+my,400+int(settings.music_max_volume*1.56),240+my,112);
+	PisteDraw2_ScreenFill(404, 224 + my, 404 + int(settings.music_max_volume * 1.56), 244 + my, 0);
+	PisteDraw2_ScreenFill(400, 220 + my, 400 + int(settings.music_max_volume * 1.56), 240 + my, 112);
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_music_volume),180,200+my);
 	my += 20;
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_less),180,200+my))
-		if (settings.music_max_volume > 0)
-			settings.music_max_volume -= 4;
+	if (settings.music_max_volume == 0) {
+		if (PK_Draw_Menu_Text(true, "Unmute", 80, 200 + my))
+			settings.music_max_volume = 64;
+	} else {
+		if (PK_Draw_Menu_Text(true, "Mute", 80, 200 + my))
+			settings.music_max_volume = 0;
+	}
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_more),180+8*15,200+my))
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_less), 180, 200 + my, 5))
+		if (settings.music_max_volume > 0)
+			settings.music_max_volume -= 2;
+
+	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_more), 180 + 8 * 15, 200 + my, 5))
 		if (settings.music_max_volume < 64)
-			settings.music_max_volume += 4;
+			settings.music_max_volume += 2;
 
 	if (settings.music_max_volume < 0)
 		settings.music_max_volume = 0;
@@ -6260,6 +6368,14 @@ int PK_Draw_Menu_Episodes(){
 				game_next_screen = SCREEN_MAP;
 				episode_started = false;
 				PK_New_Game();
+
+				if (PK_Check_File("episodes/" + std::string(episodi) + "/gfx/pk2stuff.bmp")) {
+					PisteDraw2_Image_Delete(kuva_peli);
+					kuva_peli = PisteDraw2_Image_Load(("episodes/" + std::string(episodi) + "/gfx/pk2stuff.bmp").c_str(), false);
+				}
+				
+				PK_Load_Custom_Hud_Text();
+
 				//PisteDraw2_FadeIn(PD_FADE_NORMAL);
 			}
 			my += 20;
@@ -6705,6 +6821,8 @@ int PK_Draw_Intro(){
 		PK_Draw_Intro_Text("samuli tuomola 2010",		            fontti1, 120, 310, tekijat_alku+80, tekijat_loppu+80);
 		PK_Draw_Intro_Text("sdl2 port and bug fixes",               fontti1, 120, 335, tekijat_alku + 90, tekijat_loppu + 90);
 		PK_Draw_Intro_Text("danilo lemos 2017",                     fontti1, 120, 355, tekijat_alku + 100, tekijat_loppu + 100);
+		PK_Draw_Intro_Text("Community Edition",                     fontti1, 120, 375, tekijat_alku + 110, tekijat_loppu + 110);
+		PK_Draw_Intro_Text("Deta 2019",								fontti1, 120, 395, tekijat_alku + 120, tekijat_loppu + 120);
 	}
 
 	if (introlaskuri > testaajat_alku) {
@@ -7012,7 +7130,7 @@ int PK_MainScreen_Map(){
 
 	if (going_to_game && !PisteDraw2_IsFading()) {
 		game_next_screen = SCREEN_GAME;
-		
+
 		episode_started = false;
 
 		//Draw "loading" text
@@ -7331,26 +7449,20 @@ int PK_MainScreen_Change() {
 		Game::Sprites = new PK2::SpriteSystem();
 		Game::Gifts = new PK2::GiftSystem();
 
-		//Game::camera_x = 0;
-		//Game::camera_y = 0;
-		//Game::dcamera_x = 0;
-		//Game::dcamera_y = 0;
-		//Game::dcamera_a = 0;
-		//Game::dcamera_b = 0;
-
 		if (!settings.isFiltered)
 			PisteDraw2_SetFilter(PD_FILTER_NEAREST);
 		if (settings.isFiltered)
 			PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
+
 		PisteDraw2_FitScreen(settings.isFit);
-		PisteDraw2_FullScreen(settings.isFullScreen);
+		
+		if (test_windowed) {
+			PisteDraw2_FullScreen(false);
+		} else {
+			PisteDraw2_FullScreen(settings.isFullScreen);
+		}
+
 		PisteDraw2_ChangeResolution(settings.isWide ? 800 : 640, 480);
-
-		PisteDraw2_Image_Delete(kuva_peli); //Delete if there is a image allocated
-		kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
-
-		PisteDraw2_Image_Delete(kuva_peli2); //Delete if there is a image allocated
-		kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff2.bmp", false);
 
 		PisteDraw2_Image_Delete(kuva_peli);
 		kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
@@ -7364,8 +7476,6 @@ int PK_MainScreen_Change() {
 		PK_Search_File();
 
 		PisteDraw2_ScreenFill(0);
-
-		//PisteLog_Kirjoita("  - Loading basic sound fx \n");
 
 		if ((kytkin_aani = PisteSound_LoadSFX("sfx/switch3.wav")) == -1)
 		{
@@ -7423,29 +7533,20 @@ int PK_MainScreen_Change() {
 
 		PisteDraw2_FadeIn(PD_FADE_SLOW);
 
-		//PisteLog_Kirjoita("  - Calculating tiles. \n");
 		PK_Calculate_Tiles();
 
 		Game::Gifts->clean();
 
-		//PisteLog_Kirjoita("  - Loading background picture \n");
 		PisteDraw2_Image_Delete(kuva_tausta);
 		kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp", true);
 
 		PK_Empty_Records();
 
-		//PisteLog_Kirjoita("  - Loading saves \n");
 		PK_Search_Records("data/saves.dat");
-
-		//PisteLog_Kirjoita("  - PisteSound sounds on \n");
-		//PisteSound_Aanet_Paalla(settings.aanet);
-
-		//PisteLog_Kirjoita("- Initializing basic stuff completed \n");
 	}
 
 	// Start map
-	if (game_next_screen == SCREEN_MAP)
-	{
+	if (game_next_screen == SCREEN_MAP) {
 		PK_UI_Change(UI_CURSOR);
 		if (settings.isWide)
 			PisteDraw2_SetXOffset(80);
@@ -7480,53 +7581,36 @@ int PK_MainScreen_Change() {
 		/* Ladataan kartan taustakuva ...*/
 		char mapkuva[PE_PATH_SIZE] = "map.bmp";
 		PK_Load_EpisodeDir(mapkuva);
-		//PisteLog_Kirjoita("  - Loading map picture ");
-		//PisteLog_Kirjoita(mapkuva);
-		//PisteLog_Kirjoita(" from episode folder \n");
 
 		PisteDraw2_Image_Delete(kuva_tausta);
 		kuva_tausta = PisteDraw2_Image_Load(mapkuva, true);
 		if (kuva_tausta == -1)
 			kuva_tausta = PisteDraw2_Image_Load("gfx/map.bmp", true);
 
-		/* Ladataan kartan musiikki ...*/
-		char mapmusa[PE_PATH_SIZE] = "map.mp3";
-		do
-		{
-			PK_Load_EpisodeDir(mapmusa);
-			if (PK_Check_File(mapmusa))
-				break;
-			strcpy(mapmusa, "map.ogg");
-			PK_Load_EpisodeDir(mapmusa);
-			if (PK_Check_File(mapmusa))
-				break;
-			strcpy(mapmusa, "map.xm");
-			PK_Load_EpisodeDir(mapmusa);
-			if (PK_Check_File(mapmusa))
-				break;
-			strcpy(mapmusa, "map.mod");
-			PK_Load_EpisodeDir(mapmusa);
-			if (PK_Check_File(mapmusa))
-				break;
-			strcpy(mapmusa, "map.it");
-			PK_Load_EpisodeDir(mapmusa);
-			if (PK_Check_File(mapmusa))
-				break;
-			strcpy(mapmusa, "map.s3m");
-			PK_Load_EpisodeDir(mapmusa);
-			if (PK_Check_File(mapmusa))
-				break;
-			strcpy(mapmusa, "music/map.mp3");
-			if (PK_Check_File(mapmusa))
-				break;
-			strcpy(mapmusa, "music/map.ogg");
-			if (PK_Check_File(mapmusa))
-				break;
-			strcpy(mapmusa, "music/map.xm");
-			break;
-		} while (0);
+		std::string mapmusa = "";
+		std::string mapStr[] = {
+			"episodes/" + string(episodi) + "/map.mp3",
+			"episodes/" + string(episodi) + "/map.ogg",
+			"episodes/" + string(episodi) + "/map.xm",
+			"episodes/" + string(episodi) + "/map.mod",
+			"episodes/" + string(episodi) + "/map.it",
+			"episodes/" + string(episodi) + "/map.s3m",
+			"music/map.xm",
+			"music/map.mod",
+			"music/map.it",
+			"music/map.s3m"
+		};
 
-		PisteSound_StartMusic(mapmusa);
+		for (std::string s : mapStr) {
+			if (PK_Check_File(s)) {
+				mapmusa = s;
+				break;
+			}
+		}
+
+		char mm[255];
+		strcpy(mm, mapmusa.c_str());
+		PisteSound_StartMusic(mm);
 
 		music_volume = settings.music_max_volume;
 
@@ -7792,6 +7876,10 @@ int PK_MainScreen() {
 		PisteSound_SetMusicVolume(music_volume_now);
 	}
 
+	if (test_mute) {
+		PisteSound_SetMusicVolume(0);
+	}
+
 	static bool wasPressed = false;
 
 	bool skipped = !skip_frame && doublespeed; // If is in double speed and don't skip this frame, so the last frame was skipped, and it wasn't drawn
@@ -7841,7 +7929,7 @@ void PK_Start_Test(const char* arg){
 	strcpy(episodi, buffer); episodi[sepindex] = '\0';
 	strcpy(seuraava_kartta, buffer + sepindex + 1);
 
-	printf("PK2    - testing episode '%s' level '%s'\n", episodi, seuraava_kartta);
+	printf("PK2Main\t- testing episode '%s' level '%s'\n", episodi, seuraava_kartta);
 
 	PK_Load_InfoText();
 	PK_New_Game();
@@ -7868,9 +7956,14 @@ void PK_Fade_Quit() {
 void quit(int ret) {
 	PK_Settings_Save("data/settings.ini");
 	PK_Unload();
+
+	PisteLog_Quit();
+
 	delete Engine;
+	Engine = nullptr;
+
 	if (!ret) printf("Exited correctely\n");
-	exit(ret);
+	//exit(ret);
 }
 
 int main(int argc, char *argv[]) {
@@ -7883,10 +7976,12 @@ int main(int argc, char *argv[]) {
 			printf("\n");
 			exit(0);
 		}
+
 		if (strcmp(argv[i], "dev") == 0) {
 			dev_mode = true;
 			continue;
 		}
+
 		if (strcmp(argv[i], "test") == 0) {
 			if (argc <= i + 1) {
 				printf("Please set a level to test\n");
@@ -7898,6 +7993,15 @@ int main(int argc, char *argv[]) {
 				continue;
 			}
 		}
+
+		if (strcmp(argv[i], "windowed") == 0) {
+			test_windowed = true;
+		}
+
+		if (strcmp(argv[i], "nosound") == 0) {
+			test_mute = true;
+		}
+
 		if (strcmp(argv[i], "path") == 0) {
 			if (argc <= i + 1) {
 				printf("Please set a path\n");
@@ -7917,7 +8021,7 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	printf("PK2 Started!\n");
+	PisteLog_Init(true);
 
 	if(!path_set)
 		PisteUtils_Setcwd();
@@ -7941,10 +8045,12 @@ int main(int argc, char *argv[]) {
 	tekstit = new PisteLanguage();
 
 	if (!PK_Load_Language()){
-		printf("PK2    - Could not find %s!\n",settings.kieli);
+		PisteLog_Write("PK2Main", "Couldn't find language file: " + std::string(settings.kieli), TYPE::T_ERROR);
+
 		strcpy(settings.kieli,"english.txt");
 		if(!PK_Load_Language()){
-			printf("PK2    - Could not find the default language file!\n");
+			PisteLog_Write("PK2Main", "Couldn't find default language file", TYPE::T_ERROR);
+
 			return 0;
 		}
 	}
@@ -7968,8 +8074,9 @@ int main(int argc, char *argv[]) {
 	if(PK2_error){
 		printf("PK2    - Error!\n");
 		PisteUtils_Show_Error(PK2_error_msg);
-		quit(1);
 	}
 	
 	quit(0);
+
+	return 0;
 }

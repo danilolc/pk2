@@ -5,7 +5,10 @@
 
 #pragma once
 
-#include <SDL2/SDL.h>
+#include <SDL_surface.h>
+#include <SDL_render.h>
+#include <SDL_pixels.h>
+#include <SDL_video.h>
 #include <vector>
 
 #include "PisteFont.hpp"

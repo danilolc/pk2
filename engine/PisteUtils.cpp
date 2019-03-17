@@ -8,7 +8,7 @@
 #include <string>
 #ifdef _WIN32
 	#include <io.h>
-	#include "winlite.h"
+	#include "../include/winlite.h"
 	#include <direct.h>
 #else
 	#include <dirent.h>
@@ -16,14 +16,19 @@
 	#include <limits.h>
 #endif
 
+#include <Windows.h>
+
 #include "PisteUtils.hpp"
+#include "platform.hpp"
 
 #ifdef USE_LOCAL_SDL
 #include "SDL.h"
 #else
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #endif
 #include <cstring>
+
+#define PE_PATH_SIZE 128
 
 using namespace std;
 
@@ -41,7 +46,7 @@ int PisteUtils_Setcwd() {
 	int find;
 
 #ifdef _WIN32
-	string(exepath, GetModuleFileName(NULL, exepath, PE_PATH_SIZE));
+	string(exepath, GetModuleFileNameA(NULL, exepath, PE_PATH_SIZE));
 #else
 	int count = readlink("/proc/self/exe", exepath, PE_PATH_SIZE);
 	if (count > 0) exepath[count] = '\0';

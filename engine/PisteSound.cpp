@@ -5,13 +5,15 @@
 
 #include "PisteSound.hpp"
 #include "PisteUtils.hpp"
+#include "PisteLog.hpp"
 
 #ifdef USE_LOCAL_SDL
 #include "SDL_mixer.h"
 #else
-#include <SDL2/SDL_mixer.h>
+#include <SDL_mixer.h>
 #endif
 #include <cstring>
+#include <iostream>
 
 #define AUDIO_FREQ 44100
 
@@ -60,13 +62,23 @@ int Change_Frequency(int index, int freq){
 	else return 1; // Dont need to change frequency
 }
 
-int PisteSound_LoadSFX(char* filename){
+int PisteSound_LoadSFX(std::string filename){
 	int i = -1;
-	for(i=0;i<MAX_SOUNDS;i++)
-		if (indexes[i] == NULL){
-			indexes[i] = Mix_LoadWAV(filename);
+
+	for (i = 0; i < MAX_SOUNDS; i++) {
+		if (indexes[i] == nullptr) {
+			indexes[i] = Mix_LoadWAV(filename.c_str());
+
+			if (indexes[i] == nullptr) {
+				PisteLog_Write("PisteSound", "Couldn't open " + filename, TYPE::T_ERROR);
+				
+				i = -1;
+			}
+
 			break;
 		}
+	}
+
 	return i;
 }
 int PisteSound_PlaySFX(int index){
@@ -76,7 +88,7 @@ int PisteSound_PlaySFX(int index, int volume, int panoramic, int freq){
 	//panoramic from -10000 to 10000
 
 	if(index == -1) return 1;
-	if(indexes[index] == NULL) return 2;
+	if(indexes[index] == nullptr) return 2;
 
 	volume = volume * 128 / 100;
 	indexes[index]->volume = volume;
@@ -125,8 +137,8 @@ int PisteSound_StartMusic(char* filename){
 	if(!strcmp(playingMusic,filename)) return 0;
 
 	music = Mix_LoadMUS(filename);
-	if (music == NULL){
-		printf("PS     - Music load error: %s\n",Mix_GetError());
+	if (music == nullptr) {
+		printf("PS     - Music load error: %s\n", Mix_GetError());
 		return -1;
 	}
 	if (Mix_PlayMusic( music, -1) == -1){

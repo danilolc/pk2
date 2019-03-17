@@ -7,12 +7,13 @@
 #define P_SOUND
 
 #include "platform.hpp"
+#include <string>
 
 int PisteSound_Start();
 int PisteSound_Update();
 int PisteSound_End();
 
-int PisteSound_LoadSFX(char* filename); //0 success, -1 fail
+int PisteSound_LoadSFX(std::string filename);
 int PisteSound_PlaySFX(int index);
 int PisteSound_PlaySFX(int index, int volume, int panoramic, int freq);
 void PisteSound_SetSFXVolume(int volume);

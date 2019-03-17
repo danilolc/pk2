@@ -10,8 +10,6 @@
 #include <fcntl.h>
 #include <cstring>
 
-using namespace std;
-
 const int	LUE_SKIP    = 0,
           LUE_OTSIKKO = 1,
           LUE_TEKSTI  = 2;
@@ -28,25 +26,24 @@ PisteLanguage::PisteLanguage(){
 
 }
 
-PisteLanguage::PisteLanguage(char *tiedosto){
+PisteLanguage::PisteLanguage(std::string file) {
 	read = LUE_SKIP;
 
-	for (int i=0;i<MAX_TEXTS;i++){
-		strcpy(tekstit[i],"");
-		strcpy(otsikot[i],"");
+	for (int i = 0; i<MAX_TEXTS; i++) {
+		strcpy(tekstit[i], "");
+		strcpy(otsikot[i], "");
 	}
 
-	Read_File(tiedosto);
+	Read_File(file);
 }
 
 PisteLanguage::~PisteLanguage(){}
 
-bool PisteLanguage::Read_File(char *filename){
+bool PisteLanguage::Read_File(std::string filename){
 
-	ifstream *tiedosto = new ifstream(filename, ios::in);
+	std::ifstream tiedosto(filename);
 
-	if (tiedosto->fail()){
-		delete (tiedosto);
+	if (tiedosto.fail()){
 		return false;
 	}
 
@@ -62,8 +59,8 @@ bool PisteLanguage::Read_File(char *filename){
 
 	bool jatka = true;
 
-	while(jatka && tiedosto->peek() != EOF){
-		merkki = tiedosto->get();
+	while(jatka && tiedosto.peek() != EOF){
+		merkki = tiedosto.get();
 
 		switch (merkki){
 			case MARKER_1:
@@ -125,8 +122,6 @@ bool PisteLanguage::Read_File(char *filename){
 		if (taulukko_index >= MAX_TEXTS)
 			jatka = false;
 	}
-
-	delete tiedosto;
 
 	return true;
 }

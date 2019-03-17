@@ -10,8 +10,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #else
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL_image.h>
 #endif
 
 #ifdef _WIN32
@@ -36,9 +35,11 @@ struct PI_GUI{
 PI_GUI gui_list[PI_MAX_GUI];
 int screen_w, screen_h;
 
-#define MOUSE_SPEED 20
+#define MOUSE_SPEED 1
 
-struct PELIOHJAIN{
+SDL_GameController* controller;
+
+struct PELIOHJAIN {
 	SDL_Joystick* dev;
 	bool					available;
 	char					nimi[80];
@@ -232,7 +233,7 @@ void SetMousePosition(int x, int y) {
 	int wx, wy;
 	PisteDraw2_GetWindowPosition(&wx, &wy);
 
-	SetCursorPos(x + wx, y+wy);
+	//SetCursorPos(x + wx, y+wy);
 }
 #else
 void SetMousePosition(int x, int y) {
@@ -269,6 +270,10 @@ int PisteInput_GetTouchPos(float& x, float& y){
 	return 0;
 }
 
+bool PisteInput_GamepadButtonDown(DWORD button) {
+	return SDL_GameControllerGetButton(controller, static_cast<SDL_GameControllerButton>(button));
+}
+
 bool PisteInput_Keydown(int key){
 	UpdateGui();
 	for(int i = 0; i < PI_MAX_GUI; i++)
@@ -297,11 +302,14 @@ MOUSE PisteInput_UpdateMouse(bool keyMove, bool relative){
 		was_relative = 1;
 	}
 
+	SDL_GetMouseState(&mouse_pos.x, &mouse_pos.y);
+	return mouse_pos;
 
 	if (!relative) {
 		SDL_GetMouseState(&mouse_pos.x, &mouse_pos.y);
 		return mouse_pos;
 	}
+
 	static int lastMouseUpdate = 0, dx = 0, dy = 0;
 	if(SDL_GetTicks() - lastMouseUpdate > MOUSE_SPEED) {
 		lastMouseUpdate = SDL_GetTicks();
@@ -317,13 +325,19 @@ MOUSE PisteInput_UpdateMouse(bool keyMove, bool relative){
 	}
 
 	if(keyMove){
-		mouse_pos.x += PisteInput_Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
-		mouse_pos.y += PisteInput_Ohjain_Y(PI_PELIOHJAIN_1)/30;
+		mouse_pos.x += PisteInput_Ohjain_X(PI_PELIOHJAIN_1) / 30; //Move mouse with joystick
+		mouse_pos.y += PisteInput_Ohjain_Y(PI_PELIOHJAIN_1) / 30;
 
 		if (PisteInput_Keydown(PI_LEFT)) mouse_pos.x -= 3; //Move mouse with keys
 		if (PisteInput_Keydown(PI_RIGHT)) mouse_pos.x += 3;
 		if (PisteInput_Keydown(PI_UP)) mouse_pos.y -= 3;
 		if (PisteInput_Keydown(PI_DOWN)) mouse_pos.y += 3;
+
+		// Move mouse with gamepad
+		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) mouse_pos.x -= 5;
+		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) mouse_pos.x += 5;
+		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) mouse_pos.y -= 5;
+		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) mouse_pos.y += 5;
 	}
 
 	return mouse_pos;
@@ -370,6 +384,14 @@ if(SDL_NumJoysticks()>0){
 int PisteInput_Start(){
 	SDL_DisplayMode DM;
 	SDL_GetCurrentDisplayMode(0, &DM);
+
+	controller = SDL_GameControllerOpen(1);
+
+	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+		if (SDL_IsGameController(i)) {
+			printf("Joystick %i is supported by the game controller interface!\n", i);
+		}
+	}
 
 	screen_w = (int)DM.w;
 	screen_h = (int)DM.h;
@@ -503,5 +525,7 @@ char* PisteInput_Lue_Kontrollin_Nimi(unsigned char k){
 }
 
 int PisteInput_Exit(){
+	SDL_GameControllerClose(controller);
+
 	return 0;
 }

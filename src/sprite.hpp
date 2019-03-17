@@ -7,6 +7,7 @@
 #define PK2SPRITE
 
 #include "types.hpp"
+#include <string>
 
 #define PK2SPRITE_VIIMEISIN_VERSIO "1.3"
 
@@ -477,6 +478,7 @@ class PK2Sprite_Prototyyppi{
     char		versio[4];
     //.spr filename
     char		tiedosto[255];
+	std::string file;
     //Prototype index
     int			indeksi;
     //Sprite type
@@ -571,7 +573,8 @@ class PK2Sprite_Prototyyppi{
     void Uusi();
     void Kopioi(const PK2Sprite_Prototyyppi &proto);
     int  Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi);
-    int  Lataa(char *polku, char *tiedoston_nimi);
+    int  Lataa(char *polku, char *tiedoston_nimi, char* episode = nullptr);
+	int Load(std::string filename, std::string episode);
     void Tallenna(char *tiedoston_nimi);
     int  Piirra(int x, int y, int frame);
     bool Onko_AI(int AI);

@@ -6,6 +6,7 @@
 #include "platform.hpp"
 #include "sprite.hpp"
 #include <vector>
+#include <string>
 
 enum PARTICLES{
 	PARTICLE_NOTHING,
@@ -123,10 +124,11 @@ class SpriteSystem {
 
 	int next_free_prototype = 0;
 
+	int Get_Prototype(std::string filename);
 
 	int  protot_get(char *polku, char *tiedosto);
 	
-	int  protot_get_sound(char *polku, char *tiedosto);
+	int  protot_get_sound(std::string str);
 	void protot_get_transformation(int i);
 	void protot_get_bonus(int i);
 	void protot_get_ammo1(int i);

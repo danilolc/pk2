@@ -3,10 +3,13 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 
-#include <math.h>
+#include <cctype>
+#include <iostream>
+#include <cstring>
+#include <cstdio>
+
 #include <fstream>
 #include <iostream>
-#include <string.h>
 
 #include "platform.hpp"
 #include "PisteFont.hpp"
@@ -136,7 +139,7 @@ int PisteFont2::LoadFile(const char* file_path, const char* file){
 	for (i=0;i<char_count;i++)
 		font_index[i] = i * char_w;
 	for (i=0;i<char_count;i++)
-		charList[(BYTE)toupper(chars[i])] = font_index[i];
+		charList[(BYTE) toupper(chars[i])] = font_index[i];
 
 	return 0;
 }

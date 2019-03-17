@@ -6,15 +6,18 @@
 #include "PisteDraw.hpp"
 #include "PisteFont.hpp"
 #include "PisteInput.hpp"
+#include "PisteLog.hpp"
 
 #include <fstream>
 #include <algorithm>
 #include <ctime>
+#include <cstdio>
+#include <iostream>
 
 #ifdef USE_LOCAL_SDL
 #include "SDL_image.h"
 #else
-#include <SDL2/SDL_image.h>
+#include <SDL_image.h>
 #endif
 
 const int MAX_IMAGES = 2000;
@@ -109,16 +112,19 @@ int PisteDraw2_Image_Load(const char* filename, bool getPalette){
 	SDL_Palette* pal;
 
 	index = findfreeimage();
-	if (index==-1){
-		printf("Error - Got index -1");
+	if (index == -1){
+		PisteLog_Write("PisteDraw", "Ran out of free images!", TYPE::T_ERROR);
+		
 		return -1;
 	}
 
 	imageList[index] = SDL_LoadBMP(filename);
-	if(imageList[index]==NULL){
-		printf("PD     - Error loading %s\n",filename);
+	if(imageList[index] == nullptr){
+		PisteLog_Write("PisteDraw", SDL_GetError(), TYPE::T_ERROR);
+		
 		return -1;
 	}
+
 	if(imageList[index]->format->BitsPerPixel != 8){
 		printf("PD     - Failed to open %s, just 8bpp indexed images!\n",filename);
 		PisteDraw2_Image_Delete(index);
@@ -206,8 +212,8 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha, 0);
 }
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum){
-	BYTE *imagePix = NULL;
-	BYTE *screenPix = NULL;
+	BYTE *imagePix = nullptr;
+	BYTE *screenPix = nullptr;
 	BYTE color1, color2;
 	DWORD imagePitch, screenPitch;
 	int posx, posy;
@@ -229,10 +235,10 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 	PisteDraw2_DrawScreen_Start(*&screenPix, (DWORD &)screenPitch);
 	for (posx = x_start; posx < x_end; posx++)
 		for (posy = y_start; posy < y_end; posy++) {
-			color1 = imagePix[(posx-x_start+srcrect.x)+imagePitch*(posy-y_start+srcrect.y)];
+			color1 = imagePix[(posx - x_start + srcrect.x) + imagePitch * (posy - y_start + srcrect.y)];
 			if (color1 != 255) {
-				color2 = screenPix[posx+screenPitch*posy];
-				screenPix[posx+screenPitch*posy] = PisteDraw2_BlendColors(color1, color2, alpha) + colorsum;
+				color2 = screenPix[posx + screenPitch * posy];
+				screenPix[posx+screenPitch * posy] = PisteDraw2_BlendColors(color1, color2, alpha) + colorsum;
 			}
 		}
 	PisteDraw2_DrawScreen_End();
@@ -341,7 +347,6 @@ int PisteDraw2_Font_Create(int image, int x, int y, int char_w, int char_h, int 
   return index;
 }
 int PisteDraw2_Font_Create(char* path, char* file){
-	printf("PD     - Creating font with path %s e file %s\n",path,file);
 	int index;
 
 	index = findfreefont();
@@ -352,7 +357,8 @@ int PisteDraw2_Font_Create(char* path, char* file){
 
 	fontList[index] = new PisteFont2();
 	if (fontList[index]->LoadFile(path,file) == -1){
-		printf("PD     - PisteDraw can't load a font from file!\n");
+		PisteLog_Write("PisteDraw", "Can't load file font \"" + string(file) + "\"!", TYPE::T_ERROR);
+
 		delete fontList[index];
 		return -1;
 	}
@@ -511,7 +517,7 @@ int PisteDraw2_Exit(){
 	int i, j;
 
 	for (i = 0; i<MAX_IMAGES; i++)
-		if (imageList[i] != NULL) {
+		if (imageList[i] != nullptr) {
 			j = i;
 			PisteDraw2_Image_Delete(j);
 		}
@@ -523,7 +529,10 @@ int PisteDraw2_Exit(){
 	SDL_DestroyRenderer(PD_Renderer);
 	SDL_DestroyWindow(PD_Window);
 
-	if(window_icon != NULL) SDL_FreeSurface(window_icon);
+	PD_Renderer = nullptr;
+	PD_Window = nullptr;
+
+	if(window_icon != nullptr) SDL_FreeSurface(window_icon);
 
 	PD2_loaded = false;
 	return 0;

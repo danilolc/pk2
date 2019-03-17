@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <sstream>
 
 #include "sprite.hpp"
 
@@ -624,26 +625,27 @@ PK2Sprite_Prototyyppi13 PK2Sprite_Prototyyppi::GetProto13(){
 	return proto;
 }
 
-int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
+int PK2Sprite_Prototyyppi::Lataa(char *path, char *file_name, char* episode){
 	this->Uusi();
 
-	char kuva[PE_PATH_SIZE];
-	strcpy(kuva,"");
-	strcpy(kuva,polku);
+	char image_path[PE_PATH_SIZE];
+	strcpy(image_path,"");
+	strcpy(image_path, path);
 
 	// Ladataan itse sprite-tiedosto
 
-	if (strcmp(polku,"")!=0)
-		strcat(polku,tiedoston_nimi);
+	if (strcmp(path,"") != 0)
+		strcat(path, file_name);
 	else
-		strcpy(polku,tiedoston_nimi);
+		strcpy(path, file_name);
 
-	ifstream *tiedosto = new ifstream(polku, ios::binary);
+	ifstream *tiedosto = new ifstream(path, ios::binary);
 	char versio[4];
 
 	if (tiedosto->fail()){
-		printf("PK2SPR - failed to open %s.\n", polku);
+		//printf("PK2SPR - failed to open %s.\n", path);
 		delete (tiedosto);
+
 		return 1;
 	}
 
@@ -655,7 +657,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto10(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto,tiedoston_nimi);
+		strcpy(this->tiedosto, file_name);
 	}
 	if (strcmp(versio,"1.1") == 0){
 		this->Uusi();
@@ -663,7 +665,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto11(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto,tiedoston_nimi);
+		strcpy(this->tiedosto, file_name);
 	}
 	if (strcmp(versio,"1.2") == 0){
 		this->Uusi();
@@ -671,15 +673,18 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto12(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto,tiedoston_nimi);
+		strcpy(this->tiedosto, file_name);
 	}
 	if (strcmp(versio,"1.3") == 0){
 		this->Uusi();
+
 		PK2Sprite_Prototyyppi13 proto;
-		tiedosto->read ((char *)&proto, sizeof (proto));
+
+		tiedosto->read ((char *) &proto, sizeof (proto));
 		this->SetProto13(proto);
+
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto,tiedoston_nimi);
+		strcpy(this->tiedosto, file_name);
 	}
 
 	if (tiedosto->fail()){
@@ -690,11 +695,28 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 	delete (tiedosto);
 
 	// Get sprite bmp
-	strcat(kuva,kuvatiedosto);
-	int bufferi = PisteDraw2_Image_Load(kuva,false);
+	
+	// Check the episode/-custom episode-/sprites directory first...
+	strcpy(image_path, "");
+	strcat(image_path, "episodes/");
+	strcat(image_path, episode);
+	strcat(image_path, "/sprites/");
+	strcat(image_path, kuvatiedosto);
 
-	if (bufferi == -1)
-		return 1;
+	int bufferi = PisteDraw2_Image_Load(image_path, false);
+
+	if (bufferi == -1) {
+		//... if that fails check the games sprites/ folder
+		strcpy(image_path, "");
+		strcpy(image_path, "sprites/");
+		strcat(image_path, kuvatiedosto);
+
+		bufferi = PisteDraw2_Image_Load(image_path, false);
+
+		if (bufferi == -1) {
+			return 1;
+		}
+	}
 
 	//Set diferent colors
 	BYTE *buffer = NULL;
@@ -705,14 +727,14 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 	if (this->vari != VARI_NORMAALI){ //Change sprite colors
 		PisteDraw2_Image_GetSize(bufferi,w,h);
 
-		PisteDraw2_DrawImage_Start(bufferi,*&buffer,leveys);
+		PisteDraw2_DrawImage_Start(bufferi, *&buffer, leveys);
 
-		for (x=0;x<w;x++)
-			for (y=0;y<h;y++)
-				if ((vari = buffer[x+y*leveys]) != 255){
+		for (x= 0; x < w; x++)
+			for (y = 0; y < h; y++)
+				if ((vari = buffer[x + y * leveys]) != 255){
 					vari %= 32;
 					vari += this->vari;
-					buffer[x+y*leveys] = vari;
+					buffer[x + y * leveys] = vari;
 				}
 
 		PisteDraw2_DrawImage_End(bufferi);
@@ -723,7 +745,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 		frame_y = kuva_y;
 
 	//Get each frame
-	for (frame_i=0; frame_i<frameja; frame_i++){
+	for (frame_i = 0; frame_i < frameja; frame_i++){
 		if (frame_x + kuva_frame_leveys > 640){
 			frame_y += this->kuva_frame_korkeus + 3;
 			frame_x = kuva_x;
@@ -739,6 +761,139 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 	PisteDraw2_Image_Delete(bufferi);
 	return 0;
 }
+
+int PK2Sprite_Prototyyppi::Load(std::string filename, std::string episode) {
+	this->Uusi();
+
+	std::stringstream ss;
+	ss << "episodes/" << episode << "/sprites/" << filename;
+
+	ifstream filestream(ss.str(), ios::binary);
+
+	if (filestream.fail()) {
+		ss.str("");
+		ss << "sprites/" << filename;
+
+		filestream.open(ss.str(), ios::binary);
+
+		if (filestream.fail()) {
+			std::cerr << "\tPK2Sprite - Can't find file: " << filename << std::endl;
+
+			return 1;
+		}
+	}
+
+	char versio[4];
+	filestream.read((char *)versio, 4);
+
+	if (strcmp(versio, "1.0") == 0) {
+		this->Uusi();
+		PK2Sprite_Prototyyppi10 proto;
+		filestream.read((char *)&proto, sizeof(proto));
+		this->SetProto10(proto);
+		strcpy(this->versio, versio);
+
+		this->file = filename;
+		strcpy(this->tiedosto, filename.c_str());
+	}
+	if (strcmp(versio, "1.1") == 0) {
+		this->Uusi();
+		PK2Sprite_Prototyyppi11 proto;
+		filestream.read((char *)&proto, sizeof(proto));
+		this->SetProto11(proto);
+		strcpy(this->versio, versio);
+
+		this->file = filename;
+	}
+	if (strcmp(versio, "1.2") == 0) {
+		this->Uusi();
+		PK2Sprite_Prototyyppi12 proto;
+		filestream.read((char *)&proto, sizeof(proto));
+		this->SetProto12(proto);
+		strcpy(this->versio, versio);
+
+		this->file = filename;
+		strcpy(this->tiedosto, filename.c_str());
+	}
+	if (strcmp(versio, "1.3") == 0) {
+		this->Uusi();
+
+		PK2Sprite_Prototyyppi13 proto;
+
+		filestream.read((char *)&proto, sizeof(proto));
+		this->SetProto13(proto);
+
+		strcpy(this->versio, versio);
+
+		this->file = filename;
+		strcpy(this->tiedosto, filename.c_str());
+	}
+
+	filestream.close();
+
+	// Get sprite bmp
+	// Check the episode/-custom episode-/sprites directory first...
+	ss.str("");
+	ss << "episodes/" << episode << "/sprites/" << kuvatiedosto;
+
+	int bufferi = PisteDraw2_Image_Load(ss.str().c_str(), false);
+
+	if (bufferi == -1) {
+		//... if that fails check the games sprites/ folder
+		ss.str("");
+		ss << "sprites/" << kuvatiedosto;
+
+		bufferi = PisteDraw2_Image_Load(ss.str().c_str(), false);
+
+		if (bufferi == -1) {
+			return 1;
+		}
+	}
+
+	//Set diferent colors
+	BYTE *buffer = nullptr;
+	DWORD leveys;
+	BYTE vari;
+	int x, y, w, h;
+
+	if (this->vari != VARI_NORMAALI) { //Change sprite colors
+		PisteDraw2_Image_GetSize(bufferi, w, h);
+
+		PisteDraw2_DrawImage_Start(bufferi, *&buffer, leveys);
+
+		for (x = 0; x < w; x++)
+			for (y = 0; y < h; y++)
+				if ((vari = buffer[x + y * leveys]) != 255) {
+					vari %= 32;
+					vari += this->vari;
+					buffer[x + y * leveys] = vari;
+				}
+
+		PisteDraw2_DrawImage_End(bufferi);
+	}
+
+	int frame_i = 0,
+		frame_x = kuva_x,
+		frame_y = kuva_y;
+
+	//Get each frame
+	for (frame_i = 0; frame_i < frameja; frame_i++) {
+		if (frame_x + kuva_frame_leveys > 640) {
+			frame_y += this->kuva_frame_korkeus + 3;
+			frame_x = kuva_x;
+		}
+
+		framet[frame_i] = PisteDraw2_Image_Cut(bufferi, frame_x, frame_y, kuva_frame_leveys, kuva_frame_korkeus); //frames
+		framet_peilikuva[frame_i] = PisteDraw2_Image_Cut(bufferi, frame_x, frame_y, kuva_frame_leveys, kuva_frame_korkeus); //flipped frames
+		PisteDraw2_Image_FlipHori(framet_peilikuva[frame_i]);
+
+		frame_x += this->kuva_frame_leveys + 3;
+	}
+
+	PisteDraw2_Image_Delete(bufferi);
+	return 0;
+}
+
 void PK2Sprite_Prototyyppi::Tallenna(char *tiedoston_nimi){
    	strcpy(this->tiedosto,tiedoston_nimi);
 
