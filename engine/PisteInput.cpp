@@ -5,18 +5,12 @@
 
 #include "PisteInput.hpp"
 #include "PisteDraw.hpp"
+#include "PisteLog.hpp"
 
-#ifdef USE_LOCAL_SDL
-#include "SDL.h"
-#include "SDL_image.h"
-#else
 #include <SDL_image.h>
-#endif
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif
 #include <cstring>
+#include <iostream>
 
 #define PI_MAX_GUI 15
 
@@ -38,12 +32,6 @@ int screen_w, screen_h;
 #define MOUSE_SPEED 1
 
 SDL_GameController* controller;
-
-struct PELIOHJAIN {
-	SDL_Joystick* dev;
-	bool					available;
-	char					nimi[80];
-};
 
 const int keylist[] = {
 	SDL_SCANCODE_F1,	SDL_SCANCODE_F2,	SDL_SCANCODE_F3,
@@ -100,10 +88,6 @@ const char keynames[][15] = {
 	"u","v","w","x",
 	"y","z"
 };
-/* VARIABLES ---------------------------------------------------------------------------------*/
-
-PELIOHJAIN				PI_joysticks[PI_MAX_PELIOHJAIMIA];
-int						PI_joystick_index = 0;
 
 bool					PI_unload = true;
 
@@ -115,11 +99,6 @@ SDL_Renderer* PI_Renderer = NULL;
 
 SDL_Haptic *PI_haptic;
 
-/* METHODS -----------------------------------------------------------------------------------*/
-
-
-
-
 int Alloc_GuiId(){
 	int gui_id = -1;
 	for(int i = 0; i < PI_MAX_GUI; i++)
@@ -127,6 +106,7 @@ int Alloc_GuiId(){
 			gui_id = i;
 	return gui_id;
 }
+
 int UpdateGui(){
 	PI_GUI* gui;
 	SDL_Finger* finger = NULL;
@@ -270,7 +250,7 @@ int PisteInput_GetTouchPos(float& x, float& y){
 	return 0;
 }
 
-bool PisteInput_GamepadButtonDown(DWORD button) {
+bool PisteInput_Gamepad_Button(int button) {
 	return SDL_GameControllerGetButton(controller, static_cast<SDL_GameControllerButton>(button));
 }
 
@@ -289,6 +269,7 @@ bool PisteInput_Keydown(int key){
 //TODO - change names - fullscreen uses relative mouse
 MOUSE PisteInput_UpdateMouse(bool keyMove, bool relative){
 	static int was_relative = -1;
+
 	if (was_relative == -1) { //Was just initialized
 		PisteInput_ActivateWindow(relative);
 		was_relative = (int)relative;
@@ -302,42 +283,36 @@ MOUSE PisteInput_UpdateMouse(bool keyMove, bool relative){
 		was_relative = 1;
 	}
 
-	SDL_GetMouseState(&mouse_pos.x, &mouse_pos.y);
-	return mouse_pos;
-
 	if (!relative) {
 		SDL_GetMouseState(&mouse_pos.x, &mouse_pos.y);
 		return mouse_pos;
 	}
 
 	static int lastMouseUpdate = 0, dx = 0, dy = 0;
-	if(SDL_GetTicks() - lastMouseUpdate > MOUSE_SPEED) {
+	if (SDL_GetTicks() - lastMouseUpdate > MOUSE_SPEED) {
 		lastMouseUpdate = SDL_GetTicks();
 		SDL_GetRelativeMouseState(&dx, &dy);
+
 		mouse_pos.x += dx;
 		mouse_pos.y += dy;
-	}
-	else {
+	} else {
 		mouse_pos.x += dx;
 		mouse_pos.y += dy;
+
 		dx = 0;
 		dy = 0;
 	}
 
 	if(keyMove){
-		mouse_pos.x += PisteInput_Ohjain_X(PI_PELIOHJAIN_1) / 30; //Move mouse with joystick
-		mouse_pos.y += PisteInput_Ohjain_Y(PI_PELIOHJAIN_1) / 30;
+		if (PisteInput_Keydown(PI_LEFT)) mouse_pos.x -= 1;
+		if (PisteInput_Keydown(PI_RIGHT)) mouse_pos.x += 1;
+		if (PisteInput_Keydown(PI_UP)) mouse_pos.y -= 1;
+		if (PisteInput_Keydown(PI_DOWN)) mouse_pos.y += 1;
 
-		if (PisteInput_Keydown(PI_LEFT)) mouse_pos.x -= 3; //Move mouse with keys
-		if (PisteInput_Keydown(PI_RIGHT)) mouse_pos.x += 3;
-		if (PisteInput_Keydown(PI_UP)) mouse_pos.y -= 3;
-		if (PisteInput_Keydown(PI_DOWN)) mouse_pos.y += 3;
-
-		// Move mouse with gamepad
-		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) mouse_pos.x -= 5;
-		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) mouse_pos.x += 5;
-		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) mouse_pos.y -= 5;
-		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) mouse_pos.y += 5;
+		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) mouse_pos.x -= 1;
+		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) mouse_pos.x += 1;
+		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP)) mouse_pos.y -= 1;
+		if (SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) mouse_pos.y += 1;
 	}
 
 	return mouse_pos;
@@ -350,46 +325,22 @@ int PisteInput_ActivateWindow(bool active) {
 	}
 	else {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
-		//SetMousePosition(mouse_pos.x, mouse_pos.y);
+		SetMousePosition(mouse_pos.x, mouse_pos.y);
 	}
 	return 0;
-}
-
-bool PisteInput_Alusta_Ohjaimet(){
-/*
-SDL_InitSubSystem(SDL_INIT_JOYSTICK);
-
-// Check for joystick
-if(SDL_NumJoysticks()>0){
-  // Open joystick
-  joy=SDL_JoystickOpen(0);
-
-  if(joy)
-  {
-    printf("Opened Joystick 0\n");
-    printf("Name: %s\n", SDL_JoystickName(0));
-    printf("Number of Axes: %d\n", SDL_JoystickNumAxes(joy));
-    printf("Number of Buttons: %d\n", SDL_JoystickNumButtons(joy));
-    printf("Number of Balls: %d\n", SDL_JoystickNumBalls(joy));
-  }
-  else
-    printf("Couldn't open Joystick 0\n");
-
-  if(SDL_JoystickOpened(0))
-    SDL_JoystickClose(joy);
-	*/
-	return true;
 }
 
 int PisteInput_Start(){
 	SDL_DisplayMode DM;
 	SDL_GetCurrentDisplayMode(0, &DM);
 
-	controller = SDL_GameControllerOpen(1);
-
-	for (int i = 0; i < SDL_NumJoysticks(); ++i) {
+	for (int i = 0; i < SDL_NumJoysticks(); i++) {
 		if (SDL_IsGameController(i)) {
-			printf("Joystick %i is supported by the game controller interface!\n", i);
+			controller = SDL_GameControllerOpen(i);
+
+			if (controller != nullptr) {
+				PisteLog_Write("PisteInput", "Gamepad connect", TYPE::T_INFO);
+			}
 		}
 	}
 
@@ -423,59 +374,9 @@ bool PisteInput_Hiiri_Oikea(){
 	return SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(SDL_BUTTON_RIGHT);
 }
 
-int PisteInput_Ohjain_X(int ohjain){
-	int x = 0;
-
-	if (PI_joysticks[ohjain].available)
-		x = SDL_JoystickGetAxis(PI_joysticks[ohjain].dev, 0);
-
-	return x;
+std::string PisteInput_Gamepad_Name(){
+	return SDL_GameControllerName(controller);
 }
-
-int PisteInput_Ohjain_Y(int ohjain){
-	int y = 0;
-
-	if (PI_joysticks[ohjain].available)
-		y = SDL_JoystickGetAxis(PI_joysticks[ohjain].dev, 1);
-
-	return y;
-}
-
-bool PisteInput_Ohjain_Nappi(int ohjain, int index){
-	bool painettu = false;
-
-	if (PI_joysticks[ohjain].available)
-		painettu = SDL_JoystickGetButton(PI_joysticks[ohjain].dev, index);
-
-	return painettu;
-}
-
-char *PisteInput_Ohjain_Nimi(int ohjain){
-	return PI_joysticks[ohjain].nimi;
-}
-
-//Game controller
-bool PisteInput_Hae_Ohjaimet(){
-	bool ok = false;
-
-	for(int ohjain=0; ohjain < PI_MAX_PELIOHJAIMIA; ohjain++)
-	{
-/*
-		if (PI_joysticks[ohjain].available)
-		{
-			if (FAILED(PI_joysticks[ohjain].lpdijoy->GetDeviceState(sizeof(DIJOYSTATE),(LPVOID)&PI_joysticks[ohjain].joystick_state)))
-			{
-				PisteLog_Kirjoita("[Warning] Piste Input: Lost control of game pad! \n");
-				PI_joysticks[ohjain].available = false;
-			}
-			if (PI_joysticks[ohjain].available)
-				ok = true;
-		}
-*/
-	}
-	return ok;
-}
-
 
 bool PisteInput_Hae_Nappaimet(){
 	bool ok = true;
@@ -487,7 +388,7 @@ bool PisteInput_Hae_Hiiri(){
 	return true;
 }
 
-char PisteInput_Lue_Nappaimisto(void){
+char PisteInput_Get_Typed_Char() {
 	SDL_Event event;
 	char c, str[5];
 	while(SDL_PollEvent(&event)) {

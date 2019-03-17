@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{07117172-C1AA-4E87-B798-4787BD53DA1F}</ProjectGuid>
     <RootNamespace>pk2</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -25,9 +25,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>pk2\$(Configuration)\</IntDir>
-    <IncludePath>C:\term\SDL2\VC\SDL2_image-2.0.1\include;C:\term\SDL2\VC\SDL2_mixer-2.0.1\include;C:\term\SDL2\VC\SDL2-2.0.6\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\lib\SDL2_image\include;D:\lib\SDL2_mixer\include;D:\lib\SDL2\include;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_debug</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\bin\</OutDir>
     <IntDir>pk2\$(Configuration)\</IntDir>
-    <IncludePath>C:\term\SDL2\VC\SDL2_image-2.0.1\include;C:\term\SDL2\VC\SDL2_mixer-2.0.1\include;C:\term\SDL2\VC\SDL2-2.0.6\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\lib\SDL2_image\include;D:\lib\SDL2_mixer\include;D:\lib\SDL2\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -57,12 +57,16 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>include;../src;../engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_mixer.lib</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y $(SolutionDir)\sdl2\x86\*.dll $(SolutionDir)..\bin\</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,6 +79,7 @@
       <AdditionalIncludeDirectories>include;../src;../engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp14</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -93,6 +98,7 @@
     <ClCompile Include="..\engine\PisteFont.cpp" />
     <ClCompile Include="..\engine\PisteInput.cpp" />
     <ClCompile Include="..\engine\PisteLanguage.cpp" />
+    <ClCompile Include="..\engine\PisteLog.cpp" />
     <ClCompile Include="..\engine\PisteSound.cpp" />
     <ClCompile Include="..\engine\PisteUtils.cpp" />
     <ClCompile Include="..\src\map.cpp" />
@@ -105,10 +111,12 @@
     <ClInclude Include="..\engine\PisteFont.hpp" />
     <ClInclude Include="..\engine\PisteInput.hpp" />
     <ClInclude Include="..\engine\PisteLanguage.hpp" />
+    <ClInclude Include="..\engine\PisteLog.hpp" />
     <ClInclude Include="..\engine\platform.hpp" />
     <ClInclude Include="..\engine\PisteSound.hpp" />
     <ClInclude Include="..\engine\PisteUtils.hpp" />
     <ClInclude Include="..\engine\types.hpp" />
+    <ClInclude Include="..\src\game.hpp" />
     <ClInclude Include="..\src\map.hpp" />
     <ClInclude Include="..\src\sprite.hpp" />
     <ClInclude Include="include\winlite.h" />
@@ -118,6 +126,20 @@
     <ResourceCompile Include="pk2.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\lib\SDL2-2.0.9\lib\x86\SDL2.dll" />
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\libjpeg-9.dll" />
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\libpng16-16.dll" />
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\libtiff-5.dll" />
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\libwebp-7.dll" />
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\SDL2_image.dll" />
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\zlib1.dll" />
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libFLAC-8.dll" />
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libmodplug-1.dll" />
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libmpg123-0.dll" />
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libogg-0.dll" />
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libvorbis-0.dll" />
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libvorbisfile-3.dll" />
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\SDL2_mixer.dll" />
     <None Include="..\README.md" />
     <None Include="sdl2\x86\libmodplug-1.dll" />
     <None Include="sdl2\x86\SDL2.dll" />

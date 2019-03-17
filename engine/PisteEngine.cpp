@@ -40,7 +40,7 @@ Game::Game(int width, int height, const char* name, const char* icon) {
 	PisteSound_Start();
 
 	ready = true;
-
+	running = true;
 }
 
 Game::~Game() {
@@ -61,7 +61,7 @@ void Game::loop(int (*GameLogic)()) {
 	int count = 0; // Count how much frames elapsed
 	float real_fps = 0;
 	
-	running = true;
+	//running = true;
 
 	while(running) {
 		GameLogic();

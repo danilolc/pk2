@@ -63,6 +63,9 @@
     <ClCompile Include="..\src\sprite.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
+    <ClCompile Include="..\engine\PisteLog.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\winlite.h">
@@ -104,6 +107,12 @@
     <ClInclude Include="..\src\sprite.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\game.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\engine\PisteLog.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="pk2.rc">
@@ -122,6 +131,48 @@
       <Filter>DLL</Filter>
     </None>
     <None Include="sdl2\x86\SDL2_image.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\libjpeg-9.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\libpng16-16.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\libtiff-5.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\libwebp-7.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\SDL2_image.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_image-2.0.4\lib\x86\zlib1.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\SDL2_mixer.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libFLAC-8.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libmodplug-1.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libmpg123-0.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libogg-0.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libvorbis-0.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2_mixer-2.0.2\lib\x86\libvorbisfile-3.dll">
+      <Filter>DLL</Filter>
+    </None>
+    <None Include="..\..\lib\SDL2-2.0.9\lib\x86\SDL2.dll">
       <Filter>DLL</Filter>
     </None>
   </ItemGroup>

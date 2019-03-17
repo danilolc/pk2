@@ -3,7 +3,7 @@
 
 #include "PisteLog.hpp"
 
-LOG_LEVEL_DEBUG log_level = LOG_LEVEL_DEBUG::L_NOTHING;
+LOG_LEVEL_DEBUG log_level = LOG_LEVEL_DEBUG::L_EVERYTHING;
 
 #ifdef DEBUG
 	log_level = LOG_LEVEL_DEBUG::L_EVERYTHING;
@@ -54,18 +54,18 @@ void PisteLog_Write(std::string file, std::string message, TYPE message_type) {
 		// Logging to stdout/stderr, if in debug mode
 		switch (log_level) {
 			case LOG_LEVEL_DEBUG::L_EVERYTHING:
-				std::cout << level << file << " - " << message;
+				std::cout << level << file << " - " << message << "\n";
 				break;
 
 			case LOG_LEVEL_DEBUG::L_WARNING_ERROR:
 				if (message_type == TYPE::T_WARNING || message_type == TYPE::T_ERROR) {
-					std::cerr << level << file << " - " << message;
+					std::cerr << level << file << " - " << message << "\n";
 					break;
 				}
 
 			case LOG_LEVEL_DEBUG::L_ERROR_ONLY:
 				if (message_type == TYPE::T_ERROR) {
-					std::cerr << "[ERROR] " << file << " - " << message;
+					std::cerr << "[ERROR] " << file << " - " << message << "\n";
 					break;
 				}
 		}

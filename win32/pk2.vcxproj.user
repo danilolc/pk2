@@ -10,7 +10,7 @@
     <LocalDebuggerWorkingDirectory>$(SolutionDir)..\bin\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(SolutionDir)..\bin\$(ProjectName)_debug.exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>dev debug</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>dev debug nosound windowed</LocalDebuggerCommandArguments>
     <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
   </PropertyGroup>
 </Project>

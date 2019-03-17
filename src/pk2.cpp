@@ -34,6 +34,7 @@
 #include <iostream>
 #include <array>
 #include <sstream>
+#include <string>
 
 #define GAME_NAME   "Pekka Kana 2: Community Edition"
 #define PK2_VERSION "CE0.1.1"
@@ -304,6 +305,11 @@ int hiiri_x = 10;
 int hiiri_y = 10;
 int key_delay = 0;
 
+// menu variables
+bool settingsControlKeyboard = true;
+bool settingsControlGamepad = false;
+bool settingsEditSingle = false;
+
 //JAKSO JA EPISODI
 int	jakso = 1;
 int jaksoja = 1;
@@ -481,14 +487,14 @@ void PK_Settings_Start(){
 	settings.control_attack2   = PI_RSHIFT;
 	settings.control_open_gift = PI_SPACE;
 
-	settings.gamepad_left		= CONTROLLER_LEFT;
-	settings.gamepad_right		= CONTROLLER_RIGHT;
-	settings.gamepad_jump		= CONTROLLER_B;
-	settings.gamepad_down		= CONTROLLER_DOWN;
-	settings.gamepad_walk_slow	= CONTROLLER_SHOULDER_LEFT;
-	settings.gamepad_attack1	= CONTROLLER_A;
-	settings.gamepad_attack2	= CONTROLLER_X;
-	settings.gamepad_open_gift	= CONTROLLER_Y;
+	settings.gamepad_left		= PI_CONTROLLER_LEFT;
+	settings.gamepad_right		= PI_CONTROLLER_RIGHT;
+	settings.gamepad_jump		= PI_CONTROLLER_B;
+	settings.gamepad_down		= PI_CONTROLLER_DOWN;
+	settings.gamepad_walk_slow	= PI_CONTROLLER_SHOULDER_LEFT;
+	settings.gamepad_attack1	= PI_CONTROLLER_A;
+	settings.gamepad_attack2	= PI_CONTROLLER_X;
+	settings.gamepad_open_gift	= PI_CONTROLLER_Y;
 
 	settings.isFiltered = true;
 	settings.isFit = true;
@@ -1234,7 +1240,7 @@ void PK_Play_MenuSound(int aani, int voimakkuus){
 }
 
 
-void PK_Updade_Mouse(){
+void PK_Update_Mouse(){
 	#ifdef __ANDROID__
     	float x, y;
 		PisteInput_GetTouchPos(x, y);
@@ -1245,12 +1251,10 @@ void PK_Updade_Mouse(){
 		MOUSE hiiri = PisteInput_UpdateMouse(game_screen == SCREEN_MAP, settings.isFullScreen);
 		hiiri.x -= PisteDraw2_GetXOffset();
 
-		/*
 		if (hiiri.x < 0) hiiri.x = 0;
 		if (hiiri.y < 0) hiiri.y = 0;
 		if (hiiri.x > 640-19) hiiri.x = 640-19;
 		if (hiiri.y > 480-19) hiiri.y = 480-19;
-		*/
 
 		hiiri_x = hiiri.x;
 		hiiri_y = hiiri.y;
@@ -1381,8 +1385,8 @@ void PK_Start_Info(char *text){
 //(#4) Text
 //==================================================
 
-int PK_Wavetext_Draw(char *teksti, int fontti, int x, int y){
-	int pituus = strlen(teksti);
+int PK_Wavetext_Draw(std::string text, int fontti, int x, int y){
+	int pituus = text.size();
 	int vali = 0;
 	char kirjain[3] = " \0";
 	int ys, xs;
@@ -1391,15 +1395,15 @@ int PK_Wavetext_Draw(char *teksti, int fontti, int x, int y){
 		for (int i=0;i<pituus;i++){
 			ys = (int)(sin_table[((i+degree)*8)%360])/7;
 			xs = (int)(cos_table[((i+degree)*8)%360])/9;
-			kirjain[0] = teksti[i];
+			kirjain[0] = text[i];
 			PisteDraw2_Font_Write(fontti4,kirjain,x+vali-xs+3,y+ys+3);
 			vali += PisteDraw2_Font_Write(fontti,kirjain,x+vali-xs,y+ys);
 		}
 	}
 	return vali;
 }
-int PK_WavetextSlow_Draw(char *teksti, int fontti, int x, int y){
-	int pituus = strlen(teksti);
+int PK_WavetextSlow_Draw(std::string text, int fontti, int x, int y){
+	int pituus = strlen(text.c_str());
 	int vali = 0;
 	char kirjain[3] = " \0";
 	int ys, xs;
@@ -1408,7 +1412,7 @@ int PK_WavetextSlow_Draw(char *teksti, int fontti, int x, int y){
 		for (int i=0;i<pituus;i++){
 			ys = (int)(sin_table[((i+degree)*4)%360])/9;
 			xs = (int)(cos_table[((i+degree)*4)%360])/11;
-			kirjain[0] = teksti[i];
+			kirjain[0] = text[i];
 
 			if (settings.lapinakyvat_menutekstit)
 				vali += PisteDraw2_Font_WriteAlpha(fontti,kirjain,x+vali-xs,y+ys,75);
@@ -3326,9 +3330,10 @@ int PK_Sprite_Movement(int i){
 	bool hidastus = false;
 
 	PisteInput_Lue_Eventti();
+
 	if (sprite.pelaaja != 0 && sprite.energia > 0){
 		/* SLOW WALK */
-		if (PisteInput_Keydown(settings.control_walk_slow) || PisteInput_GamepadButtonDown(settings.gamepad_walk_slow))
+		if (PisteInput_Keydown(settings.control_walk_slow) || PisteInput_Gamepad_Button(settings.gamepad_walk_slow))
 			lisavauhti = false;
 
 		/* ATTACK 1 */
@@ -3348,7 +3353,7 @@ int PK_Sprite_Movement(int i){
 		double a_lisays = 0;
 
 		/* NAVIGATING TO RIGHT */
-		if (PisteInput_Keydown(settings.control_right) || PisteInput_GamepadButtonDown(settings.gamepad_right)) {
+		if (PisteInput_Keydown(settings.control_right) || PisteInput_Gamepad_Button(settings.gamepad_left)) {
 			a_lisays = 0.04;//0.08;
 
 			if (lisavauhti) {
@@ -3365,7 +3370,7 @@ int PK_Sprite_Movement(int i){
 		}
 
 		/* NAVIGATING TO LEFT */
-		if (PisteInput_Keydown(settings.control_left) || PisteInput_GamepadButtonDown(settings.gamepad_left)) {
+		if (PisteInput_Keydown(settings.control_left) || PisteInput_Gamepad_Button(settings.gamepad_left)) {
 			a_lisays = -0.04;
 
 			if (lisavauhti) {
@@ -5049,17 +5054,17 @@ int PK_Draw_InGame_DebugInfo(){
 	else
 		PisteDraw2_SetXOffset(0);
 
-	vali = PisteDraw2_Font_Write(fontti1,"spriteja: ",10,fy);
+	vali = PisteDraw2_Font_Write(fontti1,"Sprites: ",10,fy);
 	itoa(debug_sprites,lukua,10);
 	PisteDraw2_Font_Write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
-	vali = PisteDraw2_Font_Write(fontti1,"aktiivisia: ",10,fy);
+	vali = PisteDraw2_Font_Write(fontti1,"Active: ",10,fy);
 	itoa(debug_active_sprites,lukua,10);
 	PisteDraw2_Font_Write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
-	vali = PisteDraw2_Font_Write(fontti1,"piirretty: ",10,fy);
+	vali = PisteDraw2_Font_Write(fontti1,"Animated: ",10,fy);
 	itoa(debug_drawn_sprites,lukua,10);
 	PisteDraw2_Font_Write(fontti1,lukua,10+vali,fy);
 	fy += 10;
@@ -5110,6 +5115,7 @@ int PK_Draw_InGame_DebugInfo(){
 	PisteDraw2_Font_Write(fontti1, lukua, 610, 440);
 
 	PisteDraw2_SetXOffset(0);
+
 	return 0;
 }
 int PK_Draw_InGame_DevKeys() {
@@ -5541,14 +5547,14 @@ int  PK_Draw_Menu_Square(int vasen, int yla, int oikea, int ala, BYTE pvari){
 
 	return 0;
 }
-bool PK_Draw_Menu_Text(bool active, char *text, int x, int y, int kd = 20) {
+bool PK_Draw_Menu_Text(bool active, std::string text, int x, int y, int kd = 20) {
 	if(!active){
 		PK_WavetextSlow_Draw(text, fontti2, x, y);
 
 		return false;
 	}
 
-	int length = strlen(text) * 15;
+	int length = strlen(text.c_str()) * 15;
 
 	// hiiri = mouse
 	if ((hiiri_x > x && hiiri_x < x + length && hiiri_y > y && hiiri_y < y + 20) ||
@@ -5556,7 +5562,7 @@ bool PK_Draw_Menu_Text(bool active, char *text, int x, int y, int kd = 20) {
 		menu_valittu_id = menu_valinta_id;
 
 		if (((PisteInput_Hiiri_Vasen() && hiiri_x > x && hiiri_x < x + length && hiiri_y > y - 2 && hiiri_y < y + 22)
-			|| PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
+			|| PisteInput_Keydown(PI_SPACE) || PisteInput_Gamepad_Button(PI_CONTROLLER_A))
 			&& key_delay == 0) {
 				PK_Play_MenuSound(menu_aani, 100);
 				
@@ -5590,7 +5596,7 @@ int  PK_Draw_Menu_BoolBox(int x, int y, bool muuttuja, bool active){
 	}
 
 	if (hiiri_x > x && hiiri_x < x+30 && hiiri_y > y && hiiri_y < y+31){
-		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
+		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Gamepad_Button(PI_CONTROLLER_A))
 			&& key_delay == 0){
 
 			PK_Play_MenuSound(menu_aani, 100);
@@ -5618,7 +5624,7 @@ int  PK_Draw_Menu_BackNext(int x, int y){
 		PisteDraw2_Image_CutClip(kuva_peli,x+val,y,535,124,535+31,124+31);
 
 	if ((hiiri_x > x && hiiri_x < x+30 && hiiri_y > y && hiiri_y < y+31) || (menu_valittu_id == menu_valinta_id)){
-		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
+		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Gamepad_Button(PI_CONTROLLER_A))
 			&& key_delay == 0){
 			PK_Play_MenuSound(menu_aani, 100);
 			key_delay = 20;
@@ -5629,7 +5635,7 @@ int  PK_Draw_Menu_BackNext(int x, int y){
 	x += val;
 
 	if ((hiiri_x > x && hiiri_x < x+30 && hiiri_y > y && hiiri_y < y+31) || (menu_valittu_id == menu_valinta_id+1)){
-		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
+		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Gamepad_Button(PI_CONTROLLER_A))
 			&& key_delay == 0){
 			PK_Play_MenuSound(menu_aani, 100);
 			key_delay = 20;
@@ -5766,9 +5772,9 @@ int PK_Draw_Menu_Name(){
 	PK_WavetextSlow_Draw(pelaajan_nimi,fontti2,180,255);
 	PisteDraw2_Font_WriteAlpha(fontti3,pelaajan_nimi,180,255,15);
 
-	merkki = PisteInput_Lue_Nappaimisto();
+	merkki = PisteInput_Get_Typed_Char();
 
-	if (PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1) && key_delay == 0 && nimiedit) {
+	if (PisteInput_Gamepad_Button(PI_CONTROLLER_A) && key_delay == 0 && nimiedit) {
 		nimiedit = false;
 	}
 
@@ -6202,7 +6208,17 @@ int PK_Draw_Menu_Controls(){
 
 	PK_Draw_Menu_Square(40, 70, 640-40, 410, 224);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_title),50,90);
+	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_title),50,60);
+
+	if (PK_Draw_Menu_Text(true, "Keyboard", 50, 90)) {
+		settingsControlKeyboard = true;
+		settingsControlGamepad = false;
+	}
+	
+	if (PK_Draw_Menu_Text(true, "Gamepad", 300, 90)) {
+		settingsControlKeyboard = false;
+		settingsControlGamepad = true;
+	}
 
 	my = 40;
 
@@ -6211,87 +6227,65 @@ int PK_Draw_Menu_Controls(){
 		PisteDraw2_ScreenFill(295,70+my+menu_lue_kontrollit*20,580,90+my+menu_lue_kontrollit*20,50);
 	}
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_moveleft),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_moveright),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_jump),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_duck),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_walkslow),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_eggattack),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_doodleattack),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_useitem),100,90+my);my+=20;
+	if (settingsControlKeyboard) {
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_moveleft), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_moveright), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_jump), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_duck), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_walkslow), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_eggattack), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_doodleattack), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_useitem), 100, 90 + my); my += 20;
 
-	my = 40;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_left),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_right),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_jump),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_down),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_walk_slow),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_attack1),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_attack2),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_open_gift),310,90+my);my+=20;
+		my = 40;
+		PisteDraw2_Font_Write(fontti2, PisteInput_KeyName(settings.control_left), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_KeyName(settings.control_right), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_KeyName(settings.control_jump), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_KeyName(settings.control_down), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_KeyName(settings.control_walk_slow), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_KeyName(settings.control_attack1), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_KeyName(settings.control_attack2), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_KeyName(settings.control_open_gift), 310, 90 + my); my += 20;
 
-	/*
-	if (hiiri_x > 310 && hiiri_x < 580 && hiiri_y > 130 && hiiri_y < my-20){
-		menu_lue_kontrollit = (hiiri_y - 120) / 20;
+		if (PisteInput_Hiiri_Vasen()) {
+			if (hiiri_x > 310 && hiiri_x < 580 && hiiri_y > 130 && hiiri_y < 350 - 20){
+				menu_lue_kontrollit = (hiiri_y - 110) / 20;
 
-		if (menu_lue_kontrollit < 0 || menu_lue_kontrollit > 8)
+				if (menu_lue_kontrollit < 0 || menu_lue_kontrollit > 8) {
+					menu_lue_kontrollit = 0;
+				} else {
+					settingsEditSingle = true;
+					
+					key_delay = 5;
+				}
+			}
+		}
+
+		if (menu_lue_kontrollit == 0) {
+			if (PK_Draw_Menu_Text(true, tekstit->Hae_Teksti(PK_txt.controls_edit), 100, 100 + my))
+				menu_lue_kontrollit = 1;
+				menu_valittu_id = 0; //Set menu cursor to 0
+		}
+
+		my += 30;
+
+		if (PK_Draw_Menu_Text(true, tekstit->Hae_Teksti(PK_txt.controls_kbdef), 100, 100 + my)) {
+			settings.control_left = PI_LEFT;
+			settings.control_right = PI_RIGHT;
+			settings.control_jump = PI_UP;
+			settings.control_down = PI_DOWN;
+			settings.control_walk_slow = PI_RALT;
+			settings.control_attack1 = PI_RCONTROL;
+			settings.control_attack2 = PI_RSHIFT;
+			settings.control_open_gift = PI_SPACE;
 			menu_lue_kontrollit = 0;
-		else
-			key_delay = 25;
-
-
-	}*/
-
-	if (menu_lue_kontrollit == 0){
-		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.controls_edit),100,90+my))
-			menu_lue_kontrollit = 1;
-			menu_valittu_id = 0; //Set menu cursor to 0
-	}
-
-	my += 30;
-
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.controls_kbdef),100,90+my)){
-		settings.control_left      = PI_LEFT;
-		settings.control_right     = PI_RIGHT;
-		settings.control_jump      = PI_UP;
-		settings.control_down      = PI_DOWN;
-		settings.control_walk_slow = PI_RALT;
-		settings.control_attack1   = PI_RCONTROL;
-		settings.control_attack2   = PI_RSHIFT;
-		settings.control_open_gift = PI_SPACE;
-		menu_lue_kontrollit = 0;
-		menu_valittu_id = 0;
+			menu_valittu_id = 0;
+		}
+	} else {
+		PisteDraw2_Font_Write(fontti2, "TESCHT", 30, 30);
 	}
 
 	my += 20;
-
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.controls_gp4def),100,90+my)){
-		settings.control_left      = PI_OHJAIN1_VASEMMALLE;
-		settings.control_right     = PI_OHJAIN1_OIKEALLE;
-		settings.control_jump      = PI_OHJAIN1_YLOS;
-		settings.control_down      = PI_OHJAIN1_ALAS;
-		settings.control_walk_slow = PI_OHJAIN1_NAPPI2;
-		settings.control_attack1   = PI_OHJAIN1_NAPPI1;
-		settings.control_attack2   = PI_OHJAIN1_NAPPI3;
-		settings.control_open_gift = PI_OHJAIN1_NAPPI4;
-		menu_lue_kontrollit = 0;
-		menu_valittu_id = 0;
-	}
-
-	my += 20;
-
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.controls_gp6def),100,90+my)){
-		settings.control_left      = PI_OHJAIN1_VASEMMALLE;
-		settings.control_right     = PI_OHJAIN1_OIKEALLE;
-		settings.control_jump      = PI_OHJAIN1_YLOS;//PI_OHJAIN1_NAPPI1;
-		settings.control_down      = PI_OHJAIN1_ALAS;
-		settings.control_walk_slow = PI_OHJAIN1_NAPPI2;
-		settings.control_attack1   = PI_OHJAIN1_NAPPI1;
-		settings.control_attack2   = PI_OHJAIN1_NAPPI4;
-		settings.control_open_gift = PI_OHJAIN1_NAPPI6;
-		menu_lue_kontrollit = 0;
-		menu_valittu_id = 0;
-	}
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_return),180,400)){
 		menu_nyt = MENU_MAIN;
@@ -6317,8 +6311,16 @@ int PK_Draw_Menu_Controls(){
 				default: PK_Play_MenuSound(ammuu_aani,100); break;
 			}
 
-			key_delay = 20;
-			menu_lue_kontrollit++;
+			if (!settingsEditSingle) {
+				key_delay = 20;
+				menu_lue_kontrollit++;
+
+				settingsEditSingle = false;
+			} else {
+				menu_lue_kontrollit = 0;
+
+				settingsEditSingle = false;
+			}
 		}
 
 		if (menu_lue_kontrollit > 8) {
@@ -6478,7 +6480,7 @@ int PK_Draw_Map_Button(int x, int y, int t){
 
 	if (hiiri_x > x && hiiri_x < x+17 && hiiri_y > y && hiiri_y < y+17){
 		if (key_delay == 0 && (PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE)
-													    || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))){
+													    || PisteInput_Gamepad_Button(PI_CONTROLLER_A))){
 			key_delay = 30;
 			return 2;
 		}
@@ -7126,6 +7128,8 @@ int PK_MainScreen_ScoreCount(){
 int PK_MainScreen_Map(){
 	PK_Draw_Map();
 
+	PK_Update_Mouse();
+
 	degree = 1 + degree % 360;
 
 	if (going_to_game && !PisteDraw2_IsFading()) {
@@ -7149,7 +7153,7 @@ int PK_MainScreen_Menu(){
 
 	if (!nimiedit && key_delay == 0 && menu_lue_kontrollit == 0) {
 		if (PisteInput_Keydown(PI_UP) || PisteInput_Keydown(PI_LEFT) ||
-			PisteInput_Ohjain_X(PI_PELIOHJAIN_1) < 0 || PisteInput_Ohjain_Y(PI_PELIOHJAIN_1) < 0){
+			PisteInput_Gamepad_Button(PI_CONTROLLER_LEFT) || (PisteInput_Gamepad_Button(PI_CONTROLLER_UP))){
 			menu_valittu_id--;
 
 			if (menu_valittu_id < 1)
@@ -7159,7 +7163,7 @@ int PK_MainScreen_Menu(){
 		}
 
 		if (PisteInput_Keydown(PI_DOWN) || PisteInput_Keydown(PI_RIGHT) ||
-			PisteInput_Ohjain_X(PI_PELIOHJAIN_1) > 0 || PisteInput_Ohjain_Y(PI_PELIOHJAIN_1) > 0){
+			PisteInput_Gamepad_Button(PI_CONTROLLER_RIGHT) || (PisteInput_Gamepad_Button(PI_CONTROLLER_DOWN))) {
 			menu_valittu_id++;
 
 			if (menu_valittu_id > menu_valinta_id-1)
@@ -7282,7 +7286,7 @@ int PK_MainScreen_InGame(){
 	}
 
 	if (key_delay == 0){
-		if (PisteInput_Keydown(settings.control_open_gift) && Game::Sprites->player->energia > 0){
+		if (PisteInput_Keydown(settings.control_open_gift || PisteInput_Gamepad_Button(settings.gamepad_open_gift)) && Game::Sprites->player->energia > 0){
 			Game::Gifts->use();
 			key_delay = 10;
 		}
@@ -7834,7 +7838,7 @@ int PK_MainScreen() {
 
 	if (game_next_screen != game_screen) PK_MainScreen_Change();
 	
-	PK_Updade_Mouse();
+	PK_Update_Mouse();
 	
 	switch (game_screen){
 		case SCREEN_GAME    : PK_MainScreen_InGame();     break;
