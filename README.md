@@ -6,7 +6,8 @@ http://kiwi.mbnet.fi/pistegamez/pk2/
 # Download
 
 ### Windows
-# v.0.1.1
+v.0.1.1
+
 https://www.dropbox.com/s/exvf7uiinfqlmwx/Pekka%20Kana%202%20-%20Community%20Editionv.0.1.1.rar?dl=0
 
 # Depencies
