@@ -6,7 +6,8 @@ http://kiwi.mbnet.fi/pistegamez/pk2/
 # Download
 
 ### Windows
-(coming soon)
+v.0.1.1
+https://www.dropbox.com/s/exvf7uiinfqlmwx/Pekka%20Kana%202%20-%20Community%20Editionv.0.1.1.rar?dl=0
 
 # Depencies
 
@@ -16,10 +17,10 @@ The game relies on the following depencies:
 * SDL2_image
 
 # Discord
-(coming soon)
+https://discord.gg/94XSgyH
 
 # Forum thread
-(coming soon)
+http://pistegamez.proboards.com/thread/894/pekka-kana-2-community-edition
 
 # User made episodes:
 http://mapstore.the.cz/
