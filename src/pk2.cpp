@@ -189,14 +189,14 @@ struct PK2SETTINGS {
 	DWORD control_attack2;
 	DWORD control_open_gift;
 
-	DWORD gamepad_left;
-	DWORD gamepad_right;
-	DWORD gamepad_jump;
-	DWORD gamepad_down;
-	DWORD gamepad_walk_slow;
-	DWORD gamepad_attack1;
-	DWORD gamepad_attack2;
-	DWORD gamepad_open_gift;
+	int gamepad_left;
+	int gamepad_right;
+	int gamepad_jump;
+	int gamepad_down;
+	int gamepad_walk_slow;
+	int gamepad_attack1;
+	int gamepad_attack2;
+	int gamepad_open_gift;
 
 	// audio
 	bool musiikki;
@@ -541,6 +541,7 @@ int PK_Settings_Open(char *filename){
 int PK_Settings_Save(char *filename){
 	std::ofstream ifs(filename, ios::binary);
 	ifs.write ("1.2", 4);
+
 	ifs.write ((char *)&settings, sizeof (settings));
 
 	ifs.flush();
@@ -1248,7 +1249,7 @@ void PK_Update_Mouse(){
 		hiiri_x = screen_width * x - PisteDraw2_GetXOffset();
 		hiiri_y = screen_height * y;
 	#else
-		MOUSE hiiri = PisteInput_UpdateMouse(game_screen == SCREEN_MAP, settings.isFullScreen);
+		MOUSE hiiri = PisteInput_UpdateMouse(game_screen == SCREEN_MAP || game_screen == SCREEN_SCORING, settings.isFullScreen);
 		hiiri.x -= PisteDraw2_GetXOffset();
 
 		if (hiiri.x < 0) hiiri.x = 0;
@@ -2490,14 +2491,13 @@ int PK_Map_Open(char *nimi) {
 
 	kartta->Place_Sprites();
 	kartta->Select_Start();
-	kartta->Count_Keys();
+	avaimia = kartta->Count_Keys();
 	kartta->Calculate_Edges();
 
 	Game::Sprites->start_directions();
 
 	Game::Particles->clear_particles();
 	Game::Particles->load_bg_particles(kartta);
-
 
 	if ( strcmp(kartta->musiikki, "") != 0) {
 		char music_path[PE_PATH_SIZE] = "";
@@ -3337,15 +3337,15 @@ int PK_Sprite_Movement(int i){
 			lisavauhti = false;
 
 		/* ATTACK 1 */
-		if (PisteInput_Keydown(settings.control_attack1) && sprite.lataus == 0 && sprite.ammus1 != -1)
+		if ((PisteInput_Keydown(settings.control_attack1) || PisteInput_Gamepad_Button(settings.gamepad_attack1)) && sprite.lataus == 0 && sprite.ammus1 != -1)
 			sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
 		/* ATTACK 2 */
-		else if (PisteInput_Keydown(settings.control_attack2) && sprite.lataus == 0 && sprite.ammus2 != -1)
+		else if ((PisteInput_Keydown(settings.control_attack2) || PisteInput_Gamepad_Button(settings.gamepad_attack1)) && sprite.lataus == 0 && sprite.ammus2 != -1)
 				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
 
 		/* CROUCH */
 		sprite.kyykky = false;
-		if (PisteInput_Keydown(settings.control_down) && !sprite.alas) {
+		if ((PisteInput_Keydown(settings.control_down) || PisteInput_Gamepad_Button(settings.gamepad_down)) && !sprite.alas) {
 			sprite.kyykky = true;
 			sprite_yla += sprite_korkeus/1.5;
 		}
@@ -3353,7 +3353,7 @@ int PK_Sprite_Movement(int i){
 		double a_lisays = 0;
 
 		/* NAVIGATING TO RIGHT */
-		if (PisteInput_Keydown(settings.control_right) || PisteInput_Gamepad_Button(settings.gamepad_left)) {
+		if (PisteInput_Keydown(settings.control_right) || PisteInput_Gamepad_Button(settings.gamepad_right)) {
 			a_lisays = 0.04;//0.08;
 
 			if (lisavauhti) {
@@ -3394,7 +3394,7 @@ int PK_Sprite_Movement(int i){
 
 		/* JUMPING */
 		if (sprite.tyyppi->paino > 0) {
-			if (PisteInput_Keydown(settings.control_jump)) {
+			if (PisteInput_Keydown(settings.control_jump) || PisteInput_Gamepad_Button(settings.gamepad_jump)) {
 				if (!sprite.kyykky) {
 					if (sprite.hyppy_ajastin == 0)
 						PK_Play_Sound(hyppy_aani, 100, (int)sprite_x, (int)sprite_y,
@@ -3409,17 +3409,17 @@ int PK_Sprite_Movement(int i){
 			}
 
 			/* tippuminen hiljaa alasp�in */
-			if (PisteInput_Keydown(settings.control_jump) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
+			if ((PisteInput_Keydown(settings.control_jump) || PisteInput_Gamepad_Button(settings.gamepad_jump)) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
 				sprite.tyyppi->liitokyky)
 				hidastus = true;
 		}
 		/* MOVING UP AND DOWN */
 		else { // if the player sprite-weight is 0 - like birds
 
-			if (PisteInput_Keydown(settings.control_jump))
+			if (PisteInput_Keydown(settings.control_jump) || PisteInput_Gamepad_Button(settings.gamepad_jump))
 				sprite_b -= 0.15;
 
-			if (PisteInput_Keydown(settings.control_down))
+			if (PisteInput_Keydown(settings.control_down) || PisteInput_Gamepad_Button(settings.gamepad_down))
 				sprite_b += 0.15;
 
 			sprite.hyppy_ajastin = 0;
@@ -6282,7 +6282,60 @@ int PK_Draw_Menu_Controls(){
 			menu_valittu_id = 0;
 		}
 	} else {
-		PisteDraw2_Font_Write(fontti2, "TESCHT", 30, 30);
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_moveleft), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_moveright), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_jump), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_duck), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_walkslow), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_eggattack), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_doodleattack), 100, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.controls_useitem), 100, 90 + my); my += 20;
+
+		my = 40;
+		PisteDraw2_Font_Write(fontti2, PisteInput_ButtonName(settings.gamepad_left), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_ButtonName(settings.gamepad_right), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_ButtonName(settings.gamepad_jump), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_ButtonName(settings.gamepad_down), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_ButtonName(settings.gamepad_walk_slow), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_ButtonName(settings.gamepad_attack1), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_ButtonName(settings.gamepad_attack2), 310, 90 + my); my += 20;
+		PisteDraw2_Font_Write(fontti2, PisteInput_ButtonName(settings.gamepad_open_gift), 310, 90 + my); my += 20;
+
+		if (PisteInput_Hiiri_Vasen()) {
+			if (hiiri_x > 310 && hiiri_x < 580 && hiiri_y > 130 && hiiri_y < 350 - 20) {
+				menu_lue_kontrollit = (hiiri_y - 110) / 20;
+
+				if (menu_lue_kontrollit < 0 || menu_lue_kontrollit > 8) {
+					menu_lue_kontrollit = 0;
+				} else {
+					settingsEditSingle = true;
+
+					key_delay = 5;
+				}
+			}
+		}
+
+		if (menu_lue_kontrollit == 0) {
+			if (PK_Draw_Menu_Text(true, tekstit->Hae_Teksti(PK_txt.controls_edit), 100, 100 + my))
+				menu_lue_kontrollit = 1;
+			menu_valittu_id = 0; //Set menu cursor to 0
+		}
+
+		my += 30;
+
+		if (PK_Draw_Menu_Text(true, "Gamepad defaults", 100, 100 + my)) {
+			settings.gamepad_left = PI_CONTROLLER_LEFT;
+			settings.gamepad_right = PI_CONTROLLER_RIGHT;
+			settings.gamepad_jump = PI_CONTROLLER_B;
+			settings.gamepad_down = PI_CONTROLLER_DOWN;
+			settings.gamepad_walk_slow = PI_CONTROLLER_SHOULDER_LEFT;
+			settings.gamepad_attack1 = PI_CONTROLLER_A;
+			settings.gamepad_attack2 = PI_CONTROLLER_X;
+			settings.gamepad_open_gift = PI_CONTROLLER_Y;
+
+			menu_lue_kontrollit = 0;
+			menu_valittu_id = 0;
+		}
 	}
 
 	my += 20;
@@ -6295,37 +6348,72 @@ int PK_Draw_Menu_Controls(){
 
 	BYTE k = 0;
 
+	// TODO clean this up
 	if (key_delay == 0 && menu_lue_kontrollit > 0){
-		k = PisteInput_GetKey();
+		if (settingsControlKeyboard) {
+			k = PisteInput_GetKey();
 
-		if (k != 0){
-			switch(menu_lue_kontrollit){
-				case 1 : settings.control_left      = k; break;
-				case 2 : settings.control_right     = k; break;
-				case 3 : settings.control_jump      = k; break;
-				case 4 : settings.control_down      = k; break;
-				case 5 : settings.control_walk_slow = k; break;
-				case 6 : settings.control_attack1   = k; break;
-				case 7 : settings.control_attack2   = k; break;
-				case 8 : settings.control_open_gift = k; break;
-				default: PK_Play_MenuSound(ammuu_aani,100); break;
+			if (k != 0) {
+				switch (menu_lue_kontrollit) {
+				case 1: settings.control_left = k; break;
+				case 2: settings.control_right = k; break;
+				case 3: settings.control_jump = k; break;
+				case 4: settings.control_down = k; break;
+				case 5: settings.control_walk_slow = k; break;
+				case 6: settings.control_attack1 = k; break;
+				case 7: settings.control_attack2 = k; break;
+				case 8: settings.control_open_gift = k; break;
+				default: PK_Play_MenuSound(ammuu_aani, 100); break;
+				}
+
+				if (!settingsEditSingle) {
+					key_delay = 20;
+					menu_lue_kontrollit++;
+
+					settingsEditSingle = false;
+				} else {
+					menu_lue_kontrollit = 0;
+
+					settingsEditSingle = false;
+				}
 			}
 
-			if (!settingsEditSingle) {
-				key_delay = 20;
-				menu_lue_kontrollit++;
-
-				settingsEditSingle = false;
-			} else {
+			if (menu_lue_kontrollit > 8) {
 				menu_lue_kontrollit = 0;
-
-				settingsEditSingle = false;
+				menu_valittu_id = 0;
 			}
-		}
+		} else {
+			k = PisteInput_Gamepad_Get_Pressed();
 
-		if (menu_lue_kontrollit > 8) {
-			menu_lue_kontrollit = 0;
-			menu_valittu_id = 0;
+			if (k != 255) {
+				switch (menu_lue_kontrollit) {
+				case 1: settings.gamepad_left = k; break;
+				case 2: settings.gamepad_right = k; break;
+				case 3: settings.gamepad_jump = k; break;
+				case 4: settings.gamepad_down = k; break;
+				case 5: settings.gamepad_walk_slow = k; break;
+				case 6: settings.gamepad_attack1 = k; break;
+				case 7: settings.gamepad_attack2 = k; break;
+				case 8: settings.gamepad_open_gift = k; break;
+				default: PK_Play_MenuSound(ammuu_aani, 100); break;
+				}
+
+				if (!settingsEditSingle) {
+					key_delay = 20;
+					menu_lue_kontrollit++;
+
+					settingsEditSingle = false;
+				} else {
+					menu_lue_kontrollit = 0;
+
+					settingsEditSingle = false;
+				}
+			}
+
+			if (menu_lue_kontrollit > 8) {
+				menu_lue_kontrollit = 0;
+				menu_valittu_id = 0;
+			}
 		}
 	}
 
@@ -7020,6 +7108,8 @@ int PK_MainScreen_Intro(){
 	return 0;
 }
 int PK_MainScreen_ScoreCount(){
+	PK_Update_Mouse();
+
 	PK_Draw_ScoreCount();
 
 	degree = 1 + degree % 360;
@@ -7264,11 +7354,13 @@ int PK_MainScreen_InGame(){
 			lopetusajastin--;
 
 		if (lopetusajastin == 0)
-			lopetusajastin = 800;//2000;
+			lopetusajastin = 300;//2000;
 
 		if (PisteInput_Keydown(settings.control_attack1) || PisteInput_Keydown(settings.control_attack2) ||
-			PisteInput_Keydown(settings.control_jump) || PisteInput_Keydown(PI_RETURN))
-			if (lopetusajastin > 2 && lopetusajastin < 600/*1900*/ && key_delay == 0)
+			PisteInput_Keydown(settings.control_jump) || PisteInput_Keydown(PI_RETURN) ||
+			PisteInput_Gamepad_Button(settings.gamepad_attack1) || PisteInput_Gamepad_Button(settings.gamepad_attack2) ||
+			PisteInput_Gamepad_Button(settings.gamepad_jump))
+			if (lopetusajastin > 2 && lopetusajastin < 300/*1900*/ && key_delay == 0) //???
 				lopetusajastin = 2;
 
 		if (lopetusajastin == 2)
@@ -7887,7 +7979,7 @@ int PK_MainScreen() {
 	static bool wasPressed = false;
 
 	bool skipped = !skip_frame && doublespeed; // If is in double speed and don't skip this frame, so the last frame was skipped, and it wasn't drawn
-	if (PisteInput_Keydown(PI_ESCAPE) && key_delay == 0 && !skipped){ //Don't activate menu whith a not drawn screen
+	if ((PisteInput_Keydown(PI_ESCAPE) | PisteInput_Gamepad_Button(PI_CONTROLLER_START)) && key_delay == 0 && !skipped){ //Don't activate menu whith a not drawn screen
 		if(test_level)
 			PK_Fade_Quit();
 		else{
@@ -7896,7 +7988,7 @@ int PK_MainScreen() {
 				menu_nyt = MENU_MAIN;
 				degree_temp = degree;
 			}
-			else if (game_screen == SCREEN_MENU && !wasPressed && PisteInput_Keydown(PI_ESCAPE) && menu_lue_kontrollit == 0){ // Just pressed escape in menu
+			else if (game_screen == SCREEN_MENU && !wasPressed && (PisteInput_Keydown(PI_ESCAPE) | PisteInput_Gamepad_Button(PI_CONTROLLER_START)) && menu_lue_kontrollit == 0){ // Just pressed escape in menu
 				if(menu_valittu_id == menu_valinta_id-1)
 					PK_Fade_Quit();
 				else {
@@ -7908,7 +8000,7 @@ int PK_MainScreen() {
 		}
 	}
 
-	wasPressed = PisteInput_Keydown(PI_ESCAPE);
+	wasPressed = PisteInput_Keydown(PI_ESCAPE) | PisteInput_Gamepad_Button(PI_CONTROLLER_START);
 
 	if (closing_game && !PisteDraw2_IsFading() || PK2_error)
 		Engine->stop();

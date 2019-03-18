@@ -120,6 +120,11 @@ void Game::logic() {
 			running = false;
 		if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
 			PisteDraw2_AdjustScreen();
+		if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+			PisteInput_Gamepad_Pressed(event.cbutton.button, true);
+		} else if (event.type == SDL_CONTROLLERBUTTONUP) {
+			PisteInput_Gamepad_Pressed(event.cbutton.button, false);
+		}
 	}
 
 	PisteSound_Update();

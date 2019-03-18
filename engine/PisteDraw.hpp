@@ -10,6 +10,7 @@
 #include <SDL_pixels.h>
 #include <SDL_video.h>
 #include <vector>
+#include <string>
 
 #include "PisteFont.hpp"
 #include "platform.hpp"
@@ -157,7 +158,7 @@ BYTE PisteDraw2_BlendColors(BYTE color, BYTE colBack,int alpha);
 
 int PisteDraw2_Font_Create(int image, int x, int y, int width, int height, int count);
 int PisteDraw2_Font_Create(char* path, char* file);
-int PisteDraw2_Font_Write(int font_index, const char* text, int x, int y);
+int PisteDraw2_Font_Write(int font_index, std::string text, int x, int y);
 int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha);
 
 int PisteDraw2_SetFilter(const char* filter);

@@ -13,12 +13,19 @@ http://kiwi.mbnet.fi/pistegamez/pk2/
 # Binary distibution
 
 ### Windows
+<<<<<<< HEAD
 There is a compiled binary with the "r2" version.
 https://files.fm/f/d6mvf3qr
+=======
+v.0.1.1
+
+https://www.dropbox.com/s/exvf7uiinfqlmwx/Pekka%20Kana%202%20-%20Community%20Editionv.0.1.1.rar?dl=0
+>>>>>>> d89d3cb7001a0bbbb413994c3d02f195b902f62f
 
 
 # Compiling
 
+<<<<<<< HEAD
 ### Windows
 If you want to compile it yourself, the win32 directory have the solution files for VisualStudio. It will also need the SDL2, SDL2_mixer and SDL2_image library.
 
@@ -36,6 +43,13 @@ brew install sdl2 sdl2_gfx sdl2_image sdl2_mixer
 ```
 Now just clone the code and run `make` on pk2 directory, the PK2 binary will be in bin/ directory.
 
+=======
+# Discord
+https://discord.gg/94XSgyH
+
+# Forum thread
+http://pistegamez.proboards.com/thread/894/pekka-kana-2-community-edition
+>>>>>>> d89d3cb7001a0bbbb413994c3d02f195b902f62f
 
 # User made episodes:
 http://mapstore.the.cz/

@@ -105,7 +105,11 @@ bool	PisteInput_Lue_Eventti();
 char PisteInput_Get_Typed_Char();
 
 bool	PisteInput_Gamepad_Button(int button);
+int PisteInput_Gamepad_Get_Pressed();
 std::string PisteInput_Gamepad_Name();
+std::string PisteInput_ButtonName(int button);
+
+void PisteInput_Gamepad_Pressed(int button, bool pushed);
 
 bool	PisteInput_Onko_Hiiri();
 bool	PisteInput_Onko_Ohjain(int ohjain);

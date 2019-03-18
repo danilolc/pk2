@@ -11,6 +11,7 @@
 
 #include <cstring>
 #include <iostream>
+#include <unordered_map>
 
 #define PI_MAX_GUI 15
 
@@ -89,11 +90,16 @@ const char keynames[][15] = {
 	"y","z"
 };
 
+std::unordered_map<int, std::string> Gamepad_Buttons;
+
+bool Gamepad_Button_List[SDL_CONTROLLER_BUTTON_MAX];
+
 bool					PI_unload = true;
 
 //Uint8 *m_keymap;
 const Uint8 *m_keymap = SDL_GetKeyboardState(NULL);
 MOUSE mouse_pos;
+
 
 SDL_Renderer* PI_Renderer = NULL;
 
@@ -250,8 +256,30 @@ int PisteInput_GetTouchPos(float& x, float& y){
 	return 0;
 }
 
+int pressedButton = -1;
+
+void PisteInput_Gamepad_Pressed(int button, bool pushed) {
+	Gamepad_Button_List[button] = pushed;
+
+	if (pushed) {
+		pressedButton = button;
+	} else {
+		pressedButton = -1;
+	}
+}
+
 bool PisteInput_Gamepad_Button(int button) {
+	Gamepad_Button_List[button] = SDL_GameControllerGetButton(controller, static_cast<SDL_GameControllerButton>(button));
+
 	return SDL_GameControllerGetButton(controller, static_cast<SDL_GameControllerButton>(button));
+}
+
+std::string PisteInput_ButtonName(int button) {
+	return Gamepad_Buttons[button];
+}
+
+int PisteInput_Gamepad_Get_Pressed() {
+	return pressedButton;
 }
 
 bool PisteInput_Keydown(int key){
@@ -343,6 +371,19 @@ int PisteInput_Start(){
 			}
 		}
 	}
+
+	Gamepad_Buttons[PI_CONTROLLER_A] = "Button A";
+	Gamepad_Buttons[PI_CONTROLLER_B] = "Button B";
+	Gamepad_Buttons[PI_CONTROLLER_X] = "Button X";
+	Gamepad_Buttons[PI_CONTROLLER_Y] = "Button Y";
+	Gamepad_Buttons[PI_CONTROLLER_LEFT] = "Button Left";
+	Gamepad_Buttons[PI_CONTROLLER_RIGHT] = "Button Right";
+	Gamepad_Buttons[PI_CONTROLLER_UP] = "Button Up";
+	Gamepad_Buttons[PI_CONTROLLER_DOWN] = "Button Down";
+	Gamepad_Buttons[PI_CONTROLLER_START] = "Button Start";
+	Gamepad_Buttons[PI_CONTROLLER_SELECT] = "Button Back";
+	Gamepad_Buttons[PI_CONTROLLER_SHOULDER_LEFT] = "Shoulder Left";
+	Gamepad_Buttons[PI_CONTROLLER_SHOULDER_RIGHT] = "Shoulder Right";
 
 	screen_w = (int)DM.w;
 	screen_h = (int)DM.h;

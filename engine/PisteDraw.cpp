@@ -365,9 +365,9 @@ int PisteDraw2_Font_Create(char* path, char* file){
 
   return index;
 }
-int PisteDraw2_Font_Write(int font_index, const char* text, int x, int y){
+int PisteDraw2_Font_Write(int font_index, std::string text, int x, int y) {
 	if (font_index < 0) return 1;
-	return fontList[font_index]->Write_Text(x, y, text);
+	return fontList[font_index]->Write_Text(x, y, text.c_str());
 }
 int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha){
 	return fontList[font_index]->Write_TextTrasparent(x + XOffset, y, text, alpha);
