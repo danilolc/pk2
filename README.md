@@ -3,22 +3,19 @@
 http://kiwi.mbnet.fi/pistegamez/pk2/
 
 
-# Binary distibution
-
-### Windows
+## Windows
 v.0.1.1
 https://www.dropbox.com/s/exvf7uiinfqlmwx/Pekka%20Kana%202%20-%20Community%20Editionv.0.1.1.rar?dl=0
 
 
-# Discord
+## Discord
 https://discord.gg/94XSgyH
 
 
-# Forum thread
+## Forum thread
 http://pistegamez.proboards.com/thread/894/pekka-kana-2-community-edition
->>>>>>> d89d3cb7001a0bbbb413994c3d02f195b902f62f
 
-# Credits
+## Credits
 by Janne Kivilahti from Piste Gamez (2003)
 
 Ported to SDL by Samuli Tuomola (2010)
