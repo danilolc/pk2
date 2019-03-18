@@ -26,7 +26,7 @@ int sfx_volume = 100;
 Mix_Chunk* indexes[MAX_SOUNDS]; //The original chunks loaded
 Uint8* freq_chunks[MIX_CHANNELS]; //The chunk allocated for each channel
 
-Mix_Music* music = NULL;
+Mix_Music* music = NULL, *music_buffer = nullptr;
 char playingMusic[PE_PATH_SIZE] = "";
 
 //Change the chunk frequency
@@ -134,16 +134,24 @@ void PisteSound_ResetSFX(){
 
 int PisteSound_StartMusic(char* filename){
 	PisteUtils_RemoveSpace(filename);
-	if(!strcmp(playingMusic,filename)) return 0;
+	if (!strcmp(playingMusic, filename)) {
+
+		return 0;
+	}
 
 	music = Mix_LoadMUS(filename);
+	music_buffer = Mix_LoadMUS(filename);
+
 	if (music == nullptr) {
 		printf("PS     - Music load error: %s\n", Mix_GetError());
 		return -1;
 	}
-	if (Mix_PlayMusic( music, -1) == -1){
+
+	if (Mix_PlayMusic(music, 1) == -1){
 		printf("PS     - Music play error: %s\n",Mix_GetError());
 		return -1;
+	} else {
+		std::cout << "Started playing: " << filename << std::endl;
 	}
 
 	printf("PS     - Loaded %s\n",filename);
@@ -164,10 +172,20 @@ int PisteSound_Start(){
 		return -1;
 	}
 
-	Mix_Init(MIX_INIT_MOD || MIX_INIT_MP3 || MIX_INIT_OGG);
-	return 0;
+	return Mix_Init(MIX_INIT_MOD || MIX_INIT_MP3 || MIX_INIT_OGG);
 }
-int PisteSound_Update(){
+
+void music_finished() {
+	Mix_PlayMusic(music_buffer, 1);
+
+	std::cout << "FACK!" << std::endl;
+}
+
+int PisteSound_Update() {
+	if (playingMusic[0] != '\0') {
+		Mix_HookMusicFinished(music_finished);
+	}
+
 	for(int i=0;i<MIX_CHANNELS;i++)
 		if(!Mix_Playing(i) && freq_chunks[i] != NULL){
 				SDL_free(freq_chunks[i]); //Make sure that all allocated chunks will be deleted after playing
@@ -175,11 +193,17 @@ int PisteSound_Update(){
 		}
 		return 0;
 }
+
 int PisteSound_End(){
 	PisteSound_ResetSFX();
 	
 	if(music != NULL) Mix_FreeMusic(music);
 	music = NULL;
+
+	if (music_buffer != nullptr) {
+		Mix_FreeMusic(music);
+	}
+	music_buffer = nullptr;
 	
 	Mix_CloseAudio();
 	return 0;

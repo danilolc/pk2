@@ -156,7 +156,7 @@ struct PK2FADETEXT{
 	bool ui;
 };
 
-struct PK2SAVE{
+struct PK2SAVE {
 	int   jakso;
 	char  episodi[PE_PATH_SIZE];
 	char  nimi[20];
@@ -351,7 +351,7 @@ int kytkin_aani,
 int sprite_aanet[50]; // spritejen k�ytt�m�t ��nibufferit
 
 //TALLENNUKSET
-PK2SAVE tallennukset[MAX_SAVES];
+PK2SAVE saves_list[MAX_SAVES];
 int lataa_peli = -1;
 
 //MUUTA
@@ -1095,13 +1095,13 @@ int PK_Search_Episode(){
 }
 int PK_Empty_Records(){
 	for (int i = 0;i < MAX_SAVES;i++){
-		tallennukset[i].kaytossa = false;
-		strcpy(tallennukset[i].episodi," ");
-		strcpy(tallennukset[i].nimi,"empty");
-		tallennukset[i].jakso = 0;
-		tallennukset[i].pisteet = 0;
+		saves_list[i].kaytossa = false;
+		strcpy(saves_list[i].episodi," ");
+		strcpy(saves_list[i].nimi,"empty");
+		saves_list[i].jakso = 0;
+		saves_list[i].pisteet = 0;
 		for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
-			tallennukset[i].jakso_lapaisty[j] = false;
+			saves_list[i].jakso_lapaisty[j] = false;
 	}
 
 	return 0;
@@ -1128,7 +1128,7 @@ int PK_Search_Records(char *filename){
 		lkm = atoi(lkmc);
 
 		for (i=0;i<lkm;i++)
-			tiedosto->read ((char *)&tallennukset[i], sizeof (tallennukset[i]));
+			tiedosto->read ((char *) &saves_list[i], sizeof (saves_list[i]));
 	}
 
 	delete (tiedosto);
@@ -1146,19 +1146,19 @@ int PK_Save_All_Records(char *filename){
 	file->write(lkm,    sizeof(lkm));
 
 	for (int i=0;i< MAX_SAVES;i++)
-		file->write((char *)&tallennukset[i], sizeof(tallennukset[i]));
+		file->write((char *)&saves_list[i], sizeof(saves_list[i]));
 
 	delete file;
 
 	return 0;
 }
 int PK_Load_Records(int i){
-	if (strcmp(tallennukset[i].episodi," ")!=0) {
+	if (strcmp(saves_list[i].episodi," ")!=0) {
 
-		strcpy(episodi,tallennukset[i].episodi);
-		strcpy(pelaajan_nimi, tallennukset[i].nimi);
-		jakso = tallennukset[i].jakso;
-		pisteet = tallennukset[i].pisteet;
+		strcpy(episodi, saves_list[i].episodi);
+		strcpy(pelaajan_nimi, saves_list[i].nimi);
+		jakso = saves_list[i].jakso;
+		pisteet = saves_list[i].pisteet;
 
 		PK_Start_Saves();
 
@@ -1181,14 +1181,14 @@ int PK_Load_Records(int i){
 	return 0;
 }
 int PK_Save_Records(int i){
-	tallennukset[i].kaytossa = true;
-	strcpy(tallennukset[i].episodi, episodi);
-	strcpy(tallennukset[i].nimi,pelaajan_nimi);
-	tallennukset[i].jakso = jakso;
-	tallennukset[i].pisteet = pisteet;
+	saves_list[i].kaytossa = true;
+	strcpy(saves_list[i].episodi, episodi);
+	strcpy(saves_list[i].nimi,pelaajan_nimi);
+	saves_list[i].jakso = jakso;
+	saves_list[i].pisteet = pisteet;
 
 	for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
-		tallennukset[i].jakso_lapaisty[j] = jaksot[j].lapaisty;
+		saves_list[i].jakso_lapaisty[j] = jaksot[j].lapaisty;
 
 	PK_Save_All_Records("data/saves.dat");
 
@@ -5859,18 +5859,18 @@ int PK_Draw_Menu_Load(){
 		strcpy(tpaikka,ind);
 		strcat(tpaikka,". ");
 
-		strcat(tpaikka,tallennukset[i].nimi);
+		strcat(tpaikka, saves_list[i].nimi);
 
 		if (PK_Draw_Menu_Text(true,tpaikka,100,150+my))
 			PK_Load_Records(i);
 
-		if (strcmp(tallennukset[i].episodi," ")!=0) {
+		if (strcmp(saves_list[i].episodi," ")!=0) {
 			vali = 0;
 			vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_episode),400,150+my);
-			vali += PisteDraw2_Font_Write(fontti1,tallennukset[i].episodi,400+vali,150+my);
+			vali += PisteDraw2_Font_Write(fontti1, saves_list[i].episodi,400+vali,150+my);
 			vali = 0;
 			vali += PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_level),400+vali,160+my);
-			itoa(tallennukset[i].jakso,jaksoc,10);
+			itoa(saves_list[i].jakso,jaksoc,10);
 			vali += PisteDraw2_Font_Write(fontti1,jaksoc,400+vali,160+my);
 		}
 
@@ -5902,19 +5902,19 @@ int PK_Draw_Menu_Save(){
 		strcpy(tpaikka,ind);
 		strcat(tpaikka,". ");
 
-		strcat(tpaikka,tallennukset[i].nimi);
+		strcat(tpaikka, saves_list[i].nimi);
 
 		if (PK_Draw_Menu_Text(true,tpaikka,100,150+my))
 			PK_Save_Records(i);
 
-		if (strcmp(tallennukset[i].episodi," ")!=0)
+		if (strcmp(saves_list[i].episodi," ")!=0)
 		{
 			vali = 0;
 			vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_episode),400,150+my);
-			vali += PisteDraw2_Font_Write(fontti1,tallennukset[i].episodi,400+vali,150+my);
+			vali += PisteDraw2_Font_Write(fontti1, saves_list[i].episodi,400+vali,150+my);
 			vali = 0;
 			vali += PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_level),400+vali,160+my);
-			itoa(tallennukset[i].jakso,jaksoc,10);
+			itoa(saves_list[i].jakso,jaksoc,10);
 			vali += PisteDraw2_Font_Write(fontti1,jaksoc,400+vali,160+my);
 		}
 
@@ -7218,6 +7218,9 @@ int PK_MainScreen_ScoreCount(){
 int PK_MainScreen_Map(){
 	PK_Draw_Map();
 
+	// TODO Place cursor on the icon of the next level
+	//std::cout << jakso << std::endl;
+
 	PK_Update_Mouse();
 
 	degree = 1 + degree % 360;
@@ -7657,7 +7660,7 @@ int PK_MainScreen_Change() {
 				PK_Search_File();
 
 				for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-					jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
+					jaksot[j].lapaisty = saves_list[lataa_peli].jakso_lapaisty[j];
 
 				lataa_peli = -1;
 				episode_started = true;
