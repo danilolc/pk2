@@ -1194,8 +1194,8 @@ void PK2Kartta::Select_Start() {
 				}
 	}
 
-	Game::Sprites->player->x = pos_x + Game::Sprites->player->tyyppi->leveys/2;
-	Game::Sprites->player->y = pos_y - Game::Sprites->player->tyyppi->korkeus/2;
+	Game::Sprites->player->x = pos_x + Game::Sprites->player->type->leveys/2;
+	Game::Sprites->player->y = pos_y - Game::Sprites->player->type->korkeus/2;
 
 	Game::camera_x = (int)Game::Sprites->player->x;
 	Game::camera_y = (int)Game::Sprites->player->y;

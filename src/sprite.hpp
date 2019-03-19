@@ -186,19 +186,19 @@ enum { //Damage
     VAHINKO_PISTO
 };
 enum { //Prototype
-    PROTOTYYPPI_KANA,
-    PROTOTYYPPI_MUNA,
-    PROTOTYYPPI_PIKKUKANA,
-    PROTOTYYPPI_OMENA,
-    PROTOTYYPPI_HYPPIJA
+    PROTOtype_KANA,
+    PROTOtype_MUNA,
+    PROTOtype_PIKKUKANA,
+    PROTOtype_OMENA,
+    PROTOtype_HYPPIJA
 };
 enum { //Type
-    TYYPPI_EI_MIKAAN,
-    TYYPPI_PELIHAHMO,
-    TYYPPI_BONUS,
-    TYYPPI_AMMUS,
-    TYYPPI_TELEPORTTI,
-    TYYPPI_TAUSTA
+    type_EI_MIKAAN,
+    type_PELIHAHMO,
+    type_BONUS,
+    type_AMMUS,
+    type_TELEPORTTI,
+    type_TAUSTA
 };
 enum { //Color
     VARI_HARMAA   = 0,
@@ -250,11 +250,11 @@ struct PK2SPRITE_ANIMAATIO{
 };
 
 //.spr file structures
-struct PK2Sprite_Prototyyppi10{
+struct PK2Sprite_Prototype10{
 
-    DWORD		tyyppi;											// spriten tyyppi
-    // Kuvatiedoston tiedot
-    char		kuvatiedosto[13];								// .BMP jossa ovat spriten grafiikat
+    DWORD		type;											// spriten type
+    // image_filen tiedot
+    char		image_file[13];								// .BMP jossa ovat spriten grafiikat
     // Spriteen liittyv�t ��nitehosteet
     char		aanitiedostot[7][13];							// ��nitehostetiedostot
     DWORD		aanet[7];										// ��nitehosteet (indeksit buffereihin)
@@ -286,17 +286,17 @@ struct PK2Sprite_Prototyyppi10{
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
     DWORD		tuhoutuminen;									// miten sprite tuhoutuu
     // Yhteys toisiin spriteihin
-    char		muutos_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
+    char		transformation_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
     char		bonus_sprite[13];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
     char		ammus1_sprite[13];								// Spriten ammuksena 1 k�ytt�m� sprite
     char		ammus2_sprite[13];								// Spriten ammuksena 2 k�ytt�m� sprite
     bool		avain;											// Voiko sprite avata lukkoja
 };
-struct PK2Sprite_Prototyyppi11{
+struct PK2Sprite_Prototype11{
 
-    DWORD		tyyppi;											// spriten tyyppi
-    // Kuvatiedoston tiedot
-    char		kuvatiedosto[13];								// .BMP jossa ovat spriten grafiikat
+    DWORD		type;											// spriten type
+    // image_filen tiedot
+    char		image_file[13];								// .BMP jossa ovat spriten grafiikat
     // Spriteen liittyv�t ��nitehosteet
     char		aanitiedostot[7][13];							// ��nitehostetiedostot
     DWORD		aanet[7];										// ��nitehosteet (indeksit buffereihin)
@@ -318,8 +318,8 @@ struct PK2Sprite_Prototyyppi11{
     bool		vihollinen;										// onko sprite vihollinen
     DWORD		energia;										// monta iskua kest��
     DWORD		vahinko;										// paljon vahinkoa tekee jos osuu
-    BYTE        vahinko_tyyppi;									// Mink� tyyppist� vahinkoa tekee (1.1)
-    BYTE		suojaus;										// Mink� tyyppiselt� vahingolta on suojattu
+    BYTE        vahinko_type;									// Mink� typest� vahinkoa tekee (1.1)
+    BYTE		suojaus;										// Mink� typeselt� vahingolta on suojattu
     DWORD		pisteet;										// paljonko siit� saa pisteit�
     DWORD		AI[5];											// mit� teko�lyj� k�ytet��n
     BYTE		max_hyppy;										// hypyn maksimikesto
@@ -333,19 +333,19 @@ struct PK2Sprite_Prototyyppi11{
     BYTE        bonusten_lkm;									// Bonusten lukum��r�
     DWORD       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     DWORD       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
-    DWORD		pallarx_kerroin;								// Vain TYYPPI_TAUSTA. Suhde taustakuvaan.
+    DWORD		pallarx_kerroin;								// Vain type_TAUSTA. Suhde taustakuvaan.
     // Yhteys toisiin spriteihin
-    char		muutos_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
+    char		transformation_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
     char		bonus_sprite[13];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
     char		ammus1_sprite[13];								// Spriten ammuksena 1 k�ytt�m� sprite
     char		ammus2_sprite[13];								// Spriten ammuksena 2 k�ytt�m� sprite
 
 };
-struct PK2Sprite_Prototyyppi12{
+struct PK2Sprite_Prototype12{
 
-    DWORD		tyyppi;											// spriten tyyppi
-    // Kuvatiedoston tiedot
-    char		kuvatiedosto[13];								// .BMP jossa ovat spriten grafiikat
+    DWORD		type;											// spriten type
+    // image_filen tiedot
+    char		image_file[13];								// .BMP jossa ovat spriten grafiikat
     // Spriteen liittyv�t ��nitehosteet
     char		aanitiedostot[7][13];							// ��nitehostetiedostot
     DWORD		aanet[7];										// ��nitehosteet (indeksit buffereihin)
@@ -367,8 +367,8 @@ struct PK2Sprite_Prototyyppi12{
     bool		vihollinen;										// onko sprite vihollinen
     DWORD		energia;										// monta iskua kest��
     DWORD		vahinko;										// paljon vahinkoa tekee jos osuu
-    BYTE        vahinko_tyyppi;									// Mink� tyyppist� vahinkoa tekee (1.1)
-    BYTE		suojaus;										// Mink� tyyppiselt� vahingolta on suojattu
+    BYTE        vahinko_type;									// Mink� typest� vahinkoa tekee (1.1)
+    BYTE		suojaus;										// Mink� typeselt� vahingolta on suojattu
     DWORD		pisteet;										// paljonko siit� saa pisteit�
     DWORD		AI[5];											// mit� teko�lyj� k�ytet��n
     BYTE		max_hyppy;										// hypyn maksimikesto
@@ -382,9 +382,9 @@ struct PK2Sprite_Prototyyppi12{
     BYTE        bonusten_lkm;									// Bonusten lukum��r�
     DWORD       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     DWORD       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
-    DWORD		pallarx_kerroin;								// Vain TYYPPI_TAUSTA. Suhde taustakuvaan.
+    DWORD		pallarx_kerroin;								// Vain type_TAUSTA. Suhde taustakuvaan.
     // Yhteys toisiin spriteihin
-    char		muutos_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
+    char		transformation_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
     char		bonus_sprite[13];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
     char		ammus1_sprite[13];								// Spriten ammuksena 1 k�ytt�m� sprite
     char		ammus2_sprite[13];								// Spriten ammuksena 2 k�ytt�m� sprite
@@ -400,10 +400,10 @@ struct PK2Sprite_Prototyyppi12{
     bool		este_vasemmalle;
 
 };
-struct PK2Sprite_Prototyyppi13{
+struct PK2Sprite_Prototype13{
 
-    DWORD		tyyppi;											// sprite type
-    char		kuvatiedosto[100];								// bmp path
+    DWORD		type;											// sprite type
+    char		image_file[100];								// bmp path
     char		aanitiedostot[7][100];							// sound path (max 7)
     DWORD		aanet[7];										// sound types
 
@@ -426,7 +426,7 @@ struct PK2Sprite_Prototyyppi13{
     bool		vihollinen;										// if sprite is a enemy
     DWORD		energia;										//?sprite energy
     DWORD		vahinko;										//?damage if hitted
-    BYTE        vahinko_tyyppi;									//?damage type
+    BYTE        vahinko_type;									//?damage type
     BYTE		suojaus;										//?protection type
     DWORD		pisteet;										// how much score
     DWORD		AI[10];											// AI type (max 10)
@@ -441,10 +441,10 @@ struct PK2Sprite_Prototyyppi13{
     BYTE        bonusten_lkm;									// number of bonuses
     DWORD       hyokkays1_aika;									// attack 1 duration (frames)
     DWORD       hyokkays2_aika;									// attack 2 duration (frames)
-    DWORD		pallarx_kerroin;								// parallax type (just to TYYPPI_TAUSTA)
+    DWORD		pallarx_kerroin;								// parallax type (just to type_TAUSTA)
 
 
-    char		muutos_sprite[100];								// another sprite that this sprite may change
+    char		transformation_sprite[100];								// another sprite that this sprite may change
     char		bonus_sprite[100];								// bonus that this sprite gives
     char		ammus1_sprite[100];								// ammo 1 sprite
     char		ammus2_sprite[100];								// ammo 2 sprite
@@ -471,7 +471,7 @@ struct PK2Sprite_Prototyyppi13{
 };
 
 //Classes used in game
-class PK2Sprite_Prototyyppi{
+class PK2Sprite_Prototype{
     public:
 
     //Version
@@ -482,10 +482,10 @@ class PK2Sprite_Prototyyppi{
     //Prototype index
     int			indeksi;
     //Sprite type
-    int			tyyppi;
+    int			type;
 
     //.bmp filename
-    char		kuvatiedosto[100];								// .BMP jossa ovat spriten grafiikat
+    char		image_file[100];								// .BMP jossa ovat spriten grafiikat
 
     // Spriteen liittyv�t ��nitehosteet
 
@@ -514,8 +514,8 @@ class PK2Sprite_Prototyyppi{
     bool		vihollinen;										// onko sprite vihollinen
     int			energia;										// monta iskua kest��
     int			vahinko;										// paljon vahinkoa tekee jos osuu
-    BYTE       vahinko_tyyppi;									// mink� tyyppist� vahinkoa tekee (1.1)
-    BYTE		suojaus;										// mink� tyyppiselt� vahingolta on suojattu (1.1)
+    BYTE       vahinko_type;									// mink� typest� vahinkoa tekee (1.1)
+    BYTE		suojaus;										// mink� typeselt� vahingolta on suojattu (1.1)
     int			pisteet;										// paljonko siit� saa pisteit�
 
     int			AI[SPRITE_MAX_AI];								// mit� teko�lyj� k�ytet��n
@@ -532,11 +532,11 @@ class PK2Sprite_Prototyyppi{
     int         hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     int         hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
 
-    int			pallarx_kerroin;								// Vain TYYPPI_TAUSTA. Suhde taustakuvaan.
+    int			pallarx_kerroin;								// Vain type_TAUSTA. Suhde taustakuvaan.
 
     // Yhteys toisiin spriteihin
 
-    char		muutos_sprite[100];								// Toinen sprite joksi t�m� sprite voi muuttua
+    char		transformation_sprite[100];								// Toinen sprite joksi t�m� sprite voi muuttua
     char		bonus_sprite[100];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
     char		ammus1_sprite[100];								// Spriten ammuksena 1 k�ytt�m� sprite
     char		ammus2_sprite[100];								// Spriten ammuksena 2 k�ytt�m� sprite
@@ -566,12 +566,12 @@ class PK2Sprite_Prototyyppi{
     bool		osaa_uida;										// vaikuttaako painovoima vedess�?
 
     // Muodostimet
-    PK2Sprite_Prototyyppi();
-    ~PK2Sprite_Prototyyppi();
+    PK2Sprite_Prototype();
+    ~PK2Sprite_Prototype();
 
     // Methods
     void Uusi();
-    void Kopioi(const PK2Sprite_Prototyyppi &proto);
+    void Kopioi(const PK2Sprite_Prototype &proto);
     int  Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi);
     int  Lataa(char *polku, char *tiedoston_nimi, char* episode = nullptr);
 	int Load(std::string filename, std::string episode);
@@ -579,18 +579,18 @@ class PK2Sprite_Prototyyppi{
     int  Piirra(int x, int y, int frame);
     bool Onko_AI(int AI);
 
-    void SetProto10(PK2Sprite_Prototyyppi10 &proto);
-    void SetProto11(PK2Sprite_Prototyyppi11 &proto);
-    void SetProto12(PK2Sprite_Prototyyppi12 &proto);
-    void SetProto13(PK2Sprite_Prototyyppi13 &proto);
-    PK2Sprite_Prototyyppi13 GetProto13();
+    void SetProto10(PK2Sprite_Prototype10 &proto);
+    void SetProto11(PK2Sprite_Prototype11 &proto);
+    void SetProto12(PK2Sprite_Prototype12 &proto);
+    void SetProto13(PK2Sprite_Prototype13 &proto);
+    PK2Sprite_Prototype13 GetProto13();
 };
 class PK2Sprite{
     public:
 
     bool		aktiivinen;			// true / false
     int			pelaaja;			// 0 = ei pelaaja, 1 = pelaaja
-    PK2Sprite_Prototyyppi *tyyppi;	// osoitin spriten prototyyppiin
+    PK2Sprite_Prototype *type;	// osoitin spriten prototypein
     bool		piilota;			// true = ei toiminnassa, false = toiminnassa
     double		alku_x;				// spriten alkuper�inen x sijainti
     double		alku_y;				// spriten alkuper�inen y sijainti
@@ -620,7 +620,7 @@ class PK2Sprite{
     bool		piilossa;			// onko sprite piilossa
     double      alkupaino;			// spriten alkuper�inen paino - sama kuin prototyypin
     int			saatu_vahinko;		// v�hennet��n energiasta jos erisuuri kuin 0
-    BYTE       saatu_vahinko_tyyppi; // saadun vahingon tyyppi (esim. lumi).
+    BYTE       saatu_vahinko_type; // saadun vahingon type (esim. lumi).
     bool		vihollinen;			// prototyypist� saatu tieto, onko vihollinen
     int			ammus1;				// spriten k�ytt�m�n ammus-prototyypin indeksi
     int			ammus2;				//
@@ -633,10 +633,10 @@ class PK2Sprite{
     BYTE		animaatio_index;	// t�m�nhetkinen py�riv� animaatio
     BYTE		sekvenssi_index;	// t�m�nhetkisen animaation frame
     BYTE		frame_aika;			// kuinka kauan frame on n�kynyt
-    int			muutos_ajastin;		// sprite muuttuu muutosspriteksi kun t�m� nollautuu
+    int			transformation_ajastin;		// sprite muuttuu muutosspriteksi kun t�m� nollautuu
 
     PK2Sprite();
-    PK2Sprite(PK2Sprite_Prototyyppi *tyyppi, int pelaaja, bool piilota, double x, double y);
+    PK2Sprite(PK2Sprite_Prototype *type, int pelaaja, bool piilota, double x, double y);
     ~PK2Sprite();
     int Piirra(int kamera_x, int kamera_y);		// Animoi ja piirt�� spriten
     int Animaatio(int anim_i, bool nollaus);	// Vaihtaa spriten animaation
@@ -665,10 +665,10 @@ class PK2Sprite{
     int AI_Seuraa_Pelaajaa_Vert_Hori(PK2Sprite &pelaaja);
     int AI_Jahtaa_Pelaajaa(PK2Sprite &pelaaja);
     int AI_Pakenee_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja);
-    int AI_Muutos_Jos_Energiaa_Alle_2(PK2Sprite_Prototyyppi &muutos);
-    int AI_Muutos_Jos_Energiaa_Yli_1(PK2Sprite_Prototyyppi &muutos);
-    int AI_Muutos_Ajastin(PK2Sprite_Prototyyppi &muutos);
-    int AI_Muutos_Jos_Osuttu(PK2Sprite_Prototyyppi &muutos);
+    int AI_Transformation_Jos_Energiaa_Alle_2(PK2Sprite_Prototype &muutos);
+    int AI_Transformation_Jos_Energiaa_Yli_1(PK2Sprite_Prototype &muutos);
+    int AI_Transformation_Ajastin(PK2Sprite_Prototype &muutos);
+    int AI_Transformation_Jos_Osuttu(PK2Sprite_Prototype &muutos);
     int AI_Hyokkays_1_Jos_Osuttu();
     int AI_Hyokkays_2_Jos_Osuttu();
     int AI_Hyokkays_1_Nonstop();

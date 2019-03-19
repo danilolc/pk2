@@ -16,15 +16,15 @@
 using namespace std;
 
 
-/* -------- PK2Sprite Prototyyppi ------------------------------------------------------------------ */
+/* -------- PK2Sprite Prototype ------------------------------------------------------------------ */
 
-PK2Sprite_Prototyyppi::PK2Sprite_Prototyyppi(){
+PK2Sprite_Prototype::PK2Sprite_Prototype(){
 
 	strcpy(versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(tiedosto,"");
-	strcpy(kuvatiedosto,"");
+	strcpy(image_file,"");
 	strcpy(nimi, "");
-	strcpy(this->muutos_sprite,"");
+	strcpy(this->transformation_sprite,"");
 	strcpy(this->bonus_sprite,"");
 	strcpy(this->ammus1_sprite,"");
 	strcpy(this->ammus2_sprite,"");
@@ -70,9 +70,9 @@ PK2Sprite_Prototyyppi::PK2Sprite_Prototyyppi(){
 	tarisee         = false;
 	tiletarkistus	= true;
 	tuhoutuminen	= TUHOUTUMINEN_ANIMAATIO;
-	tyyppi			= TYYPPI_EI_MIKAAN;
+	type			= type_EI_MIKAAN;
 	vahinko			= 0;
-	vahinko_tyyppi  = VAHINKO_ISKU;
+	vahinko_type  = VAHINKO_ISKU;
 	vari			= VARI_NORMAALI;
 	vihollinen		= false;
 
@@ -99,18 +99,18 @@ PK2Sprite_Prototyyppi::PK2Sprite_Prototyyppi(){
 		animaatiot[i].frameja = 0;
 	}
 }
-PK2Sprite_Prototyyppi::~PK2Sprite_Prototyyppi(){
+PK2Sprite_Prototype::~PK2Sprite_Prototype(){
 	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
 		if (framet[i] > 0)
 			PisteDraw2_Image_Delete(this->framet[i]);
 }
 
-void PK2Sprite_Prototyyppi::Kopioi(const PK2Sprite_Prototyyppi &proto){
+void PK2Sprite_Prototype::Kopioi(const PK2Sprite_Prototype &proto){
 	strcpy(versio,proto.versio);
 	strcpy(tiedosto,proto.tiedosto);
-	strcpy(kuvatiedosto,proto.kuvatiedosto);
+	strcpy(image_file,proto.image_file);
 	strcpy(nimi, proto.nimi);
-	strcpy(this->muutos_sprite,proto.muutos_sprite);
+	strcpy(this->transformation_sprite,proto.transformation_sprite);
 	strcpy(this->bonus_sprite,proto.bonus_sprite);
 	strcpy(this->ammus1_sprite,proto.ammus1_sprite);
 	strcpy(this->ammus2_sprite,proto.ammus2_sprite);
@@ -156,9 +156,9 @@ void PK2Sprite_Prototyyppi::Kopioi(const PK2Sprite_Prototyyppi &proto){
 	tarisee         = proto.tarisee;
 	tiletarkistus	= proto.tiletarkistus;
 	tuhoutuminen	= proto.tuhoutuminen;
-	tyyppi			= proto.tyyppi;
+	type			= proto.type;
 	vahinko			= proto.vahinko;
-	vahinko_tyyppi	= proto.vahinko_tyyppi;
+	vahinko_type	= proto.vahinko_type;
 	vari			= proto.vari;
 	vihollinen		= proto.vihollinen;
 
@@ -187,12 +187,12 @@ void PK2Sprite_Prototyyppi::Kopioi(const PK2Sprite_Prototyyppi &proto){
 		animaatiot[i].frameja = proto.animaatiot[i].frameja;
 	}
 }
-void PK2Sprite_Prototyyppi::Uusi(){
+void PK2Sprite_Prototype::Uusi(){
 	strcpy(versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	strcpy(tiedosto,"");
-	strcpy(kuvatiedosto,"");
+	strcpy(image_file,"");
 	strcpy(nimi, "");
-	strcpy(muutos_sprite,"");
+	strcpy(transformation_sprite,"");
 	strcpy(bonus_sprite,"");
 	strcpy(ammus1_sprite,"");
 	strcpy(ammus2_sprite,"");
@@ -238,9 +238,9 @@ void PK2Sprite_Prototyyppi::Uusi(){
 	tarisee         = false;
 	tiletarkistus	= true;
 	tuhoutuminen	= TUHOUTUMINEN_ANIMAATIO;
-	tyyppi			= TYYPPI_EI_MIKAAN;
+	type			= type_EI_MIKAAN;
 	vahinko			= 0;
-	vahinko_tyyppi	= VAHINKO_ISKU;
+	vahinko_type	= VAHINKO_ISKU;
 	vari			= VARI_NORMAALI;
 	vihollinen		= false;
 
@@ -279,7 +279,7 @@ void PK2Sprite_Prototyyppi::Uusi(){
 		animaatiot[i].frameja = 0;
 	}
 }
-int PK2Sprite_Prototyyppi::Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi){
+int PK2Sprite_Prototype::Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi){
 	BYTE frame_i = 0;
 
 	if (anim_i < SPRITE_MAX_ANIMAATIOITA)
@@ -298,10 +298,10 @@ int PK2Sprite_Prototyyppi::Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool loop
 	return 0;
 }
 
-void PK2Sprite_Prototyyppi::SetProto10(PK2Sprite_Prototyyppi10 &proto){
-	strcpy(kuvatiedosto,	proto.kuvatiedosto);
+void PK2Sprite_Prototype::SetProto10(PK2Sprite_Prototype10 &proto){
+	strcpy(image_file,	proto.image_file);
 	strcpy(nimi,			proto.nimi);
-	strcpy(muutos_sprite,	proto.muutos_sprite);
+	strcpy(transformation_sprite,	proto.transformation_sprite);
 	strcpy(bonus_sprite,	proto.bonus_sprite);
 	strcpy(ammus1_sprite,	proto.ammus1_sprite);
 	strcpy(ammus2_sprite,	proto.ammus2_sprite);
@@ -331,7 +331,7 @@ void PK2Sprite_Prototyyppi::SetProto10(PK2Sprite_Prototyyppi10 &proto){
 	pisteet				= proto.pisteet;
 	suojaus				= (BYTE) proto.suojaus;
 	tuhoutuminen		= proto.tuhoutuminen;
-	tyyppi				= proto.tyyppi;
+	type				= proto.type;
 	vahinko				= proto.vahinko;
 	vari				= proto.vari;
 	vihollinen			= proto.vihollinen;
@@ -350,10 +350,10 @@ void PK2Sprite_Prototyyppi::SetProto10(PK2Sprite_Prototyyppi10 &proto){
 		animaatiot[i].frameja = proto.animaatiot[i].frameja;
 	}
 }
-void PK2Sprite_Prototyyppi::SetProto11(PK2Sprite_Prototyyppi11 &proto){
-	strcpy(kuvatiedosto,	proto.kuvatiedosto);
+void PK2Sprite_Prototype::SetProto11(PK2Sprite_Prototype11 &proto){
+	strcpy(image_file,	proto.image_file);
 	strcpy(nimi,			proto.nimi);
-	strcpy(muutos_sprite,	proto.muutos_sprite);
+	strcpy(transformation_sprite,	proto.transformation_sprite);
 	strcpy(bonus_sprite,	proto.bonus_sprite);
 	strcpy(ammus1_sprite,	proto.ammus1_sprite);
 	strcpy(ammus2_sprite,	proto.ammus2_sprite);
@@ -388,9 +388,9 @@ void PK2Sprite_Prototyyppi::SetProto11(PK2Sprite_Prototyyppi11 &proto){
 	suojaus				= proto.suojaus;
 	tarisee				= proto.tarisee;
 	tuhoutuminen		= proto.tuhoutuminen;
-	tyyppi				= proto.tyyppi;
+	type				= proto.type;
 	vahinko				= proto.vahinko;
-	vahinko_tyyppi		= proto.vahinko_tyyppi;
+	vahinko_type		= proto.vahinko_type;
 	vari				= proto.vari;
 	vihollinen			= proto.vihollinen;
 
@@ -408,75 +408,10 @@ void PK2Sprite_Prototyyppi::SetProto11(PK2Sprite_Prototyyppi11 &proto){
 		animaatiot[i].frameja = proto.animaatiot[i].frameja;
 	}
 }
-void PK2Sprite_Prototyyppi::SetProto12(PK2Sprite_Prototyyppi12 &proto){
-	strcpy(kuvatiedosto,	proto.kuvatiedosto);
+void PK2Sprite_Prototype::SetProto12(PK2Sprite_Prototype12 &proto){
+	strcpy(image_file,	proto.image_file);
 	strcpy(nimi,			proto.nimi);
-	strcpy(muutos_sprite,	proto.muutos_sprite);
-	strcpy(bonus_sprite,	proto.bonus_sprite);
-	strcpy(ammus1_sprite,	proto.ammus1_sprite);
-	strcpy(ammus2_sprite,	proto.ammus2_sprite);
-
-	for (int aani=0;aani<MAX_AANIA;aani++)
-	{
-		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
-		aanet[aani] = proto.aanet[aani];
-	}
-
-	aani_frq			= proto.aani_frq;
-	animaatioita		= proto.animaatioita;
-	avain				= proto.avain;
-	bonusten_lkm        = proto.bonusten_lkm;
-	energia				= proto.energia;
-	este				= proto.este;
-	este_ylos			= proto.este_ylos;
-	este_alas			= proto.este_alas;
-	este_oikealle		= proto.este_oikealle;
-	este_vasemmalle		= proto.este_vasemmalle;
-	frameja				= proto.frameja;
-	frame_rate			= proto.frame_rate;
-	hyokkays1_aika		= proto.hyokkays1_aika;
-	hyokkays2_aika		= proto.hyokkays2_aika;
-	kuva_x				= proto.kuva_x;
-	kuva_y				= proto.kuva_y;
-	kuva_frame_leveys	= proto.kuva_frame_leveys;
-	kuva_frame_korkeus	= proto.kuva_frame_korkeus;
-	korkeus				= proto.korkeus;
-	latausaika			= proto.latausaika;
-	leveys				= proto.leveys;
-	max_hyppy			= proto.max_hyppy;
-	max_nopeus			= proto.max_nopeus;
-	paino				= proto.paino;
-	pallarx_kerroin		= proto.pallarx_kerroin;
-	pisteet				= proto.pisteet;
-	random_frq			= proto.random_frq;
-	suojaus				= proto.suojaus;
-	tarisee				= proto.tarisee;
-	tiletarkistus		= proto.tiletarkistus;
-	tuhoutuminen		= proto.tuhoutuminen;
-	tyyppi				= proto.tyyppi;
-	vahinko				= proto.vahinko;
-	vahinko_tyyppi		= proto.vahinko_tyyppi;
-	vari				= proto.vari;
-	vihollinen			= proto.vihollinen;
-
-	for (int i=0;i<5;i++)
-	{
-		AI[i] = proto.AI[i];
-	}
-
-	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
-	{
-		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
-			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
-
-		animaatiot[i].looppi  = proto.animaatiot[i].looppi;
-		animaatiot[i].frameja = proto.animaatiot[i].frameja;
-	}
-}
-void PK2Sprite_Prototyyppi::SetProto13(PK2Sprite_Prototyyppi13 &proto){
-	strcpy(kuvatiedosto,	proto.kuvatiedosto);
-	strcpy(nimi,			proto.nimi);
-	strcpy(muutos_sprite,	proto.muutos_sprite);
+	strcpy(transformation_sprite,	proto.transformation_sprite);
 	strcpy(bonus_sprite,	proto.bonus_sprite);
 	strcpy(ammus1_sprite,	proto.ammus1_sprite);
 	strcpy(ammus2_sprite,	proto.ammus2_sprite);
@@ -518,9 +453,74 @@ void PK2Sprite_Prototyyppi::SetProto13(PK2Sprite_Prototyyppi13 &proto){
 	tarisee				= proto.tarisee;
 	tiletarkistus		= proto.tiletarkistus;
 	tuhoutuminen		= proto.tuhoutuminen;
-	tyyppi				= proto.tyyppi;
+	type				= proto.type;
 	vahinko				= proto.vahinko;
-	vahinko_tyyppi		= proto.vahinko_tyyppi;
+	vahinko_type		= proto.vahinko_type;
+	vari				= proto.vari;
+	vihollinen			= proto.vihollinen;
+
+	for (int i=0;i<5;i++)
+	{
+		AI[i] = proto.AI[i];
+	}
+
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
+	{
+		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
+			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
+
+		animaatiot[i].looppi  = proto.animaatiot[i].looppi;
+		animaatiot[i].frameja = proto.animaatiot[i].frameja;
+	}
+}
+void PK2Sprite_Prototype::SetProto13(PK2Sprite_Prototype13 &proto){
+	strcpy(image_file,	proto.image_file);
+	strcpy(nimi,			proto.nimi);
+	strcpy(transformation_sprite,	proto.transformation_sprite);
+	strcpy(bonus_sprite,	proto.bonus_sprite);
+	strcpy(ammus1_sprite,	proto.ammus1_sprite);
+	strcpy(ammus2_sprite,	proto.ammus2_sprite);
+
+	for (int aani=0;aani<MAX_AANIA;aani++)
+	{
+		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
+		aanet[aani] = proto.aanet[aani];
+	}
+
+	aani_frq			= proto.aani_frq;
+	animaatioita		= proto.animaatioita;
+	avain				= proto.avain;
+	bonusten_lkm        = proto.bonusten_lkm;
+	energia				= proto.energia;
+	este				= proto.este;
+	este_ylos			= proto.este_ylos;
+	este_alas			= proto.este_alas;
+	este_oikealle		= proto.este_oikealle;
+	este_vasemmalle		= proto.este_vasemmalle;
+	frameja				= proto.frameja;
+	frame_rate			= proto.frame_rate;
+	hyokkays1_aika		= proto.hyokkays1_aika;
+	hyokkays2_aika		= proto.hyokkays2_aika;
+	kuva_x				= proto.kuva_x;
+	kuva_y				= proto.kuva_y;
+	kuva_frame_leveys	= proto.kuva_frame_leveys;
+	kuva_frame_korkeus	= proto.kuva_frame_korkeus;
+	korkeus				= proto.korkeus;
+	latausaika			= proto.latausaika;
+	leveys				= proto.leveys;
+	max_hyppy			= proto.max_hyppy;
+	max_nopeus			= proto.max_nopeus;
+	paino				= proto.paino;
+	pallarx_kerroin		= proto.pallarx_kerroin;
+	pisteet				= proto.pisteet;
+	random_frq			= proto.random_frq;
+	suojaus				= proto.suojaus;
+	tarisee				= proto.tarisee;
+	tiletarkistus		= proto.tiletarkistus;
+	tuhoutuminen		= proto.tuhoutuminen;
+	type				= proto.type;
+	vahinko				= proto.vahinko;
+	vahinko_type		= proto.vahinko_type;
 	vari				= proto.vari;
 	vihollinen			= proto.vihollinen;
 
@@ -547,12 +547,12 @@ void PK2Sprite_Prototyyppi::SetProto13(PK2Sprite_Prototyyppi13 &proto){
 	}
 }
 
-PK2Sprite_Prototyyppi13 PK2Sprite_Prototyyppi::GetProto13(){
-	PK2Sprite_Prototyyppi13 proto;
+PK2Sprite_Prototype13 PK2Sprite_Prototype::GetProto13(){
+	PK2Sprite_Prototype13 proto;
 
-	strcpy(proto.kuvatiedosto,kuvatiedosto);
+	strcpy(proto.image_file,image_file);
 	strcpy(proto.nimi, nimi);
-	strcpy(proto.muutos_sprite,muutos_sprite);
+	strcpy(proto.transformation_sprite,transformation_sprite);
 	strcpy(proto.bonus_sprite,bonus_sprite);
 	strcpy(proto.ammus1_sprite,ammus1_sprite);
 	strcpy(proto.ammus2_sprite,ammus2_sprite);
@@ -594,9 +594,9 @@ PK2Sprite_Prototyyppi13 PK2Sprite_Prototyyppi::GetProto13(){
 	proto.tarisee			= tarisee;
 	proto.tiletarkistus		= tiletarkistus;
 	proto.tuhoutuminen		= tuhoutuminen;
-	proto.tyyppi			= tyyppi;
+	proto.type			= type;
 	proto.vahinko			= vahinko;
-	proto.vahinko_tyyppi	= vahinko_tyyppi;
+	proto.vahinko_type	= vahinko_type;
 	proto.vari				= vari;
 	proto.vihollinen		= vihollinen;
 
@@ -625,7 +625,7 @@ PK2Sprite_Prototyyppi13 PK2Sprite_Prototyyppi::GetProto13(){
 	return proto;
 }
 
-int PK2Sprite_Prototyyppi::Lataa(char *path, char *file_name, char* episode){
+int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 	this->Uusi();
 
 	char image_path[PE_PATH_SIZE];
@@ -653,7 +653,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *path, char *file_name, char* episode){
 
 	if (strcmp(versio,"1.0") == 0){
 		this->Uusi();
-		PK2Sprite_Prototyyppi10 proto;
+		PK2Sprite_Prototype10 proto;
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto10(proto);
 		strcpy(this->versio,versio);
@@ -661,7 +661,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *path, char *file_name, char* episode){
 	}
 	if (strcmp(versio,"1.1") == 0){
 		this->Uusi();
-		PK2Sprite_Prototyyppi11 proto;
+		PK2Sprite_Prototype11 proto;
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto11(proto);
 		strcpy(this->versio,versio);
@@ -669,7 +669,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *path, char *file_name, char* episode){
 	}
 	if (strcmp(versio,"1.2") == 0){
 		this->Uusi();
-		PK2Sprite_Prototyyppi12 proto;
+		PK2Sprite_Prototype12 proto;
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto12(proto);
 		strcpy(this->versio,versio);
@@ -678,7 +678,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *path, char *file_name, char* episode){
 	if (strcmp(versio,"1.3") == 0){
 		this->Uusi();
 
-		PK2Sprite_Prototyyppi13 proto;
+		PK2Sprite_Prototype13 proto;
 
 		tiedosto->read ((char *) &proto, sizeof (proto));
 		this->SetProto13(proto);
@@ -701,7 +701,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *path, char *file_name, char* episode){
 	strcat(image_path, "episodes/");
 	strcat(image_path, episode);
 	strcat(image_path, "/sprites/");
-	strcat(image_path, kuvatiedosto);
+	strcat(image_path, image_file);
 
 	int bufferi = PisteDraw2_Image_Load(image_path, false);
 
@@ -709,7 +709,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *path, char *file_name, char* episode){
 		//... if that fails check the games sprites/ folder
 		strcpy(image_path, "");
 		strcpy(image_path, "sprites/");
-		strcat(image_path, kuvatiedosto);
+		strcat(image_path, image_file);
 
 		bufferi = PisteDraw2_Image_Load(image_path, false);
 
@@ -762,7 +762,7 @@ int PK2Sprite_Prototyyppi::Lataa(char *path, char *file_name, char* episode){
 	return 0;
 }
 
-int PK2Sprite_Prototyyppi::Load(std::string filename, std::string episode) {
+int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 	this->Uusi();
 
 	std::stringstream ss;
@@ -788,7 +788,7 @@ int PK2Sprite_Prototyyppi::Load(std::string filename, std::string episode) {
 
 	if (strcmp(versio, "1.0") == 0) {
 		this->Uusi();
-		PK2Sprite_Prototyyppi10 proto;
+		PK2Sprite_Prototype10 proto;
 		filestream.read((char *)&proto, sizeof(proto));
 		this->SetProto10(proto);
 		strcpy(this->versio, versio);
@@ -798,7 +798,7 @@ int PK2Sprite_Prototyyppi::Load(std::string filename, std::string episode) {
 	}
 	if (strcmp(versio, "1.1") == 0) {
 		this->Uusi();
-		PK2Sprite_Prototyyppi11 proto;
+		PK2Sprite_Prototype11 proto;
 		filestream.read((char *)&proto, sizeof(proto));
 		this->SetProto11(proto);
 		strcpy(this->versio, versio);
@@ -807,7 +807,7 @@ int PK2Sprite_Prototyyppi::Load(std::string filename, std::string episode) {
 	}
 	if (strcmp(versio, "1.2") == 0) {
 		this->Uusi();
-		PK2Sprite_Prototyyppi12 proto;
+		PK2Sprite_Prototype12 proto;
 		filestream.read((char *)&proto, sizeof(proto));
 		this->SetProto12(proto);
 		strcpy(this->versio, versio);
@@ -818,7 +818,7 @@ int PK2Sprite_Prototyyppi::Load(std::string filename, std::string episode) {
 	if (strcmp(versio, "1.3") == 0) {
 		this->Uusi();
 
-		PK2Sprite_Prototyyppi13 proto;
+		PK2Sprite_Prototype13 proto;
 
 		filestream.read((char *)&proto, sizeof(proto));
 		this->SetProto13(proto);
@@ -834,14 +834,14 @@ int PK2Sprite_Prototyyppi::Load(std::string filename, std::string episode) {
 	// Get sprite bmp
 	// Check the episode/-custom episode-/sprites directory first...
 	ss.str("");
-	ss << "episodes/" << episode << "/sprites/" << kuvatiedosto;
+	ss << "episodes/" << episode << "/sprites/" << image_file;
 
 	int bufferi = PisteDraw2_Image_Load(ss.str().c_str(), false);
 
 	if (bufferi == -1) {
 		//... if that fails check the games sprites/ folder
 		ss.str("");
-		ss << "sprites/" << kuvatiedosto;
+		ss << "sprites/" << image_file;
 
 		bufferi = PisteDraw2_Image_Load(ss.str().c_str(), false);
 
@@ -894,10 +894,10 @@ int PK2Sprite_Prototyyppi::Load(std::string filename, std::string episode) {
 	return 0;
 }
 
-void PK2Sprite_Prototyyppi::Tallenna(char *tiedoston_nimi){
+void PK2Sprite_Prototype::Tallenna(char *tiedoston_nimi){
    	strcpy(this->tiedosto,tiedoston_nimi);
 
-	PK2Sprite_Prototyyppi13 proto = GetProto13();
+	PK2Sprite_Prototype13 proto = GetProto13();
 
 	ofstream *tiedosto = new ofstream(tiedoston_nimi, ios::binary);
 	tiedosto->write (PK2SPRITE_VIIMEISIN_VERSIO, 4);
@@ -906,11 +906,11 @@ void PK2Sprite_Prototyyppi::Tallenna(char *tiedoston_nimi){
 	delete (tiedosto);
 }
 
-int PK2Sprite_Prototyyppi::Piirra(int x, int y, int frame){
+int PK2Sprite_Prototype::Piirra(int x, int y, int frame){
 	PisteDraw2_Image_Clip(framet[frame], x, y);
 	return 0;
 }
-bool PK2Sprite_Prototyyppi::Onko_AI(int ai){
+bool PK2Sprite_Prototype::Onko_AI(int ai){
 	for (int i=0;i<SPRITE_MAX_AI;i++)
 		if (AI[i] == ai)
 			return true;
@@ -920,7 +920,7 @@ bool PK2Sprite_Prototyyppi::Onko_AI(int ai){
 /* -------- PK2Sprite  ------------------------------------------------------------------ */
 
 PK2Sprite::PK2Sprite(){
-	this->tyyppi		= NULL;
+	this->type		= NULL;
 	this->pelaaja		= 0;
 	this->piilota		= true;
 	this->x				= 0;
@@ -959,11 +959,11 @@ PK2Sprite::PK2Sprite(){
 	this->pelaaja_x		= -1;
 	this->pelaaja_y		= -1;
 	this->ajastin		= 0;
-	this->muutos_ajastin = 0;
+	this->transformation_ajastin = 0;
 }
-PK2Sprite::PK2Sprite(PK2Sprite_Prototyyppi *tyyppi, int pelaaja, bool piilota, double x, double y){
-	if (tyyppi){
-		this->tyyppi		= tyyppi;
+PK2Sprite::PK2Sprite(PK2Sprite_Prototype *type, int pelaaja, bool piilota, double x, double y){
+	if (type){
+		this->type		= type;
 		this->pelaaja		= pelaaja;
 		this->piilota		= piilota;
 		this->x				= x;
@@ -973,8 +973,8 @@ PK2Sprite::PK2Sprite(PK2Sprite_Prototyyppi *tyyppi, int pelaaja, bool piilota, d
 		this->a				= 0;
 		this->b				= 0;
 		this->hyppy_ajastin	= 0;
-		this->energia		= tyyppi->energia;
-		this->alkupaino     = tyyppi->paino;
+		this->energia		= type->energia;
+		this->alkupaino     = type->paino;
 		this->paino			= this->alkupaino;
 		this->kytkinpaino   = 0;
 		this->kyykky		= false;
@@ -996,20 +996,20 @@ PK2Sprite::PK2Sprite(PK2Sprite_Prototyyppi *tyyppi, int pelaaja, bool piilota, d
 		this->vedessa		= false;
 		this->piilossa      = false;
 		this->saatu_vahinko = 0;
-		this->vihollinen    = tyyppi->vihollinen;
-		this->ammus1		= tyyppi->ammus1;
-		this->ammus2		= tyyppi->ammus2;
+		this->vihollinen    = type->vihollinen;
+		this->ammus1		= type->ammus1;
+		this->ammus2		= type->ammus2;
 		this->pelaaja_x		= -1;
 		this->pelaaja_y		= -1;
 		this->ajastin		= 0;
-		this->muutos_ajastin = 0;
+		this->transformation_ajastin = 0;
 	}
 }
 PK2Sprite::~PK2Sprite() {}
 
 bool PK2Sprite::Onko_AI(int ai){
 	for (int i=0;i<SPRITE_MAX_AI;i++)
-		if (tyyppi->AI[i] == ai)
+		if (type->AI[i] == ai)
 			return true;
 	return false;
 }
@@ -1026,7 +1026,7 @@ int PK2Sprite::Animaatio(int anim_i, bool nollaus){
 int PK2Sprite::Animoi(){
 	int frame = 0;
 
-	switch (tyyppi->AI[0]){
+	switch (type->AI[0]){
 	case AI_KANA:		Animaatio_Kana();break;
 	case AI_PIKKUKANA:	Animaatio_Kana();break;
 	case AI_BONUS:		Animaatio_Bonus();break;
@@ -1038,7 +1038,7 @@ int PK2Sprite::Animoi(){
 	default:			break;
 	}
 
-	PK2SPRITE_ANIMAATIO &animaatio = tyyppi->animaatiot[animaatio_index];
+	PK2SPRITE_ANIMAATIO &animaatio = type->animaatiot[animaatio_index];
 
 	if (sekvenssi_index >= animaatio.frameja)
 		sekvenssi_index = 0;
@@ -1046,7 +1046,7 @@ int PK2Sprite::Animoi(){
 	frame = animaatio.sekvenssi[sekvenssi_index]-1;
 
 	// Lasketaan kuinka paljon talla hetkella voimassa olevaa framea viela naytetaan
-	if (frame_aika < tyyppi->frame_rate)
+	if (frame_aika < type->frame_rate)
 		frame_aika++;
 	// Jos aika on kulunut loppuun, vaihdetaan seuraava frame tamanhetkisesta animaatiosta
 	else{
@@ -1063,36 +1063,36 @@ int PK2Sprite::Animoi(){
 		}
 	}
 
-	if (frame > tyyppi->frameja)
-		frame = tyyppi->frameja;
+	if (frame > type->frameja)
+		frame = type->frameja;
 
 	return frame;
 }
 int PK2Sprite::Piirra(int kamera_x, int kamera_y){
 	// Tehdaan apumuuttujia
-	int	l = (int)tyyppi->kuva_frame_leveys/2,//leveys
-		h = (int)tyyppi->kuva_frame_korkeus/2,
+	int	l = (int)type->kuva_frame_leveys/2,//leveys
+		h = (int)type->kuva_frame_korkeus/2,
 		x = (int)this->x-(kamera_x),
 		y = (int)this->y-(kamera_y),
 		frame = 0;
 
 	frame = Animoi();
 
-	if (tyyppi->tarisee){
+	if (type->tarisee){
 		x+= rand()%2 - rand()%2;
 		y+= rand()%2 - rand()%2;
 	}
 
 	if (flip_x){
 		if (!flip_y)
-			PisteDraw2_Image_Clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);
+			PisteDraw2_Image_Clip(type->framet_peilikuva[frame], x-l-1, y-h);
 		else
-			PisteDraw2_Image_Clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);//, false, true);//TODO-Fix
+			PisteDraw2_Image_Clip(type->framet_peilikuva[frame], x-l-1, y-h);//, false, true);//TODO-Fix
 	} else{
 		if (!flip_y)
-			PisteDraw2_Image_Clip(tyyppi->framet[frame], x-l-1, y-h);
+			PisteDraw2_Image_Clip(type->framet[frame], x-l-1, y-h);
 		else
-			PisteDraw2_Image_Clip(tyyppi->framet[frame], x-l-1, y-h);//, false, true);
+			PisteDraw2_Image_Clip(type->framet[frame], x-l-1, y-h);//, false, true);
 	}
 
 	return 0;
@@ -1139,13 +1139,13 @@ int PK2Sprite::AI_Kaantyy_Esteesta_Hori(){
 	{
 		if (!oikealle)
 		{
-			a = this->tyyppi->max_nopeus / -3.5;
+			a = this->type->max_nopeus / -3.5;
 			return 1;
 		}
 
 		if (!vasemmalle)
 		{
-			a = this->tyyppi->max_nopeus / 3.5;
+			a = this->type->max_nopeus / 3.5;
 			return 1;
 		}
 	}
@@ -1156,13 +1156,13 @@ int PK2Sprite::AI_Kaantyy_Esteesta_Vert(){
 	{
 		if (!alas)
 		{
-			b = this->tyyppi->max_nopeus / -3.5;
+			b = this->type->max_nopeus / -3.5;
 			return 1;
 		}
 
 		if (!ylos)
 		{
-			b = this->tyyppi->max_nopeus / 3.5;
+			b = this->type->max_nopeus / 3.5;
 			return 1;
 		}
 	}
@@ -1174,29 +1174,29 @@ int PK2Sprite::AI_Kiipeilija(){
 		if (!alas && vasemmalle)
 		{
 			b = 0;
-			a = this->tyyppi->max_nopeus / -3.5;
+			a = this->type->max_nopeus / -3.5;
 			//return 1;
 		}
 
 		if (!ylos && oikealle)
 		{
 			b = 0;
-			a = this->tyyppi->max_nopeus / 3.5;
-			//b = this->tyyppi->max_nopeus / 3.5;
+			a = this->type->max_nopeus / 3.5;
+			//b = this->type->max_nopeus / 3.5;
 			//return 1;
 		}
 
 		if (!oikealle && alas)
 		{
 			a = 0;
-			b = this->tyyppi->max_nopeus / 3.5;
+			b = this->type->max_nopeus / 3.5;
 			//return 1;
 		}
 
 		if (!vasemmalle && ylos)
 		{
 			a = 0;
-			b = this->tyyppi->max_nopeus / -3.5;
+			b = this->type->max_nopeus / -3.5;
 			//return 1;
 		}
 	}
@@ -1207,19 +1207,19 @@ int PK2Sprite::AI_Kiipeilija2(){
 		if (vasemmalle && oikealle && ylos && alas) {
 
 			if (a < 0) {
-				b = this->tyyppi->max_nopeus / 3.5;
+				b = this->type->max_nopeus / 3.5;
 				//a = 0;
 			}
 			else if (a > 0) {
-				b = this->tyyppi->max_nopeus / -3.5;
+				b = this->type->max_nopeus / -3.5;
 				//a = 0;
 			}
 			else if (b < 0) {
-				a = this->tyyppi->max_nopeus / -3.5;
+				a = this->type->max_nopeus / -3.5;
 				//b = 0;
 			}
 			else if (b > 0) {
-				a = this->tyyppi->max_nopeus / 3.5;
+				a = this->type->max_nopeus / 3.5;
 				//b = 0;
 			}
 			if (b != 0)
@@ -1229,7 +1229,7 @@ int PK2Sprite::AI_Kiipeilija2(){
 	return 0;
 }
 int PK2Sprite::AI_Varoo_Kuoppaa(){
-	double max = tyyppi->max_nopeus / 3.5;
+	double max = type->max_nopeus / 3.5;
 
 	if (energia > 0)
 	{
@@ -1292,9 +1292,9 @@ int PK2Sprite::AI_Sammakko2(){
 		if (hyppy_ajastin > 0)
 		{
 			if (!flip_x)
-				a = this->tyyppi->max_nopeus / 3.5;
+				a = this->type->max_nopeus / 3.5;
 			else
-				a = this->tyyppi->max_nopeus / -3.5;
+				a = this->type->max_nopeus / -3.5;
 		}
 	}
 	return 0;
@@ -1304,7 +1304,7 @@ int PK2Sprite::AI_Random_Suunnanvaihto_Hori(){
 	{
 		if (rand()%150 == 1)
 		{
-			int max = (int)tyyppi->max_nopeus / 4;
+			int max = (int)type->max_nopeus / 4;
 
 			while (a == 0 && max > 0)
 				a = rand()%max+1 - rand()%max+1;
@@ -1338,7 +1338,7 @@ int PK2Sprite::AI_Random_Liikahdus_Vert_Hori(){
 		if (rand()%150 == 1 || ajastin == 1)
 		if ((int)a == 0 || (int)b == 0)
 		{
-			int max = (int)tyyppi->max_nopeus;
+			int max = (int)type->max_nopeus;
 
 			if (max != 0)
 			{
@@ -1359,7 +1359,7 @@ int PK2Sprite::AI_Random_Liikahdus_Vert_Hori(){
 int PK2Sprite::AI_Seuraa_Pelaajaa(PK2Sprite &pelaaja){
 	if (energia > 0 && pelaaja.energia > 0)
 	{
-		double max = tyyppi->max_nopeus / 3.5;
+		double max = type->max_nopeus / 3.5;
 
 		if (a > -max && x > pelaaja.x)
 		{
@@ -1374,7 +1374,7 @@ int PK2Sprite::AI_Seuraa_Pelaajaa(PK2Sprite &pelaaja){
 		pelaaja_x = (int)(pelaaja.x+pelaaja.a);
 		pelaaja_y = (int)(pelaaja.y+pelaaja.b);
 
-		if (tyyppi->max_nopeus == 0)
+		if (type->max_nopeus == 0)
 		{
 			if (pelaaja.x < x)
 				flip_x = true;
@@ -1389,9 +1389,9 @@ int PK2Sprite::AI_Pakenee_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 	{
 		if ((pelaaja.x < x && flip_x && !pelaaja.flip_x) || (pelaaja.x > x && !flip_x && pelaaja.flip_x))
 			if ((pelaaja.x - x < 300 && pelaaja.x - x > -300) &&
-				(pelaaja.y - y < tyyppi->korkeus && pelaaja.y - y > -tyyppi->korkeus))
+				(pelaaja.y - y < type->korkeus && pelaaja.y - y > -type->korkeus))
 			{
-				double max = tyyppi->max_nopeus / 2.5;
+				double max = type->max_nopeus / 2.5;
 
 				if (x > pelaaja.x) {
 					a = max;
@@ -1410,7 +1410,7 @@ int PK2Sprite::AI_Pakenee_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 }
 int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 	if (energia > 0  && pelaaja.energia > 0){
-		double max = tyyppi->max_nopeus / 3.5;
+		double max = type->max_nopeus / 3.5;
 
 		if (pelaaja_x != -1){
 			if (a > -max && x > pelaaja_x)
@@ -1422,7 +1422,7 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 
 		if ((pelaaja.x < x && flip_x) || (pelaaja.x > x && ! flip_x)){
 			if ((pelaaja.x - x < 300 && pelaaja.x - x > -300) &&
-				(pelaaja.y - y < tyyppi->korkeus && pelaaja.y - y > -tyyppi->korkeus)){
+				(pelaaja.y - y < type->korkeus && pelaaja.y - y > -type->korkeus)){
 				pelaaja_x = (int)(pelaaja.x+pelaaja.a);
 				pelaaja_y = (int)(pelaaja.y+pelaaja.b);
 			}
@@ -1439,7 +1439,7 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja){
 int PK2Sprite::AI_Jahtaa_Pelaajaa(PK2Sprite &pelaaja){
 	if (energia > 0 && pelaaja.energia > 0)
 	{
-		double max = tyyppi->max_nopeus / 3.5;
+		double max = type->max_nopeus / 3.5;
 
 		if (pelaaja_x != -1)
 		{
@@ -1466,11 +1466,11 @@ int PK2Sprite::AI_Jahtaa_Pelaajaa(PK2Sprite &pelaaja){
 		}
 
 		if (((pelaaja.x < x && !flip_x) || (pelaaja.x > x && flip_x)) &&
-			pelaaja.hyokkays2 != pelaaja.tyyppi->latausaika)
+			pelaaja.hyokkays2 != pelaaja.type->latausaika)
 			return 0;
 
 		if ((pelaaja.x - x < 300 && pelaaja.x - x > -300) &&
-			(pelaaja.y - y < tyyppi->korkeus && pelaaja.y - y > -tyyppi->korkeus))
+			(pelaaja.y - y < type->korkeus && pelaaja.y - y > -type->korkeus))
 		{
 			pelaaja_x = (int)(pelaaja.x+pelaaja.a);
 			pelaaja_y = (int)(pelaaja.y+pelaaja.b);
@@ -1483,7 +1483,7 @@ int PK2Sprite::AI_Jahtaa_Pelaajaa(PK2Sprite &pelaaja){
 int PK2Sprite::AI_Seuraa_Pelaajaa_Vert_Hori(PK2Sprite &pelaaja){
 	if (energia > 0 && pelaaja.energia > 0)
 	{
-		double max = tyyppi->max_nopeus / 3.5;
+		double max = type->max_nopeus / 3.5;
 
 		if (a > -max && x > pelaaja.x)
 		{
@@ -1508,7 +1508,7 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Vert_Hori(PK2Sprite &pelaaja){
 		pelaaja_x = (int)(pelaaja.x+pelaaja.a);
 		pelaaja_y = (int)(pelaaja.y+pelaaja.b);
 
-		if (tyyppi->max_nopeus == 0)
+		if (type->max_nopeus == 0)
 		{
 			if (pelaaja.x < x)
 				flip_x = true;
@@ -1520,7 +1520,7 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Vert_Hori(PK2Sprite &pelaaja){
 }
 int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(PK2Sprite &pelaaja){
 	if (energia > 0  && pelaaja.energia > 0){
-		double max = tyyppi->max_nopeus / 3.5;
+		double max = type->max_nopeus / 3.5;
 
 		if (pelaaja_x != -1){
 			if (a > -max && x > pelaaja_x)
@@ -1552,43 +1552,43 @@ int PK2Sprite::AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(PK2Sprite &pelaaja){
 
 	return 0;
 }
-int PK2Sprite::AI_Muutos_Jos_Energiaa_Alle_2(PK2Sprite_Prototyyppi &muutos){
-	if (energia < 2 && muutos.indeksi != tyyppi->indeksi)
+int PK2Sprite::AI_Transformation_Jos_Energiaa_Alle_2(PK2Sprite_Prototype &muutos){
+	if (energia < 2 && muutos.indeksi != type->indeksi)
 	{
-		tyyppi = &muutos;
-		alkupaino = tyyppi->paino;
-		//ammus1 = tyyppi->ammus1;
-		//ammus2 = tyyppi->ammus2;
+		type = &muutos;
+		alkupaino = type->paino;
+		//ammus1 = type->ammus1;
+		//ammus2 = type->ammus2;
 		return 1;
 	}
 
 	return 0;
 }
-int PK2Sprite::AI_Muutos_Jos_Energiaa_Yli_1(PK2Sprite_Prototyyppi &muutos){
-	if (energia > 1 && muutos.indeksi != tyyppi->indeksi)
+int PK2Sprite::AI_Transformation_Jos_Energiaa_Yli_1(PK2Sprite_Prototype &muutos){
+	if (energia > 1 && muutos.indeksi != type->indeksi)
 	{
-		tyyppi = &muutos;
-		alkupaino = tyyppi->paino;
-		//ammus1 = tyyppi->ammus1;
-		//ammus2 = tyyppi->ammus2;
+		type = &muutos;
+		alkupaino = type->paino;
+		//ammus1 = type->ammus1;
+		//ammus2 = type->ammus2;
 		return 1;
 	}
 
 	return 0;
 }
-int PK2Sprite::AI_Muutos_Ajastin(PK2Sprite_Prototyyppi &muutos){
-	if (energia > 0 && muutos.indeksi != tyyppi->indeksi)
+int PK2Sprite::AI_Transformation_Ajastin(PK2Sprite_Prototype &muutos){
+	if (energia > 0 && muutos.indeksi != type->indeksi)
 	{
-		if (muutos_ajastin/*lataus*/ == 0)
-			muutos_ajastin/*lataus*/ = tyyppi->latausaika;
+		if (transformation_ajastin/*lataus*/ == 0)
+			transformation_ajastin/*lataus*/ = type->latausaika;
 
-		if (muutos_ajastin/*lataus*/ == 1)
+		if (transformation_ajastin/*lataus*/ == 1)
 		{
-			tyyppi = &muutos;
-			alkupaino = tyyppi->paino;
+			type = &muutos;
+			alkupaino = type->paino;
 
-			ammus1 = tyyppi->ammus1;
-			ammus2 = tyyppi->ammus2;
+			ammus1 = type->ammus1;
+			ammus2 = type->ammus2;
 
 			animaatio_index = -1;
 
@@ -1599,16 +1599,16 @@ int PK2Sprite::AI_Muutos_Ajastin(PK2Sprite_Prototyyppi &muutos){
 
 	return 0;
 }
-int PK2Sprite::AI_Muutos_Jos_Osuttu(PK2Sprite_Prototyyppi &muutos){
-	if (energia > 0 && muutos.indeksi != tyyppi->indeksi)
+int PK2Sprite::AI_Transformation_Jos_Osuttu(PK2Sprite_Prototype &muutos){
+	if (energia > 0 && muutos.indeksi != type->indeksi)
 	{
 		if (saatu_vahinko > 0)
 		{
-			tyyppi = &muutos;
-			alkupaino = tyyppi->paino;
+			type = &muutos;
+			alkupaino = type->paino;
 
-			ammus1 = tyyppi->ammus1;
-			ammus2 = tyyppi->ammus2;
+			ammus1 = type->ammus1;
+			ammus2 = type->ammus2;
 
 			animaatio_index = -1;
 
@@ -1626,7 +1626,7 @@ int PK2Sprite::AI_Tuhoutuu_Jos_Emo_Tuhoutuu(PK2Sprite *spritet){
 		if (spritet[emosprite].energia < 1 && energia > 0)
 		{
 			saatu_vahinko = energia;
-			this->saatu_vahinko_tyyppi = VAHINKO_KAIKKI;
+			this->saatu_vahinko_type = VAHINKO_KAIKKI;
 
 			return 1;
 		}
@@ -1637,7 +1637,7 @@ int PK2Sprite::AI_Tuhoutuu_Jos_Emo_Tuhoutuu(PK2Sprite *spritet){
 int PK2Sprite::AI_Hyokkays_1_Jos_Osuttu(){
 	if (saatu_vahinko > 0 && energia > 0)
 	{
-		this->hyokkays1 = this->tyyppi->hyokkays1_aika;
+		this->hyokkays1 = this->type->hyokkays1_aika;
 		this->lataus = 0;
 		return 1;
 	}
@@ -1647,7 +1647,7 @@ int PK2Sprite::AI_Hyokkays_1_Jos_Osuttu(){
 int PK2Sprite::AI_Hyokkays_2_Jos_Osuttu(){
 	if (saatu_vahinko > 0 && energia > 0)
 	{
-		this->hyokkays2 = this->tyyppi->hyokkays2_aika;
+		this->hyokkays2 = this->type->hyokkays2_aika;
 		this->lataus = 0;
 		return 1;
 	}
@@ -1657,7 +1657,7 @@ int PK2Sprite::AI_Hyokkays_2_Jos_Osuttu(){
 int PK2Sprite::AI_Hyokkays_1_Nonstop(){
 	if (this->lataus == 0 && energia > 0)
 	{
-		this->hyokkays1 = this->tyyppi->hyokkays1_aika;
+		this->hyokkays1 = this->type->hyokkays1_aika;
 		return 1;
 	}
 
@@ -1666,7 +1666,7 @@ int PK2Sprite::AI_Hyokkays_1_Nonstop(){
 int PK2Sprite::AI_Hyokkays_2_Nonstop(){
 	if (this->lataus == 0 && energia > 0)
 	{
-		this->hyokkays2 = this->tyyppi->hyokkays2_aika;
+		this->hyokkays2 = this->type->hyokkays2_aika;
 		return 1;
 	}
 
@@ -1676,11 +1676,11 @@ int PK2Sprite::AI_Hyokkays_1_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja){
 	if (energia > 0 && isku == 0 && pelaaja.energia > 0)
 	{
 		if ((pelaaja.x - x < 200 && pelaaja.x - x > -200) &&
-			(pelaaja.y - y < tyyppi->korkeus && pelaaja.y - y > -tyyppi->korkeus))
+			(pelaaja.y - y < type->korkeus && pelaaja.y - y > -type->korkeus))
 		{
 			if ((pelaaja.x < x && flip_x) || (pelaaja.x > x && !flip_x))
 			{
-				this->hyokkays1 = this->tyyppi->hyokkays1_aika;
+				this->hyokkays1 = this->type->hyokkays1_aika;
 				return 1;
 			}
 		}
@@ -1691,11 +1691,11 @@ int PK2Sprite::AI_Hyokkays_2_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja){
 	if (energia > 0 && isku == 0 && pelaaja.energia > 0)
 	{
 		if ((pelaaja.x - x < 200 && pelaaja.x - x > -200) &&
-			(pelaaja.y - y < tyyppi->korkeus && pelaaja.y - y > -tyyppi->korkeus))
+			(pelaaja.y - y < type->korkeus && pelaaja.y - y > -type->korkeus))
 		{
 			if ((pelaaja.x < x && flip_x) || (pelaaja.x > x && !flip_x))
 			{
-				this->hyokkays2 = this->tyyppi->hyokkays2_aika;
+				this->hyokkays2 = this->type->hyokkays2_aika;
 				return 1;
 			}
 		}
@@ -1705,10 +1705,10 @@ int PK2Sprite::AI_Hyokkays_2_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja){
 int PK2Sprite::AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(PK2Sprite &pelaaja){
 	if (energia > 0 && isku == 0 && pelaaja.energia > 0)
 	{
-		if ((pelaaja.x - x < tyyppi->leveys && pelaaja.x - x > -tyyppi->leveys) &&
+		if ((pelaaja.x - x < type->leveys && pelaaja.x - x > -type->leveys) &&
 			(pelaaja.y > y && pelaaja.y - y < 350))
 		{
-			this->hyokkays1 = this->tyyppi->hyokkays2_aika;
+			this->hyokkays1 = this->type->hyokkays2_aika;
 			return 1;
 		}
 	}
@@ -1717,7 +1717,7 @@ int PK2Sprite::AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(PK2Sprite &pelaaja){
 int PK2Sprite::AI_Hyppy_Jos_Pelaaja_Ylapuolella(PK2Sprite &pelaaja){
 	if (energia > 0 && hyppy_ajastin == 0 && pelaaja.energia > 0)
 	{
-		if ((pelaaja.x - x < tyyppi->leveys && pelaaja.x - x > -tyyppi->leveys) &&
+		if ((pelaaja.x - x < type->leveys && pelaaja.x - x > -type->leveys) &&
 			(pelaaja.y < y && y - pelaaja.y < 350))
 		{
 			hyppy_ajastin = 1;
@@ -1730,7 +1730,7 @@ int PK2Sprite::AI_NonStop(){
 	if (energia > 0)
 	{
 
-		double max = tyyppi->max_nopeus / 3.5;
+		double max = type->max_nopeus / 3.5;
 
 		if (flip_x)
 		{
@@ -1773,7 +1773,7 @@ int PK2Sprite::AI_Palaa_Alkuun_X(){
 	if (energia < 1 || pelaaja_x !=  -1)
 		return 0;
 
-	double max = tyyppi->max_nopeus / 3.5;
+	double max = type->max_nopeus / 3.5;
 
 	if (x < alku_x-16 && a < max)
 		a += 0.05;
@@ -1787,7 +1787,7 @@ int PK2Sprite::AI_Palaa_Alkuun_Y(){
 
 	if (energia > 0 && pelaaja_x == -1)
 	{
-		double max = tyyppi->max_nopeus / 3.5;
+		double max = type->max_nopeus / 3.5;
 
 		if (y < alku_y-16 && b < max)
 			b += 0.04;
@@ -1874,11 +1874,11 @@ int PK2Sprite::AI_Liikkuu_Jos_Kytkin_Painettu(int kytkin, int ak, int bk){
 	{
 		if (a == 0 && ak != 0)
 		{
-			a = tyyppi->max_nopeus / 3.5 * ak; // ak = -1 / 1
+			a = type->max_nopeus / 3.5 * ak; // ak = -1 / 1
 		}
 
 		if (b == 0 && bk != 0)
-			b = tyyppi->max_nopeus / 3.5 * bk; // bk = -1 / 1
+			b = type->max_nopeus / 3.5 * bk; // bk = -1 / 1
 	}
 
 	flip_x = false;
@@ -1887,7 +1887,7 @@ int PK2Sprite::AI_Liikkuu_Jos_Kytkin_Painettu(int kytkin, int ak, int bk){
 }
 bool PK2Sprite::AI_Info(PK2Sprite &pelaaja){
 	if ((pelaaja.x - x < 10 && pelaaja.x - x > -10) &&
-		(pelaaja.y - y < tyyppi->korkeus && pelaaja.y - y > -tyyppi->korkeus))
+		(pelaaja.y - y < type->korkeus && pelaaja.y - y > -type->korkeus))
 	{
 		return true;
 	}
@@ -1935,7 +1935,7 @@ int PK2Sprite::AI_Kana(){
 		if (rand()%200 == 10)
 			a = rand()%2 - rand()%2;
 
-		if (hyppy_ajastin == tyyppi->max_hyppy && a == 0)
+		if (hyppy_ajastin == type->max_hyppy && a == 0)
 		{
 			while (a == 0)
 				a = rand()%2 - rand()%2;
@@ -1990,7 +1990,7 @@ int PK2Sprite::AI_Muna(){
 	//a /= 1.01;
 
 	if (energia == 0 && lataus == 0)
-		lataus = tyyppi->latausaika;
+		lataus = type->latausaika;
 
 	if (this->lataus == 1)
 		this->piilota = true;
@@ -2015,12 +2015,12 @@ int PK2Sprite::AI_Ammus(){
 		flip_x = false;
 
 	if (this->lataus == 0)
-		lataus = this->tyyppi->latausaika;
+		lataus = this->type->latausaika;
 
 	if (this->lataus == 1)
 	{
-		this->saatu_vahinko = this->tyyppi->energia;
-		this->saatu_vahinko_tyyppi = VAHINKO_KAIKKI;
+		this->saatu_vahinko = this->type->energia;
+		this->saatu_vahinko_type = VAHINKO_KAIKKI;
 	}
 
 	if (energia < 1)
@@ -2030,12 +2030,12 @@ int PK2Sprite::AI_Ammus(){
 }
 int PK2Sprite::AI_Pommi(){
 	if (this->lataus == 0)
-		lataus = this->tyyppi->latausaika;
+		lataus = this->type->latausaika;
 
 	if (this->lataus == 1)
 	{
 		this->saatu_vahinko = this->energia;
-		this->saatu_vahinko_tyyppi = VAHINKO_KAIKKI;
+		this->saatu_vahinko_type = VAHINKO_KAIKKI;
 	}
 
 	return 0;
@@ -2045,8 +2045,8 @@ int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &
 
 	if (energia > 0 && lataus == 0 && hyokkays1 == 0)
 	{
-		if (sprite.x <= x + tyyppi->leveys /2 && sprite.x >= x - tyyppi->leveys /2 &&
-			sprite.y <= y + tyyppi->korkeus/2 && sprite.y >= y - tyyppi->korkeus/2 )
+		if (sprite.x <= x + type->leveys /2 && sprite.x >= x - type->leveys /2 &&
+			sprite.y <= y + type->korkeus/2 && sprite.y >= y - type->korkeus/2 )
 		{
 
 			int portit[1200];
@@ -2058,18 +2058,18 @@ int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &
 			for (i=0;i<max;i++)
 				portit[i] = -1;
 
-			// etsitaan SAMANTYYPPISET teleportit
+			// etsitaan SAMANtypeSET teleportit
 			for (i=0;i<max;i++)
-				if (spritet[i].tyyppi != NULL)
-					if (spritet[i].tyyppi->tyyppi == TYYPPI_TELEPORTTI &&
-						tyyppi->indeksi == spritet[i].tyyppi->indeksi)
+				if (spritet[i].type != NULL)
+					if (spritet[i].type->type == type_TELEPORTTI &&
+						type->indeksi == spritet[i].type->indeksi)
 					{
 						portit[portti_index] = i;
 						portti_index++;
 						porttien_maara++;
 					}
 
-			// jos yhtaan samantyyppista ei laydy...
+			// jos yhtaan samantypesta ei laydy...
 			if (porttien_maara == 0)
 			{
 				// ...etsitaan KAIKKI teleportit
@@ -2077,8 +2077,8 @@ int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &
 				porttien_maara = 0;
 
 				for (i=0;i<max;i++)
-					if (spritet[i].tyyppi != NULL)
-						if (spritet[i].tyyppi->tyyppi == TYYPPI_TELEPORTTI)
+					if (spritet[i].type != NULL)
+						if (spritet[i].type->type == type_TELEPORTTI)
 						{
 							portit[portti_index] = i;
 							portti_index++;
@@ -2099,14 +2099,14 @@ int PK2Sprite::AI_Teleportti(int oma_i, PK2Sprite *spritet, int max, PK2Sprite &
 			while(i == oma_i || i == -1)
 				i = portit[rand()%porttien_maara];
 
-			if (spritet[i].tyyppi != NULL)
+			if (spritet[i].type != NULL)
 			{
 				sprite.x = spritet[i].x;
 				sprite.y = spritet[i].y;
-				//lataus    = tyyppi->latausaika;
-				//hyokkays1 = tyyppi->hyokkays1_aika;
-				//spritet[i].lataus    = spritet[i].tyyppi->latausaika;
-				spritet[i].hyokkays1 = spritet[i].tyyppi->hyokkays1_aika;
+				//lataus    = type->latausaika;
+				//hyokkays1 = type->hyokkays1_aika;
+				//spritet[i].lataus    = spritet[i].type->latausaika;
+				spritet[i].hyokkays1 = spritet[i].type->hyokkays1_aika;
 				lataus = 0;
 				spritet[i].lataus = 0;
 				siirto = 1;
@@ -2148,7 +2148,7 @@ int PK2Sprite::Animaatio_Perus(){
 			alusta = false;
 		}
 
-		if ((hyppy_ajastin > tyyppi->max_hyppy || b > 1.5) && alas)
+		if ((hyppy_ajastin > type->max_hyppy || b > 1.5) && alas)
 		{
 			uusi_animaatio = ANIMAATIO_HYPPY_ALAS;
 			alusta = false;
@@ -2216,7 +2216,7 @@ int PK2Sprite::Animaatio_Kana(){
 			alusta = false;
 		}
 
-		if ((hyppy_ajastin > 90+10/*tyyppi->max_hyppy || b > 1.5*/) && alas)
+		if ((hyppy_ajastin > 90+10/*type->max_hyppy || b > 1.5*/) && alas)
 		{
 			uusi_animaatio = ANIMAATIO_HYPPY_ALAS;
 			alusta = false;
@@ -2268,7 +2268,7 @@ int PK2Sprite::Animaatio_Muna(){
 	uusi_animaatio = ANIMAATIO_PAIKALLA;
 	alusta = true;
 
-	if (energia < tyyppi->energia){
+	if (energia < type->energia){
 		uusi_animaatio = ANIMAATIO_KUOLEMA;
 		alusta = true;
 	}

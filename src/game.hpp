@@ -144,7 +144,7 @@ class SpriteSystem {
 
 	PK2Sprite* player;
 
-	PK2Sprite_Prototyyppi protot[MAX_PROTOTYYPPEJA];
+	PK2Sprite_Prototype protot[MAX_PROTOTYYPPEJA];
 	PK2Sprite spritet[MAX_SPRITEJA];
 	int taustaspritet[MAX_SPRITEJA];
 
@@ -171,7 +171,7 @@ class GiftSystem {
 	
 	int get(int i);
 	int count();
-	PK2Sprite_Prototyyppi* get_protot(int i);
+	PK2Sprite_Prototype* get_protot(int i);
 
 	void draw(int i, int x, int y);
 

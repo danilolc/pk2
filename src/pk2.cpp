@@ -1880,7 +1880,7 @@ void PK2::Particle_System::load_bg_particles(PK2Kartta* map) {
 		//taustapartikkelit[i].aika = 1;
 		//taustapartikkelit[i].anim = rand()%10;
 		//taustapartikkelit[i].b = rand()%9+1;
-		//taustapartikkelit[i].tyyppi = BGPARTICLE_NOTHING;
+		//taustapartikkelit[i].type = BGPARTICLE_NOTHING;
 		//taustapartikkelit[i].x = rand()%screen_width;
 		//taustapartikkelit[i].y = rand()%screen_height;
 		//taustapartikkelit[i].paino = rand()%10;
@@ -2135,10 +2135,10 @@ void PK2::SpriteSystem::protot_get_transformation(int i) {
 	int j = 0;
 	bool loaded = false;
 
-	if (strcmp(protot[i].muutos_sprite,"")!=0){
+	if (strcmp(protot[i].transformation_sprite,"")!=0){
 		while (j<MAX_PROTOTYYPPEJA && !loaded){
 			if (j!=i) {
-				if (strcmp(protot[i].muutos_sprite,protot[j].tiedosto)==0){
+				if (strcmp(protot[i].transformation_sprite,protot[j].tiedosto)==0){
 					protot[i].muutos = j;
 					loaded = true;
 				}
@@ -2147,7 +2147,7 @@ void PK2::SpriteSystem::protot_get_transformation(int i) {
 		}
 
 		if (!loaded) {
-			if (Get_Prototype(protot[i].muutos_sprite) == 0)
+			if (Get_Prototype(protot[i].transformation_sprite) == 0)
 				protot[i].muutos = next_free_prototype-1; // jokainen lataus kasvattaa next_free_prototype:a
 		}
 	}
@@ -2289,7 +2289,7 @@ void PK2::SpriteSystem::sort_bg() {
 				i = MAX_SPRITEJA;
 			else
 			{
-				if (spritet[taustaspritet[i]].tyyppi->pallarx_kerroin > spritet[taustaspritet[i+1]].tyyppi->pallarx_kerroin)
+				if (spritet[taustaspritet[i]].type->pallarx_kerroin > spritet[taustaspritet[i+1]].type->pallarx_kerroin)
 				{
 					vali = taustaspritet[i];
 					taustaspritet[i]   = taustaspritet[i+1];
@@ -2307,41 +2307,41 @@ void PK2::SpriteSystem::start_directions() {
 		if (/*pelaaja_index >= 0 && pelaaja_index < MAX_SPRITEJA && */!spritet[i].piilota){
 			spritet[i].a = 0;
 
-			if (spritet[i].tyyppi->Onko_AI(AI_RANDOM_ALOITUSSUUNTA_HORI)){
+			if (spritet[i].type->Onko_AI(AI_RANDOM_ALOITUSSUUNTA_HORI)){
 				while (spritet[i].a == 0) {
-					spritet[i].a = ((rand()%2 - rand()%2) * spritet[i].tyyppi->max_nopeus) / 3.5;//2;
+					spritet[i].a = ((rand()%2 - rand()%2) * spritet[i].type->max_nopeus) / 3.5;//2;
 				}
 			}
 
-			if (spritet[i].tyyppi->Onko_AI(AI_RANDOM_ALOITUSSUUNTA_VERT)){
+			if (spritet[i].type->Onko_AI(AI_RANDOM_ALOITUSSUUNTA_VERT)){
 				while (spritet[i].b == 0) {
-					spritet[i].b = ((rand()%2 - rand()%2) * spritet[i].tyyppi->max_nopeus) / 3.5;//2;
+					spritet[i].b = ((rand()%2 - rand()%2) * spritet[i].type->max_nopeus) / 3.5;//2;
 				}
 			}
 
-			if (spritet[i].tyyppi->Onko_AI(AI_ALOITUSSUUNTA_PELAAJAA_KOHTI)){
+			if (spritet[i].type->Onko_AI(AI_ALOITUSSUUNTA_PELAAJAA_KOHTI)){
 
 				if (spritet[i].x < player->x)
-					spritet[i].a = spritet[i].tyyppi->max_nopeus / 3.5;
+					spritet[i].a = spritet[i].type->max_nopeus / 3.5;
 
 				if (spritet[i].x > player->x)
-					spritet[i].a = (spritet[i].tyyppi->max_nopeus * -1) / 3.5;
+					spritet[i].a = (spritet[i].type->max_nopeus * -1) / 3.5;
 			}
 
-			if (spritet[i].tyyppi->Onko_AI(AI_ALOITUSSUUNTA_PELAAJAA_KOHTI_VERT)){
+			if (spritet[i].type->Onko_AI(AI_ALOITUSSUUNTA_PELAAJAA_KOHTI_VERT)){
 
 				if (spritet[i].y < player->y)
-					spritet[i].b = spritet[i].tyyppi->max_nopeus / -3.5;
+					spritet[i].b = spritet[i].type->max_nopeus / -3.5;
 
 				if (spritet[i].y > player->y)
-					spritet[i].b = spritet[i].tyyppi->max_nopeus / 3.5;
+					spritet[i].b = spritet[i].type->max_nopeus / 3.5;
 			}
 		}
 	}
 }
 
 void PK2::SpriteSystem::add(int protoype_id, int is_player, double x, double y, int emo, bool isbonus) {
-	PK2Sprite_Prototyyppi& proto = protot[protoype_id];
+	PK2Sprite_Prototype& proto = protot[protoype_id];
 	bool lisatty = false;
 	int i = 0;
 
@@ -2352,8 +2352,8 @@ void PK2::SpriteSystem::add(int protoype_id, int is_player, double x, double y, 
 			if (is_player) player = &spritet[i];
 
 			if(isbonus){ //If it is a bonus dropped by enemy
-				spritet[i].x += spritet[i].tyyppi->leveys;
-				spritet[i].y += spritet[i].tyyppi->korkeus/2;
+				spritet[i].x += spritet[i].type->leveys;
+				spritet[i].y += spritet[i].type->korkeus/2;
 				spritet[i].alku_x = spritet[i].x;
 				spritet[i].alku_y = spritet[i].y;
 				spritet[i].hyppy_ajastin = 1;
@@ -2361,12 +2361,12 @@ void PK2::SpriteSystem::add(int protoype_id, int is_player, double x, double y, 
 				spritet[i].isku = 35;//25
 			} else{
 				spritet[i].x = x + 16 + 1;
-				spritet[i].y += spritet[i].tyyppi->korkeus/2;
+				spritet[i].y += spritet[i].type->korkeus/2;
 				spritet[i].alku_x = spritet[i].x;
 				spritet[i].alku_y = spritet[i].y;
 			}
 
-			if (proto.tyyppi == TYYPPI_TAUSTA)
+			if (proto.type == type_TAUSTA)
 				add_bg(i);
 
 			if (emo != MAX_SPRITEJA)
@@ -2382,7 +2382,7 @@ void PK2::SpriteSystem::add(int protoype_id, int is_player, double x, double y, 
 }
 
 void PK2::SpriteSystem::add_ammo(int protoype_id, int is_player, double x, double y, int emo) {
-	PK2Sprite_Prototyyppi& proto = protot[protoype_id];
+	PK2Sprite_Prototype& proto = protot[protoype_id];
 	bool lisatty = false;
 	int i = 0;
 
@@ -2390,30 +2390,30 @@ void PK2::SpriteSystem::add_ammo(int protoype_id, int is_player, double x, doubl
 		if (spritet[i].piilota){
 			spritet[i] = PK2Sprite(&proto,is_player,false,x/*-proto.leveys/2*/,y);
 
-			//spritet[i].x += spritet[i].tyyppi->leveys;
-			//spritet[i].y += spritet[i].tyyppi->korkeus/2;
+			//spritet[i].x += spritet[i].type->leveys;
+			//spritet[i].y += spritet[i].type->korkeus/2;
 
 			if (proto.Onko_AI(AI_HEITTOASE)){
 				if ((int)spritet[emo].a == 0){
 					// Jos "ampuja" on pelaaja tai ammuksen nopeus on nolla
-					if (spritet[emo].pelaaja == 1 || spritet[i].tyyppi->max_nopeus == 0){
+					if (spritet[emo].pelaaja == 1 || spritet[i].type->max_nopeus == 0){
 						if (!spritet[emo].flip_x)
-							spritet[i].a = spritet[i].tyyppi->max_nopeus;
+							spritet[i].a = spritet[i].type->max_nopeus;
 						else
-							spritet[i].a = -spritet[i].tyyppi->max_nopeus;
+							spritet[i].a = -spritet[i].type->max_nopeus;
 					}
 					else{ // tai jos kyseess� on vihollinen
 						if (!spritet[emo].flip_x)
-							spritet[i].a = 1 + rand()%(int)spritet[i].tyyppi->max_nopeus;
+							spritet[i].a = 1 + rand()%(int)spritet[i].type->max_nopeus;
 						else
-							spritet[i].a = -1 - rand()%-(int)spritet[i].tyyppi->max_nopeus;
+							spritet[i].a = -1 - rand()%-(int)spritet[i].type->max_nopeus;
 					}
 				}
 				else{
 					if (!spritet[emo].flip_x)
-						spritet[i].a = spritet[i].tyyppi->max_nopeus + spritet[emo].a;
+						spritet[i].a = spritet[i].type->max_nopeus + spritet[emo].a;
 					else
-						spritet[i].a = -spritet[i].tyyppi->max_nopeus + spritet[emo].a;
+						spritet[i].a = -spritet[i].type->max_nopeus + spritet[emo].a;
 
 					//spritet[i].a = spritet[emo].a * 1.5;
 
@@ -2428,9 +2428,9 @@ void PK2::SpriteSystem::add_ammo(int protoype_id, int is_player, double x, doubl
 			}
 			else{
 				if (!spritet[emo].flip_x)
-					spritet[i].a = spritet[i].tyyppi->max_nopeus;
+					spritet[i].a = spritet[i].type->max_nopeus;
 				else
-					spritet[i].a = -spritet[i].tyyppi->max_nopeus;
+					spritet[i].a = -spritet[i].type->max_nopeus;
 			}
 
 			if (emo != MAX_SPRITEJA){
@@ -2441,7 +2441,7 @@ void PK2::SpriteSystem::add_ammo(int protoype_id, int is_player, double x, doubl
 				spritet[i].emosprite = i;
 			}
 
-			if (proto.tyyppi == TYYPPI_TAUSTA)
+			if (proto.type == type_TAUSTA)
 				add_bg(i);
 
 			lisatty = true;
@@ -2877,12 +2877,12 @@ int PK2::GiftSystem::get(int i) {
 	return list[i];
 }
 
-PK2Sprite_Prototyyppi* PK2::GiftSystem::get_protot(int i) {
+PK2Sprite_Prototype* PK2::GiftSystem::get_protot(int i) {
 	return &Game::Sprites->protot[ list[i] ];
 }
 
 void PK2::GiftSystem::draw(int i, int x, int y) {
-	PK2Sprite_Prototyyppi* prot = &Game::Sprites->protot[ list[i] ];
+	PK2Sprite_Prototype* prot = &Game::Sprites->protot[ list[i] ];
 	prot->Piirra(x - prot->leveys / 2, y - prot->korkeus / 2, 0);
 }
 
@@ -3067,7 +3067,7 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_TULI && kytkin1 == 0 && sprite.isku == 0){
 			sprite.saatu_vahinko = 2;
-			sprite.saatu_vahinko_tyyppi = VAHINKO_TULI;
+			sprite.saatu_vahinko_type = VAHINKO_TULI;
 		}
 
 		/**********************************************************************/
@@ -3102,7 +3102,7 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_TULI && kytkin1 == 0 && sprite.isku == 0){
 			sprite.saatu_vahinko = 2;
-			sprite.saatu_vahinko_tyyppi = VAHINKO_TULI;
+			sprite.saatu_vahinko_type = VAHINKO_TULI;
 		}
 	}
 
@@ -3129,13 +3129,13 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		/* Examine if it is a key and touches lock wall                       */
 		/**********************************************************************/
-		if (palikka.koodi == BLOCK_LUKKO && sprite.tyyppi->avain){
+		if (palikka.koodi == BLOCK_LUKKO && sprite.type->avain){
 			kartta->seinat[palikka.vasen/32+(palikka.yla/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
 			kartta->Calculate_Edges();
 
 			sprite.piilota = true;
 
-			if (sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU) {
+			if (sprite.type->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU) {
 				avaimia--;
 				if (avaimia < 1)
 					kartta->Open_Locks();
@@ -3244,7 +3244,7 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 					if (sprite_yla < palikka.ala) {
 						if (palikka.koodi == BLOCK_HISSI_VERT && sprite.kyykky) {
 							sprite.saatu_vahinko = 2;
-							sprite.saatu_vahinko_tyyppi = VAHINKO_ISKU;
+							sprite.saatu_vahinko_type = VAHINKO_ISKU;
 						}
 
 						if (palikka.koodi != BLOCK_HISSI_HORI) {
@@ -3266,7 +3266,7 @@ int PK_Sprite_Movement(int i){
 
 	PK2Sprite &sprite = Game::Sprites->spritet[i]; //address of sprite = address of spritet[i] (if change sprite, change spritet[i])
 
-	if (!sprite.tyyppi)
+	if (!sprite.type)
 		return -1;
 
 	sprite_x = sprite.x;
@@ -3274,15 +3274,15 @@ int PK_Sprite_Movement(int i){
 	sprite_a = sprite.a;
 	sprite_b = sprite.b;
 
-	sprite_leveys  = sprite.tyyppi->leveys;
-	sprite_korkeus = sprite.tyyppi->korkeus;
+	sprite_leveys  = sprite.type->leveys;
+	sprite_korkeus = sprite.type->korkeus;
 
 	sprite_vasen = sprite_x-sprite_leveys/2;
 	sprite_oikea = sprite_x+sprite_leveys/2;
 	sprite_yla	 = sprite_y-sprite_korkeus/2;
 	sprite_ala	 = sprite_y+sprite_korkeus/2;
 
-	max_nopeus = (BYTE)sprite.tyyppi->max_nopeus;
+	max_nopeus = (BYTE)sprite.type->max_nopeus;
 
 	vedessa = sprite.vedessa;
 
@@ -3318,8 +3318,8 @@ int PK_Sprite_Movement(int i){
 	if (sprite.lataus > 0)	// aika kahden ampumisen (munimisen) v�lill�
 		sprite.lataus --;
 
-	if (sprite.muutos_ajastin > 0)	// aika muutokseen
-		sprite.muutos_ajastin --;
+	if (sprite.transformation_ajastin > 0)	// aika muutokseen
+		sprite.transformation_ajastin --;
 
 	/*****************************************************************************************/
 	/* Player-sprite and its controls                                                        */
@@ -3337,10 +3337,10 @@ int PK_Sprite_Movement(int i){
 
 		/* ATTACK 1 */
 		if ((PisteInput_Keydown(settings.control_attack1) || PisteInput_Gamepad_Button(settings.gamepad_attack1)) && sprite.lataus == 0 && sprite.ammus1 != -1)
-			sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
+			sprite.hyokkays1 = sprite.type->hyokkays1_aika;
 		/* ATTACK 2 */
 		else if ((PisteInput_Keydown(settings.control_attack2) || PisteInput_Gamepad_Button(settings.gamepad_attack2)) && sprite.lataus == 0 && sprite.ammus2 != -1)
-				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
+				sprite.hyokkays2 = sprite.type->hyokkays2_aika;
 
 		/* CROUCH */
 		sprite.kyykky = false;
@@ -3392,12 +3392,12 @@ int PK_Sprite_Movement(int i){
 		sprite_a += a_lisays;
 
 		/* JUMPING */
-		if (sprite.tyyppi->paino > 0) {
+		if (sprite.type->paino > 0) {
 			if (PisteInput_Keydown(settings.control_jump) || PisteInput_Gamepad_Button(settings.gamepad_jump)) {
 				if (!sprite.kyykky) {
 					if (sprite.hyppy_ajastin == 0)
 						PK_Play_Sound(hyppy_aani, 100, (int)sprite_x, (int)sprite_y,
-									  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+									  sprite.type->aani_frq, sprite.type->random_frq);
 
 					if (sprite.hyppy_ajastin <= 0)
 						sprite.hyppy_ajastin = 1; //10;
@@ -3409,7 +3409,7 @@ int PK_Sprite_Movement(int i){
 
 			/* tippuminen hiljaa alasp�in */
 			if ((PisteInput_Keydown(settings.control_jump) || PisteInput_Gamepad_Button(settings.gamepad_jump)) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
-				sprite.tyyppi->liitokyky)
+				sprite.type->liitokyky)
 				hidastus = true;
 		}
 		/* MOVING UP AND DOWN */
@@ -3426,22 +3426,22 @@ int PK_Sprite_Movement(int i){
 
 		/* AI */
 		for (int ai=0;ai < SPRITE_MAX_AI;ai++)
-			switch (sprite.tyyppi->AI[ai]){
+			switch (sprite.type->AI[ai]){
 			
 			case AI_MUUTOS_JOS_ENERGIAA_ALLE_2:
-				if (sprite.tyyppi->muutos > -1)
-					sprite.AI_Muutos_Jos_Energiaa_Alle_2(Game::Sprites->protot[sprite.tyyppi->muutos]);
+				if (sprite.type->muutos > -1)
+					sprite.AI_Transformation_Jos_Energiaa_Alle_2(Game::Sprites->protot[sprite.type->muutos]);
 			break;
 			
 			case AI_MUUTOS_JOS_ENERGIAA_YLI_1:
-			if (sprite.tyyppi->muutos > -1)
-				if (sprite.AI_Muutos_Jos_Energiaa_Yli_1(Game::Sprites->protot[sprite.tyyppi->muutos])==1)
+			if (sprite.type->muutos > -1)
+				if (sprite.AI_Transformation_Jos_Energiaa_Yli_1(Game::Sprites->protot[sprite.type->muutos])==1)
 					Effect::Destruction(TUHOUTUMINEN_SAVU_HARMAA, (DWORD)sprite.x, (DWORD)sprite.y);
 			break;
 			
 			case AI_MUUTOS_AJASTIN:
-				if (sprite.tyyppi->muutos > -1)
-					sprite.AI_Muutos_Ajastin(Game::Sprites->protot[sprite.tyyppi->muutos]);
+				if (sprite.type->muutos > -1)
+					sprite.AI_Transformation_Ajastin(Game::Sprites->protot[sprite.type->muutos]);
 			break;
 			
 			case AI_VAHINGOITTUU_VEDESTA:
@@ -3449,15 +3449,15 @@ int PK_Sprite_Movement(int i){
 			break;
 			
 			case AI_MUUTOS_JOS_OSUTTU:
-				if (sprite.tyyppi->muutos > -1)
-					sprite.AI_Muutos_Jos_Osuttu(Game::Sprites->protot[sprite.tyyppi->muutos]);
+				if (sprite.type->muutos > -1)
+					sprite.AI_Transformation_Jos_Osuttu(Game::Sprites->protot[sprite.type->muutos]);
 			break;
 
 			default: break;
 			}
 
 		/* It is not acceptable that a player is anything other than the game character */
-		if (sprite.tyyppi->tyyppi != TYYPPI_PELIHAHMO)
+		if (sprite.type->type != type_PELIHAHMO)
 			sprite.energia = 0;
 	}
 
@@ -3469,17 +3469,17 @@ int PK_Sprite_Movement(int i){
 
 	// Jos ollaan hyp�tty / ilmassa:
 	if (sprite.hyppy_ajastin > 0) {
-		if (sprite.hyppy_ajastin < 50-sprite.tyyppi->max_hyppy)
-			sprite.hyppy_ajastin = 50-sprite.tyyppi->max_hyppy;
+		if (sprite.hyppy_ajastin < 50-sprite.type->max_hyppy)
+			sprite.hyppy_ajastin = 50-sprite.type->max_hyppy;
 
 		if (sprite.hyppy_ajastin < 10)
 			sprite.hyppy_ajastin = 10;
 
 		if (!hyppy_maximissa) {
-		// sprite_b = (sprite.tyyppi->max_hyppy/2 - sprite.hyppy_ajastin/2)/-2.0;//-4
-		   sprite_b = -sin_table[sprite.hyppy_ajastin]/8;//(sprite.tyyppi->max_hyppy/2 - sprite.hyppy_ajastin/2)/-2.5;
-			if (sprite_b > sprite.tyyppi->max_hyppy){
-				sprite_b = sprite.tyyppi->max_hyppy/10.0;
+		// sprite_b = (sprite.type->max_hyppy/2 - sprite.hyppy_ajastin/2)/-2.0;//-4
+		   sprite_b = -sin_table[sprite.hyppy_ajastin]/8;//(sprite.type->max_hyppy/2 - sprite.hyppy_ajastin/2)/-2.5;
+			if (sprite_b > sprite.type->max_hyppy){
+				sprite_b = sprite.type->max_hyppy/10.0;
 				sprite.hyppy_ajastin = 90 - sprite.hyppy_ajastin;
 			}
 
@@ -3493,7 +3493,7 @@ int PK_Sprite_Movement(int i){
 		sprite.hyppy_ajastin++;
 
 	if (sprite_b > 0 && !hyppy_maximissa)
-		sprite.hyppy_ajastin = 90;//sprite.tyyppi->max_hyppy*2;
+		sprite.hyppy_ajastin = 90;//sprite.type->max_hyppy*2;
 
 	/*****************************************************************************************/
 	/* Hit recovering                                                                        */
@@ -3544,7 +3544,7 @@ int PK_Sprite_Movement(int i){
 	    palikat_lkm;
 	DWORD p;
 
-	if (sprite.tyyppi->tiletarkistus){ //Find the tiles that the sprite occupies
+	if (sprite.type->tiletarkistus){ //Find the tiles that the sprite occupies
 
 		palikat_x_lkm = (int)((sprite_leveys) /32)+4; //Number of blocks
 		palikat_y_lkm = (int)((sprite_korkeus)/32)+4;
@@ -3577,7 +3577,7 @@ int PK_Sprite_Movement(int i){
 
 	if (sprite.vedessa) {
 
-		if (!sprite.tyyppi->osaa_uida || sprite.energia < 1) {
+		if (!sprite.type->osaa_uida || sprite.energia < 1) {
 			/*
 			if (sprite_b > 0)
 				sprite_b /= 2.0;
@@ -3624,22 +3624,22 @@ int PK_Sprite_Movement(int i){
 
 		if (sprite_index != i && /*!sprite2->piilota*/sprite2->aktiivinen) {
 			if (sprite2->kyykky)
-				sprite2_yla = sprite2->tyyppi->korkeus / 3;//1.5;
+				sprite2_yla = sprite2->type->korkeus / 3;//1.5;
 			else
 				sprite2_yla = 0;
 
-			if (sprite2->tyyppi->este && sprite.tyyppi->tiletarkistus) { //If there is a block sprite active
+			if (sprite2->type->este && sprite.type->tiletarkistus) { //If there is a block sprite active
 
-				if (sprite_x-sprite_leveys/2 +sprite_a  <= sprite2->x + sprite2->tyyppi->leveys /2 &&
-					sprite_x+sprite_leveys/2 +sprite_a  >= sprite2->x - sprite2->tyyppi->leveys /2 &&
-					sprite_y-sprite_korkeus/2+sprite_b <= sprite2->y + sprite2->tyyppi->korkeus/2 &&
-					sprite_y+sprite_korkeus/2+sprite_b >= sprite2->y - sprite2->tyyppi->korkeus/2)
+				if (sprite_x-sprite_leveys/2 +sprite_a  <= sprite2->x + sprite2->type->leveys /2 &&
+					sprite_x+sprite_leveys/2 +sprite_a  >= sprite2->x - sprite2->type->leveys /2 &&
+					sprite_y-sprite_korkeus/2+sprite_b <= sprite2->y + sprite2->type->korkeus/2 &&
+					sprite_y+sprite_korkeus/2+sprite_b >= sprite2->y - sprite2->type->korkeus/2)
 				{
 					spritepalikka.koodi = 0;
-					spritepalikka.ala   = (int)sprite2->y + sprite2->tyyppi->korkeus/2;
-					spritepalikka.oikea = (int)sprite2->x + sprite2->tyyppi->leveys/2;
-					spritepalikka.vasen = (int)sprite2->x - sprite2->tyyppi->leveys/2;
-					spritepalikka.yla   = (int)sprite2->y - sprite2->tyyppi->korkeus/2;
+					spritepalikka.ala   = (int)sprite2->y + sprite2->type->korkeus/2;
+					spritepalikka.oikea = (int)sprite2->x + sprite2->type->leveys/2;
+					spritepalikka.vasen = (int)sprite2->x - sprite2->type->leveys/2;
+					spritepalikka.yla   = (int)sprite2->y - sprite2->type->korkeus/2;
 
 					spritepalikka.vesi  = false;
 
@@ -3647,29 +3647,29 @@ int PK_Sprite_Movement(int i){
 					/*
 					PK_Block_Set_Barriers(spritepalikka);
 
-					if (!sprite.tyyppi->este)
+					if (!sprite.type->este)
 					{
-						if (!sprite2->tyyppi->este_alas)
+						if (!sprite2->type->este_alas)
 							spritepalikka.alas		 = BLOCK_TAUSTA;
-						if (!sprite2->tyyppi->este_ylos)
+						if (!sprite2->type->este_ylos)
 							spritepalikka.ylos		 = BLOCK_TAUSTA;
-						if (!sprite2->tyyppi->este_oikealle)
+						if (!sprite2->type->este_oikealle)
 							spritepalikka.oikealle   = BLOCK_TAUSTA;
-						if (!sprite2->tyyppi->este_vasemmalle)
+						if (!sprite2->type->este_vasemmalle)
 							spritepalikka.vasemmalle = BLOCK_TAUSTA;
 					}
 					*/
 
 					PK_Block_Set_Barriers(spritepalikka);
 
-					if (!sprite.tyyppi->este){
-						if (!sprite2->tyyppi->este_alas)
+					if (!sprite.type->este){
+						if (!sprite2->type->este_alas)
 							spritepalikka.alas = BLOCK_TAUSTA;
-						if (!sprite2->tyyppi->este_ylos)
+						if (!sprite2->type->este_ylos)
 							spritepalikka.ylos = BLOCK_TAUSTA;
-						if (!sprite2->tyyppi->este_oikealle)
+						if (!sprite2->type->este_oikealle)
 							spritepalikka.oikealle = BLOCK_TAUSTA;
-						if (!sprite2->tyyppi->este_vasemmalle)
+						if (!sprite2->type->este_vasemmalle)
 							spritepalikka.vasemmalle = BLOCK_TAUSTA;
 					}
 
@@ -3683,13 +3683,13 @@ int PK_Sprite_Movement(int i){
 				}
 			}
 
-			if (sprite_x <= sprite2->x + sprite2->tyyppi->leveys /2 &&
-				sprite_x >= sprite2->x - sprite2->tyyppi->leveys /2 &&
-				sprite_y/*yla*/ <= sprite2->y + sprite2->tyyppi->korkeus/2 &&
-				sprite_y/*ala*/ >= sprite2->y - sprite2->tyyppi->korkeus/2 + sprite2_yla)
+			if (sprite_x <= sprite2->x + sprite2->type->leveys /2 &&
+				sprite_x >= sprite2->x - sprite2->type->leveys /2 &&
+				sprite_y/*yla*/ <= sprite2->y + sprite2->type->korkeus/2 &&
+				sprite_y/*ala*/ >= sprite2->y - sprite2->type->korkeus/2 + sprite2_yla)
 			{
 				// samanmerkkiset spritet vaihtavat suuntaa t�rm�tess��n
-				if (sprite.tyyppi->indeksi == sprite2->tyyppi->indeksi &&
+				if (sprite.type->indeksi == sprite2->type->indeksi &&
 					sprite2->energia > 0/* && sprite.pelaaja == 0*/)
 				{
 					if (sprite.x < sprite2->x)
@@ -3702,23 +3702,23 @@ int PK_Sprite_Movement(int i){
 						ylos = false;
 				}
 
-				if (sprite.tyyppi->Onko_AI(AI_NUOLET_VAIKUTTAVAT)) {
+				if (sprite.type->Onko_AI(AI_NUOLET_VAIKUTTAVAT)) {
 
-					if (sprite2->tyyppi->Onko_AI(AI_NUOLI_OIKEALLE)) {
-						sprite_a = sprite.tyyppi->max_nopeus / 3.5;
+					if (sprite2->type->Onko_AI(AI_NUOLI_OIKEALLE)) {
+						sprite_a = sprite.type->max_nopeus / 3.5;
 						sprite_b = 0;
 					}
-					else if (sprite2->tyyppi->Onko_AI(AI_NUOLI_VASEMMALLE)) {
-						sprite_a = sprite.tyyppi->max_nopeus / -3.5;
+					else if (sprite2->type->Onko_AI(AI_NUOLI_VASEMMALLE)) {
+						sprite_a = sprite.type->max_nopeus / -3.5;
 						sprite_b = 0;
 					}
 
-					if (sprite2->tyyppi->Onko_AI(AI_NUOLI_YLOS)) {
-						sprite_b = sprite.tyyppi->max_nopeus / -3.5;
+					if (sprite2->type->Onko_AI(AI_NUOLI_YLOS)) {
+						sprite_b = sprite.type->max_nopeus / -3.5;
 						sprite_a = 0;
 					}
-					else if (sprite2->tyyppi->Onko_AI(AI_NUOLI_ALAS)) {
-						sprite_b = sprite.tyyppi->max_nopeus / 3.5;
+					else if (sprite2->type->Onko_AI(AI_NUOLI_ALAS)) {
+						sprite_b = sprite.type->max_nopeus / 3.5;
 						sprite_a = 0;
 					}
 				}
@@ -3732,9 +3732,9 @@ int PK_Sprite_Movement(int i){
 
 
 				if (sprite.vihollinen != sprite2->vihollinen && sprite.emosprite != sprite_index) {
-					if (sprite2->tyyppi->tyyppi != TYYPPI_TAUSTA &&
-						sprite.tyyppi->tyyppi   != TYYPPI_TAUSTA &&
-						sprite2->tyyppi->tyyppi != TYYPPI_TELEPORTTI &&
+					if (sprite2->type->type != type_TAUSTA &&
+						sprite.type->type   != type_TAUSTA &&
+						sprite2->type->type != type_TELEPORTTI &&
 						sprite2->isku == 0 &&
 						sprite.isku == 0 &&
 						sprite2->energia > 0 &&
@@ -3745,33 +3745,33 @@ int PK_Sprite_Movement(int i){
 						// Tippuuko toinen sprite p��lle?
 
 						if (sprite2->b > 2 && sprite2->paino >= 0.5 &&
-							sprite2->y < sprite_y && !sprite.tyyppi->este &&
-							sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
+							sprite2->y < sprite_y && !sprite.type->este &&
+							sprite.type->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
 						{
 							//sprite.saatu_vahinko = (int)sprite2->paino;//1;
 							sprite.saatu_vahinko = (int)(sprite2->paino+sprite2->b/4);
-							sprite.saatu_vahinko_tyyppi = VAHINKO_PUDOTUS;
+							sprite.saatu_vahinko_type = VAHINKO_PUDOTUS;
 							sprite2->hyppy_ajastin = 1;
 						}
 
 						// If there is another sprite damaging
-						if (sprite.tyyppi->vahinko > 0 && sprite2->tyyppi->tyyppi != TYYPPI_BONUS) {
+						if (sprite.type->vahinko > 0 && sprite2->type->type != type_BONUS) {
 							
-							sprite2->saatu_vahinko        = sprite.tyyppi->vahinko;
-							sprite2->saatu_vahinko_tyyppi = sprite.tyyppi->vahinko_tyyppi;
+							sprite2->saatu_vahinko        = sprite.type->vahinko;
+							sprite2->saatu_vahinko_type = sprite.type->vahinko_type;
 							
 							if ( !(sprite2->pelaaja && nakymattomyys) ) //If sprite2 isn't a invisible player
-								sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika; //Then sprite attack
+								sprite.hyokkays1 = sprite.type->hyokkays1_aika; //Then sprite attack
 
 							// The projectiles are shattered by shock
-							if (sprite2->tyyppi->tyyppi == TYYPPI_AMMUS) {
-								sprite.saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
-								sprite.saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
+							if (sprite2->type->type == type_AMMUS) {
+								sprite.saatu_vahinko = 1;//sprite2->type->vahinko;
+								sprite.saatu_vahinko_type = sprite2->type->vahinko_type;
 							}
 
-							if (sprite.tyyppi->tyyppi == TYYPPI_AMMUS) {
-								sprite.saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
-								sprite.saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
+							if (sprite.type->type == type_AMMUS) {
+								sprite.saatu_vahinko = 1;//sprite2->type->vahinko;
+								sprite.saatu_vahinko_type = sprite2->type->vahinko_type;
 							}
 						}
 					}
@@ -3779,7 +3779,7 @@ int PK_Sprite_Movement(int i){
 
 				// lis�t��n spriten painoon sit� koskettavan toisen spriten paino
 				if (sprite.paino > 0)
-					sprite.kytkinpaino += sprite2->tyyppi->paino;
+					sprite.kytkinpaino += sprite2->type->paino;
 
 			}
 		}
@@ -3790,27 +3790,27 @@ int PK_Sprite_Movement(int i){
 	/*****************************************************************************************/
 
 	// Just fire can damage a invisible player
-	if (nakymattomyys > 0 && sprite.saatu_vahinko != 0 && sprite.saatu_vahinko_tyyppi != VAHINKO_TULI &&
+	if (nakymattomyys > 0 && sprite.saatu_vahinko != 0 && sprite.saatu_vahinko_type != VAHINKO_TULI &&
 		&sprite == Game::Sprites->player /*i == pelaaja_index*/) {
 		sprite.saatu_vahinko = 0;
-		sprite.saatu_vahinko_tyyppi = VAHINKO_EI;
+		sprite.saatu_vahinko_type = VAHINKO_EI;
 	}
 
-	if (sprite.saatu_vahinko != 0 && sprite.energia > 0 && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
-		if (sprite.tyyppi->suojaus != sprite.saatu_vahinko_tyyppi || sprite.tyyppi->suojaus == VAHINKO_EI){
+	if (sprite.saatu_vahinko != 0 && sprite.energia > 0 && sprite.type->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
+		if (sprite.type->suojaus != sprite.saatu_vahinko_type || sprite.type->suojaus == VAHINKO_EI){
 			sprite.energia -= sprite.saatu_vahinko;
 			sprite.isku = VAHINKO_AIKA;
 
-			if (sprite.saatu_vahinko_tyyppi == VAHINKO_SAHKO)
+			if (sprite.saatu_vahinko_type == VAHINKO_SAHKO)
 				sprite.isku *= 6;
 
-			PK_Play_Sound(sprite.tyyppi->aanet[AANI_VAHINKO], 100, (int)sprite.x, (int)sprite.y,
-						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+			PK_Play_Sound(sprite.type->aanet[AANI_VAHINKO], 100, (int)sprite.x, (int)sprite.y,
+						  sprite.type->aani_frq, sprite.type->random_frq);
 
-			if (sprite.tyyppi->tuhoutuminen%100 == TUHOUTUMINEN_HOYHENET)
+			if (sprite.type->tuhoutuminen%100 == TUHOUTUMINEN_HOYHENET)
 				Effect::Destruction(TUHOUTUMINEN_HOYHENET, (DWORD)sprite.x, (DWORD)sprite.y);
 
-			if (sprite.tyyppi->tyyppi != TYYPPI_AMMUS){
+			if (sprite.type->type != type_AMMUS){
 				Game::Particles->new_particle(PARTICLE_STAR,sprite_x,sprite_y,-1,-1,60,0.01,128);
 				Game::Particles->new_particle(PARTICLE_STAR,sprite_x,sprite_y, 0,-1,60,0.01,128);
 				Game::Particles->new_particle(PARTICLE_STAR,sprite_x,sprite_y, 1,-1,60,0.01,128);
@@ -3820,19 +3820,19 @@ int PK_Sprite_Movement(int i){
 				kartta->Change_SkullBlocks();
 
 			if (sprite.Onko_AI(AI_HYOKKAYS_1_JOS_OSUTTU)){
-				sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
+				sprite.hyokkays1 = sprite.type->hyokkays1_aika;
 				sprite.lataus = 0;
 			}
 
 			if (sprite.Onko_AI(AI_HYOKKAYS_2_JOS_OSUTTU)){
-				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
+				sprite.hyokkays2 = sprite.type->hyokkays2_aika;
 				sprite.lataus = 0;
 			}
 
 		}
 
 		sprite.saatu_vahinko = 0;
-		sprite.saatu_vahinko_tyyppi = VAHINKO_EI;
+		sprite.saatu_vahinko_type = VAHINKO_EI;
 
 
 		/*****************************************************************************************/
@@ -3840,13 +3840,13 @@ int PK_Sprite_Movement(int i){
 		/*****************************************************************************************/
 
 		if (sprite.energia < 1){
-			tuhoutuminen = sprite.tyyppi->tuhoutuminen;
+			tuhoutuminen = sprite.type->tuhoutuminen;
 
 			if (tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
-				if (sprite.tyyppi->bonus > -1 && sprite.tyyppi->bonusten_lkm > 0)
-					if (sprite.tyyppi->bonus_aina || rand()%4 == 1)
-						for (int bi=0; bi<sprite.tyyppi->bonusten_lkm; bi++)
-							Game::Sprites->add(sprite.tyyppi->bonus,0,sprite_x-11+(10-rand()%20),
+				if (sprite.type->bonus > -1 && sprite.type->bonusten_lkm > 0)
+					if (sprite.type->bonus_aina || rand()%4 == 1)
+						for (int bi=0; bi<sprite.type->bonusten_lkm; bi++)
+							Game::Sprites->add(sprite.type->bonus,0,sprite_x-11+(10-rand()%20),
 											  sprite_ala-16-(10+rand()%20), i, true);
 
 				if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_TYRMATTY) && !sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
@@ -3858,18 +3858,18 @@ int PK_Sprite_Movement(int i){
 					sprite.piilota = true;
 
 				Effect::Destruction(tuhoutuminen, (DWORD)sprite.x, (DWORD)sprite.y);
-				PK_Play_Sound(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
-							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+				PK_Play_Sound(sprite.type->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
+							  sprite.type->aani_frq, sprite.type->random_frq);
 
 				if (sprite.Onko_AI(AI_UUSI_JOS_TUHOUTUU)) {
-					Game::Sprites->add(sprite.tyyppi->indeksi,0,sprite.alku_x-sprite.tyyppi->leveys, sprite.alku_y-sprite.tyyppi->korkeus,i, false);
-				} //TODO - does sprite.tyyppi->indeksi work
+					Game::Sprites->add(sprite.type->indeksi,0,sprite.alku_x-sprite.type->leveys, sprite.alku_y-sprite.type->korkeus,i, false);
+				} //TODO - does sprite.type->indeksi work
 
-				if (sprite.tyyppi->tyyppi == TYYPPI_PELIHAHMO && sprite.tyyppi->pisteet != 0){
+				if (sprite.type->type == type_PELIHAHMO && sprite.type->pisteet != 0){
 					char luku[10];
-					itoa(sprite.tyyppi->pisteet,luku,10);
+					itoa(sprite.type->pisteet,luku,10);
 					PK_Fadetext_New(fontti2,luku,(int)Game::Sprites->spritet[i].x-8,(int)Game::Sprites->spritet[i].y-8,80,false);
-					piste_lisays += sprite.tyyppi->pisteet;
+					piste_lisays += sprite.type->pisteet;
 				}
 			} else
 				sprite.energia = 1;
@@ -3877,7 +3877,7 @@ int PK_Sprite_Movement(int i){
 	}
 
 	if (sprite.isku == 0)
-		sprite.saatu_vahinko_tyyppi = VAHINKO_EI;
+		sprite.saatu_vahinko_type = VAHINKO_EI;
 
 
 	/*****************************************************************************************/
@@ -3897,7 +3897,7 @@ int PK_Sprite_Movement(int i){
 			sprite_b = 0;
 
 		if (!hyppy_maximissa)
-			sprite.hyppy_ajastin = 95;//sprite.tyyppi->max_hyppy * 2;
+			sprite.hyppy_ajastin = 95;//sprite.type->max_hyppy * 2;
 	}
 
 	if (!alas)
@@ -3943,8 +3943,8 @@ int PK_Sprite_Movement(int i){
 	if (sprite_a < -max_nopeus)
 		sprite_a = -max_nopeus;
 
-	if (sprite.energia > sprite.tyyppi->energia)
-		sprite.energia = sprite.tyyppi->energia;
+	if (sprite.energia > sprite.type->energia)
+		sprite.energia = sprite.type->energia;
 
 	if (sprite.isku == 0 || sprite.pelaaja == 1) {
 		sprite_x += sprite_a;
@@ -3979,7 +3979,7 @@ int PK_Sprite_Movement(int i){
 	sprite.ylos = ylos;
 
 	/*
-	sprite.paino = sprite.tyyppi->paino;
+	sprite.paino = sprite.type->paino;
 
 	if (sprite.energia < 1 && sprite.paino == 0)
 		sprite.paino = 1;*/
@@ -3997,7 +3997,7 @@ int PK_Sprite_Movement(int i){
 	
 	if (sprite.pelaaja == 0) {
 		for (int ai=0;ai < SPRITE_MAX_AI; ai++)
-			switch (sprite.tyyppi->AI[ai]) {
+			switch (sprite.type->AI[ai]) {
 				case AI_EI:							ai = SPRITE_MAX_AI; // lopetetaan
 													break;
 				case AI_KANA:						sprite.AI_Kana();
@@ -4104,19 +4104,19 @@ int PK_Sprite_Movement(int i){
 													break;
 				case AI_LIIKKUU_Y_SIN_VAPAA:		sprite.AI_Liikkuu_Y(sin_table[(sprite.ajastin/2)%360]);
 													break;
-				case AI_MUUTOS_JOS_ENERGIAA_ALLE_2:	if (sprite.tyyppi->muutos > -1)
-														sprite.AI_Muutos_Jos_Energiaa_Alle_2(Game::Sprites->protot[sprite.tyyppi->muutos]);
+				case AI_MUUTOS_JOS_ENERGIAA_ALLE_2:	if (sprite.type->muutos > -1)
+														sprite.AI_Transformation_Jos_Energiaa_Alle_2(Game::Sprites->protot[sprite.type->muutos]);
 													break;
-				case AI_MUUTOS_JOS_ENERGIAA_YLI_1:	if (sprite.tyyppi->muutos > -1)
-														if (sprite.AI_Muutos_Jos_Energiaa_Yli_1(Game::Sprites->protot[sprite.tyyppi->muutos])==1)
+				case AI_MUUTOS_JOS_ENERGIAA_YLI_1:	if (sprite.type->muutos > -1)
+														if (sprite.AI_Transformation_Jos_Energiaa_Yli_1(Game::Sprites->protot[sprite.type->muutos])==1)
 															Effect::Destruction(TUHOUTUMINEN_SAVU_HARMAA, (DWORD)sprite.x, (DWORD)sprite.y);
 													break;
-				case AI_MUUTOS_AJASTIN:				if (sprite.tyyppi->muutos > -1) {
-														sprite.AI_Muutos_Ajastin(Game::Sprites->protot[sprite.tyyppi->muutos]);
+				case AI_MUUTOS_AJASTIN:				if (sprite.type->muutos > -1) {
+														sprite.AI_Transformation_Ajastin(Game::Sprites->protot[sprite.type->muutos]);
 													}
 													break;
-				case AI_MUUTOS_JOS_OSUTTU:			if (sprite.tyyppi->muutos > -1) {
-														sprite.AI_Muutos_Jos_Osuttu(Game::Sprites->protot[sprite.tyyppi->muutos]);
+				case AI_MUUTOS_JOS_OSUTTU:			if (sprite.type->muutos > -1) {
+														sprite.AI_Transformation_Jos_Osuttu(Game::Sprites->protot[sprite.type->muutos]);
 													}
 													break;
 				case AI_TELEPORTTI:					if (sprite.AI_Teleportti(i, Game::Sprites->spritet, MAX_SPRITEJA, *Game::Sprites->player)==1)
@@ -4127,8 +4127,8 @@ int PK_Sprite_Movement(int i){
 														Game::dcamera_x = Game::camera_x-screen_width/2;
 														Game::dcamera_y = Game::camera_y-screen_height/2;
 														PisteDraw2_FadeIn(PD_FADE_NORMAL);
-														if (sprite.tyyppi->aanet[AANI_HYOKKAYS2] != -1)
-															PK_Play_MenuSound(sprite.tyyppi->aanet[AANI_HYOKKAYS2], 100);
+														if (sprite.type->aanet[AANI_HYOKKAYS2] != -1)
+															PK_Play_MenuSound(sprite.type->aanet[AANI_HYOKKAYS2], 100);
 															//PK_Play_Sound(, 100, Game::camera_x, Game::camera_y, SOUND_SAMPLERATE, false);
 
 
@@ -4204,10 +4204,10 @@ int PK_Sprite_Movement(int i){
 			}
 	}
 
-	//if (kaiku == 1 && sprite.tyyppi->tyyppi == TYYPPI_AMMUS && sprite.tyyppi->vahinko_tyyppi == VAHINKO_MELU &&
-	//	sprite.tyyppi->aanet[AANI_HYOKKAYS1] > -1)
-	//	PK_Play_Sound(sprite.tyyppi->aanet[AANI_HYOKKAYS1],20, (int)sprite_x, (int)sprite_y,
-	//				  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+	//if (kaiku == 1 && sprite.type->type == type_AMMUS && sprite.type->vahinko_type == VAHINKO_MELU &&
+	//	sprite.type->aanet[AANI_HYOKKAYS1] > -1)
+	//	PK_Play_Sound(sprite.type->aanet[AANI_HYOKKAYS1],20, (int)sprite_x, (int)sprite_y,
+	//				  sprite.type->aani_frq, sprite.type->random_frq);
 
 
 	/*****************************************************************************************/
@@ -4250,55 +4250,55 @@ int PK_Sprite_Movement(int i){
 	// If the sprite is ready and isn't crouching
 	if (sprite.lataus == 0 && !sprite.kyykky) {
 		// hy�kk�ysaika on "tapissa" mik� tarkoittaa sit�, ett� aloitetaan hy�kk�ys
-		if (sprite.hyokkays1 == sprite.tyyppi->hyokkays1_aika) {
+		if (sprite.hyokkays1 == sprite.type->hyokkays1_aika) {
 			// provides recovery time, after which the sprite can attack again
-			sprite.lataus = sprite.tyyppi->latausaika;
+			sprite.lataus = sprite.type->latausaika;
 			if(sprite.lataus == 0) sprite.lataus = 5;
 			// jos spritelle ei ole m��ritelty omaa latausaikaa ...
-			if (sprite.ammus1 > -1 && sprite.tyyppi->latausaika == 0)
+			if (sprite.ammus1 > -1 && sprite.type->latausaika == 0)
 			// ... ja ammukseen on, otetaan latausaika ammuksesta
 				if (Game::Sprites->protot[sprite.ammus1].tulitauko > 0)
 					sprite.lataus = Game::Sprites->protot[sprite.ammus1].tulitauko;
 
 			// soitetaan hy�kk�ys��ni
-			PK_Play_Sound(sprite.tyyppi->aanet[AANI_HYOKKAYS1],100, (int)sprite_x, (int)sprite_y,
-						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+			PK_Play_Sound(sprite.type->aanet[AANI_HYOKKAYS1],100, (int)sprite_x, (int)sprite_y,
+						  sprite.type->aani_frq, sprite.type->random_frq);
 
 			if (sprite.ammus1 > -1) {
 				Game::Sprites->add_ammo(sprite.ammus1,0,sprite_x, sprite_y, i);
 
 		//		if (Game::Sprites->protot[sprite.ammus1].aanet[AANI_HYOKKAYS1] > -1)
 		//			PK_Play_Sound(Game::Sprites->protot[sprite.ammus1].aanet[AANI_HYOKKAYS1],100, (int)sprite_x, (int)sprite_y,
-		//						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+		//						  sprite.type->aani_frq, sprite.type->random_frq);
 			}
 		}
 
 		// Sama kuin hy�kk�ys 1:ss�
-		if (sprite.hyokkays2 == sprite.tyyppi->hyokkays2_aika) {
-			sprite.lataus = sprite.tyyppi->latausaika;
+		if (sprite.hyokkays2 == sprite.type->hyokkays2_aika) {
+			sprite.lataus = sprite.type->latausaika;
 			if(sprite.lataus == 0) sprite.lataus = 5;
-			if (sprite.ammus2 > -1  && sprite.tyyppi->latausaika == 0)
+			if (sprite.ammus2 > -1  && sprite.type->latausaika == 0)
 				if (Game::Sprites->protot[sprite.ammus2].tulitauko > 0)
 					sprite.lataus = Game::Sprites->protot[sprite.ammus2].tulitauko;
 
-			PK_Play_Sound(sprite.tyyppi->aanet[AANI_HYOKKAYS2],100,(int)sprite_x, (int)sprite_y,
-						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+			PK_Play_Sound(sprite.type->aanet[AANI_HYOKKAYS2],100,(int)sprite_x, (int)sprite_y,
+						  sprite.type->aani_frq, sprite.type->random_frq);
 
 			if (sprite.ammus2 > -1) {
 				Game::Sprites->add_ammo(sprite.ammus2,0,sprite_x, sprite_y, i);
 
 		//		if (Game::Sprites->protot[sprite.ammus2].aanet[AANI_HYOKKAYS1] > -1)
 		//			PK_Play_Sound(Game::Sprites->protot[sprite.ammus2].aanet[AANI_HYOKKAYS1],100, (int)sprite_x, (int)sprite_y,
-		//						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+		//						  sprite.type->aani_frq, sprite.type->random_frq);
 
 			}
 		}
 	}
 
 	// Random sounds
-	if (sprite.tyyppi->aanet[AANI_RANDOM] != -1 && rand()%200 == 1 && sprite.energia > 0)
-		PK_Play_Sound(sprite.tyyppi->aanet[AANI_RANDOM],80,(int)sprite_x, (int)sprite_y,
-					  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+	if (sprite.type->aanet[AANI_RANDOM] != -1 && rand()%200 == 1 && sprite.energia > 0)
+		PK_Play_Sound(sprite.type->aanet[AANI_RANDOM],80,(int)sprite_x, (int)sprite_y,
+					  sprite.type->aani_frq, sprite.type->random_frq);
 
 
 	// KEHITYSVAIHEEN APUTOIMINTOJA
@@ -4317,7 +4317,7 @@ int PK_Sprite_Movement(int i){
 
 		}
 
-		if (sprite.tyyppi->tiletarkistus)
+		if (sprite.type->tiletarkistus)
 			for (x=0;x<palikat_x_lkm;x++) {
 				for (y=0;y<palikat_y_lkm;y++) {
 					color = 50-x*2-y*2;
@@ -4378,8 +4378,8 @@ int PK_Sprite_Bonus_Movement(int i){
 	sprite_a = sprite.a;
 	sprite_b = sprite.b;
 
-	sprite_leveys  = sprite.tyyppi->leveys;
-	sprite_korkeus = sprite.tyyppi->korkeus;
+	sprite_leveys  = sprite.type->leveys;
+	sprite_korkeus = sprite.type->korkeus;
 
 	x = 0;
 	y = 0;
@@ -4390,7 +4390,7 @@ int PK_Sprite_Bonus_Movement(int i){
 
 	vedessa = sprite.vedessa;
 
-	max_nopeus = (int)sprite.tyyppi->max_nopeus;
+	max_nopeus = (int)sprite.type->max_nopeus;
 
 	// Siirret��n varsinaiset muuttujat apumuuttujiin.
 
@@ -4406,22 +4406,22 @@ int PK_Sprite_Bonus_Movement(int i){
 	if (sprite.lataus > 0)
 		sprite.lataus--;
 
-	if (sprite.muutos_ajastin > 0)	// aika muutokseen
-		sprite.muutos_ajastin --;
+	if (sprite.transformation_ajastin > 0)	// aika muutokseen
+		sprite.transformation_ajastin --;
 
 	// Hyppyyn liittyv�t seikat
 
 	if (kytkin_tarina + Game::vibration > 0 && sprite.hyppy_ajastin == 0)
-		sprite.hyppy_ajastin = sprite.tyyppi->max_hyppy / 2;
+		sprite.hyppy_ajastin = sprite.type->max_hyppy / 2;
 
-	if (sprite.hyppy_ajastin > 0 && sprite.hyppy_ajastin < sprite.tyyppi->max_hyppy)
+	if (sprite.hyppy_ajastin > 0 && sprite.hyppy_ajastin < sprite.type->max_hyppy)
 	{
 		sprite.hyppy_ajastin ++;
-		sprite_b = (sprite.tyyppi->max_hyppy - sprite.hyppy_ajastin)/-4.0;//-2
+		sprite_b = (sprite.type->max_hyppy - sprite.hyppy_ajastin)/-4.0;//-2
 	}
 
 	if (sprite_b > 0)
-		sprite.hyppy_ajastin = sprite.tyyppi->max_hyppy;
+		sprite.hyppy_ajastin = sprite.type->max_hyppy;
 
 
 
@@ -4455,30 +4455,30 @@ int PK_Sprite_Bonus_Movement(int i){
 
 			PK2Sprite* sprite2 = &Game::Sprites->spritet[sprite_index];
 			if (sprite_index != i && !sprite2->piilota) {
-				if (sprite2->tyyppi->este && sprite.tyyppi->tiletarkistus) {
-					if (sprite_x-sprite_leveys/2 +sprite_a <= sprite2->x + sprite2->tyyppi->leveys /2 &&
-						sprite_x+sprite_leveys/2 +sprite_a >= sprite2->x - sprite2->tyyppi->leveys /2 &&
-						sprite_y-sprite_korkeus/2+sprite_b <= sprite2->y + sprite2->tyyppi->korkeus/2 &&
-						sprite_y+sprite_korkeus/2+sprite_b >= sprite2->y - sprite2->tyyppi->korkeus/2)
+				if (sprite2->type->este && sprite.type->tiletarkistus) {
+					if (sprite_x-sprite_leveys/2 +sprite_a <= sprite2->x + sprite2->type->leveys /2 &&
+						sprite_x+sprite_leveys/2 +sprite_a >= sprite2->x - sprite2->type->leveys /2 &&
+						sprite_y-sprite_korkeus/2+sprite_b <= sprite2->y + sprite2->type->korkeus/2 &&
+						sprite_y+sprite_korkeus/2+sprite_b >= sprite2->y - sprite2->type->korkeus/2)
 					{
 						spritepalikka.koodi = 0;
-						spritepalikka.ala   = (int)sprite2->y + sprite2->tyyppi->korkeus/2;
-						spritepalikka.oikea = (int)sprite2->x + sprite2->tyyppi->leveys/2;
-						spritepalikka.vasen = (int)sprite2->x - sprite2->tyyppi->leveys/2;
-						spritepalikka.yla   = (int)sprite2->y - sprite2->tyyppi->korkeus/2;
+						spritepalikka.ala   = (int)sprite2->y + sprite2->type->korkeus/2;
+						spritepalikka.oikea = (int)sprite2->x + sprite2->type->leveys/2;
+						spritepalikka.vasen = (int)sprite2->x - sprite2->type->leveys/2;
+						spritepalikka.yla   = (int)sprite2->y - sprite2->type->korkeus/2;
 
 						spritepalikka.alas       = BLOCK_SEINA;
 						spritepalikka.ylos       = BLOCK_SEINA;
 						spritepalikka.oikealle   = BLOCK_SEINA;
 						spritepalikka.vasemmalle = BLOCK_SEINA;
 
-						if (!sprite2->tyyppi->este_alas)
+						if (!sprite2->type->este_alas)
 							spritepalikka.alas		 = BLOCK_TAUSTA;
-						if (!sprite2->tyyppi->este_ylos)
+						if (!sprite2->type->este_ylos)
 							spritepalikka.ylos		 = BLOCK_TAUSTA;
-						if (!sprite2->tyyppi->este_oikealle)
+						if (!sprite2->type->este_oikealle)
 							spritepalikka.oikealle   = BLOCK_TAUSTA;
-						if (!sprite2->tyyppi->este_vasemmalle)
+						if (!sprite2->type->este_vasemmalle)
 							spritepalikka.vasemmalle = BLOCK_TAUSTA;
 
 
@@ -4489,21 +4489,21 @@ int PK_Sprite_Bonus_Movement(int i){
 					}
 				}
 
-				if (sprite_x < sprite2->x + sprite2->tyyppi->leveys/2 &&
-					sprite_x > sprite2->x - sprite2->tyyppi->leveys/2 &&
-					sprite_y < sprite2->y + sprite2->tyyppi->korkeus/2 &&
-					sprite_y > sprite2->y - sprite2->tyyppi->korkeus/2 &&
+				if (sprite_x < sprite2->x + sprite2->type->leveys/2 &&
+					sprite_x > sprite2->x - sprite2->type->leveys/2 &&
+					sprite_y < sprite2->y + sprite2->type->korkeus/2 &&
+					sprite_y > sprite2->y - sprite2->type->korkeus/2 &&
 					sprite.isku == 0)
 				{
-					if (sprite2->tyyppi->tyyppi != TYYPPI_BONUS &&
-						!(sprite2 == Game::Sprites->player && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU))
+					if (sprite2->type->type != type_BONUS &&
+						!(sprite2 == Game::Sprites->player && sprite.type->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU))
 						sprite_a += sprite2->a*(rand()%4);
 
 					// lis�t��n spriten painoon sit� koskettavan toisen spriten paino
-					sprite.kytkinpaino += sprite2->tyyppi->paino;
+					sprite.kytkinpaino += sprite2->type->paino;
 
 					// samanmerkkiset spritet vaihtavat suuntaa t�rm�tess��n
-					if (sprite.tyyppi->indeksi == sprite2->tyyppi->indeksi &&
+					if (sprite.type->indeksi == sprite2->type->indeksi &&
 						sprite2->energia > 0)
 					{
 						if (sprite.x < sprite2->x) {
@@ -4544,7 +4544,7 @@ int PK_Sprite_Bonus_Movement(int i){
 		int palikat_x_lkm = 0,
 			palikat_y_lkm = 0;
 
-		if (sprite.tyyppi->tiletarkistus)
+		if (sprite.type->tiletarkistus)
 		{
 
 			palikat_x_lkm = (int)((sprite_leveys) /32)+4;
@@ -4607,7 +4607,7 @@ int PK_Sprite_Bonus_Movement(int i){
 			if (sprite_b < 0)
 				sprite_b = 0;
 
-			sprite.hyppy_ajastin = sprite.tyyppi->max_hyppy;
+			sprite.hyppy_ajastin = sprite.type->max_hyppy;
 		}
 
 		if (!alas)
@@ -4619,7 +4619,7 @@ int PK_Sprite_Bonus_Movement(int i){
 					sprite.hyppy_ajastin = 0;
 				//	if (/*sprite_b == 4*/!maassa)
 				//		PK_Play_Sound(tomahdys_aani,20,(int)sprite_x, (int)sprite_y,
-				//				      int(25050-sprite.tyyppi->paino*4000),true);
+				//				      int(25050-sprite.type->paino*4000),true);
 				}
 
 				if (sprite_b > 2)
@@ -4673,19 +4673,19 @@ int PK_Sprite_Bonus_Movement(int i){
 	int tuhoutuminen;
 
 	// Test if player touches bonus
-	if (sprite_x < Game::Sprites->player->x + Game::Sprites->player->tyyppi->leveys/2 &&
-		sprite_x > Game::Sprites->player->x - Game::Sprites->player->tyyppi->leveys/2 &&
-		sprite_y < Game::Sprites->player->y + Game::Sprites->player->tyyppi->korkeus/2 &&
-		sprite_y > Game::Sprites->player->y - Game::Sprites->player->tyyppi->korkeus/2 &&
+	if (sprite_x < Game::Sprites->player->x + Game::Sprites->player->type->leveys/2 &&
+		sprite_x > Game::Sprites->player->x - Game::Sprites->player->type->leveys/2 &&
+		sprite_y < Game::Sprites->player->y + Game::Sprites->player->type->korkeus/2 &&
+		sprite_y > Game::Sprites->player->y - Game::Sprites->player->type->korkeus/2 &&
 		sprite.isku == 0)
 	{
 		if (sprite.energia > 0 && Game::Sprites->player->energia > 0)
 		{
-			if (sprite.tyyppi->pisteet != 0){
-				piste_lisays += sprite.tyyppi->pisteet;
+			if (sprite.type->pisteet != 0){
+				piste_lisays += sprite.type->pisteet;
 				char luku[6];
-				itoa(sprite.tyyppi->pisteet,luku,10);
-				if (sprite.tyyppi->pisteet >= 50)
+				itoa(sprite.type->pisteet,luku,10);
+				if (sprite.type->pisteet >= 50)
 					PK_Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,100,false);
 				else
 					PK_Fadetext_New(fontti1,luku,(int)sprite.x-8,(int)sprite.y-8,100,false);
@@ -4693,21 +4693,21 @@ int PK_Sprite_Bonus_Movement(int i){
 			}
 
 			if (sprite.Onko_AI(AI_BONUS_AIKA))
-				increase_time += sprite.tyyppi->latausaika;
+				increase_time += sprite.type->latausaika;
 
 			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
-				nakymattomyys = sprite.tyyppi->latausaika;
+				nakymattomyys = sprite.type->latausaika;
 
 			//kartta->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
 
-			if (sprite.tyyppi->vahinko != 0 && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
-				Game::Sprites->player->energia -= sprite.tyyppi->vahinko;
-				//if (player->energia > player->tyyppi->energia){ //TODO - set correct energy
-				//	player->energia = player->tyyppi->energia;
+			if (sprite.type->vahinko != 0 && sprite.type->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
+				Game::Sprites->player->energia -= sprite.type->vahinko;
+				//if (player->energia > player->type->energia){ //TODO - set correct energy
+				//	player->energia = player->type->energia;
 				//}
 			}
 
-			tuhoutuminen = sprite.tyyppi->tuhoutuminen;
+			tuhoutuminen = sprite.type->tuhoutuminen;
 
 			if (tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
 			{
@@ -4715,7 +4715,7 @@ int PK_Sprite_Bonus_Movement(int i){
 					tuhoutuminen -= TUHOUTUMINEN_ANIMAATIO;
 				else
 				{
-					if (sprite.tyyppi->avain)
+					if (sprite.type->avain)
 					{
 						avaimia--;
 
@@ -4728,44 +4728,44 @@ int PK_Sprite_Bonus_Movement(int i){
 
 				if (sprite.Onko_AI(AI_UUSI_JOS_TUHOUTUU)) {
 					double ax, ay;
-					ax = sprite.alku_x;//-sprite.tyyppi->leveys;
-					ay = sprite.alku_y-sprite.tyyppi->korkeus/2.0;
-					Game::Sprites->add(sprite.tyyppi->indeksi,0,ax-17, ay,i, false);
+					ax = sprite.alku_x;//-sprite.type->leveys;
+					ay = sprite.alku_y-sprite.type->korkeus/2.0;
+					Game::Sprites->add(sprite.type->indeksi,0,ax-17, ay,i, false);
 					for (int r=1;r<6;r++)
 						Game::Particles->new_particle(PARTICLE_SPARK,ax+rand()%10-rand()%10, ay+rand()%10-rand()%10,0,0,rand()%100,0.1,32);
 
 				}
 
-				if (sprite.tyyppi->bonus  != -1)
-					Game::Gifts->add(sprite.tyyppi->bonus);
+				if (sprite.type->bonus  != -1)
+					Game::Gifts->add(sprite.type->bonus);
 
-				if (sprite.tyyppi->muutos != -1)
+				if (sprite.type->muutos != -1)
 				{
-					if (Game::Sprites->protot[sprite.tyyppi->muutos].AI[0] != AI_BONUS)
+					if (Game::Sprites->protot[sprite.type->muutos].AI[0] != AI_BONUS)
 					{
-						Game::Sprites->player->tyyppi = &Game::Sprites->protot[sprite.tyyppi->muutos];
-						Game::Sprites->player->ammus1 = Game::Sprites->player->tyyppi->ammus1;
-						Game::Sprites->player->ammus2 = Game::Sprites->player->tyyppi->ammus2;
-						Game::Sprites->player->alkupaino = Game::Sprites->player->tyyppi->paino;
-						Game::Sprites->player->y -= Game::Sprites->player->tyyppi->korkeus/2;
+						Game::Sprites->player->type = &Game::Sprites->protot[sprite.type->muutos];
+						Game::Sprites->player->ammus1 = Game::Sprites->player->type->ammus1;
+						Game::Sprites->player->ammus2 = Game::Sprites->player->type->ammus2;
+						Game::Sprites->player->alkupaino = Game::Sprites->player->type->paino;
+						Game::Sprites->player->y -= Game::Sprites->player->type->korkeus/2;
 						//PK_Start_Info("pekka has been transformed!");
 					}
 				}
 
-				if (sprite.tyyppi->ammus1 != -1)
+				if (sprite.type->ammus1 != -1)
 				{
-					Game::Sprites->player->ammus1 = sprite.tyyppi->ammus1;
+					Game::Sprites->player->ammus1 = sprite.type->ammus1;
 					PK_Start_Info(tekstit->Hae_Teksti(PK_txt.game_newegg));
 				}
 
-				if (sprite.tyyppi->ammus2 != -1)
+				if (sprite.type->ammus2 != -1)
 				{
-					Game::Sprites->player->ammus2 = sprite.tyyppi->ammus2;
+					Game::Sprites->player->ammus2 = sprite.type->ammus2;
 					PK_Start_Info(tekstit->Hae_Teksti(PK_txt.game_newdoodle));
 				}
 
-				PK_Play_Sound(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
-							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+				PK_Play_Sound(sprite.type->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
+							  sprite.type->aani_frq, sprite.type->random_frq);
 
 				Effect::Destruction(tuhoutuminen, (DWORD)sprite_x, (DWORD)sprite_y);
 			}
@@ -4774,17 +4774,17 @@ int PK_Sprite_Bonus_Movement(int i){
 
 	for (i=0;i<SPRITE_MAX_AI;i++)
 	{
-		if (sprite.tyyppi->AI[i] == AI_EI)
+		if (sprite.type->AI[i] == AI_EI)
 			break;
 
-		switch (sprite.tyyppi->AI[i])
+		switch (sprite.type->AI[i])
 		{
 		case AI_BONUS:				sprite.AI_Bonus();break;
 
 		case AI_PERUS:				sprite.AI_Perus();break;
 
-		case AI_MUUTOS_AJASTIN:		if (sprite.tyyppi->muutos > -1)
-									sprite.AI_Muutos_Ajastin(Game::Sprites->protot[sprite.tyyppi->muutos]);
+		case AI_MUUTOS_AJASTIN:		if (sprite.type->muutos > -1)
+									sprite.AI_Transformation_Ajastin(Game::Sprites->protot[sprite.type->muutos]);
 									break;
 
 		case AI_TIPPUU_TARINASTA:	sprite.AI_Tippuu_Tarinasta(Game::vibration + kytkin_tarina);
@@ -4822,8 +4822,8 @@ int PK_Update_Sprites(){
 
 	for (i = 0; i < MAX_SPRITEJA; i++){
 		sprite = &Game::Sprites->spritet[i];
-		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYYPPI_TAUSTA){
-			if (sprite->tyyppi->tyyppi == TYYPPI_BONUS)
+		if (sprite->aktiivinen && sprite->type->type != type_TAUSTA){
+			if (sprite->type->type == type_BONUS)
 				PK_Sprite_Bonus_Movement(i);
 			else
 				PK_Sprite_Movement(i);
@@ -4919,18 +4919,18 @@ int PK_Draw_InGame_BGSprites(){
 	for (int in=0; in<MAX_SPRITEJA; in++) {
 		PK2Sprite* sprite = &Game::Sprites->spritet[Game::Sprites->taustaspritet[in]];
 
-		if (sprite->tyyppi != NULL && i != -1) {
-			if (!sprite->piilota && sprite->tyyppi->tyyppi == TYYPPI_TAUSTA) {
+		if (sprite->type != NULL && i != -1) {
+			if (!sprite->piilota && sprite->type->type == type_TAUSTA) {
 				//Tarkistetaanko onko sprite tai osa siit� kuvassa
 
 				alku_x = sprite->alku_x;
 				alku_y = sprite->alku_y;
 
-				if (sprite->tyyppi->pallarx_kerroin != 0) {
-					xl =  alku_x - Game::camera_x-screen_width/2 - sprite->tyyppi->leveys/2;
-					xl /= sprite->tyyppi->pallarx_kerroin;
-					yl =  alku_y - Game::camera_y-screen_height/2 - sprite->tyyppi->korkeus/2;
-					yk = sprite->tyyppi->pallarx_kerroin;///1.5;
+				if (sprite->type->pallarx_kerroin != 0) {
+					xl =  alku_x - Game::camera_x-screen_width/2 - sprite->type->leveys/2;
+					xl /= sprite->type->pallarx_kerroin;
+					yl =  alku_y - Game::camera_y-screen_height/2 - sprite->type->korkeus/2;
+					yk = sprite->type->pallarx_kerroin;///1.5;
 					if (yk != 0)
 						yl /= yk;
 
@@ -4939,14 +4939,14 @@ int PK_Draw_InGame_BGSprites(){
 				else
 					xl = yl = 0;
 
-				switch(sprite->tyyppi->AI[0]) {
+				switch(sprite->type->AI[0]) {
 				case AI_TAUSTA_KUU					:	yl += screen_height/3+50; break;
 				/*case AI_TAUSTA_LIIKKUU_VASEMMALLE	:	if (sprite->a == 0)
 															sprite->a = rand()%3;
 														sprite->alku_x -= sprite->a;
 														if (sprite->piilossa && sprite->alku_x < Game::camera_x)
 														{
-													  		  sprite->alku_x = Game::camera_x+screen_width+sprite->tyyppi->leveys*2;
+													  		  sprite->alku_x = Game::camera_x+screen_width+sprite->type->leveys*2;
 															  sprite->a = rand()%3;
 														}
 														break;*/
@@ -4973,10 +4973,10 @@ int PK_Draw_InGame_BGSprites(){
 				sprite->y = alku_y-yl;
 
 				//Tarkistetaanko onko sprite tai osa siit� kuvassa
-				if (sprite->x - sprite->tyyppi->leveys/2  < Game::camera_x+screen_width &&
-					sprite->x + sprite->tyyppi->leveys/2  > Game::camera_x &&
-					sprite->y - sprite->tyyppi->korkeus/2 < Game::camera_y+screen_height &&
-					sprite->y + sprite->tyyppi->korkeus/2 > Game::camera_y)
+				if (sprite->x - sprite->type->leveys/2  < Game::camera_x+screen_width &&
+					sprite->x + sprite->type->leveys/2  > Game::camera_x &&
+					sprite->y - sprite->type->korkeus/2 < Game::camera_y+screen_height &&
+					sprite->y + sprite->type->korkeus/2 > Game::camera_y)
 				{
 					sprite->Piirra(Game::camera_x,Game::camera_y);
 					sprite->piilossa = false;
@@ -5004,14 +5004,14 @@ int PK_Draw_InGame_Sprites(){
 	for (int i=0;i<MAX_SPRITEJA;i++){
 		// Onko sprite n�kyv�
 		PK2Sprite* sprite = &Game::Sprites->spritet[i];
-		if (!sprite->piilota && sprite->tyyppi->tyyppi != TYYPPI_TAUSTA){
+		if (!sprite->piilota && sprite->type->type != type_TAUSTA){
 			//Check whether or not sprite is on the screen
-			if (sprite->x - sprite->tyyppi->leveys/2  < Game::camera_x+screen_width &&
-				sprite->x + sprite->tyyppi->leveys/2  > Game::camera_x &&
-				sprite->y - sprite->tyyppi->korkeus/2 < Game::camera_y+screen_height &&
-				sprite->y + sprite->tyyppi->korkeus/2 > Game::camera_y){
+			if (sprite->x - sprite->type->leveys/2  < Game::camera_x+screen_width &&
+				sprite->x + sprite->type->leveys/2  > Game::camera_x &&
+				sprite->y - sprite->type->korkeus/2 < Game::camera_y+screen_height &&
+				sprite->y + sprite->type->korkeus/2 > Game::camera_y){
 
-				if (sprite->isku > 0 && sprite->tyyppi->tyyppi != TYYPPI_BONUS && sprite->energia < 1){
+				if (sprite->isku > 0 && sprite->type->type != type_BONUS && sprite->energia < 1){
 					int framex = ((degree%12)/3) * 58;
 					DWORD hit_x = sprite->x-8, hit_y = sprite->y-8;
 					PisteDraw2_Image_CutClip(kuva_peli,hit_x-Game::camera_x-28+8, hit_y-Game::camera_y-27+8,1+framex,83,1+57+framex,83+55);
@@ -5020,7 +5020,7 @@ int PK_Draw_InGame_Sprites(){
 				if (nakymattomyys == 0 || (!doublespeed && nakymattomyys%2 == 0) || (doublespeed && nakymattomyys%4 <= 1) || sprite != Game::Sprites->player/*i != pelaaja_index*/)
 					sprite->Piirra(Game::camera_x,Game::camera_y);
 
-				if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYYPPI_AMMUS){
+				if (sprite->energia < 1 && sprite->type->type != type_AMMUS){
 					sx = (int)sprite->x;
 					for (stars=0; stars<3; stars++){
 						star_x = sprite->x-8 + (sin_table[((stars*120+degree)*2)%359])/3;
@@ -6633,7 +6633,7 @@ int PK_Draw_Map(){
 	}
 
 	int nuppi_x = 0, nuppi_y = 0;
-	int tyyppi = 0;
+	int type = 0;
 	int paluu;
 	int min = 0, sek = 0;
 	int ikoni;
@@ -6649,13 +6649,13 @@ int PK_Draw_Map(){
 
 	for (int i=0;i<=jaksoja;i++) {
 		if (strcmp(jaksot[i].nimi,"")!=0 && jaksot[i].jarjestys > 0) {
-			tyyppi = 0;							//0 harmaa
+			type = 0;							//0 harmaa
 			if (jaksot[i].jarjestys == jakso)
-				tyyppi = 1;						//1 vihre�
+				type = 1;						//1 vihre�
 			if (jaksot[i].jarjestys > jakso)
-				tyyppi = 2;						//2 oranssi
+				type = 2;						//2 oranssi
 			if (jaksot[i].lapaisty)
-				tyyppi = 0;
+				type = 0;
 
 			if (jaksot[i].x == 0)
 				jaksot[i].x = 142+i*30;
@@ -6668,18 +6668,18 @@ int PK_Draw_Map(){
 			//PisteDraw2_Image_Clip(kuva_peli,jaksot[i].x-4,jaksot[i].y-4-30,1+(ikoni*27),452,27+(ikoni*27),478);
 			PisteDraw2_Image_CutClip(kuva_peli,jaksot[i].x-9,jaksot[i].y-14,1+(ikoni*28),452,28+(ikoni*28),479);
 
-			if (tyyppi==1) {
+			if (type==1) {
 				sinx = (int)(sin_table[degree%360]/2);
 				cosy = (int)(cos_table[degree%360]/2);
 				pekkaframe = 28*((degree%360)/120);
 				PisteDraw2_Image_CutClip(kuva_peli,jaksot[i].x+sinx-12,jaksot[i].y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
 			}
 
-			paluu = PK_Draw_Map_Button(jaksot[i].x-5, jaksot[i].y-10, tyyppi);
+			paluu = PK_Draw_Map_Button(jaksot[i].x-5, jaksot[i].y-10, type);
 
 			// if clicked
 			if (paluu == 2) {
-				if (tyyppi != 2 || dev_mode) {
+				if (type != 2 || dev_mode) {
 					strcpy(seuraava_kartta,jaksot[i].tiedosto);
 					jakso_indeksi_nyt = i;
 					going_to_game = true;
@@ -6810,7 +6810,7 @@ int PK_Draw_ScoreCount(){
 
 	for (int i = 0; i < MAX_GIFTS; i++)
 		if (Game::Gifts->get(i) != -1)	{
-			//PK2Sprite_Prototyyppi* prot = Game::Gifts->get_protot(i);
+			//PK2Sprite_Prototype* prot = Game::Gifts->get_protot(i);
 			Game::Gifts->draw(i, x, y);
 			//prot->Piirra(x - prot->leveys/2, y - prot->korkeus / 2, 0);
 			x += 38;
@@ -6935,11 +6935,11 @@ int PK_Draw_Intro(){
 	return 0;
 }
 
-int PK_Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
+int PK_Draw_EndGame_Image(int x, int y, int type, int plus, int rapytys){
 	int frm = 0;
 	int yk = 0;
 
-	if (tyyppi == 1){ // Pekka
+	if (type == 1){ // Pekka
 		frm = 1;
 		if ((degree/10)%10==rapytys) frm = 0;
 		yk = (int)sin_table[(degree%360)];
@@ -6951,7 +6951,7 @@ int PK_Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 		PisteDraw2_Image_CutClip(kuva_tausta,x,y, 1+frm*35, 1, 32+frm*35, 59);
 	}
 
-	if (tyyppi == 2){ // kana (katse oikealle)
+	if (type == 2){ // kana (katse oikealle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)cos_table[((degree+plus)%360)];
@@ -6963,7 +6963,7 @@ int PK_Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 		PisteDraw2_Image_CutClip(kuva_tausta,x,y, 106+frm*37, 1, 139+frm*37, 38);
 	}
 
-	if (tyyppi == 3){ // kana (katse vasemmalle)
+	if (type == 3){ // kana (katse vasemmalle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)cos_table[((degree+plus)%360)];
@@ -6975,7 +6975,7 @@ int PK_Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 		PisteDraw2_Image_CutClip(kuva_tausta,x,y, 106+frm*37, 41, 139+frm*37, 77);
 	}
 
-	if (tyyppi == 4){ // pikkukana (katse oikealle)
+	if (type == 4){ // pikkukana (katse oikealle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)sin_table[(((degree*2)+plus)%360)];
@@ -6987,7 +6987,7 @@ int PK_Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 		PisteDraw2_Image_CutClip(kuva_tausta,x,y, 217+frm*29, 1, 243+frm*29, 29);
 	}
 
-	if (tyyppi == 5){ // pikkukana (katse vasemmalle)
+	if (type == 5){ // pikkukana (katse vasemmalle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)sin_table[(((degree*2)+plus)%360)];
@@ -7471,13 +7471,13 @@ int PK_MainScreen_InGame(){
 				for (int r = 1; r<6; r++)
 					//Game::Particles->new_particle(PARTICLE_SPARK, player->x + rand() % 10 - rand() % 10, player->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
 					Game::Particles->new_particle(PARTICLE_SPARK, Game::Sprites->player->x + rand() % 10 - rand() % 10, Game::Sprites->player->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
-				*Game::Sprites->player = PK2Sprite(&Game::Sprites->protot[PROTOTYYPPI_KANA], 1, false, Game::Sprites->player->x, Game::Sprites->player->y);
+				*Game::Sprites->player = PK2Sprite(&Game::Sprites->protot[PROTOtype_KANA], 1, false, Game::Sprites->player->x, Game::Sprites->player->y);
 			}
 		}
 		if (PisteInput_Keydown(PI_U))
 			Game::Sprites->player->b = -10;
 		if (PisteInput_Keydown(PI_E))
-			Game::Sprites->player->energia = Game::Sprites->player->tyyppi->energia;
+			Game::Sprites->player->energia = Game::Sprites->player->type->energia;
 		if (PisteInput_Keydown(PI_V))
 			nakymattomyys = 3000;
 	}
