@@ -8,6 +8,7 @@
 
 #include "types.hpp"
 #include <string>
+#include <vector>
 
 #define PK2SPRITE_VIIMEISIN_VERSIO "1.3"
 
@@ -400,7 +401,8 @@ struct PK2Sprite_Prototype12{
     bool		este_vasemmalle;
 
 };
-struct PK2Sprite_Prototype13{
+
+struct PK2Sprite_Prototype13 {
 
     DWORD		type;											// sprite type
     char		image_file[100];								// bmp path
@@ -470,22 +472,97 @@ struct PK2Sprite_Prototype13{
     bool		osaa_uida;										// be alive in water
 };
 
+struct PK2Sprite_Prototype14 {
+
+	DWORD		type;											// sprite type
+	std::string	image_file;								// bmp path
+	char		aanitiedostot[7][100];							// sound path (max 7)
+	DWORD		aanet[7];										// sound types
+
+	std::string lua_script;										// Lua script file
+
+	BYTE		frameja;										// number of frames
+	PK2SPRITE_ANIMAATIO animaatiot[20];							// animation sequences
+	BYTE		animaatioita;									// number of animations
+	BYTE		frame_rate;										// frame rate
+	DWORD		kuva_x;											// x position of first frame
+	DWORD		kuva_y;											// y position of first frame
+	DWORD		kuva_frame_leveys;								// frame width
+	DWORD		kuva_frame_korkeus;								// frame height
+	DWORD		kuva_frame_vali;								// space between frames
+
+	std::string	nimi;										// name
+	DWORD		leveys;											// width
+	DWORD		korkeus;										// height
+	double		paino;											// weight (for jump and switches)
+	bool		vihollinen;										// if sprite is a enemy
+	DWORD		energia;										//?sprite energy
+	DWORD		vahinko;										//?damage if hitted
+	BYTE        vahinko_type;									//?damage type
+	BYTE		suojaus;										//?protection type
+	DWORD		pisteet;										// how much score
+	DWORD		AI[10];											// AI type (max 10)
+	BYTE		max_hyppy;										// max jump time
+	double		max_nopeus;										// max speed
+	DWORD		latausaika;										//?wait post shoot
+	BYTE		vari;											// color
+	bool		este;											// is a wall
+	DWORD		tuhoutuminen;									// how sprite is destroyed
+	bool		avain;											// can sprite open locks
+	bool		tarisee;										//?sprite randomly
+	BYTE        bonusten_lkm;									// number of bonuses
+	DWORD       hyokkays1_aika;									// attack 1 duration (frames)
+	DWORD       hyokkays2_aika;									// attack 2 duration (frames)
+	DWORD		pallarx_kerroin;								// parallax type (just to type_TAUSTA)
+
+	std::string	transformation_sprite;							// another sprite that this sprite may change into
+
+	/*
+	std::string bonus_sprite;									// bonus that this sprite gives
+	std::string bonus_sprite2;									// bonus that this sprite gives
+	std::string bonus_sprite3;									// bonus that this sprite gives
+	*/
+	std::string bonus_sprite;				
+
+	std::string	ammus1_sprite;									// ammo 1 sprite
+	std::string	ammus2_sprite;									// ammo 2 sprite
+
+	bool		tiletarkistus;									//?make sounds?
+	DWORD		aani_frq;										// sound frequency (def. 22050)
+	bool		random_frq;										// use random frequency?
+
+	bool		este_ylos;                                      // if is wall at up
+	bool		este_alas;                                      // if is wall at down
+	bool		este_oikealle;                                  // if is wall at right
+	bool		este_vasemmalle;                                // if is wall at left
+
+	BYTE		lapinakyvyys;									// transparency
+	bool		hehkuu;											// is transparent?
+	DWORD		tulitauko;										//*ammuspriten ampujalle aiheuttama latausaika
+	bool		liitokyky;										//*voiko tippua hiljaa alas?
+	bool		boss;											// if it is a boss
+	bool		bonus_aina;										// allways gives bonus
+	bool		osaa_uida;										// be alive in water
+
+	int transformation_value;									// Sprite transforms if it's energy is below this value
+};
+
 //Classes used in game
-class PK2Sprite_Prototype{
+class PK2Sprite_Prototype {
     public:
 
     //Version
     char		versio[4];
     //.spr filename
-    char		tiedosto[255];
 	std::string file;
+
     //Prototype index
     int			indeksi;
     //Sprite type
     int			type;
 
     //.bmp filename
-    char		image_file[100];								// .BMP jossa ovat spriten grafiikat
+    std::string	image_file;								// .BMP jossa ovat spriten grafiikat
 
     // Spriteen liittyv�t ��nitehosteet
 
@@ -506,7 +583,7 @@ class PK2Sprite_Prototype{
     int			kuva_frame_vali;								// kahden framen vali
 
     // Spriten ominaisuudet
-    char		nimi[30];										// spriten nimi (n�kyy editorissa)
+    std::string	nimi;										// spriten nimi (n�kyy editorissa)
     int			leveys;											// spriten leveys
     int			korkeus;										// spriten korkeus
     double		paino;											// sprite paino (vaikuttaa hyppyyn ja kytkimiin)
@@ -536,10 +613,10 @@ class PK2Sprite_Prototype{
 
     // Yhteys toisiin spriteihin
 
-    char		transformation_sprite[100];								// Toinen sprite joksi t�m� sprite voi muuttua
-    char		bonus_sprite[100];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
-    char		ammus1_sprite[100];								// Spriten ammuksena 1 k�ytt�m� sprite
-    char		ammus2_sprite[100];								// Spriten ammuksena 2 k�ytt�m� sprite
+    std::string transformation_sprite;								// Toinen sprite joksi t�m� sprite voi muuttua
+    std::string bonus_sprite;								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
+    std::string ammus1_sprite;								// Spriten ammuksena 1 k�ytt�m� sprite
+    std::string ammus2_sprite;								// Spriten ammuksena 2 k�ytt�m� sprite
     int			muutos;											// Muutosspriten prototyypin indeksi. -1 jos ei ole
     int			bonus;											// Bonusspriten prototyypin indeksi. -1 jos ei ole
     int			ammus1;											// Ammussprite1 prototyypin indeksi. -1 jos ei ole
@@ -565,6 +642,10 @@ class PK2Sprite_Prototype{
     bool		bonus_aina;										// j�tt�� aina bonuksen tuhoutuessa
     bool		osaa_uida;										// vaikuttaako painovoima vedess�?
 
+	// version 1.4
+	std::string lua_script;
+	int transformation_value;
+
     // Muodostimet
     PK2Sprite_Prototype();
     ~PK2Sprite_Prototype();
@@ -583,6 +664,7 @@ class PK2Sprite_Prototype{
     void SetProto11(PK2Sprite_Prototype11 &proto);
     void SetProto12(PK2Sprite_Prototype12 &proto);
     void SetProto13(PK2Sprite_Prototype13 &proto);
+    void SetProto14(PK2Sprite_Prototype14 &proto);
     PK2Sprite_Prototype13 GetProto13();
 };
 class PK2Sprite{

@@ -2135,10 +2135,12 @@ void PK2::SpriteSystem::protot_get_transformation(int i) {
 	int j = 0;
 	bool loaded = false;
 
-	if (strcmp(protot[i].transformation_sprite,"")!=0){
+	if (!protot[i].transformation_sprite.empty()){
 		while (j<MAX_PROTOTYYPPEJA && !loaded){
 			if (j!=i) {
-				if (strcmp(protot[i].transformation_sprite,protot[j].tiedosto)==0){
+				if (protot[i].transformation_sprite == protot[j].file) {
+					std::cout << "TRANSFORMED!" << std::endl;
+
 					protot[i].muutos = j;
 					loaded = true;
 				}
@@ -2157,10 +2159,10 @@ void PK2::SpriteSystem::protot_get_bonus(int i) {
 	int j = 0;
 	bool loaded = false;
 
-	if (strcmp(protot[i].bonus_sprite,"")!=0){
+	if (!protot[i].bonus_sprite.empty()) {
 		while (j<MAX_PROTOTYYPPEJA && !loaded){
 			if (j!=i){
-				if (strcmp(protot[i].bonus_sprite,protot[j].tiedosto)==0){
+				if (protot[i].bonus_sprite == protot[j].file){
 					protot[i].bonus = j;
 					loaded = true;
 				}
@@ -2180,10 +2182,10 @@ void PK2::SpriteSystem::protot_get_ammo1(int i) {
 	int j = 0;
 	bool loaded = false;
 
-	if (strcmp(protot[i].ammus1_sprite,"")!=0){
+	if (!protot[i].ammus1_sprite.empty()) {
 		while (j<MAX_PROTOTYYPPEJA && !loaded){
 			if (j!=i){
-				if (strcmp(protot[i].ammus1_sprite,protot[j].tiedosto)==0){
+				if (protot[i].ammus1_sprite == protot[j].file) {
 					protot[i].ammus1 = j;
 					loaded = true;
 				}
@@ -2196,7 +2198,6 @@ void PK2::SpriteSystem::protot_get_ammo1(int i) {
 			char polku[PE_PATH_SIZE];
 			strcpy(polku,"sprites/");
 
-
 			if (Get_Prototype(protot[i].ammus1_sprite) == 0)
 				protot[i].ammus1 = next_free_prototype-1;
 		}
@@ -2207,10 +2208,10 @@ void PK2::SpriteSystem::protot_get_ammo2(int i) {
 	int j = 0;
 	bool loaded = false;
 
-	if (strcmp(protot[i].ammus2_sprite,"")!=0){
+	if (!protot[i].ammus2_sprite.empty()) {
 		while (j<MAX_PROTOTYYPPEJA && !loaded){
 			if (j!=i){
-				if (strcmp(protot[i].ammus2_sprite,protot[j].tiedosto)==0){
+				if (protot[i].ammus2_sprite == protot[j].file){
 					protot[i].ammus2 = j;
 					loaded = true; //Prototype has already loaded
 				}
@@ -5071,8 +5072,8 @@ int PK_Draw_InGame_DebugInfo(){
 	for (int i=0;i<40;i++){
 		itoa(Game::Sprites->protot[i].indeksi,lukua,10);
 		PisteDraw2_Font_Write(fontti1,lukua,410,10+i*10);
-		PisteDraw2_Font_Write(fontti1,Game::Sprites->protot[i].tiedosto,430,10+i*10);
-		PisteDraw2_Font_Write(fontti1,Game::Sprites->protot[i].bonus_sprite,545,10+i*10);
+		PisteDraw2_Font_Write(fontti1,Game::Sprites->protot[i].file, 430,10+i*10);
+		//PisteDraw2_Font_Write(fontti1,Game::Sprites->protot[i].bonus_sprite,545,10+i*10);
 	}
 
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++)

@@ -21,18 +21,23 @@ using namespace std;
 PK2Sprite_Prototype::PK2Sprite_Prototype(){
 
 	strcpy(versio,PK2SPRITE_VIIMEISIN_VERSIO);
-	strcpy(tiedosto,"");
-	strcpy(image_file,"");
-	strcpy(nimi, "");
-	strcpy(this->transformation_sprite,"");
-	strcpy(this->bonus_sprite,"");
-	strcpy(this->ammus1_sprite,"");
-	strcpy(this->ammus2_sprite,"");
+	file = "";
+	image_file = "";
+	nimi = "";
+	transformation_sprite = "";
+
+	bonus_sprite = "";
+
+	ammus1_sprite = "";
+	ammus2_sprite = "";
 
 	for (int aani=0;aani<MAX_AANIA;aani++){
 		strcpy(aanitiedostot[aani], "");
 		aanet[aani] = -1;
 	}
+
+	lua_script = "";
+	transformation_value = 0;
 
 	aani_frq		= 22050;
 	ammus1			= -1;
@@ -105,97 +110,20 @@ PK2Sprite_Prototype::~PK2Sprite_Prototype(){
 			PisteDraw2_Image_Delete(this->framet[i]);
 }
 
-void PK2Sprite_Prototype::Kopioi(const PK2Sprite_Prototype &proto){
-	strcpy(versio,proto.versio);
-	strcpy(tiedosto,proto.tiedosto);
-	strcpy(image_file,proto.image_file);
-	strcpy(nimi, proto.nimi);
-	strcpy(this->transformation_sprite,proto.transformation_sprite);
-	strcpy(this->bonus_sprite,proto.bonus_sprite);
-	strcpy(this->ammus1_sprite,proto.ammus1_sprite);
-	strcpy(this->ammus2_sprite,proto.ammus2_sprite);
-
-	for (int aani=0;aani<MAX_AANIA;aani++){
-		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
-		aanet[aani] = proto.aanet[aani];
-	}
-
-	aani_frq        = proto.aani_frq;
-	ammus1			= proto.ammus1;
-	ammus2			= proto.ammus2;
-	animaatioita	= proto.animaatioita;
-	avain			= proto.avain;
-	bonus			= proto.bonus;
-	bonusten_lkm    = proto.bonusten_lkm;
-	energia			= proto.energia;
-	este			= proto.este;
-	este_ylos		= proto.este_ylos;
-	este_alas		= proto.este_alas;
-	este_oikealle	= proto.este_oikealle;
-	este_vasemmalle	= proto.este_vasemmalle;
-	frameja			= proto.frameja;
-	frame_rate		= proto.frame_rate;
-	hyokkays1_aika  = proto.hyokkays1_aika;
-	hyokkays2_aika  = proto.hyokkays2_aika;
-	indeksi			= proto.indeksi;
-	kuva_x			= proto.kuva_x;
-	kuva_y			= proto.kuva_y;
-	kuva_frame_leveys  = proto.kuva_frame_leveys;
-	kuva_frame_korkeus = proto.kuva_frame_korkeus;
-	korkeus			= proto.korkeus;
-	latausaika		= proto.latausaika;
-	leveys			= proto.leveys;
-	max_hyppy		= proto.max_hyppy;
-	max_nopeus		= proto.max_nopeus;
-	muutos			= proto.muutos;
-	paino			= proto.paino;
-	pallarx_kerroin = proto.pallarx_kerroin;
-	pisteet			= proto.pisteet;
-	random_frq		= proto.random_frq;
-	suojaus			= proto.suojaus;
-	tarisee         = proto.tarisee;
-	tiletarkistus	= proto.tiletarkistus;
-	tuhoutuminen	= proto.tuhoutuminen;
-	type			= proto.type;
-	vahinko			= proto.vahinko;
-	vahinko_type	= proto.vahinko_type;
-	vari			= proto.vari;
-	vihollinen		= proto.vihollinen;
-
-	lapinakyvyys	= proto.lapinakyvyys;
-	hehkuu			= proto.hehkuu;
-	tulitauko		= proto.tulitauko;
-	liitokyky		= proto.liitokyky;
-	boss			= proto.boss;
-	bonus_aina		= proto.bonus_aina;
-	osaa_uida		= proto.osaa_uida;
-
-	for (int i=0;i<SPRITE_MAX_AI;i++)
-	{
-		AI[i] = proto.AI[i];
-	}
-
-	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
-		framet[i] = proto.framet[i];
-
-	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
-	{
-		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
-			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
-
-		animaatiot[i].looppi  = proto.animaatiot[i].looppi;
-		animaatiot[i].frameja = proto.animaatiot[i].frameja;
-	}
-}
 void PK2Sprite_Prototype::Uusi(){
 	strcpy(versio,PK2SPRITE_VIIMEISIN_VERSIO);
-	strcpy(tiedosto,"");
-	strcpy(image_file,"");
-	strcpy(nimi, "");
-	strcpy(transformation_sprite,"");
-	strcpy(bonus_sprite,"");
-	strcpy(ammus1_sprite,"");
-	strcpy(ammus2_sprite,"");
+	file = "";
+	image_file = "";
+	nimi = "";
+	transformation_sprite = "";
+
+	bonus_sprite = "";
+
+	ammus1_sprite = "";
+	ammus2_sprite = "";
+
+	lua_script = "";
+	transformation_value = 0;
 
 	for (int aani=0;aani<MAX_AANIA;aani++){
 		strcpy(aanitiedostot[aani], "");
@@ -299,12 +227,12 @@ int PK2Sprite_Prototype::Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi
 }
 
 void PK2Sprite_Prototype::SetProto10(PK2Sprite_Prototype10 &proto){
-	strcpy(image_file,	proto.image_file);
-	strcpy(nimi,			proto.nimi);
-	strcpy(transformation_sprite,	proto.transformation_sprite);
-	strcpy(bonus_sprite,	proto.bonus_sprite);
-	strcpy(ammus1_sprite,	proto.ammus1_sprite);
-	strcpy(ammus2_sprite,	proto.ammus2_sprite);
+	image_file = proto.image_file;
+	nimi = proto.nimi;
+	transformation_sprite = proto.transformation_sprite;
+	bonus_sprite = proto.bonus_sprite;
+	ammus1_sprite = proto.ammus1_sprite;
+	ammus2_sprite = proto.ammus2_sprite;
 
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
@@ -351,12 +279,12 @@ void PK2Sprite_Prototype::SetProto10(PK2Sprite_Prototype10 &proto){
 	}
 }
 void PK2Sprite_Prototype::SetProto11(PK2Sprite_Prototype11 &proto){
-	strcpy(image_file,	proto.image_file);
-	strcpy(nimi,			proto.nimi);
-	strcpy(transformation_sprite,	proto.transformation_sprite);
-	strcpy(bonus_sprite,	proto.bonus_sprite);
-	strcpy(ammus1_sprite,	proto.ammus1_sprite);
-	strcpy(ammus2_sprite,	proto.ammus2_sprite);
+	image_file = proto.image_file;
+	nimi = proto.nimi;
+	transformation_sprite = proto.transformation_sprite;
+	bonus_sprite = proto.bonus_sprite;
+	ammus1_sprite = proto.ammus1_sprite;
+	ammus2_sprite = proto.ammus2_sprite;
 
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
@@ -409,12 +337,12 @@ void PK2Sprite_Prototype::SetProto11(PK2Sprite_Prototype11 &proto){
 	}
 }
 void PK2Sprite_Prototype::SetProto12(PK2Sprite_Prototype12 &proto){
-	strcpy(image_file,	proto.image_file);
-	strcpy(nimi,			proto.nimi);
-	strcpy(transformation_sprite,	proto.transformation_sprite);
-	strcpy(bonus_sprite,	proto.bonus_sprite);
-	strcpy(ammus1_sprite,	proto.ammus1_sprite);
-	strcpy(ammus2_sprite,	proto.ammus2_sprite);
+	image_file = proto.image_file;
+	nimi = proto.nimi;
+	transformation_sprite = proto.transformation_sprite;
+	bonus_sprite = proto.bonus_sprite;
+	ammus1_sprite = proto.ammus1_sprite;
+	ammus2_sprite = proto.ammus2_sprite;
 
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
@@ -473,14 +401,17 @@ void PK2Sprite_Prototype::SetProto12(PK2Sprite_Prototype12 &proto){
 		animaatiot[i].frameja = proto.animaatiot[i].frameja;
 	}
 }
-void PK2Sprite_Prototype::SetProto13(PK2Sprite_Prototype13 &proto){
-	strcpy(image_file,	proto.image_file);
-	strcpy(nimi,			proto.nimi);
-	strcpy(transformation_sprite,	proto.transformation_sprite);
-	strcpy(bonus_sprite,	proto.bonus_sprite);
-	strcpy(ammus1_sprite,	proto.ammus1_sprite);
-	strcpy(ammus2_sprite,	proto.ammus2_sprite);
 
+void PK2Sprite_Prototype::SetProto13(PK2Sprite_Prototype13 &proto){
+	image_file = proto.image_file;
+	nimi = proto.nimi;
+	transformation_sprite = proto.transformation_sprite;
+	
+	bonus_sprite = proto.bonus_sprite;
+
+	ammus1_sprite = proto.ammus1_sprite;
+	ammus2_sprite = proto.ammus2_sprite;
+	
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
 		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
@@ -550,12 +481,12 @@ void PK2Sprite_Prototype::SetProto13(PK2Sprite_Prototype13 &proto){
 PK2Sprite_Prototype13 PK2Sprite_Prototype::GetProto13(){
 	PK2Sprite_Prototype13 proto;
 
-	strcpy(proto.image_file,image_file);
-	strcpy(proto.nimi, nimi);
-	strcpy(proto.transformation_sprite,transformation_sprite);
-	strcpy(proto.bonus_sprite,bonus_sprite);
-	strcpy(proto.ammus1_sprite,ammus1_sprite);
-	strcpy(proto.ammus2_sprite,ammus2_sprite);
+	strcpy(proto.image_file, image_file.c_str());
+	strcpy(proto.nimi, nimi.c_str());
+	strcpy(proto.transformation_sprite, transformation_sprite.c_str());
+	strcpy(proto.bonus_sprite, bonus_sprite.c_str());
+	strcpy(proto.ammus1_sprite, ammus1_sprite.c_str());
+	strcpy(proto.ammus2_sprite, ammus2_sprite.c_str());
 
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
@@ -625,14 +556,81 @@ PK2Sprite_Prototype13 PK2Sprite_Prototype::GetProto13(){
 	return proto;
 }
 
+void PK2Sprite_Prototype::SetProto14(PK2Sprite_Prototype14 &proto) {
+	image_file = proto.image_file;
+	nimi = proto.nimi;
+	transformation_sprite = proto.transformation_sprite;
+
+	bonus_sprite = proto.bonus_sprite;
+
+	ammus1_sprite = proto.ammus1_sprite;
+	ammus2_sprite = proto.ammus2_sprite;
+
+	for (int aani = 0; aani<MAX_AANIA; aani++) {
+		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
+		aanet[aani] = proto.aanet[aani];
+	}
+
+	aani_frq = proto.aani_frq;
+	animaatioita = proto.animaatioita;
+	avain = proto.avain;
+	bonusten_lkm = proto.bonusten_lkm;
+	energia = proto.energia;
+	este = proto.este;
+	este_ylos = proto.este_ylos;
+	este_alas = proto.este_alas;
+	este_oikealle = proto.este_oikealle;
+	este_vasemmalle = proto.este_vasemmalle;
+	frameja = proto.frameja;
+	frame_rate = proto.frame_rate;
+	hyokkays1_aika = proto.hyokkays1_aika;
+	hyokkays2_aika = proto.hyokkays2_aika;
+	kuva_x = proto.kuva_x;
+	kuva_y = proto.kuva_y;
+	kuva_frame_leveys = proto.kuva_frame_leveys;
+	kuva_frame_korkeus = proto.kuva_frame_korkeus;
+	korkeus = proto.korkeus;
+	latausaika = proto.latausaika;
+	leveys = proto.leveys;
+	max_hyppy = proto.max_hyppy;
+	max_nopeus = proto.max_nopeus;
+	paino = proto.paino;
+	pallarx_kerroin = proto.pallarx_kerroin;
+	pisteet = proto.pisteet;
+	random_frq = proto.random_frq;
+	suojaus = proto.suojaus;
+	tarisee = proto.tarisee;
+	tiletarkistus = proto.tiletarkistus;
+	tuhoutuminen = proto.tuhoutuminen;
+	type = proto.type;
+	vahinko = proto.vahinko;
+	vahinko_type = proto.vahinko_type;
+	vari = proto.vari;
+	vihollinen = proto.vihollinen;
+
+	lapinakyvyys = proto.lapinakyvyys;
+	hehkuu = proto.hehkuu;
+	tulitauko = proto.tulitauko;
+	liitokyky = proto.liitokyky;
+	boss = proto.boss;
+	bonus_aina = proto.bonus_aina;
+	osaa_uida = proto.osaa_uida;
+
+	for (int i = 0; i<10; i++) {
+		AI[i] = proto.AI[i];
+	}
+
+	for (int i = 0; i<SPRITE_MAX_ANIMAATIOITA; i++) {
+		for (int j = 0; j<ANIMAATIO_MAX_SEKVENSSEJA; j++)
+			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
+
+		animaatiot[i].looppi = proto.animaatiot[i].looppi;
+		animaatiot[i].frameja = proto.animaatiot[i].frameja;
+	}
+}
+
 int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 	this->Uusi();
-
-	char image_path[PE_PATH_SIZE];
-	strcpy(image_path,"");
-	strcpy(image_path, path);
-
-	// Ladataan itse sprite-tiedosto
 
 	if (strcmp(path,"") != 0)
 		strcat(path, file_name);
@@ -657,7 +655,7 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto10(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, file_name);
+		this->file = file_name;
 	}
 	if (strcmp(versio,"1.1") == 0){
 		this->Uusi();
@@ -665,7 +663,7 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto11(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, file_name);
+		this->file = file_name;
 	}
 	if (strcmp(versio,"1.2") == 0){
 		this->Uusi();
@@ -673,7 +671,7 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto12(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, file_name);
+		this->file = file_name;
 	}
 	if (strcmp(versio,"1.3") == 0){
 		this->Uusi();
@@ -684,7 +682,19 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 		this->SetProto13(proto);
 
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, file_name);
+		this->file = file_name;
+	}
+
+	if (strcmp(versio, "1.4") == 0) {
+		this->Uusi();
+
+		PK2Sprite_Prototype14 proto;
+
+		tiedosto->read((char *) &proto, sizeof(proto));
+		SetProto14(proto);
+
+		strcpy(this->versio, versio);
+		this->file = file_name;
 	}
 
 	if (tiedosto->fail()){
@@ -697,21 +707,17 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 	// Get sprite bmp
 	
 	// Check the episode/-custom episode-/sprites directory first...
-	strcpy(image_path, "");
-	strcat(image_path, "episodes/");
-	strcat(image_path, episode);
-	strcat(image_path, "/sprites/");
-	strcat(image_path, image_file);
-
-	int bufferi = PisteDraw2_Image_Load(image_path, false);
+	std::stringstream ss;
+	ss << "episodes/" << episode << "/sprites/" << image_file;
+	
+	int bufferi = PisteDraw2_Image_Load(ss.str().c_str(), false);
 
 	if (bufferi == -1) {
 		//... if that fails check the games sprites/ folder
-		strcpy(image_path, "");
-		strcpy(image_path, "sprites/");
-		strcat(image_path, image_file);
+		ss.str("");
+		ss << "sprites/" << image_file;
 
-		bufferi = PisteDraw2_Image_Load(image_path, false);
+		bufferi = PisteDraw2_Image_Load(ss.str().c_str(), false);
 
 		if (bufferi == -1) {
 			return 1;
@@ -794,8 +800,8 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 		strcpy(this->versio, versio);
 
 		this->file = filename;
-		strcpy(this->tiedosto, filename.c_str());
 	}
+
 	if (strcmp(versio, "1.1") == 0) {
 		this->Uusi();
 		PK2Sprite_Prototype11 proto;
@@ -805,6 +811,7 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 
 		this->file = filename;
 	}
+
 	if (strcmp(versio, "1.2") == 0) {
 		this->Uusi();
 		PK2Sprite_Prototype12 proto;
@@ -813,8 +820,8 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 		strcpy(this->versio, versio);
 
 		this->file = filename;
-		strcpy(this->tiedosto, filename.c_str());
 	}
+
 	if (strcmp(versio, "1.3") == 0) {
 		this->Uusi();
 
@@ -826,7 +833,6 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 		strcpy(this->versio, versio);
 
 		this->file = filename;
-		strcpy(this->tiedosto, filename.c_str());
 	}
 
 	filestream.close();
@@ -895,7 +901,7 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 }
 
 void PK2Sprite_Prototype::Tallenna(char *tiedoston_nimi){
-   	strcpy(this->tiedosto,tiedoston_nimi);
+   	/*strcpy(this->tiedosto,tiedoston_nimi);
 
 	PK2Sprite_Prototype13 proto = GetProto13();
 
@@ -903,7 +909,7 @@ void PK2Sprite_Prototype::Tallenna(char *tiedoston_nimi){
 	tiedosto->write (PK2SPRITE_VIIMEISIN_VERSIO, 4);
 	tiedosto->write ((char *)&proto, sizeof (proto));
 
-	delete (tiedosto);
+	delete (tiedosto);*/
 }
 
 int PK2Sprite_Prototype::Piirra(int x, int y, int frame){

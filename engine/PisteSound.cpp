@@ -106,7 +106,7 @@ int PisteSound_PlaySFX(int index, int volume, int panoramic, int freq){
 
 	Mix_SetPanning(channel, pan_left, pan_right);
 
-	if(Mix_PlayChannel(channel, indexes[index], 0) == -1)
+	if (Mix_PlayChannel(channel, indexes[index], 0) == -1)
 		return -1;
 
 	indexes[index]->abuf = bkp_buf;
