@@ -150,8 +150,6 @@ int PisteSound_StartMusic(char* filename){
 	if (Mix_PlayMusic(music, 1) == -1){
 		printf("PS     - Music play error: %s\n",Mix_GetError());
 		return -1;
-	} else {
-		std::cout << "Started playing: " << filename << std::endl;
 	}
 
 	printf("PS     - Loaded %s\n",filename);
@@ -177,8 +175,6 @@ int PisteSound_Start(){
 
 void music_finished() {
 	Mix_PlayMusic(music_buffer, 1);
-
-	std::cout << "FACK!" << std::endl;
 }
 
 int PisteSound_Update() {

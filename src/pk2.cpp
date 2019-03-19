@@ -331,7 +331,7 @@ DWORD pisteet = 0;
 DWORD piste_lisays = 0;
 char pelaajan_nimi[20] = " ";
 
-bool nimiedit = false;
+bool name_edit = false;
 
 //PALIKOIHIN LIITTYV�T AJASTIMET
 int kytkin1 = 0, kytkin2 = 0, kytkin3 = 0;
@@ -1249,16 +1249,16 @@ void PK_Update_Mouse(){
 		hiiri_x = screen_width * x - PisteDraw2_GetXOffset();
 		hiiri_y = screen_height * y;
 	#else
-		MOUSE hiiri = PisteInput_UpdateMouse(game_screen == SCREEN_MAP || game_screen == SCREEN_SCORING, settings.isFullScreen);
-		hiiri.x -= PisteDraw2_GetXOffset();
+		MOUSE mouse = PisteInput_UpdateMouse(game_screen == SCREEN_MAP || game_screen == SCREEN_SCORING, settings.isFullScreen);
+		mouse.x -= PisteDraw2_GetXOffset();
 
-		if (hiiri.x < 0) hiiri.x = 0;
-		if (hiiri.y < 0) hiiri.y = 0;
-		if (hiiri.x > 640-19) hiiri.x = 640-19;
-		if (hiiri.y > 480-19) hiiri.y = 480-19;
+		if (mouse.x < 0) mouse.x = 0;
+		if (mouse.y < 0) mouse.y = 0;
+		if (mouse.x > 640-19) mouse.x = 640-19;
+		if (mouse.y > 480-19) mouse.y = 480-19;
 
-		hiiri_x = hiiri.x;
-		hiiri_y = hiiri.y;
+		hiiri_x = mouse.x;
+		hiiri_y = mouse.y;
 	#endif
 }
 
@@ -2499,6 +2499,7 @@ int PK_Map_Open(char *nimi) {
 	Game::Particles->clear_particles();
 	Game::Particles->load_bg_particles(kartta);
 
+	// TODO Load music from episodes/-episode-/music
 	if ( strcmp(kartta->musiikki, "") != 0) {
 		char music_path[PE_PATH_SIZE] = "";
 		PK_Load_EpisodeDir(music_path);
@@ -3340,7 +3341,7 @@ int PK_Sprite_Movement(int i){
 		if ((PisteInput_Keydown(settings.control_attack1) || PisteInput_Gamepad_Button(settings.gamepad_attack1)) && sprite.lataus == 0 && sprite.ammus1 != -1)
 			sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
 		/* ATTACK 2 */
-		else if ((PisteInput_Keydown(settings.control_attack2) || PisteInput_Gamepad_Button(settings.gamepad_attack1)) && sprite.lataus == 0 && sprite.ammus2 != -1)
+		else if ((PisteInput_Keydown(settings.control_attack2) || PisteInput_Gamepad_Button(settings.gamepad_attack2)) && sprite.lataus == 0 && sprite.ammus2 != -1)
 				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
 
 		/* CROUCH */
@@ -5668,7 +5669,7 @@ int PK_Draw_Menu_Main(){
 	}
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_new_game),180,my)){
-		nimiedit = true;
+		name_edit = true;
 		menu_name_index = strlen(pelaajan_nimi);//   0;
 		menu_name_last_mark = ' ';
 		menu_nyt = MENU_NAME;
@@ -5721,7 +5722,7 @@ int PK_Draw_Menu_Name(){
 	int mx; //Text cursor
 	char merkki;
 	bool hiiri_alueella = false;
-	int nameSize = (int)strlen(pelaajan_nimi);
+	int nameSize = (int) strlen(pelaajan_nimi);
 
 	PK_Draw_Menu_Square(90, 150, 640-90, 480-100, 224);
 
@@ -5729,12 +5730,12 @@ int PK_Draw_Menu_Name(){
 		hiiri_alueella = true; //Mouse is in text
 
 	if (hiiri_alueella && PisteInput_Hiiri_Vasen() && key_delay == 0){
-		nimiedit = true;
+		name_edit = true;
 		menu_name_index = (hiiri_x - 180)/15; //Set text cursor with the mouse
 		key_delay = 10;
 	}
 
-	if (nimiedit && key_delay == 0){
+	if (name_edit && key_delay == 0){
 
 		if (PisteInput_Keydown(PI_LEFT)) {
 			menu_name_index--;
@@ -5759,14 +5760,15 @@ int PK_Draw_Menu_Name(){
 
 	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.playermenu_type_name),180,224);
 
-	PisteDraw2_ScreenFill(180-2,255-2,180+19*15+4,255+18+4,0);
-	PisteDraw2_ScreenFill(180,255,180+19*15,255+18,50);
+	PisteDraw2_ScreenFill(180 - 2, 255 - 2, 180 + 19 * 15 + 4, 255 + 18 + 4, 0);
+	PisteDraw2_ScreenFill(180, 255, 180 + 19 * 15, 255 + 18, 50);
 
-	if (nimiedit) { //Draw text cursor
+	if (name_edit) { //Draw text cursor
 		mx = menu_name_index*15 + 180 + rand()%2; //Text cursor x
-		PisteDraw2_ScreenFill(mx-2, 254, mx+6+3, 254+20+3, 0);
-		PisteDraw2_ScreenFill(mx-1, 254, mx+6, 254+20, 96+16);
-		PisteDraw2_ScreenFill(mx+4, 254, mx+6, 254+20, 96+8);
+
+		PisteDraw2_ScreenFill(mx-2, 254, mx + 15, 254 + 20 + 3, 0);
+		PisteDraw2_ScreenFill(mx, 254, mx + 12, 254 + 20, 96 + 8);
+		PisteDraw2_ScreenFill(mx-1, 254, mx + 11, 254 + 20, 96 + 16);
 	}
 
 	PK_WavetextSlow_Draw(pelaajan_nimi,fontti2,180,255);
@@ -5774,11 +5776,7 @@ int PK_Draw_Menu_Name(){
 
 	merkki = PisteInput_Get_Typed_Char();
 
-	if (PisteInput_Gamepad_Button(PI_CONTROLLER_A) && key_delay == 0 && nimiedit) {
-		nimiedit = false;
-	}
-
-	if (merkki != '\0' && (merkki != menu_name_last_mark || key_delay == 0) && nimiedit && nameSize < 19) {
+	if (merkki != '\0' && (merkki != menu_name_last_mark || key_delay == 0) && name_edit && nameSize < 19) {
 		menu_name_last_mark = merkki; // Don't write the same letter many times
 		key_delay = 15;
 
@@ -5789,36 +5787,10 @@ int PK_Draw_Menu_Name(){
 		menu_name_index++;
 	}
 
-	if (key_delay == 0){
-		if (PisteInput_Keydown(PI_DELETE)) {
-			for (int c=menu_name_index;c<19;c++)
-				pelaajan_nimi[c] = pelaajan_nimi[c+1];
-			pelaajan_nimi[19] = '\0';
-			key_delay = 10;
-		}
-
-		if (PisteInput_Keydown(PI_BACK) && menu_name_index != 0) {
-			for (int c=menu_name_index-1;c<19;c++)
-				pelaajan_nimi[c] = pelaajan_nimi[c+1];
-			pelaajan_nimi[19] = '\0';
-			if(pelaajan_nimi[menu_name_index] == '\0') pelaajan_nimi[menu_name_index-1] = '\0';
-			menu_name_index--;
-			key_delay = 10;
-		}
-
-		if (PisteInput_Keydown(PI_RETURN) && pelaajan_nimi[0] != '\0') {
-			key_delay = 10;
-			merkki = '\0';
-			nimiedit = false;
-			menu_valittu_id = 1;
-		}
-	}
-
-
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.playermenu_continue),180,300)) {
 		menu_nyt = MENU_EPISODES;
 		menu_name_index = 0;
-		nimiedit = false;
+		name_edit = false;
 		menu_valittu_id = menu_valinta_id = 1;
 
 		if (episodi_lkm == 1) {
@@ -5837,7 +5809,39 @@ int PK_Draw_Menu_Name(){
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_exit),180,400)) {
 		menu_nyt = MENU_MAIN;
 		menu_name_index = 0;
-		nimiedit = false;
+		name_edit = false;
+	}
+
+	if (key_delay == 0) {
+		if (PisteInput_Keydown(PI_DELETE)) {
+			for (int c = menu_name_index; c<19; c++)
+				pelaajan_nimi[c] = pelaajan_nimi[c + 1];
+			pelaajan_nimi[19] = '\0';
+			key_delay = 10;
+		}
+
+		if (PisteInput_Keydown(PI_BACK) && menu_name_index != 0) {
+			for (int c = menu_name_index - 1; c<19; c++)
+				pelaajan_nimi[c] = pelaajan_nimi[c + 1];
+			pelaajan_nimi[19] = '\0';
+			if (pelaajan_nimi[menu_name_index] == '\0') pelaajan_nimi[menu_name_index - 1] = '\0';
+			menu_name_index--;
+			key_delay = 10;
+		}
+
+		if (PisteInput_Keydown(PI_RETURN) && pelaajan_nimi[0] != '\0') {
+			key_delay = 10;
+			merkki = '\0';
+			name_edit = false;
+			menu_valittu_id = 1;
+		}
+
+		if (PisteInput_Gamepad_Button(PI_CONTROLLER_A) && pelaajan_nimi[0] != '\0') {
+			key_delay = 10;
+			merkki = '\0';
+			name_edit = false;
+			menu_valittu_id = 1;
+		}
 	}
 
 	return 0;
@@ -7100,7 +7104,7 @@ int PK_MainScreen_Intro(){
 	}
 	if (key_delay > 0) key_delay--;
 	if (key_delay == 0)
-		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE) || introlaskuri == 3500){
+		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE) || PisteInput_Gamepad_Button(PI_CONTROLLER_A) || introlaskuri == 3500){
 			siirry_introsta_menuun = true;
 			PisteDraw2_FadeOut(PD_FADE_SLOW);
 		}
@@ -7244,14 +7248,14 @@ int PK_MainScreen_Map(){
 }
 int PK_MainScreen_Menu(){
 
-	if (!nimiedit && key_delay == 0 && menu_lue_kontrollit == 0) {
+	if (!name_edit && key_delay == 0 && menu_lue_kontrollit == 0) {
 		if (PisteInput_Keydown(PI_UP) || PisteInput_Keydown(PI_LEFT) ||
 			PisteInput_Gamepad_Button(PI_CONTROLLER_LEFT) || (PisteInput_Gamepad_Button(PI_CONTROLLER_UP))){
 			menu_valittu_id--;
 
 			if (menu_valittu_id < 1)
 				menu_valittu_id = menu_valinta_id-1;
-
+			
 			key_delay = 15;
 		}
 
@@ -7267,12 +7271,12 @@ int PK_MainScreen_Menu(){
 		}
 	}
 
-	if (nimiedit || menu_lue_kontrollit > 0){
+	if (name_edit || menu_lue_kontrollit > 0){
 		menu_valittu_id = 0;
 	}
 
 	if (menu_nyt != MENU_NAME){
-		nimiedit = false;
+		name_edit = false;
 	}
 	int menu_ennen = menu_nyt;
 
@@ -7381,7 +7385,7 @@ int PK_MainScreen_InGame(){
 	}
 
 	if (key_delay == 0){
-		if (PisteInput_Keydown(settings.control_open_gift || PisteInput_Gamepad_Button(settings.gamepad_open_gift)) && Game::Sprites->player->energia > 0){
+		if ((PisteInput_Keydown(settings.control_open_gift) || PisteInput_Gamepad_Button(settings.gamepad_open_gift)) && Game::Sprites->player->energia > 0) {
 			Game::Gifts->use();
 			key_delay = 10;
 		}
@@ -7503,7 +7507,7 @@ int PK_MainScreen_End(){
 
 	if (key_delay == 0)
 	{
-		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE))
+		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE) || PisteInput_Gamepad_Button(PI_CONTROLLER_A))
 		{
 			siirry_lopusta_menuun = true;
 			music_volume = 0;

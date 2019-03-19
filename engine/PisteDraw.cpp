@@ -14,12 +14,6 @@
 #include <cstdio>
 #include <iostream>
 
-#ifdef USE_LOCAL_SDL
-#include "SDL_image.h"
-#else
-#include <SDL_image.h>
-#endif
-
 const int MAX_IMAGES = 2000;
 const int MAX_FONTS = 20;
 
@@ -293,10 +287,12 @@ int PisteDraw2_ImageFill(int index, int posx, int posy, int oikea, int ala, BYTE
 int PisteDraw2_ScreenFill(BYTE color){
 	return SDL_FillRect(frameBuffer8, NULL, color);
 }
+
 int PisteDraw2_ScreenFill(int posx, int posy, int oikea, int ala, BYTE color){
 	SDL_Rect r = {posx + XOffset, posy, oikea-posx, ala-posy};
 	return SDL_FillRect(frameBuffer8, &r, color);
 }
+
 void PisteDraw2_SetMask(int x, int y, int w, int h){
 	SDL_Rect r = {x, y, w, h};
 	SDL_SetClipRect(frameBuffer8, &r);
@@ -320,11 +316,19 @@ int PisteDraw2_DrawImage_End(int index){
 	SDL_UnlockSurface(imageList[index]);
 	return 0;
 }
+
 BYTE PisteDraw2_BlendColors(BYTE color, BYTE colBack, int alpha){
 	int result;
 
 	if(alpha>100) alpha = 100;
 	if(alpha<0) alpha = 0;
+
+	/*
+	color1 &= (BYTE)0b00011111;
+	color2 = back_buffer[fy];
+	color3 = color2 & (BYTE)0b11100000;
+	color2 -= color3;
+	color1 = (color1 * a1 + color2 * a2) / 100;*/
 
 	result = color%32;
 	result = (result*alpha)/100;
@@ -451,6 +455,10 @@ int PisteDraw2_GetXOffset() {
 }
 void PisteDraw2_SetXOffset(int x) {
 	XOffset = x;
+}
+
+SDL_Window* PisteDraw2_Get_Window() {
+	return PD_Window;
 }
 
 int PisteDraw2_Start(int width, int height, const char* name, const char* icon) {
