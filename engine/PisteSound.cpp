@@ -7,11 +7,8 @@
 #include "PisteUtils.hpp"
 #include "PisteLog.hpp"
 
-#ifdef USE_LOCAL_SDL
-#include "SDL_mixer.h"
-#else
 #include <SDL_mixer.h>
-#endif
+
 #include <cstring>
 #include <iostream>
 
@@ -27,7 +24,7 @@ Mix_Chunk* indexes[MAX_SOUNDS]; //The original chunks loaded
 Uint8* freq_chunks[MIX_CHANNELS]; //The chunk allocated for each channel
 
 Mix_Music* music = NULL, *music_buffer = nullptr;
-char playingMusic[PE_PATH_SIZE] = "";
+std::string playingMusic = "";
 
 //Change the chunk frequency
 int Change_Frequency(int index, int freq){
@@ -132,28 +129,28 @@ void PisteSound_ResetSFX(){
 		PisteSound_FreeSFX(i);
 }
 
-int PisteSound_StartMusic(char* filename){
-	PisteUtils_RemoveSpace(filename);
-	if (!strcmp(playingMusic, filename)) {
-
+int PisteSound_StartMusic(std::string filename) {
+	if (playingMusic == filename) {
 		return 0;
 	}
 
-	music = Mix_LoadMUS(filename);
-	music_buffer = Mix_LoadMUS(filename);
+	music = Mix_LoadMUS(filename.c_str());
+	music_buffer = Mix_LoadMUS(filename.c_str());
 
 	if (music == nullptr) {
-		printf("PS     - Music load error: %s\n", Mix_GetError());
+		PisteLog_Write("PisteSound", "Couldn't load music! Mix_Get_Error(): " + std::string(Mix_GetError()), TYPE::T_ERROR);
+	
 		return -1;
 	}
 
 	if (Mix_PlayMusic(music, 1) == -1){
-		printf("PS     - Music play error: %s\n",Mix_GetError());
+		PisteLog_Write("PisteSound", "Couldn't play music! Mix_Get_Error(): " + std::string(Mix_GetError()), TYPE::T_ERROR);
+	
 		return -1;
 	}
 
-	printf("PS     - Loaded %s\n",filename);
-	strcpy(playingMusic,filename);
+	playingMusic = filename;
+
 	return 0;
 }
 void PisteSound_SetMusicVolume(int volume){

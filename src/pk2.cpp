@@ -2499,29 +2499,27 @@ int PK_Map_Open(char *nimi) {
 	Game::Particles->clear_particles();
 	Game::Particles->load_bg_particles(kartta);
 
-	// TODO Load music from episodes/-episode-/music
 	if ( strcmp(kartta->musiikki, "") != 0) {
-		char music_path[PE_PATH_SIZE] = "";
-		PK_Load_EpisodeDir(music_path);
-		strcat(music_path, kartta->musiikki);
-		if (PisteSound_StartMusic(music_path) != 0) {
+		std::stringstream ss;
+		ss << "episodes/" << episodi << "/music/" << kartta->musiikki;
 
-			printf("Can't load '%s'. ", music_path);
-			strcpy(music_path, "music/");
-			strcat(music_path, kartta->musiikki);
-			printf("Trying '%s'.\n", music_path);
+		if (PisteSound_StartMusic(ss.str()) != 0) {
+			ss.str("");
+			ss << "music/" << kartta->musiikki;
 
-			if (PisteSound_StartMusic(music_path) != 0) {
+			if (PisteSound_StartMusic(ss.str()) != 0) {
+				ss.str("");
+				ss << "Couldn't find music file \"" << kartta->musiikki << "\", trying to load song01.xm";
 
-				printf("Can't load '%s'. Trying 'music/song01.xm'.\n", music_path);
-
-				if (PisteSound_StartMusic("music/song01.xm") != 0){
-					PK2_error = true;
-					PK2_error_msg = "Can't find song01.xm";
+				PisteLog_Write("PK2Main", ss.str(), TYPE::T_ERROR);
+				
+				if (PisteSound_StartMusic("music/song01.xm") != 0) {
+					PisteLog_Write("PK2Main", "Couldn't find song01.xm or custom music!", TYPE::T_ERROR);
 				}
 			}
 		}
 	}
+
 	return 0;
 }
 

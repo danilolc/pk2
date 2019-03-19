@@ -20,7 +20,7 @@ void PisteSound_SetSFXVolume(int volume);
 int PisteSound_FreeSFX(int index);
 void PisteSound_ResetSFX();
 
-int PisteSound_StartMusic(char* filename);
+int PisteSound_StartMusic(std::string filename);
 void PisteSound_SetMusicVolume(int volume);
 void PisteSound_StopMusic();
 
