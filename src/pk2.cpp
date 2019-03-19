@@ -1173,6 +1173,7 @@ int PK_Load_Records(int i){
 		PK_Load_Custom_Hud_Text();
 
 		game_next_screen = SCREEN_MAP;
+
 		lataa_peli = i;
 		episode_started = false;
 
@@ -1240,13 +1241,12 @@ void PK_Play_MenuSound(int aani, int voimakkuus){
 	}
 }
 
-
 void PK_Update_Mouse(){
 	#ifdef __ANDROID__
     	float x, y;
 		PisteInput_GetTouchPos(x, y);
 
-		hiiri_x = screen_width * x - PisteDraw2_GetXOffset();
+		screen_width * x - PisteDraw2_GetXOffset();
 		hiiri_y = screen_height * y;
 	#else
 		MOUSE mouse = PisteInput_UpdateMouse(game_screen == SCREEN_MAP || game_screen == SCREEN_SCORING, settings.isFullScreen);
@@ -2036,7 +2036,7 @@ void PK2::SpriteSystem::protot_clear_all() {
 		for (int j=0;j<MAX_AANIA;j++)
 			if (protot[i].aanet[j] > -1)
 				PisteSound_FreeSFX(protot[i].aanet[j]);
-		protot[i].Uusi();
+		protot[i].New();
 		strcpy(kartta->protot[i],"");
 	}
 
@@ -2139,8 +2139,6 @@ void PK2::SpriteSystem::protot_get_transformation(int i) {
 		while (j<MAX_PROTOTYYPPEJA && !loaded){
 			if (j!=i) {
 				if (protot[i].transformation_sprite == protot[j].file) {
-					std::cout << "TRANSFORMED!" << std::endl;
-
 					protot[i].muutos = j;
 					loaded = true;
 				}
@@ -2159,21 +2157,23 @@ void PK2::SpriteSystem::protot_get_bonus(int i) {
 	int j = 0;
 	bool loaded = false;
 
-	if (!protot[i].bonus_sprite.empty()) {
-		while (j<MAX_PROTOTYYPPEJA && !loaded){
-			if (j!=i){
-				if (protot[i].bonus_sprite == protot[j].file){
-					protot[i].bonus = j;
-					loaded = true;
+	for (int k = 0; k < 5; k++) {
+		if (!protot[i].bonus_sprite[k].empty()) {
+			while (j < MAX_PROTOTYYPPEJA && !loaded) {
+				if (j != i) {
+					if (protot[i].bonus_sprite[k] == protot[j].file) {
+						protot[i].bonus[k] = j;
+						loaded = true;
+					}
 				}
+
+				j++;
 			}
 
-			j++;
-		}
-
-		if (!loaded){
-			if (Get_Prototype(protot[i].bonus_sprite) == 0)
-				protot[i].bonus = next_free_prototype - 1;
+			if (!loaded) {
+				if (Get_Prototype(protot[i].bonus_sprite[k]) == 0)
+					protot[i].bonus[k] = next_free_prototype - 1;
+			}
 		}
 	}
 }
@@ -3844,11 +3844,13 @@ int PK_Sprite_Movement(int i){
 			tuhoutuminen = sprite.type->tuhoutuminen;
 
 			if (tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
-				if (sprite.type->bonus > -1 && sprite.type->bonusten_lkm > 0)
-					if (sprite.type->bonus_aina || rand()%4 == 1)
-						for (int bi=0; bi<sprite.type->bonusten_lkm; bi++)
-							Game::Sprites->add(sprite.type->bonus,0,sprite_x-11+(10-rand()%20),
-											  sprite_ala-16-(10+rand()%20), i, true);
+				for (int i = 0; i < 5; i++) {
+					if (sprite.type->bonus[i] > -1 && sprite.type->bonus_amount[i] > 0)
+						if (sprite.type->bonus_aina || rand() % 4 == 1)
+							for (int bi = 0; bi < sprite.type->bonus_amount[i]; bi++)
+								Game::Sprites->add(sprite.type->bonus[i], 0, sprite_x - 11 + (10 - rand() % 20),
+									sprite_ala - 16 - (10 + rand() % 20), i, true);
+				}
 
 				if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_TYRMATTY) && !sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
 					kartta->Change_SkullBlocks();
@@ -4737,9 +4739,11 @@ int PK_Sprite_Bonus_Movement(int i){
 
 				}
 
-				if (sprite.type->bonus  != -1)
-					Game::Gifts->add(sprite.type->bonus);
-
+				for (int i = 0; i < 5; i++) {
+					if (sprite.type->bonus[i] != -1)
+						Game::Gifts->add(sprite.type->bonus[i]);
+				}
+				
 				if (sprite.type->muutos != -1)
 				{
 					if (Game::Sprites->protot[sprite.type->muutos].AI[0] != AI_BONUS)
@@ -5554,7 +5558,7 @@ bool PK_Draw_Menu_Text(bool active, std::string text, int x, int y, int kd = 20)
 		return false;
 	}
 
-	int length = strlen(text.c_str()) * 15;
+	int length = text.length() * 15;
 
 	// hiiri = mouse
 	if ((hiiri_x > x && hiiri_x < x + length && hiiri_y > y && hiiri_y < y + 20) ||
@@ -6628,7 +6632,7 @@ int PK_Draw_Map(){
 		PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.episodes_no_maps),180,290);
 	}
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_return),100,430)){
+	if (PK_Draw_Menu_Text(true, tekstit->Hae_Teksti(PK_txt.mainmenu_return), 100, 430)){
 		game_next_screen = SCREEN_MENU;
 		menu_nyt = MENU_MAIN;
 	}
@@ -6727,8 +6731,8 @@ int PK_Draw_Map(){
 			}
 		}
 	}
-
-	PK_Draw_Cursor(hiiri_x,hiiri_y);
+	
+	PK_Draw_Cursor(hiiri_x, hiiri_y);
 
 	return 0;
 }
@@ -7221,9 +7225,6 @@ int PK_MainScreen_ScoreCount(){
 int PK_MainScreen_Map(){
 	PK_Draw_Map();
 
-	// TODO Place cursor on the icon of the next level
-	//std::cout << jakso << std::endl;
-
 	PK_Update_Mouse();
 
 	degree = 1 + degree % 360;
@@ -7376,10 +7377,14 @@ int PK_MainScreen_InGame(){
 		}
 	}
 	if (lopetusajastin == 1 && !PisteDraw2_IsFading()){
-		if(test_level) PK_Fade_Quit();
-		else {
-			if (jakso_lapaisty) game_next_screen = SCREEN_SCORING;
-			else game_next_screen = SCREEN_MAP;
+		if (test_level) {
+			PK_Fade_Quit();
+		} else {
+			if (jakso_lapaisty) {
+				game_next_screen = SCREEN_SCORING;
+			} else {
+				game_next_screen = SCREEN_MAP;
+			}
 		}
 	}
 

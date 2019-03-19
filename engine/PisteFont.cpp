@@ -76,6 +76,7 @@ int PisteFont2::InitCharList(){
 	charList['\\']= font_index[51];
 	charList['_'] = font_index[52];
 	charList['%'] = font_index[53];
+	charList['\''] = font_index[54];
 
 	return 0;
 }

@@ -447,9 +447,9 @@ struct PK2Sprite_Prototype13 {
 
 
     char		transformation_sprite[100];								// another sprite that this sprite may change
-    char		bonus_sprite[100];								// bonus that this sprite gives
-    char		ammus1_sprite[100];								// ammo 1 sprite
-    char		ammus2_sprite[100];								// ammo 2 sprite
+    char bonus_sprite[100];								// bonus that this sprite gives
+    char ammus1_sprite[100];								// ammo 1 sprite
+    char ammus2_sprite[100];								// ammo 2 sprite
 
 
     bool		tiletarkistus;									//?make sounds?
@@ -510,7 +510,7 @@ struct PK2Sprite_Prototype14 {
 	DWORD		tuhoutuminen;									// how sprite is destroyed
 	bool		avain;											// can sprite open locks
 	bool		tarisee;										//?sprite randomly
-	BYTE        bonusten_lkm;									// number of bonuses
+	int			bonus_amount[5];									// number of bonuses
 	DWORD       hyokkays1_aika;									// attack 1 duration (frames)
 	DWORD       hyokkays2_aika;									// attack 2 duration (frames)
 	DWORD		pallarx_kerroin;								// parallax type (just to type_TAUSTA)
@@ -522,7 +522,7 @@ struct PK2Sprite_Prototype14 {
 	std::string bonus_sprite2;									// bonus that this sprite gives
 	std::string bonus_sprite3;									// bonus that this sprite gives
 	*/
-	std::string bonus_sprite;				
+	std::string bonus_sprite[5];				
 
 	std::string	ammus1_sprite;									// ammo 1 sprite
 	std::string	ammus2_sprite;									// ammo 2 sprite
@@ -605,7 +605,7 @@ class PK2Sprite_Prototype {
     int			tuhoutuminen;									// miten sprite tuhoutuu
     bool		avain;											// Voiko sprite avata lukkoja
     bool		tarisee;										// T�riseek� sprite satunnaisesti
-    BYTE       bonusten_lkm;									// Bonusten lukum��r�
+    int			bonus_amount[5];									// Bonusten lukum��r�
     int         hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     int         hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
 
@@ -614,11 +614,11 @@ class PK2Sprite_Prototype {
     // Yhteys toisiin spriteihin
 
     std::string transformation_sprite;								// Toinen sprite joksi t�m� sprite voi muuttua
-    std::string bonus_sprite;								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
+    std::string bonus_sprite[5];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
     std::string ammus1_sprite;								// Spriten ammuksena 1 k�ytt�m� sprite
     std::string ammus2_sprite;								// Spriten ammuksena 2 k�ytt�m� sprite
     int			muutos;											// Muutosspriten prototyypin indeksi. -1 jos ei ole
-    int			bonus;											// Bonusspriten prototyypin indeksi. -1 jos ei ole
+    int			bonus[5];											// Bonusspriten prototyypin indeksi. -1 jos ei ole
     int			ammus1;											// Ammussprite1 prototyypin indeksi. -1 jos ei ole
     int			ammus2;											// Ammussprite1 prototyypin indeksi. -1 jos ei ole
 
@@ -651,8 +651,7 @@ class PK2Sprite_Prototype {
     ~PK2Sprite_Prototype();
 
     // Methods
-    void Uusi();
-    void Kopioi(const PK2Sprite_Prototype &proto);
+    void New();
     int  Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi);
     int  Lataa(char *polku, char *tiedoston_nimi, char* episode = nullptr);
 	int Load(std::string filename, std::string episode);
@@ -667,7 +666,7 @@ class PK2Sprite_Prototype {
     void SetProto14(PK2Sprite_Prototype14 &proto);
     PK2Sprite_Prototype13 GetProto13();
 };
-class PK2Sprite{
+class PK2Sprite {
     public:
 
     bool		aktiivinen;			// true / false

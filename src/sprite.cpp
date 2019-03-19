@@ -12,6 +12,7 @@
 
 #include "PisteDraw.hpp"
 #include "platform.hpp"
+#include "PisteLog.hpp"
 
 using namespace std;
 
@@ -26,8 +27,10 @@ PK2Sprite_Prototype::PK2Sprite_Prototype(){
 	nimi = "";
 	transformation_sprite = "";
 
-	bonus_sprite = "";
-
+	for (int i = 0; i < 5; i++) {
+		bonus_sprite[i] = "";
+	}
+	
 	ammus1_sprite = "";
 	ammus2_sprite = "";
 
@@ -44,8 +47,13 @@ PK2Sprite_Prototype::PK2Sprite_Prototype(){
 	ammus2			= -1;
 	animaatioita	= 0;
 	avain			= false;
-	bonus			= -1;
-	bonusten_lkm    = 1;
+	
+	for (int i = 0; i < 5; i++) {
+		bonus[i] = -1;
+
+		bonus_amount[i] = 1;
+	}
+
 	energia			= 0;
 	este			= false;
 	este_ylos		= true;
@@ -110,14 +118,16 @@ PK2Sprite_Prototype::~PK2Sprite_Prototype(){
 			PisteDraw2_Image_Delete(this->framet[i]);
 }
 
-void PK2Sprite_Prototype::Uusi(){
+void PK2Sprite_Prototype::New(){
 	strcpy(versio,PK2SPRITE_VIIMEISIN_VERSIO);
 	file = "";
 	image_file = "";
 	nimi = "";
 	transformation_sprite = "";
 
-	bonus_sprite = "";
+	for (int i = 0; i < 5; i++) {
+		bonus_sprite[i] = "";
+	}
 
 	ammus1_sprite = "";
 	ammus2_sprite = "";
@@ -135,8 +145,13 @@ void PK2Sprite_Prototype::Uusi(){
 	ammus2			= -1;
 	animaatioita	= 0;
 	avain			= false;
-	bonus			= -1;
-	bonusten_lkm    = 1;
+
+	for (int i = 0; i < 5; i++) {
+		bonus[i] = -1;
+
+		bonus_amount[i] = 1;
+	}
+
 	energia			= 0;
 	este			= false;
 	este_ylos		= true;
@@ -230,7 +245,7 @@ void PK2Sprite_Prototype::SetProto10(PK2Sprite_Prototype10 &proto){
 	image_file = proto.image_file;
 	nimi = proto.nimi;
 	transformation_sprite = proto.transformation_sprite;
-	bonus_sprite = proto.bonus_sprite;
+	bonus_sprite[0] = proto.bonus_sprite;
 	ammus1_sprite = proto.ammus1_sprite;
 	ammus2_sprite = proto.ammus2_sprite;
 
@@ -282,7 +297,7 @@ void PK2Sprite_Prototype::SetProto11(PK2Sprite_Prototype11 &proto){
 	image_file = proto.image_file;
 	nimi = proto.nimi;
 	transformation_sprite = proto.transformation_sprite;
-	bonus_sprite = proto.bonus_sprite;
+	bonus_sprite[0] = proto.bonus_sprite;
 	ammus1_sprite = proto.ammus1_sprite;
 	ammus2_sprite = proto.ammus2_sprite;
 
@@ -294,7 +309,7 @@ void PK2Sprite_Prototype::SetProto11(PK2Sprite_Prototype11 &proto){
 
 	animaatioita		= proto.animaatioita;
 	avain				= proto.avain;
-	bonusten_lkm        = proto.bonusten_lkm;
+	bonus_amount[0]     = proto.bonusten_lkm;
 	energia				= proto.energia;
 	este				= proto.este;
 	frameja				= proto.frameja;
@@ -340,7 +355,7 @@ void PK2Sprite_Prototype::SetProto12(PK2Sprite_Prototype12 &proto){
 	image_file = proto.image_file;
 	nimi = proto.nimi;
 	transformation_sprite = proto.transformation_sprite;
-	bonus_sprite = proto.bonus_sprite;
+	bonus_sprite[0] = proto.bonus_sprite;
 	ammus1_sprite = proto.ammus1_sprite;
 	ammus2_sprite = proto.ammus2_sprite;
 
@@ -353,7 +368,7 @@ void PK2Sprite_Prototype::SetProto12(PK2Sprite_Prototype12 &proto){
 	aani_frq			= proto.aani_frq;
 	animaatioita		= proto.animaatioita;
 	avain				= proto.avain;
-	bonusten_lkm        = proto.bonusten_lkm;
+	bonus_amount[0]		= proto.bonusten_lkm;
 	energia				= proto.energia;
 	este				= proto.este;
 	este_ylos			= proto.este_ylos;
@@ -407,7 +422,7 @@ void PK2Sprite_Prototype::SetProto13(PK2Sprite_Prototype13 &proto){
 	nimi = proto.nimi;
 	transformation_sprite = proto.transformation_sprite;
 	
-	bonus_sprite = proto.bonus_sprite;
+	bonus_sprite[0] = proto.bonus_sprite;
 
 	ammus1_sprite = proto.ammus1_sprite;
 	ammus2_sprite = proto.ammus2_sprite;
@@ -421,7 +436,7 @@ void PK2Sprite_Prototype::SetProto13(PK2Sprite_Prototype13 &proto){
 	aani_frq			= proto.aani_frq;
 	animaatioita		= proto.animaatioita;
 	avain				= proto.avain;
-	bonusten_lkm        = proto.bonusten_lkm;
+	bonus_amount[0]		= proto.bonusten_lkm;
 	energia				= proto.energia;
 	este				= proto.este;
 	este_ylos			= proto.este_ylos;
@@ -484,10 +499,12 @@ PK2Sprite_Prototype13 PK2Sprite_Prototype::GetProto13(){
 	strcpy(proto.image_file, image_file.c_str());
 	strcpy(proto.nimi, nimi.c_str());
 	strcpy(proto.transformation_sprite, transformation_sprite.c_str());
-	strcpy(proto.bonus_sprite, bonus_sprite.c_str());
+	
+	strcpy(proto.bonus_sprite, bonus_sprite[0].c_str());
+
 	strcpy(proto.ammus1_sprite, ammus1_sprite.c_str());
 	strcpy(proto.ammus2_sprite, ammus2_sprite.c_str());
-
+	
 	for (int aani=0;aani<MAX_AANIA;aani++)
 	{
 		strcpy(proto.aanitiedostot[aani], aanitiedostot[aani]);
@@ -497,7 +514,7 @@ PK2Sprite_Prototype13 PK2Sprite_Prototype::GetProto13(){
 	proto.aani_frq			= aani_frq;
 	proto.animaatioita		= animaatioita;
 	proto.avain				= avain;
-	proto.bonusten_lkm      = bonusten_lkm;
+	proto.bonusten_lkm      = bonus_amount[0];
 	proto.energia			= energia;
 	proto.este				= este;
 	proto.este_ylos			= este_ylos;
@@ -561,7 +578,9 @@ void PK2Sprite_Prototype::SetProto14(PK2Sprite_Prototype14 &proto) {
 	nimi = proto.nimi;
 	transformation_sprite = proto.transformation_sprite;
 
-	bonus_sprite = proto.bonus_sprite;
+	for (int i = 0; i < 5; i++) {
+		bonus_sprite[i] = proto.bonus_sprite[i];
+	}
 
 	ammus1_sprite = proto.ammus1_sprite;
 	ammus2_sprite = proto.ammus2_sprite;
@@ -574,7 +593,11 @@ void PK2Sprite_Prototype::SetProto14(PK2Sprite_Prototype14 &proto) {
 	aani_frq = proto.aani_frq;
 	animaatioita = proto.animaatioita;
 	avain = proto.avain;
-	bonusten_lkm = proto.bonusten_lkm;
+
+	for (int i = 0; i < 5; i++) {
+		bonus_amount[i] = proto.bonus_amount[i];
+	}
+
 	energia = proto.energia;
 	este = proto.este;
 	este_ylos = proto.este_ylos;
@@ -630,7 +653,7 @@ void PK2Sprite_Prototype::SetProto14(PK2Sprite_Prototype14 &proto) {
 }
 
 int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
-	this->Uusi();
+	this->New();
 
 	if (strcmp(path,"") != 0)
 		strcat(path, file_name);
@@ -650,7 +673,7 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 	tiedosto->read ((char *)versio, 4);
 
 	if (strcmp(versio,"1.0") == 0){
-		this->Uusi();
+		this->New();
 		PK2Sprite_Prototype10 proto;
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto10(proto);
@@ -658,7 +681,7 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 		this->file = file_name;
 	}
 	if (strcmp(versio,"1.1") == 0){
-		this->Uusi();
+		this->New();
 		PK2Sprite_Prototype11 proto;
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto11(proto);
@@ -666,7 +689,7 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 		this->file = file_name;
 	}
 	if (strcmp(versio,"1.2") == 0){
-		this->Uusi();
+		this->New();
 		PK2Sprite_Prototype12 proto;
 		tiedosto->read ((char *)&proto, sizeof (proto));
 		this->SetProto12(proto);
@@ -674,7 +697,7 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 		this->file = file_name;
 	}
 	if (strcmp(versio,"1.3") == 0){
-		this->Uusi();
+		this->New();
 
 		PK2Sprite_Prototype13 proto;
 
@@ -686,7 +709,7 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 	}
 
 	if (strcmp(versio, "1.4") == 0) {
-		this->Uusi();
+		this->New();
 
 		PK2Sprite_Prototype14 proto;
 
@@ -769,7 +792,7 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 }
 
 int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
-	this->Uusi();
+	this->New();
 
 	std::stringstream ss;
 	ss << "episodes/" << episode << "/sprites/" << filename;
@@ -783,7 +806,7 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 		filestream.open(ss.str(), ios::binary);
 
 		if (filestream.fail()) {
-			std::cerr << "\tPK2Sprite - Can't find file: " << filename << std::endl;
+			PisteLog_Write("PK2Sprite", "Can't find file: " + filename, TYPE::T_ERROR);
 
 			return 1;
 		}
@@ -793,7 +816,7 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 	filestream.read((char *)versio, 4);
 
 	if (strcmp(versio, "1.0") == 0) {
-		this->Uusi();
+		this->New();
 		PK2Sprite_Prototype10 proto;
 		filestream.read((char *)&proto, sizeof(proto));
 		this->SetProto10(proto);
@@ -803,7 +826,7 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 	}
 
 	if (strcmp(versio, "1.1") == 0) {
-		this->Uusi();
+		this->New();
 		PK2Sprite_Prototype11 proto;
 		filestream.read((char *)&proto, sizeof(proto));
 		this->SetProto11(proto);
@@ -813,7 +836,7 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 	}
 
 	if (strcmp(versio, "1.2") == 0) {
-		this->Uusi();
+		this->New();
 		PK2Sprite_Prototype12 proto;
 		filestream.read((char *)&proto, sizeof(proto));
 		this->SetProto12(proto);
@@ -823,9 +846,11 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 	}
 
 	if (strcmp(versio, "1.3") == 0) {
-		this->Uusi();
+		this->New();
 
 		PK2Sprite_Prototype13 proto;
+
+		// TODO PK2Sprite - Actually read the file, instead of reading the struct at once, because of string/char*
 
 		filestream.read((char *)&proto, sizeof(proto));
 		this->SetProto13(proto);
