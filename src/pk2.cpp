@@ -6137,13 +6137,13 @@ int PK_Draw_Menu_Sounds(){
 
 	PK_Draw_Menu_Square(40, 70, 640-40, 410, 224);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_title),50,90);
+	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_title), 50, 90);
 	my += 20;
 
-	PisteDraw2_ScreenFill(404,224+my,404+settings.sfx_max_volume,244+my,0);
-	PisteDraw2_ScreenFill(400,220+my,400+settings.sfx_max_volume,240+my,81);
+	PisteDraw2_ScreenFill(404, 224 + my, 404 + settings.sfx_max_volume, 244 + my, 0);
+	PisteDraw2_ScreenFill(400, 220 + my, 400 + settings.sfx_max_volume, 240 + my, 81);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_sfx_volume),180,200+my);
+	PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.sound_sfx_volume), 150, 195 + my);
 	my += 20;
 
 	if (settings.sfx_max_volume == 0) {
@@ -6173,7 +6173,7 @@ int PK_Draw_Menu_Sounds(){
 	PisteDraw2_ScreenFill(404, 224 + my, 404 + int(settings.music_max_volume * 1.56), 244 + my, 0);
 	PisteDraw2_ScreenFill(400, 220 + my, 400 + int(settings.music_max_volume * 1.56), 240 + my, 112);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_music_volume),180,200+my);
+	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_music_volume), 200, 195 + my);
 	my += 20;
 
 	if (settings.music_max_volume == 0) {
