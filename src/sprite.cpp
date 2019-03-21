@@ -860,6 +860,19 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 		this->file = filename;
 	}
 
+	if (strcmp(versio, "1.4") == 0) {
+		this->New();
+
+		PK2Sprite_Prototype14 proto;
+
+		//filestream.read((char *) &proto, sizeof(proto));
+		this->SetProto14(proto);
+
+		strcpy(this->versio, versio);
+
+		this->file = filename;
+	}
+
 	filestream.close();
 
 	// Get sprite bmp

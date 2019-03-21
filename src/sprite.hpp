@@ -199,8 +199,15 @@ enum { //Type
     type_BONUS,
     type_AMMUS,
     type_TELEPORTTI,
-    type_TAUSTA
+    type_TAUSTA,
+
+	// 1.4
+	TYPE_COLLECTABLE,
+	TYPE_SWITCH,
+	TYPE_CHECKPOINT,
+	TYPE_EXIT
 };
+
 enum { //Color
     VARI_HARMAA   = 0,
     VARI_SININEN  = 32,
@@ -473,78 +480,125 @@ struct PK2Sprite_Prototype13 {
 };
 
 struct PK2Sprite_Prototype14 {
+	BYTE type;
 
-	DWORD		type;											// sprite type
-	std::string	image_file;								// bmp path
-	char		aanitiedostot[7][100];							// sound path (max 7)
-	DWORD		aanet[7];										// sound types
+	std::string	image_file;
+	std::string lua_script;
 
-	std::string lua_script;										// Lua script file
+	char sound_files[7][100];
 
-	BYTE		frameja;										// number of frames
-	PK2SPRITE_ANIMAATIO animaatiot[20];							// animation sequences
-	BYTE		animaatioita;									// number of animations
-	BYTE		frame_rate;										// frame rate
-	DWORD		kuva_x;											// x position of first frame
-	DWORD		kuva_y;											// y position of first frame
-	DWORD		kuva_frame_leveys;								// frame width
-	DWORD		kuva_frame_korkeus;								// frame height
-	DWORD		kuva_frame_vali;								// space between frames
+	BYTE frames;
+	PK2SPRITE_ANIMAATIO animation_sequence[20];
+	
+	BYTE animations;
+	BYTE frame_rate;
 
-	std::string	nimi;										// name
-	DWORD		leveys;											// width
-	DWORD		korkeus;										// height
-	double		paino;											// weight (for jump and switches)
-	bool		vihollinen;										// if sprite is a enemy
-	DWORD		energia;										//?sprite energy
-	DWORD		vahinko;										//?damage if hitted
-	BYTE        vahinko_type;									//?damage type
-	BYTE		suojaus;										//?protection type
-	DWORD		pisteet;										// how much score
-	DWORD		AI[10];											// AI type (max 10)
-	BYTE		max_hyppy;										// max jump time
-	double		max_nopeus;										// max speed
-	DWORD		latausaika;										//?wait post shoot
-	BYTE		vari;											// color
-	bool		este;											// is a wall
-	DWORD		tuhoutuminen;									// how sprite is destroyed
-	bool		avain;											// can sprite open locks
-	bool		tarisee;										//?sprite randomly
-	int			bonus_amount[5];									// number of bonuses
-	DWORD       hyokkays1_aika;									// attack 1 duration (frames)
-	DWORD       hyokkays2_aika;									// attack 2 duration (frames)
-	DWORD		pallarx_kerroin;								// parallax type (just to type_TAUSTA)
+	int	clip_x;
+	int clip_y;
+	int clip_width;
+	int clip_height;
+	
+	std::string	name;
+	int hitbox_x;
+	int hitbox_y;
+	int hitbox_width;
+	int hitbox_height;
+	
+	double weight;
 
-	std::string	transformation_sprite;							// another sprite that this sprite may change into
+	bool is_enemy;
 
-	/*
-	std::string bonus_sprite;									// bonus that this sprite gives
-	std::string bonus_sprite2;									// bonus that this sprite gives
-	std::string bonus_sprite3;									// bonus that this sprite gives
-	*/
+	int energy;
+
+	// The amount of damage this sprite causes
+	int damage;
+
+	// The type of damage this sprite causes
+	BYTE damage_type;
+	
+	// Damage type this sprite isn't hurt by. See Damage list.
+	BYTE immunity;
+
+	// If the sprite is a game character, then score is the number of points you get when you knock it out.
+	// If sprite is a bonus item sprite, then score is the amount of points you get when you collect the bonus item.
+	int score;
+
+	int AI[10];
+
+	BYTE max_jump_time;	
+
+	double max_speed;
+
+	// How many frames to wait, after shooting
+	int loading_time;
+
+	// See color list
+	BYTE color;
+
+	// Is the sprite a wall?
+	bool obstacle;
+
+	// Knock out effect. See Destruction Style list.
+	int destruction;
+
+	// can sprite open locks
+	bool is_key;
+
+	// sprite shakes randomly
+	bool shakes;
+
+	// Amount of bonuses, per sprite
+	int bonus_amount[5];
+
+	// How many frames the attack sprite is alive
+	int attack1_frames;
+	int attack2_frames;
+
+	int parallax_factor;
+
+	std::string	transformation_sprite;
+
 	std::string bonus_sprite[5];				
 
-	std::string	ammus1_sprite;									// ammo 1 sprite
-	std::string	ammus2_sprite;									// ammo 2 sprite
+	std::string	ammo1_sprite;
+	std::string	ammo2_sprite;
 
-	bool		tiletarkistus;									//?make sounds?
-	DWORD		aani_frq;										// sound frequency (def. 22050)
-	bool		random_frq;										// use random frequency?
+	std::string message;
 
-	bool		este_ylos;                                      // if is wall at up
-	bool		este_alas;                                      // if is wall at down
-	bool		este_oikealle;                                  // if is wall at right
-	bool		este_vasemmalle;                                // if is wall at left
+	// Display message, as soon as the sprite becomes active? If not, use script
+	bool message_when_active;
 
-	BYTE		lapinakyvyys;									// transparency
-	bool		hehkuu;											// is transparent?
-	DWORD		tulitauko;										//*ammuspriten ampujalle aiheuttama latausaika
-	bool		liitokyky;										//*voiko tippua hiljaa alas?
-	bool		boss;											// if it is a boss
-	bool		bonus_aina;										// allways gives bonus
-	bool		osaa_uida;										// be alive in water
+	bool show_healthbar;
+	bool healthbar_when_active;
 
-	int transformation_value;									// Sprite transforms if it's energy is below this value
+	bool tile_check;
+
+	// sound frequency (def. 22050)
+	int sound_frq;
+
+	// use random frequency?
+	bool random_frq;
+
+	// If sprite acts as a wall up, down...
+	bool wall_up;
+	bool wall_down;
+	bool wall_right;
+	bool wall_left;
+
+	//BYTE transparency;									// transparency
+	//bool glow;									// is transparent?
+	
+	int	attack_pause;
+	
+	bool can_glide;
+	bool is_boss;
+	bool bonus_always;
+
+	// If true, sprite won't be affected by gravity, when in water
+	bool can_swim;
+
+	// Sprite transforms if it's energy is below this value
+	int transformation_value;
 };
 
 //Classes used in game
