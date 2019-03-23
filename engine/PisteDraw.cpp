@@ -181,6 +181,7 @@ int PisteDraw2_Image_Clip(int index, int x, int y){
 
 	return 0;
 }
+
 int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int alpha){
 	PD_RECT srcrect, dstrect;
 	srcrect.x = 0;
@@ -191,12 +192,33 @@ int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int alpha){
 	dstrect.y = y;
 	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha);
 }
+
+int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int width, int height, int alpha) {
+	PD_RECT srcrect, dstrect;
+	srcrect.x = 0;
+	srcrect.y = 0;
+	srcrect.w = width;
+	srcrect.h = height;
+	dstrect.x = x;
+	dstrect.y = y;
+
+	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha);
+}
+
 int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala){ //TODO - fix names
 	PD_RECT src = {(DWORD)srcx, (DWORD)srcy, (DWORD)oikea-srcx, (DWORD)ala-srcy};
 	PD_RECT dst = {(DWORD)dstx, (DWORD)dsty, (DWORD)oikea-srcx, (DWORD)ala-srcy};
 	PisteDraw2_Image_CutClip(index, src, dst);
 	return 0;
 }
+
+int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala, int alpha) { //TODO - fix names
+	PD_RECT src = { (DWORD)srcx, (DWORD)srcy, (DWORD)oikea - srcx, (DWORD)ala - srcy };
+	PD_RECT dst = { (DWORD)dstx, (DWORD)dsty, (DWORD)oikea - srcx, (DWORD)ala - srcy };
+	PisteDraw2_Image_CutClipTransparent(index, src, dst, alpha);
+	return 0;
+}
+
 int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
 	dstrect.x += XOffset;
 	SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);

@@ -482,7 +482,7 @@ struct PK2Sprite_Prototype13 {
 struct PK2Sprite_Prototype14 {
 	BYTE type;
 
-	std::string	image_file;
+	std::string image_file;
 	std::string lua_script;
 
 	char sound_files[7][100];
@@ -493,7 +493,7 @@ struct PK2Sprite_Prototype14 {
 	BYTE animations;
 	BYTE frame_rate;
 
-	int	clip_x;
+	int clip_x;
 	int clip_y;
 	int clip_width;
 	int clip_height;
@@ -586,7 +586,7 @@ struct PK2Sprite_Prototype14 {
 	bool wall_left;
 
 	//BYTE transparency;									// transparency
-	//bool glow;									// is transparent?
+	//bool glow;									
 	
 	int	attack_pause;
 	
@@ -599,6 +599,9 @@ struct PK2Sprite_Prototype14 {
 
 	// Sprite transforms if it's energy is below this value
 	int transformation_value;
+
+	bool trigger_healthbar_when_active;
+	bool trigger_message_on_collision;
 };
 
 //Classes used in game
@@ -635,6 +638,9 @@ class PK2Sprite_Prototype {
     int			kuva_frame_leveys;								// yhden framen leveys
     int			kuva_frame_korkeus;								// yhden framen korkeus
     int			kuva_frame_vali;								// kahden framen vali
+
+	int hitbox_x;
+	int hitbox_y;
 
     // Spriten ominaisuudet
     std::string	nimi;										// spriten nimi (n�kyy editorissa)
@@ -699,6 +705,9 @@ class PK2Sprite_Prototype {
 	// version 1.4
 	std::string lua_script;
 	int transformation_value;
+
+	bool trigger_healthbar_when_active;
+	bool trigger_message_on_collision;
 
     // Muodostimet
     PK2Sprite_Prototype();
