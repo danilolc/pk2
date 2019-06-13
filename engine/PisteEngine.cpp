@@ -26,7 +26,15 @@
 
 #include <iostream>
 
+#include "PisteTimer.h"
+
 using namespace Piste;
+
+const int FPS = 60;
+const int TICKS_PER_FRAME = 1000 / FPS;
+
+PisteTimer fpsTimer;
+PisteTimer capTimer;
 
 Game::Game(int width, int height, const char* name, const char* icon) {
 	
@@ -41,6 +49,8 @@ Game::Game(int width, int height, const char* name, const char* icon) {
 
 	ready = true;
 	running = true;
+
+	fpsTimer.start();
 }
 
 Game::~Game() {
@@ -55,8 +65,9 @@ Game::~Game() {
 
 }
 
+int countedFrames = 0;
+
 void Game::loop(int (*GameLogic)()) {
-	
 	int last_time = 0;
 	int count = 0; // Count how much frames elapsed
 	float real_fps = 0;
@@ -64,8 +75,24 @@ void Game::loop(int (*GameLogic)()) {
 	//running = true;
 
 	while(running) {
+		capTimer.start();
+
+		avgFps = countedFrames / (fpsTimer.getTicks() / 1000.f);
+
+		if (avgFps > 2000000) {
+			avgFps = 0;
+		}
+
 		GameLogic();
 		logic();
+		draw = true;
+
+		int frameTicks = capTimer.getTicks();
+		if (frameTicks < TICKS_PER_FRAME) {
+			SDL_Delay(TICKS_PER_FRAME - frameTicks);
+		}
+
+		++countedFrames;
 
 		/*
 		if (draw) {
@@ -74,9 +101,9 @@ void Game::loop(int (*GameLogic)()) {
 			avrg_fps = avrg_fps * 0.8 + real_fps * 0.2;
 			last_time = SDL_GetTicks();
 			count = 0;
-		}*/
+		}
 
-		draw = true; // TODO - Set false if the game gets slow
+		draw = true; // TODO - Set false if the game gets slow*/
 	}
 
 }
@@ -89,7 +116,7 @@ void Game::stop() {
 
 float Game::get_fps() {
 	
-	return avrg_fps;
+	return avgFps;
 
 }
 

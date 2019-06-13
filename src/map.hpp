@@ -11,9 +11,15 @@
 #include <cstring>
 #include <string>
 
+#include <vector>
+
 typedef struct {
 	int left, top, right, bottom;
 } RECT;
+
+enum UNLOCK {
+	SCORE = 0, COLLECTABLES
+};
 
 const char PK2KARTTA_VIIMEISIN_VERSIO[4] = "1.3";
 
@@ -52,7 +58,7 @@ const BYTE BLOCK_KYTKIN3			= 147;
 const BYTE BLOCK_ALOITUS			= 148;
 const BYTE BLOCK_LOPETUS			= 149;
 
-const int KYTKIN_ALOITUSARVO		= 2000;
+const int SWITCH_TIME_DEFAULT		= 2000;
 
 const BYTE ILMA_NORMAALI			= 0;
 const BYTE ILMA_SADE				= 1;
@@ -69,34 +75,35 @@ void PK2Kartta_Cos_Sin(double *cost, double *sint);
 void PK2Kartta_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys);
 void PK2Kartta_Aseta_Ruudun_Mitat(int leveys, int korkeus);
 
-class PK2Kartta
-{
+class PK2Kartta {
 	public:
 
-	/* Atributs ------------------------*/
-
 	char		versio[5];			// map version. eg "1.3"
-	char		palikka_bmp[13];	// path of block palette .bmp
-	char		taustakuva[13];		// path of map bg .bmp
-	char		musiikki[13];		// path of map music
+	std::string	palikka_bmp;	// path of block palette .bmp
+	std::string taustakuva;		// path of map bg .bmp
+	std::string musiikki;		// path of map music
 
-	char		nimi[40];			// map name
-	char		tekija[40];			// map author
+	std::string		map_name;			// map name
+	std::string		tekija;			// map author
 
-	int			jakso;				// level of the episode
+	int			jakso;				// level of the episode. 0 means secret level
 	int			ilma;				// map climate
 	int			aika;				// map time
 	BYTE		extra;				// extra config - not used
 	BYTE		tausta;				// bg movemant type
-	DWORD		kytkin1_aika;		// button 1 time - not used
-	DWORD		kytkin2_aika;		// button 2 time - not used
-	DWORD		kytkin3_aika;		// button 3 time - not used
+	DWORD		kytkin1_aika;		// button 1 time
+	DWORD		kytkin2_aika;		// button 2 time
+	DWORD		kytkin3_aika;		// button 3 time
 	int			pelaaja_sprite;		// player prototype
 
 	BYTE		taustat[PK2KARTTA_KARTTA_KOKO];	// map bg tiles 256*224
 	BYTE		seinat [PK2KARTTA_KARTTA_KOKO];	// map fg tiles 256*224
 	BYTE		spritet[PK2KARTTA_KARTTA_KOKO];	// map sprites 256*224
-	char		protot [PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA][13]; // map prototype list .spr
+	char protot [PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA][13]; // map prototype list .spr
+	
+	std::vector<std::string> prototypes;
+
+
 	bool		reunat [PK2KARTTA_KARTTA_KOKO]; // map edges - calculated during game
 
 	int			palikat_buffer;		// index of block palette
@@ -106,27 +113,33 @@ class PK2Kartta
 	int	  x,y;						// map icon pos
 	int	  ikoni;					// map icon id
 
-	//static char	pk2_hakemisto[256]; // PK2.exe:n sis�lt�v� hakemisto
+	int background_width;
+	int background_height;
 
-	/* Metodit --------------------------*/
+	int level_number_secret;
+
+	int collectable_amount;
+
+	int unlock;
+	int unlock_score;
+	int unlock_collectables;
+	bool is_secret = false;
+
+	int collectables;
 
 	PK2Kartta();						// Oletusmuodostin
 	PK2Kartta(const PK2Kartta &kartta);	// Kopiointimuodostin
 	~PK2Kartta();						// Hajoitin
 
-	PK2Kartta &operator = (const PK2Kartta &kartta);	//Sijoitusoperaattori
-
 	int Load(std::string filename, std::string episode);		// Lataa kartta
-	int Lataa_Pelkat_Tiedot(char *polku, char *nimi);	// Lataa kartta ilman grafiikoita
+	int Lataa_Pelkat_Tiedot(char *polku, const char *nimi);	// Lataa kartta ilman grafiikoita
 
-	int Tallenna(char *filename);	// Save map
 	void Tyhjenna();				// clean map
 	RECT LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde);
 	RECT LaskeTallennusAlue(BYTE *alue);
 	void LueTallennusAlue(BYTE *lahde, RECT alue, int kohde);
 	int Piirra_Taustat(int, int, bool);
 	int Piirra_Seinat (int, int, bool);
-	void Kopioi(PK2Kartta &kartta);
 
 	//PK2 functions
 	int Count_Keys();
@@ -138,14 +151,14 @@ class PK2Kartta
 
 	private:
 
-	int LataaVersio01(char *filename);	// Lataa kartta versio 0.1
 	int LataaVersio10(char *filename);	// Lataa kartta versio 1.0
 	int LataaVersio11(char *filename);	// Lataa kartta versio 1.1
 	int LataaVersio12(char *filename);  // Lataa kartta versio 1.2
 	int LoadVersion13(std::string filename);  // Lataa kartta versio 1.3
+	int LoadVersion14(std::string filename);  // Load map version 1.4
 	
 	int Load_Background(std::string filename, std::string episode);
-	int Lataa_PalikkaPaletti(char *polku, char *filename);
+	int Load_Tileset(std::string filename, std::string episode);
 	int Lataa_TaustaMusiikki(char *filename);
 
 	void Animoi_Tuli(void);
@@ -155,5 +168,4 @@ class PK2Kartta
 	void Animoi_Vesi(void);
 	
 };
-
 #endif

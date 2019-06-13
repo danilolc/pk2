@@ -1,7 +1,10 @@
-//#########################
-//Pekka Kana 2
-//by Janne Kivilahti from Piste Gamez (2003)
-//#########################
+/*
+*	Pekka Kana 2
+*	by Janne Kivilahti from Piste Gamez (2003)
+*
+*	Community Edition
+*	by Deta (2019)
+*/
 
 #ifndef PK2SPRITE
 #define PK2SPRITE
@@ -12,7 +15,7 @@
 
 #define PK2SPRITE_VIIMEISIN_VERSIO "1.3"
 
-#define MAX_SPRITEJA       800
+//#define MAX_SPRITEJA       800
 #define MAX_PROTOTYYPPEJA  100
 
 #define SPRITE_MAX_FRAMEJA        50
@@ -22,18 +25,19 @@
 #define MAX_AANIA                  7
 #define	VAHINKO_AIKA              50 //Damage time?
 
-//Spite file values
-enum { //Animation
-    ANIMAATIO_PAIKALLA,
-    ANIMAATIO_KAVELY,
-    ANIMAATIO_HYPPY_YLOS,
-    ANIMAATIO_HYPPY_ALAS,
-    ANIMAATIO_KYYKKY,
-    ANIMAATIO_VAHINKO,
-    ANIMAATIO_KUOLEMA,
-    ANIMAATIO_HYOKKAYS1,
-    ANIMAATIO_HYOKKAYS2
+//Animation
+enum Animation {
+	STILL,
+	WALKING,
+	JUMP_UP,
+	JUMP_DOWN,
+	DUCK,
+	DAMAGE,
+	KNOCK_OUT,
+	ATTACK1,
+	ATTACK2,
 };
+
 enum { //Sound
     AANI_VAHINKO,
     AANI_TUHOUTUMINEN,
@@ -187,13 +191,15 @@ enum { //Damage
     VAHINKO_PISTO
 };
 enum { //Prototype
-    PROTOtype_KANA,
-    PROTOtype_MUNA,
-    PROTOtype_PIKKUKANA,
-    PROTOtype_OMENA,
-    PROTOtype_HYPPIJA
+    PROTOTYPE_KANA,
+    PROTOTYPE_MUNA,
+    PROTOTYPE_PIKKUKANA,
+    PROTOTYPE_OMENA,
+    PROTOTYPE_HYPPIJA
 };
-enum { //Type
+
+//Type
+enum {
     type_EI_MIKAAN,
     type_PELIHAHMO,
     type_BONUS,
@@ -203,7 +209,6 @@ enum { //Type
 
 	// 1.4
 	TYPE_COLLECTABLE,
-	TYPE_SWITCH,
 	TYPE_CHECKPOINT,
 	TYPE_EXIT
 };
@@ -252,9 +257,20 @@ enum { //Bonus Item
 };
 
 struct PK2SPRITE_ANIMAATIO{
-    BYTE		sekvenssi[ANIMAATIO_MAX_SEKVENSSEJA];	// sequence
+    uint8_t		sekvenssi[ANIMAATIO_MAX_SEKVENSSEJA];	// sequence
     BYTE		frameja;								// frames
     bool		looppi;									// loop
+};
+
+// Needed, because PK2SPRITE_ANIMAATIO is read from the file. This struct contains "last_frame", which isn't saved in the file
+// TODO Store last_frame in sprite file format 1.4
+struct AnimationData {
+	uint8_t frames[ANIMAATIO_MAX_SEKVENSSEJA];
+	uint8_t frame_amount;
+	
+	uint8_t last_frame;
+
+	bool loop;
 };
 
 //.spr file structures
@@ -565,12 +581,6 @@ struct PK2Sprite_Prototype14 {
 
 	std::string message;
 
-	// Display message, as soon as the sprite becomes active? If not, use script
-	bool message_when_active;
-
-	bool show_healthbar;
-	bool healthbar_when_active;
-
 	bool tile_check;
 
 	// sound frequency (def. 22050)
@@ -600,8 +610,7 @@ struct PK2Sprite_Prototype14 {
 	// Sprite transforms if it's energy is below this value
 	int transformation_value;
 
-	bool trigger_healthbar_when_active;
-	bool trigger_message_on_collision;
+	int attack_priority;
 };
 
 //Classes used in game
@@ -630,7 +639,12 @@ class PK2Sprite_Prototype {
     int			framet[SPRITE_MAX_FRAMEJA];						// spriten framet (bitm�pit)
     int			framet_peilikuva[SPRITE_MAX_FRAMEJA];			// spriten framet peilikuvina
     BYTE		frameja;										// framejen m��r�
+	
+	// TODO Remove this and use "animations" instead
     PK2SPRITE_ANIMAATIO animaatiot[SPRITE_MAX_ANIMAATIOITA];	// animaatio sekvenssit
+
+	AnimationData animations[SPRITE_MAX_ANIMAATIOITA];
+
     BYTE		animaatioita;									// animaatioiden m��r�
     BYTE		frame_rate;										// yhden framen kesto
     int			kuva_x;											// miss� kohtaa kuvaa sprite on
@@ -638,6 +652,8 @@ class PK2Sprite_Prototype {
     int			kuva_frame_leveys;								// yhden framen leveys
     int			kuva_frame_korkeus;								// yhden framen korkeus
     int			kuva_frame_vali;								// kahden framen vali
+
+	int originalX, originalY;
 
 	int hitbox_x;
 	int hitbox_y;
@@ -677,6 +693,7 @@ class PK2Sprite_Prototype {
     std::string bonus_sprite[5];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
     std::string ammus1_sprite;								// Spriten ammuksena 1 k�ytt�m� sprite
     std::string ammus2_sprite;								// Spriten ammuksena 2 k�ytt�m� sprite
+
     int			muutos;											// Muutosspriten prototyypin indeksi. -1 jos ei ole
     int			bonus[5];											// Bonusspriten prototyypin indeksi. -1 jos ei ole
     int			ammus1;											// Ammussprite1 prototyypin indeksi. -1 jos ei ole
@@ -705,6 +722,8 @@ class PK2Sprite_Prototype {
 	// version 1.4
 	std::string lua_script;
 	int transformation_value;
+
+	std::string message;
 
 	bool trigger_healthbar_when_active;
 	bool trigger_message_on_collision;
@@ -740,6 +759,10 @@ class PK2Sprite {
     double		alku_y;				// spriten alkuper�inen y sijainti
     double		x;					// x-kordinaatti pelikent�ll�
     double		y;					// y-kordinaatti pelikent�ll�
+
+	int originalX;
+	int originalY;
+
     double		a;					// horizontal speed
     double		b;					// vertical speed
     bool		flip_x;				// true = peilikuva sivusuunnassa
@@ -774,16 +797,23 @@ class PK2Sprite {
 
     int			ajastin;			// ajastin jonka arvo py�rii v�lill� 1 - 32000
 
-    BYTE		animaatio_index;	// t�m�nhetkinen py�riv� animaatio
-    BYTE		sekvenssi_index;	// t�m�nhetkisen animaation frame
+    uint8_t		current_animation;
+	uint8_t		current_frame;
+
     BYTE		frame_aika;			// kuinka kauan frame on n�kynyt
     int			transformation_ajastin;		// sprite muuttuu muutosspriteksi kun t�m� nollautuu
+
+	// Used for checkpoint animation
+	bool checkpoint_activated = false;
+	bool knockout_complete = false;
+
+	std::string message;
 
     PK2Sprite();
     PK2Sprite(PK2Sprite_Prototype *type, int pelaaja, bool piilota, double x, double y);
     ~PK2Sprite();
     int Piirra(int kamera_x, int kamera_y);		// Animoi ja piirt�� spriten
-    int Animaatio(int anim_i, bool nollaus);	// Vaihtaa spriten animaation
+    void Animate(int anim_i, bool loop);	// Vaihtaa spriten animaation
     int Animoi();								// Animoi muttei piirr� sprite�
     bool Onko_AI(int AI);						// Palauttaa true, jos spritell� on ko. AI
 
@@ -803,12 +833,12 @@ class PK2Sprite {
     int AI_Random_Suunnanvaihto_Hori();
     int AI_Random_Hyppy();
     int AI_Random_Liikahdus_Vert_Hori();
-    int AI_Seuraa_Pelaajaa(PK2Sprite &pelaaja);
-    int AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja);
-    int AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(PK2Sprite &pelaaja);
-    int AI_Seuraa_Pelaajaa_Vert_Hori(PK2Sprite &pelaaja);
-    int AI_Jahtaa_Pelaajaa(PK2Sprite &pelaaja);
-    int AI_Pakenee_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja);
+    int AI_Seuraa_Pelaajaa(PK2Sprite *pelaaja);
+    int AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite *pelaaja);
+    int AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(PK2Sprite *pelaaja);
+    int AI_Seuraa_Pelaajaa_Vert_Hori(PK2Sprite *pelaaja);
+    int AI_Jahtaa_Pelaajaa(PK2Sprite *pelaaja);
+    int AI_Pakenee_Pelaajaa_Jos_Nakee(PK2Sprite *pelaaja);
     int AI_Transformation_Jos_Energiaa_Alle_2(PK2Sprite_Prototype &muutos);
     int AI_Transformation_Jos_Energiaa_Yli_1(PK2Sprite_Prototype &muutos);
     int AI_Transformation_Ajastin(PK2Sprite_Prototype &muutos);
@@ -817,11 +847,11 @@ class PK2Sprite {
     int AI_Hyokkays_2_Jos_Osuttu();
     int AI_Hyokkays_1_Nonstop();
     int AI_Hyokkays_2_Nonstop();
-    int AI_Hyokkays_1_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja);
-    int AI_Hyokkays_2_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja);
-    int AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(PK2Sprite &pelaaja);
+    int AI_Hyokkays_1_Jos_Pelaaja_Edessa(PK2Sprite *pelaaja);
+    int AI_Hyokkays_2_Jos_Pelaaja_Edessa(PK2Sprite *pelaaja);
+    int AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(PK2Sprite *pelaaja);
     int AI_NonStop();
-    int AI_Hyppy_Jos_Pelaaja_Ylapuolella(PK2Sprite &pelaaja);
+    int AI_Hyppy_Jos_Pelaaja_Ylapuolella(PK2Sprite *pelaaja);
     int AI_Pommi();
     int AI_Vahingoittuu_Vedesta();
     int AI_Tapa_Kaikki();
@@ -835,17 +865,20 @@ class PK2Sprite {
     int AI_Liikkuu_Y(double liike);
     int AI_Tippuu_Jos_Kytkin_Painettu(int kytkin);
     int AI_Liikkuu_Jos_Kytkin_Painettu(int kytkin, int ak, int bk);
-    int AI_Teleportti(int i, PK2Sprite *spritet, int max, PK2Sprite &pelaaja);
+    int AI_Teleportti(int i, std::vector<PK2Sprite> &spritet, int max, PK2Sprite &pelaaja);
     int AI_Kiipeilija();
     int AI_Kiipeilija2();
     bool AI_Info(PK2Sprite &pelaaja);
-    int AI_Tuhoutuu_Jos_Emo_Tuhoutuu(PK2Sprite *spritet);
+    int AI_Tuhoutuu_Jos_Emo_Tuhoutuu(std::vector<PK2Sprite> &spritet);
 
+	// TODO change these to void return types
     int Animaatio_Perus();
     int Animaatio_Kana();
     int Animaatio_Bonus();
     int Animaatio_Muna();
     int Animaatio_Ammus();
+
+	void Animate_Checkpoint();
 };
 
 #endif

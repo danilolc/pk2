@@ -64,6 +64,7 @@ void PK2Kartta_Aseta_Ruudun_Mitat(int leveys, int korkeus){
 
 //char PK2Kartta::pk2_hakemisto[256] = "";
 
+// TODO Is this even used?
 PK2Kartta::PK2Kartta(){
 
 	this->palikat_buffer = -1;
@@ -71,18 +72,18 @@ PK2Kartta::PK2Kartta(){
 	this->palikat_vesi_buffer = -1;
 
 	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
-	strcpy(this->palikka_bmp,"blox.bmp");
-	strcpy(this->taustakuva, "default.bmp");
-	strcpy(this->musiikki,   "default.xm");
+	palikka_bmp = "tileset01.bmp";
+	taustakuva = "default.bmp";
+	musiikki = "song01.xm";
 
-	strcpy(this->nimi,  "untitled");
-	strcpy(this->tekija,"unknown");
+	this->map_name = "untitled";
+	this->tekija = "unknown";
 
 	this->jakso		= 0;
 	this->ilma		= ILMA_NORMAALI;
-	this->kytkin1_aika = KYTKIN_ALOITUSARVO;
-	this->kytkin2_aika = KYTKIN_ALOITUSARVO;
-	this->kytkin3_aika = KYTKIN_ALOITUSARVO;
+	this->kytkin1_aika = SWITCH_TIME_DEFAULT;
+	this->kytkin2_aika = SWITCH_TIME_DEFAULT;
+	this->kytkin3_aika = SWITCH_TIME_DEFAULT;
 	this->pelaaja_sprite = 0;
 	this->aika		= 0;
 	this->extra		= PK2KARTTA_EXTRA_EI;
@@ -97,8 +98,8 @@ PK2Kartta::PK2Kartta(){
 	memset(this->spritet, 255, sizeof(spritet));
 	memset(this->reunat,  0,   sizeof(reunat));
 
-	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-		strcpy(this->protot[i],"");
+	for (int i = 0; i < PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
+		strcpy(protot[i], "");
 
 	this->taustakuva_buffer = PisteDraw2_Image_New(640,480);
 	this->palikat_buffer = PisteDraw2_Image_New(PK2KARTTA_BLOCK_PALETTI_LEVEYS,PK2KARTTA_BLOCK_PALETTI_KORKEUS);
@@ -116,12 +117,13 @@ PK2Kartta::PK2Kartta(const PK2Kartta &kartta){
 	this->palikat_vesi_buffer = -1;
 
 	strcpy(this->versio,		kartta.versio);
-	strcpy(this->palikka_bmp,	kartta.palikka_bmp);
-	strcpy(this->taustakuva,	kartta.taustakuva);
-	strcpy(this->musiikki,		kartta.musiikki);
+	palikka_bmp = kartta.palikka_bmp;
+	taustakuva = kartta.taustakuva;
+	musiikki = kartta.musiikki;
 
-	strcpy(this->nimi,			kartta.nimi);
-	strcpy(this->tekija,		kartta.tekija);
+	/*
+	strcpy(this->map_name,			kartta.nimi);
+	strcpy(this->tekija,		kartta.tekija);*/
 
 	this->jakso			= kartta.jakso;
 	this->ilma			= kartta.ilma;
@@ -152,7 +154,7 @@ PK2Kartta::PK2Kartta(const PK2Kartta &kartta){
 		this->reunat[i] = kartta.reunat[i];
 
 	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-		strcpy(this->protot[i],kartta.protot[i]);
+		strcpy(protot[i], kartta.protot[i]);
 
 
 	PisteDraw2_Image_Copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
@@ -298,223 +300,25 @@ void PK2Kartta::LueTallennusAlue(BYTE *lahde, RECT alue, int kohde){
 	}
 }
 
-int PK2Kartta::Tallenna(char *filename){
-	char luku[8];
-	DWORD i;
-
-	ofstream *tiedosto = new ofstream(filename, ios::binary);
-
-	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
-
-	//tiedosto->write ((char *)this, sizeof (*this));
-
-	tiedosto->write(this->versio,		sizeof(versio));
-	tiedosto->write(this->palikka_bmp,	sizeof(palikka_bmp));
-	tiedosto->write(this->taustakuva,	sizeof(taustakuva));
-	tiedosto->write(this->musiikki,		sizeof(musiikki));
-	tiedosto->write(this->nimi,			sizeof(nimi));
-	tiedosto->write(this->tekija,		sizeof(tekija));
-
-	//itoa(this->jakso,luku,10);
-	sprintf(luku, "%i", this->jakso);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->ilma,luku,10);
-	sprintf(luku, "%i", this->ilma);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->kytkin1_aika,luku,10);
-	sprintf(luku, "%" PRIu32, this->kytkin1_aika);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->kytkin2_aika,luku,10);
-	sprintf(luku, "%" PRIu32, this->kytkin2_aika);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->kytkin3_aika,luku,10);
-	sprintf(luku, "%" PRIu32, this->kytkin3_aika);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->aika,luku,10);
-	sprintf(luku, "%i", this->aika);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->extra,luku,10);
-	sprintf(luku, "%i", this->extra);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->tausta,luku,10);
-	sprintf(luku, "%i", this->tausta);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->pelaaja_sprite,luku,10);
-	sprintf(luku, "%i", this->pelaaja_sprite);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->x,luku,10);
-	sprintf(luku, "%i", this->x);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->y,luku,10);
-	sprintf(luku, "%i", this->y);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	//itoa(this->ikoni,luku,10);
-	sprintf(luku, "%i", this->ikoni);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	int protoja = 0;
-
-	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-		if (strlen(this->protot[i]) > 0)
-			protoja++;
-
-	//itoa(protoja,luku,10);
-	sprintf(luku, "%i", protoja);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-		if (strlen(this->protot[i]) > 0)
-			tiedosto->write(protot[i],sizeof(protot[i]));
-
-	// laske alue
-
-	//BYTE *alue_taustat = NULL, *alue_seinat = NULL, *alue_spritet = NULL;
-	RECT alue = {0,0,0,0};
-	DWORD /*koko, aloituskohta,*/ leveys, korkeus, x, y;
-	DWORD aloitus_x,aloitus_y;
-	char tile[1];
-
-	// taustat
-	alue = LaskeTallennusAlue(this->taustat);
-	leveys = alue.right - alue.left;
-	korkeus = alue.bottom - alue.top;
-	aloitus_x = alue.left;
-	aloitus_y = alue.top;
-
-	sprintf(luku, "%" PRIu32, aloitus_x);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	sprintf(luku, "%" PRIu32, aloitus_y);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	sprintf(luku, "%" PRIu32, leveys);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	sprintf(luku, "%" PRIu32, korkeus);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
-		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
-			tile[0] = this->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
-			tiedosto->write(tile, sizeof(tile));
-		}
-	}
-
-	// seinat
-	alue = LaskeTallennusAlue(this->seinat);
-	leveys = alue.right - alue.left;
-	korkeus = alue.bottom - alue.top;
-	aloitus_x = alue.left;
-	aloitus_y = alue.top;
-	//ltoa(aloitus_x,luku,10);
-	sprintf(luku, "%" PRIu32, aloitus_x);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	sprintf(luku, "%" PRIu32, aloitus_y);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	sprintf(luku, "%" PRIu32, leveys);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-
-	sprintf(luku, "%" PRIu32, korkeus);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku)); //TODO - MAKE A FUNCTION TO DO THIS
-	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
-		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
-			tile[0] = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
-			tiedosto->write(tile, sizeof(tile));
-		}
-	}
-
-	// spritet
-	alue = LaskeTallennusAlue(this->spritet);
-	leveys = alue.right - alue.left;
-	korkeus = alue.bottom - alue.top;
-	aloitus_x = alue.left;
-	aloitus_y = alue.top;
-	//ltoa(aloitus_x,luku,10);
-	sprintf(luku, "%" PRIu32, aloitus_x);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-	//ltoa(aloitus_y,luku,10);
-	sprintf(luku, "%" PRIu32, aloitus_y);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-	//ltoa(leveys,luku,10);
-	sprintf(luku, "%" PRIu32, leveys);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-	//ltoa(korkeus,luku,10);
-	sprintf(luku, "%" PRIu32, korkeus);
-	tiedosto->write(luku, sizeof(luku));
-	memset(luku, 0, sizeof(luku));
-	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
-		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
-			tile[0] = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
-			tiedosto->write(tile, sizeof(tile));
-		}
-	}
-
-	if (tiedosto->fail()){
-		delete (tiedosto);
-		return 1;
-	}
-
-	delete (tiedosto);
-
-	return 0;
-}
-
 int PK2Kartta::Load(std::string filename, std::string episode) {
 	std::stringstream ss;
 	ss << "episodes/" << episode << "/" << filename;
 
 	ifstream ifs(ss.str(), ios::binary);
-	char versio[8] = "\0";
+	char versio[4];
 
 	if (ifs.fail()){
-		std::cerr << "PK2Map\t- Couldn't open map file \"" << ss.str() << "\"" << std::endl;
+		PisteLog_Write("PK2Map", "Couldn't open map file" + ss.str(), TYPE::T_ERROR);
 
 		ifs.close();
 
 		return 1;
 	}
 
-	ifs.read((char *) versio, sizeof(versio));
+	ifs.read(versio, sizeof(versio));
 
 	if (ifs.fail()) {
-		std::cout << "PK2Map\t- Error reading map file \"" << filename << "\"" << std::endl;
+		PisteLog_Write("PK2Map", "Couldn't read version!" + ss.str(), TYPE::T_ERROR);
 
 		ifs.close();
 
@@ -523,7 +327,11 @@ int PK2Kartta::Load(std::string filename, std::string episode) {
 
 	int ok = 2;
 
-	if (strcmp(versio,"1.3") == 0){
+	prototypes.clear();
+
+	if (strcmp(versio, "1.4") == 0) {
+		ok = this->LoadVersion14(ss.str());
+	} else if (strcmp(versio, "1.3") == 0) {
 		ok = this->LoadVersion13(ss.str());
 	}
 	
@@ -543,23 +351,24 @@ int PK2Kartta::Load(std::string filename, std::string episode) {
 		this->LataaVersio10(str);
 		ok = 0;
 	}
+	/*
 	if (strcmp(versio,"0.1")==0){
 		this->LataaVersio01(str);
 		ok = 0;
-	}
+	}*/
+
+	ifs.close();
 
 	char strr[255];
 	strcpy(strr, ss.str().c_str());
 
-	Lataa_PalikkaPaletti(strr, this->palikka_bmp);
+	Load_Tileset(palikka_bmp, episode);
 	Load_Background(taustakuva, episode);
-
-	ifs.close();
 
 	return ok;
 }
 
-int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
+int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, const char *nimi){
 	char file[PE_PATH_SIZE];
 	strcpy(file,polku);
 	strcat(file,nimi);
@@ -573,7 +382,7 @@ int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
 		return 1;
 	}
 
-	tiedosto->read ((char *)versio, sizeof (versio));
+	tiedosto->read((char *)versio, sizeof (versio));
 
 	if (tiedosto->fail())
 	{
@@ -582,6 +391,9 @@ int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
 	}
 
 	delete (tiedosto);
+
+	if (strcmp(versio, "1.4") == 0)
+		this->LoadVersion14(file);
 
 	if (strcmp(versio,"1.3")==0)
 		this->LoadVersion13(file);
@@ -595,47 +407,10 @@ int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
 	if (strcmp(versio,"1.0")==0)
 		this->LataaVersio10(file);
 
-	if (strcmp(versio,"0.1")==0)
-		this->LataaVersio01(file);
-
 	return(0);
 }
 
-int PK2Kartta::LataaVersio01(char *filename){
-
-	FILE *tiedosto;
-
-	PK2KARTTA kartta;
-
-	if ((tiedosto = fopen(filename, "r")) == NULL){
-		return(1);
-	}
-
-	fread(&kartta, sizeof(PK2KARTTA), 1, tiedosto);
-
-	fclose(tiedosto);
-
-	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
-	strcpy(this->palikka_bmp,"blox.bmp");
-	strcpy(this->taustakuva, "default.bmp");
-	strcpy(this->musiikki,   "default.xm");
-
-	strcpy(this->nimi,  "v01");
-	strcpy(this->tekija,"unknown");
-
-	this->aika		= 0;
-	this->extra		= 0;
-	this->tausta	= kartta.taustakuva;
-
-	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
-		this->seinat[i] = kartta.kartta[i%PK2KARTTA_KARTTA_LEVEYS + (i/PK2KARTTA_KARTTA_LEVEYS) * 640];
-
-	memset(this->taustat,255, sizeof(taustat));
-
-	memset(this->spritet,255, sizeof(spritet));
-
-	return(0);
-}
+// TODO Remove this
 int PK2Kartta::LataaVersio10(char *filename){
 	FILE *tiedosto;
 
@@ -649,14 +424,15 @@ int PK2Kartta::LataaVersio10(char *filename){
 	fread(kartta, sizeof(PK2Kartta), 1, tiedosto);
 
 	fclose(tiedosto);
-
+	/*
 	strcpy(this->versio,		kartta->versio);
 	strcpy(this->palikka_bmp,	kartta->palikka_bmp);
 	strcpy(this->taustakuva,	kartta->taustakuva);
 	strcpy(this->musiikki,		kartta->musiikki);
 
-	strcpy(this->nimi,			kartta->nimi);
+	strcpy(this->map_name,			kartta->map_name);
 	strcpy(this->tekija,		kartta->tekija);
+	*/
 
 	this->aika			= kartta->aika;
 	this->extra			= kartta->extra;
@@ -679,6 +455,8 @@ int PK2Kartta::LataaVersio10(char *filename){
 
 	return(0);
 }
+
+// TODO Remove this
 int PK2Kartta::LataaVersio11(char *filename){
 	FILE *tiedosto;
 	int virhe = 0;
@@ -694,10 +472,12 @@ int PK2Kartta::LataaVersio11(char *filename){
 	memset(this->spritet, 255, sizeof(this->spritet));
 
 	fread(this->versio,		sizeof(char),	5, tiedosto);
+	/*
 	fread(this->palikka_bmp,sizeof(char),	13, tiedosto);
 	fread(this->taustakuva,	sizeof(char),	13, tiedosto);
 	fread(this->musiikki,	sizeof(char),	13, tiedosto);
-	fread(this->nimi,		sizeof(char),	40, tiedosto);
+	
+	fread(this->map_name,		sizeof(char),	40, tiedosto);
 	fread(this->tekija,		sizeof(char),	40, tiedosto);
 	fread(&this->aika,		sizeof(int),	1, tiedosto);
 	fread(&this->extra,		sizeof(BYTE),	1, tiedosto);
@@ -706,7 +486,7 @@ int PK2Kartta::LataaVersio11(char *filename){
 	if (fread(this->seinat,	sizeof(seinat),	1, tiedosto) != PK2KARTTA_KARTTA_KOKO)
 		virhe = 2;
 	fread(this->spritet,	sizeof(spritet),1, tiedosto);
-
+	*/
 	fclose(tiedosto);
 
 	int i;
@@ -728,31 +508,40 @@ int PK2Kartta::LataaVersio11(char *filename){
 
 	return (virhe);
 }
-int PK2Kartta::LataaVersio12(char *filename){
+int PK2Kartta::LataaVersio12(char *filename) {
 
 	ifstream *tiedosto = new ifstream(filename, ios::binary);
 	char luku[8];
 
-	if (tiedosto->fail())
-	{
+	if (tiedosto->fail()) {
 		delete (tiedosto);
 		return 1;
 	}
 
 	memset(this->taustat, 255, sizeof(this->taustat));
-	memset(this->seinat , 255, sizeof(this->seinat));
+	memset(this->seinat, 255, sizeof(this->seinat));
 	memset(this->spritet, 255, sizeof(this->spritet));
 
-	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-		strcpy(this->protot[i],"");
+	for (int i = 0; i < PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
+		strcpy(protot[i], "");
 
 	//tiedosto->read ((char *)this, sizeof (*this));
-	tiedosto->read(this->versio,		sizeof(versio));
-	tiedosto->read(this->palikka_bmp,	sizeof(palikka_bmp));
-	tiedosto->read(this->taustakuva,	sizeof(taustakuva));
-	tiedosto->read(this->musiikki,		sizeof(musiikki));
-	tiedosto->read(this->nimi,			sizeof(nimi));
-	tiedosto->read(this->tekija,		sizeof(tekija));
+	tiedosto->read(this->versio, sizeof(versio));
+
+	char tmp[13];
+
+	tiedosto->read(tmp, sizeof(tmp));
+	palikka_bmp = tmp;
+
+	tiedosto->read(tmp, sizeof(tmp));
+	taustakuva = tmp;
+
+	tiedosto->read(tmp, sizeof(tmp));
+	musiikki = tmp;
+
+	/*
+	tiedosto->read(this->map_name, sizeof(nimi));
+	tiedosto->read(this->tekija, sizeof(tekija));*/
 
 	tiedosto->read(luku, sizeof(luku));
 	this->jakso = atoi(luku);
@@ -781,12 +570,13 @@ int PK2Kartta::LataaVersio12(char *filename){
 	tiedosto->read(luku, sizeof(luku));
 	this->pelaaja_sprite = atoi(luku);
 
-	tiedosto->read((char*)this->taustat,		sizeof(taustat));
-	tiedosto->read((char*)this->seinat,		sizeof(seinat));
-	tiedosto->read((char*)this->spritet,		sizeof(spritet));
+	tiedosto->read((char*) this->taustat, sizeof(taustat));
+	tiedosto->read((char*) this->seinat, sizeof(seinat));
+	tiedosto->read((char*) this->spritet, sizeof(spritet));
 
-	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-		tiedosto->read(this->protot[i],sizeof(protot[i]));
+	for (int i = 0; i < PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++) {
+		tiedosto->read(protot[i], sizeof(protot[i]));
+	}
 
 	if (tiedosto->fail())
 	{
@@ -801,7 +591,24 @@ int PK2Kartta::LataaVersio12(char *filename){
 
 	return 0;
 }
-int PK2Kartta::LoadVersion13(std::string filename){
+
+static std::string readString(std::ifstream& ifs) {
+	std::stringstream str;
+
+	char c = 0;
+
+	do {
+		ifs.read((char*) &c, sizeof(c));
+
+		str << c;
+	} while (c != 0x0);
+
+	std::string st = str.str();
+
+	return st;
+}
+
+int PK2Kartta::LoadVersion13(std::string filename) {
 	ifstream ifs(filename.c_str(), ios::binary);
 
 	char luku[8];
@@ -816,18 +623,31 @@ int PK2Kartta::LoadVersion13(std::string filename){
 	}
 
 	memset(this->taustat, 255, sizeof(this->taustat));
-	memset(this->seinat , 255, sizeof(this->seinat));
+	memset(this->seinat, 255, sizeof(this->seinat));
 	memset(this->spritet, 255, sizeof(this->spritet));
 
-	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-		strcpy(this->protot[i],"");
+	for (i = 0; i < PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
+		strcpy(protot[i], "");
 
-	ifs.read(this->versio,		sizeof(versio));
-	ifs.read(this->palikka_bmp,	sizeof(palikka_bmp));
-	ifs.read(this->taustakuva,	sizeof(taustakuva));
-	ifs.read(this->musiikki,		sizeof(musiikki));
-	ifs.read(this->nimi,			sizeof(nimi));
-	ifs.read(this->tekija,		sizeof(tekija));
+	char tmp[13];
+
+	ifs.read(this->versio, sizeof(versio));
+	ifs.read(tmp, sizeof(tmp));
+	palikka_bmp = tmp;
+
+	ifs.read(tmp, sizeof(tmp));
+	taustakuva = tmp;
+
+	ifs.read(tmp, sizeof(tmp));
+	musiikki = tmp;
+
+	char tmp2[40];
+
+	ifs.read(tmp2, sizeof(tmp2));
+	map_name = tmp2;
+	
+	ifs.read(tmp2, sizeof(tmp2));
+	tekija = tmp2;
 
 	ifs.read(luku, sizeof(luku));
 	this->jakso = atoi(luku);
@@ -879,13 +699,16 @@ int PK2Kartta::LoadVersion13(std::string filename){
 
 	DWORD lkm;
 	ifs.read(luku, sizeof(luku));
-	lkm = (int)atoi(luku);
+	lkm = (int) atoi(luku);
 
 	//for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 	//	itoa(lkm,protot[i],10);//strcpy(protot[i],"");
 
-	for (i=0;i<lkm/*PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA*/;i++)
-		ifs.read(protot[i],sizeof(protot[i]));
+	for (i = 0; i < lkm/*PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA*/; i++) {
+		ifs.read(tmp, sizeof(tmp));
+
+		prototypes.push_back(tmp);
+	}
 
 	DWORD leveys, korkeus,
 		  aloitus_x,aloitus_y,
@@ -931,7 +754,116 @@ int PK2Kartta::LoadVersion13(std::string filename){
 	if (ifs.fail()) {
 		ifs.close();
 
-return 1;
+		return 1;
+	}
+
+	ifs.close();
+
+	return 0;
+}
+
+int PK2Kartta::LoadVersion14(std::string filename) {
+	ifstream ifs(filename.c_str(), ios::binary);
+
+	char luku[8];
+	DWORD i;
+
+	if (ifs.fail()) {
+		std::cerr << "PK2Map\t- Couldn't open map file \"" << filename << "\"" << std::endl;
+
+		ifs.close();
+
+		return 1;
+	}
+
+	memset(this->taustat, 255, sizeof(this->taustat));
+	memset(this->seinat, 255, sizeof(this->seinat));
+	memset(this->spritet, 255, sizeof(this->spritet));
+
+	ifs.read(this->versio, sizeof(versio));
+	
+	palikka_bmp = readString(ifs);
+	taustakuva = readString(ifs);
+	musiikki = readString(ifs);
+
+	map_name = readString(ifs);
+	tekija = readString(ifs);
+
+	ifs.read((char *) &jakso, sizeof(jakso));
+	ifs.read((char *) &ilma, sizeof(ilma));
+
+	ifs.read((char *) &kytkin1_aika, sizeof(kytkin1_aika));
+	ifs.read((char *) &kytkin2_aika, sizeof(kytkin2_aika));
+	ifs.read((char *) &kytkin3_aika, sizeof(kytkin3_aika));
+
+	ifs.read((char *) &aika, sizeof(aika));
+
+	ifs.read((char *) &pelaaja_sprite, sizeof(pelaaja_sprite));
+
+	ifs.read((char *) &x, sizeof(x));
+	ifs.read((char *) &y, sizeof(y));
+	ifs.read((char *) &ikoni, sizeof(y));
+
+	int prototype_amount = 0;
+	ifs.read((char*) &prototype_amount, sizeof(prototype_amount));
+
+	for (int i = 0; i < prototype_amount; i++) {
+		prototypes.push_back(readString(ifs));
+	}
+
+	DWORD width, height,
+		start_x, start_y,
+		x, y;
+	char tile[1];
+
+	ifs.read((char*)& start_x, sizeof(start_x));
+	ifs.read((char*)& start_y, sizeof(start_y));
+	ifs.read((char*)& width, sizeof(width));
+	ifs.read((char*)& height, sizeof(height));
+	for (y = start_y; y <= start_y + height; y++) {	// Luetaan alue tile by tile
+		for (x = start_x; x <= start_x + width; x++) {
+			ifs.read(tile, sizeof(tile));
+			this->taustat[x + y * PK2KARTTA_KARTTA_LEVEYS] = tile[0];
+		}
+	}
+
+	ifs.read((char*)& start_x, sizeof(start_x));
+	ifs.read((char*)& start_y, sizeof(start_y));
+	ifs.read((char*)& width, sizeof(width));
+	ifs.read((char*)& height, sizeof(height));
+	for (y = start_y; y <= start_y + height; y++) {	// Luetaan alue tile by tile
+		for (x = start_x; x <= start_x + width; x++) {
+			ifs.read(tile, sizeof(tile));
+			this->seinat[x + y * PK2KARTTA_KARTTA_LEVEYS] = tile[0];
+		}
+	}
+
+	ifs.read((char*)& start_x, sizeof(start_x));
+	ifs.read((char*)& start_y, sizeof(start_y));
+	ifs.read((char*)& width, sizeof(width));
+	ifs.read((char*)& height, sizeof(height));
+	for (y = start_y; y <= start_y + height; y++) {
+		for (x = start_x; x <= start_x + width; x++) {
+			ifs.read(tile, sizeof(tile));
+			this->spritet[x + y * PK2KARTTA_KARTTA_LEVEYS] = tile[0];
+		}
+	}
+
+	if (jakso == 0) {
+		is_secret = true;
+	}
+
+	ifs.read(reinterpret_cast<char*>(&level_number_secret), sizeof(level_number_secret));
+	ifs.read(reinterpret_cast<char*>(&unlock), sizeof(unlock));
+	ifs.read(reinterpret_cast<char*>(&unlock_score), sizeof(unlock_score));
+	ifs.read(reinterpret_cast<char*>(&unlock_collectables), sizeof(unlock_collectables));
+
+	ifs.read(reinterpret_cast<char*>(&collectable_amount), sizeof(collectable_amount));
+
+	if (ifs.fail()) {
+		ifs.close();
+
+		return 1;
 	}
 
 	ifs.close();
@@ -941,18 +873,21 @@ return 1;
 
 void PK2Kartta::Tyhjenna() {
 	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
-	strcpy(this->palikka_bmp, "blox.bmp");
-	strcpy(this->taustakuva, "default.bmp");
-	strcpy(this->musiikki, "default.xm");
+	
+	palikka_bmp = "tileset01.bmp";
+	taustakuva = "default.bmp";
+	musiikki = "song01.xm";
 
-	strcpy(this->nimi, "untitled");
+	/*
+	strcpy(this->map_name, "untitled");
 	strcpy(this->tekija, "unknown");
+	*/
 
 	this->jakso = 0;
 	this->ilma = ILMA_NORMAALI;
-	this->kytkin1_aika = KYTKIN_ALOITUSARVO;
-	this->kytkin2_aika = KYTKIN_ALOITUSARVO;
-	this->kytkin3_aika = KYTKIN_ALOITUSARVO;
+	this->kytkin1_aika = SWITCH_TIME_DEFAULT;
+	this->kytkin2_aika = SWITCH_TIME_DEFAULT;
+	this->kytkin3_aika = SWITCH_TIME_DEFAULT;
 	this->pelaaja_sprite = 0;
 	this->aika = 0;
 	this->extra = PK2KARTTA_EXTRA_EI;
@@ -967,62 +902,13 @@ void PK2Kartta::Tyhjenna() {
 	memset(this->spritet, 255, sizeof(spritet));
 
 	for (int i = 0; i < PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
-		strcpy(this->protot[i], "");
+		strcpy(protot[i], "");
 
 	//PisteDraw2_ImageFill(this->palikat_buffer,255);
 	//PisteDraw2_ImageFill(this->taustakuva_buffer,255);
 }
 
-PK2Kartta &PK2Kartta::operator = (const PK2Kartta &kartta) {
-	if (this == &kartta) return *this;
-
-	strcpy(this->versio, kartta.versio);
-	strcpy(this->palikka_bmp, kartta.palikka_bmp);
-	strcpy(this->taustakuva, kartta.taustakuva);
-	strcpy(this->musiikki, kartta.musiikki);
-
-	strcpy(this->nimi, kartta.nimi);
-	strcpy(this->tekija, kartta.tekija);
-
-	this->aika = kartta.aika;
-	this->extra = kartta.extra;
-	this->tausta = kartta.tausta;
-
-	int i;
-
-	for (i = 0; i < PK2KARTTA_KARTTA_KOKO; i++)
-		this->seinat[i] = kartta.seinat[i];
-
-	for (i = 0; i < PK2KARTTA_KARTTA_KOKO; i++)
-		this->taustat[i] = kartta.taustat[i];
-
-	for (i = 0; i < PK2KARTTA_KARTTA_KOKO; i++)
-		this->spritet[i] = kartta.spritet[i];
-
-	PisteDraw2_Image_Copy(kartta.taustakuva_buffer, this->taustakuva_buffer);
-	PisteDraw2_Image_Copy(kartta.palikat_buffer, this->palikat_buffer);
-
-	return *this;
-}
-
 int PK2Kartta::Load_Background(std::string filename, std::string episode) {
-	/*int i;
-	char file[PE_PATH_SIZE];
-	strcpy(file,"");
-	strcpy(file,polku);
-
-	for (i=0 ; filename[i]!='\0' ; i++)
-		filename[i]=tolower(filename[i]);
-
-	strcat(file,filename);
-
-	if (!PisteUtils_Find(file)){
-		//strcpy(file,PK2Kartta::pk2_hakemisto);
-		strcpy(file,"gfx/scenery/");
-		strcat(file,filename);
-		if (!PisteUtils_Find(file)) return 1;
-	}*/
-
 	int bgIndex = -1;
 
 	std::stringstream ss;
@@ -1039,10 +925,12 @@ int PK2Kartta::Load_Background(std::string filename, std::string episode) {
 		}
 	}
 
+	PisteDraw2_Image_GetSize(bgIndex, background_width, background_height);
+
 	PisteDraw2_Image_Copy(bgIndex, this->taustakuva_buffer);
 	PisteDraw2_Image_Delete(bgIndex);
 
-	strcpy(this->taustakuva, filename.c_str());
+	taustakuva = filename;
 
 	BYTE *buffer = NULL;
 	DWORD leveys;
@@ -1067,31 +955,30 @@ int PK2Kartta::Load_Background(std::string filename, std::string episode) {
 	return 0;
 }
 
-int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
-	int i;
+int PK2Kartta::Load_Tileset(std::string filename, std::string episode){
 	int img;
-	char file[PE_PATH_SIZE];
-	strcpy(file,"");
-	strcpy(file,polku);
-	strcat(file,filename);
 
-	if (!PisteUtils_Find(file)){
-		//strcpy(file,PK2Kartta::pk2_hakemisto);
-		strcpy(file,"gfx/tiles/");
-		strcat(file,filename);
-		if (!PisteUtils_Find(file))
+	std::stringstream ss;
+	ss << "episodes/" << episode << "/gfx/tiles/" << filename;
+
+	if (!PisteUtils_File_Exists(ss.str())){
+		ss.str("");
+		ss << "gfx/tiles/" << palikka_bmp;
+
+		if (!PisteUtils_File_Exists(ss.str())) {
 			return 1;
+		}
 	}
 
-	img = PisteDraw2_Image_Load(file,false);
+	img = PisteDraw2_Image_Load(ss.str().c_str(), false);
 	if(img == -1) return 2;
-	PisteDraw2_Image_Copy(img,this->palikat_buffer);
+	PisteDraw2_Image_Copy(img, this->palikat_buffer);
 	PisteDraw2_Image_Delete(img);
 
 	PisteDraw2_Image_Delete(this->palikat_vesi_buffer); //Delete last water buffer
-	this->palikat_vesi_buffer = PisteDraw2_Image_Cut(this->palikat_buffer,0,416,320,32);
+	this->palikat_vesi_buffer = PisteDraw2_Image_Cut(this->palikat_buffer, 0, 416, 320, 32);
 
-	strcpy(this->palikka_bmp,filename);
+	palikka_bmp = ss.str();
 	return 0;
 }
 
@@ -1100,57 +987,9 @@ int PK2Kartta::Lataa_TaustaMusiikki(char *filename){
 	return 0;
 }
 
-void PK2Kartta::Kopioi(PK2Kartta &kartta){
-	if (this != &kartta){
-		strcpy(this->versio,		kartta.versio);
-		strcpy(this->palikka_bmp,	kartta.palikka_bmp);
-		strcpy(this->taustakuva,	kartta.taustakuva);
-		strcpy(this->musiikki,		kartta.musiikki);
-
-		strcpy(this->nimi,			kartta.nimi);
-		strcpy(this->tekija,		kartta.tekija);
-
-		this->jakso			= kartta.jakso;
-		this->ilma			= kartta.ilma;
-		this->kytkin1_aika	= kartta.kytkin1_aika;
-		this->kytkin2_aika	= kartta.kytkin2_aika;
-		this->kytkin3_aika	= kartta.kytkin3_aika;
-		this->pelaaja_sprite = kartta.pelaaja_sprite;
-		this->aika		= kartta.aika;
-		this->extra		= kartta.extra;
-		this->tausta	= kartta.tausta;
-
-		int i;
-
-		for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
-			this->seinat[i] = kartta.seinat[i];
-
-		for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
-			this->taustat[i] = kartta.taustat[i];
-
-		for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
-			this->spritet[i] = kartta.spritet[i];
-
-		for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-			strcpy(this->protot[i],kartta.protot[i]);
-
-		PisteDraw2_ImageFill(palikat_buffer,255);
-		PisteDraw2_ImageFill(taustakuva_buffer,0);
-
-		PisteDraw2_Image_Copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
-		PisteDraw2_Image_Copy(kartta.palikat_buffer,this->palikat_buffer);
-		PisteDraw2_Image_Copy(kartta.palikat_vesi_buffer,this->palikat_vesi_buffer);
-	}
-}
-
-/* Pekka Kana 2 funcitons ---------------------------------------------------------------*/
-
-
-
 void PK2Kartta::Place_Sprites() {
-
 	Game::Sprites->clear();
-	Game::Sprites->add(this->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
+	Game::Sprites->add(this->pelaaja_sprite, 1, 0, 0, -1, false);
 
 	int sprite;
 
@@ -1158,14 +997,13 @@ void PK2Kartta::Place_Sprites() {
 		for (int y = 0; y < PK2KARTTA_KARTTA_KORKEUS; y++){
 			sprite = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
-			if (sprite != 255 && Game::Sprites->protot[sprite].korkeus > 0){
-				Game::Sprites->add(sprite, 0, x*32, y*32 - Game::Sprites->protot[sprite].korkeus+32, MAX_SPRITEJA, false);
+			if (sprite != 255 && Game::Sprites->prototypes[sprite]->korkeus > 0){
+				Game::Sprites->add(sprite, 0, x * 32, y * 32 - Game::Sprites->prototypes[sprite]->korkeus + 32, -1, false);
 			}
 		}
 	}
 
 	Game::Sprites->sort_bg();
-
 }
 
 void PK2Kartta::Select_Start() {
@@ -1214,8 +1052,8 @@ int PK2Kartta::Count_Keys() {
 	for (x=0; x < PK2KARTTA_KARTTA_KOKO; x++){
 		sprite = this->spritet[x];
 		if (sprite != 255)
-			if (Game::Sprites->protot[sprite].avain && 
-				Game::Sprites->protot[sprite].tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
+			if (Game::Sprites->prototypes[sprite]->avain && 
+				Game::Sprites->prototypes[sprite]->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
 
 				keys++;
 	}
@@ -1577,8 +1415,8 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		if (ajastin1 < 64)
 			ajastin1_y = ajastin1;
 
-		if (ajastin1 > KYTKIN_ALOITUSARVO-64)
-			ajastin1_y = KYTKIN_ALOITUSARVO - ajastin1;
+		if (ajastin1 > kytkin1_aika - 64)
+			ajastin1_y = kytkin1_aika - ajastin1;
 	}
 
 	if (ajastin2 > 0){
@@ -1587,8 +1425,8 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		if (ajastin2 < 64)
 			ajastin2_y = ajastin2;
 
-		if (ajastin2 > KYTKIN_ALOITUSARVO-64)
-			ajastin2_y = KYTKIN_ALOITUSARVO - ajastin2;
+		if (ajastin2 > kytkin2_aika - 64)
+			ajastin2_y = kytkin2_aika - ajastin2;
 	}
 
 	if (ajastin3 > 0){
@@ -1597,8 +1435,8 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		if (ajastin3 < 64)
 			ajastin3_x = ajastin3;
 
-		if (ajastin3 > KYTKIN_ALOITUSARVO-64)
-			ajastin3_x = KYTKIN_ALOITUSARVO - ajastin3;
+		if (ajastin3 > kytkin3_aika - 64)
+			ajastin3_x = kytkin3_aika - ajastin3;
 	}
 
 

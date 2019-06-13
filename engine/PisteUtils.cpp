@@ -16,6 +16,8 @@
 	#include <limits.h>
 #endif
 
+#include <iostream>
+
 #include <Windows.h>
 
 #include "PisteUtils.hpp"
@@ -52,8 +54,10 @@ int PisteUtils_Setcwd() {
 	if (count > 0) exepath[count] = '\0';
 #endif
 
+	// TODO Check if this causes a weird problem... @Discord
 	find = string(exepath).find_last_of("/\\");
 	exepath[find] = '\0';
+
 	chdir(exepath);
 	return chdir("../res");
 }
@@ -70,6 +74,19 @@ void PisteUtils_RemoveSpace(char* string){
 		string[len-2]='\0';
 		len--;
 	}
+}
+
+bool PisteUtils_File_Exists(std::string filename) {
+	bool ok = true;
+
+	std::ifstream ifs(filename.c_str());
+
+	if (ifs.fail())
+		ok = false;
+
+	ifs.close();
+
+	return ok;
 }
 
 bool PisteUtils_Find(char *filename){

@@ -144,16 +144,17 @@ class SpriteSystem {
 
 	PK2Sprite* player;
 
-	PK2Sprite_Prototype protot[MAX_PROTOTYYPPEJA];
-	PK2Sprite spritet[MAX_SPRITEJA];
-	int taustaspritet[MAX_SPRITEJA];
+	std::vector<PK2Sprite_Prototype*> prototypes;
+
+	std::vector<PK2Sprite> sprites;
+	std::vector<int> background_sprites;
 
 
 	int  protot_get_all();
 	void protot_clear_all();
 
 	void clear();
-	void add(int protoype_id, int pelaaja, double x, double y, int emo, bool isbonus);
+	void add(int protoype_id, int pelaaja, double x, double y, int parent_sprite, bool isbonus);
 	void add_ammo(int protoype_id, int pelaaja, double x, double y, int emo);
 	void sort_bg();
 	void start_directions();
@@ -163,13 +164,13 @@ class SpriteSystem {
 #define MAX_GIFTS 4
 
 class GiftSystem {
-	
+	public:
 	int list[MAX_GIFTS];
 	int gift_count;
 
-	public:
-	
 	int get(int i);
+	void set(int index, int value);
+
 	int count();
 	PK2Sprite_Prototype* get_protot(int i);
 
@@ -345,6 +346,8 @@ struct LANGUAGE{
 		game_newitem,
 		game_loading,
 		game_paused,
+
+		game_collectables,
 
 		end_congratulations,
 		end_chickens_saved,

@@ -139,13 +139,13 @@ int PisteSound_StartMusic(std::string filename) {
 
 	if (music == nullptr) {
 		PisteLog_Write("PisteSound", "Couldn't load music! Mix_Get_Error(): " + std::string(Mix_GetError()), TYPE::T_ERROR);
-	
+
 		return -1;
 	}
 
-	if (Mix_PlayMusic(music, 1) == -1){
+	if (Mix_PlayMusic(music, -1) == -1) {
 		PisteLog_Write("PisteSound", "Couldn't play music! Mix_Get_Error(): " + std::string(Mix_GetError()), TYPE::T_ERROR);
-	
+
 		return -1;
 	}
 
@@ -162,16 +162,19 @@ void PisteSound_StopMusic(){
 }
 
 int PisteSound_Start(){
-	if(Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, 4096) < 0){
-		printf("PS     - Unable to init Mixer: %s\n", Mix_GetError());
+	if(Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, 1024) < 0){
+		PisteLog_Write("PisteSound", Mix_GetError(), TYPE::T_ERROR);
+		//printf("PS     - Unable to init Mixer: %s\n", Mix_GetError());
 		return -1;
 	}
 
-	return Mix_Init(MIX_INIT_MOD || MIX_INIT_MP3 || MIX_INIT_OGG);
+	return Mix_Init(MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG);
 }
 
 void music_finished() {
-	Mix_PlayMusic(music_buffer, 1);
+	Mix_RewindMusic();
+
+	//Mix_PlayMusic(music_buffer, 1);
 }
 
 int PisteSound_Update() {

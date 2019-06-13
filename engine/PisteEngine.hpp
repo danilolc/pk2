@@ -35,7 +35,7 @@ private:
     bool ready = false;
     bool running = false;
 
-    float avrg_fps = 0;
+    float avgFps = 0;
 
     bool debug = false;
     bool draw = true;

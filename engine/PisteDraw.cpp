@@ -101,7 +101,7 @@ int PisteDraw2_Image_New(int w, int h){
 
 	return index;
 }
-int PisteDraw2_Image_Load(const char* filename, bool getPalette){
+int PisteDraw2_Image_Load(std::string filename, bool getPalette){
 	int index, i;
 	SDL_Palette* pal;
 
@@ -112,7 +112,7 @@ int PisteDraw2_Image_Load(const char* filename, bool getPalette){
 		return -1;
 	}
 
-	imageList[index] = SDL_LoadBMP(filename);
+	imageList[index] = SDL_LoadBMP(filename.c_str());
 	if(imageList[index] == nullptr){
 		PisteLog_Write("PisteDraw", SDL_GetError(), TYPE::T_ERROR);
 		
@@ -120,7 +120,9 @@ int PisteDraw2_Image_Load(const char* filename, bool getPalette){
 	}
 
 	if(imageList[index]->format->BitsPerPixel != 8){
-		printf("PD     - Failed to open %s, just 8bpp indexed images!\n",filename);
+		//printf("PD     - Failed to open %s, just 8bpp indexed images!\n",filename);
+		PisteLog_Write("PisteDraw", "Failed to load image file\"" + filename + "\". Image is not 8BPP format!", TYPE::T_ERROR);
+
 		PisteDraw2_Image_Delete(index);
 		return -1;
 	}
@@ -155,7 +157,9 @@ int PisteDraw2_Image_Cut(int ImgIndex, PD_RECT area){
 
 	index = findfreeimage();
 	if (index==-1){
-		printf("PD     - PisteDraw has run out of free images!");
+		//printf("PD     - PisteDraw has run out of free images!");
+		PisteLog_Write("PisteDraw", "PisteDraw has run out of free images!", TYPE::T_ERROR);
+
 		return -1;
 	}
 
@@ -208,6 +212,7 @@ int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int width, int hei
 int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala){ //TODO - fix names
 	PD_RECT src = {(DWORD)srcx, (DWORD)srcy, (DWORD)oikea-srcx, (DWORD)ala-srcy};
 	PD_RECT dst = {(DWORD)dstx, (DWORD)dsty, (DWORD)oikea-srcx, (DWORD)ala-srcy};
+
 	PisteDraw2_Image_CutClip(index, src, dst);
 	return 0;
 }
@@ -219,11 +224,19 @@ int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, 
 	return 0;
 }
 
-int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect){
+int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect) {
 	dstrect.x += XOffset;
 	SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
 	return 0;
 }
+
+int PisteDraw2_Image_CutClipTransparent(int index, int cx, int cy, int cw, int ch, int dx, int dy, int alpha) {
+	PD_RECT srcrect = { cx, cy, cw, ch };
+	PD_RECT dstrect = { dx, dy, cw, ch };
+
+	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha, 0);
+}
+
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha){
 	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha, 0);
 }
@@ -315,6 +328,12 @@ int PisteDraw2_ScreenFill(int posx, int posy, int oikea, int ala, BYTE color){
 	return SDL_FillRect(frameBuffer8, &r, color);
 }
 
+void PisteDraw2_Fill_Rect(int posx, int posy, int width, int height, BYTE color) {
+	SDL_Rect r = { posx, posy, width, height };
+	
+	SDL_FillRect(frameBuffer8, &r, color);
+}
+
 void PisteDraw2_SetMask(int x, int y, int w, int h){
 	SDL_Rect r = {x, y, w, h};
 	SDL_SetClipRect(frameBuffer8, &r);
@@ -339,25 +358,58 @@ int PisteDraw2_DrawImage_End(int index){
 	return 0;
 }
 
+/*
+	TODO Figure out how this shit works
+
+	It's not simple alpha blending, because you need to use the palette.
+	Maybe use alpha blending, then search the palette for that color?
+	
+	This function probably gets called every frame though, so not sure,
+	you could render onto a Bitmap in memory, I guess.
+*/
 BYTE PisteDraw2_BlendColors(BYTE color, BYTE colBack, int alpha){
 	int result;
 
-	if(alpha>100) alpha = 100;
+	/*if(alpha>100) alpha = 100;
 	if(alpha<0) alpha = 0;
 
 	/*
-	color1 &= (BYTE)0b00011111;
-	color2 = back_buffer[fy];
-	color3 = color2 & (BYTE)0b11100000;
-	color2 -= color3;
-	color1 = (color1 * a1 + color2 * a2) / 100;*/
-
 	result = color%32;
 	result = (result*alpha)/100;
 	result += colBack%32;
-	if(result>31) result = 31;
+	if(result>31) result = 31;*/
 
-	return (BYTE)result;//+32*col
+	// -----
+
+
+	int i = 0;
+	BYTE color2 = 0, color3;
+
+	if (alpha > 100) alpha = 100;
+	int a1 = alpha;
+	int a2 = 100 - alpha;
+
+	result = color % 32;
+	result = (result*alpha) / 100;
+	result += colBack % 32;
+	//if (result > 31) result = 31;
+
+	/*
+	color &= (BYTE) 0b00011111;
+	color2 = colBack;
+	color3 = color2 & (BYTE) 0b11100000;
+	color2 -= color3;
+	color = (color * a1 + color2 * a2) / 100;
+	*/
+	// -----
+
+	color &= (BYTE) 0b00011111;
+	color2 = colBack;
+	color3 = color2 & (BYTE) 0b11100000;
+	color2 -= color3;
+	color = (color * a1 + color2 * a2) / 100;
+
+	return color + color3;//+32*col
 }
 
 int PisteDraw2_Font_Create(int image, int x, int y, int char_w, int char_h, int count){
@@ -395,8 +447,8 @@ int PisteDraw2_Font_Write(int font_index, std::string text, int x, int y) {
 	if (font_index < 0) return 1;
 	return fontList[font_index]->Write_Text(x, y, text.c_str());
 }
-int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha){
-	return fontList[font_index]->Write_TextTrasparent(x + XOffset, y, text, alpha);
+int PisteDraw2_Font_WriteAlpha(int font_index, std::string text, int x, int y, BYTE alpha){
+	return fontList[font_index]->Write_TextTrasparent(x + XOffset, y, text.c_str(), alpha);
 }
 
 int PisteDraw2_SetFilter(const char* filter){
@@ -515,7 +567,7 @@ int PisteDraw2_Start(int width, int height, const char* name, const char* icon) 
 
 	#endif
 
-	PD_Renderer = SDL_CreateRenderer(PD_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	PD_Renderer = SDL_CreateRenderer(PD_Window, -1, SDL_RENDERER_ACCELERATED);
 	SDL_RenderClear(PD_Renderer);
 
 	frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);

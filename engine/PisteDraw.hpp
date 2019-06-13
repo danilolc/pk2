@@ -9,6 +9,8 @@
 #include <SDL_render.h>
 #include <SDL_pixels.h>
 #include <SDL_video.h>
+#include <SDL_rect.h>
+
 #include <vector>
 #include <string>
 
@@ -24,9 +26,11 @@
 #define		PD_FILTER_NEAREST  "0"
 #define		PD_FILTER_BILINEAR "1"
 
-struct PD_RECT{
+using PD_RECT = SDL_Rect;
+
+/*struct PD_RECT{
 	DWORD x, y, w, h;
-};
+};*/
 
 bool PisteDraw2_IsFading();
 int PisteDraw2_FadeOut(int speed);
@@ -34,17 +38,18 @@ int PisteDraw2_FadeIn(int speed);
 void PisteDraw2_RotatePalette(BYTE start, BYTE end);
 
 int PisteDraw2_Image_New(int w, int h);
-int PisteDraw2_Image_Load(const char* filename, bool getPalette);
+int PisteDraw2_Image_Load(std::string filename, bool getPalette = false);
 int PisteDraw2_Image_Copy(int src_i, int dst_i);
 int PisteDraw2_Image_Cut(int ImgIndex, int x, int y, int w, int h);
 int PisteDraw2_Image_Cut(int ImgIndex, PD_RECT area);
 int PisteDraw2_Image_Clip(int index, int x, int y);
 int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int alpha);
 int PisteDraw2_Image_ClipTransparent(int index, int x, int y, int width, int height, int alpha);
-int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala);
+int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala); // Use the function with the SDL_Rect parameters instead
 int PisteDraw2_Image_CutClip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala, int alpha);
 int PisteDraw2_Image_CutClip(int index, PD_RECT srcrect, PD_RECT dstrect);
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha);
+//void PisteDraw2_Image_CutClip(int index, PD_RECT srcRect, PD_RECT dstRect);
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum);
 void PisteDraw2_Image_GetSize(int index, int& w, int& h);
 int PisteDraw2_Image_FlipHori(int index);
@@ -55,6 +60,9 @@ int PisteDraw2_ImageFill(int index, BYTE color);
 int PisteDraw2_ImageFill(int index, int posx, int posy, int oikea, int ala, BYTE color);
 int PisteDraw2_ScreenFill(BYTE color);
 int PisteDraw2_ScreenFill(int posx, int posy, int width, int height, BYTE color);
+
+void PisteDraw2_Fill_Rect(int posx, int posy, int width, int height, BYTE color);
+
 void PisteDraw2_SetMask(int x, int y, int w, int h);
 
 int PisteDraw2_DrawScreen_Start(BYTE *&pixels, DWORD &pitch);
@@ -66,7 +74,7 @@ BYTE PisteDraw2_BlendColors(BYTE color, BYTE colBack,int alpha);
 int PisteDraw2_Font_Create(int image, int x, int y, int width, int height, int count);
 int PisteDraw2_Font_Create(char* path, char* file);
 int PisteDraw2_Font_Write(int font_index, std::string text, int x, int y);
-int PisteDraw2_Font_WriteAlpha(int font_index, const char* text, int x, int y, BYTE alpha);
+int PisteDraw2_Font_WriteAlpha(int font_index, std::string text, int x, int y, BYTE alpha);
 
 int PisteDraw2_SetFilter(const char* filter);
 void PisteDraw2_FullScreen(bool set);

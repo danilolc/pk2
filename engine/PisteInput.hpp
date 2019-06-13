@@ -84,9 +84,9 @@ struct MOUSE { //RECT
 	int x, y;
 };
 
-const char* PisteInput_KeyName(BYTE key);
+const char* PisteInput_KeyName(int key);
 int PisteInput_GetTouchPos(float& x, float& y);
-BYTE	PisteInput_GetKey();
+int	PisteInput_GetKey();
 bool	PisteInput_Keydown(int key);
 MOUSE   PisteInput_UpdateMouse(bool keyMove, bool relative);
 int     PisteInput_ActivateWindow(bool active);
@@ -104,7 +104,7 @@ bool	PisteInput_Lue_Eventti();
 
 char PisteInput_Get_Typed_Char();
 
-bool	PisteInput_Gamepad_Button(int button);
+bool	PisteInput_Gamepad_Button(int button); // Check if button is pressed
 int PisteInput_Gamepad_Get_Pressed();
 std::string PisteInput_Gamepad_Name();
 std::string PisteInput_ButtonName(int button);

@@ -228,11 +228,12 @@ void SetMousePosition(int x, int y) {
 #endif
 
 
-const char* PisteInput_KeyName(BYTE key){
+const char* PisteInput_KeyName(int key){
 	if(key >= sizeof(keynames) / 15) return keynames[0];
 	return keynames[key+1];
 }
-BYTE PisteInput_GetKey(){
+
+int PisteInput_GetKey(){
 	SDL_PumpEvents();
 	int key;
 	int count = sizeof(keylist)/sizeof(int);
@@ -268,6 +269,7 @@ void PisteInput_Gamepad_Pressed(int button, bool pushed) {
 	}
 }
 
+// Check if button is pressed down
 bool PisteInput_Gamepad_Button(int button) {
 	Gamepad_Button_List[button] = SDL_GameControllerGetButton(controller, static_cast<SDL_GameControllerButton>(button));
 
