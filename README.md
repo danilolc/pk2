@@ -4,9 +4,7 @@ http://kiwi.mbnet.fi/pistegamez/pk2/
 
 
 ## Windows
-v.0.1.2
-
-https://www.dropbox.com/s/ieacmjvcjdg38zq/Pekka%20Kana%202%20Community%20Edition%20v.0.1.2.rar?dl=0
+-will be updated soon-
 
 
 ## Discord
