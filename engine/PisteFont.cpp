@@ -170,6 +170,7 @@ int PisteFont2::Write_Text(int posx, int posy, const char *text){
 
 	return((i-1)*char_w);
 }
+
 int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int alpha){
 
 	BYTE *back_buffer, *txt_buffer;
@@ -207,7 +208,11 @@ int PisteFont2::Write_TextTrasparent(int posx, int posy, const char* text, int a
 						color3 = color2 & (BYTE)0b11100000;
 						color2-= color3;
 						color1 = (color1 * a1 + color2 * a2)/100;
-						back_buffer[fy] = color1 + color3;
+						
+						// TODO Adjust for resolution, if background image size ever gets increased too
+						if (fy < (640 * 480)) {
+							back_buffer[fy] = color1 + color3;
+						}
 					}
 				}
 			}
