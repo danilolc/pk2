@@ -17,6 +17,7 @@
 
 //#define MAX_SPRITEJA       800
 #define MAX_PROTOTYYPPEJA  100
+#define MAX_SPRITES 20000
 
 #define SPRITE_MAX_FRAMEJA        50
 #define SPRITE_MAX_ANIMAATIOITA   20
@@ -498,10 +499,10 @@ struct PK2Sprite_Prototype13 {
 struct PK2Sprite_Prototype14 {
 	BYTE type;
 
-	std::string image_file;
+	std::string image_file = "";
 	std::string lua_script;
 
-	char sound_files[7][100];
+	char sound_files[5][100];
 
 	BYTE frames;
 	PK2SPRITE_ANIMAATIO animation_sequence[20];
@@ -610,7 +611,11 @@ struct PK2Sprite_Prototype14 {
 	// Sprite transforms if it's energy is below this value
 	int transformation_value;
 
-	int attack_priority;
+	int message_duration = 0;
+	bool show_message_on_collision = false;
+	bool show_message_on_hit = false;
+
+	int attack_priority = 0;
 };
 
 //Classes used in game
@@ -620,15 +625,15 @@ class PK2Sprite_Prototype {
     //Version
     char		versio[4];
     //.spr filename
-	std::string file;
+	std::string file = "";
 
     //Prototype index
-    int			indeksi;
+    int			indeksi = -1;
     //Sprite type
-    int			type;
+    int			type = -1;
 
     //.bmp filename
-    std::string	image_file;								// .BMP jossa ovat spriten grafiikat
+    std::string	image_file = "";								// .BMP jossa ovat spriten grafiikat
 
     // Spriteen liittyv�t ��nitehosteet
 
@@ -647,10 +652,10 @@ class PK2Sprite_Prototype {
 
     BYTE		animaatioita;									// animaatioiden m��r�
     BYTE		frame_rate;										// yhden framen kesto
-    int			kuva_x;											// miss� kohtaa kuvaa sprite on
-    int			kuva_y;											// miss� kohtaa kuvaa sprite on
-    int			kuva_frame_leveys;								// yhden framen leveys
-    int			kuva_frame_korkeus;								// yhden framen korkeus
+    int			kuva_x = 0;											// miss� kohtaa kuvaa sprite on
+    int			kuva_y = 0;											// miss� kohtaa kuvaa sprite on
+    int			kuva_frame_leveys = 1;								// yhden framen leveys
+    int			kuva_frame_korkeus = 1;								// yhden framen korkeus
     int			kuva_frame_vali;								// kahden framen vali
 
 	int originalX, originalY;
@@ -694,10 +699,10 @@ class PK2Sprite_Prototype {
     std::string ammus1_sprite;								// Spriten ammuksena 1 k�ytt�m� sprite
     std::string ammus2_sprite;								// Spriten ammuksena 2 k�ytt�m� sprite
 
-    int			muutos;											// Muutosspriten prototyypin indeksi. -1 jos ei ole
+	int			muutos = -1;											// Muutosspriten prototyypin indeksi. -1 jos ei ole
     int			bonus[5];											// Bonusspriten prototyypin indeksi. -1 jos ei ole
-    int			ammus1;											// Ammussprite1 prototyypin indeksi. -1 jos ei ole
-    int			ammus2;											// Ammussprite1 prototyypin indeksi. -1 jos ei ole
+	int			ammus1 = -1;											// Ammussprite1 prototyypin indeksi. -1 jos ei ole
+    int			ammus2 = -1;											// Ammussprite1 prototyypin indeksi. -1 jos ei ole
 
     // Lis�ykset 1.2 versiossa
     bool		tiletarkistus;									// t�rm�ileek� tileihin
@@ -724,9 +729,12 @@ class PK2Sprite_Prototype {
 	int transformation_value;
 
 	std::string message;
+	int message_duration = 0;
 
-	bool trigger_healthbar_when_active;
-	bool trigger_message_on_collision;
+	bool show_message_on_collision = false;
+	bool show_message_on_hit = false;
+
+	int attack_priority = 0;
 
     // Muodostimet
     PK2Sprite_Prototype();
@@ -755,10 +763,10 @@ class PK2Sprite {
     int			pelaaja;			// 0 = ei pelaaja, 1 = pelaaja
     PK2Sprite_Prototype *type;	// osoitin spriten prototypein
     bool		piilota;			// true = ei toiminnassa, false = toiminnassa
-    double		alku_x;				// spriten alkuper�inen x sijainti
-    double		alku_y;				// spriten alkuper�inen y sijainti
-    double		x;					// x-kordinaatti pelikent�ll�
-    double		y;					// y-kordinaatti pelikent�ll�
+    double		alku_x = 0;				// spriten alkuper�inen x sijainti
+    double		alku_y = 0;				// spriten alkuper�inen y sijainti
+    double		x = 0;					// x-kordinaatti pelikent�ll�
+    double		y = 0;					// y-kordinaatti pelikent�ll�
 
 	int originalX;
 	int originalY;
@@ -789,8 +797,8 @@ class PK2Sprite {
     int			saatu_vahinko;		// v�hennet��n energiasta jos erisuuri kuin 0
     BYTE       saatu_vahinko_type; // saadun vahingon type (esim. lumi).
     bool		vihollinen;			// prototyypist� saatu tieto, onko vihollinen
-    int			ammus1;				// spriten k�ytt�m�n ammus-prototyypin indeksi
-    int			ammus2;				//
+    int			ammus1 = -1;				// spriten k�ytt�m�n ammus-prototyypin indeksi
+    int			ammus2 = -1;				//
 
     int			pelaaja_x,			// tieto siit�, miss� pelaaja on n�hty viimeksi
     pelaaja_y;
@@ -807,7 +815,15 @@ class PK2Sprite {
 	bool checkpoint_activated = false;
 	bool knockout_complete = false;
 
+	int transformation_value = 0;
+
 	std::string message;
+
+	int message_duration = 0;
+	bool show_message_on_collision = false;
+	bool show_message_on_hit = false;
+
+	int attack_priority = 0;
 
     PK2Sprite();
     PK2Sprite(PK2Sprite_Prototype *type, int pelaaja, bool piilota, double x, double y);
@@ -869,7 +885,7 @@ class PK2Sprite {
     int AI_Kiipeilija();
     int AI_Kiipeilija2();
     bool AI_Info(PK2Sprite &pelaaja);
-    int AI_Tuhoutuu_Jos_Emo_Tuhoutuu(std::vector<PK2Sprite> &spritet);
+    int AI_Tuhoutuu_Jos_Emo_Tuhoutuu(std::vector<PK2Sprite> &sprites);
 
 	// TODO change these to void return types
     int Animaatio_Perus();

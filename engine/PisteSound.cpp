@@ -118,9 +118,12 @@ void PisteSound_SetSFXVolume(int volume){
 	sfx_volume = volume;
 }
 int PisteSound_FreeSFX(int index){
-	if(indexes[index] != NULL)
-		Mix_FreeChunk(indexes[index]);
-	indexes[index] = NULL;
+	if (index < 300) {
+		if (indexes[index] != NULL)
+			Mix_FreeChunk(indexes[index]);
+		indexes[index] = NULL;
+	}
+
 	return 0;
 }
 void PisteSound_ResetSFX(){

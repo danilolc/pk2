@@ -142,9 +142,9 @@ class SpriteSystem {
 	SpriteSystem();
 	~SpriteSystem();
 
-	PK2Sprite* player;
+	PK2Sprite* player = 0;
 
-	std::vector<PK2Sprite_Prototype*> prototypes;
+	std::vector<PK2Sprite_Prototype> prototypes;
 
 	std::vector<PK2Sprite> sprites;
 	std::vector<int> background_sprites;
@@ -221,9 +221,8 @@ namespace Effect {
 
 }
 
+void PK_Start_Info(std::string text, int duration = 700);
 
-
-void PK_Start_Info(char *text);
 extern PisteLanguage *tekstit;
 struct LANGUAGE{
 	int setup_options,
