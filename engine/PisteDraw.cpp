@@ -370,46 +370,15 @@ int PisteDraw2_DrawImage_End(int index){
 BYTE PisteDraw2_BlendColors(BYTE color, BYTE colBack, int alpha){
 	int result;
 
-	/*if(alpha>100) alpha = 100;
+	if(alpha>100) alpha = 100;
 	if(alpha<0) alpha = 0;
 
-	/*
 	result = color%32;
 	result = (result*alpha)/100;
 	result += colBack%32;
-	if(result>31) result = 31;*/
+	if(result>31) result = 31;
 
-	// -----
-
-
-	int i = 0;
-	BYTE color2 = 0, color3;
-
-	if (alpha > 100) alpha = 100;
-	int a1 = alpha;
-	int a2 = 100 - alpha;
-
-	result = color % 32;
-	result = (result*alpha) / 100;
-	result += colBack % 32;
-	//if (result > 31) result = 31;
-
-	/*
-	color &= (BYTE) 0b00011111;
-	color2 = colBack;
-	color3 = color2 & (BYTE) 0b11100000;
-	color2 -= color3;
-	color = (color * a1 + color2 * a2) / 100;
-	*/
-	// -----
-
-	color &= (BYTE) 0b00011111;
-	color2 = colBack;
-	color3 = color2 & (BYTE) 0b11100000;
-	color2 -= color3;
-	color = (color * a1 + color2 * a2) / 100;
-
-	return color + color3;//+32*col
+	return (BYTE)result;//+32*col
 }
 
 int PisteDraw2_Font_Create(int image, int x, int y, int char_w, int char_h, int count){

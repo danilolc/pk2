@@ -8,6 +8,8 @@
 
 include config.txt
 
+SDLD = /usr/include/SDL2/
+
 .PHONY: pk2 pk2le pk2sc clean makedirs
 
 pk2: makedirs $(PK2_BIN)
@@ -39,13 +41,13 @@ $(PK2_SC_BIN): $(PK2_SC_OBJ) $(PK2_SPRITE_OBJ) $(ENGINE_OBJ)
 
 build/%.o : engine/%.cpp
 	@echo -Some dependence of $@ was changed, updating
-	@$(CPP) $(CFLAGS) -I$(ENGINE_DIR) -o $@ -c $<
-	@$(CPP) -MM -MT $@ -I$(ENGINE_DIR) $< > $(BUILD_DIR)$*.d
+	@$(CPP) $(CFLAGS) -I$(SDLD) -I$(ENGINE_DIR) -o $@ -c $<
+	@$(CPP) -MM -MT $@ -I$(SDLD) -I$(ENGINE_DIR) $< > $(BUILD_DIR)$*.d
 
 build/%.o : src/%.cpp
 	@echo -Some dependence of $@ was changed, updating
-	@$(CPP) $(CFLAGS) -I$(SRC_DIR) -I$(ENGINE_DIR) -o $@ -c $<
-	@$(CPP) -MM -MT $@ -I$(SRC_DIR) -I$(ENGINE_DIR) $< > $(BUILD_DIR)$*.d
+	@$(CPP) $(CFLAGS) -I$(SDLD) -I$(SRC_DIR) -I$(ENGINE_DIR) -o $@ -c $<
+	@$(CPP) -MM -MT $@ -I$(SDLD) -I$(SRC_DIR) -I$(ENGINE_DIR) $< > $(BUILD_DIR)$*.d
 ###########################
 
 clean:

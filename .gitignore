@@ -2,6 +2,8 @@ bin/
 build/
 doc/
 
+log.txt
+
 res/episodes/*
 !res/episodes/rooster island 1
 !res/episodes/rooster island 2

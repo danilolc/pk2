@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <string>
 #ifdef _WIN32
+	#include <Windows.h>
 	#include <io.h>
 	#include "../include/winlite.h"
 	#include <direct.h>
@@ -17,8 +18,6 @@
 #endif
 
 #include <iostream>
-
-#include <Windows.h>
 
 #include "PisteUtils.hpp"
 #include "platform.hpp"
