@@ -88,7 +88,7 @@ class PK2Kartta {
 
 	int			jakso;				// level of the episode. 0 means secret level
 	int			ilma;				// map climate
-	int			aika;				// map time
+	int			aika = 0;				// map time
 	BYTE		extra;				// extra config - not used
 	BYTE		tausta;				// bg movemant type
 	DWORD		kytkin1_aika;		// button 1 time

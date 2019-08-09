@@ -811,6 +811,22 @@ int PK2Sprite_Prototype::Lataa(char *path, char *file_name, char* episode){
 	return 0;
 }
 
+static std::string readString(std::ifstream &ifs) {
+	std::stringstream str;
+
+	char c = 0;
+
+	do {
+		ifs.read((char *)& c, sizeof(c));
+
+		str << c;
+	} while (c != 0x0);
+
+	std::string st = str.str();
+
+	return st;
+}
+
 int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 	this->New();
 
@@ -882,116 +898,185 @@ int PK2Sprite_Prototype::Load(std::string filename, std::string episode) {
 		this->New();
 
 		PK2Sprite_Prototype14 proto;
+
+		filestream.read((char*) &proto.type, sizeof(proto.type));
+
+		int len = 0;
+	
+		filestream.read((char*) &len, sizeof(len));
 		
+		proto.image_file = readString(filestream);
+
+		//std::cout << proto.image_file;
+
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 100; j++)
+				filestream.read((char *) &proto.sound_files[i][j], sizeof(proto.sound_files[i][j]));
+		}
+
+		filestream.read((char*) &proto.frames, sizeof(proto.frames));
+
+		for (int i = 0; i < 10; i++) {
+			filestream.read((char *) &proto.animation_sequence[i], sizeof(proto.animation_sequence[i]));
+		}
+
+		filestream.read((char*) &proto.animations, sizeof(proto.animations));
+		filestream.read((char*) &proto.frame_rate, sizeof(proto.frame_rate));
+
+		filestream.read((char*) &proto.clip_x, sizeof(proto.clip_x));
+		filestream.read((char*) &proto.clip_y, sizeof(proto.clip_y));
+		filestream.read((char*) &proto.clip_width, sizeof(proto.clip_width));
+		filestream.read((char*) &proto.clip_height, sizeof(proto.clip_height));
+
+		filestream.read((char*) &len, sizeof(len));
+
+		char* tmp = new char[len];
+		strcpy(tmp, "");
+
+		for (int i = 0; i < len; i++) {
+			filestream.read((char *)& tmp[i], sizeof(char));
+		}
+
+		proto.name = std::string(tmp);
+
+		//std::cout << proto.name << std::endl;
+
+		delete[] tmp;
+
+		filestream.read((char*)& proto.hitbox_width, sizeof(proto.hitbox_width));
+		filestream.read((char*)& proto.hitbox_height, sizeof(proto.hitbox_height));
+
+		filestream.read((char*) &proto.weight, sizeof(proto.weight));
+
+		filestream.read((char*) &proto.is_enemy, sizeof(proto.is_enemy));
+
+		filestream.read((char*) &proto.energy, sizeof(proto.energy));
+		filestream.read((char*) &proto.damage, sizeof(proto.damage));
+
+		filestream.read((char*) &proto.damage_type, sizeof(proto.damage_type));
+		filestream.read((char*) &proto.immunity, sizeof(proto.immunity));
+
+		filestream.read((char*) &proto.score, sizeof(proto.score));
+
+		filestream.read((char*) &proto.AI, sizeof(proto.AI));
+
+		filestream.read((char*) &proto.max_jump_time, sizeof(proto.max_jump_time));
+
+		filestream.read((char *) &proto.max_speed, sizeof(proto.max_speed));
+
+		filestream.read((char *) &proto.loading_time, sizeof(proto.loading_time));
+
+		filestream.read((char *) &proto.color, sizeof(proto.color));
+
+		filestream.read((char *) &proto.obstacle, sizeof(proto.obstacle));
+
+		filestream.read((char *) &proto.destruction, sizeof(proto.destruction));
+
+		filestream.read((char *) &proto.is_key, sizeof(proto.is_key));
+
+		filestream.read((char *) &proto.shakes, sizeof(proto.shakes));
+
+		filestream.read((char *) &proto.bonus_amount, sizeof(proto.bonus_amount));
+
+		filestream.read((char *) &proto.attack1_frames, sizeof(proto.attack1_frames));
+		filestream.read((char *) &proto.attack2_frames, sizeof(proto.attack2_frames));
+
+		filestream.read((char *) &proto.parallax_factor, sizeof(proto.parallax_factor));
+		
+		filestream.read((char *) &len, sizeof(len));
+
+		tmp = new char[len];
+		strcpy(tmp, "");
+
+		for (int i = 0; i < len; i++) {
+			filestream.read((char *)& tmp[i], sizeof(char));
+		}
+
+		proto.transformation_sprite = std::string(tmp);
+
+		delete[] tmp;
+
+		filestream.read((char *)&len, sizeof(len));
+		tmp = new char[len];
+		strcpy(tmp, "");
+
+		for (int i = 0; i < len; i++) {
+			filestream.read((char *)& tmp[i], sizeof(char));
+		}
+
+		proto.bonus_sprite[0] = std::string(tmp);
+
+		delete[] tmp;
+
+		filestream.read((char *)&len, sizeof(len));
+		tmp = new char[len];
+		strcpy(tmp, "");
+
+		for (int i = 0; i < len; i++) {
+			filestream.read((char *)& tmp[i], sizeof(char));
+		}
+
+		proto.ammo1_sprite = std::string(tmp);
+
+		delete[] tmp;
+
+		filestream.read((char *)&len, sizeof(len));
+		tmp = new char[len];
+		strcpy(tmp, "");
+
+		for (int i = 0; i < len; i++) {
+			filestream.read((char *)& tmp[i], sizeof(char));
+		}
+
+		proto.ammo2_sprite = std::string(tmp);
+
+		delete[] tmp;
+
+		filestream.read((char *) &proto.tile_check, sizeof(proto.tile_check));
+		
+		filestream.read((char *) &proto.sound_frq, sizeof(proto.sound_frq));
+		filestream.read((char *) &proto.random_frq, sizeof(proto.random_frq));
+		
+		filestream.read((char *) &proto.wall_up, sizeof(proto.wall_up));
+		filestream.read((char *) &proto.wall_down, sizeof(proto.wall_down));
+		filestream.read((char *) &proto.wall_right, sizeof(proto.wall_right));
+		filestream.read((char *) &proto.wall_left, sizeof(proto.wall_left));
+		
+		filestream.read((char *) &proto.attack_pause, sizeof(proto.attack_pause));
+		
+		filestream.read((char *) &proto.can_glide, sizeof(proto.can_glide));
+		filestream.read((char *) &proto.is_boss, sizeof(proto.is_boss));
+		filestream.read((char *) &proto.bonus_always, sizeof(proto.bonus_always));
+		filestream.read((char *) &proto.can_swim, sizeof(proto.can_swim));
+
+		filestream.read((char *)&len, sizeof(len));
+
+		//std::cout << "messag len: " << len << std::endl;
+
+		tmp = new char[len];
+		strcpy(tmp, "");
+
+		for (int i = 0; i < len; i++) {
+			filestream.read((char *)& tmp[i], sizeof(char));
+		}
+
+		proto.message = std::string(tmp);
+
+		//std::cout << proto.message << std::endl;
+
+		delete[] tmp;
+
+		filestream.read((char *) &proto.message_duration, sizeof(proto.message_duration));
+		filestream.read((char *) &proto.show_message_on_hit, sizeof(proto.show_message_on_hit));
+		filestream.read((char *) &proto.show_message_on_collision, sizeof(proto.show_message_on_collision));
+
+		filestream.read((char *) &proto.transformation_value, sizeof(proto.transformation_value));
+		
+		filestream.read((char *) &proto.attack_priority, sizeof(proto.attack_priority));
+		
+		strcpy(this->versio, versio);
+
 		this->SetProto14(proto);
-
-		/*
-		filestream.read(reinterpret_cast<char *>(&proto.type), sizeof(BYTE));
-		
-		proto.image_file = read_string(filestream);
-		proto.lua_script = read_string(filestream);
-		proto.message = read_string(filestream);
-
-		for (int i = 0; i < 7; i++) {
-			filestream.read(proto.sound_files[i], 100);
-		}
-
-		filestream.read(reinterpret_cast<char *>(&proto.frames), sizeof(BYTE));
-
-		filestream.read(reinterpret_cast<char *>(&proto.animation_sequence), sizeof(proto.animation_sequence));
-
-		filestream.read(reinterpret_cast<char *>(&proto.animations), sizeof(BYTE));
-		filestream.read(reinterpret_cast<char *>(&proto.frame_rate), sizeof(BYTE));
-
-		filestream.read(reinterpret_cast<char *>(&proto.clip_x), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.clip_y), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.clip_width), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.clip_height), sizeof(int));
-
-		proto.name = read_string(filestream);
-
-		filestream.read(reinterpret_cast<char *>(&proto.hitbox_x), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.hitbox_y), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.hitbox_width), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.hitbox_height), sizeof(int));
-
-		filestream.read(reinterpret_cast<char *>(&proto.weight), sizeof(double));
-		
-		filestream.read(reinterpret_cast<char *>(&proto.is_enemy), sizeof(bool));
-		
-		filestream.read(reinterpret_cast<char *>(&proto.energy), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.damage), sizeof(int));
-
-		filestream.read(reinterpret_cast<char *>(&proto.damage_type), sizeof(BYTE));
-		filestream.read(reinterpret_cast<char *>(&proto.immunity), sizeof(BYTE));
-
-		filestream.read(reinterpret_cast<char *>(&proto.score), sizeof(int));
-		
-		filestream.read(reinterpret_cast<char *>(&proto.AI), sizeof(proto.AI));
-
-		filestream.read(reinterpret_cast<char *>(&proto.max_jump_time), sizeof(BYTE));
-
-		filestream.read(reinterpret_cast<char *>(&proto.max_speed), sizeof(double));
-
-		filestream.read(reinterpret_cast<char *>(&proto.loading_time), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.color), sizeof(BYTE));
-		filestream.read(reinterpret_cast<char *>(&proto.obstacle), sizeof(bool));
-		filestream.read(reinterpret_cast<char *>(&proto.destruction), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.is_key), sizeof(bool));
-		filestream.read(reinterpret_cast<char *>(&proto.shakes), sizeof(bool));
-
-		int bonus_val = 0;
-		filestream.read(reinterpret_cast<char *>(&bonus_val), sizeof(int));
-
-		for (int i = 0; i < bonus_val; i++) {
-			filestream.read(reinterpret_cast<char *>(&proto.bonus_amount), sizeof(proto.bonus_amount));
-		}
-
-		filestream.read(reinterpret_cast<char *>(&proto.attack1_frames), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.attack2_frames), sizeof(int));
-		filestream.read(reinterpret_cast<char *>(&proto.parallax_factor), sizeof(int));
-
-		proto.transformation_sprite = read_string(filestream);
-
-		int bonus_spr_amount = 0;
-
-		filestream.read(reinterpret_cast<char *>(&bonus_spr_amount), sizeof(int));
-
-		for (int i = 0; i < bonus_spr_amount; i++) {
-			bonus_sprite[i] = read_string(filestream);
-		}
-
-		proto.ammo1_sprite = read_string(filestream);
-		proto.ammo2_sprite = read_string(filestream);
-
-		proto.message = read_string(filestream);
-		filestream.read(reinterpret_cast<char *>(&proto.message_when_active), sizeof(bool));
-		
-		filestream.read(reinterpret_cast<char *>(&proto.show_healthbar), sizeof(bool));
-		filestream.read(reinterpret_cast<char *>(&proto.healthbar_when_active), sizeof(bool));
-		
-		filestream.read(reinterpret_cast<char *>(&proto.tile_check), sizeof(bool));
-
-		filestream.read(reinterpret_cast<char *>(&proto.sound_frq), sizeof(int));
-
-		filestream.read(reinterpret_cast<char *>(&proto.random_frq), sizeof(bool));
-
-		filestream.read(reinterpret_cast<char *>(&proto.wall_up), sizeof(bool));
-		filestream.read(reinterpret_cast<char *>(&proto.wall_down), sizeof(bool));
-		filestream.read(reinterpret_cast<char *>(&proto.wall_right), sizeof(bool));
-		filestream.read(reinterpret_cast<char *>(&proto.wall_left), sizeof(bool));
-		
-		filestream.read(reinterpret_cast<char *>(&proto.attack_pause), sizeof(int));
-
-		filestream.read(reinterpret_cast<char *>(&proto.can_glide), sizeof(bool));
-		filestream.read(reinterpret_cast<char *>(&proto.is_boss), sizeof(bool));
-		filestream.read(reinterpret_cast<char *>(&proto.bonus_always), sizeof(bool));
-		filestream.read(reinterpret_cast<char *>(&proto.can_swim), sizeof(bool));
-
-		filestream.read(reinterpret_cast<char *>(&proto.transformation_value), sizeof(int));
-
-		filestream.read(reinterpret_cast<char *>(&proto.trigger_healthbar_when_active, sizeof(bool)));
-		filestream.read(reinterpret_cast<char *>(&proto.trigger_message_on_collision, sizeof(bool)));*/
 
 		this->file = filename;
 	}
@@ -1170,6 +1255,16 @@ PK2Sprite::PK2Sprite(PK2Sprite_Prototype *type, int pelaaja, bool piilota, doubl
 		this->pelaaja_y		= -1;
 		this->ajastin		= 0;
 		this->transformation_ajastin = 0;
+
+		this->transformation_value = type->transformation_value;
+
+		this->message = type->message;
+
+		this->message_duration = type->message_duration;
+		bool show_message_on_collision = type->show_message_on_collision;
+		bool show_message_on_hit = type->show_message_on_hit;
+
+		int attack_priority = type->attack_priority;
 	}
 }
 PK2Sprite::~PK2Sprite() {}

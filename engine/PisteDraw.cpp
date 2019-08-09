@@ -101,6 +101,8 @@ int PisteDraw2_Image_New(int w, int h){
 
 	return index;
 }
+
+// TODO Only load image once
 int PisteDraw2_Image_Load(std::string filename, bool getPalette){
 	int index, i;
 	SDL_Palette* pal;
@@ -240,15 +242,15 @@ int PisteDraw2_Image_CutClipTransparent(int index, int cx, int cy, int cw, int c
 int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha){
 	return PisteDraw2_Image_CutClipTransparent(index, srcrect, dstrect, alpha, 0);
 }
-int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum){
-	BYTE *imagePix = nullptr;
-	BYTE *screenPix = nullptr;
+int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstrect, int alpha, int colorsum) {
+	BYTE *imagePix = NULL;
+	BYTE *screenPix = NULL;
 	BYTE color1, color2;
 	DWORD imagePitch, screenPitch;
 	int posx, posy;
 
 	int x_start = dstrect.x + XOffset;
-	int	x_end = dstrect.x + srcrect.w;
+	int	x_end = dstrect.x + srcrect.w + XOffset;
 	int	y_start = dstrect.y;
 	int	y_end = dstrect.y + srcrect.h;
 
@@ -262,14 +264,17 @@ int PisteDraw2_Image_CutClipTransparent(int index, PD_RECT srcrect, PD_RECT dstr
 
 	PisteDraw2_DrawImage_Start(index, *&imagePix, (DWORD &)imagePitch);
 	PisteDraw2_DrawScreen_Start(*&screenPix, (DWORD &)screenPitch);
-	for (posx = x_start; posx < x_end; posx++)
+
+	for (posx = x_start; posx < x_end; posx++) {
 		for (posy = y_start; posy < y_end; posy++) {
 			color1 = imagePix[(posx - x_start + srcrect.x) + imagePitch * (posy - y_start + srcrect.y)];
 			if (color1 != 255) {
 				color2 = screenPix[posx + screenPitch * posy];
-				screenPix[posx+screenPitch * posy] = PisteDraw2_BlendColors(color1, color2, alpha) + colorsum;
+				screenPix[posx + screenPitch * posy] = PisteDraw2_BlendColors(color1, color2, alpha) + colorsum;
 			}
 		}
+	}
+
 	PisteDraw2_DrawScreen_End();
 	PisteDraw2_DrawImage_End(index);
 	return 0;
@@ -370,13 +375,13 @@ int PisteDraw2_DrawImage_End(int index){
 BYTE PisteDraw2_BlendColors(BYTE color, BYTE colBack, int alpha){
 	int result;
 
-	if(alpha>100) alpha = 100;
-	if(alpha<0) alpha = 0;
+	if (alpha > 100) alpha = 100;
+	if (alpha < 0) alpha = 0;
 
-	result = color%32;
-	result = (result*alpha)/100;
-	result += colBack%32;
-	if(result>31) result = 31;
+	result = color % 32;
+	result = (result * alpha) / 100;
+	result += colBack % 32;
+	if (result > 31) result = 31;
 
 	return (BYTE)result;//+32*col
 }

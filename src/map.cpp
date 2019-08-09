@@ -997,8 +997,8 @@ void PK2Kartta::Place_Sprites() {
 		for (int y = 0; y < PK2KARTTA_KARTTA_KORKEUS; y++){
 			sprite = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
-			if (sprite != 255 && Game::Sprites->prototypes[sprite]->korkeus > 0){
-				Game::Sprites->add(sprite, 0, x * 32, y * 32 - Game::Sprites->prototypes[sprite]->korkeus + 32, -1, false);
+			if (sprite != 255 && Game::Sprites->prototypes[sprite].korkeus > 0){
+				Game::Sprites->add(sprite, 0, x * 32, y * 32 - Game::Sprites->prototypes[sprite].korkeus + 32, -1, false);
 			}
 		}
 	}
@@ -1052,8 +1052,8 @@ int PK2Kartta::Count_Keys() {
 	for (x=0; x < PK2KARTTA_KARTTA_KOKO; x++){
 		sprite = this->spritet[x];
 		if (sprite != 255)
-			if (Game::Sprites->prototypes[sprite]->avain && 
-				Game::Sprites->prototypes[sprite]->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
+			if (Game::Sprites->prototypes[sprite].avain && 
+				Game::Sprites->prototypes[sprite].tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
 
 				keys++;
 	}
