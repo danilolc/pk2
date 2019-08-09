@@ -7228,7 +7228,7 @@ int PK_Draw_Map() {
 	int nuppi_x = 0, nuppi_y = 0;
 	int type = 0;
 	int result;
-	int min = 0, sek = 0;
+	int time = 0, min = 0, sek = 0;
 	int ikoni;
 	int sinx = 0, cosy = 0;
 	int pekkaframe = 0;
@@ -7328,9 +7328,12 @@ int PK_Draw_Map() {
 				if (result > 0) {
 
 					int info_x = 489 + 3, info_y = 341 - 26;
-
+					
 					// TODO figure out values, that make this look good
-					PK_Draw_Transparent_Object(kuva_peli, 473, 0, 607, 121, info_x, info_y + 26, 40, 39);
+					// It is width and heigth, not end_x end_y
+					// The transparent object has just one color (line) on the palette, the las arg is a power of two
+					// that determines witch color is it. It'll sum on the color value
+					PK_Draw_Transparent_Object(kuva_peli, info_x - 3, 0, 610 - info_x, 121, info_x, info_y + 26, 60, 128*2);
 					//PisteDraw2_Image_CutClip(kuva_peli, info_x - 3, info_y + 26, 473, 0, 607, 121);
 
 					PisteDraw2_Font_Write(FONT_SMALL, levels[i].name, info_x, info_y + 30);
@@ -7343,13 +7346,20 @@ int PK_Draw_Map() {
 						PisteDraw2_Font_Write(FONT_SMALL, luku, info_x + vali, info_y + 75);
 					}
 
-					if (episodipisteet.best_time[i] > 0) {
+					if (episodipisteet.best_time[i] > 0) { //TODO - Also show if zero
 						PisteDraw2_Font_WriteAlpha(FONT_SMALL, tekstit->Hae_Teksti(PK_txt.map_level_fastest_player), info_x, info_y + 98, 75);
 						PisteDraw2_Font_Write(FONT_SMALL, episodipisteet.fastest_player[i], info_x, info_y + 110);
 
 						vali = 8 + PisteDraw2_Font_WriteAlpha(FONT_SMALL, tekstit->Hae_Teksti(PK_txt.map_level_best_time), info_x, info_y + 122, 75);
-						min = episodipisteet.best_time[i] / 60;
-						sek = episodipisteet.best_time[i] % 60;
+
+						time = (int)episodipisteet.best_time[i];
+						if (time < 0) {
+							vali += PisteDraw2_Font_Write(FONT_SMALL, "-", info_x + vali, info_y + 122);
+							time = -time;
+						}
+						
+						min = time / 60;
+						sek = time % 60;
 
 						itoa(min, luku, 10);
 						vali += PisteDraw2_Font_Write(FONT_SMALL, luku, info_x + vali, info_y + 122);
