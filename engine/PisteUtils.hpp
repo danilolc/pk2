@@ -2,9 +2,7 @@
 //PisteEngine - PisteUtils
 //by Janne Kivilahti from Piste Gamez
 //#########################
-
-#ifndef PISTELUTILS
-#define PISTELUTILS
+#pragma once
 
 #include "platform.hpp"
 
@@ -21,4 +19,3 @@ void  PisteUtils_Show_Error(const char* txt);
 // ".exe" - *.exe
 int  PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], int length);
 
-#endif

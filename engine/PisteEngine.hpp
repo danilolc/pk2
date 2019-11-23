@@ -2,7 +2,6 @@
 //PisteEngine
 //by Janne Kivilahti from Piste Gamez
 //#########################
-
 #pragma once
 
 #include "platform.hpp"

@@ -1,6 +1,5 @@
 // Platform defs
-#ifndef PLATFORM_H
-#define PLATFORM_H
+#pragma once
 
 #include "types.hpp"
 
@@ -70,5 +69,3 @@
 #endif
 
 #endif // _WIN32 && _MSC_VER
-
-#endif // PLATFORM_H

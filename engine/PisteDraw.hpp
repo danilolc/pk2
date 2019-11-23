@@ -2,10 +2,9 @@
 //PisteEngine - PisteDraw
 //by Janne Kivilahti from Piste Gamez
 //#########################
-
 #pragma once
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <vector>
 
 #include "PisteFont.hpp"
@@ -17,6 +16,12 @@
 
 #define		PD_FILTER_NEAREST  "0"
 #define		PD_FILTER_BILINEAR "1"
+
+namespace PDraw {
+
+	
+}
+
 
 namespace Piste {
 

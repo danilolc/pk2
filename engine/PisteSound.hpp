@@ -2,9 +2,7 @@
 //PisteEngine - PisteSound
 //by Janne Kivilahti from Piste Gamez
 //#########################
-
-#ifndef P_SOUND
-#define P_SOUND
+#pragma once
 
 #include "platform.hpp"
 
@@ -22,5 +20,3 @@ void PisteSound_ResetSFX();
 int PisteSound_StartMusic(char* filename);
 void PisteSound_SetMusicVolume(int volume);
 void PisteSound_StopMusic();
-
-#endif

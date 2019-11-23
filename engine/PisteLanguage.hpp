@@ -2,9 +2,7 @@
 //PisteEngine - PisteLanguage
 //by Janne Kivilahti from Piste Gamez
 //#########################
-
-#ifndef PISTELANGUAGE
-#define PISTELANGUAGE
+#pragma once
 
 #include "platform.hpp"
 
@@ -27,5 +25,3 @@ class PisteLanguage{
 		char otsikot[MAX_TEXTS][MAX_HEAD_LENGTH+1];
 		int  read;
 };
-
-#endif

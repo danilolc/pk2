@@ -18,11 +18,7 @@
 
 #include "PisteUtils.hpp"
 
-#ifdef USE_LOCAL_SDL
-#include "SDL.h"
-#else
-#include <SDL2/SDL.h>
-#endif
+#include <SDL.h>
 #include <cstring>
 
 using namespace std;

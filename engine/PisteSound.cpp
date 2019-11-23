@@ -6,11 +6,7 @@
 #include "PisteSound.hpp"
 #include "PisteUtils.hpp"
 
-#ifdef USE_LOCAL_SDL
-#include "SDL_mixer.h"
-#else
-#include <SDL2/SDL_mixer.h>
-#endif
+#include <SDL_mixer.h>
 #include <cstring>
 
 #define AUDIO_FREQ 44100

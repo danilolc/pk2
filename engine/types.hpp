@@ -3,8 +3,7 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 
-#ifndef P_TYPES
-#define P_TYPES
+#pragma once
 
 #include <stdint.h>
 
@@ -18,6 +17,4 @@ typedef uint16_t WORD;
     typedef unsigned long DWORD;
 #else
     typedef uint32_t DWORD;
-#endif
-
 #endif

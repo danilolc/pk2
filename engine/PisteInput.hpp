@@ -2,9 +2,7 @@
 //PisteEngine - PisteInput
 //by Janne Kivilahti from Piste Gamez
 //#########################
-
-#ifndef P_INPUT
-#define P_INPUT
+#pragma once
 
 #include "platform.hpp"
 
@@ -96,5 +94,3 @@ bool	PisteInput_Onko_Ohjain(int ohjain);
 int PisteInput_CreateGui(int x, int y, int w, int h, BYTE alpha, const char* t_path, DWORD* key);
 int PisteInput_ActiveGui(int id, bool active);
 int PisteInput_DrawGui(int pd_alpha);
-
-#endif

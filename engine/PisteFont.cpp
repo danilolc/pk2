@@ -19,6 +19,7 @@ int PisteFont2::InitCharList(){
 	for (i=0;i<256;i++) charList[i] = -1;
 	for (i=0;i<char_count;i++) font_index[i] = i * char_w; //The x position of the char
 
+	//TODO - create a {'A', 'B' ..} array
 	charList['A'] = font_index[0];
 	charList['B'] = font_index[1];
 	charList['C'] = font_index[2];
@@ -45,9 +46,9 @@ int PisteFont2::InitCharList(){
 	charList['X'] = font_index[23];
 	charList['Y'] = font_index[24];
 	charList['Z'] = font_index[25];
-	charList[(BYTE)197] = font_index[26];
-	charList[(BYTE)196] = font_index[27];
-	charList[(BYTE)214] = font_index[28];
+	charList[197] = font_index[26];
+	charList[196] = font_index[27];
+	charList[214] = font_index[28];
 	charList['0'] = font_index[29];
 	charList['1'] = font_index[30];
 	charList['2'] = font_index[31];
