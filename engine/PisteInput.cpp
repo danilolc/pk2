@@ -4,7 +4,7 @@
 //#########################
 
 #include "PisteInput.hpp"
-#include "PisteDraw.hpp"
+#include "PisteGui.hpp"
 
 #include "platform.hpp"
 
@@ -12,21 +12,6 @@
 
 #include <cstring>
 
-#define PI_MAX_GUI 15
-
-struct PI_GUI{
-	bool set;
-	bool active;
-
-	int pos_x, pos_y;
-	int width, height;
-	BYTE alpha;
-	SDL_Texture* texture;
-	DWORD* key;
-	bool pressed;
-};
-
-PI_GUI gui_list[PI_MAX_GUI];
 int screen_w, screen_h;
 
 #define MOUSE_SPEED 20
@@ -110,104 +95,6 @@ SDL_Haptic *PI_haptic;
 
 
 
-int Alloc_GuiId(){
-	int gui_id = -1;
-	for(int i = 0; i < PI_MAX_GUI; i++)
-		if (!gui_list[i].set)
-			gui_id = i;
-	return gui_id;
-}
-int UpdateGui(){
-	PI_GUI* gui;
-	SDL_Finger* finger = NULL;
-	SDL_TouchID id = SDL_GetTouchDevice(0);
-
-	int fingers = SDL_GetNumTouchFingers(id);
-
-	int x, y;
-	for(int i = 0; i < PI_MAX_GUI; i++){
-		gui = gui_list + i;
-		gui->pressed = false;
-		if(gui->set && gui->active && fingers > 0){
-			for(int j = 0; j < fingers; j++){
-
-				finger = SDL_GetTouchFinger(id, j);
-				if(finger == NULL){
-					printf("Can't find finger %i - %s", j, SDL_GetError());
-					SDL_ClearError();
-				} else{
-					x = finger->x * screen_w;
-					y = finger->y * screen_h;
-					if(x > gui->pos_x && x < gui->width+gui->pos_x && y > gui->pos_y && y < gui->height+gui->pos_y)
-						gui->pressed = true;
-				}
-			}
-		}
-	}
-	return 0;
-}
-
-int PisteInput_CreateGui(int x, int y, int w, int h, BYTE alpha, const char* t_path, DWORD* key){
-	int gui_id = Alloc_GuiId();
-	if(gui_id == -1)
-		return gui_id;
-
-	PI_GUI& gui = gui_list[gui_id];
-
-	float prop_x = (float)screen_w / 1920;
-	float prop_y = (float)screen_h / 1080;
-
-	gui.pos_x = x * prop_x;
-	gui.pos_y = y * prop_y;
-
-	gui.width = w * prop_x;
-	gui.height = h * prop_x;
-	gui.alpha = alpha;
-	gui.key = key;
-
-	if(gui.texture != NULL){
-		SDL_DestroyTexture(gui.texture);
-	}
-	gui.texture = NULL;
-	if(strcmp(t_path, "") != 0){
-		/*SDL_Surface* surface = IMG_Load(t_path);
-		if(surface == NULL){
-			printf("Can't load image. SDL Image: %s\n",IMG_GetError());
-			gui.set = false;
-			return -1;
-		}
-		gui.texture = SDL_CreateTextureFromSurface(PI_Renderer, surface);*/
-	}
-	gui.set = true;
-	return gui_id;
-}
-
-int PisteInput_ActiveGui(int id, bool active){
-	if(id >= PI_MAX_GUI || id < 0)
-		return -1;
-	if(!gui_list[id].set)
-		return -1;
-	gui_list[id].active = active;
-	return 0;
-}
-
-int PisteInput_DrawGui(int pd_alpha){
-	PI_GUI* gui;
-	SDL_Rect rect;
-	for(int i = 0; i < PI_MAX_GUI; i++){
-		gui = gui_list + i;
-
-		if(gui->set && gui->active && gui->texture != NULL){
-			rect.x = gui->pos_x;
-			rect.y = gui->pos_y;
-			rect.w = gui->width;
-			rect.h = gui->height;
-			//SDL_SetTextureAlphaMod(gui->texture,(gui->alpha * pd_alpha) / 256);
-			//SDL_RenderCopy(PI_Renderer, gui->texture, NULL, &rect);
-		}
-	}
-	return 0;
-}
 
 
 int PisteInput_Vibrate(){
@@ -245,7 +132,7 @@ BYTE PisteInput_GetKey(){
 		if(m_keymap[keylist[key]]) return key;
 	return 0;
 }
-int PisteInput_GetTouchPos(float& x, float& y){
+int PisteInput_GetTouchPos(float& x, float& y) {
 	SDL_Finger* finger = NULL;
 	SDL_TouchID id = SDL_GetTouchDevice(0);
 	int fingers = SDL_GetNumTouchFingers(id);
@@ -261,12 +148,8 @@ int PisteInput_GetTouchPos(float& x, float& y){
 }
 
 bool PisteInput_Keydown(int key){
-	UpdateGui();
-	for(int i = 0; i < PI_MAX_GUI; i++)
-		if(gui_list[i].set && gui_list[i].active && gui_list[i].pressed && gui_list[i].key != NULL){
-			if(*gui_list[i].key == key)
-				return true;
-		}
+	if(PGui::check_key(key))
+		return true;
 
 	SDL_PumpEvents();
 	return m_keymap[keylist[key]];
@@ -369,9 +252,6 @@ int PisteInput_Start(){
 		screen_h = screen_w;
 		screen_w = x;
 	}
-
-	for(int i = 0; i < PI_MAX_GUI; i++)
-		gui_list[i].set = false;
 
 	PI_haptic = SDL_HapticOpen(0);
 	if (PI_haptic == NULL)

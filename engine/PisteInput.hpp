@@ -90,7 +90,3 @@ int		PisteInput_Ohjain_X(int ohjain);
 int		PisteInput_Ohjain_Y(int ohjain);
 bool	PisteInput_Onko_Hiiri();
 bool	PisteInput_Onko_Ohjain(int ohjain);
-
-int PisteInput_CreateGui(int x, int y, int w, int h, BYTE alpha, const char* t_path, DWORD* key);
-int PisteInput_ActiveGui(int id, bool active);
-int PisteInput_DrawGui(int pd_alpha);

@@ -8,6 +8,7 @@
 
 #include "PisteDraw.hpp"
 #include "PisteInput.hpp"
+#include "PisteGui.hpp"
 #include "PisteSound.hpp"
 #include "PisteUtils.hpp"
 #include "PisteLanguage.hpp"

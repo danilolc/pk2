@@ -1161,25 +1161,28 @@ void PK_Play_MenuSound(int aani, int voimakkuus){
 }
 
 
-void PK_Updade_Mouse(){
-	#ifdef __ANDROID__
+int PK_Updade_Mouse(){
+	if(PisteUtils_Is_Mobile()){
     	float x, y;
-		PisteInput_GetTouchPos(x, y);
+		if (PisteInput_GetTouchPos(x, y) == 0) {
+			hiiri_x = screen_width * x - PDraw::get_xoffset();
+			hiiri_y = screen_height * y;
+			return 1;
+		}
+	}
 
-		hiiri_x = screen_width * x - PDraw::getxoffset();
-		hiiri_y = screen_height * y;
-	#else
-		MOUSE hiiri = PisteInput_UpdateMouse(game_screen == SCREEN_MAP, settings.isFullScreen);
-		hiiri.x -= PDraw::get_xoffset();
+	MOUSE hiiri = PisteInput_UpdateMouse(game_screen == SCREEN_MAP, settings.isFullScreen);
+	hiiri.x -= PDraw::get_xoffset();
 
-		if (hiiri.x < 0) hiiri.x = 0;
-		if (hiiri.y < 0) hiiri.y = 0;
-		if (hiiri.x > 640-19) hiiri.x = 640-19;
-		if (hiiri.y > 480-19) hiiri.y = 480-19;
+	if (hiiri.x < 0) hiiri.x = 0;
+	if (hiiri.y < 0) hiiri.y = 0;
+	if (hiiri.x > 640-19) hiiri.x = 640-19;
+	if (hiiri.y > 480-19) hiiri.y = 480-19;
 
-		hiiri_x = hiiri.x;
-		hiiri_y = hiiri.y;
-	#endif
+	hiiri_x = hiiri.x;
+	hiiri_y = hiiri.y;
+
+	return 0;
 }
 
 void PK_Precalculate_SinCos(){
@@ -5356,15 +5359,11 @@ int PK_Draw_InGame(){
 	return 0;
 }
 
-int PK_Draw_Cursor(int x,int y){
-	#ifndef __ANDROID__
+void PK_Draw_Cursor(int x, int y){
 
-	if(settings.isFullScreen)
+	if(!PisteUtils_Is_Mobile() && settings.isFullScreen)
 		PDraw::image_cutclip(kuva_peli,x,y,621,461,640,480);
-
-	#endif
-
-	return 0;
+	
 }
 
 int  PK_Draw_Menu_Square(int vasen, int yla, int oikea, int ala, BYTE pvari){
@@ -5547,10 +5546,7 @@ int  PK_Draw_Menu_BackNext(int x, int y){
 }
 
 int PK_Draw_Menu_Main(){
-	int my = 240;//250;
-	#ifdef __ANDROID__
-	my = 260;
-	#endif
+	int my = PisteUtils_Is_Mobile()? 260 : 240;//250;
 
 	PK_Draw_Menu_Square(160, 200, 640-180, 410, 224);
 
@@ -5591,12 +5587,12 @@ int PK_Draw_Menu_Main(){
 	}
 	my += 20;
 
-	#ifndef __ANDROID__
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_controls),180,my)){
-		menu_nyt = MENU_CONTROLS;
+	if (!PisteUtils_Is_Mobile()) {
+		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_controls),180,my)){
+			menu_nyt = MENU_CONTROLS;
+		}
+		my += 20;
 	}
-	my += 20;
-	#endif
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_graphics),180,my)){
 		menu_nyt = MENU_GRAPHICS;
@@ -5608,11 +5604,11 @@ int PK_Draw_Menu_Main(){
 	}
 	my += 20;
 
-	#ifndef __ANDROID__
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_exit),180,my))
-		PK_Fade_Quit();
-	my += 20;
-	#endif
+	if (!PisteUtils_Is_Mobile()) {
+		if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_exit),180,my))
+			PK_Fade_Quit();
+		my += 20;
+	}
 	return 0;
 }
 int PK_Draw_Menu_Name(){
@@ -6010,12 +6006,12 @@ int PK_Draw_Menu_Graphics(){
 		}
 		my += 30;
 
-		#ifndef __ANDROID__
-		if (PK_Draw_Menu_Text(true,"more",100,360)){
-			moreOptions = true;
-			menu_valittu_id = 0; //Set menu cursor to 0
+		if (!PisteUtils_Is_Mobile()) {
+			if (PK_Draw_Menu_Text(true,"more",100,360)){
+				moreOptions = true;
+				menu_valittu_id = 0; //Set menu cursor to 0
+			}
 		}
-		#endif
 
 	}
 
@@ -6341,7 +6337,7 @@ int PK_Draw_Menu(){
 	default            : PK_Draw_Menu_Main();     break;
 	}
 
-	PK_Draw_Cursor(hiiri_x,hiiri_y);
+	PK_Draw_Cursor(hiiri_x, hiiri_y);
 
 	return 0;
 }
@@ -6515,7 +6511,7 @@ int PK_Draw_Map(){
 		}
 	}
 
-	PK_Draw_Cursor(hiiri_x,hiiri_y);
+	PK_Draw_Cursor(hiiri_x, hiiri_y);
 
 	return 0;
 }
@@ -6635,7 +6631,7 @@ int PK_Draw_ScoreCount(){
 		//game_next_screen = SCREEN_MAP;
 	}
 
-	PK_Draw_Cursor(hiiri_x,hiiri_y);
+	PK_Draw_Cursor(hiiri_x, hiiri_y);
 
 	return 0;
 }
@@ -6818,33 +6814,33 @@ int PK_Draw_EndGame(){
 }
 
 //==================================================
-//(#14) Android UI
+//(#14) Mobile UI
 //==================================================
 
 void PK_UI_Activate(bool set){
-	PisteInput_ActiveGui(gui_menu, set);
-	PisteInput_ActiveGui(gui_arr, set);
-	PisteInput_ActiveGui(gui_left, set);
-	PisteInput_ActiveGui(gui_right, set);
-	PisteInput_ActiveGui(gui_up, set);
-	PisteInput_ActiveGui(gui_down, set);
-	PisteInput_ActiveGui(gui_doodle, set);
-	PisteInput_ActiveGui(gui_egg, set);
-	PisteInput_ActiveGui(gui_gift, set);
-	PisteInput_ActiveGui(gui_tab, set);
+	PGui::activate(gui_menu, set);
+	PGui::activate(gui_arr, set);
+	PGui::activate(gui_left, set);
+	PGui::activate(gui_right, set);
+	PGui::activate(gui_up, set);
+	PGui::activate(gui_down, set);
+	PGui::activate(gui_doodle, set);
+	PGui::activate(gui_egg, set);
+	PGui::activate(gui_gift, set);
+	PGui::activate(gui_tab, set);
 }
 void PK_UI_Change(int ui_mode){
 	switch(ui_mode){
 		case UI_TOUCH_TO_START:
-			PisteInput_ActiveGui(gui_touch, true);
+			PGui::activate(gui_touch, true);
 			PK_UI_Activate(false);
 		break;
 		case UI_CURSOR:
-			PisteInput_ActiveGui(gui_touch, false);
+			PGui::activate(gui_touch, false);
 			PK_UI_Activate(false);
 		break;
 		case UI_GAME_BUTTONS:
-			PisteInput_ActiveGui(gui_touch, true);
+			PGui::activate(gui_touch, true);
 			PK_UI_Activate(true);
 		break;
 	}
@@ -6857,18 +6853,18 @@ void PK_UI_Load(){
 	int circ_size = 200;
 	int alpha = 170;
 
-	gui_touch = PisteInput_CreateGui(0,0,1920,1080,alpha,"", &enter);
+	gui_touch = PGui::create(0,0,1920,1080,alpha,"", &enter);
 
-	gui_menu = PisteInput_CreateGui(50,130,circ_size,circ_size,alpha,"android/menu.png", &escape);
-	gui_arr = PisteInput_CreateGui(50,650,388,256,alpha,"android/arrow.png", NULL);
-	gui_left = PisteInput_CreateGui(50,650,388/2,256,alpha,"", &settings.control_left);
-	gui_right = PisteInput_CreateGui(50+388/2,650,388/2,256,alpha,"",  &settings.control_right);
-	gui_up = PisteInput_CreateGui(1630,650,circ_size,circ_size,alpha,"android/up.png", &settings.control_jump);
-	gui_down = PisteInput_CreateGui(1420,700,circ_size,circ_size,alpha,"android/down.png", &settings.control_down);
-	gui_doodle = PisteInput_CreateGui(1630,450,circ_size,circ_size,alpha,"android/doodle.png", &settings.control_attack2);
-	gui_egg = PisteInput_CreateGui(1420,500,circ_size,circ_size,alpha,"android/egg.png", &settings.control_attack1);
-	gui_gift = PisteInput_CreateGui(1630,250,circ_size,circ_size,alpha,"android/gift.png", &settings.control_open_gift);
-	gui_tab = PisteInput_CreateGui(0,930,530,150,alpha,"", &tab);
+	gui_menu = PGui::create(50,130,circ_size,circ_size,alpha,"mobile/menu.png", &escape);
+	gui_arr = PGui::create(50,650,388,256,alpha,"mobile/arrow.png", NULL);
+	gui_left = PGui::create(50,650,388/2,256,alpha,"", &settings.control_left);
+	gui_right = PGui::create(50+388/2,650,388/2,256,alpha,"",  &settings.control_right);
+	gui_up = PGui::create(1630,650,circ_size,circ_size,alpha,"mobile/up.png", &settings.control_jump);
+	gui_down = PGui::create(1420,700,circ_size,circ_size,alpha,"mobile/down.png", &settings.control_down);
+	gui_doodle = PGui::create(1630,450,circ_size,circ_size,alpha,"mobile/doodle.png", &settings.control_attack2);
+	gui_egg = PGui::create(1420,500,circ_size,circ_size,alpha,"mobile/egg.png", &settings.control_attack1);
+	gui_gift = PGui::create(1630,250,circ_size,circ_size,alpha,"mobile/gift.png", &settings.control_open_gift);
+	gui_tab = PGui::create(0,930,530,150,alpha,"", &tab);
 }
 
 //==================================================
@@ -7880,34 +7876,40 @@ int main(int argc, char *argv[]) {
 		}
 		if (strcmp(argv[i], "dev") == 0) {
 			dev_mode = true;
-			continue;
 		}
-		if (strcmp(argv[i], "test") == 0) {
+		else if (strcmp(argv[i], "test") == 0) {
 			if (argc <= i + 1) {
 				printf("Please set a level to test\n");
 				exit(1);
 			}
 			else {
 				test_level = true;
-				test_path = argv[i + 1];
+				test_path = argv[++i];
 				continue;
 			}
 		}
-		if (strcmp(argv[i], "path") == 0) {
+		else if (strcmp(argv[i], "path") == 0) {
 			if (argc <= i + 1) {
 				printf("Please set a path\n");
 				exit(1);
 			}
 			else {
-				printf("PK2    - Path set to %s\n", argv[i + 1]);
+				printf("PK2    - Path set to %s\n", argv[++i]);
 				chdir(argv[i + 1]);
 				path_set = true;
 				continue;
 			}
 		}
-		if (strcmp(argv[i], "fps") == 0) {
+		else if (strcmp(argv[i], "fps") == 0) {
 			show_fps = true;
 			continue;
+		}
+		else if (strcmp(argv[i], "mobile") == 0) {
+			PisteUtils_Force_Mobile();
+		}
+		else {
+			printf("Invalid arg\n");
+			exit(0);
 		}
 
 	}
@@ -7920,9 +7922,8 @@ int main(int argc, char *argv[]) {
 
 	PK_Settings_Open("data/settings.ini");
 
-	#ifdef __ANDROID__
-	screen_width = 800;
-	#endif
+	if (PisteUtils_Is_Mobile())
+		screen_width = 800;
 
 	Piste::init(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp");
 
@@ -7946,9 +7947,8 @@ int main(int argc, char *argv[]) {
 
 	PK_MainScreen_Change();
 
-	#ifdef __ANDROID__
-	PK_UI_Load();
-	#endif
+	if(PisteUtils_Is_Mobile())
+		PK_UI_Load();
 
 	game_next_screen = SCREEN_INTRO;
 	if (dev_mode)

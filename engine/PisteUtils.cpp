@@ -13,6 +13,8 @@
 
 using namespace std;
 
+bool force_mobile = false;
+
 #ifdef __ANDROID__
 
 int PisteUtils_Setcwd() {
@@ -192,5 +194,21 @@ void PisteUtils_Show_Error(const char* txt) {
 	//const SDL_MessageBoxButtonData buttons[] = {{ 0, 0, "ok" }};
 
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", txt, NULL);
+
+}
+
+void PisteUtils_Force_Mobile() {
+
+	force_mobile = true;
+
+}
+
+bool PisteUtils_Is_Mobile() {
+
+#ifdef __ANDROID__
+	return true;
+#else
+	return force_mobile;
+#endif
 
 }

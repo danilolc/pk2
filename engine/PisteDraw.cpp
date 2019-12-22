@@ -5,7 +5,7 @@
 
 #include "PisteDraw.hpp"
 #include "PisteFont.hpp"
-#include "PisteInput.hpp"
+#include "PisteGui.hpp"
 
 #include <fstream>
 #include <algorithm>
@@ -23,13 +23,14 @@ SDL_Renderer* renderer = NULL;
 SDL_Surface* window_icon; 
 
 SDL_Surface* frameBuffer8 = NULL;
+SDL_Palette* game_palette = NULL;
 
 std::vector<SDL_Surface*> imageList;
 std::vector<PFont*> fontList;
-SDL_Palette* game_palette = NULL;
 
 int screen_width;
 int screen_height;
+
 SDL_Rect screen_dest = {0, 0, 0, 0};
 bool screen_fit = false;
 
@@ -490,6 +491,8 @@ int init(int width, int height, const char* name, const char* icon) {
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
     SDL_FillRect(frameBuffer8, NULL, 255);
 
+    PGui::init(width, height, renderer);
+
     SDL_Rect r = {0, 0, width, height};
     SDL_SetClipRect(frameBuffer8, &r);
 
@@ -551,7 +554,7 @@ void update(bool draw){
         else
             SDL_RenderCopy(renderer, texture, NULL, &screen_dest);
 
-        PisteInput_DrawGui(alpha2);
+        PGui::draw(alpha2);
 
         SDL_RenderPresent(renderer);
 
@@ -569,5 +572,6 @@ void update(bool draw){
     r.x = screen_width - x_offset;
     SDL_FillRect(frameBuffer8, &r, 0);
 }
+
 
 }

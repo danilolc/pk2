@@ -19,3 +19,5 @@ void  PisteUtils_Show_Error(const char* txt);
 // ".exe" - *.exe
 int  PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], int length);
 
+void PisteUtils_Force_Mobile();
+bool PisteUtils_Is_Mobile();
