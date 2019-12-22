@@ -2,7 +2,6 @@
 //PisteEngine - PisteSound
 //by Janne Kivilahti from Piste Gamez
 //#########################
-
 #include "PisteSound.hpp"
 #include "PisteUtils.hpp"
 
@@ -10,6 +9,8 @@
 #include <cstring>
 
 #define AUDIO_FREQ 44100
+
+namespace PSound {
 
 const int MAX_SOUNDS = 300;
 
@@ -56,7 +57,7 @@ int Change_Frequency(int index, int freq){
 	else return 1; // Dont need to change frequency
 }
 
-int PisteSound_LoadSFX(char* filename){
+int load_sfx(char* filename){
 	int i = -1;
 	for(i=0;i<MAX_SOUNDS;i++)
 		if (indexes[i] == NULL){
@@ -65,10 +66,10 @@ int PisteSound_LoadSFX(char* filename){
 		}
 	return i;
 }
-int PisteSound_PlaySFX(int index){
-	return PisteSound_PlaySFX(index, sfx_volume, 0, def_freq);
+int play_sfx(int index){
+	return play_sfx(index, sfx_volume, 0, def_freq);
 }
-int PisteSound_PlaySFX(int index, int volume, int panoramic, int freq){
+int play_sfx(int index, int volume, int panoramic, int freq){
 	//panoramic from -10000 to 10000
 
 	if(index == -1) return 1;
@@ -101,22 +102,22 @@ int PisteSound_PlaySFX(int index, int volume, int panoramic, int freq){
 
 	return 0;
 }
-void PisteSound_SetSFXVolume(int volume){
+void set_sfxvolume(int volume){
 	sfx_volume = volume;
 }
-int PisteSound_FreeSFX(int index){
+int free_sfx(int index){
 	if(indexes[index] != NULL)
 		Mix_FreeChunk(indexes[index]);
 	indexes[index] = NULL;
 	return 0;
 }
-void PisteSound_ResetSFX(){
+void reset_sfx(){
 	int i;
 	for(i=0;i<MAX_SOUNDS;i++)
-		PisteSound_FreeSFX(i);
+		free_sfx(i);
 }
 
-int PisteSound_StartMusic(char* filename){
+int start_music(char* filename){
 	PisteUtils_RemoveSpace(filename);
 	if(!strcmp(playingMusic,filename)) return 0;
 
@@ -134,15 +135,15 @@ int PisteSound_StartMusic(char* filename){
 	strcpy(playingMusic,filename);
 	return 0;
 }
-void PisteSound_SetMusicVolume(int volume){
+void set_musicvolume(int volume){
 	Mix_VolumeMusic(volume * 128 / 100);
 	mus_volume = volume;
 }
-void PisteSound_StopMusic(){
+void stop_music(){
 	Mix_FadeOutMusic(0);
 }
 
-int PisteSound_Start(){
+int init(){
 	if(Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, 4096) < 0){
 		printf("PS     - Unable to init Mixer: %s\n", Mix_GetError());
 		return -1;
@@ -151,7 +152,7 @@ int PisteSound_Start(){
 	Mix_Init(MIX_INIT_MOD || MIX_INIT_MP3 || MIX_INIT_OGG);
 	return 0;
 }
-int PisteSound_Update(){
+int update(){
 	for(int i=0;i<MIX_CHANNELS;i++)
 		if(!Mix_Playing(i) && freq_chunks[i] != NULL){
 				SDL_free(freq_chunks[i]); //Make sure that all allocated chunks will be deleted after playing
@@ -159,12 +160,14 @@ int PisteSound_Update(){
 		}
 		return 0;
 }
-int PisteSound_End(){
-	PisteSound_ResetSFX();
+int terminate(){
+	reset_sfx();
 	
 	if(music != NULL) Mix_FreeMusic(music);
 	music = NULL;
 	
 	Mix_CloseAudio();
 	return 0;
+}
+
 }

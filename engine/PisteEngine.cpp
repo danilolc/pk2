@@ -3,50 +3,49 @@
 //by Janne Kivilahti from Piste Gamez
 //#########################
 #include "PisteEngine.hpp"
+#include "platform.hpp"
 
 #include <SDL.h>
-
 #include <string>
 
-#ifdef _WIN32
-	#include <direct.h>
-	#include "stdio.h"
-	#include "stdlib.h"
-	#include "winlite.h"
-#else
-	#include <unistd.h>
-	#include <limits.h>
-#endif
+namespace Piste {
 
-using namespace Piste;
+bool ready = false;
+bool running = false;
 
+float avrg_fps = 0;
 
-Game::Game(int width, int height, const char* name, const char* icon) {
+bool debug = false;
+bool draw = true;
+
+void logic();
+
+void init(int width, int height, const char* name, const char* icon) {
 	
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 		printf("Unable to init SDL: %s\n", SDL_GetError());
 		return;
 	}
 
-	PisteDraw2_Start(width, height, name, icon);
+	PDraw::init(width, height, name, icon);
 	PisteInput_Start();
-	PisteSound_Start();
+	PSound::init();
 
 	ready = true;
 
 }
 
-Game::~Game() {
+void terminate() {
 	
-	PisteDraw2_Exit();
+	PDraw::terminate();
 	PisteInput_Exit();
-	PisteSound_End();
+	PSound::terminate();
 	SDL_Quit();
 	ready = false;
 
 }
 
-void Game::loop(int (*GameLogic)()) {
+void loop(int (*GameLogic)()) {
 	
 	int last_time = 0;
 	int count = 0; // Count how much frames elapsed
@@ -74,37 +73,37 @@ void Game::loop(int (*GameLogic)()) {
 
 }
 
-void Game::stop() {
+void stop() {
 	
 	running = false;
 
 }
 
-float Game::get_fps() {
+float get_fps() {
 	
 	return avrg_fps;
 
 }
 
-void Game::set_debug(bool set) {
+void set_debug(bool set) {
 
 	debug = set;
 
 }
 
-void Game::ignore_frame() {
+void ignore_frame() {
 
 	draw = false;
 
 }
 
-bool Game::is_ready() {
+bool is_ready() {
 
 	return ready;
 
 }
 
-void Game::logic() {
+void logic() {
 
 	SDL_Event event;
 
@@ -112,15 +111,16 @@ void Game::logic() {
 		if(event.type == SDL_QUIT)
 			running = false;
 		if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
-			PisteDraw2_AdjustScreen();
+			PDraw::adjust_screen();
 	}
 
-	PisteSound_Update();
-	PisteDraw2_Update(draw);
-
+	PDraw::update(draw);
+	PSound::update();
+	
 	if (debug) {
-		//if ( PisteInput_Keydown(PI_Q) ) GDB_Break();
 		fflush(stdout);
 	}
+
+}
 
 }

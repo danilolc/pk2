@@ -6,12 +6,10 @@
 #include "PisteInput.hpp"
 #include "PisteDraw.hpp"
 
-#include <SDL.h>
-#include <SDL_image.h>
+#include "platform.hpp"
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif
+#include <SDL.h>
+
 #include <cstring>
 
 #define PI_MAX_GUI 15
@@ -105,8 +103,6 @@ bool					PI_unload = true;
 const Uint8 *m_keymap = SDL_GetKeyboardState(NULL);
 MOUSE mouse_pos;
 
-SDL_Renderer* PI_Renderer = NULL;
-
 SDL_Haptic *PI_haptic;
 
 /* METHODS -----------------------------------------------------------------------------------*/
@@ -174,13 +170,13 @@ int PisteInput_CreateGui(int x, int y, int w, int h, BYTE alpha, const char* t_p
 	}
 	gui.texture = NULL;
 	if(strcmp(t_path, "") != 0){
-		SDL_Surface* surface = IMG_Load(t_path);
+		/*SDL_Surface* surface = IMG_Load(t_path);
 		if(surface == NULL){
 			printf("Can't load image. SDL Image: %s\n",IMG_GetError());
 			gui.set = false;
 			return -1;
 		}
-		gui.texture = SDL_CreateTextureFromSurface(PI_Renderer, surface);
+		gui.texture = SDL_CreateTextureFromSurface(PI_Renderer, surface);*/
 	}
 	gui.set = true;
 	return gui_id;
@@ -206,8 +202,8 @@ int PisteInput_DrawGui(int pd_alpha){
 			rect.y = gui->pos_y;
 			rect.w = gui->width;
 			rect.h = gui->height;
-			SDL_SetTextureAlphaMod(gui->texture,(gui->alpha * pd_alpha) / 256);
-			SDL_RenderCopy(PI_Renderer, gui->texture, NULL, &rect);
+			//SDL_SetTextureAlphaMod(gui->texture,(gui->alpha * pd_alpha) / 256);
+			//SDL_RenderCopy(PI_Renderer, gui->texture, NULL, &rect);
 		}
 	}
 	return 0;
@@ -374,7 +370,6 @@ int PisteInput_Start(){
 		screen_w = x;
 	}
 
-	PI_Renderer = (SDL_Renderer*) PisteDraw2_GetRenderer();
 	for(int i = 0; i < PI_MAX_GUI; i++)
 		gui_list[i].set = false;
 

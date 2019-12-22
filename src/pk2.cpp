@@ -38,10 +38,6 @@ void ltoa(long n, char s[], int radix){
 }
 #endif
 
-
-//#### Classes
-Piste::Game* Engine;
-
 //#### Constants
 const int MAX_SAVES = 10;
 const BYTE BLOCK_MAX_MASKEJA = 150;
@@ -607,18 +603,18 @@ int PK_Load_Font() {
 	int ind_font = 0,
 		ind_path = 0;
 
-	PisteDraw2_Clear_Fonts();
+	PDraw::clear_fonts();
 	ind_path = tekstit->Hae_Indeksi("font path");
 
 	ind_font = tekstit->Hae_Indeksi("font small font");
 	if (ind_path == -1 || ind_font == -1) {
-		if ((fontti1 = PisteDraw2_Font_Create("language/fonts/", "ScandicSmall.txt")) == -1) {
+		if ((fontti1 = PDraw::font_create("language/fonts/", "ScandicSmall.txt")) == -1) {
 			PK2_error = true;
 			PK2_error_msg = "Can't create font 1 from ScandicSmall.txt";
 		}
 	}
 	else {
-		if ((fontti1 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
+		if ((fontti1 = PDraw::font_create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
 			PK2_error = true;
 			PK2_error_msg = "Can't create font 1";
 		}
@@ -626,13 +622,13 @@ int PK_Load_Font() {
 
 	ind_font = tekstit->Hae_Indeksi("font big font normal");
 	if (ind_path == -1 || ind_font == -1) {
-		if ((fontti2 = PisteDraw2_Font_Create("language/fonts/", "ScandicBig1.txt")) == -1) {
+		if ((fontti2 = PDraw::font_create("language/fonts/", "ScandicBig1.txt")) == -1) {
 			PK2_error = true;
 			PK2_error_msg = "Can't create font 1 from ScandicBig1.txt";
 		}
 	}
 	else {
-		if ((fontti2 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
+		if ((fontti2 = PDraw::font_create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
 			PK2_error = true;
 			PK2_error_msg = "Can't create font 2";
 		}
@@ -640,13 +636,13 @@ int PK_Load_Font() {
 
 	ind_font = tekstit->Hae_Indeksi("font big font hilite");
 	if (ind_path == -1 || ind_font == -1) {
-		if ((fontti3 = PisteDraw2_Font_Create("language/fonts/", "ScandicBig2.txt")) == -1) {
+		if ((fontti3 = PDraw::font_create("language/fonts/", "ScandicBig2.txt")) == -1) {
 			PK2_error = true;
 			PK2_error_msg = "Can't create font 3 from ScandicBig2.txt";
 		}
 	}
 	else {
-		if ((fontti3 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
+		if ((fontti3 = PDraw::font_create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
 			PK2_error = true;
 			PK2_error_msg = "Can't create font 3";
 		}
@@ -654,30 +650,30 @@ int PK_Load_Font() {
 
 	ind_font = tekstit->Hae_Indeksi("font big font shadow");
 	if (ind_path == -1 || ind_font == -1) {
-		if ((fontti4 = PisteDraw2_Font_Create("language/fonts/", "ScandicBig3.txt")) == -1) {
+		if ((fontti4 = PDraw::font_create("language/fonts/", "ScandicBig3.txt")) == -1) {
 			PK2_error = true;
 			PK2_error_msg = "Can't create font 4 from ScandicBig3.txt";
 		}
 	}
 	else {
-		if ((fontti4 = PisteDraw2_Font_Create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
+		if ((fontti4 = PDraw::font_create(tekstit->Hae_Teksti(ind_path), tekstit->Hae_Teksti(ind_font))) == -1) {
 			PK2_error = true;
 			PK2_error_msg = "Can't create font 4";
 		}
 	}
 
 	/*
-	if ((fontti2 = PisteDraw2_Font_Create("language/fonts/","ScandicBig1.txt")) == -1){
+	if ((fontti2 = PDraw::font_create("language/fonts/","ScandicBig1.txt")) == -1){
 	PK2_error = true;
 	PK2_error_msg = "Can't create font 2 from ScandicBig1.txt";
 	}
 
-	if ((fontti3 = PisteDraw2_Font_Create("language/fonts/","ScandicBig2.txt")) == -1){
+	if ((fontti3 = PDraw::font_create("language/fonts/","ScandicBig2.txt")) == -1){
 	PK2_error = true;
 	PK2_error_msg = "Can't create font 3 from ScandicBig2.txt";
 	}
 
-	if ((fontti4 = PisteDraw2_Font_Create("language/fonts/","ScandicBig3.txt")) == -1){
+	if ((fontti4 = PDraw::font_create("language/fonts/","ScandicBig3.txt")) == -1){
 	PK2_error = true;
 	PK2_error_msg = "Can't create font 4 from ScandicBig3.txt";
 	}*/
@@ -1140,7 +1136,7 @@ void PK_Play_Sound(int aani, int voimakkuus, int x, int y, int freq, bool random
 			if (random_freq)
 				freq = freq + rand()%4000 - rand()%2000;
 
-			int err = PisteSound_PlaySFX(aani,settings.sfx_max_volume, pan, freq);
+			int err = PSound::play_sfx(aani,settings.sfx_max_volume, pan, freq);
 			if (err)
 				printf("PK2     - Error playing sound. Error %i\n", err);
 		}
@@ -1158,7 +1154,7 @@ void PK_Play_MenuSound(int aani, int voimakkuus){
 
 		int freq = 22050 + rand()%5000 - rand()%5000;
 
-		int err = PisteSound_PlaySFX(aani, settings.sfx_max_volume, 0, freq);
+		int err = PSound::play_sfx(aani, settings.sfx_max_volume, 0, freq);
 		if (err)
 			printf("PK2     - Error playing sound. Error %i\n", err);
 	}
@@ -1170,11 +1166,11 @@ void PK_Updade_Mouse(){
     	float x, y;
 		PisteInput_GetTouchPos(x, y);
 
-		hiiri_x = screen_width * x - PisteDraw2_GetXOffset();
+		hiiri_x = screen_width * x - PDraw::getxoffset();
 		hiiri_y = screen_height * y;
 	#else
 		MOUSE hiiri = PisteInput_UpdateMouse(game_screen == SCREEN_MAP, settings.isFullScreen);
-		hiiri.x -= PisteDraw2_GetXOffset();
+		hiiri.x -= PDraw::get_xoffset();
 
 		if (hiiri.x < 0) hiiri.x = 0;
 		if (hiiri.y < 0) hiiri.y = 0;
@@ -1198,7 +1194,7 @@ int PK_Palikka_Tee_Maskit(){
 	int x,y;
 	BYTE color;
 
-	PisteDraw2_DrawImage_Start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
+	PDraw::drawimage_start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
 	for (int mask=0; mask<BLOCK_MAX_MASKEJA; mask++){
 		for (x=0; x<32; x++){
 			y=0;
@@ -1216,7 +1212,7 @@ int PK_Palikka_Tee_Maskit(){
 			palikkamaskit[mask].ylos[x] = 31-y;
 		}
 	}
-	PisteDraw2_DrawImage_End(kartta->palikat_buffer);
+	PDraw::drawimage_end(kartta->palikat_buffer);
 
 	return 0;
 }
@@ -1225,12 +1221,12 @@ int PK_Clean_TileBuffer(){
 	DWORD leveys;
 	int x,y;
 
-	PisteDraw2_DrawImage_Start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
+	PDraw::drawimage_start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
 	for (y=0;y<480;y++)
 		for(x=0;x<320;x++)
 			if (buffer[x+y*leveys] == 254)
 				buffer[x+y*leveys] = 255;
-	PisteDraw2_DrawImage_End(kartta->palikat_buffer);
+	PDraw::drawimage_end(kartta->palikat_buffer);
 
 	return 0;
 }
@@ -1243,7 +1239,7 @@ int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 	double kerroin;
 
 
-	if (PisteDraw2_DrawImage_Start(kbuffer,*&buffer,(DWORD &)leveys)==1)
+	if (PDraw::drawimage_start(kbuffer,*&buffer,(DWORD &)leveys)==1)
 		return 1;
 
 	if (kleveys > leveys)
@@ -1283,7 +1279,7 @@ int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 			kerroin = kerroin - 0.005;
 	}
 
-	if (PisteDraw2_DrawImage_End(kbuffer)==1)
+	if (PDraw::drawimage_end(kbuffer)==1)
 		return 1;
 
 	return 0;
@@ -1291,9 +1287,9 @@ int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 
 int PK_Draw_Transparent_Object(int lahde_buffer, DWORD lahde_x, DWORD lahde_y, DWORD lahde_leveys, DWORD lahde_korkeus,
 						 DWORD kohde_x, DWORD kohde_y, int pros, BYTE vari){
-	PD_RECT src = {lahde_x, lahde_y, lahde_leveys, lahde_korkeus};
-	PD_RECT dst = {kohde_x, kohde_y, lahde_leveys, lahde_korkeus};
-	PisteDraw2_Image_CutClipTransparent(lahde_buffer, src, dst, pros, vari);
+	PDraw::RECT src = {lahde_x, lahde_y, lahde_leveys, lahde_korkeus};
+	PDraw::RECT dst = {kohde_x, kohde_y, lahde_leveys, lahde_korkeus};
+	PDraw::image_cutcliptransparent(lahde_buffer, src, dst, pros, vari);
 	return 0;
 }
 
@@ -1321,8 +1317,8 @@ int PK_Wavetext_Draw(char *teksti, int fontti, int x, int y){
 			ys = (int)(sin_table[((i+degree)*8)%360])/7;
 			xs = (int)(cos_table[((i+degree)*8)%360])/9;
 			kirjain[0] = teksti[i];
-			PisteDraw2_Font_Write(fontti4,kirjain,x+vali-xs+3,y+ys+3);
-			vali += PisteDraw2_Font_Write(fontti,kirjain,x+vali-xs,y+ys);
+			PDraw::font_write(fontti4,kirjain,x+vali-xs+3,y+ys+3);
+			vali += PDraw::font_write(fontti,kirjain,x+vali-xs,y+ys);
 		}
 	}
 	return vali;
@@ -1340,10 +1336,10 @@ int PK_WavetextSlow_Draw(char *teksti, int fontti, int x, int y){
 			kirjain[0] = teksti[i];
 
 			if (settings.lapinakyvat_menutekstit)
-				vali += PisteDraw2_Font_WriteAlpha(fontti,kirjain,x+vali-xs,y+ys,75);
+				vali += PDraw::font_writealpha(fontti,kirjain,x+vali-xs,y+ys,75);
 			else{
-				PisteDraw2_Font_Write(fontti4,kirjain,x+vali-xs+1,y+ys+1);
-				vali += PisteDraw2_Font_Write(fontti,kirjain,x+vali-xs,y+ys);
+				PDraw::font_write(fontti4,kirjain,x+vali-xs+1,y+ys+1);
+				vali += PDraw::font_write(fontti,kirjain,x+vali-xs,y+ys);
 			}
 
 
@@ -1383,9 +1379,9 @@ int  PK_Fadetext_Draw(){
 			y = fadetekstit[i].ui ? fadetekstit[i].y : fadetekstit[i].y - Game::camera_y;
 
 			if (settings.lapinakyvat_objektit && pros < 100)
-				PisteDraw2_Font_WriteAlpha(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y, pros);
+				PDraw::font_writealpha(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y, pros);
 			else
-				PisteDraw2_Font_Write(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y);
+				PDraw::font_write(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y);
 
 		}
 	return 0;
@@ -1487,14 +1483,14 @@ bool PK2::Particle::time_over() {
 
 void PK2::Particle::draw_dot() {
 
-	PisteDraw2_ScreenFill(x-Game::camera_x, y-Game::camera_y, x-Game::camera_x+1, y-Game::camera_y+1, color+25);
+	PDraw::screen_fill(x-Game::camera_x, y-Game::camera_y, x-Game::camera_x+1, y-Game::camera_y+1, color+25);
 
 }
 
 void PK2::Particle::draw_star() {
 
 	if (color > 99 || !settings.lapinakyvat_objektit)
-		PisteDraw2_Image_CutClip(kuva_peli, x-Game::camera_x, y-Game::camera_y, 1, 1, 11, 11);
+		PDraw::image_cutclip(kuva_peli, x-Game::camera_x, y-Game::camera_y, 1, 1, 11, 11);
 	else
 		PK_Draw_Transparent_Object(kuva_peli, 2, 2, 10, 10, x-Game::camera_x, y-Game::camera_y, alpha, color);
 
@@ -1503,7 +1499,7 @@ void PK2::Particle::draw_star() {
 void PK2::Particle::draw_hit() {
 
 	int framex = ((degree%12)/3) * 58;
-	PisteDraw2_Image_CutClip(kuva_peli,x-Game::camera_x-28+8, y-Game::camera_y-27+8,1+framex,83,1+57+framex,83+55);
+	PDraw::image_cutclip(kuva_peli,x-Game::camera_x-28+8, y-Game::camera_y-27+8,1+framex,83,1+57+framex,83+55);
 }
 
 void PK2::Particle::draw_light() {
@@ -1512,7 +1508,7 @@ void PK2::Particle::draw_light() {
 		PK_Draw_Transparent_Object(kuva_peli, 1, 14, 13, 13, x-Game::camera_x, y-Game::camera_y, alpha, color);
 	else{
 		int vx = (color/32) * 14;
-		PisteDraw2_Image_CutClip(kuva_peli,x-Game::camera_x, y-Game::camera_y,1+vx,14+14,14+vx,27+14);
+		PDraw::image_cutclip(kuva_peli,x-Game::camera_x, y-Game::camera_y,1+vx,14+14,14+vx,27+14);
 	}
 
 }
@@ -1523,7 +1519,7 @@ void PK2::Particle::draw_spark() {
 		PK_Draw_Transparent_Object(kuva_peli, 99, 14, 7, 7, x-Game::camera_x, y-Game::camera_y, alpha, color);
 	else{
 		int vx = (color/32) * 8;
-		PisteDraw2_Image_CutClip(kuva_peli,x-Game::camera_x, y-Game::camera_y,99+vx,14+14,106+vx,21+14);
+		PDraw::image_cutclip(kuva_peli,x-Game::camera_x, y-Game::camera_y,99+vx,14+14,106+vx,21+14);
 	}
 
 }
@@ -1531,7 +1527,7 @@ void PK2::Particle::draw_spark() {
 void PK2::Particle::draw_feather() {
 
 	int xplus = (anim/7) * 21;
-	PisteDraw2_Image_CutClip(kuva_peli,x-Game::camera_x,y-Game::camera_y,14+xplus,1,34+xplus,12);
+	PDraw::image_cutclip(kuva_peli,x-Game::camera_x,y-Game::camera_y,14+xplus,1,34+xplus,12);
 	anim++;
 	if (anim > 63)
 		anim = 0;
@@ -1549,7 +1545,7 @@ void PK2::Particle::draw_smoke() {
 		if (frame > 16)
 			yplus = 32;
 
-		PisteDraw2_Image_CutClip(kuva_peli,x-Game::camera_x,y-Game::camera_y,1+xplus,338+yplus,34+xplus,366+yplus);
+		PDraw::image_cutclip(kuva_peli,x-Game::camera_x,y-Game::camera_y,1+xplus,338+yplus,34+xplus,366+yplus);
 		anim++;
 	}
 
@@ -1558,10 +1554,10 @@ void PK2::Particle::draw_smoke() {
 void PK2::Particle::draw_dust() {
 
 	if (alpha > 99 || !settings.lapinakyvat_objektit)
-		PisteDraw2_Image_CutClip(kuva_peli,x-Game::camera_x,y-Game::camera_y,226,2,224,49);
+		PDraw::image_cutclip(kuva_peli,x-Game::camera_x,y-Game::camera_y,226,2,224,49);
 	else
 		PK_Draw_Transparent_Object(kuva_peli, 226, 2, 18, 19, x-Game::camera_x, y-Game::camera_y, alpha, color);
-	PisteDraw2_Image_CutClip(kuva_peli,x-Game::camera_x,y-Game::camera_y,226, 2, 18, 19);
+	PDraw::image_cutclip(kuva_peli,x-Game::camera_x,y-Game::camera_y,226, 2, 18, 19);
 
 }
 
@@ -1570,7 +1566,7 @@ void PK2::Particle::draw_waterdrop() {
 	int kx = (int)(x-Game::camera_x);
 	int ky = (int)(y-Game::camera_y);
 
-	PisteDraw2_ScreenFill(kx,ky,kx+1,ky+4,40+(int)b);
+	PDraw::screen_fill(kx,ky,kx+1,ky+4,40+(int)b);
 
 }
 
@@ -1579,7 +1575,7 @@ void PK2::Particle::draw_leaf1() {
 	int kx = (int)(x-Game::camera_x),
 		ky = (int)(y-Game::camera_y);
 
-	PisteDraw2_ScreenFill(kx,ky,kx+2,ky+2,96+6+(int)b+(int)(x+y)%10);
+	PDraw::screen_fill(kx,ky,kx+2,ky+2,96+6+(int)b+(int)(x+y)%10);
 
 }
 
@@ -1589,7 +1585,7 @@ void PK2::Particle::draw_leaf2() {
 		ky = (int)(y-Game::camera_y),
 		frame = (int(y/10)%4)*23;
 
-	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,1+frame,141,21+frame,152);
+	PDraw::image_cutclip(kuva_peli,kx,ky,1+frame,141,21+frame,152);
 
 }
 
@@ -1599,7 +1595,7 @@ void PK2::Particle::draw_leaf3() {
 		ky = (int)(y-Game::camera_y),
 		frame = (int(y/5)%4)*20;
 
-	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,93+frame,141,109+frame,150);
+	PDraw::image_cutclip(kuva_peli,kx,ky,93+frame,141,109+frame,150);
 
 }
 
@@ -1609,7 +1605,7 @@ void PK2::Particle::draw_leaf4() {
 		ky = (int)(y-Game::camera_y),
 		frame = (int(y/5)%2)*14;
 
-	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,173+frame,141,183+frame,150);
+	PDraw::image_cutclip(kuva_peli,kx,ky,173+frame,141,183+frame,150);
 
 }
 
@@ -1618,7 +1614,7 @@ void PK2::Particle::draw_flake1() {
 	int kx = (int)(x-Game::camera_x),
 		ky = (int)(y-Game::camera_y);
 
-	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,1,155,8,162);
+	PDraw::image_cutclip(kuva_peli,kx,ky,1,155,8,162);
 
 }
 
@@ -1627,7 +1623,7 @@ void PK2::Particle::draw_flake2() {
 	int kx = (int)(x-Game::camera_x),
 		ky = (int)(y-Game::camera_y);
 
-	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,11,155,16,160);
+	PDraw::image_cutclip(kuva_peli,kx,ky,11,155,16,160);
 
 }
 
@@ -1636,7 +1632,7 @@ void PK2::Particle::draw_flake3() {
 	int kx = (int)(x-Game::camera_x),
 		ky = (int)(y-Game::camera_y);
 
-	PisteDraw2_Image_CutClip(kuva_peli,kx,ky,19,155,22,158);
+	PDraw::image_cutclip(kuva_peli,kx,ky,19,155,22,158);
 
 }
 
@@ -1645,7 +1641,7 @@ void PK2::Particle::draw_flake4() {
 	int kx = (int)(x-Game::camera_x),
 		ky = (int)(y-Game::camera_y);
 
-	PisteDraw2_ScreenFill(kx,ky,kx+2,ky+2,20+(int)b);
+	PDraw::screen_fill(kx,ky,kx+2,ky+2,20+(int)b);
 
 }
 
@@ -1959,7 +1955,7 @@ void PK2::SpriteSystem::protot_clear_all() {
 	for (int i=0; i<MAX_PROTOTYYPPEJA; i++){
 		for (int j=0;j<MAX_AANIA;j++)
 			if (protot[i].aanet[j] > -1)
-				PisteSound_FreeSFX(protot[i].aanet[j]);
+				PSound::free_sfx(protot[i].aanet[j]);
 		protot[i].Uusi();
 		strcpy(kartta->protot[i],"");
 	}
@@ -1972,7 +1968,7 @@ int  PK2::SpriteSystem::protot_get_sound(char *polku, char *tiedosto) {
 	if (strcmp(tiedosto,"")!=0){
 		strcpy(aanitiedosto,polku);
 		strcat(aanitiedosto,tiedosto);
-		return PisteSound_LoadSFX(aanitiedosto);
+		return PSound::load_sfx(aanitiedosto);
 	}
 
 	return -1;
@@ -2410,18 +2406,18 @@ int PK_Map_Open(char *nimi) {
 		char music_path[PE_PATH_SIZE] = "";
 		PK_Load_EpisodeDir(music_path);
 		strcat(music_path, kartta->musiikki);
-		if (PisteSound_StartMusic(music_path) != 0) {
+		if (PSound::start_music(music_path) != 0) {
 
 			printf("Can't load '%s'. ", music_path);
 			strcpy(music_path, "music/");
 			strcat(music_path, kartta->musiikki);
 			printf("Trying '%s'.\n", music_path);
 
-			if (PisteSound_StartMusic(music_path) != 0) {
+			if (PSound::start_music(music_path) != 0) {
 
 				printf("Can't load '%s'. Trying 'music/song01.xm'.\n", music_path);
 
-				if (PisteSound_StartMusic("music/song01.xm") != 0){
+				if (PSound::start_music("music/song01.xm") != 0){
 					PK2_error = true;
 					PK2_error_msg = "Can't find song01.xm";
 				}
@@ -2989,7 +2985,7 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_LOPETUS && sprite.pelaaja != 0){
 			if (!jakso_lapaisty){
-				if (PisteSound_StartMusic("music/hiscore.xm") != 0){
+				if (PSound::start_music("music/hiscore.xm") != 0){
 					PK2_error = true;
 					PK2_error_msg = "Can't find hiscore.xm";
 				}
@@ -4033,7 +4029,7 @@ int PK_Sprite_Movement(int i){
 														Game::camera_y = (int)Game::Sprites->player->y;
 														Game::dcamera_x = Game::camera_x-screen_width/2;
 														Game::dcamera_y = Game::camera_y-screen_height/2;
-														PisteDraw2_FadeIn(PD_FADE_NORMAL);
+														PDraw::fade_in(PDraw::FADE_NORMAL);
 														if (sprite.tyyppi->aanet[AANI_HYOKKAYS2] != -1)
 															PK_Play_MenuSound(sprite.tyyppi->aanet[AANI_HYOKKAYS2], 100);
 															//PK_Play_Sound(, 100, Game::camera_x, Game::camera_y, SOUND_SAMPLERATE, false);
@@ -4220,7 +4216,7 @@ int PK_Sprite_Movement(int i){
 			char lukua[50];
 			itoa(palikat[1].yla,lukua,10);
 			//gcvt(sprite_a,7,lukua);
-			PisteDraw2_Font_Write(fontti1,lukua,310,50);
+			PDraw::font_write(fontti1,lukua,310,50);
 
 		}
 
@@ -4239,7 +4235,7 @@ int PK_Sprite_Movement(int i){
 					if (!palikat[plk].tausta)
 						color += 32;
 
-					PisteDraw2_ScreenFill(
+					PDraw::screen_fill(
 											palikat[plk].vasen-Game::camera_x,
 											palikat[plk].yla-Game::camera_y,
 											palikat[plk].oikea-Game::camera_x,
@@ -4248,7 +4244,7 @@ int PK_Sprite_Movement(int i){
 				}
 			}
 
-		PisteDraw2_ScreenFill(
+		PDraw::screen_fill(
 								(int)(sprite_vasen-Game::camera_x),
 								(int)(sprite_yla-Game::camera_y),
 								(int)(sprite_oikea-Game::camera_x),
@@ -4921,7 +4917,7 @@ int PK_Draw_InGame_Sprites(){
 				if (sprite->isku > 0 && sprite->tyyppi->tyyppi != TYYPPI_BONUS && sprite->energia < 1){
 					int framex = ((degree%12)/3) * 58;
 					DWORD hit_x = sprite->x-8, hit_y = sprite->y-8;
-					PisteDraw2_Image_CutClip(kuva_peli,hit_x-Game::camera_x-28+8, hit_y-Game::camera_y-27+8,1+framex,83,1+57+framex,83+55);
+					PDraw::image_cutclip(kuva_peli,hit_x-Game::camera_x-28+8, hit_y-Game::camera_y-27+8,1+framex,83,1+57+framex,83+55);
 				}
 
 				if (nakymattomyys == 0 || (!doublespeed && nakymattomyys%2 == 0) || (doublespeed && nakymattomyys%4 <= 1) || sprite != Game::Sprites->player/*i != pelaaja_index*/)
@@ -4932,7 +4928,7 @@ int PK_Draw_InGame_Sprites(){
 					for (stars=0; stars<3; stars++){
 						star_x = sprite->x-8 + (sin_table[((stars*120+degree)*2)%359])/3;
 						star_y = sprite->y-18 + (cos_table[((stars*120+degree)*2+sx)%359])/8;
-						PisteDraw2_Image_CutClip(kuva_peli,star_x-Game::camera_x, star_y-Game::camera_y,1,1,11,11);
+						PDraw::image_cutclip(kuva_peli,star_x-Game::camera_x, star_y-Game::camera_y,1,1,11,11);
 					}
 				}
 
@@ -4956,82 +4952,82 @@ int PK_Draw_InGame_DebugInfo(){
 	char lukua[20];
 
 	if (settings.isWide)
-		PisteDraw2_SetXOffset(80);
+		PDraw::set_xoffset(80);
 	else
-		PisteDraw2_SetXOffset(0);
+		PDraw::set_xoffset(0);
 
-	vali = PisteDraw2_Font_Write(fontti1,"spriteja: ",10,fy);
+	vali = PDraw::font_write(fontti1,"spriteja: ",10,fy);
 	itoa(debug_sprites,lukua,10);
-	PisteDraw2_Font_Write(fontti1,lukua,10+vali,fy);
+	PDraw::font_write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
-	vali = PisteDraw2_Font_Write(fontti1,"aktiivisia: ",10,fy);
+	vali = PDraw::font_write(fontti1,"aktiivisia: ",10,fy);
 	itoa(debug_active_sprites,lukua,10);
-	PisteDraw2_Font_Write(fontti1,lukua,10+vali,fy);
+	PDraw::font_write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
-	vali = PisteDraw2_Font_Write(fontti1,"piirretty: ",10,fy);
+	vali = PDraw::font_write(fontti1,"piirretty: ",10,fy);
 	itoa(debug_drawn_sprites,lukua,10);
-	PisteDraw2_Font_Write(fontti1,lukua,10+vali,fy);
+	PDraw::font_write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
 	for (int i=0;i<40;i++){
 		itoa(Game::Sprites->protot[i].indeksi,lukua,10);
-		PisteDraw2_Font_Write(fontti1,lukua,410,10+i*10);
-		PisteDraw2_Font_Write(fontti1,Game::Sprites->protot[i].tiedosto,430,10+i*10);
-		PisteDraw2_Font_Write(fontti1,Game::Sprites->protot[i].bonus_sprite,545,10+i*10);
+		PDraw::font_write(fontti1,lukua,410,10+i*10);
+		PDraw::font_write(fontti1,Game::Sprites->protot[i].tiedosto,430,10+i*10);
+		PDraw::font_write(fontti1,Game::Sprites->protot[i].bonus_sprite,545,10+i*10);
 	}
 
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++)
 		if (strcmp(jaksot[i].nimi,"")!=0)
-			PisteDraw2_Font_Write(fontti1,jaksot[i].nimi,0,240+i*10);
+			PDraw::font_write(fontti1,jaksot[i].nimi,0,240+i*10);
 
 	char dluku[50];
 
 	sprintf(dluku, "%.7f", Game::Sprites->player->x); //Player x
-	PisteDraw2_Font_Write(fontti1, dluku, 10, 410);
+	PDraw::font_write(fontti1, dluku, 10, 410);
 
 	sprintf(dluku, "%.7f", Game::Sprites->player->y); //Player y
-	PisteDraw2_Font_Write(fontti1, dluku, 10, 420);
+	PDraw::font_write(fontti1, dluku, 10, 420);
 
 	sprintf(dluku, "%.7f", Game::Sprites->player->b); //Player v-speed
-	PisteDraw2_Font_Write(fontti1, dluku, 10, 430);
+	PDraw::font_write(fontti1, dluku, 10, 430);
 
 	sprintf(dluku, "%.7f", Game::Sprites->player->a); //Player h-speed
-	PisteDraw2_Font_Write(fontti1, dluku, 10, 440);
+	PDraw::font_write(fontti1, dluku, 10, 440);
 
-	PisteDraw2_Font_Write(fontti1, seuraava_kartta, 10, 460);
+	PDraw::font_write(fontti1, seuraava_kartta, 10, 460);
 
 	itoa(Game::Sprites->player->hyppy_ajastin, lukua, 10);
-	PisteDraw2_Font_Write(fontti1, lukua, 270, 460);
+	PDraw::font_write(fontti1, lukua, 270, 460);
 
 	char tpolku[PE_PATH_SIZE] = "";
 	PK_Load_EpisodeDir(tpolku);
 
-	PisteDraw2_Font_Write(fontti1,tpolku,10,470);
+	PDraw::font_write(fontti1,tpolku,10,470);
 
 	itoa(nakymattomyys,lukua,10);
-	PisteDraw2_Font_Write(fontti1,lukua,610,470);
+	PDraw::font_write(fontti1,lukua,610,470);
 
 	itoa(kytkin1, lukua, 10);
-	PisteDraw2_Font_Write(fontti1, lukua, 610, 460);
+	PDraw::font_write(fontti1, lukua, 610, 460);
 	itoa(kytkin2, lukua, 10);
-	PisteDraw2_Font_Write(fontti1, lukua, 610, 450);
+	PDraw::font_write(fontti1, lukua, 610, 450);
 	itoa(kytkin3, lukua, 10);
-	PisteDraw2_Font_Write(fontti1, lukua, 610, 440);
+	PDraw::font_write(fontti1, lukua, 610, 440);
 
-	PisteDraw2_SetXOffset(0);
+	PDraw::set_xoffset(0);
 	return 0;
 }
 int PK_Draw_InGame_DevKeys() {
 	const char* txt0 = "dev mode";
-	int char_w = PisteDraw2_Font_Write(fontti1, txt0, 0, screen_height - 10) / strlen(txt0);
+	int char_w = PDraw::font_write(fontti1, txt0, 0, screen_height - 10) / strlen(txt0);
 	int char_h = 10;
 
 	const char* help = "h: help";
 
 	if (!PisteInput_Keydown(PI_H)) {
-		PisteDraw2_Font_Write(fontti1, help, screen_width - strlen(help) * char_w, screen_height - 10);
+		PDraw::font_write(fontti1, help, screen_width - strlen(help) * char_w, screen_height - 10);
 		return 0;
 	}
 
@@ -5061,11 +5057,11 @@ int PK_Draw_InGame_DevKeys() {
 	int posx = screen_width - last_size * char_w;
 	int posy = screen_height - char_h * nof_txt;
 
-	PisteDraw2_ScreenFill(posx - 4, posy - 4, screen_width, screen_height, 0);
-	PisteDraw2_ScreenFill(posx - 2, posy - 2, screen_width, screen_height, 38);
+	PDraw::screen_fill(posx - 4, posy - 4, screen_width, screen_height, 0);
+	PDraw::screen_fill(posx - 2, posy - 2, screen_width, screen_height, 38);
 	
 	for (int i = 0; i < nof_txt; i++)
-		PisteDraw2_Font_Write(fontti1, txts[i], posx, screen_height - (i+1)*10);
+		PDraw::font_write(fontti1, txts[i], posx, screen_height - (i+1)*10);
 
 	return 0;
 }
@@ -5073,40 +5069,40 @@ int PK_Draw_InGame_BG(){
 	int pallarx = (Game::camera_x%(640*3))/3;
 	int pallary = (Game::camera_y%(480*3))/3;
 
-	PisteDraw2_ScreenFill(34);//0
+	PDraw::screen_fill(34);//0
 
 	if (kartta->tausta == TAUSTA_STAATTINEN){
-		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,0);
-		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640,0);
+		PDraw::image_clip(kartta->taustakuva_buffer,0,0);
+		PDraw::image_clip(kartta->taustakuva_buffer,640,0);
 	}
 
 	if (kartta->tausta == TAUSTA_PALLARX_HORI){
-		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0   - pallarx,0);
-		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640 - pallarx,0);
+		PDraw::image_clip(kartta->taustakuva_buffer,0   - pallarx,0);
+		PDraw::image_clip(kartta->taustakuva_buffer,640 - pallarx,0);
 
 		if (screen_width > 640)
-			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640*2 - pallarx,0);
+			PDraw::image_clip(kartta->taustakuva_buffer,640*2 - pallarx,0);
 	}
 
 	if (kartta->tausta == TAUSTA_PALLARX_VERT){
-		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,0   - pallary);
-		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0,480 - pallary);
+		PDraw::image_clip(kartta->taustakuva_buffer,0,0   - pallary);
+		PDraw::image_clip(kartta->taustakuva_buffer,0,480 - pallary);
 
 		if (screen_width > 640){
-			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640,0   - pallary);
-			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640,480 - pallary);
+			PDraw::image_clip(kartta->taustakuva_buffer,640,0   - pallary);
+			PDraw::image_clip(kartta->taustakuva_buffer,640,480 - pallary);
 		}
 	}
 
 	if (kartta->tausta == TAUSTA_PALLARX_VERT_JA_HORI){
-		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0   - pallarx, 0-pallary);
-		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640 - pallarx, 0-pallary);
-		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,0   - pallarx, 480-pallary);
-		PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640 - pallarx, 480-pallary);
+		PDraw::image_clip(kartta->taustakuva_buffer,0   - pallarx, 0-pallary);
+		PDraw::image_clip(kartta->taustakuva_buffer,640 - pallarx, 0-pallary);
+		PDraw::image_clip(kartta->taustakuva_buffer,0   - pallarx, 480-pallary);
+		PDraw::image_clip(kartta->taustakuva_buffer,640 - pallarx, 480-pallary);
 
 		if (screen_width > 640){
-			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640*2 - pallarx,0-pallary);
-			PisteDraw2_Image_Clip(kartta->taustakuva_buffer,640*2 - pallarx,480-pallary);
+			PDraw::image_clip(kartta->taustakuva_buffer,640*2 - pallarx,0-pallary);
+			PDraw::image_clip(kartta->taustakuva_buffer,640*2 - pallarx,480-pallary);
 		}
 	}
 
@@ -5158,12 +5154,12 @@ int PK_Draw_InGame_Lower_Menu(){
 
 		x = screen_width / 2 - 546 / 2 + 342;
 		y = screen_height-39;
-		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_time),x,y-20);
+		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_time),x,y-20);
 
 		itoa(min,luku,10);
-		PisteDraw2_Font_Write(        fontti4,luku,x+1,y+1);
-		vali += PisteDraw2_Font_Write(fontti2,luku,x,y);
-		vali += PisteDraw2_Font_Write(fontti1,":",x+vali,y);
+		PDraw::font_write(        fontti4,luku,x+1,y+1);
+		vali += PDraw::font_write(fontti2,luku,x,y);
+		vali += PDraw::font_write(fontti1,":",x+vali,y);
 
 		if (increase_time > 0) {
 			itoa((int)(increase_time * TIME_FPS) / 60, luku, 10);
@@ -5172,13 +5168,13 @@ int PK_Draw_InGame_Lower_Menu(){
 		}
 
 		if (sek < 10){
-			PisteDraw2_Font_Write(        fontti4,"0",x+vali+1,y+1);
-			vali += PisteDraw2_Font_Write(fontti2,"0",x+vali,y);
+			PDraw::font_write(        fontti4,"0",x+vali+1,y+1);
+			vali += PDraw::font_write(fontti2,"0",x+vali,y);
 		}
 		itoa(sek,luku,10);
 
-		PisteDraw2_Font_Write(        fontti4,luku,x+vali+1,y+1);
-		vali += PisteDraw2_Font_Write(fontti2,luku,x+vali,y);
+		PDraw::font_write(        fontti4,luku,x+vali+1,y+1);
+		vali += PDraw::font_write(fontti2,luku,x+vali,y);
 	}
 
 	/////////////////
@@ -5187,11 +5183,11 @@ int PK_Draw_InGame_Lower_Menu(){
 	if (avaimia > 0){
 		x = screen_width / 2 - 546 / 2 + 483;
 		y = screen_height-39;
-		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_keys),x,y-20);
+		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_keys),x,y-20);
 
 		itoa(avaimia,luku,10);
-		PisteDraw2_Font_Write(fontti4,luku,x+1,y+1);
-		PisteDraw2_Font_Write(fontti2,luku,x,y);
+		PDraw::font_write(fontti4,luku,x+1,y+1);
+		PDraw::font_write(fontti2,luku,x,y);
 	}
 
 	/////////////////
@@ -5204,10 +5200,10 @@ int PK_Draw_InGame_Lower_Menu(){
 		item_paneeli_x--;
 
 	if (item_paneeli_x > -215)
-		PisteDraw2_Image_CutClip(kuva_peli,item_paneeli_x,screen_height-60,
+		PDraw::image_cutclip(kuva_peli,item_paneeli_x,screen_height-60,
 		                        1,216,211,266);
 	if (item_paneeli_x > 5)
-		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_items),15,screen_height-65);
+		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_items),15,screen_height-65);
 
 	PK_Draw_InGame_Gifts();
 
@@ -5221,39 +5217,39 @@ int PK_Draw_InGame_UI(){
 	/////////////////
 	// Draw Energy
 	/////////////////
-	vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_energy),40,my);
+	vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_energy),40,my);
 	ltoa(Game::Sprites->player->energia,luku,10);
-	PisteDraw2_Font_Write(fontti4,luku,40+vali+1,my+1);
-	PisteDraw2_Font_Write(fontti2,luku,40+vali,my);
+	PDraw::font_write(fontti4,luku,40+vali+1,my+1);
+	PDraw::font_write(fontti2,luku,40+vali,my);
 
 	/////////////////
 	// Draw Invisible
 	/////////////////
 	if(nakymattomyys > 0){
-		vali = PisteDraw2_Font_Write(fontti1,"invisible:",40,my+27);
+		vali = PDraw::font_write(fontti1,"invisible:",40,my+27);
 		ltoa(nakymattomyys/60,luku,10);
-		PisteDraw2_Font_Write(fontti2,luku,40+vali+1,my+27+1);
-		PisteDraw2_Font_Write(fontti2,luku,40+vali,my+27);
+		PDraw::font_write(fontti2,luku,40+vali+1,my+27+1);
+		PDraw::font_write(fontti2,luku,40+vali,my+27);
 	}
 
 	/////////////////
 	// Draw Score
 	/////////////////
-	vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_score),230,my);
+	vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_score),230,my);
 	ltoa(jakso_pisteet,luku,10);
-	PisteDraw2_Font_Write(fontti4,luku,230+vali+1,my+1);
-	PisteDraw2_Font_Write(fontti2,luku,230+vali,my);
+	PDraw::font_write(fontti4,luku,230+vali+1,my+1);
+	PDraw::font_write(fontti2,luku,230+vali,my);
 
 	/////////////////
 	// Draw Ammunition
 	/////////////////
 	if (Game::Sprites->player->ammus2 != -1){
-		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack1), screen_width-170,my);
+		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack1), screen_width-170,my);
 		Game::Sprites->protot[Game::Sprites->player->ammus2].Piirra(screen_width-170,my+10,0);
 	}
 
 	if (Game::Sprites->player->ammus1 != -1){
-		PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack2), screen_width-90,my+15);
+		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack2), screen_width-90,my+15);
 		Game::Sprites->protot[Game::Sprites->player->ammus1].Piirra(screen_width-90,my+25,0);
 	}
 
@@ -5275,13 +5271,13 @@ int PK_Draw_InGame_UI(){
 			alue.bottom -= 10 - (MAX_ILMOITUKSENNAYTTOAIKA - info_timer) / 2;
 		}
 
-		PisteDraw2_ScreenFill(alue.left-1,alue.top-1,alue.right+1,alue.bottom+1,51);
-		PisteDraw2_ScreenFill(alue.left,alue.top,alue.right,alue.bottom,38);
+		PDraw::screen_fill(alue.left-1,alue.top-1,alue.right+1,alue.bottom+1,51);
+		PDraw::screen_fill(alue.left,alue.top,alue.right,alue.bottom,38);
 
 		if (info_timer >= 100)
-			PisteDraw2_Font_Write(fontti1,info,alue.left+4,alue.top+4);
+			PDraw::font_write(fontti1,info,alue.left+4,alue.top+4);
 		else
-			PisteDraw2_Font_WriteAlpha(fontti1,info,alue.left+4,alue.top+4,info_timer);
+			PDraw::font_writealpha(fontti1,info,alue.left+4,alue.top+4,info_timer);
 	}
 
 	return 0;
@@ -5321,20 +5317,20 @@ int PK_Draw_InGame(){
 			if (dev_mode)
 				PK_Draw_InGame_DevKeys();
 			if (test_level)
-				PisteDraw2_Font_Write(fontti1, "testing level", 0, 480 - 20);
+				PDraw::font_write(fontti1, "testing level", 0, 480 - 20);
 			if (show_fps) {
 				if (fps >= 100)
-					vali = PisteDraw2_Font_Write(fontti1, "fps:", 570, 48);
+					vali = PDraw::font_write(fontti1, "fps:", 570, 48);
 				else
-					vali = PisteDraw2_Font_Write(fontti1, "fps: ", 570, 48);
-				fps = Engine->get_fps();
+					vali = PDraw::font_write(fontti1, "fps: ", 570, 48);
+				fps = Piste::get_fps();
 				itoa((int)fps, luku, 10);
-				PisteDraw2_Font_Write(fontti1, luku, 570 + vali, 48);
+				PDraw::font_write(fontti1, luku, 570 + vali, 48);
 			}
 		}
 
 		if (paused)
-			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.game_paused),screen_width/2-82,screen_height/2-9);
+			PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.game_paused),screen_width/2-82,screen_height/2-9);
 
 		if (jakso_lapaisty)
 			PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
@@ -5350,7 +5346,7 @@ int PK_Draw_InGame(){
 			}
 	}
 	
-	if (skip_frame) Engine->ignore_frame();
+	if (skip_frame) Piste::ignore_frame();
 
 	if (doublespeed) skip_frame = !skip_frame;
 	else skip_frame = false;
@@ -5364,7 +5360,7 @@ int PK_Draw_Cursor(int x,int y){
 	#ifndef __ANDROID__
 
 	if(settings.isFullScreen)
-		PisteDraw2_Image_CutClip(kuva_peli,x,y,621,461,640,480);
+		PDraw::image_cutclip(kuva_peli,x,y,621,461,640,480);
 
 	#endif
 
@@ -5411,7 +5407,7 @@ int  PK_Draw_Menu_Square(int vasen, int yla, int oikea, int ala, BYTE pvari){
 	yla	+= (int)(sin_table[((degree*2)+20)%359]/2.0);
 	ala += (int)(cos_table[((degree*2)+40)%359]/2.0);
 
-	//PisteDraw2_ScreenFill(vasen,yla,oikea,ala,38);
+	//PDraw::screen_fill(vasen,yla,oikea,ala,38);
 
 	double kerroin_y = (ala - yla) / 19.0;
 	double kerroin_x = (oikea - vasen) / 19.0;
@@ -5429,27 +5425,27 @@ int  PK_Draw_Menu_Square(int vasen, int yla, int oikea, int ala, BYTE pvari){
 			vari = (x/4)+(y/3);
 			if (tumma) vari /= 2;
 
-			PisteDraw2_ScreenFill(int(dbl_x),int(dbl_y),int(dbl_x+kerroin_x),int(dbl_y+kerroin_y),pvari+vari);
+			PDraw::screen_fill(int(dbl_x),int(dbl_y),int(dbl_x+kerroin_x),int(dbl_y+kerroin_y),pvari+vari);
 			dbl_x += kerroin_x;
 			tumma = !tumma;
 		}
 		dbl_y += kerroin_y;
 	}
 
-	PisteDraw2_ScreenFill(vasen-1,yla-1,oikea+1,yla+2,0);
-	PisteDraw2_ScreenFill(vasen-1,yla-1,vasen+2,ala+1,0);
-	PisteDraw2_ScreenFill(vasen-1,ala-2,oikea+1,ala+1,0);
-	PisteDraw2_ScreenFill(oikea-2,yla-1,oikea+1,ala+1,0);
+	PDraw::screen_fill(vasen-1,yla-1,oikea+1,yla+2,0);
+	PDraw::screen_fill(vasen-1,yla-1,vasen+2,ala+1,0);
+	PDraw::screen_fill(vasen-1,ala-2,oikea+1,ala+1,0);
+	PDraw::screen_fill(oikea-2,yla-1,oikea+1,ala+1,0);
 
-	PisteDraw2_ScreenFill(vasen-1+1,yla-1+1,oikea+1+1,yla+2+1,0);
-	PisteDraw2_ScreenFill(vasen-1+1,yla-1+1,vasen+2+1,ala+1+1,0);
-	PisteDraw2_ScreenFill(vasen-1+1,ala-2+1,oikea+1+1,ala+1+1,0);
-	PisteDraw2_ScreenFill(oikea-2+1,yla-1+1,oikea+1+1,ala+1+1,0);
+	PDraw::screen_fill(vasen-1+1,yla-1+1,oikea+1+1,yla+2+1,0);
+	PDraw::screen_fill(vasen-1+1,yla-1+1,vasen+2+1,ala+1+1,0);
+	PDraw::screen_fill(vasen-1+1,ala-2+1,oikea+1+1,ala+1+1,0);
+	PDraw::screen_fill(oikea-2+1,yla-1+1,oikea+1+1,ala+1+1,0);
 
-	PisteDraw2_ScreenFill(vasen,yla,oikea,yla+1,153);
-	PisteDraw2_ScreenFill(vasen,yla,vasen+1,ala,144);
-	PisteDraw2_ScreenFill(vasen,ala-1,oikea,ala,138);
-	PisteDraw2_ScreenFill(oikea-1,yla,oikea,ala,138);
+	PDraw::screen_fill(vasen,yla,oikea,yla+1,153);
+	PDraw::screen_fill(vasen,yla,vasen+1,ala,144);
+	PDraw::screen_fill(vasen,ala-1,oikea,ala,138);
+	PDraw::screen_fill(oikea-1,yla,oikea,ala,138);
 
 	return 0;
 }
@@ -5485,15 +5481,15 @@ bool PK_Draw_Menu_Text(bool active, char *teksti, int x, int y){
 	return false;
 }
 int  PK_Draw_Menu_BoolBox(int x, int y, bool muuttuja, bool active){
-	PD_RECT img_src, img_dst = {(DWORD)x,(DWORD)y,0,0};
+	PDraw::RECT img_src, img_dst = {(DWORD)x,(DWORD)y,0,0};
 
 	if(muuttuja) img_src = {504,124,31,31};
 	else img_src = {473,124,31,31};
 
 	if(active){
-		PisteDraw2_Image_CutClip(kuva_peli,img_src,img_dst);
+		PDraw::image_cutclip(kuva_peli,img_src,img_dst);
 	} else{
-		PisteDraw2_Image_CutClipTransparent(kuva_peli,img_src,img_dst,50);
+		PDraw::image_cutcliptransparent(kuva_peli,img_src,img_dst,50);
 		return false;
 	}
 
@@ -5516,14 +5512,14 @@ int  PK_Draw_Menu_BackNext(int x, int y){
 	int randy = rand()%3 - rand()%3;
 
 	if (menu_valittu_id == menu_valinta_id)
-		PisteDraw2_Image_CutClip(kuva_peli,x+randx,y+randy,566,124,566+31,124+31);
+		PDraw::image_cutclip(kuva_peli,x+randx,y+randy,566,124,566+31,124+31);
 	else
-		PisteDraw2_Image_CutClip(kuva_peli,x,y,566,124,566+31,124+31);
+		PDraw::image_cutclip(kuva_peli,x,y,566,124,566+31,124+31);
 
 	if (menu_valittu_id == menu_valinta_id+1)
-		PisteDraw2_Image_CutClip(kuva_peli,x+val+randx,y+randy,535,124,535+31,124+31);
+		PDraw::image_cutclip(kuva_peli,x+val+randx,y+randy,535,124,535+31,124+31);
 	else
-		PisteDraw2_Image_CutClip(kuva_peli,x+val,y,535,124,535+31,124+31);
+		PDraw::image_cutclip(kuva_peli,x+val,y,535,124,535+31,124+31);
 
 	if ((hiiri_x > x && hiiri_x < x+30 && hiiri_y > y && hiiri_y < y+31) || (menu_valittu_id == menu_valinta_id)){
 		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
@@ -5659,20 +5655,20 @@ int PK_Draw_Menu_Name(){
 		menu_name_index = 0;
 
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.playermenu_type_name),180,224);
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.playermenu_type_name),180,224);
 
-	PisteDraw2_ScreenFill(180-2,255-2,180+19*15+4,255+18+4,0);
-	PisteDraw2_ScreenFill(180,255,180+19*15,255+18,50);
+	PDraw::screen_fill(180-2,255-2,180+19*15+4,255+18+4,0);
+	PDraw::screen_fill(180,255,180+19*15,255+18,50);
 
 	if (nimiedit) { //Draw text cursor
 		mx = menu_name_index*15 + 180 + rand()%2; //Text cursor x
-		PisteDraw2_ScreenFill(mx-2, 254, mx+6+3, 254+20+3, 0);
-		PisteDraw2_ScreenFill(mx-1, 254, mx+6, 254+20, 96+16);
-		PisteDraw2_ScreenFill(mx+4, 254, mx+6, 254+20, 96+8);
+		PDraw::screen_fill(mx-2, 254, mx+6+3, 254+20+3, 0);
+		PDraw::screen_fill(mx-1, 254, mx+6, 254+20, 96+16);
+		PDraw::screen_fill(mx+4, 254, mx+6, 254+20, 96+8);
 	}
 
 	PK_WavetextSlow_Draw(pelaajan_nimi,fontti2,180,255);
-	PisteDraw2_Font_WriteAlpha(fontti3,pelaajan_nimi,180,255,15);
+	PDraw::font_writealpha(fontti3,pelaajan_nimi,180,255,15);
 
 	merkki = PisteInput_Lue_Nappaimisto();
 
@@ -5752,8 +5748,8 @@ int PK_Draw_Menu_Load(){
 
 	PK_Draw_Menu_Square(40, 70, 640-40, 410, 70);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.loadgame_title),50,90);
-	PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_info),50,110);
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.loadgame_title),50,90);
+	PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_info),50,110);
 	my = -20;
 
 	for ( int i = 0; i < MAX_SAVES; i++ ) {
@@ -5768,12 +5764,12 @@ int PK_Draw_Menu_Load(){
 
 		if (strcmp(tallennukset[i].episodi," ")!=0) {
 			vali = 0;
-			vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_episode),400,150+my);
-			vali += PisteDraw2_Font_Write(fontti1,tallennukset[i].episodi,400+vali,150+my);
+			vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_episode),400,150+my);
+			vali += PDraw::font_write(fontti1,tallennukset[i].episodi,400+vali,150+my);
 			vali = 0;
-			vali += PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_level),400+vali,160+my);
+			vali += PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_level),400+vali,160+my);
 			itoa(tallennukset[i].jakso,jaksoc,10);
-			vali += PisteDraw2_Font_Write(fontti1,jaksoc,400+vali,160+my);
+			vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
 		}
 
 		my += 22;
@@ -5794,8 +5790,8 @@ int PK_Draw_Menu_Save(){
 
 	PK_Draw_Menu_Square(40, 70, 640-40, 410, 224);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.savegame_title),50,90);
-	PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_info),50,110);
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.savegame_title),50,90);
+	PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_info),50,110);
 	my = -20;
 
 	for (int i=0;i<MAX_SAVES;i++)
@@ -5812,12 +5808,12 @@ int PK_Draw_Menu_Save(){
 		if (strcmp(tallennukset[i].episodi," ")!=0)
 		{
 			vali = 0;
-			vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_episode),400,150+my);
-			vali += PisteDraw2_Font_Write(fontti1,tallennukset[i].episodi,400+vali,150+my);
+			vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_episode),400,150+my);
+			vali += PDraw::font_write(fontti1,tallennukset[i].episodi,400+vali,150+my);
 			vali = 0;
-			vali += PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_level),400+vali,160+my);
+			vali += PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_level),400+vali,160+my);
 			itoa(tallennukset[i].jakso,jaksoc,10);
-			vali += PisteDraw2_Font_Write(fontti1,jaksoc,400+vali,160+my);
+			vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
 		}
 
 		my += 22;
@@ -5837,7 +5833,7 @@ int PK_Draw_Menu_Graphics(){
 
 	PK_Draw_Menu_Square(40, 70, 640-40, 410, 224);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.gfx_title),50,90);
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.gfx_title),50,90);
 
 	if(moreOptions){
 		wasFullScreen = settings.isFullScreen;
@@ -5907,26 +5903,26 @@ int PK_Draw_Menu_Graphics(){
 		//Can add more options here
 
 		if(wasFullScreen != settings.isFullScreen) // If fullscreen changes
-			PisteDraw2_FullScreen(settings.isFullScreen);
+			PDraw::set_fullscreen(settings.isFullScreen);
 
 		if(wasFiltered && !settings.isFiltered) // If filter changes
-			PisteDraw2_SetFilter(PD_FILTER_NEAREST);
+			PDraw::set_filter(PDraw::FILTER_NEAREST);
 		if(!wasFiltered && settings.isFiltered)
-			PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
+			PDraw::set_filter(PDraw::FILTER_BILINEAR);
 
 		if(wasFit != settings.isFit) // If fit changes
-			PisteDraw2_FitScreen(settings.isFit);
+			PDraw::fit_screen(settings.isFit);
 
 		if (wasWide != settings.isWide) {
 			screen_width = settings.isWide ? 800 : 640;
 			PK2Kartta_Aseta_Ruudun_Mitat(screen_width, screen_height);
-			PisteDraw2_ChangeResolution(screen_width,screen_height);
+			PDraw::change_resolution(screen_width,screen_height);
 			
 			if(episode_started)
-				PisteDraw2_ImageFill(kuva_tausta, 0);
+				PDraw::image_fill(kuva_tausta, 0);
 			
-			if (settings.isWide) PisteDraw2_SetXOffset(80);
-			else PisteDraw2_SetXOffset(0);
+			if (settings.isWide) PDraw::set_xoffset(80);
+			else PDraw::set_xoffset(0);
 		}
 
 		if (PK_Draw_Menu_Text(true,"back",100,360)){
@@ -6035,13 +6031,13 @@ int PK_Draw_Menu_Sounds(){
 
 	PK_Draw_Menu_Square(40, 70, 640-40, 410, 224);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_title),50,90);
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_title),50,90);
 	my += 20;
 
-	PisteDraw2_ScreenFill(404,224+my,404+settings.sfx_max_volume,244+my,0);
-	PisteDraw2_ScreenFill(400,220+my,400+settings.sfx_max_volume,240+my,81);
+	PDraw::screen_fill(404,224+my,404+settings.sfx_max_volume,244+my,0);
+	PDraw::screen_fill(400,220+my,400+settings.sfx_max_volume,240+my,81);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_sfx_volume),180,200+my);
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_sfx_volume),180,200+my);
 	my += 20;
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_less),180,200+my))
@@ -6060,10 +6056,10 @@ int PK_Draw_Menu_Sounds(){
 
 	my+=40;
 
-	PisteDraw2_ScreenFill(404,224+my,404+int(settings.music_max_volume*1.56),244+my,0);
-	PisteDraw2_ScreenFill(400,220+my,400+int(settings.music_max_volume*1.56),240+my,112);
+	PDraw::screen_fill(404,224+my,404+int(settings.music_max_volume*1.56),244+my,0);
+	PDraw::screen_fill(400,220+my,400+int(settings.music_max_volume*1.56),240+my,112);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_music_volume),180,200+my);
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_music_volume),180,200+my);
 	my += 20;
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.sound_less),180,200+my))
@@ -6094,33 +6090,33 @@ int PK_Draw_Menu_Controls(){
 
 	PK_Draw_Menu_Square(40, 70, 640-40, 410, 224);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_title),50,90);
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_title),50,90);
 
 	my = 40;
 
 	if (menu_lue_kontrollit > 0){
-		PisteDraw2_ScreenFill(299,74+my+menu_lue_kontrollit*20,584,94+my+menu_lue_kontrollit*20,0);
-		PisteDraw2_ScreenFill(295,70+my+menu_lue_kontrollit*20,580,90+my+menu_lue_kontrollit*20,50);
+		PDraw::screen_fill(299,74+my+menu_lue_kontrollit*20,584,94+my+menu_lue_kontrollit*20,0);
+		PDraw::screen_fill(295,70+my+menu_lue_kontrollit*20,580,90+my+menu_lue_kontrollit*20,50);
 	}
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_moveleft),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_moveright),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_jump),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_duck),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_walkslow),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_eggattack),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_doodleattack),100,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_useitem),100,90+my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_moveleft),100,90+my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_moveright),100,90+my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_jump),100,90+my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_duck),100,90+my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_walkslow),100,90+my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_eggattack),100,90+my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_doodleattack),100,90+my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_useitem),100,90+my);my+=20;
 
 	my = 40;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_left),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_right),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_jump),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_down),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_walk_slow),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_attack1),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_attack2),310,90+my);my+=20;
-	PisteDraw2_Font_Write(fontti2,PisteInput_KeyName(settings.control_open_gift),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PisteInput_KeyName(settings.control_left),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PisteInput_KeyName(settings.control_right),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PisteInput_KeyName(settings.control_jump),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PisteInput_KeyName(settings.control_down),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PisteInput_KeyName(settings.control_walk_slow),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PisteInput_KeyName(settings.control_attack1),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PisteInput_KeyName(settings.control_attack2),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PisteInput_KeyName(settings.control_open_gift),310,90+my);my+=20;
 
 	/*
 	if (hiiri_x > 310 && hiiri_x < 580 && hiiri_y > 130 && hiiri_y < my-20){
@@ -6228,7 +6224,7 @@ int PK_Draw_Menu_Episodes(){
 
 	PK_Draw_Menu_Square(110, 130, 640-110, 450, 224);
 
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.episodes_choose_episode),50,90);
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.episodes_choose_episode),50,90);
 	my += 80;
 
 	if (episodi_lkm-2 > 10) {
@@ -6236,12 +6232,12 @@ int PK_Draw_Menu_Episodes(){
 		int vali = 90;
 		int x = 50,//500,
 			y = 50;//300;
-		//vali += PisteDraw2_Font_Write(fontti1,"page:",x,y+40);
+		//vali += PDraw::font_write(fontti1,"page:",x,y+40);
 		itoa(episodisivu+1,luku,10);
-		vali += PisteDraw2_Font_Write(fontti1,luku,x+vali,y+20);
-		vali += PisteDraw2_Font_Write(fontti1,"/",x+vali,y+20);
+		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
+		vali += PDraw::font_write(fontti1,"/",x+vali,y+20);
 		itoa((episodi_lkm/10)+1,luku,10);
-		vali += PisteDraw2_Font_Write(fontti1,luku,x+vali,y+20);
+		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 
 		int nappi = PK_Draw_Menu_BackNext(x,y);
 
@@ -6260,7 +6256,7 @@ int PK_Draw_Menu_Episodes(){
 				game_next_screen = SCREEN_MAP;
 				episode_started = false;
 				PK_New_Game();
-				//PisteDraw2_FadeIn(PD_FADE_NORMAL);
+				//PDraw::fade_in(PD_FADE_NORMAL);
 			}
 			my += 20;
 		}
@@ -6271,7 +6267,7 @@ int PK_Draw_Menu_Episodes(){
 		menu_nyt = MENU_MAIN;
 		my += 20;
 	}
-	PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.episodes_get_more),140,440);
+	PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.episodes_get_more),140,440);
 
 	return 0;
 }
@@ -6281,7 +6277,7 @@ int PK_Draw_Menu_Language(){
 
 	PK_Draw_Menu_Square(110, 130, 640-110, 450, 224);
 
-	PisteDraw2_Font_Write(fontti2,"select a language:",50,100);
+	PDraw::font_write(fontti2,"select a language:",50,100);
 
 
 	for (i=0;i<10;i++){
@@ -6326,8 +6322,8 @@ int PK_Draw_Menu_Language(){
 }
 
 int PK_Draw_Menu(){
-	PisteDraw2_ScreenFill(0);
-	PisteDraw2_Image_Clip(kuva_tausta, (episode_started && settings.isWide)? -80 : 0, 0);
+	PDraw::screen_fill(0);
+	PDraw::image_clip(kuva_tausta, (episode_started && settings.isWide)? -80 : 0, 0);
 
 	menu_valinta_id = 1;
 
@@ -6381,7 +6377,7 @@ int PK_Draw_Map_Button(int x, int y, int t){
 		PK_Draw_Transparent_Object(kuva_peli, 247, 1, 25, 25, x-2, y-2, vilkku, 96);
 
 	if (((degree/45)+1)%4==0 || t==0)
-		PisteDraw2_Image_CutClip(kuva_peli,x,y,1+t,58,23+t,80);
+		PDraw::image_cutclip(kuva_peli,x,y,1+t,58,23+t,80);
 
 	return paluu;
 }
@@ -6389,34 +6385,34 @@ int PK_Draw_Map(){
 	char luku[20];
 	int vali = 20;
 
-	PisteDraw2_ScreenFill(0);
-	PisteDraw2_Image_Clip(kuva_tausta, 0, 0);
+	PDraw::screen_fill(0);
+	PDraw::image_clip(kuva_tausta, 0, 0);
 
-	PisteDraw2_Font_Write(fontti4,episodi,100+2,72+2);
-	PisteDraw2_Font_Write(fontti2,episodi,100,72);
+	PDraw::font_write(fontti4,episodi,100+2,72+2);
+	PDraw::font_write(fontti2,episodi,100,72);
 
-	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.map_total_score),100+2,92+2);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.map_total_score),100,92);//250,80
+	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.map_total_score),100+2,92+2);
+	vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.map_total_score),100,92);//250,80
 	ltoa(pisteet,luku,10);
-	PisteDraw2_Font_Write(fontti4,luku,100+vali+2+15,92+2);
-	PisteDraw2_Font_Write(fontti2,luku,100+vali+15,92);
+	PDraw::font_write(fontti4,luku,100+vali+2+15,92+2);
+	PDraw::font_write(fontti2,luku,100+vali+15,92);
 
 	if (episodipisteet.episode_top_score > 0) {
-		vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.map_episode_best_player),360,72);
-		PisteDraw2_Font_Write(fontti1,episodipisteet.episode_top_player,360+vali+10,72);
-		vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.map_episode_hiscore),360,92);
+		vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.map_episode_best_player),360,72);
+		PDraw::font_write(fontti1,episodipisteet.episode_top_player,360+vali+10,72);
+		vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.map_episode_hiscore),360,92);
 		ltoa(episodipisteet.episode_top_score,luku,10);
-		PisteDraw2_Font_Write(fontti2,luku,360+vali+15,92);
+		PDraw::font_write(fontti2,luku,360+vali+15,92);
 	}
 
-	vali = PisteDraw2_Font_Write(fontti1,tekstit->Hae_Teksti(PK_txt.map_next_level),100,120);
+	vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.map_next_level),100,120);
 	ltoa(jakso,luku,10);
-	PisteDraw2_Font_Write(fontti1,luku,100+vali+15,120);
+	PDraw::font_write(fontti1,luku,100+vali+15,120);
 
 	//PK_Particles_Draw();
 
 	if (jaksoja == 0) {
-		PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.episodes_no_maps),180,290);
+		PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.episodes_no_maps),180,290);
 	}
 
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_return),100,430)){
@@ -6457,14 +6453,14 @@ int PK_Draw_Map(){
 
 			ikoni = jaksot[i].ikoni;
 
-			//PisteDraw2_Image_Clip(kuva_peli,jaksot[i].x-4,jaksot[i].y-4-30,1+(ikoni*27),452,27+(ikoni*27),478);
-			PisteDraw2_Image_CutClip(kuva_peli,jaksot[i].x-9,jaksot[i].y-14,1+(ikoni*28),452,28+(ikoni*28),479);
+			//PDraw::image_clip(kuva_peli,jaksot[i].x-4,jaksot[i].y-4-30,1+(ikoni*27),452,27+(ikoni*27),478);
+			PDraw::image_cutclip(kuva_peli,jaksot[i].x-9,jaksot[i].y-14,1+(ikoni*28),452,28+(ikoni*28),479);
 
 			if (tyyppi==1) {
 				sinx = (int)(sin_table[degree%360]/2);
 				cosy = (int)(cos_table[degree%360]/2);
 				pekkaframe = 28*((degree%360)/120);
-				PisteDraw2_Image_CutClip(kuva_peli,jaksot[i].x+sinx-12,jaksot[i].y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
+				PDraw::image_cutclip(kuva_peli,jaksot[i].x+sinx-12,jaksot[i].y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
 			}
 
 			paluu = PK_Draw_Map_Button(jaksot[i].x-5, jaksot[i].y-10, tyyppi);
@@ -6475,7 +6471,7 @@ int PK_Draw_Map(){
 					strcpy(seuraava_kartta,jaksot[i].tiedosto);
 					jakso_indeksi_nyt = i;
 					going_to_game = true;
-					PisteDraw2_FadeOut(PD_FADE_SLOW);
+					PDraw::fade_out(PDraw::FADE_SLOW);
 					music_volume = 0;
 					PK_Play_MenuSound(kieku_aani,90);
 				}
@@ -6484,36 +6480,36 @@ int PK_Draw_Map(){
 			}
 
 			itoa(jaksot[i].jarjestys,luku,10);
-			PisteDraw2_Font_Write(fontti1,luku,jaksot[i].x-12+2,jaksot[i].y-29+2);
+			PDraw::font_write(fontti1,luku,jaksot[i].x-12+2,jaksot[i].y-29+2);
 
 			if (paluu > 0) {
 
 				int info_x = 489+3, info_y = 341-26;
 
-				PisteDraw2_Image_CutClip(kuva_peli,info_x-3,info_y+26,473,0,607,121);
-				PisteDraw2_Font_Write(fontti1,jaksot[i].nimi,info_x,info_y+30);
+				PDraw::image_cutclip(kuva_peli,info_x-3,info_y+26,473,0,607,121);
+				PDraw::font_write(fontti1,jaksot[i].nimi,info_x,info_y+30);
 
 				if (episodipisteet.best_score[i] > 0) {
-					PisteDraw2_Font_WriteAlpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_best_player),info_x,info_y+50,75);
-					PisteDraw2_Font_Write(fontti1,episodipisteet.top_player[i],info_x,info_y+62);
-					vali = 8 + PisteDraw2_Font_WriteAlpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_hiscore),info_x,info_y+74,75);
+					PDraw::font_writealpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_best_player),info_x,info_y+50,75);
+					PDraw::font_write(fontti1,episodipisteet.top_player[i],info_x,info_y+62);
+					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_hiscore),info_x,info_y+74,75);
 					ltoa(episodipisteet.best_score[i],luku,10);
-					PisteDraw2_Font_Write(fontti1,luku,info_x+vali,info_y+75);
+					PDraw::font_write(fontti1,luku,info_x+vali,info_y+75);
 				}
 
 				if (episodipisteet.best_time[i] > 0) {
-					PisteDraw2_Font_WriteAlpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_fastest_player),info_x,info_y+98,75);
-					PisteDraw2_Font_Write(fontti1,episodipisteet.fastest_player[i],info_x,info_y+110);
+					PDraw::font_writealpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_fastest_player),info_x,info_y+98,75);
+					PDraw::font_write(fontti1,episodipisteet.fastest_player[i],info_x,info_y+110);
 
-					vali = 8 + PisteDraw2_Font_WriteAlpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_best_time),info_x,info_y+122,75);
+					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_best_time),info_x,info_y+122,75);
 					min = episodipisteet.best_time[i]/60;
 					sek = episodipisteet.best_time[i]%60;
 
 					itoa(min,luku,10);
-					vali += PisteDraw2_Font_Write(fontti1,luku,info_x+vali,info_y+122);
-					vali += PisteDraw2_Font_Write(fontti1,":",info_x+vali,info_y+122);
+					vali += PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);
+					vali += PDraw::font_write(fontti1,":",info_x+vali,info_y+122);
 					itoa(sek,luku,10);
-					PisteDraw2_Font_Write(fontti1,luku,info_x+vali,info_y+122);
+					PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);
 				}
 			}
 		}
@@ -6531,8 +6527,8 @@ int PK_Draw_ScoreCount(){
 	int kuutio, aste;
 	int	vari = 0, kerroin;
 
-	PisteDraw2_ScreenFill(0);
-	PisteDraw2_Image_Clip(kuva_tausta, 0, 0);
+	PDraw::screen_fill(0);
+	PDraw::image_clip(kuva_tausta, 0, 0);
 
 	for (aste=0;aste<18;aste++) {
 
@@ -6540,61 +6536,61 @@ int PK_Draw_ScoreCount(){
 
 		x = (int)(sin_table[(degree+aste*10)%360]*2)+kerroin;
 		y = (int)(cos_table[(degree+aste*10)%360]*2);//10 | 360 | 2
-		//PisteDraw2_Image_Clip(kuva_peli,320+x,240+y,157,46,181,79);
+		//PDraw::image_clip(kuva_peli,320+x,240+y,157,46,181,79);
 		kuutio = (int)(sin_table[(degree+aste*3)%360]);
 		if (kuutio < 0) kuutio = -kuutio;
 
-		PisteDraw2_ScreenFill(320-x,240-y,320-x+kuutio,240-y+kuutio,VARI_TURKOOSI+8);
+		PDraw::screen_fill(320-x,240-y,320-x+kuutio,240-y+kuutio,VARI_TURKOOSI+8);
 	}
 	for (aste=0;aste<18;aste++) {
 
 		x = (int)(sin_table[(degree+aste*10)%360]*3);
 		y = (int)(cos_table[(degree+aste*10)%360]*3);//10 | 360 | 3
-		//PisteDraw2_Image_Clip(kuva_peli,320+x,240+y,157,46,181,79);
+		//PDraw::image_clip(kuva_peli,320+x,240+y,157,46,181,79);
 		kuutio = (int)(sin_table[(degree+aste*2)%360])+18;
 		if (kuutio < 0) kuutio = -kuutio;//0;//
 		if (kuutio > 100) kuutio = 100;
 
-		//PisteDraw2_ScreenFill(320+x,240+y,320+x+kuutio,240+y+kuutio,VARI_TURKOOSI+10);
+		//PDraw::screen_fill(320+x,240+y,320+x+kuutio,240+y+kuutio,VARI_TURKOOSI+10);
 		PK_Draw_Transparent_Object(kuva_peli, 247, 1, 25, 25, 320+x, 240+y, kuutio, 32);
 	}
 
-	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_title),100+2,72+2);
-	PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_title),100,72);
-	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_level_score),100+2,102+2);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_level_score),100,102);//250,80
+	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_title),100+2,72+2);
+	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_title),100,72);
+	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_level_score),100+2,102+2);
+	vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_level_score),100,102);//250,80
 	fake_pisteet = bonuspisteet + aikapisteet + energiapisteet + esinepisteet + pelastuspisteet;
 	ltoa(fake_pisteet,luku,10);
-	PisteDraw2_Font_Write(fontti4,luku,400+2,102+2);
-	PisteDraw2_Font_Write(fontti2,luku,400,102);
+	PDraw::font_write(fontti4,luku,400+2,102+2);
+	PDraw::font_write(fontti2,luku,400,102);
 	my = 0;
 
-	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_bonus_score),100+2,192+2+my);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_bonus_score),100,192+my);
+	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_bonus_score),100+2,192+2+my);
+	vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_bonus_score),100,192+my);
 	ltoa(bonuspisteet,luku,10);
-	PisteDraw2_Font_Write(fontti4,luku,400+2,192+2+my);
-	PisteDraw2_Font_Write(fontti2,luku,400,192+my);
+	PDraw::font_write(fontti4,luku,400+2,192+2+my);
+	PDraw::font_write(fontti2,luku,400,192+my);
 	my += 30;
 
-	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_time_score),100+2,192+2+my);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_time_score),100,192+my);
+	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_time_score),100+2,192+2+my);
+	vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_time_score),100,192+my);
 	ltoa(aikapisteet,luku,10);
-	PisteDraw2_Font_Write(fontti4,luku,400+2,192+2+my);
-	PisteDraw2_Font_Write(fontti2,luku,400,192+my);
+	PDraw::font_write(fontti4,luku,400+2,192+2+my);
+	PDraw::font_write(fontti2,luku,400,192+my);
 	my += 30;
 
-	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_energy_score),100+2,192+2+my);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_energy_score),100,192+my);
+	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_energy_score),100+2,192+2+my);
+	vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_energy_score),100,192+my);
 	ltoa(energiapisteet,luku,10);
-	PisteDraw2_Font_Write(fontti4,luku,400+2,192+2+my);
-	PisteDraw2_Font_Write(fontti2,luku,400,192+my);
+	PDraw::font_write(fontti4,luku,400+2,192+2+my);
+	PDraw::font_write(fontti2,luku,400,192+my);
 	my += 30;
 
-	PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_item_score),100+2,192+2+my);
-	vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_item_score),100,192+my);
+	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_item_score),100+2,192+2+my);
+	vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_item_score),100,192+my);
 	ltoa(esinepisteet,luku,10);
-	PisteDraw2_Font_Write(fontti4,luku,400+2,192+2+my);
-	PisteDraw2_Font_Write(fontti2,luku,400,192+my);
+	PDraw::font_write(fontti4,luku,400+2,192+2+my);
+	PDraw::font_write(fontti2,luku,400,192+my);
 	my += 30;
 
 	x = 110;
@@ -6611,23 +6607,23 @@ int PK_Draw_ScoreCount(){
 	my += 10;
 
 	if (pistelaskuvaihe >= 4){
-		PisteDraw2_Font_Write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100+2,192+2+my);
-		vali = PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100,192+my);//250,80
+		PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100+2,192+2+my);
+		vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100,192+my);//250,80
 		ltoa(pisteet,luku,10);
-		PisteDraw2_Font_Write(fontti4,luku,400+2,192+2+my);
-		PisteDraw2_Font_Write(fontti2,luku,400,192+my);
+		PDraw::font_write(fontti4,luku,400+2,192+2+my);
+		PDraw::font_write(fontti2,luku,400,192+my);
 		my += 25;
 
 		if (jakso_uusi_ennatys) {
-			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_new_level_hiscore),100+rand()%2,192+my+rand()%2);
+			PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_new_level_hiscore),100+rand()%2,192+my+rand()%2);
 			my += 25;
 		}
 		if (jakso_uusi_ennatysaika) {
-			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_new_level_best_time),100+rand()%2,192+my+rand()%2);
+			PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_new_level_best_time),100+rand()%2,192+my+rand()%2);
 			my += 25;
 		}
 		if (episodi_uusi_ennatys) {
-			PisteDraw2_Font_Write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_new_episode_hiscore),100+rand()%2,192+my+rand()%2);
+			PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_new_episode_hiscore),100+rand()%2,192+my+rand()%2);
 			my += 25;
 		}
 	}
@@ -6635,7 +6631,7 @@ int PK_Draw_ScoreCount(){
 	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.score_screen_continue),100,430)){
 		music_volume = 0;
 		siirry_pistelaskusta_karttaan = true;
-		PisteDraw2_FadeOut(PD_FADE_SLOW);
+		PDraw::fade_out(PDraw::FADE_SLOW);
 		//game_next_screen = SCREEN_MAP;
 	}
 
@@ -6656,9 +6652,9 @@ int PK_Draw_Intro_Text(char *teksti, int fontti, int x, int y, DWORD alkuaika, D
 
 		if (pros > 0) {
 			if (pros < 100)
-				PisteDraw2_Font_WriteAlpha(fontti,teksti,x,y,pros);
+				PDraw::font_writealpha(fontti,teksti,x,y,pros);
 			else
-				PisteDraw2_Font_Write(fontti,teksti,x,y);
+				PDraw::font_write(fontti,teksti,x,y);
 		}
 
 	}
@@ -6675,11 +6671,11 @@ int PK_Draw_Intro(){
 	DWORD kaantaja_alku		= testaajat_loppu + 100;
 	DWORD kaantaja_loppu	= kaantaja_alku + 300;
 
-	PisteDraw2_ScreenFill(0);
-	PisteDraw2_Image_CutClip(kuva_tausta, 280, 80, 280, 80, 640, 480);
+	PDraw::screen_fill(0);
+	PDraw::image_cutclip(kuva_tausta, 280, 80, 280, 80, 640, 480);
 
 	if ((introlaskuri / 10) % 50 == 0)
-		PisteDraw2_Image_CutClip(kuva_tausta,353, 313, 242, 313, 275, 432);
+		PDraw::image_cutclip(kuva_tausta,353, 313, 242, 313, 275, 432);
 
 	if (introlaskuri > pistelogo_alku && introlaskuri < pistelogo_loppu) {
 
@@ -6690,7 +6686,7 @@ int PK_Draw_Intro(){
 		if (x > 120)
 			x = 120;
 
-		PisteDraw2_Image_CutClip(kuva_tausta,/*120*/x,230, 37, 230, 194, 442);
+		PDraw::image_cutclip(kuva_tausta,/*120*/x,230, 37, 230, 194, 442);
 
 		PK_Draw_Intro_Text(tekstit->Hae_Teksti(PK_txt.intro_presents), fontti1, 230, 400, pistelogo_alku, pistelogo_loppu-20);
 
@@ -6733,60 +6729,60 @@ int PK_Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 		frm = 1;
 		if ((degree/10)%10==rapytys) frm = 0;
 		yk = (int)sin_table[(degree%360)];
-		PisteDraw2_Image_CutClip(kuva_tausta,x+3,y+56, 4, 63, 29, 69);
+		PDraw::image_cutclip(kuva_tausta,x+3,y+56, 4, 63, 29, 69);
 		if (yk < 0){
 			y+=yk;
 			frm = 2;
 		}
-		PisteDraw2_Image_CutClip(kuva_tausta,x,y, 1+frm*35, 1, 32+frm*35, 59);
+		PDraw::image_cutclip(kuva_tausta,x,y, 1+frm*35, 1, 32+frm*35, 59);
 	}
 
 	if (tyyppi == 2){ // kana (katse oikealle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)cos_table[((degree+plus)%360)];
-		PisteDraw2_Image_CutClip(kuva_tausta,x+3,y+36, 4, 63, 29, 69);
+		PDraw::image_cutclip(kuva_tausta,x+3,y+36, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
 			frm = 2;
 		}
-		PisteDraw2_Image_CutClip(kuva_tausta,x,y, 106+frm*37, 1, 139+frm*37, 38);
+		PDraw::image_cutclip(kuva_tausta,x,y, 106+frm*37, 1, 139+frm*37, 38);
 	}
 
 	if (tyyppi == 3){ // kana (katse vasemmalle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)cos_table[((degree+plus)%360)];
-		PisteDraw2_Image_CutClip(kuva_tausta,x+3,y+36, 4, 63, 29, 69);
+		PDraw::image_cutclip(kuva_tausta,x+3,y+36, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
 			frm = 2;
 		}
-		PisteDraw2_Image_CutClip(kuva_tausta,x,y, 106+frm*37, 41, 139+frm*37, 77);
+		PDraw::image_cutclip(kuva_tausta,x,y, 106+frm*37, 41, 139+frm*37, 77);
 	}
 
 	if (tyyppi == 4){ // pikkukana (katse oikealle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)sin_table[(((degree*2)+plus)%360)];
-		PisteDraw2_Image_CutClip(kuva_tausta,x+3,y+27, 4, 63, 29, 69);
+		PDraw::image_cutclip(kuva_tausta,x+3,y+27, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
 			frm = 2;
 		}
-		PisteDraw2_Image_CutClip(kuva_tausta,x,y, 217+frm*29, 1, 243+frm*29, 29);
+		PDraw::image_cutclip(kuva_tausta,x,y, 217+frm*29, 1, 243+frm*29, 29);
 	}
 
 	if (tyyppi == 5){ // pikkukana (katse vasemmalle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)sin_table[(((degree*2)+plus)%360)];
-		PisteDraw2_Image_CutClip(kuva_tausta,x,y+27, 4, 63, 29, 69);
+		PDraw::image_cutclip(kuva_tausta,x,y+27, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
 			frm = 2;
 		}
-		PisteDraw2_Image_CutClip(kuva_tausta,x,y, 217+frm*29, 33, 243+frm*29, 61);
+		PDraw::image_cutclip(kuva_tausta,x,y, 217+frm*29, 33, 243+frm*29, 61);
 	}
 
 	return 0;
@@ -6798,8 +6794,8 @@ int PK_Draw_EndGame(){
 	DWORD the_end_alku		= onnittelut_loppu + 80;
 	DWORD the_end_loppu		= the_end_alku + 3000;
 
-	PisteDraw2_ScreenFill(0);
-	PisteDraw2_Image_CutClip(kuva_tausta,320-233/2,240-233/2, 6, 229, 239, 462);
+	PDraw::screen_fill(0);
+	PDraw::image_cutclip(kuva_tausta,320-233/2,240-233/2, 6, 229, 239, 462);
 
 	PK_Draw_EndGame_Image(345, 244, 3, 30, 2);
 	PK_Draw_EndGame_Image(276, 230, 2, 50, 3);
@@ -6886,7 +6882,7 @@ int PK_MainScreen_Intro(){
 
 	introlaskuri++;
 
-	if (siirry_introsta_menuun && !PisteDraw2_IsFading()){
+	if (siirry_introsta_menuun && !PDraw::is_fading()){
 		game_next_screen = SCREEN_MENU;
 		episode_started = false;
 	}
@@ -6894,7 +6890,7 @@ int PK_MainScreen_Intro(){
 	if (key_delay == 0)
 		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE) || introlaskuri == 3500){
 			siirry_introsta_menuun = true;
-			PisteDraw2_FadeOut(PD_FADE_SLOW);
+			PDraw::fade_out(PDraw::FADE_SLOW);
 		}
 
 	return 0;
@@ -6959,7 +6955,7 @@ int PK_MainScreen_ScoreCount(){
 	if (pistelaskudelay > 0)
 		pistelaskudelay--;
 
-	if (siirry_pistelaskusta_karttaan && !PisteDraw2_IsFading()){
+	if (siirry_pistelaskusta_karttaan && !PDraw::is_fading()){
 		/*tarkistetaan oliko viimeinen jakso*/
 
 		if (jakso_indeksi_nyt == EPISODI_MAX_LEVELS-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
@@ -6982,7 +6978,7 @@ int PK_MainScreen_ScoreCount(){
 		if (PisteInput_Keydown(PI_RETURN) && pistelaskuvaihe == 5){
 			siirry_pistelaskusta_karttaan = true;
 			music_volume = 0;
-			PisteDraw2_FadeOut(PD_FADE_SLOW);
+			PDraw::fade_out(PDraw::FADE_SLOW);
 			key_delay = 20;
 		}
 
@@ -7010,16 +7006,16 @@ int PK_MainScreen_Map(){
 
 	degree = 1 + degree % 360;
 
-	if (going_to_game && !PisteDraw2_IsFading()) {
+	if (going_to_game && !PDraw::is_fading()) {
 		game_next_screen = SCREEN_GAME;
 		
 		episode_started = false;
 
 		//Draw "loading" text
-		PisteDraw2_SetXOffset(0);
-		PisteDraw2_ScreenFill(0);
-		PisteDraw2_Font_Write(fontti2, tekstit->Hae_Teksti(PK_txt.game_loading), screen_width / 2 - 82, screen_height / 2 - 9);
-		PisteDraw2_FadeOut(0);
+		PDraw::set_xoffset(0);
+		PDraw::screen_fill(0);
+		PDraw::font_write(fontti2, tekstit->Hae_Teksti(PK_txt.game_loading), screen_width / 2 - 82, screen_height / 2 - 9);
+		PDraw::fade_out(0);
 	}
 
 	if (key_delay > 0)
@@ -7151,11 +7147,11 @@ int PK_MainScreen_InGame(){
 
 		if (lopetusajastin == 2)
 		{
-			PisteDraw2_FadeOut(PD_FADE_NORMAL);
+			PDraw::fade_out(PDraw::FADE_NORMAL);
 			//music_volume = 0;
 		}
 	}
-	if (lopetusajastin == 1 && !PisteDraw2_IsFading()){
+	if (lopetusajastin == 1 && !PDraw::is_fading()){
 		if(test_level) PK_Fade_Quit();
 		else {
 			if (jakso_lapaisty) game_next_screen = SCREEN_SCORING;
@@ -7222,7 +7218,7 @@ int PK_MainScreen_InGame(){
 			}
 			if (PisteInput_Keydown(PI_W)) {
 				settings.isFullScreen = !settings.isFullScreen;
-				PisteDraw2_FullScreen(settings.isFullScreen);
+				PDraw::set_fullscreen(settings.isFullScreen);
 				key_delay = 20;
 			}
 			if (PisteInput_Keydown(PI_I)) {
@@ -7236,7 +7232,7 @@ int PK_MainScreen_InGame(){
 			}
 			if (PisteInput_Keydown(PI_END)) {
 				key_delay = 20;
-				if (PisteSound_StartMusic("music/hiscore.xm") != 0){
+				if (PSound::start_music("music/hiscore.xm") != 0){
 					PK2_error = true;
 					PK2_error_msg = "Can't find hiscore.xm";
 				}
@@ -7274,7 +7270,7 @@ int PK_MainScreen_End(){
 	loppulaskuri++;
 	introlaskuri = loppulaskuri; // introtekstej� varten
 
-	if (siirry_lopusta_menuun && !PisteDraw2_IsFading())
+	if (siirry_lopusta_menuun && !PDraw::is_fading())
 	{
 		game_next_screen = SCREEN_MENU;
 		menu_nyt = MENU_MAIN;
@@ -7290,7 +7286,7 @@ int PK_MainScreen_End(){
 		{
 			siirry_lopusta_menuun = true;
 			music_volume = 0;
-			PisteDraw2_FadeOut(PD_FADE_SLOW);
+			PDraw::fade_out(PDraw::FADE_SLOW);
 		}
 	}
 
@@ -7299,7 +7295,7 @@ int PK_MainScreen_End(){
 
 int PK_MainScreen_Change() {
 
-	PisteDraw2_FadeIn(PD_FADE_NORMAL);
+	PDraw::fade_in(PDraw::FADE_NORMAL);
 
 	// First start
 	if (game_next_screen == SCREEN_BASIC_FORMAT)
@@ -7339,21 +7335,21 @@ int PK_MainScreen_Change() {
 		//Game::dcamera_b = 0;
 
 		if (!settings.isFiltered)
-			PisteDraw2_SetFilter(PD_FILTER_NEAREST);
+			PDraw::set_filter(PDraw::FILTER_NEAREST);
 		if (settings.isFiltered)
-			PisteDraw2_SetFilter(PD_FILTER_BILINEAR);
-		PisteDraw2_FitScreen(settings.isFit);
-		PisteDraw2_FullScreen(settings.isFullScreen);
-		PisteDraw2_ChangeResolution(settings.isWide ? 800 : 640, 480);
+			PDraw::set_filter(PDraw::FILTER_BILINEAR);
+		PDraw::fit_screen(settings.isFit);
+		PDraw::set_fullscreen(settings.isFullScreen);
+		PDraw::change_resolution(settings.isWide ? 800 : 640, 480);
 
-		PisteDraw2_Image_Delete(kuva_peli); //Delete if there is a image allocated
-		kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
+		PDraw::image_delete(kuva_peli); //Delete if there is a image allocated
+		kuva_peli = PDraw::image_load("gfx/pk2stuff.bmp", false);
 
-		PisteDraw2_Image_Delete(kuva_peli2); //Delete if there is a image allocated
-		kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff2.bmp", false);
+		PDraw::image_delete(kuva_peli2); //Delete if there is a image allocated
+		kuva_peli = PDraw::image_load("gfx/pk2stuff2.bmp", false);
 
-		PisteDraw2_Image_Delete(kuva_peli);
-		kuva_peli = PisteDraw2_Image_Load("gfx/pk2stuff.bmp", false);
+		PDraw::image_delete(kuva_peli);
+		kuva_peli = PDraw::image_load("gfx/pk2stuff.bmp", false);
 
 		PK_Load_Font();
 
@@ -7363,65 +7359,65 @@ int PK_MainScreen_Change() {
 		PK_Start_Saves();
 		PK_Search_File();
 
-		PisteDraw2_ScreenFill(0);
+		PDraw::screen_fill(0);
 
 		//PisteLog_Kirjoita("  - Loading basic sound fx \n");
 
-		if ((kytkin_aani = PisteSound_LoadSFX("sfx/switch3.wav")) == -1)
+		if ((kytkin_aani = PSound::load_sfx("sfx/switch3.wav")) == -1)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't find switch3.wav";
 		}
 
-		if ((hyppy_aani = PisteSound_LoadSFX("sfx/jump4.wav")) == -1)
+		if ((hyppy_aani = PSound::load_sfx("sfx/jump4.wav")) == -1)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't find jump4.wav";
 		}
 
-		if ((loiskahdus_aani = PisteSound_LoadSFX("sfx/splash.wav")) == -1)
+		if ((loiskahdus_aani = PSound::load_sfx("sfx/splash.wav")) == -1)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't find splash.wav";
 		}
 
-		if ((avaa_lukko_aani = PisteSound_LoadSFX("sfx/openlock.wav")) == -1)
+		if ((avaa_lukko_aani = PSound::load_sfx("sfx/openlock.wav")) == -1)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't find openlock.wav";
 		}
 
-		if ((menu_aani = PisteSound_LoadSFX("sfx/menu2.wav")) == -1)
+		if ((menu_aani = PSound::load_sfx("sfx/menu2.wav")) == -1)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't find menu2.wav";
 		}
 
-		if ((ammuu_aani = PisteSound_LoadSFX("sfx/moo.wav")) == -1)
+		if ((ammuu_aani = PSound::load_sfx("sfx/moo.wav")) == -1)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't find moo.wav";
 		}
 
-		if ((kieku_aani = PisteSound_LoadSFX("sfx/doodle.wav")) == -1)
+		if ((kieku_aani = PSound::load_sfx("sfx/doodle.wav")) == -1)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't find doodle.wav";
 		}
 
-		if ((tomahdys_aani = PisteSound_LoadSFX("sfx/pump.wav")) == -1)
+		if ((tomahdys_aani = PSound::load_sfx("sfx/pump.wav")) == -1)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't find pump.wav";
 		}
 
-		if ((pistelaskuri_aani = PisteSound_LoadSFX("sfx/counter.wav")) == -1)
+		if ((pistelaskuri_aani = PSound::load_sfx("sfx/counter.wav")) == -1)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't find counter.wav";
 		}
 
-		PisteDraw2_FadeIn(PD_FADE_SLOW);
+		PDraw::fade_in(PDraw::FADE_SLOW);
 
 		//PisteLog_Kirjoita("  - Calculating tiles. \n");
 		PK_Calculate_Tiles();
@@ -7429,8 +7425,8 @@ int PK_MainScreen_Change() {
 		Game::Gifts->clean();
 
 		//PisteLog_Kirjoita("  - Loading background picture \n");
-		PisteDraw2_Image_Delete(kuva_tausta);
-		kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp", true);
+		PDraw::image_delete(kuva_tausta);
+		kuva_tausta = PDraw::image_load("gfx/menu.bmp", true);
 
 		PK_Empty_Records();
 
@@ -7438,7 +7434,7 @@ int PK_MainScreen_Change() {
 		PK_Search_Records("data/saves.dat");
 
 		//PisteLog_Kirjoita("  - PisteSound sounds on \n");
-		//PisteSound_Aanet_Paalla(settings.aanet);
+		//PSound::Aanet_Paalla(settings.aanet);
 
 		//PisteLog_Kirjoita("- Initializing basic stuff completed \n");
 	}
@@ -7448,10 +7444,10 @@ int PK_MainScreen_Change() {
 	{
 		PK_UI_Change(UI_CURSOR);
 		if (settings.isWide)
-			PisteDraw2_SetXOffset(80);
+			PDraw::set_xoffset(80);
 		else
-			PisteDraw2_SetXOffset(0);
-		PisteDraw2_ScreenFill(0);
+			PDraw::set_xoffset(0);
+		PDraw::screen_fill(0);
 
 		if (!episode_started)
 		{
@@ -7484,10 +7480,10 @@ int PK_MainScreen_Change() {
 		//PisteLog_Kirjoita(mapkuva);
 		//PisteLog_Kirjoita(" from episode folder \n");
 
-		PisteDraw2_Image_Delete(kuva_tausta);
-		kuva_tausta = PisteDraw2_Image_Load(mapkuva, true);
+		PDraw::image_delete(kuva_tausta);
+		kuva_tausta = PDraw::image_load(mapkuva, true);
 		if (kuva_tausta == -1)
-			kuva_tausta = PisteDraw2_Image_Load("gfx/map.bmp", true);
+			kuva_tausta = PDraw::image_load("gfx/map.bmp", true);
 
 		/* Ladataan kartan musiikki ...*/
 		char mapmusa[PE_PATH_SIZE] = "map.mp3";
@@ -7526,13 +7522,13 @@ int PK_MainScreen_Change() {
 			break;
 		} while (0);
 
-		PisteSound_StartMusic(mapmusa);
+		PSound::start_music(mapmusa);
 
 		music_volume = settings.music_max_volume;
 
 		going_to_game = false;
 
-		PisteDraw2_FadeIn(PD_FADE_SLOW);
+		PDraw::fade_in(PDraw::FADE_SLOW);
 	}
 
 	// Start menu
@@ -7540,28 +7536,28 @@ int PK_MainScreen_Change() {
 	{
 		PK_UI_Change(UI_CURSOR);
 		if (settings.isWide)
-			PisteDraw2_SetXOffset(80);
+			PDraw::set_xoffset(80);
 		else
-			PisteDraw2_SetXOffset(0);
+			PDraw::set_xoffset(0);
 		PK_Search_Episode();
 
 		if (!episode_started)
 		{
-			PisteDraw2_Image_Delete(kuva_tausta);
-			kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp", true);
-			PisteSound_StartMusic("music/song09.xm"); //theme.xm
+			PDraw::image_delete(kuva_tausta);
+			kuva_tausta = PDraw::image_load("gfx/menu.bmp", true);
+			PSound::start_music("music/song09.xm"); //theme.xm
 			music_volume = settings.music_max_volume;
 		}
 		else
 		{
 			int w, h;
-			PisteDraw2_Image_GetSize(kuva_tausta, w, h);
+			PDraw::image_getsize(kuva_tausta, w, h);
 			if (w != screen_width)
 			{
-				PisteDraw2_Image_Delete(kuva_tausta);
-				kuva_tausta = PisteDraw2_Image_New(screen_width, screen_height);
+				PDraw::image_delete(kuva_tausta);
+				kuva_tausta = PDraw::image_new(screen_width, screen_height);
 			}
-			PisteDraw2_Image_Snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
+			PDraw::image_snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
 			PK_MenuShadow_Create(kuva_tausta, 640, 480, settings.isWide? 110 : 30);
 		}
 
@@ -7570,7 +7566,7 @@ int PK_MainScreen_Change() {
 		menunelio.right = 320 + 5;
 		menunelio.bottom = 240 + 5;
 
-		PisteDraw2_ScreenFill(0);
+		PDraw::screen_fill(0);
 		menu_valittu_id = 1;
 	}
 
@@ -7578,7 +7574,7 @@ int PK_MainScreen_Change() {
 	if (game_next_screen == SCREEN_GAME)
 	{
 		PK_UI_Change(UI_GAME_BUTTONS);
-		PisteDraw2_SetXOffset(0);
+		PDraw::set_xoffset(0);
 
 		if (jaksot[jakso_indeksi_nyt].lapaisty)
 			uusinta = true;
@@ -7621,13 +7617,13 @@ int PK_MainScreen_Change() {
 	{
 		PK_UI_Change(UI_CURSOR);
 		if (settings.isWide)
-			PisteDraw2_SetXOffset(80);
+			PDraw::set_xoffset(80);
 		else
-			PisteDraw2_SetXOffset(0);
-		PisteDraw2_ScreenFill(0);
+			PDraw::set_xoffset(0);
+		PDraw::screen_fill(0);
 
-		PisteDraw2_Image_Delete(kuva_tausta);
-		kuva_tausta = PisteDraw2_Image_Load("gfx/menu.bmp", true);
+		PDraw::image_delete(kuva_tausta);
+		kuva_tausta = PDraw::image_load("gfx/menu.bmp", true);
 		PK_MenuShadow_Create(kuva_tausta, 640, 480, 30);
 
 		jakso_uusi_ennatys = false;
@@ -7678,7 +7674,7 @@ int PK_MainScreen_Change() {
 
 		siirry_pistelaskusta_karttaan = false;
 
-		PisteDraw2_FadeIn(PD_FADE_FAST);
+		PDraw::fade_in(PDraw::FADE_FAST);
 	}
 
 	// Start intro
@@ -7687,18 +7683,18 @@ int PK_MainScreen_Change() {
 		//PisteLog_Kirjoita("- Initializing intro screen\n");
 		PK_UI_Change(UI_TOUCH_TO_START);
 		if (settings.isWide)
-			PisteDraw2_SetXOffset(80);
+			PDraw::set_xoffset(80);
 		else
-			PisteDraw2_SetXOffset(0);
-		PisteDraw2_ScreenFill(0);
+			PDraw::set_xoffset(0);
+		PDraw::screen_fill(0);
 
 		//PisteLog_Kirjoita("  - Loading picture: gfx/intro.bmp\n");
-		PisteDraw2_Image_Delete(kuva_tausta);
-		kuva_tausta = PisteDraw2_Image_Load("gfx/intro.bmp", true);
+		PDraw::image_delete(kuva_tausta);
+		kuva_tausta = PDraw::image_load("gfx/intro.bmp", true);
 
 		//PisteLog_Kirjoita("  - Loading music: music/INTRO.XM\n");
 
-		if (PisteSound_StartMusic("music/intro.xm") != 0)
+		if (PSound::start_music("music/intro.xm") != 0)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't load intro.xm";
@@ -7709,7 +7705,7 @@ int PK_MainScreen_Change() {
 		introlaskuri = 0;
 		siirry_pistelaskusta_karttaan = false;
 
-		PisteDraw2_FadeIn(PD_FADE_FAST);
+		PDraw::fade_in(PDraw::FADE_FAST);
 	}
 
 	// Start ending
@@ -7717,14 +7713,14 @@ int PK_MainScreen_Change() {
 	{
 		PK_UI_Change(UI_TOUCH_TO_START);
 		if (settings.isWide)
-			PisteDraw2_SetXOffset(80);
+			PDraw::set_xoffset(80);
 		else
-			PisteDraw2_SetXOffset(0);
-		PisteDraw2_ScreenFill(0);
-		PisteDraw2_Image_Delete(kuva_tausta);
-		kuva_tausta = PisteDraw2_Image_Load("gfx/ending.bmp", true);
+			PDraw::set_xoffset(0);
+		PDraw::screen_fill(0);
+		PDraw::image_delete(kuva_tausta);
+		kuva_tausta = PDraw::image_load("gfx/ending.bmp", true);
 
-		if (PisteSound_StartMusic("music/intro.xm") != 0)
+		if (PSound::start_music("music/intro.xm") != 0)
 		{
 			PK2_error = true;
 			PK2_error_msg = "Can't load intro.xm";
@@ -7736,7 +7732,7 @@ int PK_MainScreen_Change() {
 		siirry_lopusta_menuun = false;
 		episode_started = false;
 
-		PisteDraw2_FadeIn(PD_FADE_FAST);
+		PDraw::fade_in(PDraw::FADE_FAST);
 	}
 
 	game_screen = game_next_screen;
@@ -7789,7 +7785,7 @@ int PK_MainScreen() {
 		if (music_volume_now < 0)
 			music_volume_now = 0;
 
-		PisteSound_SetMusicVolume(music_volume_now);
+		PSound::set_musicvolume(music_volume_now);
 	}
 
 	static bool wasPressed = false;
@@ -7818,8 +7814,8 @@ int PK_MainScreen() {
 
 	wasPressed = PisteInput_Keydown(PI_ESCAPE);
 
-	if (closing_game && !PisteDraw2_IsFading() || PK2_error)
-		Engine->stop();
+	if (closing_game && !PDraw::is_fading() || PK2_error)
+		Piste::stop();
 	
 	return 0;
 }
@@ -7849,7 +7845,7 @@ void PK_Start_Test(const char* arg){
 
 void PK_Unload(){
 	if (!unload){
-		PisteSound_StopMusic();
+		PSound::stop_music();
 		delete kartta;
 		delete tekstit;
 		delete Game::Particles;
@@ -7860,7 +7856,7 @@ void PK_Unload(){
 }
 
 void PK_Fade_Quit() {
-	if(!closing_game) PisteDraw2_FadeOut(PD_FADE_FAST);
+	if(!closing_game) PDraw::fade_out(PDraw::FADE_FAST);
 	closing_game = true;
 	music_volume = 0;
 }
@@ -7868,7 +7864,6 @@ void PK_Fade_Quit() {
 void quit(int ret) {
 	PK_Settings_Save("data/settings.ini");
 	PK_Unload();
-	delete Engine;
 	if (!ret) printf("Exited correctely\n");
 	exit(ret);
 }
@@ -7929,14 +7924,14 @@ int main(int argc, char *argv[]) {
 	screen_width = 800;
 	#endif
 
-	Engine = new Piste::Game(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp");
+	Piste::init(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp");
 
-	if (!Engine->is_ready()) {
+	if (!Piste::is_ready()) {
 		printf("PK2    - Failed to init PisteEngine.\n");
 		return 0;
 	}
 
-	if (dev_mode) Engine->set_debug(true);
+	if (dev_mode) Piste::set_debug(true);
 
 	tekstit = new PisteLanguage();
 
@@ -7963,7 +7958,7 @@ int main(int argc, char *argv[]) {
 		PK_Start_Test(test_path);
 	}
 
-	Engine->loop(PK_MainScreen); //The game loop calls PK_MainScreen().
+	Piste::loop(PK_MainScreen); //The game loop calls PK_MainScreen().
 
 	if(PK2_error){
 		printf("PK2    - Error!\n");

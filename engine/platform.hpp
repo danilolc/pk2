@@ -15,9 +15,13 @@
 #endif
 
 #ifdef _WIN32
-    #include <direct.h>
-#elif __linux__ || __APPLE__
-    #include <unistd.h> //getcwd chdir
+	#include <io.h>
+	#include "winlite.h"
+	#include <direct.h>
+#else
+	#include <dirent.h>
+	#include <unistd.h>
+	#include <limits.h>
 #endif
 
 #ifdef __ANDROID__

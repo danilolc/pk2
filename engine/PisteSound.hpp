@@ -6,17 +6,21 @@
 
 #include "platform.hpp"
 
-int PisteSound_Start();
-int PisteSound_Update();
-int PisteSound_End();
+namespace PSound {
 
-int PisteSound_LoadSFX(char* filename); //0 success, -1 fail
-int PisteSound_PlaySFX(int index);
-int PisteSound_PlaySFX(int index, int volume, int panoramic, int freq);
-void PisteSound_SetSFXVolume(int volume);
-int PisteSound_FreeSFX(int index);
-void PisteSound_ResetSFX();
+int init();
+int update();
+int terminate();
 
-int PisteSound_StartMusic(char* filename);
-void PisteSound_SetMusicVolume(int volume);
-void PisteSound_StopMusic();
+int  load_sfx(char* filename); //0 success, -1 fail
+int  play_sfx(int index);
+int  play_sfx(int index, int volume, int panoramic, int freq);
+void set_sfxvolume(int volume);
+int  free_sfx(int index);
+void reset_sfx();
+
+int  start_music(char* filename);
+void set_musicvolume(int volume);
+void stop_music();
+
+}

@@ -2,24 +2,14 @@
 //PisteEngine - PisteUtils
 //by Janne Kivilahti from Piste Gamez
 //#########################
+#include "PisteUtils.hpp"
+
+#include <SDL.h>
+
 #include <cstring>
 #include <sys/stat.h>
 #include <ctype.h>
 #include <string>
-#ifdef _WIN32
-	#include <io.h>
-	#include "winlite.h"
-	#include <direct.h>
-#else
-	#include <dirent.h>
-	#include <unistd.h>
-	#include <limits.h>
-#endif
-
-#include "PisteUtils.hpp"
-
-#include <SDL.h>
-#include <cstring>
 
 using namespace std;
 

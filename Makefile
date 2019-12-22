@@ -69,4 +69,4 @@ makedirs:
 	@mkdir -p $(BIN_DIR) >/dev/null
 	@mkdir -p $(BUILD_DIR) >/dev/null
 
-.PHONY: pk2 clean makedirs
+.PHONY: pk2 test clean makedirs
