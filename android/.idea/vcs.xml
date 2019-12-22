@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/jni/SDL" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/jni/SDL_image" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/app/jni/SDL_mixer" vcs="Git" />
+  </component>
+</project>

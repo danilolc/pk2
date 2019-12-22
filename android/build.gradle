@@ -1,68 +1,25 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
 buildscript {
-	repositories {
-		jcenter()
-		google()
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:3.0.1'
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.3'
 
-	}
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
 }
-
-apply plugin: 'com.android.application'
 
 allprojects {
     repositories {
-		jcenter()
-		mavenCentral()
-
+        jcenter()
+        google()
     }
 }
 
-dependencies {
-    compile 'com.android.support:appcompat-v7:23.4.0'
-}
-
-android {
-	signingConfigs {
-		release {
-			storeFile file("key.keystore")
-			storePassword 'pekkakana'
-			keyAlias 'pekka_kana'
-			keyPassword 'pekkakana'
-		}
-	}
-	lintOptions {
-		abortOnError false
-		disable 'MissingTranslation'
-	}
-	compileSdkVersion 27
-	buildToolsVersion '26.0.2'
-	packagingOptions {
-		exclude 'META-INF/LICENSE'
-		exclude 'META-INF/NOTICE'
-	}
-
-    buildTypes {
-        debug {
-            signingConfig signingConfigs.release
-        }
-        release {
-            signingConfig signingConfigs.release
-            debuggable false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            minifyEnabled true
-        }
-    }
-
-	sourceSets {
-		main {
-			manifest.srcFile 'AndroidManifest.xml'
-            jniLibs.srcDirs = [ 'libs' ]
-            jni.srcDirs = [ ]
-            java.srcDirs = [ 'src', '../external/SDL/android-project/app/src/main/java']
-			res.srcDirs = [ 'res' ]
-			assets.srcDirs = [ '../res/pack' ]
-		}
-	}
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
