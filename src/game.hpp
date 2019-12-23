@@ -8,6 +8,8 @@
 #include "types.hpp"
 #include "platform.hpp"
 
+#include "settings.hpp"
+
 #include <vector>
 
 enum PARTICLES{
@@ -190,13 +192,15 @@ class GiftSystem {
 
 //In game variables
 namespace Game {
-
+	
 	extern PK2::Particle_System* Particles;
 	extern PK2::SpriteSystem* Sprites;
 	extern PK2::GiftSystem* Gifts;
 
 	extern PK2Kartta* current_map;
 	extern char map_path[PE_PATH_SIZE];
+
+	extern PK2SETTINGS settings;
 
 	extern int vibration;
 
