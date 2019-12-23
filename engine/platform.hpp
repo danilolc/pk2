@@ -3,16 +3,12 @@
 
 #include "types.hpp"
 
-#include <cstdio>
-#include <cstdlib>
-#include <ctime>
 #include <sys/stat.h>
 #include <fstream>
 
-#include <cmath> //sin cos
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 
 #ifdef _WIN32
 	#include <io.h>
@@ -29,10 +25,12 @@
     #undef printf
     #define printf(...) __android_log_print(ANDROID_LOG_DEBUG, "PK2", __VA_ARGS__)
 
-    #ifndef main
-        extern "C" int SDL_main(int argc, char *argv[]);
-        #define main SDL_main
+    #ifdef main
+        #undef main
     #endif
+    extern "C" int SDL_main(int argc, char *argv[]);
+    #define main SDL_main
+
 #endif
 
 #ifdef _WIN32

@@ -263,12 +263,12 @@ int PisteInput_Start(){
 
 bool PisteInput_Hiiri_Vasen(){
 	SDL_PumpEvents();
-	return SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(SDL_BUTTON_LEFT);
+	return SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT);
 }
 
 bool PisteInput_Hiiri_Oikea(){
 	SDL_PumpEvents();
-	return SDL_GetMouseState(NULL, NULL)&SDL_BUTTON(SDL_BUTTON_RIGHT);
+	return SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT);
 }
 
 int PisteInput_Ohjain_X(int ohjain){

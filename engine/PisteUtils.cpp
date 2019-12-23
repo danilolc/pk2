@@ -8,8 +8,7 @@
 
 #include <cstring>
 #include <sys/stat.h>
-#include <ctype.h>
-#include <string>
+#include <cstring>
 
 using namespace std;
 
@@ -19,43 +18,55 @@ bool force_mobile = false;
 
 int PisteUtils_Setcwd() {
 	char path[PE_PATH_SIZE];
-	strcpy(path,"/storage/sdcard0/Pekka Kana 2/");
-	return chdir(path);
+	strcpy(path,"./");
+	return 0; //chdir(path);
 }
 
-#else
+#elif _WIN32
+
 int PisteUtils_Setcwd() {
 	char exepath[PE_PATH_SIZE];
 	int find;
 
-#ifdef _WIN32
 	string(exepath, GetModuleFileName(NULL, exepath, PE_PATH_SIZE));
-#else
-	int count = readlink("/proc/self/exe", exepath, PE_PATH_SIZE);
-	if (count > 0) exepath[count] = '\0';
-#endif
 
 	find = string(exepath).find_last_of("/\\");
 	exepath[find] = '\0';
 	chdir(exepath);
 	return chdir("../res");
 }
+
+#else
+
+int PisteUtils_Setcwd() {
+	char exepath[PE_PATH_SIZE];
+	int find;
+
+	int count = readlink("/proc/self/exe", exepath, PE_PATH_SIZE);
+	if (count > 0) exepath[count] = '\0';
+
+	find = string(exepath).find_last_of("/\\");
+	exepath[find] = '\0';
+	chdir(exepath);
+	return chdir("../res");
+}
+
 #endif
 
-void PisteUtils_Lower(char* string){
+void PisteUtils_Lower(char* string) {
 	for(int i = 0; string[i]!='\0'; i++)
 		string[i] = tolower(string[i]);
 }
 
-void PisteUtils_RemoveSpace(char* string){
+void PisteUtils_RemoveSpace(char* string) {
 	int len = strlen(string);
-	while(string[len-2]==' '){
-		string[len-2]='\0';
+	while(string[len-2] == ' '){
+		string[len-2] = '\0';
 		len--;
 	}
 }
 
-bool PisteUtils_Find(char *filename){
+bool PisteUtils_Find(char *filename) {
 
 	//printf("\n\nFinding %s\n",filename);
 

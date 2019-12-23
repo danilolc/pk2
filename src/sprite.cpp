@@ -3,14 +3,12 @@
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
 
-#include <iostream>
-#include <fstream>
-#include <cstring>
-
 #include "sprite.hpp"
 
 #include "PisteDraw.hpp"
 #include "platform.hpp"
+
+#include <cstring>
 
 using namespace std;
 

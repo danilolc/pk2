@@ -2,16 +2,14 @@
 //PisteEngine - PisteFont
 //by Janne Kivilahti from Piste Gamez
 //#########################
-
 #include "PisteFont.hpp"
+
 #include "PisteDraw.hpp"
 #include "PisteLanguage.hpp"
 #include "platform.hpp"
 
-#include <math.h>
-#include <fstream>
-#include <iostream>
-#include <string.h>
+#include <cmath>
+#include <cstring>
 
 int PFont::init_charlist(){
 	int font_index[256], i;

@@ -9,7 +9,7 @@
 
 CXX = g++
 CXXFLAGS += $(shell pkg-config --cflags sdl2) -g -O2 -std=gnu++17 -w
-LDFLAGS += $(shell pkg-config --libs sdl2) -lSDL2_mixer -lSDL2_image
+LDFLAGS += -lSDL2 -lSDL2_mixer -lSDL2_image
 
 # Defines directories
 SRC_DIR = src/

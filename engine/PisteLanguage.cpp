@@ -5,9 +5,7 @@
 
 #include "PisteLanguage.hpp"
 
-#include <fstream>
-#include <iostream>
-#include <fcntl.h>
+#include <SDL.h>
 #include <cstring>
 
 using namespace std;
@@ -43,14 +41,12 @@ PisteLanguage::~PisteLanguage(){}
 
 bool PisteLanguage::Read_File(char *filename){
 
-	ifstream *tiedosto = new ifstream(filename, ios::in);
+	SDL_RWops *io = SDL_RWFromFile(filename, "r");
 
-	if (tiedosto->fail()){
-		delete (tiedosto);
+	if (io == nullptr)
 		return false;
-	}
 
-	for (int i=0;i<MAX_TEXTS;i++){
+	for (int i = 0; i < MAX_TEXTS; i++) {
 		strcpy(tekstit[i],"");
 		strcpy(otsikot[i],"");
 	}
@@ -62,9 +58,7 @@ bool PisteLanguage::Read_File(char *filename){
 
 	bool jatka = true;
 
-	while(jatka && tiedosto->peek() != EOF){
-		merkki = tiedosto->get();
-
+	while(jatka && SDL_RWread(io, &merkki, 1, 1)) {
 		switch (merkki){
 			case MARKER_1:
 				if (read == LUE_SKIP){
@@ -126,8 +120,7 @@ bool PisteLanguage::Read_File(char *filename){
 			jatka = false;
 	}
 
-	delete tiedosto;
-
+    SDL_RWclose(io);
 	return true;
 }
 

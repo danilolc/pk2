@@ -3,8 +3,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include <cstring>
-#include <cstdio>
+#include "platform.hpp"
 
 namespace PGui {
 

@@ -5,7 +5,6 @@
 #pragma once
 
 #include "platform.hpp"
-//#include "PisteDraw.hpp"
 
 class PFont{
 private:

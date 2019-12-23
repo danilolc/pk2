@@ -25,6 +25,8 @@
 #include "game.hpp"
 
 #include <array>
+#include <cmath>
+#include <cstring>
 
 #define GAME_NAME   "Pekka Kana 2"
 #define PK2_VERSION "r3"
@@ -7810,7 +7812,7 @@ int PK_MainScreen() {
 
 	wasPressed = PisteInput_Keydown(PI_ESCAPE);
 
-	if (closing_game && !PDraw::is_fading() || PK2_error)
+	if ((closing_game && !PDraw::is_fading()) || PK2_error)
 		Piste::stop();
 	
 	return 0;
@@ -7883,8 +7885,9 @@ int main(int argc, char *argv[]) {
 				exit(1);
 			}
 			else {
+				i++;
+				test_path = argv[i];
 				test_level = true;
-				test_path = argv[++i];
 				continue;
 			}
 		}
@@ -7894,8 +7897,9 @@ int main(int argc, char *argv[]) {
 				exit(1);
 			}
 			else {
-				printf("PK2    - Path set to %s\n", argv[++i]);
-				chdir(argv[i + 1]);
+				i++;
+				printf("PK2    - Path set to %s\n", argv[i]);
+				chdir(argv[i]);
 				path_set = true;
 				continue;
 			}
@@ -7967,4 +7971,6 @@ int main(int argc, char *argv[]) {
 	}
 	
 	quit(0);
+
+	return 0;
 }

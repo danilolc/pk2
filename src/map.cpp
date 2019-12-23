@@ -3,17 +3,15 @@
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
 
-#include <sys/stat.h>
-#include <iostream>
-#include <fcntl.h>
-#include <inttypes.h>
-#include <fstream>
 
 #include "game.hpp"
 #include "map.hpp"
 #include "PisteDraw.hpp"
 #include "PisteUtils.hpp"
 #include "PisteInput.hpp"
+
+#include <inttypes.h>
+#include <cstring>
 
 using namespace std;
 

@@ -7,8 +7,6 @@
 #include "PisteFont.hpp"
 #include "platform.hpp"
 
-#include <vector>
-
 namespace PDraw {
 
 const int FADE_FAST = 5;

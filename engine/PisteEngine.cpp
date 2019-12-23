@@ -6,7 +6,6 @@
 #include "platform.hpp"
 
 #include <SDL.h>
-#include <string>
 
 namespace Piste {
 

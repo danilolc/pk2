@@ -7,9 +7,8 @@
 #include "PisteFont.hpp"
 #include "PisteGui.hpp"
 
-#include <fstream>
 #include <algorithm>
-#include <ctime>
+#include <vector>
 
 #include <SDL_image.h>
 

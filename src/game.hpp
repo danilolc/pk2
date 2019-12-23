@@ -1,10 +1,13 @@
 #pragma once
 
 #include "PisteLanguage.hpp"
+
 #include "map.hpp"
+#include "sprite.hpp"
+
 #include "types.hpp"
 #include "platform.hpp"
-#include "sprite.hpp"
+
 #include <vector>
 
 enum PARTICLES{

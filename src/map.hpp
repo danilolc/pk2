@@ -8,8 +8,6 @@
 
 #include "platform.hpp"
 
-#include <string.h>
-
 typedef struct {
 	int left, top, right, bottom;
 } RECT;
