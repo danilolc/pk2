@@ -27,6 +27,7 @@ void  rotate_palette(BYTE start, BYTE end);
 
 int   image_new(int w, int h);
 int   image_load(const char* filename, bool getPalette);
+int   image_load(int& index, const char* filename, bool getPalette);
 int   image_copy(int src_i, int dst_i);
 int   image_cut(int ImgIndex, int x, int y, int w, int h);
 int   image_cut(int ImgIndex, RECT area);

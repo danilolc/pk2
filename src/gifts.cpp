@@ -2,6 +2,7 @@
 
 #include "sprites.hpp"
 #include "game.hpp"
+#include "language.hpp"
 #include <cstring>
 
 int gifts_count = 0;
@@ -37,14 +38,12 @@ bool Gifts_Add(int prototype_id) {
 	char ilmo[80];
 	strcpy(ilmo,tekstit->Hae_Teksti(PK_txt.game_newitem));  //"a new item: ";
 
-	while (i<MAX_GIFTS && !lisatty)
-	{
-		if (gifts_list[i] == -1)
-		{
+	while (i < MAX_GIFTS && !lisatty) {
+		if (gifts_list[i] == -1) {
 			lisatty = true;
 			gifts_list[i] = prototype_id;
 			
-			//strcat(ilmo,protot[prototype_id]->nimi);
+			strcat(ilmo, Prototypes_List[prototype_id].nimi); //TODO
 			PK_Start_Info(ilmo);
 			gifts_count++;
 		}

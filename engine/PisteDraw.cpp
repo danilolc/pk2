@@ -138,6 +138,15 @@ int image_load(const char* filename, bool getPalette){
 
     return index;
 }
+int image_load(int& index, const char* filename, bool getPalette){
+    
+    image_delete(index);
+    index = image_load(filename, getPalette);
+
+    return index;
+
+}
+
 int image_copy(int src_i, int dst_i){
     if(src_i < 0 || dst_i < 0) return -1;
     SDL_FillRect(imageList[dst_i], NULL, 255);

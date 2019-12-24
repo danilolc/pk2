@@ -1,5 +1,6 @@
 
 #include "settings.hpp"
+
 #include "PisteInput.hpp"
 #include "PisteUtils.hpp"
 

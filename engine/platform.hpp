@@ -10,6 +10,11 @@
 #include <cstdlib>
 #include <ctime>
 
+#ifndef _WIN32
+    #define itoa(X,Y,Z) sprintf(Y,"%i",X)
+    #define ltoa(X,Y,Z) sprintf(Y,"%ld",X)
+#endif
+
 #ifdef _WIN32
 	#include <io.h>
 	#include "winlite.h"

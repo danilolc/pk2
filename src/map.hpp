@@ -62,7 +62,6 @@ const BYTE TAUSTA_PALLARX_VERT			= 1;
 const BYTE TAUSTA_PALLARX_HORI			= 2;
 const BYTE TAUSTA_PALLARX_VERT_JA_HORI	= 3;
 
-void PK2Kartta_Cos_Sin(double *cost, double *sint);
 void PK2Kartta_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys);
 void PK2Kartta_Aseta_Ruudun_Mitat(int leveys, int korkeus);
 

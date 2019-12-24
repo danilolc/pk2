@@ -9,6 +9,7 @@
 #include "effect.hpp"
 #include "sprites.hpp"
 #include "game.hpp"
+#include "language.hpp"
 
 #include "PisteDraw.hpp"
 #include "PisteUtils.hpp"
@@ -18,9 +19,6 @@
 #include <cstring>
 
 using namespace std;
-
-double *kartta_cos_table;
-double *kartta_sin_table;
 
 int aste,
 	vesiaste = 0,
@@ -42,11 +40,6 @@ struct PK2KARTTA{ // Vanha versio 0.1
 	BYTE		palikat[320*256];
 	BYTE		extrat [640*480];
 };
-
-void PK2Kartta_Cos_Sin(double *cost, double *sint){
-	kartta_cos_table = cost;
-	kartta_sin_table = sint;
-}
 
 void PK2Kartta_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys){
 	aste = degree;
@@ -1429,8 +1422,8 @@ void PK2Kartta::Animoi_Vesi(void){
 		for (x=0;x<32;x++){
 			sini = int((y+d2/2)*11.25)%360;
 			cosi = int((x+d1/2)*11.25)%360;
-			sini = (int)kartta_sin_table[sini];
-			cosi = (int)kartta_cos_table[cosi];
+			sini = (int)sin_table[sini];
+			cosi = (int)cos_table[cosi];
 
 			vy = (y+sini/11)%32;
 			vx = (x+cosi/11)%32;
@@ -1596,10 +1589,10 @@ int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 
 				if (!editor){
 					if (palikka == BLOCK_HISSI_VERT)
-						ay = (int)kartta_sin_table[aste%360];
+						ay = (int)sin_table[aste%360];
 
 					if (palikka == BLOCK_HISSI_HORI)
-						ax = (int)kartta_cos_table[aste%360];
+						ax = (int)cos_table[aste%360];
 
 					if (palikka == BLOCK_KYTKIN1)
 						ay = ajastin1_y/2;
