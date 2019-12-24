@@ -4,8 +4,12 @@
 //#########################
 
 
-#include "game.hpp"
 #include "map.hpp"
+
+#include "effect.hpp"
+#include "sprites.hpp"
+#include "game.hpp"
+
 #include "PisteDraw.hpp"
 #include "PisteUtils.hpp"
 #include "PisteInput.hpp"
@@ -1121,8 +1125,8 @@ void PK2Kartta::Kopioi(PK2Kartta &kartta){
 
 void PK2Kartta::Place_Sprites() {
 
-	Game::Sprites->clear();
-	Game::Sprites->add(this->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
+	Sprites_clear();
+	Sprites_add(this->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
 
 	int sprite;
 
@@ -1130,13 +1134,13 @@ void PK2Kartta::Place_Sprites() {
 		for (int y = 0; y < PK2KARTTA_KARTTA_KORKEUS; y++){
 			sprite = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
-			if (sprite != 255 && Game::Sprites->protot[sprite].korkeus > 0){
-				Game::Sprites->add(sprite, 0, x*32, y*32 - Game::Sprites->protot[sprite].korkeus+32, MAX_SPRITEJA, false);
+			if (sprite != 255 && Prototypes_List[sprite].korkeus > 0){
+				Sprites_add(sprite, 0, x*32, y*32 - Prototypes_List[sprite].korkeus+32, MAX_SPRITEJA, false);
 			}
 		}
 	}
 
-	Game::Sprites->sort_bg();
+	Sprites_sort_bg();
 
 }
 
@@ -1166,11 +1170,11 @@ void PK2Kartta::Select_Start() {
 				}
 	}
 
-	Game::Sprites->player->x = pos_x + Game::Sprites->player->tyyppi->leveys/2;
-	Game::Sprites->player->y = pos_y - Game::Sprites->player->tyyppi->korkeus/2;
+	Player_Sprite->x = pos_x + Player_Sprite->tyyppi->leveys/2;
+	Player_Sprite->y = pos_y - Player_Sprite->tyyppi->korkeus/2;
 
-	Game::camera_x = (int)Game::Sprites->player->x;
-	Game::camera_y = (int)Game::Sprites->player->y;
+	Game::camera_x = (int)Player_Sprite->x;
+	Game::camera_y = (int)Player_Sprite->y;
 	Game::dcamera_x = Game::camera_x;
 	Game::dcamera_y = Game::camera_y;
 
@@ -1186,8 +1190,8 @@ int PK2Kartta::Count_Keys() {
 	for (x=0; x < PK2KARTTA_KARTTA_KOKO; x++){
 		sprite = this->spritet[x];
 		if (sprite != 255)
-			if (Game::Sprites->protot[sprite].avain && 
-				Game::Sprites->protot[sprite].tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
+			if (Prototypes_List[sprite].avain && 
+				Prototypes_List[sprite].tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
 
 				keys++;
 	}
@@ -1207,7 +1211,7 @@ void PK2Kartta::Change_SkullBlocks() {
 			if (front == BLOCK_KALLOSEINA){
 				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
 				if (back != BLOCK_KALLOSEINA)
-					Effect::SmokeClouds(x*32+24,y*32+6);
+					Effect_SmokeClouds(x*32+24,y*32+6);
 
 			}
 
@@ -1232,7 +1236,7 @@ void PK2Kartta::Open_Locks() {
 			palikka = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
 			if (palikka == BLOCK_LUKKO){
 				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
-				Effect::SmokeClouds(x*32+6,y*32+6);
+				Effect_SmokeClouds(x*32+6,y*32+6);
 			}
 		}
 

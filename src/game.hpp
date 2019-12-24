@@ -9,7 +9,6 @@
 #include "platform.hpp"
 
 #include "settings.hpp"
-#include "particle_system.hpp"
 
 #include <vector>
 
@@ -26,57 +25,10 @@ extern double sin_table[360];
 extern int degree;
 extern int degree_temp;
 
-
-
-
-namespace PK2 {
-
-class SpriteSystem {
-
-	int next_free_prototype = 0;
-
-
-	int  protot_get(char *polku, char *tiedosto);
-	
-	int  protot_get_sound(char *polku, char *tiedosto);
-	void protot_get_transformation(int i);
-	void protot_get_bonus(int i);
-	void protot_get_ammo1(int i);
-	void protot_get_ammo2(int i);
-
-	void add_bg(int index);
-	
-
-	public:
-
-	SpriteSystem();
-	~SpriteSystem();
-
-	PK2Sprite* player;
-
-	PK2Sprite_Prototyyppi protot[MAX_PROTOTYYPPEJA];
-	PK2Sprite spritet[MAX_SPRITEJA];
-	int taustaspritet[MAX_SPRITEJA];
-
-
-	int  protot_get_all();
-	void protot_clear_all();
-
-	void clear();
-	void add(int protoype_id, int pelaaja, double x, double y, int emo, bool isbonus);
-	void add_ammo(int protoype_id, int pelaaja, double x, double y, int emo);
-	void sort_bg();
-	void start_directions();
-	
-};
-
-}
-
+extern PK2Kartta *kartta;
 
 //In game variables
 namespace Game {
-	
-	extern PK2::SpriteSystem* Sprites;
 	
 	extern PK2Kartta* current_map;
 	extern char map_path[PE_PATH_SIZE];
@@ -95,19 +47,10 @@ namespace Game {
 	extern int keys;
 }
 
-namespace Effect {
-
-    void Feathers(DWORD x, DWORD y);
-    void Splash(DWORD x, DWORD y, BYTE color);
-    void Explosion(DWORD x, DWORD y, BYTE color);
-    void Smoke(DWORD x, DWORD y, BYTE color);
-    void SmokeClouds(DWORD x, DWORD y);
-    void Stars(DWORD x, DWORD y, BYTE color);
-    void Destruction(BYTE tehoste, DWORD x, DWORD y);
-
-}
 
 
+bool PK_Check_File(char *filename);
+void PK_Load_EpisodeDir(char *tiedosto);
 
 void PK_Start_Info(char *text);
 extern PisteLanguage *tekstit;

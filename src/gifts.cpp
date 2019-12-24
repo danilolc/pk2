@@ -1,5 +1,6 @@
 #include "gifts.hpp"
 
+#include "sprites.hpp"
 #include "game.hpp"
 #include <cstring>
 
@@ -15,11 +16,11 @@ int Gifts_Get(int i) {
 }
 
 PK2Sprite_Prototyyppi* Gifts_GetProtot(int i) {
-	return &Game::Sprites->protot[ gifts_list[i] ];
+	return &Prototypes_List[ gifts_list[i] ];
 }
 
 void Gifts_Draw(int i, int x, int y) {
-	PK2Sprite_Prototyyppi* prot = &Game::Sprites->protot[ gifts_list[i] ];
+	PK2Sprite_Prototyyppi* prot = &Prototypes_List[ gifts_list[i] ];
 	prot->Piirra(x - prot->leveys / 2, y - prot->korkeus / 2, 0);
 }
 
@@ -54,10 +55,10 @@ bool Gifts_Add(int prototype_id) {
 
 int Gifts_Use() {
 	if (gifts_count > 0) {
-		Game::Sprites->add(
+		Sprites_add(
 			gifts_list[0], 0,
-			Game::Sprites->player->x - Game::Sprites->protot[gifts_list[0]].leveys,
-			Game::Sprites->player->y,
+			Player_Sprite->x - Prototypes_List[gifts_list[0]].leveys,
+			Player_Sprite->y,
 			MAX_SPRITEJA, false);
 
 		for (int i = 0; i < MAX_GIFTS - 1; i++)
