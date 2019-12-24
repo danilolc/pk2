@@ -206,17 +206,24 @@ int image_cutclip(int index, RECT srcrect, RECT dstrect){
 int image_cutcliptransparent(int index, RECT srcrect, RECT dstrect, int alpha){
     return image_cutcliptransparent(index, srcrect, dstrect, alpha, 0); //TODO implement
 }
-int image_cutcliptransparent(int index, RECT srcrect, RECT dstrect, int alpha, int colorsum){
-    BYTE *imagePix = NULL;
-    BYTE *screenPix = NULL;
+
+int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, int colorsum){
+	return image_cutcliptransparent(index, src.x, src.y, src.w, src.h,
+	    dst.x, dst.y, alpha, colorsum);
+}
+
+int image_cutcliptransparent(int index, DWORD src_x, DWORD src_y, DWORD src_w, DWORD src_h,
+						 DWORD dst_x, DWORD dst_y, int alpha, BYTE colorsum){
+    BYTE *imagePix = nullptr;
+    BYTE *screenPix = nullptr;
     BYTE color1, color2;
     DWORD imagePitch, screenPitch;
     int posx, posy;
 
-    int x_start = dstrect.x + x_offset;
-    int    x_end = dstrect.x + srcrect.w;
-    int    y_start = dstrect.y;
-    int    y_end = dstrect.y + srcrect.h;
+    int x_start = dst_x + x_offset;
+    int x_end = dst_x + src_w;
+    int y_start = dst_y;
+    int y_end = dst_y + src_h;
 
     if (alpha > 100) alpha = 100;
     if (alpha < 0) alpha = 0;
@@ -230,7 +237,7 @@ int image_cutcliptransparent(int index, RECT srcrect, RECT dstrect, int alpha, i
     drawscreen_start(*&screenPix, (DWORD &)screenPitch);
     for (posx = x_start; posx < x_end; posx++)
         for (posy = y_start; posy < y_end; posy++) {
-            color1 = imagePix[(posx-x_start+srcrect.x)+imagePitch*(posy-y_start+srcrect.y)];
+            color1 = imagePix[(posx-x_start+src_x)+imagePitch*(posy-y_start+src_y)];
             if (color1 != 255) {
                 color2 = screenPix[posx+screenPitch*posy];
                 screenPix[posx+screenPitch*posy] = blend_colors(color1, color2, alpha) + colorsum;

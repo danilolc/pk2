@@ -1,75 +1,91 @@
 
 #include "settings.hpp"
 #include "PisteInput.hpp"
+#include "PisteUtils.hpp"
 
+#include <SDL_rwops.h>
 #include <cstring>
 
 #define SETTINGS_PATH "data/settings.ini"
+#define SETTINGS_VERSION "1.2"
 
-void settings_init(PK2SETTINGS* settings) {
-	settings->ladattu = false;
+PK2SETTINGS Settings;
 
-	strcpy(settings->kieli,"english.txt");
+void settings_init() {
 
-	settings->lapinakyvat_objektit = true;
-	settings->lapinakyvat_menutekstit = false;
-	settings->saa_efektit = true;
-	settings->nayta_tavarat = true;
-	settings->tausta_spritet = true;
+	strcpy(Settings.versio, SETTINGS_VERSION);
+	Settings.ladattu = false;
 
-	settings->aanet = true;
-	settings->musiikki = true;
+	strcpy(Settings.kieli, "english.txt");
 
-	settings->control_left      = PI_LEFT;
-	settings->control_right     = PI_RIGHT;
-	settings->control_jump      = PI_UP;
-	settings->control_down      = PI_DOWN;
-	settings->control_walk_slow = PI_RALT;
-	settings->control_attack1   = PI_RCONTROL;
-	settings->control_attack2   = PI_RSHIFT;
-	settings->control_open_gift = PI_SPACE;
+	Settings.lapinakyvat_objektit = true;
+	Settings.lapinakyvat_menutekstit = false;
+	Settings.saa_efektit = true;
+	Settings.nayta_tavarat = true;
+	Settings.tausta_spritet = true;
 
-	settings->isFiltered = true;
-	settings->isFit = true;
-	settings->isFullScreen = true;
-	settings->isWide = true;
+	Settings.aanet = true;
+	Settings.musiikki = true;
 
-	settings->music_max_volume = 64;
-	settings->sfx_max_volume = 90;
+	Settings.control_left      = PI_LEFT;
+	Settings.control_right     = PI_RIGHT;
+	Settings.control_jump      = PI_UP;
+	Settings.control_down      = PI_DOWN;
+	Settings.control_walk_slow = PI_RALT;
+	Settings.control_attack1   = PI_RCONTROL;
+	Settings.control_attack2   = PI_RSHIFT;
+	Settings.control_open_gift = PI_SPACE;
+
+	Settings.isFiltered = true;
+	Settings.isFit = true;
+	Settings.isFullScreen = true;
+	Settings.isWide = true;
+
+	Settings.music_max_volume = 64;
+	Settings.sfx_max_volume = 90;
 }
 
-int settings_open(PK2SETTINGS* settings) {
-	ifstream *file = new ifstream(SETTINGS_PATH, ios::binary);
+int settings_open() {
+	SDL_RWops *file = SDL_RWFromFile(SETTINGS_PATH, "rb");
 
-	if (file->fail()){
-		delete file;
-		settings_init(settings);
+	if (file == nullptr){
+		settings_init();
+		settings_save();
 		return 1;
 	}
 
-	file->read(settings->versio, 4); // Read the version from settings file
-
-	if (strcmp(settings->versio, "1.2") != 0) { // If settings version isn't 1.2
-		delete file;
-		settings_init(settings);
-        settings_save(settings);
+	SDL_RWread(file, Settings.versio, 4, 1);
+	
+	if (strcmp(Settings.versio, SETTINGS_VERSION) != 0) { 
+		// If settings isn't in current version
+		settings_init();
+        settings_save();
 		return 2;
 	}
-	file->read((char*)settings, sizeof(PK2SETTINGS));
-	delete file;
+	
+	SDL_RWread(file, (char*)&Settings, sizeof(PK2SETTINGS), 1);
+	
+	Settings.ladattu = true;
 
-	settings->ladattu = true;
-
+	SDL_RWclose(file);
+	
 	return 0;
 }
 
-int settings_save(PK2SETTINGS* settings) {
-    //PisteUtils_CreateDir("data");
+int settings_save() {
+    PisteUtils_CreateDir("data");
 	
-	ofstream *tiedosto = new ofstream(SETTINGS_PATH, ios::binary);
-	tiedosto->write ("1.2", 4);
-	tiedosto->write ((char*)settings, sizeof(PK2SETTINGS));
+	SDL_RWops *file = SDL_RWFromFile(SETTINGS_PATH, "wb");
 
-	delete (tiedosto);
+	if (file == nullptr) {
+		printf("Error saving settings\n");
+		return 1;
+	}
+	
+	SDL_RWwrite(file, SETTINGS_VERSION, 1, 4);
+	SDL_RWwrite(file, (char*)&Settings, 1, sizeof(PK2SETTINGS));
+	
+	SDL_RWclose(file);
+
 	return 0;
 }

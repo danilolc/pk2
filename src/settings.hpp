@@ -43,5 +43,7 @@ struct PK2SETTINGS {
 
 };
 
-int settings_open(PK2SETTINGS* settings);
-int settings_save(PK2SETTINGS* settings);
+extern PK2SETTINGS Settings;
+
+int settings_open();
+int settings_save();
