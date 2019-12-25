@@ -41,4 +41,21 @@ extern DWORD fake_pisteet;
 
 extern PK2EPISODESCORES episodipisteet;
 
+extern bool jakso_uusi_ennatys;
+extern bool jakso_uusi_ennatysaika;
+extern bool episodi_uusi_ennatys;
+extern bool episodi_uusi_ennatys_naytetty; //unused
+
 extern bool episode_started;
+
+void PK_Fade_Quit();
+
+void PK_Start_Saves();
+
+void EpisodeScore_Start();
+int  EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupisteet);
+int  EpisodeScore_Open(char *filename);
+int  EpisodeScore_Save(char *filename);
+void Load_InfoText();
+void Load_Maps();
+void Load_EpisodeDir(char *tiedosto);

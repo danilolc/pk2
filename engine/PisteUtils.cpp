@@ -54,8 +54,8 @@ int PisteUtils_Setcwd() {
 #endif
 
 void PisteUtils_Lower(char* string) {
-	for(int i = 0; string[i]!='\0'; i++)
-		string[i] = tolower(string[i]);
+	for(; *string != '\0'; string++)
+		*string |= ' ';
 }
 
 void PisteUtils_RemoveSpace(char* string) {
@@ -222,4 +222,32 @@ bool PisteUtils_Is_Mobile() {
 	return force_mobile;
 #endif
 
+}
+
+int PisteUtils_Alphabetical_Compare(char *a, char *b) {
+	
+	int a_size, b_size;
+
+	for(a_size = 0; a[a_size] != '\0'; a_size++)
+		a[a_size] |= ' '; //Lower case
+
+	for(b_size = 0; b[b_size] != '\0'; b_size++)
+		b[b_size] |= ' ';
+	
+	int min_size = a_size < b_size? a_size : b_size;
+
+	for (int i = 0; i < min_size; i++) {
+		if (a[i] < b[i])
+			return 2;
+		if (a[i] > b[i])
+			return 1;
+	}
+
+	if (a_size > b_size)
+		return 1;
+
+	if (a_size < b_size)
+		return 2;
+
+	return 0;
 }

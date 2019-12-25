@@ -9,15 +9,20 @@
 
 #include "map.hpp"
 
-#include "PisteDraw.hpp"
-#include "PisteInput.hpp"
+#include "PisteEngine.hpp"
 
 #include <cstring>
 
 int current_screen = SCREEN_NOT_SET;
 int next_screen = SCREEN_FIRST_START;
 
+bool closing_game = false;
 
+void PK_Fade_Quit() {
+	if(!closing_game) PDraw::fade_out(PDraw::FADE_FAST);
+	closing_game = true;
+	music_volume = 0;
+}
 
 int Screen_First_Start() {
 	
@@ -66,7 +71,7 @@ int Screen_First_Start() {
 
 	PK_Search_Episode();
 	PK_Start_Saves();
-	PK_Search_File();
+	Load_Maps();
 
 	Load_SFX();
 	
@@ -79,9 +84,10 @@ int Screen_First_Start() {
 	PDraw::image_delete(kuva_tausta);
 	kuva_tausta = PDraw::image_load("gfx/menu.bmp", true);
 
-	PK_Empty_Records();
+	//why
+	Empty_Records();
+	Save_All_Records();
 
-	PK_Search_Records("data/saves.dat");
 }
 
 //If the screen change
@@ -158,21 +164,21 @@ int Screen_Loop() {
 	if (PisteInput_Keydown(PI_ESCAPE) && key_delay == 0 && !skipped){ //Don't activate menu whith a not drawn screen
 		if(test_level)
 			PK_Fade_Quit();
-		else{
-			if (menu_nyt != MENU_MAIN || current_screen != SCREEN_MENU){
-				next_screen = SCREEN_MENU;
-				menu_nyt = MENU_MAIN;
-				degree_temp = degree;
-			}
-			else if (current_screen == SCREEN_MENU && !wasPressed && PisteInput_Keydown(PI_ESCAPE) && menu_lue_kontrollit == 0){ // Just pressed escape in menu
-				if(menu_valittu_id == menu_valinta_id-1)
-					PK_Fade_Quit();
-				else {
-					menu_valittu_id = menu_valinta_id-1; // Set to "exit" option
+		else { //Exit with esc
+			//if (menu_nyt != MENU_MAIN || current_screen != SCREEN_MENU){
+			//	next_screen = SCREEN_MENU;
+				//menu_nyt = MENU_MAIN;
+			//	degree_temp = degree;
+			//}
+			//else if (current_screen == SCREEN_MENU && !wasPressed && PisteInput_Keydown(PI_ESCAPE) && menu_lue_kontrollit == 0){ // Just pressed escape in menu
+			//	if(menu_valittu_id == menu_valinta_id-1)
+			//		PK_Fade_Quit();
+			//	else {
+			//		menu_valittu_id = menu_valinta_id-1; // Set to "exit" option
 					//window_activated = false;
 					//PisteInput_ActivateWindow(false);
-				}
-			}
+			//	}
+			//}
 		}
 	}
 

@@ -12,6 +12,9 @@
 
 #include <vector>
 
+extern int kytkin1; //TODO - on inGame.cpp
+extern int kytkin2;
+extern int kytkin3;
 
 extern int screen_width;
 extern int screen_height;

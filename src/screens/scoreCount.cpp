@@ -1,12 +1,28 @@
 
+#include "screens.hpp"
+
 #include "text.hpp"
+#include "language.hpp"
 #include "game.hpp"
 #include "gifts.hpp"
 #include "gui.hpp"
+#include "episode.hpp"
+#include "sfx.hpp"
+#include "sprites.hpp"
 
 #include "PisteDraw.hpp"
+#include "PisteInput.hpp"
 
 bool siirry_pistelaskusta_karttaan = false;
+
+int pistelaskuvaihe = 0;
+int pistelaskudelay = 0;
+
+DWORD bonuspisteet = 0;
+DWORD aikapisteet = 0;
+DWORD energiapisteet = 0;
+DWORD esinepisteet = 0;
+DWORD pelastuspisteet = 0;
 
 int PK_Draw_ScoreCount(){
 	char luku[20];
@@ -116,7 +132,7 @@ int PK_Draw_ScoreCount(){
 		}
 	}
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.score_screen_continue),100,430)){
+	if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.score_screen_continue),100,430)){
 		music_volume = 0;
 		siirry_pistelaskusta_karttaan = true;
 		PDraw::fade_out(PDraw::FADE_SLOW);
@@ -130,7 +146,7 @@ int PK_Draw_ScoreCount(){
 
 
 int Screen_ScoreCount_Init() {
-	PK_UI_Change(UI_CURSOR);
+	GUI_Change(UI_CURSOR);
 	if (Settings.isWide)
 		PDraw::set_xoffset(80);
 	else
@@ -174,16 +190,16 @@ int Screen_ScoreCount_Init() {
 	int vertailun_tulos;
 
 	/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
-	vertailun_tulos = PK_EpisodeScore_Compare(jakso_indeksi_nyt, temp_pisteet, kartta->aika - timeout, false);
+	vertailun_tulos = EpisodeScore_Compare(jakso_indeksi_nyt, temp_pisteet, kartta->aika - timeout, false);
 	if (vertailun_tulos > 0)
 	{
-		PK_EpisodeScore_Save(pisteet_tiedosto);
+		EpisodeScore_Save(pisteet_tiedosto);
 	}
 
 	/* Tutkitaan onko pelaaja rikkonut episodin piste-enn�tyksen */
-	vertailun_tulos = PK_EpisodeScore_Compare(0, pisteet, 0, true);
+	vertailun_tulos = EpisodeScore_Compare(0, pisteet, 0, true);
 	if (vertailun_tulos > 0)
-		PK_EpisodeScore_Save(pisteet_tiedosto);
+		EpisodeScore_Save(pisteet_tiedosto);
 
 	music_volume = Settings.music_max_volume;
 
@@ -208,7 +224,7 @@ int Screen_ScoreCount(){
 			bonuspisteet += 10;
 
 			if (degree%7==1)
-				PK_Play_MenuSound(pistelaskuri_aani, 70);
+				Play_MenuSFX(pistelaskuri_aani, 70);
 
 			if (bonuspisteet >= jakso_pisteet){
 				bonuspisteet = jakso_pisteet;
@@ -222,7 +238,7 @@ int Screen_ScoreCount(){
 			timeout--;
 
 			if (degree%10==1)
-				PK_Play_MenuSound(pistelaskuri_aani, 70);
+				Play_MenuSFX(pistelaskuri_aani, 70);
 
 			if (timeout == 0)
 				pistelaskudelay = 50;
@@ -233,7 +249,7 @@ int Screen_ScoreCount(){
 			energiapisteet+=300;
 			Player_Sprite->energia--;
 
-			PK_Play_MenuSound(pistelaskuri_aani, 70);
+			Play_MenuSFX(pistelaskuri_aani, 70);
 
 		} else if (Gifts_Count() > 0){
 			pistelaskuvaihe = 4;
@@ -242,7 +258,7 @@ int Screen_ScoreCount(){
 				if (Gifts_Get(i) != -1) {
 					esinepisteet += Gifts_GetProtot(i)->pisteet + 500;
 					//esineet[i] = NULL;
-					PK_Play_MenuSound(hyppy_aani, 100);
+					Play_MenuSFX(hyppy_aani, 100);
 					break;
 				}
 		}
@@ -264,7 +280,7 @@ int Screen_ScoreCount(){
 		{
 			next_screen = SCREEN_MAP;
 			//episode_started = false;
-			menu_nyt = MENU_MAIN;
+			//menu_nyt = MENU_MAIN;
 		}
 	}
 

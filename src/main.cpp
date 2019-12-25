@@ -20,6 +20,7 @@
 //#########################
 
 #include "PisteEngine.hpp"
+
 #include "map.hpp"
 #include "sprite.hpp"
 #include "game.hpp"
@@ -32,6 +33,7 @@
 #include "sfx.hpp"
 #include "text.hpp"
 #include "language.hpp"
+#include "episode.hpp"
 
 #include <array>
 #include <cmath>
@@ -81,15 +83,12 @@ const int MAX_ILMOITUKSENNAYTTOAIKA = 700;
 bool test_level = false;
 bool dev_mode = false;
 
-bool closing_game = false;
 
 bool unload = false;
 
 //Debug info
-bool	draw_dubug_info = false;
-int		debug_sprites = 0;
-int		debug_drawn_sprites = 0;
-int		debug_active_sprites = 0;
+
+int debug_active_sprites = 0;
 
 //KARTTA
 
@@ -99,22 +98,17 @@ char current_map_name[PE_PATH_SIZE];
 
 //PALIKAT JA MASKIT
 PK2BLOCK	palikat[300];
-
 PK2BLOCK	lasketut_palikat[150];//150
-
 PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
 
 
-bool nimiedit = false;
 
-//Map
-int kytkin1 = 0, kytkin2 = 0, kytkin3 = 0;
-int palikka_animaatio = 0;
+
 
 //��NIEFEKTIT
 
 
-int sprite_aanet[50]; // spritejen k�ytt�m�t ��nibufferit
+//int sprite_aanet[50]; // spritejen k�ytt�m�t ��nibufferit
 
 //TALLENNUKSET
 
@@ -130,31 +124,12 @@ bool aikaraja = false;
 
 int kytkin_tarina = 0;
 
-int item_paneeli_x = 10;
+
 
 int info_timer = 0;
 char info[80] = " ";
 
 //PISTEIDEN LASKEMINEN
-
-
-int pistelaskuvaihe = 0;
-int pistelaskudelay = 0;
-DWORD	bonuspisteet = 0,
-		aikapisteet = 0,
-		energiapisteet = 0,
-		esinepisteet = 0,
-		pelastuspisteet = 0;
-
-bool jakso_uusi_ennatys = false;
-bool jakso_uusi_ennatysaika = false;
-bool episodi_uusi_ennatys = false;
-bool episodi_uusi_ennatys_naytetty = false;
-
-//PELIN MUUTTUJAT
-
-bool going_to_game = false;
-
 
 int nakymattomyys = 0;
 
@@ -177,7 +152,6 @@ bool show_fps = false;
 //==================================================
 
 void PK_Load_EpisodeDir(char *tiedosto);
-void PK_Fade_Quit();
 
 //==================================================
 //(#1) Filesystem
@@ -227,44 +201,9 @@ void PK_New_Save(){
 
 	nakymattomyys = 0;
 }
-void PK_Start_Saves(){
-	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
-		strcpy(jaksot[i].nimi,"");
-		strcpy(jaksot[i].tiedosto,"");
-		jaksot[i].x = 0;
-		jaksot[i].y = 0;
-		jaksot[i].jarjestys = -1;
-		jaksot[i].lapaisty = false;
-		jaksot[i].ikoni = 0;
-	}
-}
 
-int PK_Alphabetical_Compare(char *a, char *b){
-	int apituus = strlen(a);
-	int bpituus = strlen(b);
-	int looppi = apituus;
 
-	if (bpituus < apituus)
-		looppi = bpituus;
 
-	PisteUtils_Lower(a);
-	PisteUtils_Lower(b);
-
-	for (int i=0;i<looppi;i++){
-		if (a[i] < b[i])
-			return 2;
-		if (a[i] > b[i])
-			return 1;
-	}
-
-	if (apituus > bpituus)
-		return 1;
-
-	if (apituus < bpituus)
-		return 2;
-
-	return 0;
-}
 int PK_Order_Episodes(){
 	char temp[PE_PATH_SIZE] = "";
 	bool tehty;
@@ -277,7 +216,7 @@ int PK_Order_Episodes(){
 
 			//for (t=0;t<i;t++) {
 			for (int t=2 ; t<i+2 ; t++) {
-				if (PK_Alphabetical_Compare(episodit[t],episodit[t+1]) == 1) {
+				if (PisteUtils_Alphabetical_Compare(episodit[t],episodit[t+1]) == 1) {
 					strcpy(temp, episodit[t]);
 					strcpy(episodit[t], episodit[t+1]);
 					strcpy(episodit[t+1], temp);
@@ -2857,7 +2796,7 @@ void PK_Start_Test(const char* arg){
 
 	printf("PK2    - testing episode '%s' level '%s'\n", episodi, current_map_name);
 
-	PK_Load_InfoText();
+	Load_InfoText();
 	PK_New_Game();
 }
 
@@ -2870,11 +2809,7 @@ void PK_Unload(){
 	}
 }
 
-void PK_Fade_Quit() {
-	if(!closing_game) PDraw::fade_out(PDraw::FADE_FAST);
-	closing_game = true;
-	music_volume = 0;
-}
+
 
 void quit(int ret) {
 	settings_save();

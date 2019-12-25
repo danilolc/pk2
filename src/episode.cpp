@@ -26,7 +26,24 @@ DWORD fake_pisteet = 0;
 
 PK2EPISODESCORES episodipisteet;
 
+bool jakso_uusi_ennatys = false;
+bool jakso_uusi_ennatysaika = false;
+bool episodi_uusi_ennatys = false;
+bool episodi_uusi_ennatys_naytetty = false;
+
 bool episode_started = false;
+
+void PK_Start_Saves(){
+	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
+		strcpy(jaksot[i].nimi,"");
+		strcpy(jaksot[i].tiedosto,"");
+		jaksot[i].x = 0;
+		jaksot[i].y = 0;
+		jaksot[i].jarjestys = -1;
+		jaksot[i].lapaisty = false;
+		jaksot[i].ikoni = 0;
+	}
+}
 
 void EpisodeScore_Start(){
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
@@ -97,7 +114,8 @@ int  EpisodeScore_Save(char *filename){
 	return 0;
 }
 
-void Load_InfoText() { //TODO - Load info from different languages
+//TODO - Load info from different languages
+void Load_InfoText() { 
 	PisteLanguage* temp;
 	char infofile[PE_PATH_SIZE] = "infosign.txt";
 	char otsikko[] = "info00";
@@ -125,7 +143,6 @@ void Load_InfoText() { //TODO - Load info from different languages
 	delete (temp);
 }
 
-//PK_Search_File
 void Load_Maps(){
 	int i=0;
 	char hakemisto[PE_PATH_SIZE];

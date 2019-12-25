@@ -21,3 +21,4 @@ int  PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE],
 
 void PisteUtils_Force_Mobile();
 bool PisteUtils_Is_Mobile();
+int PisteUtils_Alphabetical_Compare(char *a, char *b);

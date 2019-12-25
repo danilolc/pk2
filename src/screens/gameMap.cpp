@@ -1,5 +1,20 @@
+#include "screens.hpp"
 
 #include "PisteDraw.hpp"
+#include "PisteInput.hpp"
+#include "PisteSound.hpp"
+
+#include <cstring>
+
+#include "game.hpp"
+#include "text.hpp"
+#include "language.hpp"
+#include "gui.hpp"
+#include "episode.hpp"
+#include "sfx.hpp"
+#include "save.hpp"
+
+bool going_to_game = false;
 
 int PK_Draw_Map_Button(int x, int y, int t){
 	int paluu = 0;
@@ -71,9 +86,9 @@ int PK_Draw_Map(){
 		PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.episodes_no_maps),180,290);
 	}
 
-	if (PK_Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_return),100,430)){
+	if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_return),100,430)){
 		next_screen = SCREEN_MENU;
-		menu_nyt = MENU_MAIN;
+		//menu_nyt = MENU_MAIN;
 	}
 
 	int nuppi_x = 0, nuppi_y = 0;
@@ -129,10 +144,10 @@ int PK_Draw_Map(){
 					going_to_game = true;
 					PDraw::fade_out(PDraw::FADE_SLOW);
 					music_volume = 0;
-					PK_Play_MenuSound(kieku_aani,90);
+					Play_MenuSFX(kieku_aani,90);
 				}
 				else
-					PK_Play_MenuSound(ammuu_aani,100);
+					Play_MenuSFX(ammuu_aani,100);
 			}
 
 			itoa(jaksot[i].jarjestys,luku,10);
@@ -178,7 +193,7 @@ int PK_Draw_Map(){
 
 
 int Screen_Map_Init() {
-	PK_UI_Change(UI_CURSOR);
+	GUI_Change(UI_CURSOR);
 	if (Settings.isWide)
 		PDraw::set_xoffset(80);
 	else
@@ -187,14 +202,14 @@ int Screen_Map_Init() {
 
 	if (!episode_started)
 	{
-		if (lataa_peli != -1)
+		if (true) //lataa_peli != -1)
 		{
-			PK_Search_File();
+			Load_Maps();
 
-			for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-				jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
+			//for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
+			//	jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
 
-			lataa_peli = -1;
+			//lataa_peli = -1;
 			episode_started = true;
 			peli_ohi = true;
 			jakso_lapaisty = true;
@@ -203,10 +218,10 @@ int Screen_Map_Init() {
 		else
 		{
 			PK_Start_Saves(); // jos ladataan peli, asetetaan l�p�istyarvot jaksoille aikaisemmin
-			PK_Search_File();
+			Load_Maps();
 		}
 		char topscoretiedosto[PE_PATH_SIZE] = "scores.dat";
-		PK_EpisodeScore_Open(topscoretiedosto);
+		EpisodeScore_Open(topscoretiedosto);
 	}
 
 	/* Ladataan kartan taustakuva ...*/

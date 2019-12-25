@@ -1,9 +1,29 @@
 
 
+#include "screens.hpp"
+
+#include "PisteEngine.hpp"
+
+#include <cstring>
+
 #include "sprites.hpp"
 #include "game.hpp"
+#include "episode.hpp"
+#include "text.hpp"
+#include "language.hpp"
+#include "particles.hpp"
+#include "sfx.hpp"
+#include "gifts.hpp"
+#include "gui.hpp"
 
-#include "PisteDraw.hpp"
+int item_paneeli_x = 10;
+
+bool draw_dubug_info = false;
+int debug_sprites = 0;
+int debug_drawn_sprites = 0;
+
+int kytkin1 = 0, kytkin2 = 0, kytkin3 = 0;
+int palikka_animaatio = 0;
 
 int PK_Draw_InGame_BGSprites(){
 	double xl, yl, alku_x, alku_y, yk;
@@ -192,7 +212,7 @@ int PK_Draw_InGame_DebugInfo(){
 	PDraw::font_write(fontti1, lukua, 270, 460);
 
 	char tpolku[PE_PATH_SIZE] = "";
-	PK_Load_EpisodeDir(tpolku);
+	Load_EpisodeDir(tpolku);
 
 	PDraw::font_write(fontti1,tpolku,10,470);
 
@@ -353,7 +373,7 @@ int PK_Draw_InGame_Lower_Menu(){
 
 		if (increase_time > 0) {
 			itoa((int)(increase_time * TIME_FPS) / 60, luku, 10);
-			PK_Fadetext_New(fontti2, luku, x + vali, y, 49, true);
+			Fadetext_New(fontti2, luku, x + vali, y, 49, true);
 			increase_time = 0;
 		}
 
@@ -497,7 +517,7 @@ int PK_Draw_InGame(){
 		if (Settings.nayta_tavarat)
 			PK_Draw_InGame_Lower_Menu();
 
-		PK_Fadetext_Draw();
+		Fadetext_Draw();
 
 		PK_Draw_InGame_UI();
 
@@ -523,16 +543,16 @@ int PK_Draw_InGame(){
 			PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.game_paused),screen_width/2-82,screen_height/2-9);
 
 		if (jakso_lapaisty)
-			PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
+			Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
 		else
 			if (peli_ohi){
 				if (Player_Sprite->energia < 1)
-					PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
+					Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
 				else
 					if (timeout < 1 && aikaraja)
-						PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
+						Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
 
-				PK_Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
+				Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
 			}
 	}
 	
@@ -547,7 +567,7 @@ int PK_Draw_InGame(){
 }
 
 int Screen_InGame_Init(){
-	PK_UI_Change(UI_GAME_BUTTONS);
+	GUI_Change(UI_GAME_BUTTONS);
 	PDraw::set_xoffset(0);
 
 	if (jaksot[jakso_indeksi_nyt].lapaisty)
@@ -568,7 +588,7 @@ int Screen_InGame_Init(){
 
 		PK_Calculate_Tiles();
 
-		PK_Fadetext_Init(); //Reset fade text
+		Fadetext_Init(); //Reset fade text
 
 		episode_started = true;
 		music_volume = Settings.music_max_volume;
@@ -591,7 +611,7 @@ int Screen_InGame(){
 	if (!Game::paused){
 		if (!jakso_lapaisty && (!aikaraja || timeout > 0))
 			PK_Update_Sprites();
-		PK_Fadetext_Update();
+		Fadetext_Update();
 	}
 
 	PK_Draw_InGame();
@@ -663,8 +683,8 @@ int Screen_InGame(){
 	if (lopetusajastin == 1 && !PDraw::is_fading()){
 		if(test_level) PK_Fade_Quit();
 		else {
-			if (jakso_lapaisty) game_next_screen = SCREEN_SCORING;
-			else game_next_screen = SCREEN_MAP;
+			if (jakso_lapaisty) next_screen = SCREEN_SCORING;
+			else next_screen = SCREEN_MAP;
 		}
 	}
 
