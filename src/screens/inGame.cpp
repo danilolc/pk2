@@ -18,12 +18,60 @@
 
 int item_paneeli_x = 10;
 
+int debug_active_sprites = 0;
+
 bool draw_dubug_info = false;
 int debug_sprites = 0;
 int debug_drawn_sprites = 0;
 
 int kytkin1 = 0, kytkin2 = 0, kytkin3 = 0;
 int palikka_animaatio = 0;
+
+const int INFO_TIME = 700;
+
+void PK_Start_Info(char *text) {
+
+	if (strcmp(text, info) != 0 || info_timer == 0) {
+
+		strcpy(info, text);
+		info_timer = INFO_TIME;
+	
+	}
+}
+
+int PK_Update_Sprites(){
+	debug_active_sprites = 0;
+	int i;
+	PK2Sprite* sprite;
+
+	for (i = 0; i < MAX_SPRITEJA; i++){ //Activate sprite if it is on screen
+		sprite = &Sprites_List[i];
+		if (sprite->x < Game::camera_x+640+320 &&//screen_width+screen_width/2 &&
+			sprite->x > Game::camera_x-320 &&//screen_width/2 &&
+			sprite->y < Game::camera_y+480+240 &&//screen_height+screen_height/2 &&
+			sprite->y > Game::camera_y-240)//screen_height/2)
+			sprite->aktiivinen = true;
+		else
+			sprite->aktiivinen = false;
+
+		if (sprite->piilota == true)
+			sprite->aktiivinen = false;
+	}
+
+	for (i = 0; i < MAX_SPRITEJA; i++){
+		sprite = &Sprites_List[i];
+		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYYPPI_TAUSTA){
+			if (sprite->tyyppi->tyyppi == TYYPPI_BONUS)
+				PK_Sprite_Bonus_Movement(i);
+			else
+				PK_Sprite_Movement(i);
+
+			debug_active_sprites++;
+		}
+	}
+
+	return 0;
+}
 
 int PK_Draw_InGame_BGSprites(){
 	double xl, yl, alku_x, alku_y, yk;
@@ -206,7 +254,7 @@ int PK_Draw_InGame_DebugInfo(){
 	sprintf(dluku, "%.7f", Player_Sprite->a); //Player h-speed
 	PDraw::font_write(fontti1, dluku, 10, 440);
 
-	PDraw::font_write(fontti1, seuraava_kartta, 10, 460);
+	PDraw::font_write(fontti1, current_map_name, 10, 460);
 
 	itoa(Player_Sprite->hyppy_ajastin, lukua, 10);
 	PDraw::font_write(fontti1, lukua, 270, 460);
@@ -476,9 +524,9 @@ int PK_Draw_InGame_UI(){
 			alue.bottom -= (20 - info_timer) / 2;
 		}
 
-		if (info_timer > MAX_ILMOITUKSENNAYTTOAIKA - 20){
-			alue.top	+= 10 - (MAX_ILMOITUKSENNAYTTOAIKA - info_timer) / 2;
-			alue.bottom -= 10 - (MAX_ILMOITUKSENNAYTTOAIKA - info_timer) / 2;
+		if (info_timer > INFO_TIME - 20){
+			alue.top	+= 10 - (INFO_TIME - info_timer) / 2;
+			alue.bottom -= 10 - (INFO_TIME - info_timer) / 2;
 		}
 
 		PDraw::screen_fill(alue.left-1,alue.top-1,alue.right+1,alue.bottom+1,51);
@@ -566,6 +614,294 @@ int PK_Draw_InGame(){
 	return 0;
 }
 
+
+
+
+PK2BLOCK	palikat[300];
+PK2BLOCK	lasketut_palikat[150];//150
+PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
+void PK_Calculate_MovableBlocks_Position() {
+	lasketut_palikat[BLOCK_HISSI_HORI].vasen = (int)cos_table[degree%360];
+	lasketut_palikat[BLOCK_HISSI_HORI].oikea = (int)cos_table[degree%360];
+
+	lasketut_palikat[BLOCK_HISSI_VERT].ala = (int)sin_table[degree%360];
+	lasketut_palikat[BLOCK_HISSI_VERT].yla = (int)sin_table[degree%360];
+
+	int kytkin1_y = 0,
+		kytkin2_y = 0,
+		kytkin3_x = 0;
+
+	if (kytkin1 > 0)
+	{
+		kytkin1_y = 64;
+
+		if (kytkin1 < 64)
+			kytkin1_y = kytkin1;
+
+		if (kytkin1 > KYTKIN_ALOITUSARVO-64)
+			kytkin1_y = KYTKIN_ALOITUSARVO - kytkin1;
+	}
+
+	if (kytkin2 > 0)
+	{
+		kytkin2_y = 64;
+
+		if (kytkin2 < 64)
+			kytkin2_y = kytkin2;
+
+		if (kytkin2 > KYTKIN_ALOITUSARVO-64)
+			kytkin2_y = KYTKIN_ALOITUSARVO - kytkin2;
+	}
+
+	if (kytkin3 > 0)
+	{
+		kytkin3_x = 64;
+
+		if (kytkin3 < 64)
+			kytkin3_x = kytkin3;
+
+		if (kytkin3 > KYTKIN_ALOITUSARVO-64)
+			kytkin3_x = KYTKIN_ALOITUSARVO - kytkin3;
+	}
+
+	kytkin1_y /= 2;
+	kytkin2_y /= 2;
+	kytkin3_x /= 2;
+
+	lasketut_palikat[BLOCK_KYTKIN1].ala = kytkin1_y;
+	lasketut_palikat[BLOCK_KYTKIN1].yla = kytkin1_y;
+
+	lasketut_palikat[BLOCK_KYTKIN2_YLOS].ala = -kytkin2_y;
+	lasketut_palikat[BLOCK_KYTKIN2_YLOS].yla = -kytkin2_y;
+
+	lasketut_palikat[BLOCK_KYTKIN2_ALAS].ala = kytkin2_y;
+	lasketut_palikat[BLOCK_KYTKIN2_ALAS].yla = kytkin2_y;
+
+	lasketut_palikat[BLOCK_KYTKIN2].ala = kytkin2_y;
+	lasketut_palikat[BLOCK_KYTKIN2].yla = kytkin2_y;
+
+	lasketut_palikat[BLOCK_KYTKIN3_OIKEALLE].oikea = kytkin3_x;
+	lasketut_palikat[BLOCK_KYTKIN3_OIKEALLE].vasen = kytkin3_x;
+	lasketut_palikat[BLOCK_KYTKIN3_OIKEALLE].koodi = BLOCK_HISSI_HORI;
+
+	lasketut_palikat[BLOCK_KYTKIN3_VASEMMALLE].oikea = -kytkin3_x;
+	lasketut_palikat[BLOCK_KYTKIN3_VASEMMALLE].vasen = -kytkin3_x;
+	lasketut_palikat[BLOCK_KYTKIN3_VASEMMALLE].koodi = BLOCK_HISSI_HORI;
+
+	lasketut_palikat[BLOCK_KYTKIN3].ala = kytkin3_x;
+	lasketut_palikat[BLOCK_KYTKIN3].yla = kytkin3_x;
+}
+
+int PK_Palikka_Tee_Maskit(){
+	BYTE *buffer = NULL;
+	DWORD leveys;
+	int x,y;
+	BYTE color;
+
+	PDraw::drawimage_start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
+	for (int mask=0; mask<BLOCK_MAX_MASKEJA; mask++){
+		for (x=0; x<32; x++){
+			y=0;
+			while (y<31 && (color = buffer[x+(mask%10)*32 + (y+(mask/10)*32)*leveys])==255)
+				y++;
+
+			palikkamaskit[mask].alas[x] = y;
+		}
+
+		for (x=0; x<32; x++){
+			y=31;
+			while (y>=0 && (color = buffer[x+(mask%10)*32 + (y+(mask/10)*32)*leveys])==255)
+				y--;
+
+			palikkamaskit[mask].ylos[x] = 31-y;
+		}
+	}
+	PDraw::drawimage_end(kartta->palikat_buffer);
+
+	return 0;
+}
+int PK_Clean_TileBuffer(){
+	BYTE *buffer = NULL;
+	DWORD leveys;
+	int x,y;
+
+	PDraw::drawimage_start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
+	for (y=0;y<480;y++)
+		for(x=0;x<320;x++)
+			if (buffer[x+y*leveys] == 254)
+				buffer[x+y*leveys] = 255;
+	PDraw::drawimage_end(kartta->palikat_buffer);
+
+	return 0;
+}
+void PK_New_Save(){
+	timeout = kartta->aika;
+
+	if (timeout > 0)
+		aikaraja = true;
+	else
+		aikaraja = false;
+
+	lopetusajastin = 0;
+
+	sekunti = TIME_FPS;
+	jakso_pisteet = 0;
+	peli_ohi = false;
+	jakso_lapaisty = false;
+	kytkin1 = 0;
+	kytkin2 = 0;
+	kytkin3 = 0;
+	kytkin_tarina = 0;
+	Game::vibration = 0;
+
+	Game::paused = false;
+
+	info_timer = 0;
+
+	nakymattomyys = 0;
+}
+int PK_Map_Open(char *nimi) {
+	
+	char polku[PE_PATH_SIZE];
+	strcpy(polku,"");
+	Load_EpisodeDir(polku);
+
+	if (kartta->Lataa(polku, nimi) == 1){
+		printf("PK2    - Error loading map '%s' at '%s'\n", current_map_name, polku);
+		return 1;
+	}
+
+	PK_New_Save();
+
+	if (strcmp(kartta->versio,"1.2") == 0 || strcmp(kartta->versio,"1.3") == 0)
+		if (Prototypes_get_all() == 1)
+			return 1;
+
+	PK_Palikka_Tee_Maskit();
+
+	if (PK_Clean_TileBuffer()==1)
+		return 1;
+
+	kartta->Place_Sprites();
+	kartta->Select_Start();
+	kartta->Count_Keys();
+	kartta->Calculate_Edges();
+
+	Sprites_start_directions();
+
+	Particles_Clear();
+	Particles_LoadBG(kartta);
+
+	if ( strcmp(kartta->musiikki, "") != 0) {
+		char music_path[PE_PATH_SIZE] = "";
+		Load_EpisodeDir(music_path);
+		strcat(music_path, kartta->musiikki);
+		if (PSound::start_music(music_path) != 0) {
+
+			printf("Can't load '%s'. ", music_path);
+			strcpy(music_path, "music/");
+			strcat(music_path, kartta->musiikki);
+			printf("Trying '%s'.\n", music_path);
+
+			if (PSound::start_music(music_path) != 0) {
+
+				printf("Can't load '%s'. Trying 'music/song01.xm'.\n", music_path);
+
+				if (PSound::start_music("music/song01.xm") != 0){
+					PK2_error = true;
+					PK2_error_msg = "Can't find song01.xm";
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+
+
+
+
+int PK_Calculate_Tiles() {
+	PK2BLOCK palikka;
+
+	for (int i=0;i<150;i++){
+		palikka = lasketut_palikat[i];
+
+		palikka.vasen  = 0;
+		palikka.oikea  = 0;//32
+		palikka.yla	   = 0;
+		palikka.ala    = 0;//32
+
+		palikka.koodi  = i;
+
+		if ((i < 80 || i > 139) && i != 255){
+			palikka.tausta = false;
+
+			palikka.oikealle	= BLOCK_SEINA;
+			palikka.vasemmalle	= BLOCK_SEINA;
+			palikka.ylos		= BLOCK_SEINA;
+			palikka.alas		= BLOCK_SEINA;
+
+			// Erikoislattiat
+
+			if (i > 139){
+				palikka.oikealle	= BLOCK_TAUSTA;
+				palikka.vasemmalle	= BLOCK_TAUSTA;
+				palikka.ylos		= BLOCK_TAUSTA;
+				palikka.alas		= BLOCK_TAUSTA;
+			}
+
+			// L�pik�velt�v� lattia
+
+			if (i == BLOCK_ESTO_ALAS){
+				palikka.oikealle	= BLOCK_TAUSTA;
+				palikka.ylos		= BLOCK_TAUSTA;
+				palikka.alas		= BLOCK_SEINA;
+				palikka.vasemmalle	= BLOCK_TAUSTA;
+				palikka.ala -= 27;
+			}
+
+			// M�et
+
+			if (i > 49 && i < 60){
+				palikka.oikealle	= BLOCK_TAUSTA;
+				palikka.ylos		= BLOCK_SEINA;
+				palikka.alas		= BLOCK_SEINA;
+				palikka.vasemmalle	= BLOCK_TAUSTA;
+				palikka.ala += 1;
+			}
+
+			// Kytkimet
+
+			if (i >= BLOCK_KYTKIN1 && i <= BLOCK_KYTKIN3){
+				palikka.oikealle	= BLOCK_SEINA;
+				palikka.ylos		= BLOCK_SEINA;
+				palikka.alas		= BLOCK_SEINA;
+				palikka.vasemmalle	= BLOCK_SEINA;
+			}
+		}
+		else{
+			palikka.tausta = true;
+
+			palikka.oikealle	= BLOCK_TAUSTA;
+			palikka.vasemmalle	= BLOCK_TAUSTA;
+			palikka.ylos		= BLOCK_TAUSTA;
+			palikka.alas		= BLOCK_TAUSTA;
+		}
+
+		if (i > 131 && i < 140)
+			palikka.vesi = true;
+		else
+			palikka.vesi = false;
+
+		lasketut_palikat[i] = palikka;
+	}
+
+	PK_Calculate_MovableBlocks_Position();
+
+	return 0;
+}
+
 int Screen_InGame_Init(){
 	GUI_Change(UI_GAME_BUTTONS);
 	PDraw::set_xoffset(0);
@@ -583,7 +919,7 @@ int Screen_InGame_Init(){
 		Sprites_clear(); //Reset sprites
 		Prototypes_clear_all(); //Reset prototypes
 
-		if (PK_Map_Open(seuraava_kartta) == 1)
+		if (PK_Map_Open(current_map_name) == 1)
 			PK2_Error("Can't load map");
 
 		PK_Calculate_Tiles();
@@ -599,6 +935,79 @@ int Screen_InGame_Init(){
 	else
 		degree = degree_temp;
 
+}
+
+int PK_Update_Camera(){
+
+
+	Game::camera_x = (int)Player_Sprite->x-screen_width/2;
+	Game::camera_y = (int)Player_Sprite->y-screen_height/2;
+
+	/*
+	if (!PisteInput_Hiiri_Vasen())
+	{
+		Game::camera_x = (int)player->x-screen_width/2;
+		Game::camera_y = (int)player->y-screen_height/2;
+	}
+	else
+	{
+		Game::camera_x += PisteInput_Hiiri_X(0)*5;
+		Game::camera_y += PisteInput_Hiiri_Y(0)*5;
+	}*/
+
+	if (Game::vibration > 0)
+	{
+		Game::dcamera_x += (rand()%Game::vibration-rand()%Game::vibration)/5;
+		Game::dcamera_y += (rand()%Game::vibration-rand()%Game::vibration)/5;
+
+		Game::vibration--;
+	}
+
+	if (kytkin_tarina > 0)
+	{
+		Game::dcamera_x += (rand()%9-rand()%9);//3
+		Game::dcamera_y += (rand()%9-rand()%9);
+
+		kytkin_tarina--;
+	}
+
+	if (Game::dcamera_x != Game::camera_x)
+		Game::dcamera_a = (Game::camera_x - Game::dcamera_x) / 15;
+
+	if (Game::dcamera_y != Game::camera_y)
+		Game::dcamera_b = (Game::camera_y - Game::dcamera_y) / 15;
+
+	if (Game::dcamera_a > 6)
+		Game::dcamera_a = 6;
+
+	if (Game::dcamera_a < -6)
+		Game::dcamera_a = -6;
+
+	if (Game::dcamera_b > 6)
+		Game::dcamera_b = 6;
+
+	if (Game::dcamera_b < -6)
+		Game::dcamera_b = -6;
+
+	Game::dcamera_x += Game::dcamera_a;
+	Game::dcamera_y += Game::dcamera_b;
+
+	Game::camera_x = (int)Game::dcamera_x;
+	Game::camera_y = (int)Game::dcamera_y;
+
+	if (Game::camera_x < 0)
+		Game::camera_x = 0;
+
+	if (Game::camera_y < 0)
+		Game::camera_y = 0;
+
+	if (Game::camera_x > int(PK2KARTTA_KARTTA_LEVEYS-screen_width/32)*32)
+		Game::camera_x = int(PK2KARTTA_KARTTA_LEVEYS-screen_width/32)*32;
+
+	if (Game::camera_y > int(PK2KARTTA_KARTTA_KORKEUS-screen_height/32)*32)
+		Game::camera_y = int(PK2KARTTA_KARTTA_KORKEUS-screen_height/32)*32;
+
+	return 0;
 }
 
 int Screen_InGame(){

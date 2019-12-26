@@ -20,13 +20,11 @@ BUILD_DIR = build/
 # Defines the engine and src used in main codes
 ENG_SRC  = $(wildcard $(ENG_DIR)*.cpp)
 ENG_OBJ := $(basename $(ENG_SRC))
-ENG_OBJ := $(notdir $(ENG_OBJ))
 ENG_OBJ := $(addsuffix .o, $(ENG_OBJ))
 ENG_OBJ := $(addprefix $(BUILD_DIR), $(ENG_OBJ))
 
-PK2_SRC  = $(wildcard $(SRC_DIR)*.cpp)
+PK2_SRC  = $(wildcard $(SRC_DIR)*.cpp) $(wildcard $(SRC_DIR)*/*.cpp)
 PK2_OBJ := $(basename $(PK2_SRC))
-PK2_OBJ := $(notdir $(PK2_OBJ))
 PK2_OBJ := $(addsuffix .o, $(PK2_OBJ))
 PK2_OBJ := $(addprefix $(BUILD_DIR), $(PK2_OBJ))
 
@@ -37,12 +35,15 @@ DEPENDENCIES := $(PK2_OBJ) $(ENG_OBJ)
 DEPENDENCIES := $(basename $(DEPENDENCIES))
 DEPENDENCIES := $(addsuffix .d, $(DEPENDENCIES))
 
-pk2: makedirs $(PK2_BIN)
+pk2: $(PK2_BIN)
+
+engine: $(ENG_OBJ)
 
 ###########################
 # Rules for generate the binaries using the object files
 $(PK2_BIN) : $(PK2_OBJ) $(ENG_OBJ)
 	@echo -Linking Pekka Kana 2
+	@mkdir -p $(dir $@) >/dev/null
 	@$(CXX) $^ $(LDFLAGS) -o $@
 ###########################
 
@@ -50,13 +51,9 @@ $(PK2_BIN) : $(PK2_OBJ) $(ENG_OBJ)
 # Rules for generate any *.o file
 -include $(DEPENDENCIES)
 
-$(BUILD_DIR)%.o : $(ENG_DIR)%.cpp
-	@echo -Some dependence of $@ was changed, updating
-	@$(CXX) $(CXXFLAGS) -I$(ENG_DIR) -o $@ -c $<
-	@$(CXX) -MM -MT $@ -I$(ENG_DIR) $< > $(BUILD_DIR)$*.d
-
-$(BUILD_DIR)%.o : $(SRC_DIR)%.cpp
-	@echo -Some dependence of $@ was changed, updating
+$(BUILD_DIR)%.o : %.cpp
+	@echo -Compiling $<
+	@mkdir -p $(dir $@) >/dev/null
 	@$(CXX) $(CXXFLAGS) -I$(SRC_DIR) -I$(ENG_DIR) -o $@ -c $<
 	@$(CXX) -MM -MT $@ -I$(SRC_DIR) -I$(ENG_DIR) $< > $(BUILD_DIR)$*.d
 ###########################
@@ -65,8 +62,4 @@ clean:
 	@rm -rf $(BIN_DIR)
 	@rm -rf $(BUILD_DIR)
 
-makedirs:
-	@mkdir -p $(BIN_DIR) >/dev/null
-	@mkdir -p $(BUILD_DIR) >/dev/null
-
-.PHONY: pk2 test clean makedirs
+.PHONY: pk2 test clean

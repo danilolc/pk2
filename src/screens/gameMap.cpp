@@ -139,7 +139,7 @@ int PK_Draw_Map(){
 			// if clicked
 			if (paluu == 2) {
 				if (tyyppi != 2 || dev_mode) {
-					strcpy(seuraava_kartta,jaksot[i].tiedosto);
+					strcpy(current_map_name,jaksot[i].tiedosto);
 					jakso_indeksi_nyt = i;
 					going_to_game = true;
 					PDraw::fade_out(PDraw::FADE_SLOW);
@@ -226,7 +226,7 @@ int Screen_Map_Init() {
 
 	/* Ladataan kartan taustakuva ...*/
 	char mapkuva[PE_PATH_SIZE] = "map.bmp";
-	PK_Load_EpisodeDir(mapkuva);
+	Load_EpisodeDir(mapkuva);
 	//PisteLog_Kirjoita("  - Loading map picture ");
 	//PisteLog_Kirjoita(mapkuva);
 	//PisteLog_Kirjoita(" from episode folder \n");
@@ -240,27 +240,27 @@ int Screen_Map_Init() {
 	char mapmusa[PE_PATH_SIZE] = "map.mp3";
 	do
 	{
-		PK_Load_EpisodeDir(mapmusa);
+		Load_EpisodeDir(mapmusa);
 		if (PK_Check_File(mapmusa))
 			break;
 		strcpy(mapmusa, "map.ogg");
-		PK_Load_EpisodeDir(mapmusa);
+		Load_EpisodeDir(mapmusa);
 		if (PK_Check_File(mapmusa))
 			break;
 		strcpy(mapmusa, "map.xm");
-		PK_Load_EpisodeDir(mapmusa);
+		Load_EpisodeDir(mapmusa);
 		if (PK_Check_File(mapmusa))
 			break;
 		strcpy(mapmusa, "map.mod");
-		PK_Load_EpisodeDir(mapmusa);
+		Load_EpisodeDir(mapmusa);
 		if (PK_Check_File(mapmusa))
 			break;
 		strcpy(mapmusa, "map.it");
-		PK_Load_EpisodeDir(mapmusa);
+		Load_EpisodeDir(mapmusa);
 		if (PK_Check_File(mapmusa))
 			break;
 		strcpy(mapmusa, "map.s3m");
-		PK_Load_EpisodeDir(mapmusa);
+		Load_EpisodeDir(mapmusa);
 		if (PK_Check_File(mapmusa))
 			break;
 		strcpy(mapmusa, "music/map.mp3");

@@ -8,6 +8,16 @@
 int music_volume = 64;
 int music_volume_now = 64;
 
+int kytkin_aani;
+int hyppy_aani;
+int loiskahdus_aani;
+int avaa_lukko_aani;
+int menu_aani;
+int ammuu_aani;
+int kieku_aani;
+int tomahdys_aani;
+int pistelaskuri_aani;
+
 int Load_SFX() {
 
     kytkin_aani = PSound::load_sfx("sfx/switch3.wav");

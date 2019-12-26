@@ -148,6 +148,60 @@ bool Draw_Menu_Text(bool active, char *teksti, int x, int y){
 
 	return false;
 }
+int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
+	BYTE *buffer = NULL;
+	DWORD leveys;
+	BYTE vari,/* vari2, vari3,*/ vari32;
+	DWORD x, mx, my;
+	int y;
+	double kerroin;
+
+
+	if (PDraw::drawimage_start(kbuffer,*&buffer,(DWORD &)leveys)==1)
+		return 1;
+
+	if (kleveys > leveys)
+		kleveys = leveys;
+
+	kkorkeus -= 2;
+	kleveys  -= 2;
+
+	kleveys += startx - 30;
+
+	kerroin = 3;//2.25;//2
+
+	//for (y=0;y<kkorkeus;y++)
+	for (y=35;y<kkorkeus-30;y++)
+	{
+		my = (y)*leveys;
+		//for(x=0;x<kleveys;x++)
+		for(x=startx;x<kleveys-30;x++)
+		{
+			mx = x+my;
+			vari   = buffer[mx];
+
+			vari32 = VARI_TURKOOSI;//(vari>>5)<<5;
+			vari %= 32;
+
+			if (x == startx || x == kleveys-31 || y == 35 || y == kkorkeus-31)
+				vari = int((double)vari / (kerroin / 1.5));//1.25
+			else
+				vari = int((double)vari / kerroin);//1.25
+
+			vari += vari32;
+
+			buffer[mx] = vari;
+		}
+
+		if (kerroin > 1.005)
+			kerroin = kerroin - 0.005;
+	}
+
+	if (PDraw::drawimage_end(kbuffer)==1)
+		return 1;
+
+	return 0;
+}
 int  PK_Draw_Menu_BoolBox(int x, int y, bool muuttuja, bool active){
 	PDraw::RECT img_src, img_dst = {(DWORD)x,(DWORD)y,0,0};
 
@@ -1015,26 +1069,67 @@ int PK_Draw_Menu(){
 	return 0;
 }
 
+int Order_Episodes(){
+	char temp[PE_PATH_SIZE] = "";
+	bool tehty;
+
+	if (episodi_lkm > 1) {
+
+		for (int i = episodi_lkm-1 ; i>=0 ;i--) {
+
+			tehty = true;
+
+			//for (t=0;t<i;t++) {
+			for (int t=2 ; t<i+2 ; t++) {
+				if (PisteUtils_Alphabetical_Compare(episodit[t],episodit[t+1]) == 1) {
+					strcpy(temp, episodit[t]);
+					strcpy(episodit[t], episodit[t+1]);
+					strcpy(episodit[t+1], temp);
+					tehty = false;
+				}
+			}
+
+			if (tehty)
+				return 0;
+		}
+	}
+
+	return 0;
+}
+
+int Search_Episode(){
+	int i;
+	char hakemisto[PE_PATH_SIZE];
+
+	for (i=0;i<MAX_EPISODEJA;i++)
+		strcpy(episodit[i],"");
+
+	strcpy(hakemisto,"episodes/");
+
+	episodi_lkm = PisteUtils_Scandir("/", hakemisto, episodit, MAX_EPISODEJA) - 2;
+
+	Order_Episodes();
+
+	return 0;
+}
+
 int Screen_Menu_Init() {
 	GUI_Change(UI_CURSOR);
 
 	PDraw::set_xoffset(Settings.isWide? 80 : 0);
 
-	PK_Search_Episode();
+	Search_Episode();
 
-	if (!episode_started)
-	{
+	if (!episode_started) {
 		PDraw::image_delete(kuva_tausta);
 		kuva_tausta = PDraw::image_load("gfx/menu.bmp", true);
 		PSound::start_music("music/song09.xm"); //theme.xm
 		music_volume = Settings.music_max_volume;
-	}
-	else
-	{
+	
+	} else {
 		int w, h;
 		PDraw::image_getsize(kuva_tausta, w, h);
-		if (w != screen_width)
-		{
+		if (w != screen_width) {
 			PDraw::image_delete(kuva_tausta);
 			kuva_tausta = PDraw::image_new(screen_width, screen_height);
 		}

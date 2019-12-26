@@ -6,6 +6,7 @@
 #include "language.hpp"
 #include "text.hpp"
 #include "game.hpp"
+#include "save.hpp"
 
 #include "map.hpp"
 
@@ -35,7 +36,7 @@ int Screen_First_Start() {
 	
 	if (!test_level) {
 		strcpy(episodi, "");
-		strcpy(seuraava_kartta, "untitle1.map");
+		strcpy(current_map_name, "untitle1.map");
 	}
 
 	jakso = 1;
@@ -69,7 +70,7 @@ int Screen_First_Start() {
 	//Gifts_Clean();
 	//Particles_Clear();
 
-	PK_Search_Episode();
+	//PK_Search_Episode();
 	PK_Start_Saves();
 	Load_Maps();
 
@@ -77,7 +78,7 @@ int Screen_First_Start() {
 	
 	PDraw::fade_in(PDraw::FADE_SLOW);
 
-	PK_Calculate_Tiles();
+	//PK_Calculate_Tiles();
 
 	//Gifts_Clean();
 
@@ -86,7 +87,7 @@ int Screen_First_Start() {
 
 	//why
 	Empty_Records();
-	Save_All_Records();
+	//Save_All_Records();
 
 }
 
@@ -107,6 +108,30 @@ int Screen_Change() {
 	}
 
 	current_screen = next_screen;
+
+	return 0;
+}
+
+int PK_Updade_Mouse(){
+	if(PisteUtils_Is_Mobile()){
+    	float x, y;
+		if (PisteInput_GetTouchPos(x, y) == 0) {
+			hiiri_x = screen_width * x - PDraw::get_xoffset();
+			hiiri_y = screen_height * y;
+			return 1;
+		}
+	}
+
+	MOUSE hiiri = PisteInput_UpdateMouse(current_screen == SCREEN_MAP, Settings.isFullScreen);
+	hiiri.x -= PDraw::get_xoffset();
+
+	if (hiiri.x < 0) hiiri.x = 0;
+	if (hiiri.y < 0) hiiri.y = 0;
+	if (hiiri.x > 640-19) hiiri.x = 640-19;
+	if (hiiri.y > 480-19) hiiri.y = 480-19;
+
+	hiiri_x = hiiri.x;
+	hiiri_y = hiiri.y;
 
 	return 0;
 }

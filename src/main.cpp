@@ -44,39 +44,11 @@
 
 //#### Constants
 
-const BYTE BLOCK_MAX_MASKEJA = 150;
 
-enum BLOCKS{
-	BLOCK_TAUSTA,          //BLOCK_BACKGROUND
-	BLOCK_SEINA,           //BLOCK_WALL
-	BLOCK_MAKI_OIKEA_YLOS, //BLOCK_MAX
-	BLOCK_MAKI_VASEN_YLOS, //BLOCK_MAX_
-	BLOCK_MAKI_OIKEA_ALAS, //BLOCK_MAX_
-	BLOCK_MAKI_VASEN_ALAS, //BLOCK_MAX_ 
-	BLOCK_MAKI_YLOS,       //BLOCK_MAX_UP
-	BLOCK_MAKI_ALAS        //BLOCK_MAX_DOWN
-};
-
-
-struct PK2BLOCK{
-	BYTE	koodi;
-	bool	tausta;
-	BYTE	vasemmalle, oikealle, ylos, alas;
-	int 	vasen, oikea, yla, ala;
-	bool	vesi;
-	bool	reuna;
-};
-
-struct PK2BLOCKMASKI{
-	short int	ylos[32];
-	short int	alas[32];
-	short int	vasemmalle[32];
-	short int	oikealle[32];
-};
 
 
 //Episode
-const int MAX_ILMOITUKSENNAYTTOAIKA = 700;
+
 
 
 //#### Global Variables
@@ -86,10 +58,6 @@ bool dev_mode = false;
 
 bool unload = false;
 
-//Debug info
-
-int debug_active_sprites = 0;
-
 //KARTTA
 
 
@@ -97,9 +65,7 @@ PK2Kartta *kartta;
 char current_map_name[PE_PATH_SIZE];
 
 //PALIKAT JA MASKIT
-PK2BLOCK	palikat[300];
-PK2BLOCK	lasketut_palikat[150];//150
-PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
+
 
 
 
@@ -116,7 +82,7 @@ int lataa_peli = -1;
 
 
 // Time
-const int TIME_FPS = 100;
+//const int TIME_FPS = 100;
 DWORD timeout = 0;
 int increase_time = 0;
 int sekunti = 0;
@@ -151,7 +117,6 @@ bool show_fps = false;
 //(#0) Prototypes
 //==================================================
 
-void PK_Load_EpisodeDir(char *tiedosto);
 
 //==================================================
 //(#1) Filesystem
@@ -175,77 +140,12 @@ void PK_New_Game(){
 	pisteet = 0;
 	jakso = 1;
 }
-void PK_New_Save(){
-	timeout = kartta->aika;
-
-	if (timeout > 0)
-		aikaraja = true;
-	else
-		aikaraja = false;
-
-	lopetusajastin = 0;
-
-	sekunti = TIME_FPS;
-	jakso_pisteet = 0;
-	peli_ohi = false;
-	jakso_lapaisty = false;
-	kytkin1 = 0;
-	kytkin2 = 0;
-	kytkin3 = 0;
-	kytkin_tarina = 0;
-	Game::vibration = 0;
-
-	Game::paused = false;
-
-	info_timer = 0;
-
-	nakymattomyys = 0;
-}
 
 
 
-int PK_Order_Episodes(){
-	char temp[PE_PATH_SIZE] = "";
-	bool tehty;
 
-	if (episodi_lkm > 1) {
 
-		for (int i = episodi_lkm-1 ; i>=0 ;i--) {
 
-			tehty = true;
-
-			//for (t=0;t<i;t++) {
-			for (int t=2 ; t<i+2 ; t++) {
-				if (PisteUtils_Alphabetical_Compare(episodit[t],episodit[t+1]) == 1) {
-					strcpy(temp, episodit[t]);
-					strcpy(episodit[t], episodit[t+1]);
-					strcpy(episodit[t+1], temp);
-					tehty = false;
-				}
-			}
-
-			if (tehty)
-				return 0;
-		}
-	}
-
-	return 0;
-}
-int PK_Search_Episode(){
-	int i;
-	char hakemisto[PE_PATH_SIZE];
-
-	for (i=0;i<MAX_EPISODEJA;i++)
-		strcpy(episodit[i],"");
-
-	strcpy(hakemisto,"episodes/");
-
-	episodi_lkm = PisteUtils_Scandir("/", hakemisto, episodit, MAX_EPISODEJA) - 2;
-
-	PK_Order_Episodes();
-
-	return 0;
-}
 
 //==================================================
 //(#3) Sounds
@@ -254,128 +154,13 @@ int PK_Search_Episode(){
 
 
 
-int PK_Updade_Mouse(){
-	if(PisteUtils_Is_Mobile()){
-    	float x, y;
-		if (PisteInput_GetTouchPos(x, y) == 0) {
-			hiiri_x = screen_width * x - PDraw::get_xoffset();
-			hiiri_y = screen_height * y;
-			return 1;
-		}
-	}
-
-	MOUSE hiiri = PisteInput_UpdateMouse(current_screen == SCREEN_MAP, Settings.isFullScreen);
-	hiiri.x -= PDraw::get_xoffset();
-
-	if (hiiri.x < 0) hiiri.x = 0;
-	if (hiiri.y < 0) hiiri.y = 0;
-	if (hiiri.x > 640-19) hiiri.x = 640-19;
-	if (hiiri.y > 480-19) hiiri.y = 480-19;
-
-	hiiri_x = hiiri.x;
-	hiiri_y = hiiri.y;
-
-	return 0;
-}
 
 
 
-int PK_Palikka_Tee_Maskit(){
-	BYTE *buffer = NULL;
-	DWORD leveys;
-	int x,y;
-	BYTE color;
-
-	PDraw::drawimage_start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
-	for (int mask=0; mask<BLOCK_MAX_MASKEJA; mask++){
-		for (x=0; x<32; x++){
-			y=0;
-			while (y<31 && (color = buffer[x+(mask%10)*32 + (y+(mask/10)*32)*leveys])==255)
-				y++;
-
-			palikkamaskit[mask].alas[x] = y;
-		}
-
-		for (x=0; x<32; x++){
-			y=31;
-			while (y>=0 && (color = buffer[x+(mask%10)*32 + (y+(mask/10)*32)*leveys])==255)
-				y--;
-
-			palikkamaskit[mask].ylos[x] = 31-y;
-		}
-	}
-	PDraw::drawimage_end(kartta->palikat_buffer);
-
-	return 0;
-}
-int PK_Clean_TileBuffer(){
-	BYTE *buffer = NULL;
-	DWORD leveys;
-	int x,y;
-
-	PDraw::drawimage_start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
-	for (y=0;y<480;y++)
-		for(x=0;x<320;x++)
-			if (buffer[x+y*leveys] == 254)
-				buffer[x+y*leveys] = 255;
-	PDraw::drawimage_end(kartta->palikat_buffer);
-
-	return 0;
-}
-int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
-	BYTE *buffer = NULL;
-	DWORD leveys;
-	BYTE vari,/* vari2, vari3,*/ vari32;
-	DWORD x, mx, my;
-	int y;
-	double kerroin;
 
 
-	if (PDraw::drawimage_start(kbuffer,*&buffer,(DWORD &)leveys)==1)
-		return 1;
 
-	if (kleveys > leveys)
-		kleveys = leveys;
 
-	kkorkeus -= 2;
-	kleveys  -= 2;
-
-	kleveys += startx - 30;
-
-	kerroin = 3;//2.25;//2
-
-	//for (y=0;y<kkorkeus;y++)
-	for (y=35;y<kkorkeus-30;y++)
-	{
-		my = (y)*leveys;
-		//for(x=0;x<kleveys;x++)
-		for(x=startx;x<kleveys-30;x++)
-		{
-			mx = x+my;
-			vari   = buffer[mx];
-
-			vari32 = VARI_TURKOOSI;//(vari>>5)<<5;
-			vari %= 32;
-
-			if (x == startx || x == kleveys-31 || y == 35 || y == kkorkeus-31)
-				vari = int((double)vari / (kerroin / 1.5));//1.25
-			else
-				vari = int((double)vari / kerroin);//1.25
-
-			vari += vari32;
-
-			buffer[mx] = vari;
-		}
-
-		if (kerroin > 1.005)
-			kerroin = kerroin - 0.005;
-	}
-
-	if (PDraw::drawimage_end(kbuffer)==1)
-		return 1;
-
-	return 0;
-}
 
 /*
 int PK_Draw_Transparent_Object(int lahde_buffer, DWORD lahde_x, DWORD lahde_y, DWORD lahde_leveys, DWORD lahde_korkeus,
@@ -386,14 +171,7 @@ int PK_Draw_Transparent_Object(int lahde_buffer, DWORD lahde_x, DWORD lahde_y, D
 	return 0;
 }*/
 
-void PK_Start_Info(char *text){
-	if (strcmp(text, info) != 0 || info_timer == 0) {
 
-		strcpy(info, text);
-		info_timer = MAX_ILMOITUKSENNAYTTOAIKA;
-	
-	}
-}
 
 //==================================================
 //(#4) Text
@@ -416,62 +194,6 @@ void PK_Start_Info(char *text){
 //(#9) Map
 //==================================================
 
-int PK_Map_Open(char *nimi) {
-	
-	char polku[PE_PATH_SIZE];
-	strcpy(polku,"");
-	PK_Load_EpisodeDir(polku);
-
-	if (kartta->Lataa(polku, nimi) == 1){
-		printf("PK2    - Error loading map '%s' at '%s'\n", current_map_name, polku);
-		return 1;
-	}
-
-	PK_New_Save();
-
-	if (strcmp(kartta->versio,"1.2") == 0 || strcmp(kartta->versio,"1.3") == 0)
-		if (Prototypes_get_all() == 1)
-			return 1;
-
-	PK_Palikka_Tee_Maskit();
-
-	if (PK_Clean_TileBuffer()==1)
-		return 1;
-
-	kartta->Place_Sprites();
-	kartta->Select_Start();
-	kartta->Count_Keys();
-	kartta->Calculate_Edges();
-
-	Sprites_start_directions();
-
-	Particles_Clear();
-	Particles_LoadBG(kartta);
-
-	if ( strcmp(kartta->musiikki, "") != 0) {
-		char music_path[PE_PATH_SIZE] = "";
-		PK_Load_EpisodeDir(music_path);
-		strcat(music_path, kartta->musiikki);
-		if (PSound::start_music(music_path) != 0) {
-
-			printf("Can't load '%s'. ", music_path);
-			strcpy(music_path, "music/");
-			strcat(music_path, kartta->musiikki);
-			printf("Trying '%s'.\n", music_path);
-
-			if (PSound::start_music(music_path) != 0) {
-
-				printf("Can't load '%s'. Trying 'music/song01.xm'.\n", music_path);
-
-				if (PSound::start_music("music/song01.xm") != 0){
-					PK2_error = true;
-					PK2_error_msg = "Can't find song01.xm";
-				}
-			}
-		}
-	}
-	return 0;
-}
 
 //==================================================
 //(#10) Blocks
@@ -660,189 +382,39 @@ PK2BLOCK PK_Block_Get(int x, int y) {
 	return palikka;
 }
 
-void     PK_Calculate_MovableBlocks_Position() {
-	lasketut_palikat[BLOCK_HISSI_HORI].vasen = (int)cos_table[degree%360];
-	lasketut_palikat[BLOCK_HISSI_HORI].oikea = (int)cos_table[degree%360];
 
-	lasketut_palikat[BLOCK_HISSI_VERT].ala = (int)sin_table[degree%360];
-	lasketut_palikat[BLOCK_HISSI_VERT].yla = (int)sin_table[degree%360];
 
-	int kytkin1_y = 0,
-		kytkin2_y = 0,
-		kytkin3_x = 0;
-
-	if (kytkin1 > 0)
-	{
-		kytkin1_y = 64;
-
-		if (kytkin1 < 64)
-			kytkin1_y = kytkin1;
-
-		if (kytkin1 > KYTKIN_ALOITUSARVO-64)
-			kytkin1_y = KYTKIN_ALOITUSARVO - kytkin1;
-	}
-
-	if (kytkin2 > 0)
-	{
-		kytkin2_y = 64;
-
-		if (kytkin2 < 64)
-			kytkin2_y = kytkin2;
-
-		if (kytkin2 > KYTKIN_ALOITUSARVO-64)
-			kytkin2_y = KYTKIN_ALOITUSARVO - kytkin2;
-	}
-
-	if (kytkin3 > 0)
-	{
-		kytkin3_x = 64;
-
-		if (kytkin3 < 64)
-			kytkin3_x = kytkin3;
-
-		if (kytkin3 > KYTKIN_ALOITUSARVO-64)
-			kytkin3_x = KYTKIN_ALOITUSARVO - kytkin3;
-	}
-
-	kytkin1_y /= 2;
-	kytkin2_y /= 2;
-	kytkin3_x /= 2;
-
-	lasketut_palikat[BLOCK_KYTKIN1].ala = kytkin1_y;
-	lasketut_palikat[BLOCK_KYTKIN1].yla = kytkin1_y;
-
-	lasketut_palikat[BLOCK_KYTKIN2_YLOS].ala = -kytkin2_y;
-	lasketut_palikat[BLOCK_KYTKIN2_YLOS].yla = -kytkin2_y;
-
-	lasketut_palikat[BLOCK_KYTKIN2_ALAS].ala = kytkin2_y;
-	lasketut_palikat[BLOCK_KYTKIN2_ALAS].yla = kytkin2_y;
-
-	lasketut_palikat[BLOCK_KYTKIN2].ala = kytkin2_y;
-	lasketut_palikat[BLOCK_KYTKIN2].yla = kytkin2_y;
-
-	lasketut_palikat[BLOCK_KYTKIN3_OIKEALLE].oikea = kytkin3_x;
-	lasketut_palikat[BLOCK_KYTKIN3_OIKEALLE].vasen = kytkin3_x;
-	lasketut_palikat[BLOCK_KYTKIN3_OIKEALLE].koodi = BLOCK_HISSI_HORI;
-
-	lasketut_palikat[BLOCK_KYTKIN3_VASEMMALLE].oikea = -kytkin3_x;
-	lasketut_palikat[BLOCK_KYTKIN3_VASEMMALLE].vasen = -kytkin3_x;
-	lasketut_palikat[BLOCK_KYTKIN3_VASEMMALLE].koodi = BLOCK_HISSI_HORI;
-
-	lasketut_palikat[BLOCK_KYTKIN3].ala = kytkin3_x;
-	lasketut_palikat[BLOCK_KYTKIN3].yla = kytkin3_x;
-}
-
-int      PK_Calculate_Tiles() {
-	PK2BLOCK palikka;
-
-	for (int i=0;i<150;i++){
-		palikka = lasketut_palikat[i];
-
-		palikka.vasen  = 0;
-		palikka.oikea  = 0;//32
-		palikka.yla	   = 0;
-		palikka.ala    = 0;//32
-
-		palikka.koodi  = i;
-
-		if ((i < 80 || i > 139) && i != 255){
-			palikka.tausta = false;
-
-			palikka.oikealle	= BLOCK_SEINA;
-			palikka.vasemmalle	= BLOCK_SEINA;
-			palikka.ylos		= BLOCK_SEINA;
-			palikka.alas		= BLOCK_SEINA;
-
-			// Erikoislattiat
-
-			if (i > 139){
-				palikka.oikealle	= BLOCK_TAUSTA;
-				palikka.vasemmalle	= BLOCK_TAUSTA;
-				palikka.ylos		= BLOCK_TAUSTA;
-				palikka.alas		= BLOCK_TAUSTA;
-			}
-
-			// L�pik�velt�v� lattia
-
-			if (i == BLOCK_ESTO_ALAS){
-				palikka.oikealle	= BLOCK_TAUSTA;
-				palikka.ylos		= BLOCK_TAUSTA;
-				palikka.alas		= BLOCK_SEINA;
-				palikka.vasemmalle	= BLOCK_TAUSTA;
-				palikka.ala -= 27;
-			}
-
-			// M�et
-
-			if (i > 49 && i < 60){
-				palikka.oikealle	= BLOCK_TAUSTA;
-				palikka.ylos		= BLOCK_SEINA;
-				palikka.alas		= BLOCK_SEINA;
-				palikka.vasemmalle	= BLOCK_TAUSTA;
-				palikka.ala += 1;
-			}
-
-			// Kytkimet
-
-			if (i >= BLOCK_KYTKIN1 && i <= BLOCK_KYTKIN3){
-				palikka.oikealle	= BLOCK_SEINA;
-				palikka.ylos		= BLOCK_SEINA;
-				palikka.alas		= BLOCK_SEINA;
-				palikka.vasemmalle	= BLOCK_SEINA;
-			}
-		}
-		else{
-			palikka.tausta = true;
-
-			palikka.oikealle	= BLOCK_TAUSTA;
-			palikka.vasemmalle	= BLOCK_TAUSTA;
-			palikka.ylos		= BLOCK_TAUSTA;
-			palikka.alas		= BLOCK_TAUSTA;
-		}
-
-		if (i > 131 && i < 140)
-			palikka.vesi = true;
-		else
-			palikka.vesi = false;
-
-		lasketut_palikat[i] = palikka;
-	}
-
-	PK_Calculate_MovableBlocks_Position();
-
-	return 0;
-}
 
 //==================================================
 //(#12) Collision System
 //==================================================
 
-	double	sprite_x,
-			sprite_y,
-			sprite_a,
-			sprite_b,
+double	sprite_x,
+		sprite_y,
+		sprite_a,
+		sprite_b,
 
-			sprite_vasen,
-			sprite_oikea,
-			sprite_yla,
-			sprite_ala;
+		sprite_vasen,
+		sprite_oikea,
+		sprite_yla,
+		sprite_ala;
 
-	int		sprite_leveys,
-			sprite_korkeus;
+int		sprite_leveys,
+		sprite_korkeus;
 
-	int		kartta_vasen,
-			kartta_yla,
-			x = 0,
-			y = 0;
+int		kartta_vasen,
+		kartta_yla,
+		x = 0,
+		y = 0;
 
-	bool	oikealle,
-			vasemmalle,
-			ylos,
-			alas,
+bool	oikealle,
+		vasemmalle,
+		ylos,
+		alas,
 
-			vedessa;
+		vedessa;
 
-	BYTE   max_nopeus;
+BYTE   max_nopeus;
 
 void PK_Check_Blocks2(PK2Sprite &sprite, PK2BLOCK &palikka) {
 
@@ -2657,112 +2229,9 @@ int PK_Sprite_Bonus_Movement(int i){
 	return 0;
 }
 
-int PK_Update_Sprites(){
-	debug_active_sprites = 0;
-	int i;
-	PK2Sprite* sprite;
-
-	for (i = 0; i < MAX_SPRITEJA; i++){ //Activate sprite if it is on screen
-		sprite = &Sprites_List[i];
-		if (sprite->x < Game::camera_x+640+320 &&//screen_width+screen_width/2 &&
-			sprite->x > Game::camera_x-320 &&//screen_width/2 &&
-			sprite->y < Game::camera_y+480+240 &&//screen_height+screen_height/2 &&
-			sprite->y > Game::camera_y-240)//screen_height/2)
-			sprite->aktiivinen = true;
-		else
-			sprite->aktiivinen = false;
-
-		if (sprite->piilota == true)
-			sprite->aktiivinen = false;
-	}
-
-	for (i = 0; i < MAX_SPRITEJA; i++){
-		sprite = &Sprites_List[i];
-		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYYPPI_TAUSTA){
-			if (sprite->tyyppi->tyyppi == TYYPPI_BONUS)
-				PK_Sprite_Bonus_Movement(i);
-			else
-				PK_Sprite_Movement(i);
-
-			debug_active_sprites++;
-		}
-	}
-
-	return 0;
-}
-
-int PK_Update_Camera(){
 
 
-	Game::camera_x = (int)Player_Sprite->x-screen_width/2;
-	Game::camera_y = (int)Player_Sprite->y-screen_height/2;
 
-	/*
-	if (!PisteInput_Hiiri_Vasen())
-	{
-		Game::camera_x = (int)player->x-screen_width/2;
-		Game::camera_y = (int)player->y-screen_height/2;
-	}
-	else
-	{
-		Game::camera_x += PisteInput_Hiiri_X(0)*5;
-		Game::camera_y += PisteInput_Hiiri_Y(0)*5;
-	}*/
-
-	if (Game::vibration > 0)
-	{
-		Game::dcamera_x += (rand()%Game::vibration-rand()%Game::vibration)/5;
-		Game::dcamera_y += (rand()%Game::vibration-rand()%Game::vibration)/5;
-
-		Game::vibration--;
-	}
-
-	if (kytkin_tarina > 0)
-	{
-		Game::dcamera_x += (rand()%9-rand()%9);//3
-		Game::dcamera_y += (rand()%9-rand()%9);
-
-		kytkin_tarina--;
-	}
-
-	if (Game::dcamera_x != Game::camera_x)
-		Game::dcamera_a = (Game::camera_x - Game::dcamera_x) / 15;
-
-	if (Game::dcamera_y != Game::camera_y)
-		Game::dcamera_b = (Game::camera_y - Game::dcamera_y) / 15;
-
-	if (Game::dcamera_a > 6)
-		Game::dcamera_a = 6;
-
-	if (Game::dcamera_a < -6)
-		Game::dcamera_a = -6;
-
-	if (Game::dcamera_b > 6)
-		Game::dcamera_b = 6;
-
-	if (Game::dcamera_b < -6)
-		Game::dcamera_b = -6;
-
-	Game::dcamera_x += Game::dcamera_a;
-	Game::dcamera_y += Game::dcamera_b;
-
-	Game::camera_x = (int)Game::dcamera_x;
-	Game::camera_y = (int)Game::dcamera_y;
-
-	if (Game::camera_x < 0)
-		Game::camera_x = 0;
-
-	if (Game::camera_y < 0)
-		Game::camera_y = 0;
-
-	if (Game::camera_x > int(PK2KARTTA_KARTTA_LEVEYS-screen_width/32)*32)
-		Game::camera_x = int(PK2KARTTA_KARTTA_LEVEYS-screen_width/32)*32;
-
-	if (Game::camera_y > int(PK2KARTTA_KARTTA_KORKEUS-screen_height/32)*32)
-		Game::camera_y = int(PK2KARTTA_KARTTA_KORKEUS-screen_height/32)*32;
-
-	return 0;
-}
 
 //==================================================
 //(#13) Draw Screen Functions
@@ -2827,8 +2296,7 @@ int main(int argc, char *argv[]) {
 			printf(PK2_VERSION);
 			printf("\n");
 			exit(0);
-		}	music_volume = Settings.music_max_volume;
-	music_volume_now = Settings.music_max_volume - 1;
+		}
 		if (strcmp(argv[i], "dev") == 0) {
 			dev_mode = true;
 		}

@@ -4,6 +4,7 @@
 #include "sprite.hpp"
 
 #include "game.hpp"
+#include "episode.hpp"
 #include <cstring>
 
 PK2Sprite* Player_Sprite;
@@ -101,7 +102,7 @@ void Prototypes_get_transformation(int i) {
 		if (!loaded) {
 			char polku[PE_PATH_SIZE];
 			strcpy(polku,"sprites/");
-			//PK_Load_EpisodeDir(polku);
+			//Load_EpisodeDir(polku);
 
 			if (Prototypes_get(polku, Prototypes_List[i].muutos_sprite)==0)
 				Prototypes_List[i].muutos = next_free_prototype-1; // jokainen lataus kasvattaa next_free_prototype:a
@@ -128,7 +129,7 @@ void Prototypes_get_bonus(int i) {
 		if (!loaded){
 			char polku[PE_PATH_SIZE];
 			strcpy(polku,"sprites/");
-			//PK_Load_EpisodeDir(polku);
+			//Load_EpisodeDir(polku);
 
 			if (Prototypes_get(polku, Prototypes_List[i].bonus_sprite)==0)
 				Prototypes_List[i].bonus = next_free_prototype-1;
@@ -197,7 +198,7 @@ int  Prototypes_get_all() {
 		if (strcmp(kartta->protot[i],"") != 0){
 			viimeinen_proto = i;
 			strcpy(polku,"");
-			PK_Load_EpisodeDir(polku);
+			Load_EpisodeDir(polku);
 
 			if (Prototypes_get(polku,kartta->protot[i])!=0){
 				strcpy(polku,"sprites/");
