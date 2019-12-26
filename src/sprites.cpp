@@ -11,12 +11,12 @@ PK2Sprite* Player_Sprite;
 
 int next_free_prototype = 0;
 
-PK2Sprite Sprites_List[MAX_SPRITEJA];
 PK2Sprite_Prototyyppi Prototypes_List[MAX_PROTOTYYPPEJA];
+PK2Sprite Sprites_List[MAX_SPRITEJA];
 
 int bgSprites_List[MAX_SPRITEJA];
 
-void Prototypes_clear_all() {
+void Prototypes_ClearAll() {
 	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++){
 		for (int j = 0; j < MAX_AANIA; j++)
 			if (Prototypes_List[i].aanet[j] > -1)
@@ -190,7 +190,7 @@ void Prototypes_get_ammo2(int i) {
 	}
 }
 
-int  Prototypes_get_all() {
+int  Prototypes_GetAll() {
 	char polku[PE_PATH_SIZE];
 	int viimeinen_proto;
 

@@ -2,15 +2,15 @@
 
 #include "game.hpp"
 
-#include <iostream> //TODO - remove
-#include <fstream> //TODO - remove
+#include <SDL_rwops.h>
+
 #include <cstring>
 
 #define SAVES_PATH "data/saves.dat"
 
 PK2SAVE tallennukset[MAX_SAVES];
 
-int Empty_Records(){
+int Empty_Records() {
 
 	for (int i = 0; i < MAX_SAVES; i++){
 		tallennukset[i].kaytossa = false;
@@ -25,27 +25,31 @@ int Empty_Records(){
 	return 0;
 }
 
-//PK_Search_Records
-int Save_All_Records(char *filename){
+int Save_All_Records() {
+
 	char versio[2] = "1";
 	char lkm[8];
 
-	itoa(MAX_SAVES,lkm,10);
+	itoa(MAX_SAVES, lkm, 10);
 
-	std::ofstream *file = new std::ofstream(filename, ios::binary);
-	file->write(versio, sizeof(versio));
-	file->write(lkm,    sizeof(lkm));
-
-	for (int i=0;i< MAX_SAVES;i++)
-		file->write((char *)&tallennukset[i], sizeof(tallennukset[i]));
-
-	delete file;
-
+	//std::ofstream *file = new std::ofstream(filename, ios::binary);
+	SDL_RWops *file = SDL_RWFromFile(SAVES_PATH, "wb");
+	if (file == nullptr) {
+		printf("Error saving records\n");
+		return 1;
+	}
+	
+	SDL_RWwrite(file, versio, 1, sizeof(versio));
+	SDL_RWwrite(file, lkm, 1, sizeof(lkm));
+	SDL_RWwrite(file, tallennukset, 1, sizeof(tallennukset));
+	
+	SDL_RWclose(file);
+	
 	return 0;
+
 }
 
-//Load_Save
-int Load_Records(int i){
+int Load_Save(int i){
 	if (strcmp(tallennukset[i].episodi," ")!=0) {
 
 		strcpy(episodi,tallennukset[i].episodi);
@@ -55,40 +59,41 @@ int Load_Records(int i){
 
 		for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
 				jaksot[j].lapaisty = tallennukset[i].jakso_lapaisty[j];
-		PK_Start_Saves();
-
+		
+		PK_Start_Saves(); //TODO -?
 		
 	}
+		
 
 	return 0;
 }
 
-//Load_SaveFile
-int Load_Records(char *filename){
+int Load_SaveFile(){
 	char versio[2];
-	char lkmc[8];
-	int lkm, i;
-
-	std::ifstream *tiedosto = new std::ifstream(filename, ios::binary);
+	char count_c[8];
+	int count, i;
 
 	Empty_Records();
 
-	if (tiedosto->fail()){
-		delete (tiedosto);
+	//std::ifstream *tiedosto = new std::ifstream(SAVES_PATH, ios::binary);
+	SDL_RWops *file = SDL_RWFromFile(SAVES_PATH, "rb");
+	if (file == nullptr){
+		printf("No save file\n");
 		return 1;
 	}
 
-	tiedosto->read(versio,	sizeof(versio));
+	SDL_RWread(file, versio, sizeof(versio), 1);
 
-	if (strcmp(versio,"1")==0){
-		tiedosto->read(lkmc, sizeof(lkmc));
-		lkm = atoi(lkmc);
-
-		for (i=0;i<lkm;i++)
-			tiedosto->read ((char *)&tallennukset[i], sizeof (tallennukset[i]));
+	if (strcmp(versio,"1")==0) {
+		SDL_RWread(file, count_c, sizeof(count_c), 1);
+		count = atoi(count_c);
+		if (count > MAX_SAVES)
+			count = MAX_SAVES;
+		
+		SDL_RWread(file, (char *)tallennukset, sizeof(PK2SAVE)*count , 1);
 	}
 
-	delete (tiedosto);
+	SDL_RWclose(file);
 
 	return 0;
 }
@@ -103,7 +108,7 @@ int Save_Records(int i){
 	for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
 		tallennukset[i].jakso_lapaisty[j] = jaksot[j].lapaisty;
 
-	Save_All_Records("data/saves.dat");
+	Save_All_Records();
 
 	return 0;
 }

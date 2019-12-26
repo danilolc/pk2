@@ -26,8 +26,8 @@ extern int screen_height;
 
 extern char tyohakemisto[PE_PATH_SIZE];
 
-extern int hiiri_x;
-extern int hiiri_y;
+extern int mouse_x;
+extern int mouse_y;
 extern int key_delay;
 
 extern int kuva_peli;

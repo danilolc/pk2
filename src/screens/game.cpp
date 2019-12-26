@@ -9,9 +9,9 @@
 #include "sprites.hpp"
 #include "game.hpp"
 #include "episode.hpp"
-#include "text.hpp"
+#include "gfx/text.hpp"
 #include "language.hpp"
-#include "particles.hpp"
+#include "gfx/particles.hpp"
 #include "sfx.hpp"
 #include "gifts.hpp"
 #include "gui.hpp"
@@ -774,7 +774,7 @@ int PK_Map_Open(char *nimi) {
 	PK_New_Save();
 
 	if (strcmp(kartta->versio,"1.2") == 0 || strcmp(kartta->versio,"1.3") == 0)
-		if (Prototypes_get_all() == 1)
+		if (Prototypes_GetAll() == 1)
 			return 1;
 
 	PK_Palikka_Tee_Maskit();
@@ -917,7 +917,7 @@ int Screen_InGame_Init(){
 
 		Gifts_Clean(); //Reset gifts
 		Sprites_clear(); //Reset sprites
-		Prototypes_clear_all(); //Reset prototypes
+		Prototypes_ClearAll(); //Reset prototypes
 
 		if (PK_Map_Open(current_map_name) == 1)
 			PK2_Error("Can't load map");

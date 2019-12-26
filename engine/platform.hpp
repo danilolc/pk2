@@ -8,7 +8,6 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <ctime>
 
 #ifndef _WIN32
     #define itoa(X,Y,Z) sprintf(Y,"%i",X)

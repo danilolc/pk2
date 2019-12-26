@@ -1,7 +1,7 @@
 
 #include "screens.hpp"
 
-#include "text.hpp"
+#include "gfx/text.hpp"
 #include "language.hpp"
 #include "game.hpp"
 #include "gifts.hpp"
@@ -140,7 +140,7 @@ int PK_Draw_ScoreCount(){
 		//next_screen = SCREEN_MAP;
 	}
 
-	PK_Draw_Cursor(hiiri_x, hiiri_y);
+	PK_Draw_Cursor(mouse_x, mouse_y);
 
 	return 0;
 }

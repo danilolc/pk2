@@ -25,13 +25,13 @@
 #include "sprite.hpp"
 #include "game.hpp"
 #include "gifts.hpp"
-#include "effect.hpp"
-#include "particles.hpp"
+#include "gfx/effect.hpp"
+#include "gfx/particles.hpp"
 #include "sprites.hpp"
 #include "screens/screens.hpp"
 #include "gui.hpp"
 #include "sfx.hpp"
-#include "text.hpp"
+#include "gfx/text.hpp"
 #include "language.hpp"
 #include "episode.hpp"
 
@@ -2370,6 +2370,7 @@ int main(int argc, char *argv[]) {
 			return 0;
 		}
 	}
+	Load_Fonts(tekstit);
 
 	Screen_Change(); //TODO - don't call
 

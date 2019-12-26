@@ -1,6 +1,6 @@
-#include "effect.hpp"
+#include "gfx/effect.hpp"
 
-#include "particles.hpp"
+#include "gfx/particles.hpp"
 #include "sprite.hpp"
 
 void Effect_Feathers(DWORD x, DWORD y) {

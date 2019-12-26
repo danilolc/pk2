@@ -4,7 +4,7 @@
 #include "settings.hpp"
 #include "gui.hpp"
 #include "game.hpp"
-#include "text.hpp"
+#include "gfx/text.hpp"
 #include "sfx.hpp"
 #include "language.hpp"
 #include "episode.hpp"
@@ -206,7 +206,7 @@ bool Draw_Menu_Text(bool active, char *teksti, int x, int y) {
 
 	int length = strlen(teksti) * 15;
 
-	bool mouse_on = hiiri_x > x && hiiri_x < x + length && hiiri_y > y && hiiri_y < y + TEXT_H;
+	bool mouse_on = mouse_x > x && mouse_x < x + length && mouse_y > y && mouse_y < y + TEXT_H;
 
 	if ( mouse_on || (menu_valittu_id == menu_valinta_id) ) {
 
@@ -247,7 +247,7 @@ int Draw_BoolBox(int x, int y, bool muuttuja, bool active){
 		return false;
 	}
 
-	if (hiiri_x > x && hiiri_x < x+30 && hiiri_y > y && hiiri_y < y+31){
+	if (mouse_x > x && mouse_x < x+30 && mouse_y > y && mouse_y < y+31){
 		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
 			&& key_delay == 0){
 
@@ -276,7 +276,7 @@ int  Draw_BackNext(int x, int y){
 	else
 		PDraw::image_cutclip(kuva_peli,x+val,y,535,124,535+31,124+31);
 
-	if ((hiiri_x > x && hiiri_x < x+30 && hiiri_y > y && hiiri_y < y+31) || (menu_valittu_id == menu_valinta_id)){
+	if ((mouse_x > x && mouse_x < x+30 && mouse_y > y && mouse_y < y+31) || (menu_valittu_id == menu_valinta_id)){
 		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
 			&& key_delay == 0){
 			Play_MenuSFX(menu_aani, 100);
@@ -287,7 +287,7 @@ int  Draw_BackNext(int x, int y){
 
 	x += val;
 
-	if ((hiiri_x > x && hiiri_x < x+30 && hiiri_y > y && hiiri_y < y+31) || (menu_valittu_id == menu_valinta_id+1)){
+	if ((mouse_x > x && mouse_x < x+30 && mouse_y > y && mouse_y < y+31) || (menu_valittu_id == menu_valinta_id+1)){
 		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
 			&& key_delay == 0){
 			Play_MenuSFX(menu_aani, 100);
@@ -376,12 +376,12 @@ int Draw_Menu_Name() {
 
 	Draw_BGSquare(90, 150, 640-90, 480-100, 224);
 
-	if (hiiri_x > 180 && hiiri_x < 180+15*20 && hiiri_y > 255 && hiiri_y < 255+18)
+	if (mouse_x > 180 && mouse_x < 180+15*20 && mouse_y > 255 && mouse_y < 255+18)
 		hiiri_alueella = true; //Mouse is in text
 
 	if (hiiri_alueella && PisteInput_Hiiri_Vasen() && key_delay == 0){
 		nimiedit = true;
-		menu_name_index = (hiiri_x - 180)/15; //Set text cursor with the mouse
+		menu_name_index = (mouse_x - 180)/15; //Set text cursor with the mouse
 		key_delay = 10;
 	}
 
@@ -514,7 +514,7 @@ int Draw_Menu_Load() {
 		strcat(number,tallennukset[i].nimi);
 
 		if (Draw_Menu_Text(true,number,100,150+my)) {
-			Load_Records(i);
+			Load_Save(i);
 			next_screen = SCREEN_MAP;
 			lataa_peli = i;
 			//episode_started = false;
@@ -677,7 +677,7 @@ int Draw_Menu_Graphics() {
 
 		if (wasWide != Settings.isWide) {
 			screen_width = Settings.isWide ? 800 : 640;
-			PK2Kartta_Aseta_Ruudun_Mitat(screen_width, screen_height);
+			PK2Kartta_Set_Screen_Size(screen_width, screen_height);
 			PDraw::change_resolution(screen_width, screen_height);
 			
 			if(episode_started)
@@ -883,8 +883,8 @@ int Draw_Menu_Controls() {
 	PDraw::font_write(fontti2,PisteInput_KeyName(Settings.control_open_gift),310,90+my);my+=20;
 
 	/*
-	if (hiiri_x > 310 && hiiri_x < 580 && hiiri_y > 130 && hiiri_y < my-20){
-		menu_lue_kontrollit = (hiiri_y - 120) / 20;
+	if (mouse_x > 310 && mouse_x < 580 && mouse_y > 130 && mouse_y < my-20){
+		menu_lue_kontrollit = (mouse_y - 120) / 20;
 
 		if (menu_lue_kontrollit < 0 || menu_lue_kontrollit > 8)
 			menu_lue_kontrollit = 0;
@@ -1054,6 +1054,7 @@ int Draw_Menu_Language() {
 			//printf("Selected %s\n",langmenulist[i]);
 			strcpy(Settings.kieli,langmenulist[i]);
 			Load_Language();
+			Load_Fonts(tekstit);
 		}
 		my += 20;
 	}
@@ -1110,7 +1111,7 @@ int Draw_Menu() {
 		default            : Draw_Menu_Main();     break;
 	}
 
-	PK_Draw_Cursor(hiiri_x, hiiri_y);
+	PK_Draw_Cursor(mouse_x, mouse_y);
 
 	return 0;
 
@@ -1239,7 +1240,7 @@ int Screen_Menu() {
 				menu_valittu_id = 1;
 
 			key_delay = 15;
-			//hiiri_y += 3;
+			//mouse_y += 3;
 		}
 	}
 

@@ -63,7 +63,7 @@ const BYTE TAUSTA_PALLARX_HORI			= 2;
 const BYTE TAUSTA_PALLARX_VERT_JA_HORI	= 3;
 
 void PK2Kartta_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys);
-void PK2Kartta_Aseta_Ruudun_Mitat(int leveys, int korkeus);
+void PK2Kartta_Set_Screen_Size(int width, int height);
 
 class PK2Kartta
 {

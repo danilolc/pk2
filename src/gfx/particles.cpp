@@ -1,4 +1,4 @@
-#include "particle.hpp"
+#include "gfx/particle.hpp"
 
 #include "game.hpp"
 #include "settings.hpp"

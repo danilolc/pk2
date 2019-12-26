@@ -6,7 +6,7 @@
 
 #include "map.hpp"
 
-#include "effect.hpp"
+#include "gfx/effect.hpp"
 #include "sprites.hpp"
 #include "game.hpp"
 #include "language.hpp"
@@ -50,9 +50,9 @@ void PK2Kartta_Animoi(int degree, int anim, int aika1, int aika2, int aika3, boo
 	avaimet  = keys;
 }
 
-void PK2Kartta_Aseta_Ruudun_Mitat(int leveys, int korkeus){
-	ruudun_leveys_palikoina  = leveys/32+1;
-	ruudun_korkeus_palikoina = korkeus/32+1;
+void PK2Kartta_Set_Screen_Size(int width, int height){
+	ruudun_leveys_palikoina  = width/32 + 1;
+	ruudun_korkeus_palikoina = height/32 + 1;
 }
 
 //char PK2Kartta::pk2_hakemisto[256] = "";

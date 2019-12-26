@@ -8,8 +8,8 @@ int screen_height = 480;
 
 char tyohakemisto[PE_PATH_SIZE] = ".";
 
-int hiiri_x = 10;
-int hiiri_y = 10;
+int mouse_x = 10;
+int mouse_y = 10;
 int key_delay = 0;
 
 double cos_table[360];

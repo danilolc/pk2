@@ -17,7 +17,6 @@ struct PK2SAVE{
 
 extern PK2SAVE tallennukset[MAX_SAVES];
 
-int Empty_Records();
-int Load_Records(char *filename);
-int Load_Records(int i);
+int Load_SaveFile();
+int Load_Save(int i);
 int Save_Records(int i);

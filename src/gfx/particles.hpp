@@ -1,6 +1,6 @@
 #pragma once
 
-#include "particle.hpp"
+#include "gfx/particle.hpp"
 #include "map.hpp"
 
 void Particles_Update();

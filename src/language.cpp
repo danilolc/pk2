@@ -6,6 +6,7 @@
 
 #include <cstring>
 
+PisteLanguage *tekstit;
 LANGUAGE PK_txt;
 
 bool Load_Language(){
@@ -17,7 +18,7 @@ bool Load_Language(){
 	if (!tekstit->Read_File(path))
 		return false;
 
-	//Load_Fonts(); //TODO
+	//Load_Fonts(tekstit);
 
 	// Aloitusikkuna
 	PK_txt.setup_options			= tekstit->Hae_Indeksi("setup options");

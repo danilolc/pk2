@@ -7,7 +7,7 @@
 #include <cstring>
 
 #include "game.hpp"
-#include "text.hpp"
+#include "gfx/text.hpp"
 #include "language.hpp"
 #include "gui.hpp"
 #include "episode.hpp"
@@ -26,7 +26,7 @@ int PK_Draw_Map_Button(int x, int y, int t){
 	if (vilkku < 0)
 		vilkku = 0;
 
-	if (hiiri_x > x && hiiri_x < x+17 && hiiri_y > y && hiiri_y < y+17){
+	if (mouse_x > x && mouse_x < x+17 && mouse_y > y && mouse_y < y+17){
 		if (key_delay == 0 && (PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE)
 													    || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))){
 			key_delay = 30;
@@ -186,7 +186,7 @@ int PK_Draw_Map(){
 		}
 	}
 
-	PK_Draw_Cursor(hiiri_x, hiiri_y);
+	PK_Draw_Cursor(mouse_x, mouse_y);
 
 	return 0;
 }

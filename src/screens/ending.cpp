@@ -1,7 +1,7 @@
 
 #include "screens.hpp"
 
-#include "text.hpp"
+#include "gfx/text.hpp"
 #include "gui.hpp"
 #include "game.hpp"
 #include "sfx.hpp"
