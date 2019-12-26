@@ -92,7 +92,7 @@ int Screen_Intro_Init() {
 	if (PSound::start_music("music/intro.xm") != 0)
 		PK2_Error("Can't load intro.xm");
 
-	music_volume = Settings.music_max_volume;
+	PSound::set_musicvolume(Settings.music_max_volume);
 
 	introlaskuri = 0;
 	//siirry_pistelaskusta_karttaan = false;

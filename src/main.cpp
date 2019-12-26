@@ -515,8 +515,7 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 				jaksot[jakso_indeksi_nyt].lapaisty = true;
 				if (jaksot[jakso_indeksi_nyt].jarjestys == jakso)
 					jakso++; //Increase level
-				music_volume = Settings.music_max_volume;
-				music_volume_now = Settings.music_max_volume - 1;
+				PSound::set_musicvolume_now(Settings.music_max_volume);
 			}
 		}
 	}
@@ -1603,7 +1602,7 @@ int PK_Sprite_Movement(int i){
 													break;
 				case AI_KAANTYY_JOS_OSUTTU:			sprite.AI_Kaantyy_Jos_Osuttu();
 													break;
-				case AI_EVIL_ONE:					if (sprite.energia < 1) music_volume = 0;
+				case AI_EVIL_ONE:					if (sprite.energia < 1) PSound::set_musicvolume(0);
 													break;
 
 				case AI_INFO1:						if (sprite.AI_Info(*Player_Sprite))	PK_Start_Info(tekstit->Hae_Teksti(PK_txt.info01));break;
@@ -2346,8 +2345,7 @@ int main(int argc, char *argv[]) {
 
 	settings_open();
 
-	music_volume = Settings.music_max_volume;
-	music_volume_now = Settings.music_max_volume - 1;
+	PSound::set_musicvolume_now(Settings.music_max_volume);
 	screen_width = Settings.isWide ? 800 : 640;
 
 	if (PisteUtils_Is_Mobile())

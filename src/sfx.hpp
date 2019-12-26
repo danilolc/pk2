@@ -2,9 +2,6 @@
 
 const int SOUND_SAMPLERATE = 22050;
 
-extern int music_volume;
-extern int music_volume_now;
-
 extern int kytkin_aani;
 extern int hyppy_aani;
 extern int loiskahdus_aani;

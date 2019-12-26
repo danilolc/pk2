@@ -926,8 +926,9 @@ int Screen_InGame_Init(){
 
 		Fadetext_Init(); //Reset fade text
 
+		PSound::set_musicvolume(Settings.music_max_volume);
+		
 		episode_started = true;
-		music_volume = Settings.music_max_volume;
 		degree = 0;
 		item_paneeli_x = -215;
 		piste_lisays = 0;
@@ -1083,10 +1084,10 @@ int Screen_InGame(){
 			if (lopetusajastin > 2 && lopetusajastin < 600/*1900*/ && key_delay == 0)
 				lopetusajastin = 2;
 
-		if (lopetusajastin == 2)
-		{
+		if (lopetusajastin == 2) {
 			PDraw::fade_out(PDraw::FADE_NORMAL);
-			//music_volume = 0;
+			//PSound::set_musicvolume(0);
+		
 		}
 	}
 	if (lopetusajastin == 1 && !PDraw::is_fading()){
@@ -1178,8 +1179,7 @@ int Screen_InGame(){
 				jaksot[jakso_indeksi_nyt].lapaisty = true;
 				if (jaksot[jakso_indeksi_nyt].jarjestys == jakso)
 					jakso++;
-				music_volume = Settings.music_max_volume;
-				music_volume_now = Settings.music_max_volume - 1;
+				PSound::set_musicvolume_now(Settings.music_max_volume);
 			}
 			if (PisteInput_Keydown(PI_LSHIFT)/* && key_delay == 0*/) {
 				//key_delay = 20;

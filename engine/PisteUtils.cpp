@@ -123,7 +123,7 @@ void getext(char* string){
 
 #ifdef _WIN32
 
-int PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], int length){
+int PisteUtils_Scandir(const char* type, const char* dir, char (*list)[PE_PATH_SIZE], int length){
     struct _finddata_t map_file;
     long hFile;
 
@@ -161,7 +161,7 @@ int PisteUtils_CreateDir(char *directory){
 
 #else
 
-int PisteUtils_Scandir(const char* type, char* dir, char (*list)[PE_PATH_SIZE], int length){
+int PisteUtils_Scandir(const char* type, const char* dir, char (*list)[PE_PATH_SIZE], int length){
 	int i, numb = 0, files = 0;
 	char ext[128];
 

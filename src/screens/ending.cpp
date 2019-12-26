@@ -123,7 +123,7 @@ int Screen_Ending_Init() {
 	if (PSound::start_music("music/intro.xm") != 0)
 		PK2_Error("Can't load intro.xm");
 
-	music_volume = Settings.music_max_volume;
+	PSound::set_musicvolume(Settings.music_max_volume);
 
 	loppulaskuri = 0;
 	siirry_lopusta_menuun = false;
@@ -151,12 +151,10 @@ int Screen_Ending(){
 	if (key_delay > 0)
 		key_delay--;
 
-	if (key_delay == 0)
-	{
-		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE))
-		{
+	if (key_delay == 0) {
+		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE)) {
 			siirry_lopusta_menuun = true;
-			music_volume = 0;
+			PSound::set_musicvolume(0);
 			PDraw::fade_out(PDraw::FADE_SLOW);
 		}
 	}

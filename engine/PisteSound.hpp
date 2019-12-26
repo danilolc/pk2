@@ -21,6 +21,7 @@ void reset_sfx();
 
 int  start_music(char* filename);
 void set_musicvolume(int volume);
+void set_musicvolume_now(int volume);
 void stop_music();
 
 }

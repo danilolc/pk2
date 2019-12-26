@@ -11,13 +11,11 @@
 
 int	jakso = 1;
 int jaksoja = 1;
-int episodi_lkm = 0;
 int jakso_indeksi_nyt = 1;
-char episodit[MAX_EPISODEJA][PE_PATH_SIZE];
-char episodi[PE_PATH_SIZE];
-int  episodisivu = 0;
 PK2LEVEL jaksot[EPISODI_MAX_LEVELS];
 bool jakso_lapaisty = false;
+
+char episodi[PE_PATH_SIZE];
 bool uusinta = false;
 bool peli_ohi = false;
 DWORD lopetusajastin = 0;

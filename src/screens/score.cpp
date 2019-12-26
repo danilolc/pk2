@@ -12,6 +12,7 @@
 
 #include "PisteDraw.hpp"
 #include "PisteInput.hpp"
+#include "PisteSound.hpp"
 
 bool siirry_pistelaskusta_karttaan = false;
 
@@ -133,7 +134,7 @@ int PK_Draw_ScoreCount(){
 	}
 
 	if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.score_screen_continue),100,430)){
-		music_volume = 0;
+		PSound::set_musicvolume(0);
 		siirry_pistelaskusta_karttaan = true;
 		PDraw::fade_out(PDraw::FADE_SLOW);
 		//next_screen = SCREEN_MAP;
@@ -201,7 +202,7 @@ int Screen_ScoreCount_Init() {
 	if (vertailun_tulos > 0)
 		EpisodeScore_Save(pisteet_tiedosto);
 
-	music_volume = Settings.music_max_volume;
+	PSound::set_musicvolume(Settings.music_max_volume);
 
 	siirry_pistelaskusta_karttaan = false;
 
@@ -290,8 +291,8 @@ int Screen_ScoreCount(){
 	if (key_delay == 0){
 		if (PisteInput_Keydown(PI_RETURN) && pistelaskuvaihe == 5){
 			siirry_pistelaskusta_karttaan = true;
-			music_volume = 0;
 			PDraw::fade_out(PDraw::FADE_SLOW);
+			PSound::set_musicvolume(0);
 			key_delay = 20;
 		}
 

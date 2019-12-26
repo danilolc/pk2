@@ -9,12 +9,6 @@
 PK2FADETEXT fadetekstit[MAX_FADETEKSTEJA];
 int fadeteksti_index = 0;
 
-//TODO - lang menu
-char langlist[60][PE_PATH_SIZE];
-char langmenulist[10][PE_PATH_SIZE];
-int langlistindex = 0;
-int totallangs = 0;
-
 //Fonts
 int fontti1;
 int fontti2;

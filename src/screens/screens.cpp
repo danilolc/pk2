@@ -22,7 +22,7 @@ bool closing_game = false;
 void PK_Fade_Quit() {
 	if(!closing_game) PDraw::fade_out(PDraw::FADE_FAST);
 	closing_game = true;
-	music_volume = 0;
+	PSound::set_musicvolume(0);
 }
 
 int Screen_First_Start() {
@@ -151,36 +151,6 @@ int Screen_Loop() {
 		case SCREEN_SCORING : Screen_ScoreCount(); break;
 		case SCREEN_END     : Screen_Ending();     break;
 		default             : PK_Fade_Quit();      break;
-	}
-
-	// Update music volume
-	bool update = false;
-	if (music_volume != music_volume_now)
-		update = true;
-
-	if (update) {
-		if (Settings.music_max_volume > 64)
-			Settings.music_max_volume = 64;
-
-		if (Settings.music_max_volume < 0)
-			Settings.music_max_volume = 0;
-
-		if (music_volume > Settings.music_max_volume)
-			music_volume = Settings.music_max_volume;
-
-		if (music_volume_now < music_volume)
-			music_volume_now++;
-
-		if (music_volume_now > music_volume)
-			music_volume_now--;
-
-		if (music_volume_now > 64)
-			music_volume_now = 64;
-
-		if (music_volume_now < 0)
-			music_volume_now = 0;
-
-		PSound::set_musicvolume(music_volume_now);
 	}
 
 	static bool wasPressed = false;

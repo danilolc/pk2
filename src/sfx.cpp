@@ -5,9 +5,6 @@
 
 #include "PisteSound.hpp"
 
-int music_volume = 64;
-int music_volume_now = 64;
-
 int kytkin_aani;
 int hyppy_aani;
 int loiskahdus_aani;

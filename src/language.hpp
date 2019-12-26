@@ -2,11 +2,6 @@
 
 #include "PisteLanguage.hpp"
 
-extern char langlist[60][PE_PATH_SIZE];
-extern char langmenulist[10][PE_PATH_SIZE];
-extern int langlistindex;
-extern int totallangs;
-
 extern PisteLanguage *tekstit;
 
 struct LANGUAGE{

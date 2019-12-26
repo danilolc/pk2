@@ -15,8 +15,9 @@ namespace PSound {
 const int MAX_SOUNDS = 300;
 
 int def_freq = 22050;
-int mus_volume = 100;
 int sfx_volume = 100;
+int mus_volume = 100;
+int mus_volume_now = 100;
 
 Mix_Chunk* indexes[MAX_SOUNDS]; //The original chunks loaded
 Uint8* freq_chunks[MIX_CHANNELS]; //The chunk allocated for each channel
@@ -136,8 +137,13 @@ int start_music(char* filename){
 	return 0;
 }
 void set_musicvolume(int volume){
-	Mix_VolumeMusic(volume * 128 / 100);
 	mus_volume = volume;
+}
+void set_musicvolume_now(int volume){
+	mus_volume = volume;
+	mus_volume_now = volume;
+	Mix_VolumeMusic(volume * 128 / 100);
+	
 }
 void stop_music(){
 	Mix_FadeOutMusic(0);
@@ -158,7 +164,14 @@ int update(){
 				SDL_free(freq_chunks[i]); //Make sure that all allocated chunks will be deleted after playing
 				freq_chunks[i] = NULL;
 		}
-		return 0;
+	
+	if (mus_volume_now < mus_volume)
+		Mix_VolumeMusic(++mus_volume_now * 128 / 100);
+
+	else if (mus_volume_now > mus_volume)
+		Mix_VolumeMusic(--mus_volume_now * 128 / 100);
+
+	return 0;
 }
 int terminate(){
 	reset_sfx();

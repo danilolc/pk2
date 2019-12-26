@@ -143,7 +143,7 @@ int PK_Draw_Map(){
 					jakso_indeksi_nyt = i;
 					going_to_game = true;
 					PDraw::fade_out(PDraw::FADE_SLOW);
-					music_volume = 0;
+					PSound::set_musicvolume(0);
 					Play_MenuSFX(kieku_aani,90);
 				}
 				else
@@ -274,8 +274,7 @@ int Screen_Map_Init() {
 	} while (0);
 
 	PSound::start_music(mapmusa);
-
-	music_volume = Settings.music_max_volume;
+	PSound::set_musicvolume_now(Settings.music_max_volume);
 
 	going_to_game = false;
 

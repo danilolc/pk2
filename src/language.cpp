@@ -9,20 +9,12 @@
 LANGUAGE PK_txt;
 
 bool Load_Language(){
-	char tiedosto[PE_PATH_SIZE];
-	int i;
+	char path[PE_PATH_SIZE];
 
-	strcpy(tiedosto,"language/");
+	strcpy(path,"language/");
+	strcat(path, Settings.kieli);
 
-	if(totallangs == 0){
-		totallangs = PisteUtils_Scandir(".txt", tiedosto, langlist, 60);
-		for(i=0;i<10;i++)
-			strcpy(langmenulist[i], langlist[i]);
-	}
-
-	strcat(tiedosto,Settings.kieli);
-
-	if (!tekstit->Read_File(tiedosto))
+	if (!tekstit->Read_File(path))
 		return false;
 
 	//Load_Fonts(); //TODO

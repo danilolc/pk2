@@ -26,12 +26,9 @@ struct PK2EPISODESCORES{
 
 extern int jakso;
 extern int jaksoja;
-extern int episodi_lkm;
 extern int jakso_indeksi_nyt;
-extern char episodit[MAX_EPISODEJA][PE_PATH_SIZE];
-extern char episodi[PE_PATH_SIZE];
-extern int  episodisivu;
 extern PK2LEVEL jaksot[EPISODI_MAX_LEVELS];
+extern char episodi[PE_PATH_SIZE];
 extern bool jakso_lapaisty;
 extern bool uusinta;
 extern bool peli_ohi;

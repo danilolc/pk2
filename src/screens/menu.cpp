@@ -32,7 +32,7 @@ enum MENU{
 struct MENU_RECT {
 	int left, right;
 	int top, bottom;
-} menunelio;
+} bg_square;
 
 int menu_nyt = MENU_MAIN;
 int menu_lue_kontrollit = 0;
@@ -41,113 +41,18 @@ char menu_name_last_mark = '\0';
 int menu_valittu_id = 0;
 int menu_valinta_id = 1;
 
+char episodes[MAX_EPISODEJA][PE_PATH_SIZE];
+int  episode_page = 0;
+int episode_count = 0;
+
+char langlist[60][PE_PATH_SIZE];
+char langmenulist[10][PE_PATH_SIZE];
+int langlistindex = 0;
+int totallangs = 0;
+
 bool nimiedit = false;
 
-int PK_Draw_Menu_Square(int vasen, int yla, int oikea, int ala, BYTE pvari){
-	if (episode_started)
-		return 0;
 
-	//pvari = 224;
-
-	if (menunelio.left < vasen)
-		menunelio.left++;
-
-	if (menunelio.left > vasen)
-		menunelio.left--;//TODO - ERROR
-		menunelio.top++;
-
-	if (menunelio.top > yla)
-		menunelio.top--;
-
-	if (menunelio.bottom < ala)
-		menunelio.bottom++;
-
-	if (menunelio.bottom > ala)
-		menunelio.bottom--;
-
-	vasen = (int)menunelio.left;
-	oikea = (int)menunelio.right;
-	yla	= (int)menunelio.top;
-	ala = (int)menunelio.bottom;
-
-	vasen += (int)(sin_table[(degree*2)%359]/2.0);
-	oikea += (int)(cos_table[(degree*2)%359]/2.0);
-	yla	+= (int)(sin_table[((degree*2)+20)%359]/2.0);
-	ala += (int)(cos_table[((degree*2)+40)%359]/2.0);
-
-	//PDraw::screen_fill(vasen,yla,oikea,ala,38);
-
-	double kerroin_y = (ala - yla) / 19.0;
-	double kerroin_x = (oikea - vasen) / 19.0;
-	double dbl_y = yla;
-	double dbl_x = vasen;
-	bool tumma = true;
-	int vari = 0;
-
-	for (int y=0;y<19;y++) {
-
-		dbl_x = vasen;
-
-		for (int x=0;x<19;x++) {
-			//vari = (x+y) / 6;
-			vari = (x/4)+(y/3);
-			if (tumma) vari /= 2;
-
-			PDraw::screen_fill(int(dbl_x),int(dbl_y),int(dbl_x+kerroin_x),int(dbl_y+kerroin_y),pvari+vari);
-			dbl_x += kerroin_x;
-			tumma = !tumma;
-		}
-		dbl_y += kerroin_y;
-	}
-
-	PDraw::screen_fill(vasen-1,yla-1,oikea+1,yla+2,0);
-	PDraw::screen_fill(vasen-1,yla-1,vasen+2,ala+1,0);
-	PDraw::screen_fill(vasen-1,ala-2,oikea+1,ala+1,0);
-	PDraw::screen_fill(oikea-2,yla-1,oikea+1,ala+1,0);
-
-	PDraw::screen_fill(vasen-1+1,yla-1+1,oikea+1+1,yla+2+1,0);
-	PDraw::screen_fill(vasen-1+1,yla-1+1,vasen+2+1,ala+1+1,0);
-	PDraw::screen_fill(vasen-1+1,ala-2+1,oikea+1+1,ala+1+1,0);
-	PDraw::screen_fill(oikea-2+1,yla-1+1,oikea+1+1,ala+1+1,0);
-
-	PDraw::screen_fill(vasen,yla,oikea,yla+1,153);
-	PDraw::screen_fill(vasen,yla,vasen+1,ala,144);
-	PDraw::screen_fill(vasen,ala-1,oikea,ala,138);
-	PDraw::screen_fill(oikea-1,yla,oikea,ala,138);
-
-	return 0;
-}
-bool Draw_Menu_Text(bool active, char *teksti, int x, int y){
-	if(!active){
-		WavetextSlow_Draw(teksti, fontti2, x, y);
-		return false;
-	}
-
-	int pituus = strlen(teksti)*15;
-
-	if ((hiiri_x > x && hiiri_x < x+pituus && hiiri_y > y && hiiri_y < y+15) ||
-		(menu_valittu_id == menu_valinta_id)){
-		menu_valittu_id = menu_valinta_id;
-
-		if ((
-			(PisteInput_Hiiri_Vasen() && hiiri_x > x && hiiri_x < x+pituus && hiiri_y > y && hiiri_y < y+15)
-			|| PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
-			&& key_delay == 0){
-			Play_MenuSFX(menu_aani, 100);
-			key_delay = 20;
-			menu_valinta_id++;
-			return true;
-		}
-
-		Wavetext_Draw(teksti, fontti3, x, y);
-	}
-	else
-		WavetextSlow_Draw(teksti, fontti2, x, y);
-
-	menu_valinta_id++;
-
-	return false;
-}
 int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 	BYTE *buffer = NULL;
 	DWORD leveys;
@@ -202,7 +107,134 @@ int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 
 	return 0;
 }
-int  PK_Draw_Menu_BoolBox(int x, int y, bool muuttuja, bool active){
+
+int Draw_BGSquare(int left, int top, int right, int bottom, BYTE pvari){
+	
+	if (episode_started)
+		return 0;
+
+	if (bg_square.left < left)
+		bg_square.left++;
+
+	if (bg_square.left > left)
+		bg_square.left--;
+
+	if (bg_square.right < right)
+		bg_square.right++;
+
+	if (bg_square.right > right)
+		bg_square.right--;
+
+	if (bg_square.top < top)
+		bg_square.top++;
+
+	if (bg_square.top > top)
+		bg_square.top--;
+
+	if (bg_square.bottom < bottom)
+		bg_square.bottom++;
+
+	if (bg_square.bottom > bottom)
+		bg_square.bottom--;
+
+	left = bg_square.left;
+	right = bg_square.right;
+	top	= bg_square.top;
+	bottom = bg_square.bottom;
+
+	left += (int)(sin_table[(degree*2)%359]/2.0);
+	right += (int)(cos_table[(degree*2)%359]/2.0);
+	top	+= (int)(sin_table[((degree*2)+20)%359]/2.0);
+	bottom += (int)(cos_table[((degree*2)+40)%359]/2.0);
+
+	//PDraw::screen_fill(left,top,right,bottom,38);
+
+	double mult_y = (bottom - top) / 19.0;
+	double mult_x = (right - left) / 19.0;
+	double dbl_y = top;
+	double dbl_x = left;
+	bool dark = true;
+	int vari = 0;
+
+	//Draw squares
+	for (int y=0;y<19;y++) {
+		dbl_x = left;
+
+		for (int x=0;x<19;x++) {
+			
+			vari = (x / 4) + (y / 3);
+			if (dark) vari /= 2;
+
+			PDraw::screen_fill(int(dbl_x),int(dbl_y),int(dbl_x+mult_x),int(dbl_y+mult_y),pvari+vari);
+			
+			dbl_x += mult_x;
+			dark = !dark;
+
+		}
+
+		dbl_y += mult_y;
+	}
+
+	//Draw borders
+	PDraw::screen_fill(left-1,top-1,right+1,top+2,0);
+	PDraw::screen_fill(left-1,top-1,left+2,bottom+1,0);
+	PDraw::screen_fill(left-1,bottom-2,right+1,bottom+1,0);
+	PDraw::screen_fill(right-2,top-1,right+1,bottom+1,0);
+
+	PDraw::screen_fill(left-1+1,top-1+1,right+1+1,top+2+1,0);
+	PDraw::screen_fill(left-1+1,top-1+1,left+2+1,bottom+1+1,0);
+	PDraw::screen_fill(left-1+1,bottom-2+1,right+1+1,bottom+1+1,0);
+	PDraw::screen_fill(right-2+1,top-1+1,right+1+1,bottom+1+1,0);
+
+	PDraw::screen_fill(left,top,right,top+1,153);
+	PDraw::screen_fill(left,top,left+1,bottom,144);
+	PDraw::screen_fill(left,bottom-1,right,bottom,138);
+	PDraw::screen_fill(right-1,top,right,bottom,138);
+
+	return 0;
+
+}
+
+bool Draw_Menu_Text(bool active, char *teksti, int x, int y) {
+
+	if(!active) {
+		WavetextSlow_Draw(teksti, fontti2, x, y);
+		return false;
+	}
+
+	const int TEXT_H = 20; 
+
+	int length = strlen(teksti) * 15;
+
+	bool mouse_on = hiiri_x > x && hiiri_x < x + length && hiiri_y > y && hiiri_y < y + TEXT_H;
+
+	if ( mouse_on || (menu_valittu_id == menu_valinta_id) ) {
+
+		menu_valittu_id = menu_valinta_id;
+
+		if (( (PisteInput_Hiiri_Vasen() && mouse_on) || PisteInput_Keydown(PI_SPACE)
+			|| PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1))
+			&& key_delay == 0) {
+
+			Play_MenuSFX(menu_aani, 100);
+			key_delay = 20;
+			menu_valinta_id++;
+			return true;
+
+		}
+
+		Wavetext_Draw(teksti, fontti3, x, y);
+
+	}
+	else
+		WavetextSlow_Draw(teksti, fontti2, x, y);
+
+	menu_valinta_id++;
+
+	return false;
+}
+
+int Draw_BoolBox(int x, int y, bool muuttuja, bool active){
 	PDraw::RECT img_src, img_dst = {(DWORD)x,(DWORD)y,0,0};
 
 	if(muuttuja) img_src = {504,124,31,31};
@@ -227,7 +259,8 @@ int  PK_Draw_Menu_BoolBox(int x, int y, bool muuttuja, bool active){
 
 	return false;
 }
-int  PK_Draw_Menu_BackNext(int x, int y){
+
+int  Draw_BackNext(int x, int y){
 	int val = 45;
 
 	int randx = rand()%3 - rand()%3;
@@ -268,10 +301,10 @@ int  PK_Draw_Menu_BackNext(int x, int y){
 	return 0;
 }
 
-int PK_Draw_Menu_Main(){
+int Draw_Menu_Main() {
 	int my = PisteUtils_Is_Mobile()? 260 : 240;//250;
 
-	PK_Draw_Menu_Square(160, 200, 640-180, 410, 224);
+	Draw_BGSquare(160, 200, 640-180, 410, 224);
 
 	if (episode_started){
 		if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_continue),180,my)){
@@ -334,13 +367,14 @@ int PK_Draw_Menu_Main(){
 	}
 	return 0;
 }
-int PK_Draw_Menu_Name(){
+
+int Draw_Menu_Name() {
 	int mx; //Text cursor
 	char merkki;
 	bool hiiri_alueella = false;
 	int nameSize = (int)strlen(pelaajan_nimi);
 
-	PK_Draw_Menu_Square(90, 150, 640-90, 480-100, 224);
+	Draw_BGSquare(90, 150, 640-90, 480-100, 224);
 
 	if (hiiri_x > 180 && hiiri_x < 180+15*20 && hiiri_y > 255 && hiiri_y < 255+18)
 		hiiri_alueella = true; //Mouse is in text
@@ -380,7 +414,7 @@ int PK_Draw_Menu_Name(){
 	PDraw::screen_fill(180,255,180+19*15,255+18,50);
 
 	if (nimiedit) { //Draw text cursor
-		mx = menu_name_index*15 + 180 + rand()%2; //Text cursor x
+		mx = menu_name_index*15 + 180 + rand() % 2; //Text cursor x
 		PDraw::screen_fill(mx-2, 254, mx+6+3, 254+20+3, 0);
 		PDraw::screen_fill(mx-1, 254, mx+6, 254+20, 96+16);
 		PDraw::screen_fill(mx+4, 254, mx+6, 254+20, 96+8);
@@ -438,8 +472,8 @@ int PK_Draw_Menu_Name(){
 		nimiedit = false;
 		menu_valittu_id = menu_valinta_id = 1;
 
-		if (episodi_lkm == 1) {
-			strcpy(episodi,episodit[2]);
+		if (episode_count == 1) {
+			strcpy(episodi,episodes[2]);
 			next_screen = SCREEN_MAP;
 			episode_started = false;
 			PK_New_Game();
@@ -459,13 +493,14 @@ int PK_Draw_Menu_Name(){
 
 	return 0;
 }
-int PK_Draw_Menu_Load(){
+
+int Draw_Menu_Load() {
 	int my = 0, vali = 0;
-	char tpaikka[100];
+	char number[100];
 	char jaksoc[8];
 	char ind[4];
 
-	PK_Draw_Menu_Square(40, 70, 640-40, 410, 70);
+	Draw_BGSquare(40, 70, 640-40, 410, 70);
 
 	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.loadgame_title),50,90);
 	PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_info),50,110);
@@ -473,12 +508,12 @@ int PK_Draw_Menu_Load(){
 
 	for ( int i = 0; i < MAX_SAVES; i++ ) {
 		itoa(i+1,ind,10);
-		strcpy(tpaikka,ind);
-		strcat(tpaikka,". ");
+		strcpy(number,ind);
+		strcat(number,". ");
 
-		strcat(tpaikka,tallennukset[i].nimi);
+		strcat(number,tallennukset[i].nimi);
 
-		if (Draw_Menu_Text(true,tpaikka,100,150+my)) {
+		if (Draw_Menu_Text(true,number,100,150+my)) {
 			Load_Records(i);
 			next_screen = SCREEN_MAP;
 			lataa_peli = i;
@@ -505,31 +540,33 @@ int PK_Draw_Menu_Load(){
 
 	return 0;
 }
-int PK_Draw_Menu_Save(){
+
+int Draw_Menu_Save() {
+
 	int my = 0, vali = 0;
-	char tpaikka[100];
+	char number[8];
 	char jaksoc[8];
 	char ind[4];
 
-	PK_Draw_Menu_Square(40, 70, 640-40, 410, 224);
+	Draw_BGSquare(40, 70, 640-40, 410, 224);
 
 	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.savegame_title),50,90);
 	PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_info),50,110);
 	my = -20;
 
-	for (int i=0;i<MAX_SAVES;i++)
-	{
+	for (int i=0;i<MAX_SAVES;i++) {
+
 		itoa(i+1,ind,10);
-		strcpy(tpaikka,ind);
-		strcat(tpaikka,". ");
+		strcpy(number,ind);
+		strcat(number,". ");
 
-		strcat(tpaikka,tallennukset[i].nimi);
+		strcat(number,tallennukset[i].nimi);
 
-		if (Draw_Menu_Text(true,tpaikka,100,150+my))
+		if (Draw_Menu_Text(true,number,100,150+my))
 			Save_Records(i);
 
-		if (strcmp(tallennukset[i].episodi," ")!=0)
-		{
+		if (strcmp(tallennukset[i].episodi," ")!=0) {
+
 			vali = 0;
 			vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_episode),400,150+my);
 			vali += PDraw::font_write(fontti1,tallennukset[i].episodi,400+vali,150+my);
@@ -537,6 +574,7 @@ int PK_Draw_Menu_Save(){
 			vali += PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_level),400+vali,160+my);
 			itoa(tallennukset[i].jakso,jaksoc,10);
 			vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
+
 		}
 
 		my += 22;
@@ -549,12 +587,13 @@ int PK_Draw_Menu_Save(){
 
 	return 0;
 }
-int PK_Draw_Menu_Graphics(){
+
+int Draw_Menu_Graphics() {
 	bool wasFullScreen, wasFiltered, wasFit, wasWide;
 	int my = 150;
 	static bool moreOptions = false;
 
-	PK_Draw_Menu_Square(40, 70, 640-40, 410, 224);
+	Draw_BGSquare(40, 70, 640-40, 410, 224);
 
 	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.gfx_title),50,90);
 
@@ -573,7 +612,7 @@ int PK_Draw_Menu_Graphics(){
 				Settings.isFullScreen = true;
 			}
 		}
-		if (PK_Draw_Menu_BoolBox(100, my, Settings.isFullScreen, true)) {
+		if (Draw_BoolBox(100, my, Settings.isFullScreen, true)) {
 			Settings.isFullScreen = !Settings.isFullScreen;
 		}
 		my += 30;
@@ -587,7 +626,7 @@ int PK_Draw_Menu_Graphics(){
 				Settings.isFiltered = true;
 			}
 		}
-		if (PK_Draw_Menu_BoolBox(100, my, Settings.isFiltered, true)) {
+		if (Draw_BoolBox(100, my, Settings.isFiltered, true)) {
 			Settings.isFiltered = !Settings.isFiltered;
 		}
 		my += 30;
@@ -601,7 +640,7 @@ int PK_Draw_Menu_Graphics(){
 				Settings.isFit = true;
 			}
 		}
-		if (PK_Draw_Menu_BoolBox(100, my, Settings.isFit, true)) {
+		if (Draw_BoolBox(100, my, Settings.isFit, true)) {
 			Settings.isFit = !Settings.isFit;
 		}
 		my += 30;
@@ -618,7 +657,7 @@ int PK_Draw_Menu_Graphics(){
 				Settings.isWide = true;
 			}
 		}
-		if (PK_Draw_Menu_BoolBox(100, my, Settings.isWide, res_active)) {
+		if (Draw_BoolBox(100, my, Settings.isWide, res_active)) {
 			Settings.isWide = !Settings.isWide;
 		}
 		my += 30;
@@ -663,7 +702,7 @@ int PK_Draw_Menu_Graphics(){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_tfx_off),180,my))
 				Settings.lapinakyvat_objektit = true;
 		}
-		if (PK_Draw_Menu_BoolBox(100, my, Settings.lapinakyvat_objektit, true)) {
+		if (Draw_BoolBox(100, my, Settings.lapinakyvat_objektit, true)) {
 			Settings.lapinakyvat_objektit = !Settings.lapinakyvat_objektit;
 		}
 		my += 30;
@@ -676,7 +715,7 @@ int PK_Draw_Menu_Graphics(){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_tmenus_off),180,my))
 				Settings.lapinakyvat_menutekstit = true;
 		}
-		if (PK_Draw_Menu_BoolBox(100, my, Settings.lapinakyvat_menutekstit, true)) {
+		if (Draw_BoolBox(100, my, Settings.lapinakyvat_menutekstit, true)) {
 			Settings.lapinakyvat_menutekstit = !Settings.lapinakyvat_menutekstit;
 		}
 		my += 30;
@@ -689,7 +728,7 @@ int PK_Draw_Menu_Graphics(){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_items_off),180,my))
 				Settings.nayta_tavarat = true;
 		}
-		if (PK_Draw_Menu_BoolBox(100, my, Settings.nayta_tavarat, true)) {
+		if (Draw_BoolBox(100, my, Settings.nayta_tavarat, true)) {
 			Settings.nayta_tavarat = !Settings.nayta_tavarat;
 		}
 		my += 30;
@@ -702,7 +741,7 @@ int PK_Draw_Menu_Graphics(){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_weather_off),180,my))
 				Settings.saa_efektit = true;
 		}
-		if (PK_Draw_Menu_BoolBox(100, my, Settings.saa_efektit, true)) {
+		if (Draw_BoolBox(100, my, Settings.saa_efektit, true)) {
 			Settings.saa_efektit = !Settings.saa_efektit;
 		}
 		my += 30;
@@ -715,7 +754,7 @@ int PK_Draw_Menu_Graphics(){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_bgsprites_off),180,my))
 				Settings.tausta_spritet = true;
 		}
-		if (PK_Draw_Menu_BoolBox(100, my, Settings.tausta_spritet, true)) {
+		if (Draw_BoolBox(100, my, Settings.tausta_spritet, true)) {
 			Settings.tausta_spritet = !Settings.tausta_spritet;
 		}
 		my += 30;
@@ -728,7 +767,7 @@ int PK_Draw_Menu_Graphics(){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_speed_normal),180,my))
 				doublespeed = true;
 		}
-		if (PK_Draw_Menu_BoolBox(100, my, doublespeed, true)) {
+		if (Draw_BoolBox(100, my, doublespeed, true)) {
 			doublespeed = !doublespeed;
 		}
 		my += 30;
@@ -749,10 +788,11 @@ int PK_Draw_Menu_Graphics(){
 
 	return 0;
 }
-int PK_Draw_Menu_Sounds(){
+
+int Draw_Menu_Sounds() {
 	int my = 0;
 
-	PK_Draw_Menu_Square(40, 70, 640-40, 410, 224);
+	Draw_BGSquare(40, 70, 640-40, 410, 224);
 
 	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.sound_title),50,90);
 	my += 20;
@@ -799,7 +839,7 @@ int PK_Draw_Menu_Sounds(){
 	if (Settings.music_max_volume > 64)
 		Settings.music_max_volume = 64;
 
-	music_volume = Settings.music_max_volume;
+	PSound::set_musicvolume(Settings.music_max_volume);
 
 	my += 20;
 
@@ -808,10 +848,11 @@ int PK_Draw_Menu_Sounds(){
 
 	return 0;
 }
-int PK_Draw_Menu_Controls(){
+
+int Draw_Menu_Controls() {
 	int my = 0;
 
-	PK_Draw_Menu_Square(40, 70, 640-40, 410, 224);
+	Draw_BGSquare(40, 70, 640-40, 410, 224);
 
 	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.controls_title),50,90);
 
@@ -942,39 +983,42 @@ int PK_Draw_Menu_Controls(){
 
 	return 0;
 }
-int PK_Draw_Menu_Episodes(){
+
+int Draw_Menu_Episodes() {
 	int my = 0;
 
-	PK_Draw_Menu_Square(110, 130, 640-110, 450, 224);
+	Draw_BGSquare(110, 130, 640-110, 450, 224);
 
 	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.episodes_choose_episode),50,90);
 	my += 80;
 
-	if (episodi_lkm-2 > 10) {
+	if (episode_count-2 > 10) {
+		
 		char luku[20];
 		int vali = 90;
-		int x = 50,//500,
-			y = 50;//300;
+		int x = 50;//500,
+		int y = 50;//300;
+		
 		//vali += PDraw::font_write(fontti1,"page:",x,y+40);
-		itoa(episodisivu+1,luku,10);
+		itoa(episode_page + 1,luku,10);
 		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 		vali += PDraw::font_write(fontti1,"/",x+vali,y+20);
-		itoa((episodi_lkm/10)+1,luku,10);
+		itoa((episode_count/10)+1,luku,10);
 		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 
-		int nappi = PK_Draw_Menu_BackNext(x,y);
+		int nappi = Draw_BackNext(x,y);
 
-		if (nappi == 1 && episodisivu > 0)
-			episodisivu--;
+		if (nappi == 1 && episode_page > 0)
+			episode_page--;
 
-		if (nappi == 2 && (episodisivu*10)+10 < episodi_lkm)
-			episodisivu++;
+		if (nappi == 2 && (episode_page*10)+10 < episode_count)
+			episode_page++;
 	}
 
-	for (int i=(episodisivu*10)+2;i<(episodisivu*10)+12;i++){
-		if (strcmp(episodit[i],"") != 0){
-			if (Draw_Menu_Text(true,episodit[i],220,90+my)){
-				strcpy(episodi,episodit[i]);
+	for (int i=(episode_page*10)+2;i<(episode_page*10)+12;i++){
+		if (strcmp(episodes[i],"") != 0){
+			if (Draw_Menu_Text(true,episodes[i],220,90+my)){
+				strcpy(episodi,episodes[i]);
 				Load_InfoText();
 				next_screen = SCREEN_MAP;
 				episode_started = false;
@@ -990,15 +1034,17 @@ int PK_Draw_Menu_Episodes(){
 		menu_nyt = MENU_MAIN;
 		my += 20;
 	}
+
 	PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.episodes_get_more),140,440);
 
 	return 0;
 }
-int PK_Draw_Menu_Language(){
+
+int Draw_Menu_Language() {
 	int my = 0;
 	int i;
 
-	PK_Draw_Menu_Square(110, 130, 640-110, 450, 224);
+	Draw_BGSquare(110, 130, 640-110, 450, 224);
 
 	PDraw::font_write(fontti2,"select a language:",50,100);
 
@@ -1016,7 +1062,7 @@ int PK_Draw_Menu_Language(){
 
 	int direction;
 	if(totallangs>10){
-		direction = PK_Draw_Menu_BackNext(400,my-20);
+		direction = Draw_BackNext(400,my-20);
 		if(direction == 1){
 			if(langlistindex>0){
 
@@ -1044,52 +1090,56 @@ int PK_Draw_Menu_Language(){
 	return 0;
 }
 
-int PK_Draw_Menu(){
+int Draw_Menu() {
+
 	PDraw::screen_fill(0);
 	PDraw::image_clip(kuva_tausta, (episode_started && Settings.isWide)? -80 : 0, 0);
 
 	menu_valinta_id = 1;
 
-	switch (menu_nyt)
-	{
-	case MENU_MAIN     : PK_Draw_Menu_Main();     break;
-	case MENU_EPISODES : PK_Draw_Menu_Episodes(); break;
-	case MENU_GRAPHICS : PK_Draw_Menu_Graphics(); break;
-	case MENU_SOUNDS   : PK_Draw_Menu_Sounds();   break;
-	case MENU_CONTROLS : PK_Draw_Menu_Controls(); break;
-	case MENU_NAME     : PK_Draw_Menu_Name();     break;
-	case MENU_LOAD     : PK_Draw_Menu_Load();     break;
-	case MENU_TALLENNA : PK_Draw_Menu_Save();     break;
-	case MENU_LANGUAGE : PK_Draw_Menu_Language(); break;
-	default            : PK_Draw_Menu_Main();     break;
+	switch (menu_nyt) {
+		case MENU_MAIN     : Draw_Menu_Main();     break;
+		case MENU_EPISODES : Draw_Menu_Episodes(); break;
+		case MENU_GRAPHICS : Draw_Menu_Graphics(); break;
+		case MENU_SOUNDS   : Draw_Menu_Sounds();   break;
+		case MENU_CONTROLS : Draw_Menu_Controls(); break;
+		case MENU_NAME     : Draw_Menu_Name();     break;
+		case MENU_LOAD     : Draw_Menu_Load();     break;
+		case MENU_TALLENNA : Draw_Menu_Save();     break;
+		case MENU_LANGUAGE : Draw_Menu_Language(); break;
+		default            : Draw_Menu_Main();     break;
 	}
 
 	PK_Draw_Cursor(hiiri_x, hiiri_y);
 
 	return 0;
+
 }
 
-int Order_Episodes(){
+
+
+
+int Order_Episodes() {
 	char temp[PE_PATH_SIZE] = "";
-	bool tehty;
+	bool done;
 
-	if (episodi_lkm > 1) {
+	if (episode_count > 1) {
 
-		for (int i = episodi_lkm-1 ; i>=0 ;i--) {
+		for (int i = episode_count-1 ; i>=0 ;i--) {
 
-			tehty = true;
+			done = true;
 
 			//for (t=0;t<i;t++) {
 			for (int t=2 ; t<i+2 ; t++) {
-				if (PisteUtils_Alphabetical_Compare(episodit[t],episodit[t+1]) == 1) {
-					strcpy(temp, episodit[t]);
-					strcpy(episodit[t], episodit[t+1]);
-					strcpy(episodit[t+1], temp);
-					tehty = false;
+				if (PisteUtils_Alphabetical_Compare(episodes[t], episodes[t+1]) == 1) {
+					strcpy(temp, episodes[t]);
+					strcpy(episodes[t], episodes[t+1]);
+					strcpy(episodes[t+1], temp);
+					done = false;
 				}
 			}
 
-			if (tehty)
+			if (done)
 				return 0;
 		}
 	}
@@ -1097,36 +1147,55 @@ int Order_Episodes(){
 	return 0;
 }
 
-int Search_Episode(){
-	int i;
-	char hakemisto[PE_PATH_SIZE];
+void Search_Episode() {
+	
+	static bool episodes_loaded = false;
+	if (episodes_loaded) return;
 
-	for (i=0;i<MAX_EPISODEJA;i++)
-		strcpy(episodit[i],"");
+	for (int i = 0; i < MAX_EPISODEJA; i++)
+		strcpy(episodes[i], "");
 
-	strcpy(hakemisto,"episodes/");
-
-	episodi_lkm = PisteUtils_Scandir("/", hakemisto, episodit, MAX_EPISODEJA) - 2;
+	episode_count = PisteUtils_Scandir("/", "episodes/", episodes, MAX_EPISODEJA) - 2;
 
 	Order_Episodes();
 
-	return 0;
+	episodes_loaded = true;
+
 }
 
-int Screen_Menu_Init() {
-	GUI_Change(UI_CURSOR);
 
+void Search_Languages() {
+
+	static bool languages_loaded = false;
+	if (languages_loaded) return;
+
+	if(totallangs == 0) {
+		totallangs = PisteUtils_Scandir(".txt", "language/", langlist, 60);
+		for(int i = 0; i < 10; i++)
+			strcpy(langmenulist[i], langlist[i]);
+	}
+
+	languages_loaded = true;
+
+}
+
+
+int Screen_Menu_Init() {
+	
+	GUI_Change(UI_CURSOR);
 	PDraw::set_xoffset(Settings.isWide? 80 : 0);
 
 	Search_Episode();
+	Search_Languages();
 
 	if (!episode_started) {
-		PDraw::image_delete(kuva_tausta);
-		kuva_tausta = PDraw::image_load("gfx/menu.bmp", true);
-		PSound::start_music("music/song09.xm"); //theme.xm
-		music_volume = Settings.music_max_volume;
+
+		PDraw::image_load(kuva_tausta, "gfx/menu.bmp", true);
+		PSound::start_music("music/song09.xm");
+		PSound::set_musicvolume(Settings.music_max_volume);
 	
 	} else {
+
 		int w, h;
 		PDraw::image_getsize(kuva_tausta, w, h);
 		if (w != screen_width) {
@@ -1135,20 +1204,21 @@ int Screen_Menu_Init() {
 		}
 		PDraw::image_snapshot(kuva_tausta); //TODO - take snapshot without text and cursor
 		PK_MenuShadow_Create(kuva_tausta, 640, 480, Settings.isWide? 110 : 30);
+
 	}
 
 	menu_nyt = MENU_MAIN; //TODO - test
 
-	menunelio.left = 320 - 5;
-	menunelio.top = 240 - 5;
-	menunelio.right = 320 + 5;
-	menunelio.bottom = 240 + 5;
+	bg_square.left = 320 - 5;
+	bg_square.top = 240 - 5;
+	bg_square.right = 320 + 5;
+	bg_square.bottom = 240 + 5;
 
 	PDraw::screen_fill(0);
 	menu_valittu_id = 1;
 }
 
-int Screen_Menu(){
+int Screen_Menu() {
 
 	if (!nimiedit && key_delay == 0 && menu_lue_kontrollit == 0) {
 		if (PisteInput_Keydown(PI_UP) || PisteInput_Keydown(PI_LEFT) ||
@@ -1182,7 +1252,7 @@ int Screen_Menu(){
 	}
 	int menu_ennen = menu_nyt;
 
-	PK_Draw_Menu();
+	Draw_Menu();
 
 	if (menu_nyt != menu_ennen)
 		menu_valittu_id = 0;
