@@ -2,14 +2,13 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
+#include "game/map.hpp"
 
-
-#include "map.hpp"
-
+#include "game/sprites.hpp"
+#include "game/game.hpp"
 #include "gfx/effect.hpp"
-#include "sprites.hpp"
-#include "game.hpp"
 #include "language.hpp"
+#include "system.hpp"
 
 #include "PisteDraw.hpp"
 #include "PisteUtils.hpp"

@@ -1,4 +1,8 @@
-#include "screens.hpp"
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
+#include "screens/screens.hpp"
 
 #include "PisteDraw.hpp"
 #include "PisteInput.hpp"
@@ -6,13 +10,14 @@
 
 #include <cstring>
 
-#include "game.hpp"
+#include "game/game.hpp"
 #include "gfx/text.hpp"
 #include "language.hpp"
 #include "gui.hpp"
 #include "episode.hpp"
 #include "sfx.hpp"
 #include "save.hpp"
+#include "system.hpp"
 
 bool going_to_game = false;
 
@@ -139,7 +144,7 @@ int PK_Draw_Map(){
 			// if clicked
 			if (paluu == 2) {
 				if (tyyppi != 2 || dev_mode) {
-					strcpy(current_map_name,jaksot[i].tiedosto);
+					strcpy(Game::map_path,jaksot[i].tiedosto);
 					jakso_indeksi_nyt = i;
 					going_to_game = true;
 					PDraw::fade_out(PDraw::FADE_SLOW);

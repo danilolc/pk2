@@ -1,3 +1,7 @@
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #include "screens.hpp"
 
 #include "sfx.hpp"
@@ -5,10 +9,11 @@
 #include "gui.hpp"
 #include "language.hpp"
 #include "gfx/text.hpp"
-#include "game.hpp"
+#include "game/game.hpp"
 #include "save.hpp"
+#include "system.hpp"
 
-#include "map.hpp"
+#include "game/map.hpp"
 
 #include "PisteEngine.hpp"
 
@@ -36,18 +41,18 @@ int Screen_First_Start() {
 	
 	if (!test_level) {
 		strcpy(episodi, "");
-		strcpy(current_map_name, "untitle1.map");
+		strcpy(Game::map_path, "untitle1.map");
 	}
 
 	jakso = 1;
 
-	Precalculate_SinCos();
+	Calculate_SinCos();
 
 	Fadetext_Init();
 
 	PK2Kartta_Set_Screen_Size(screen_width, screen_height);
 
-	current_map = new PK2Kartta();
+	Game::map = new PK2Kartta();
 	
 	if (Settings.isFiltered)
 		PDraw::set_filter(PDraw::FILTER_BILINEAR);

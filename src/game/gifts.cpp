@@ -1,8 +1,13 @@
-#include "gifts.hpp"
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
+#include "game/gifts.hpp"
 
-#include "sprites.hpp"
-#include "game.hpp"
+#include "game/sprites.hpp"
+#include "game/game.hpp"
 #include "language.hpp"
+
 #include <cstring>
 
 int gifts_count = 0;

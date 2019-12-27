@@ -1,4 +1,7 @@
-// Platform defs
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #pragma once
 
 #include "types.hpp"

@@ -1,8 +1,13 @@
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #include "episode.hpp"
 
-#include "map.hpp"
+#include "game/map.hpp"
 #include "language.hpp"
-#include "game.hpp"
+#include "game/game.hpp"
+#include "system.hpp"
 
 #include "PisteUtils.hpp"
 
@@ -65,7 +70,7 @@ int  EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupiste
 			jakso_uusi_ennatys = true;
 			paluu++;
 		}
-		if ((aika < episodipisteet.best_time[jakso] || episodipisteet.best_time[jakso] == 0) && current_map->aika > 0) {
+		if ((aika < episodipisteet.best_time[jakso] || episodipisteet.best_time[jakso] == 0) && Game::map->aika > 0) {
 			strcpy(episodipisteet.fastest_player[jakso],pelaajan_nimi);
 			episodipisteet.best_time[jakso] = aika;
 			jakso_uusi_ennatysaika = true;

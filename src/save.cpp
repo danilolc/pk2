@@ -1,6 +1,10 @@
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #include "save.hpp"
 
-#include "game.hpp"
+#include "game/game.hpp"
 
 #include <SDL_rwops.h>
 

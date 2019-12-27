@@ -1,10 +1,14 @@
-
-#include "screens.hpp"
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
+#include "screens/screens.hpp"
 
 #include "gfx/text.hpp"
 #include "gui.hpp"
-#include "game.hpp"
+#include "game/game.hpp"
 #include "language.hpp"
+#include "system.hpp"
 
 #include "PisteDraw.hpp"
 #include "PisteInput.hpp"

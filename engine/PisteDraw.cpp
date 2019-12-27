@@ -1,9 +1,9 @@
 //#########################
-//PisteEngine - PisteDraw
-//by Janne Kivilahti from Piste Gamez
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-
 #include "PisteDraw.hpp"
+
 #include "PisteFont.hpp"
 #include "PisteGui.hpp"
 

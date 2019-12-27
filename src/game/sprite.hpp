@@ -2,9 +2,7 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-
-#ifndef PK2SPRITE
-#define PK2SPRITE
+#pragma once
 
 #include "types.hpp"
 
@@ -700,5 +698,3 @@ class PK2Sprite{
     int Animaatio_Muna();
     int Animaatio_Ammus();
 };
-
-#endif

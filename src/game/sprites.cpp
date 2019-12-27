@@ -1,10 +1,14 @@
-#include "sprites.hpp"
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
+#include "game/sprites.hpp"
 
 #include "PisteSound.hpp"
-#include "sprite.hpp"
 
-#include "game.hpp"
+#include "game/game.hpp"
 #include "episode.hpp"
+
 #include <cstring>
 
 PK2Sprite* Player_Sprite;
@@ -22,7 +26,7 @@ void Prototypes_ClearAll() {
 			if (Prototypes_List[i].aanet[j] > -1)
 				PSound::free_sfx(Prototypes_List[i].aanet[j]);
 		Prototypes_List[i].Uusi();
-		strcpy(current_map->protot[i],"");
+		strcpy(Game::map->protot[i],"");
 	}
 
 	next_free_prototype = 0;
@@ -195,15 +199,15 @@ int  Prototypes_GetAll() {
 	int viimeinen_proto;
 
 	for (int i=0;i < MAX_PROTOTYYPPEJA;i++){
-		if (strcmp(current_map->protot[i],"") != 0){
+		if (strcmp(Game::map->protot[i],"") != 0){
 			viimeinen_proto = i;
 			strcpy(polku,"");
 			Load_EpisodeDir(polku);
 
-			if (Prototypes_get(polku,current_map->protot[i])!=0){
+			if (Prototypes_get(polku,Game::map->protot[i])!=0){
 				strcpy(polku,"sprites/");
-				if (Prototypes_get(polku,current_map->protot[i])!=0){
-					printf("PK2    - Can't load sprite %s. It will not appear.\n", current_map->protot[i]);
+				if (Prototypes_get(polku,Game::map->protot[i])!=0){
+					printf("PK2    - Can't load sprite %s. It will not appear.\n", Game::map->protot[i]);
 					next_free_prototype++;
 				}
 			}

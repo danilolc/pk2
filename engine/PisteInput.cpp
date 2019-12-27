@@ -1,11 +1,10 @@
 //#########################
-//PisteEngine - PisteInput
-//by Janne Kivilahti from Piste Gamez
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-
 #include "PisteInput.hpp"
-#include "PisteGui.hpp"
 
+#include "PisteGui.hpp"
 #include "platform.hpp"
 
 #include <SDL.h>

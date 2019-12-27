@@ -1,7 +1,14 @@
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #include "gfx/particle.hpp"
 
-#include "game.hpp"
+#include "game/game.hpp"
 #include "settings.hpp"
+#include "system.hpp"
+
+#include <vector>
 
 std::vector<Particle*> Particles;
 std::vector<Particle*> BGParticles;

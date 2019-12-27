@@ -1,11 +1,13 @@
 //#########################
-//PisteEngine - PisteSound
-//by Janne Kivilahti from Piste Gamez
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
 //#########################
 #include "PisteSound.hpp"
+
 #include "PisteUtils.hpp"
 
 #include <SDL_mixer.h>
+
 #include <cstring>
 
 #define AUDIO_FREQ 44100

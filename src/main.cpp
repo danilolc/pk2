@@ -2,15 +2,6 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //-------------------------
-//PK2 main code
-//
-//This is the main code of the game,
-//it interacts with the Piste Engine
-//to do the entire game logic.
-//This code does everything, except the
-//sprite and map managing, that are made
-//in a separated code to be used in the Level Editor.
-//-------------------------
 //It can be started with the "dev" argument to start the
 //cheats and "test" follown by the episode and level to
 //open directely on the level.
@@ -21,43 +12,27 @@
 
 #include "PisteEngine.hpp"
 
-#include "map.hpp"
-#include "sprite.hpp"
-#include "game.hpp"
-#include "gifts.hpp"
+#include "game/map.hpp"
+#include "game/sprite.hpp"
+#include "game/game.hpp"
+#include "game/gifts.hpp"
 #include "gfx/effect.hpp"
 #include "gfx/particles.hpp"
-#include "sprites.hpp"
+#include "game/sprites.hpp"
 #include "screens/screens.hpp"
 #include "gui.hpp"
 #include "sfx.hpp"
 #include "gfx/text.hpp"
 #include "language.hpp"
 #include "episode.hpp"
+#include "system.hpp"
 
-#include <array>
-#include <cmath>
 #include <cstring>
 
 #define GAME_NAME    "Pekka Kana 2"
 #define GAME_VERSION "r3"
 
-//#### Global Variables
-bool test_level = false;
-bool dev_mode = false;
-
-
-bool unload = false;
-
-//KARTTA
-
-
-PK2Kartta *current_map;
-char current_map_name[PE_PATH_SIZE];
-
-
 int lataa_peli = -1;
-
 
 // Time
 //const int TIME_FPS = 100;
@@ -82,8 +57,6 @@ int nakymattomyys = 0;
 
 
 //GRAFIIKKA
-bool doublespeed = false;
-bool skip_frame = false;
 
 //Menus
 
@@ -100,12 +73,7 @@ bool show_fps = false;
 //(#1) Filesystem
 //==================================================
 
-bool PK_Check_File(char *filename){ //TODO - If isn't Windows - List directory, set lower case, test, and change "char *filename".
-	struct stat st;
-	bool ret = (stat(filename, &st) == 0);
-	if(!ret) printf("PK2    - asked about non-existing file: %s\n", filename);
-	return ret;
-}
+
 
 
 //==================================================
@@ -275,7 +243,7 @@ PK2BLOCK PK_Block_Get(int x, int y) {
 		return palikka;
 	}
 
-	BYTE i = current_map->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+	BYTE i = Game::map->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
 	if (i<150){ //If it is ground
 		palikka = lasketut_palikat[i];
@@ -299,12 +267,12 @@ PK2BLOCK PK_Block_Get(int x, int y) {
 		palikka.alas = 0;
 	}
 
-	i = current_map->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+	i = Game::map->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
 	if (i>131 && i<140)
 		palikka.vesi = true;
 
-	palikka.reuna = current_map->reunat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+	palikka.reuna = Game::map->reunat[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
 
 	return palikka;
@@ -330,8 +298,8 @@ double	sprite_x,
 int		sprite_leveys,
 		sprite_korkeus;
 
-int		current_map_vasen,
-		current_map_yla,
+int		map_vasen,
+		map_yla,
 		x = 0,
 		y = 0;
 
@@ -483,15 +451,15 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 		/* Examine if it is a key and touches lock wall                       */
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_LUKKO && sprite.tyyppi->avain){
-			current_map->seinat[palikka.vasen/32+(palikka.yla/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
-			current_map->Calculate_Edges();
+			Game::map->seinat[palikka.vasen/32+(palikka.yla/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
+			Game::map->Calculate_Edges();
 
 			sprite.piilota = true;
 
 			if (sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU) {
 				Game::keys--;
 				if (Game::keys < 1)
-					current_map->Open_Locks();
+					Game::map->Open_Locks();
 			}
 
 			Effect_Explosion(palikka.vasen+16, palikka.yla+10, 0);
@@ -647,8 +615,8 @@ int PK_Sprite_Movement(int i){
 	ylos		 = true,
 	alas		 = true;
 
-	current_map_vasen = 0;
-	current_map_yla   = 0;
+	map_vasen = 0;
+	map_yla   = 0;
 
 	sprite.kyykky = false;
 
@@ -901,12 +869,12 @@ int PK_Sprite_Movement(int i){
 		palikat_x_lkm = (int)((sprite_leveys) /32)+4; //Number of blocks
 		palikat_y_lkm = (int)((sprite_korkeus)/32)+4;
 
-		current_map_vasen = (int)(sprite_vasen)/32;	//Position in tile map
-		current_map_yla	 = (int)(sprite_yla)/32;
+		map_vasen = (int)(sprite_vasen)/32;	//Position in tile map
+		map_yla	 = (int)(sprite_yla)/32;
 
 		for (y=0;y<palikat_y_lkm;y++)
 			for (x=0;x<palikat_x_lkm;x++) //For each block, create a array of blocks around the sprite
-				palikat[x+(y*palikat_x_lkm)] = PK_Block_Get(current_map_vasen+x-1,current_map_yla+y-1); //x = 0, y = 0
+				palikat[x+(y*palikat_x_lkm)] = PK_Block_Get(map_vasen+x-1,map_yla+y-1); //x = 0, y = 0
 
 		/*****************************************************************************************/
 		/* Going through the blocks around the sprite.                                           */
@@ -1170,7 +1138,7 @@ int PK_Sprite_Movement(int i){
 			}
 
 			if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
-				current_map->Change_SkullBlocks();
+				Game::map->Change_SkullBlocks();
 
 			if (sprite.Onko_AI(AI_HYOKKAYS_1_JOS_OSUTTU)){
 				sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
@@ -1203,7 +1171,7 @@ int PK_Sprite_Movement(int i){
 											  sprite_ala-16-(10+rand()%20), i, true);
 
 				if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_TYRMATTY) && !sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
-					current_map->Change_SkullBlocks();
+					Game::map->Change_SkullBlocks();
 
 				if (tuhoutuminen >= TUHOUTUMINEN_ANIMAATIO)
 					tuhoutuminen -= TUHOUTUMINEN_ANIMAATIO;
@@ -1307,10 +1275,10 @@ int PK_Sprite_Movement(int i){
 	if (&sprite == Player_Sprite || sprite.energia < 1) {
 		double kitka = 1.04;
 
-		if (current_map->ilma == ILMA_SADE || current_map->ilma == ILMA_SADEMETSA)
+		if (Game::map->ilma == ILMA_SADE || Game::map->ilma == ILMA_SADEMETSA)
 			kitka = 1.03;
 
-		if (current_map->ilma == ILMA_LUMISADE)
+		if (Game::map->ilma == ILMA_LUMISADE)
 			kitka = 1.01;
 
 		if (!alas)
@@ -1721,8 +1689,8 @@ int PK_Sprite_Bonus_Movement(int i){
 	sprite_leveys  = 0;
 	sprite_korkeus = 0;
 
-	current_map_vasen = 0;
-	current_map_yla   = 0;
+	map_vasen = 0;
+	map_yla   = 0;
 
 	PK2Sprite &sprite = Sprites_List[i];
 
@@ -1903,13 +1871,13 @@ int PK_Sprite_Bonus_Movement(int i){
 			palikat_x_lkm = (int)((sprite_leveys) /32)+4;
 			palikat_y_lkm = (int)((sprite_korkeus)/32)+4;
 
-			current_map_vasen = (int)(sprite_vasen)/32;
-			current_map_yla	 = (int)(sprite_yla)/32;
+			map_vasen = (int)(sprite_vasen)/32;
+			map_yla	 = (int)(sprite_yla)/32;
 
 			for (y=0;y<palikat_y_lkm;y++)
 				for (x=0;x<palikat_x_lkm;x++)
 				{
-					palikat[x+y*palikat_x_lkm] = PK_Block_Get(current_map_vasen+x-1,current_map_yla+y-1);
+					palikat[x+y*palikat_x_lkm] = PK_Block_Get(map_vasen+x-1,map_yla+y-1);
 				}
 
 			// Tutkitaan t�rm��k� palikkaan
@@ -1929,8 +1897,8 @@ int PK_Sprite_Bonus_Movement(int i){
 					sprite_ala,
 					sprite_leveys,
 					sprite_korkeus,
-					current_map_vasen,
-					current_map_yla,
+					map_vasen,
+					map_yla,
 					oikealle,
 					vasemmalle,
 					ylos,
@@ -2053,7 +2021,7 @@ int PK_Sprite_Bonus_Movement(int i){
 			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
 				nakymattomyys = sprite.tyyppi->latausaika;
 
-			//current_map->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
+			//Game::map->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
 
 			if (sprite.tyyppi->vahinko != 0 && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
 				Player_Sprite->energia -= sprite.tyyppi->vahinko;
@@ -2075,7 +2043,7 @@ int PK_Sprite_Bonus_Movement(int i){
 						Game::keys--;
 
 						if (Game::keys < 1)
-							current_map->Open_Locks();
+							Game::map->Open_Locks();
 					}
 
 					sprite.piilota = true;
@@ -2188,28 +2156,25 @@ void PK_Start_Test(const char* arg){
 		if(buffer[sepindex]=='/') break;
 
 	strcpy(episodi, buffer); episodi[sepindex] = '\0';
-	strcpy(current_map_name, buffer + sepindex + 1);
+	strcpy(Game::map_path, buffer + sepindex + 1);
 
-	printf("PK2    - testing episode '%s' level '%s'\n", episodi, current_map_name);
+	printf("PK2    - testing episode '%s' level '%s'\n", episodi, Game::map_path);
 
 	Load_InfoText();
 	PK_New_Game();
-}
-
-void PK_Unload(){
-	if (!unload){
-		PSound::stop_music();
-		delete current_map;
-		delete tekstit;
-		unload = true;
-	}
 }
 
 
 
 void quit(int ret) {
 	settings_save();
-	PK_Unload();
+
+	PSound::stop_music();
+	delete Game::map;
+	delete tekstit;
+
+	Piste::terminate();
+
 	if (!ret) printf("Exited correctely\n");
 	exit(ret);
 }

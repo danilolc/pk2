@@ -1,14 +1,18 @@
-
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #include "screens.hpp"
 
 #include "gfx/text.hpp"
 #include "language.hpp"
-#include "game.hpp"
-#include "gifts.hpp"
+#include "game/game.hpp"
+#include "game/gifts.hpp"
 #include "gui.hpp"
 #include "episode.hpp"
 #include "sfx.hpp"
-#include "sprites.hpp"
+#include "game/sprites.hpp"
+#include "system.hpp"
 
 #include "PisteDraw.hpp"
 #include "PisteInput.hpp"
@@ -191,7 +195,7 @@ int Screen_ScoreCount_Init() {
 	int vertailun_tulos;
 
 	/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
-	vertailun_tulos = EpisodeScore_Compare(jakso_indeksi_nyt, temp_pisteet, current_map->aika - timeout, false);
+	vertailun_tulos = EpisodeScore_Compare(jakso_indeksi_nyt, temp_pisteet, Game::map->aika - timeout, false);
 	if (vertailun_tulos > 0)
 	{
 		EpisodeScore_Save(pisteet_tiedosto);

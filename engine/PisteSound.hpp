@@ -1,6 +1,6 @@
 //#########################
-//PisteEngine - PisteSound
-//by Janne Kivilahti from Piste Gamez
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
 //#########################
 #pragma once
 

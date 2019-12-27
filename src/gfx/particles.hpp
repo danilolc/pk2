@@ -1,7 +1,11 @@
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #pragma once
 
 #include "gfx/particle.hpp"
-#include "map.hpp"
+#include "game/map.hpp"
 
 void Particles_Update();
 

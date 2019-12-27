@@ -1,46 +1,25 @@
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #pragma once
 
 #include "PisteLanguage.hpp"
-
-#include "map.hpp"
-#include "sprite.hpp"
-
 #include "types.hpp"
 #include "platform.hpp"
 
+#include "game/map.hpp"
+#include "game/sprites.hpp"
 #include "settings.hpp"
-
-#include <vector>
 
 extern int kytkin1; //TODO - on inGame.cpp
 extern int kytkin2;
 extern int kytkin3;
 extern int kytkin_tarina;
 
-
-extern bool doublespeed; //TODO
-extern bool skip_frame;
-
-extern int screen_width;
-extern int screen_height;
-
-extern char tyohakemisto[PE_PATH_SIZE];
-
-extern int mouse_x;
-extern int mouse_y;
-extern int key_delay;
-
 extern int kuva_peli;
 extern int kuva_peli2;
 extern int kuva_tausta;
-
-extern double cos_table[360];
-extern double sin_table[360];
-extern int degree;
-extern int degree_temp;
-
-extern PK2Kartta *current_map;
-extern char current_map_name[PE_PATH_SIZE];
 
 const int TIME_FPS = 100;
 extern DWORD timeout;
@@ -57,15 +36,6 @@ extern bool show_fps;
 extern int lataa_peli;
 
 extern int nakymattomyys;
-
-extern bool PK2_error;
-extern const char* PK2_error_msg;
-
-extern bool test_level;
-extern bool dev_mode;
-
-int PK2_Error(const char* msg);
-void Precalculate_SinCos();
 
 extern DWORD pisteet;
 extern DWORD piste_lisays;
@@ -107,7 +77,7 @@ extern PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
 //In game variables
 namespace Game {
 	
-	extern PK2Kartta* current_map;
+	extern PK2Kartta* map;
 	extern char map_path[PE_PATH_SIZE];
 
 	extern int vibration;

@@ -1,8 +1,9 @@
 //#########################
-//PisteEngine
-//by Janne Kivilahti from Piste Gamez
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
 //#########################
 #include "PisteEngine.hpp"
+
 #include "platform.hpp"
 
 #include <SDL.h>

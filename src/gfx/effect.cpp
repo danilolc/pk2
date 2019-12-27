@@ -1,7 +1,11 @@
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #include "gfx/effect.hpp"
 
 #include "gfx/particles.hpp"
-#include "sprite.hpp"
+#include "game/sprites.hpp"
 
 void Effect_Feathers(DWORD x, DWORD y) {
 	for (int i=0;i<9;i++)//6

@@ -1,8 +1,13 @@
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #include "gfx/particle.hpp"
 
 #include "PisteDraw.hpp"
 
-#include "game.hpp"
+#include "game/game.hpp"
+#include "system.hpp"
 
 Particle::Particle(int type, double x, double y, double a, double b, int anim, int time, double weight, int color) {
 	this->type = type;

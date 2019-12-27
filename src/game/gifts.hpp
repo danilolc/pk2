@@ -1,6 +1,10 @@
+//#########################
+//Pekka Kana 2
+//by Janne Kivilahti from Piste Gamez (2003)
+//#########################
 #pragma once
 
-#include "sprite.hpp"
+#include "game/sprites.hpp"
 
 #define MAX_GIFTS 4
 

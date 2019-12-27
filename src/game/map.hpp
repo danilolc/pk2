@@ -2,9 +2,7 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-
-#ifndef PK2MAP
-#define PK2MAP
+#pragma once
 
 #include "platform.hpp"
 
@@ -151,5 +149,3 @@ class PK2Kartta
 	void Animoi_Vesi(void);
 	
 };
-
-#endif
