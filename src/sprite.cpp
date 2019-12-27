@@ -10,6 +10,8 @@
 
 #include <cstring>
 
+#include <SDL_rwops.h>
+
 using namespace std;
 
 
@@ -622,75 +624,64 @@ PK2Sprite_Prototyyppi13 PK2Sprite_Prototyyppi::GetProto13(){
 	return proto;
 }
 
-int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
+int PK2Sprite_Prototyyppi::Lataa(const char *dir, const char *filename){
 	this->Uusi();
 
-	char kuva[PE_PATH_SIZE];
-	strcpy(kuva,"");
-	strcpy(kuva,polku);
+	char path[PE_PATH_SIZE];
+	strcpy(path, dir);
+	strcat(path, filename);
 
-	// Ladataan itse sprite-tiedosto
-
-	if (strcmp(polku,"")!=0)
-		strcat(polku,tiedoston_nimi);
-	else
-		strcpy(polku,tiedoston_nimi);
-
-	ifstream *tiedosto = new ifstream(polku, ios::binary);
 	char versio[4];
-
-	if (tiedosto->fail()){
-		printf("PK2SPR - failed to open %s.\n", polku);
-		delete (tiedosto);
+	SDL_RWops* file = SDL_RWFromFile(path, "r");
+	if (file == nullptr){
+		printf("PK2SPR - failed to open %s.\n", path);
 		return 1;
 	}
 
-	tiedosto->read ((char *)versio, 4);
+	SDL_RWread(file, versio, 1, 4);
 
 	if (strcmp(versio,"1.0") == 0){
 		this->Uusi();
 		PK2Sprite_Prototyyppi10 proto;
-		tiedosto->read ((char *)&proto, sizeof (proto));
+		SDL_RWread(file, &proto, sizeof(proto), 1);
 		this->SetProto10(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto,tiedoston_nimi);
+		strcpy(this->tiedosto, filename);
 	}
 	if (strcmp(versio,"1.1") == 0){
 		this->Uusi();
 		PK2Sprite_Prototyyppi11 proto;
-		tiedosto->read ((char *)&proto, sizeof (proto));
+		SDL_RWread(file, &proto, sizeof(proto), 1);
 		this->SetProto11(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto,tiedoston_nimi);
+		strcpy(this->tiedosto, filename);
 	}
 	if (strcmp(versio,"1.2") == 0){
 		this->Uusi();
 		PK2Sprite_Prototyyppi12 proto;
-		tiedosto->read ((char *)&proto, sizeof (proto));
+		SDL_RWread(file, &proto, sizeof(proto), 1);
 		this->SetProto12(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto,tiedoston_nimi);
+		strcpy(this->tiedosto, filename);
 	}
 	if (strcmp(versio,"1.3") == 0){
 		this->Uusi();
 		PK2Sprite_Prototyyppi13 proto;
-		tiedosto->read ((char *)&proto, sizeof (proto));
+		SDL_RWread(file, &proto, sizeof(proto), 1);
 		this->SetProto13(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto,tiedoston_nimi);
+		strcpy(this->tiedosto, filename);
 	}
 
-	if (tiedosto->fail()){
-		delete (tiedosto);
-		return 1;
-	}
+	SDL_RWclose(file);
 
-	delete (tiedosto);
 
 	// Get sprite bmp
-	strcat(kuva,kuvatiedosto);
-	int bufferi = PDraw::image_load(kuva,false);
+	char kuva[PE_PATH_SIZE];
+	strcpy(kuva, dir);
+	strcat(kuva, kuvatiedosto);
 
+	int bufferi = PDraw::image_load(kuva, false);
 	if (bufferi == -1)
 		return 1;
 
@@ -737,16 +728,18 @@ int PK2Sprite_Prototyyppi::Lataa(char *polku, char *tiedoston_nimi){
 	PDraw::image_delete(bufferi);
 	return 0;
 }
-void PK2Sprite_Prototyyppi::Tallenna(char *tiedoston_nimi){
+void PK2Sprite_Prototyyppi::Tallenna(char *tiedoston_nimi) {
+
    	strcpy(this->tiedosto,tiedoston_nimi);
 
 	PK2Sprite_Prototyyppi13 proto = GetProto13();
 
-	ofstream *tiedosto = new ofstream(tiedoston_nimi, ios::binary);
-	tiedosto->write (PK2SPRITE_VIIMEISIN_VERSIO, 4);
-	tiedosto->write ((char *)&proto, sizeof (proto));
+	SDL_RWops* file = SDL_RWFromFile(tiedoston_nimi, "w");
+	SDL_RWwrite(file, PK2SPRITE_VIIMEISIN_VERSIO, 4, 1);
+	SDL_RWwrite(file, &proto, sizeof(proto), 1);
 
-	delete (tiedosto);
+	SDL_RWclose(file);
+
 }
 
 int PK2Sprite_Prototyyppi::Piirra(int x, int y, int frame){

@@ -6,6 +6,8 @@
 
 #include "PisteUtils.hpp"
 
+#include <SDL_rwops.h>
+
 #include <cstring>
 #include <memory>
 
@@ -63,7 +65,7 @@ int  EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupiste
 			jakso_uusi_ennatys = true;
 			paluu++;
 		}
-		if ((aika < episodipisteet.best_time[jakso] || episodipisteet.best_time[jakso] == 0) && kartta->aika > 0) {
+		if ((aika < episodipisteet.best_time[jakso] || episodipisteet.best_time[jakso] == 0) && current_map->aika > 0) {
 			strcpy(episodipisteet.fastest_player[jakso],pelaajan_nimi);
 			episodipisteet.best_time[jakso] = aika;
 			jakso_uusi_ennatysaika = true;
@@ -80,36 +82,48 @@ int  EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupiste
 	}
 	return paluu;
 }
-int  EpisodeScore_Open(char *filename){
-	Load_EpisodeDir(filename);
+int EpisodeScore_Open(char *filename) {
 
-	ifstream *tiedosto = new ifstream(filename, ios::binary);
 	char versio[4];
 
-	if (tiedosto->fail()){
-		delete (tiedosto);
+	Load_EpisodeDir(filename);
+	
+	SDL_RWops *file = SDL_RWFromFile(filename, "r");
+	if (file == nullptr){
 		EpisodeScore_Start();
 		return 1;
 	}
 
-	tiedosto->read ((char *)versio, 4);
-
-	if (strcmp(versio,"1.0") == 0) {
-		tiedosto->read ((char *)&episodipisteet, sizeof (episodipisteet));
+	SDL_RWread(file, versio, 4, 1);
+	if (strcmp(versio, "1.0") != 0) {
+		EpisodeScore_Start();
+		SDL_RWclose(file);
+		return 2;
 	}
-
-	delete (tiedosto);
+	
+	SDL_RWread(file, &episodipisteet, sizeof(episodipisteet), 1);
+	SDL_RWclose(file);
 
 	return 0;
+
 }
-int  EpisodeScore_Save(char *filename){
+int EpisodeScore_Save(char *filename) {
+
 	Load_EpisodeDir(filename);
 
-	ofstream *tiedosto = new ofstream(filename, ios::binary);
-	tiedosto->write ("1.0", 4);
-	tiedosto->write ((char *)&episodipisteet, sizeof (episodipisteet));
-	delete (tiedosto);
+	SDL_RWops *file = SDL_RWFromFile(filename, "w");
+	if (file == nullptr) {
+		printf("Error saving scores\n");
+		return 1;
+	}
+
+	SDL_RWwrite(file, "1.0", 1, 4);
+	SDL_RWwrite(file, &episodipisteet, 1, sizeof(episodipisteet));
+	
+	SDL_RWclose(file);
+
 	return 0;
+
 }
 
 //TODO - Load info from different languages

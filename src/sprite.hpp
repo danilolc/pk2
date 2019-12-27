@@ -571,7 +571,7 @@ class PK2Sprite_Prototyyppi{
     void Uusi();
     void Kopioi(const PK2Sprite_Prototyyppi &proto);
     int  Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi);
-    int  Lataa(char *polku, char *tiedoston_nimi);
+    int  Lataa(const char *dir, const char *filename);
     void Tallenna(char *tiedoston_nimi);
     int  Piirra(int x, int y, int frame);
     bool Onko_AI(int AI);

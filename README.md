@@ -4,7 +4,7 @@ by Janne Kivilahti from Piste Gamez (2003)
 Ported to SDL by Samuli Tuomola (2010)
 https://github.com/stt/pk2
 
-Translated and ported to SDL2 by Danilo Lemos (2016/2017)
+Translated and ported to SDL2 by Danilo Lemos (2016-2019)
 
 "Pekka Kana 2 (Pekka the Rooster 2) is a jump 'n run game made in the spirit of old classic platformers such as Super Mario, Sonic the Hedgehog, Jazz Jackrabbit, Super Frog and so on."
 http://kiwi.mbnet.fi/pistegamez/pk2/
@@ -60,7 +60,6 @@ This example starts the level13.map on dev mode:
 * Find a solution to change sfx frequency without delay
 * Increase txt buttons area
 * Make the code cleaner (and remove all the Finnish things)
-* Add link to Discord
 * Jump frames when FPS is slow
 * Start on language select on first start
 * Super mode - energy = 0 on touch Pekka

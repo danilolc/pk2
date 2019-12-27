@@ -47,7 +47,7 @@ int Screen_First_Start() {
 
 	PK2Kartta_Set_Screen_Size(screen_width, screen_height);
 
-	kartta = new PK2Kartta();
+	current_map = new PK2Kartta();
 	
 	if (Settings.isFiltered)
 		PDraw::set_filter(PDraw::FILTER_BILINEAR);
@@ -60,7 +60,7 @@ int Screen_First_Start() {
 
 	PDraw::image_load(kuva_peli, "gfx/pk2stuff.bmp", false);
 	PDraw::image_load(kuva_peli2, "gfx/pk2stuff2.bmp", false);
-	PDraw::image_load(kuva_tausta, "gfx/menu.bmp", true);
+	//PDraw::image_load(kuva_tausta, "gfx/menu.bmp", true);
 
 	//Sprites_clear();
 	//Gifts_Clean();

@@ -39,7 +39,7 @@ extern double sin_table[360];
 extern int degree;
 extern int degree_temp;
 
-extern PK2Kartta *kartta;
+extern PK2Kartta *current_map;
 extern char current_map_name[PE_PATH_SIZE];
 
 const int TIME_FPS = 100;

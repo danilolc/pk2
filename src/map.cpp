@@ -15,10 +15,10 @@
 #include "PisteUtils.hpp"
 #include "PisteInput.hpp"
 
+#include <SDL_rwops.h>
+
 #include <inttypes.h>
 #include <cstring>
-
-using namespace std;
 
 int aste,
 	vesiaste = 0,
@@ -292,80 +292,80 @@ void PK2Kartta::LueTallennusAlue(BYTE *lahde, RECT alue, int kohde){
 }
 
 int PK2Kartta::Tallenna(char *filename){
-	char luku[8];
+	char luku[8]; //Size can't be changed
 	DWORD i;
 
-	ofstream *tiedosto = new ofstream(filename, ios::binary);
+	SDL_RWops* file = SDL_RWFromFile(filename, "w");
 
 	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
 
 	//tiedosto->write ((char *)this, sizeof (*this));
 
-	tiedosto->write(this->versio,		sizeof(versio));
-	tiedosto->write(this->palikka_bmp,	sizeof(palikka_bmp));
-	tiedosto->write(this->taustakuva,	sizeof(taustakuva));
-	tiedosto->write(this->musiikki,		sizeof(musiikki));
-	tiedosto->write(this->nimi,			sizeof(nimi));
-	tiedosto->write(this->tekija,		sizeof(tekija));
+	SDL_RWwrite(file, this->versio,      sizeof(versio), 1);
+	SDL_RWwrite(file, this->palikka_bmp, sizeof(palikka_bmp), 1);
+	SDL_RWwrite(file, this->taustakuva,  sizeof(taustakuva), 1);
+	SDL_RWwrite(file, this->musiikki,    sizeof(musiikki), 1);
+	SDL_RWwrite(file, this->nimi,        sizeof(nimi), 1);
+	SDL_RWwrite(file, this->tekija,      sizeof(tekija), 1);
 
 	//itoa(this->jakso,luku,10);
 	sprintf(luku, "%i", this->jakso);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->ilma,luku,10);
 	sprintf(luku, "%i", this->ilma);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->kytkin1_aika,luku,10);
 	sprintf(luku, "%" PRIu32, this->kytkin1_aika);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->kytkin2_aika,luku,10);
 	sprintf(luku, "%" PRIu32, this->kytkin2_aika);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->kytkin3_aika,luku,10);
 	sprintf(luku, "%" PRIu32, this->kytkin3_aika);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->aika,luku,10);
 	sprintf(luku, "%i", this->aika);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->extra,luku,10);
 	sprintf(luku, "%i", this->extra);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->tausta,luku,10);
 	sprintf(luku, "%i", this->tausta);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->pelaaja_sprite,luku,10);
 	sprintf(luku, "%i", this->pelaaja_sprite);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->x,luku,10);
 	sprintf(luku, "%i", this->x);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->y,luku,10);
 	sprintf(luku, "%i", this->y);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	//itoa(this->ikoni,luku,10);
 	sprintf(luku, "%i", this->ikoni);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	int protoja = 0;
@@ -376,48 +376,48 @@ int PK2Kartta::Tallenna(char *filename){
 
 	//itoa(protoja,luku,10);
 	sprintf(luku, "%i", protoja);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 		if (strlen(this->protot[i]) > 0)
-			tiedosto->write(protot[i],sizeof(protot[i]));
+			SDL_RWwrite(file, this->protot[i], sizeof(this->protot[i]), 1);
 
 	// laske alue
 
 	//BYTE *alue_taustat = NULL, *alue_seinat = NULL, *alue_spritet = NULL;
 	RECT alue = {0,0,0,0};
 	DWORD /*koko, aloituskohta,*/ leveys, korkeus, x, y;
-	DWORD aloitus_x,aloitus_y;
+	DWORD offset_x,offset_y;
 	char tile[1];
 
 	// taustat
 	alue = LaskeTallennusAlue(this->taustat);
 	leveys = alue.right - alue.left;
 	korkeus = alue.bottom - alue.top;
-	aloitus_x = alue.left;
-	aloitus_y = alue.top;
+	offset_x = alue.left;
+	offset_y = alue.top;
 
-	sprintf(luku, "%" PRIu32, aloitus_x);
-	tiedosto->write(luku, sizeof(luku));
+	sprintf(luku, "%" PRIu32, offset_x);
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
-	sprintf(luku, "%" PRIu32, aloitus_y);
-	tiedosto->write(luku, sizeof(luku));
+	sprintf(luku, "%" PRIu32, offset_y);
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	sprintf(luku, "%" PRIu32, leveys);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	sprintf(luku, "%" PRIu32, korkeus);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
-	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
-		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
+	for (y=offset_y;y<=offset_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
+		for (x=offset_x;x<=offset_x+leveys;x++) {
 			tile[0] = this->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
-			tiedosto->write(tile, sizeof(tile));
+			SDL_RWwrite(file, tile, sizeof(tile), 1);
 		}
 	}
 
@@ -425,28 +425,28 @@ int PK2Kartta::Tallenna(char *filename){
 	alue = LaskeTallennusAlue(this->seinat);
 	leveys = alue.right - alue.left;
 	korkeus = alue.bottom - alue.top;
-	aloitus_x = alue.left;
-	aloitus_y = alue.top;
-	//ltoa(aloitus_x,luku,10);
-	sprintf(luku, "%" PRIu32, aloitus_x);
-	tiedosto->write(luku, sizeof(luku));
+	offset_x = alue.left;
+	offset_y = alue.top;
+	//ltoa(offset_x,luku,10);
+	sprintf(luku, "%" PRIu32, offset_x);
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
-	sprintf(luku, "%" PRIu32, aloitus_y);
-	tiedosto->write(luku, sizeof(luku));
+	sprintf(luku, "%" PRIu32, offset_y);
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	sprintf(luku, "%" PRIu32, leveys);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
 	sprintf(luku, "%" PRIu32, korkeus);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku)); //TODO - MAKE A FUNCTION TO DO THIS
-	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
-		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
+	for (y=offset_y;y<=offset_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
+		for (x=offset_x;x<=offset_x+leveys;x++) {
 			tile[0] = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
-			tiedosto->write(tile, sizeof(tile));
+			SDL_RWwrite(file, tile, sizeof(tile), 1);
 		}
 	}
 
@@ -454,147 +454,131 @@ int PK2Kartta::Tallenna(char *filename){
 	alue = LaskeTallennusAlue(this->spritet);
 	leveys = alue.right - alue.left;
 	korkeus = alue.bottom - alue.top;
-	aloitus_x = alue.left;
-	aloitus_y = alue.top;
-	//ltoa(aloitus_x,luku,10);
-	sprintf(luku, "%" PRIu32, aloitus_x);
-	tiedosto->write(luku, sizeof(luku));
+	offset_x = alue.left;
+	offset_y = alue.top;
+
+	//ltoa(offset_x,luku,10);
+	sprintf(luku, "%" PRIu32, offset_x);
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
-	//ltoa(aloitus_y,luku,10);
-	sprintf(luku, "%" PRIu32, aloitus_y);
-	tiedosto->write(luku, sizeof(luku));
+
+	//ltoa(offset_y,luku,10);
+	sprintf(luku, "%" PRIu32, offset_y);
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
+
 	//ltoa(leveys,luku,10);
 	sprintf(luku, "%" PRIu32, leveys);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
+
 	//ltoa(korkeus,luku,10);
 	sprintf(luku, "%" PRIu32, korkeus);
-	tiedosto->write(luku, sizeof(luku));
+	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
-	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
-		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
+	for (y=offset_y;y<=offset_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
+		for (x=offset_x;x<=offset_x+leveys;x++) {
 			tile[0] = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
-			tiedosto->write(tile, sizeof(tile));
+			SDL_RWwrite(file, tile, sizeof(tile), 1);
 		}
 	}
 
-	if (tiedosto->fail()){
-		delete (tiedosto);
-		return 1;
-	}
-
-	delete (tiedosto);
+	SDL_RWclose(file);
 
 	return 0;
 }
 
 int PK2Kartta::Lataa(char *polku, char *nimi){
-	char file[PE_PATH_SIZE];
-	strcpy(file,polku);
-	strcat(file,nimi);
+	
+	char path[PE_PATH_SIZE];
+	strcpy(path, polku);
+	strcat(path, nimi);
 
-	ifstream *tiedosto = new ifstream(file, ios::binary);
-	char versio[8] = "\0";
+	char versio[8];
 
-	if (tiedosto->fail()){
-		delete (tiedosto);
+	SDL_RWops* file = SDL_RWFromFile(path, "r");
+	if (file == nullptr){
 		return 1;
 	}
 
-	tiedosto->read ((char *)versio, sizeof (versio));
-
-	if (tiedosto->fail()){
-		delete (tiedosto);
-		return 1;
-	}
-
-	delete (tiedosto);
+	SDL_RWread(file, versio, sizeof(versio), 1);
+	SDL_RWclose(file);
 
 	int ok = 2;
 
-	if (strcmp(versio,"1.3")==0){
-		this->LataaVersio13(file);
+	printf("PK2MAP - Loading %s, version %s\n", path, versio);
+
+	if (strcmp(versio,"1.3")==0) {
+		this->LataaVersio13(path);
 		ok = 0;
 	}
-	if (strcmp(versio,"1.2")==0){
-		this->LataaVersio12(file);
+	if (strcmp(versio,"1.2")==0) {
+		this->LataaVersio12(path);
 		ok = 0;
 	}
-	if (strcmp(versio,"1.1")==0){
-		this->LataaVersio11(file);
+	if (strcmp(versio,"1.1")==0) {
+		this->LataaVersio11(path);
 		ok = 0;
 	}
-	if (strcmp(versio,"1.0")==0){
-		this->LataaVersio10(file);
+	if (strcmp(versio,"1.0")==0) {
+		this->LataaVersio10(path);
 		ok = 0;
 	}
-	if (strcmp(versio,"0.1")==0){
-		this->LataaVersio01(file);
+	if (strcmp(versio,"0.1")==0) {
+		this->LataaVersio01(path);
 		ok = 0;
 	}
 
 	Lataa_PalikkaPaletti(polku, this->palikka_bmp);
-	Lataa_Taustakuva(polku,this->taustakuva);
+	Lataa_Taustakuva(polku, this->taustakuva);
 
 	return(ok);
 }
 
 int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
-	char file[PE_PATH_SIZE];
-	strcpy(file,polku);
-	strcat(file,nimi);
+	char path[PE_PATH_SIZE];
+	strcpy(path, polku);
+	strcat(path, nimi);
 
-	ifstream *tiedosto = new ifstream(file, ios::binary);
-	char versio[8] = "\0";
+	char versio[8];
 
-	if (tiedosto->fail())
-	{
-		delete (tiedosto);
+	SDL_RWops* file = SDL_RWFromFile(path, "r");
+	if (file == nullptr){
 		return 1;
 	}
 
-	tiedosto->read ((char *)versio, sizeof (versio));
-
-	if (tiedosto->fail())
-	{
-		delete (tiedosto);
-		return 1;
-	}
-
-	delete (tiedosto);
+	SDL_RWread(file, versio, sizeof(versio), 1);
+	SDL_RWclose(file);
 
 	if (strcmp(versio,"1.3")==0)
-		this->LataaVersio13(file);
+		this->LataaVersio13(path);
 
 	if (strcmp(versio,"1.2")==0)
-		this->LataaVersio12(file);
+		this->LataaVersio12(path);
 
 	if (strcmp(versio,"1.1")==0)
-		this->LataaVersio11(file);
+		this->LataaVersio11(path);
 
 	if (strcmp(versio,"1.0")==0)
-		this->LataaVersio10(file);
+		this->LataaVersio10(path);
 
 	if (strcmp(versio,"0.1")==0)
-		this->LataaVersio01(file);
+		this->LataaVersio01(path);
 
 	return(0);
 }
 
 int PK2Kartta::LataaVersio01(char *filename){
 
-	FILE *tiedosto;
-
 	PK2KARTTA kartta;
 
-	if ((tiedosto = fopen(filename, "r")) == NULL){
-		return(1);
+	SDL_RWops* file = SDL_RWFromFile(filename, "r");
+	if (file == nullptr) {
+		return 1;
 	}
 
-	fread(&kartta, sizeof(PK2KARTTA), 1, tiedosto);
-
-	fclose(tiedosto);
+	SDL_RWread(file, &kartta, sizeof(PK2KARTTA), 1);
+	SDL_RWclose(file);
 
 	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
 	strcpy(this->palikka_bmp,"blox.bmp");
@@ -618,18 +602,16 @@ int PK2Kartta::LataaVersio01(char *filename){
 	return(0);
 }
 int PK2Kartta::LataaVersio10(char *filename){
-	FILE *tiedosto;
-
+	
 	PK2Kartta *kartta = new PK2Kartta();
 
-	if ((tiedosto = fopen(filename, "r")) == NULL)
-	{
-		return(1);
+	SDL_RWops* file = SDL_RWFromFile(filename, "r");
+	if (file == nullptr) {
+		return 1;
 	}
 
-	fread(kartta, sizeof(PK2Kartta), 1, tiedosto);
-
-	fclose(tiedosto);
+	SDL_RWread(file, &kartta, sizeof(PK2KARTTA), 1);
+	SDL_RWclose(file);
 
 	strcpy(this->versio,		kartta->versio);
 	strcpy(this->palikka_bmp,	kartta->palikka_bmp);
@@ -661,34 +643,32 @@ int PK2Kartta::LataaVersio10(char *filename){
 	return(0);
 }
 int PK2Kartta::LataaVersio11(char *filename){
-	FILE *tiedosto;
 	int virhe = 0;
 
-
-	if ((tiedosto = fopen(filename, "r")) == NULL)
-	{
-		return(1);
+	SDL_RWops* file = SDL_RWFromFile(filename, "r");
+	if (file == nullptr) {
+		return 1;
 	}
 
 	memset(this->taustat, 255, sizeof(this->taustat));
 	memset(this->seinat , 255, sizeof(this->seinat));
 	memset(this->spritet, 255, sizeof(this->spritet));
 
-	fread(this->versio,		sizeof(char),	5, tiedosto);
-	fread(this->palikka_bmp,sizeof(char),	13, tiedosto);
-	fread(this->taustakuva,	sizeof(char),	13, tiedosto);
-	fread(this->musiikki,	sizeof(char),	13, tiedosto);
-	fread(this->nimi,		sizeof(char),	40, tiedosto);
-	fread(this->tekija,		sizeof(char),	40, tiedosto);
-	fread(&this->aika,		sizeof(int),	1, tiedosto);
-	fread(&this->extra,		sizeof(BYTE),	1, tiedosto);
-	fread(&this->tausta,	sizeof(BYTE),	1, tiedosto);
-	fread(this->taustat,	sizeof(taustat),1, tiedosto);
-	if (fread(this->seinat,	sizeof(seinat),	1, tiedosto) != PK2KARTTA_KARTTA_KOKO)
+	SDL_RWread(file, this->versio,      sizeof(char),    5);
+	SDL_RWread(file, this->palikka_bmp, sizeof(char),   13);
+	SDL_RWread(file, this->taustakuva,  sizeof(char),   13);
+	SDL_RWread(file, this->musiikki,    sizeof(char),   13);
+	SDL_RWread(file, this->nimi,        sizeof(char),   40);
+	SDL_RWread(file, this->tekija,      sizeof(char),   40);
+	SDL_RWread(file, &this->aika,       sizeof(int),     1);
+	SDL_RWread(file, &this->extra,      sizeof(BYTE),    1);
+	SDL_RWread(file, &this->tausta,     sizeof(BYTE),    1);
+	SDL_RWread(file, this->taustat,     sizeof(taustat), 1);
+	if (SDL_RWread(file, this->seinat,  sizeof(seinat),  1) != PK2KARTTA_KARTTA_KOKO)
 		virhe = 2;
-	fread(this->spritet,	sizeof(spritet),1, tiedosto);
+	SDL_RWread(file, this->spritet,     sizeof(spritet), 1);
 
-	fclose(tiedosto);
+	SDL_RWclose(file);
 
 	int i;
 
@@ -711,12 +691,10 @@ int PK2Kartta::LataaVersio11(char *filename){
 }
 int PK2Kartta::LataaVersio12(char *filename){
 
-	ifstream *tiedosto = new ifstream(filename, ios::binary);
 	char luku[8];
-
-	if (tiedosto->fail())
-	{
-		delete (tiedosto);
+	
+	SDL_RWops* file = SDL_RWFromFile(filename, "r");
+	if (file == nullptr) {
 		return 1;
 	}
 
@@ -728,54 +706,47 @@ int PK2Kartta::LataaVersio12(char *filename){
 		strcpy(this->protot[i],"");
 
 	//tiedosto->read ((char *)this, sizeof (*this));
-	tiedosto->read(this->versio,		sizeof(versio));
-	tiedosto->read(this->palikka_bmp,	sizeof(palikka_bmp));
-	tiedosto->read(this->taustakuva,	sizeof(taustakuva));
-	tiedosto->read(this->musiikki,		sizeof(musiikki));
-	tiedosto->read(this->nimi,			sizeof(nimi));
-	tiedosto->read(this->tekija,		sizeof(tekija));
+	SDL_RWread(file, versio,      sizeof(versio), 1);
+	SDL_RWread(file, palikka_bmp, sizeof(palikka_bmp), 1);
+	SDL_RWread(file, taustakuva,  sizeof(taustakuva), 1);
+	SDL_RWread(file, musiikki,    sizeof(musiikki), 1);
+	SDL_RWread(file, nimi,        sizeof(nimi), 1);
+	SDL_RWread(file, tekija,      sizeof(tekija), 1);
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->jakso = atoi(luku);
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->ilma = atoi(luku);
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->kytkin1_aika = atoi(luku);
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->kytkin2_aika = atoi(luku);
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->kytkin3_aika = atoi(luku);
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->aika = atoi(luku);
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->extra = atoi(luku);
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->tausta = atoi(luku);
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->pelaaja_sprite = atoi(luku);
 
-	tiedosto->read((char*)this->taustat,		sizeof(taustat));
-	tiedosto->read((char*)this->seinat,		sizeof(seinat));
-	tiedosto->read((char*)this->spritet,		sizeof(spritet));
+	SDL_RWread(file, taustat, sizeof(taustat), 1);
+	SDL_RWread(file, seinat,  sizeof(seinat), 1);
+	SDL_RWread(file, spritet, sizeof(spritet), 1);
 
-	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-		tiedosto->read(this->protot[i],sizeof(protot[i]));
+	SDL_RWread(file, protot, sizeof(protot[0]), PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA);
 
-	if (tiedosto->fail())
-	{
-		delete (tiedosto);
-		return 1;
-	}
-
-	delete (tiedosto);
+	SDL_RWclose(file);
 
 	//Lataa_PalikkaPaletti(this->palikka_bmp);
 	//Lataa_Taustakuva(this->taustakuva);
@@ -784,13 +755,11 @@ int PK2Kartta::LataaVersio12(char *filename){
 }
 int PK2Kartta::LataaVersio13(char *filename){
 
-	ifstream *tiedosto = new ifstream(filename, ios::binary);
 	char luku[8];
 	DWORD i;
 
-	if (tiedosto->fail())
-	{
-		delete (tiedosto);
+	SDL_RWops* file = SDL_RWFromFile(filename, "r");
+	if (file == nullptr) {
 		return 1;
 	}
 
@@ -801,120 +770,101 @@ int PK2Kartta::LataaVersio13(char *filename){
 	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 		strcpy(this->protot[i],"");
 
-	//tiedosto->read ((char *)this, sizeof (*this));
-	tiedosto->read(this->versio,		sizeof(versio));
-	tiedosto->read(this->palikka_bmp,	sizeof(palikka_bmp));
-	tiedosto->read(this->taustakuva,	sizeof(taustakuva));
-	tiedosto->read(this->musiikki,		sizeof(musiikki));
-	tiedosto->read(this->nimi,			sizeof(nimi));
-	tiedosto->read(this->tekija,		sizeof(tekija));
+	SDL_RWread(file, versio,      sizeof(versio), 1);
+	SDL_RWread(file, palikka_bmp, sizeof(palikka_bmp), 1);
+	SDL_RWread(file, taustakuva,  sizeof(taustakuva), 1);
+	SDL_RWread(file, musiikki,    sizeof(musiikki), 1);
+	SDL_RWread(file, nimi,        sizeof(nimi), 1);
+	SDL_RWread(file, tekija,      sizeof(tekija), 1);
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->jakso = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->ilma = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->kytkin1_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->kytkin2_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->kytkin3_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->extra = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->tausta = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->pelaaja_sprite = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->x = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->y = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	this->ikoni = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
 	DWORD lkm;
-	tiedosto->read(luku, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);
 	lkm = (int)atoi(luku);
 
-	//for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
-	//	itoa(lkm,protot[i],10);//strcpy(protot[i],"");
+	SDL_RWread(file, protot, sizeof(protot[0]), lkm);
 
-	for (i=0;i<lkm/*PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA*/;i++)
-		tiedosto->read(protot[i],sizeof(protot[i]));
-
-	DWORD leveys, korkeus,
-		  aloitus_x,aloitus_y,
-		  x,y;
-	char tile[1];
+	DWORD leveys, korkeus;
+	DWORD offset_x, offset_y;
 
 	// taustat
-	tiedosto->read(luku, sizeof(luku)); aloitus_x = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); aloitus_y = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); leveys    = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); korkeus   = atol(luku); memset(luku, 0, sizeof(luku));
-	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Luetaan alue tile by tile
-		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
-			tiedosto->read(tile, sizeof(tile));
-			this->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS] = tile[0];
-		}
+	SDL_RWread(file, luku, sizeof(luku), 1); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
+	for (DWORD y = offset_y; y <= offset_y + korkeus; y++) {
+		DWORD x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
+		SDL_RWread(file, &taustat[x_start], 1, leveys + 1);
 	}
 
 	// seinat
-	tiedosto->read(luku, sizeof(luku)); aloitus_x = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); aloitus_y = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); leveys    = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); korkeus   = atol(luku); memset(luku, 0, sizeof(luku));
-	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Luetaan alue tile by tile
-		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
-			tiedosto->read(tile, sizeof(tile));
-			this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = tile[0];
-		}
+	SDL_RWread(file, luku, sizeof(luku), 1); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
+	for (DWORD y = offset_y; y <= offset_y + korkeus; y++) {
+		DWORD x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
+		SDL_RWread(file, &seinat[x_start], 1, leveys + 1);
 	}
 
 	//spritet
-	tiedosto->read(luku, sizeof(luku)); aloitus_x = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); aloitus_y = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); leveys    = atol(luku); memset(luku, 0, sizeof(luku));
-	tiedosto->read(luku, sizeof(luku)); korkeus   = atol(luku); memset(luku, 0, sizeof(luku));
-	for (y=aloitus_y;y<=aloitus_y+korkeus;y++) {	// Luetaan alue tile by tile
-		for (x=aloitus_x;x<=aloitus_x+leveys;x++) {
-			tiedosto->read(tile, sizeof(tile));
-			this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS] = tile[0];
-		}
+	SDL_RWread(file, luku, sizeof(luku), 1);; offset_x = atol(luku); memset(luku, 0, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);; offset_y = atol(luku); memset(luku, 0, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);; leveys   = atol(luku); memset(luku, 0, sizeof(luku));
+	SDL_RWread(file, luku, sizeof(luku), 1);; korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
+	for (DWORD y = offset_y; y <= offset_y + korkeus; y++) {
+		DWORD x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
+		SDL_RWread(file, &spritet[x_start], 1, leveys + 1);
 	}
 
-	if (tiedosto->fail())
-	{
-		delete (tiedosto);
-		return 1;
-	}
-
-	delete (tiedosto);
+	SDL_RWclose(file);
 
 	//Lataa_PalikkaPaletti(this->palikka_bmp);
 	//Lataa_Taustakuva(this->taustakuva);
@@ -995,7 +945,7 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 	strcpy(file,polku);
 
 	for (i=0 ; filename[i]!='\0' ; i++)
-		filename[i]=tolower(filename[i]);
+		filename[i] |= ' ';
 
 	strcat(file,filename);
 

@@ -7,8 +7,8 @@
 #include <SDL.h>
 
 #include <cstring>
+#include <string>
 #include <sys/stat.h>
-#include <cstring>
 
 using namespace std;
 

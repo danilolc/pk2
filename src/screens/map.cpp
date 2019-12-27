@@ -224,54 +224,57 @@ int Screen_Map_Init() {
 		EpisodeScore_Open(topscoretiedosto);
 	}
 
-	/* Ladataan kartan taustakuva ...*/
 	char mapkuva[PE_PATH_SIZE] = "map.bmp";
 	Load_EpisodeDir(mapkuva);
-	//PisteLog_Kirjoita("  - Loading map picture ");
-	//PisteLog_Kirjoita(mapkuva);
-	//PisteLog_Kirjoita(" from episode folder \n");
 
-	PDraw::image_delete(kuva_tausta);
-	kuva_tausta = PDraw::image_load(mapkuva, true);
+	PDraw::image_load(kuva_tausta, mapkuva, true);
 	if (kuva_tausta == -1)
-		kuva_tausta = PDraw::image_load("gfx/map.bmp", true);
+		PDraw::image_load(kuva_tausta, "gfx/map.bmp", true);
 
 	/* Ladataan kartan musiikki ...*/
-	char mapmusa[PE_PATH_SIZE] = "map.mp3";
-	do
-	{
-		Load_EpisodeDir(mapmusa);
-		if (PK_Check_File(mapmusa))
-			break;
-		strcpy(mapmusa, "map.ogg");
-		Load_EpisodeDir(mapmusa);
-		if (PK_Check_File(mapmusa))
-			break;
-		strcpy(mapmusa, "map.xm");
-		Load_EpisodeDir(mapmusa);
-		if (PK_Check_File(mapmusa))
-			break;
-		strcpy(mapmusa, "map.mod");
-		Load_EpisodeDir(mapmusa);
-		if (PK_Check_File(mapmusa))
-			break;
-		strcpy(mapmusa, "map.it");
-		Load_EpisodeDir(mapmusa);
-		if (PK_Check_File(mapmusa))
-			break;
-		strcpy(mapmusa, "map.s3m");
-		Load_EpisodeDir(mapmusa);
-		if (PK_Check_File(mapmusa))
-			break;
-		strcpy(mapmusa, "music/map.mp3");
-		if (PK_Check_File(mapmusa))
-			break;
-		strcpy(mapmusa, "music/map.ogg");
-		if (PK_Check_File(mapmusa))
-			break;
-		strcpy(mapmusa, "music/map.xm");
-		break;
-	} while (0);
+	char mapmusa[PE_PATH_SIZE];
+	
+	strcpy(mapmusa, "map.mp3");
+	Load_EpisodeDir(mapmusa);
+	if (PK_Check_File(mapmusa))
+		goto found;
+	
+	strcpy(mapmusa, "map.ogg");
+	Load_EpisodeDir(mapmusa);
+	if (PK_Check_File(mapmusa))
+		goto found;
+	
+	strcpy(mapmusa, "map.xm");
+	Load_EpisodeDir(mapmusa);
+	if (PK_Check_File(mapmusa))
+		goto found;
+	
+	strcpy(mapmusa, "map.mod");
+	Load_EpisodeDir(mapmusa);
+	if (PK_Check_File(mapmusa))
+		goto found;
+	
+	strcpy(mapmusa, "map.it");
+	Load_EpisodeDir(mapmusa);
+	if (PK_Check_File(mapmusa))
+		goto found;
+	
+	strcpy(mapmusa, "map.s3m");
+	Load_EpisodeDir(mapmusa);
+	if (PK_Check_File(mapmusa))
+		goto found;
+	
+	strcpy(mapmusa, "music/map.mp3");
+	if (PK_Check_File(mapmusa))
+		goto found;
+	
+	strcpy(mapmusa, "music/map.ogg");
+	if (PK_Check_File(mapmusa))
+		goto found;
+	
+	strcpy(mapmusa, "music/map.xm");
+	
+	found:
 
 	PSound::start_music(mapmusa);
 	PSound::set_musicvolume_now(Settings.music_max_volume);

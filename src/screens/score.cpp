@@ -191,7 +191,7 @@ int Screen_ScoreCount_Init() {
 	int vertailun_tulos;
 
 	/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
-	vertailun_tulos = EpisodeScore_Compare(jakso_indeksi_nyt, temp_pisteet, kartta->aika - timeout, false);
+	vertailun_tulos = EpisodeScore_Compare(jakso_indeksi_nyt, temp_pisteet, current_map->aika - timeout, false);
 	if (vertailun_tulos > 0)
 	{
 		EpisodeScore_Save(pisteet_tiedosto);

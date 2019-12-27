@@ -64,7 +64,7 @@ int settings_open() {
 		return 2;
 	}
 	
-	SDL_RWread(file, (char*)&Settings, sizeof(PK2SETTINGS), 1);
+	SDL_RWread(file, &Settings, sizeof(PK2SETTINGS), 1);
 	
 	Settings.ladattu = true;
 

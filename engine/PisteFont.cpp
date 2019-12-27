@@ -135,7 +135,7 @@ int PFont::load(const char* file_path, const char* file){
 	for (i=0;i<char_count;i++)
 		font_index[i] = i * char_w;
 	for (i=0;i<char_count;i++)
-		charlist[(BYTE)toupper(chars[i])] = font_index[i];
+		charlist[(BYTE)(chars[i]&~' ')] = font_index[i];
 
 	return 0;
 }
@@ -153,7 +153,7 @@ int PFont::write(int posx, int posy, const char *text){
 
 	do {
 		curr_char = text[i];
-		ix = charlist[(BYTE)toupper(curr_char)];
+		ix = charlist[(BYTE)(curr_char&~' ')];
 		i2 = i * char_w + posx;
 		if (ix > -1) {
 			srcrect.x = ix;
@@ -184,7 +184,7 @@ int PFont::write_trasparent(int posx, int posy, const char* text, int alpha){
 
 	do {
 		curr_char = text[i];
-		ix = charlist[(BYTE)toupper(curr_char)];
+		ix = charlist[(BYTE)(curr_char&~' ')];
 		if (ix > -1){
 			for (x = 0; x < char_w; x++){
 				fx = posx + x + i * char_w;

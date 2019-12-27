@@ -32,7 +32,6 @@ int Save_All_Records() {
 
 	itoa(MAX_SAVES, lkm, 10);
 
-	//std::ofstream *file = new std::ofstream(filename, ios::binary);
 	SDL_RWops *file = SDL_RWFromFile(SAVES_PATH, "wb");
 	if (file == nullptr) {
 		printf("Error saving records\n");
@@ -75,7 +74,6 @@ int Load_SaveFile(){
 
 	Empty_Records();
 
-	//std::ifstream *tiedosto = new std::ifstream(SAVES_PATH, ios::binary);
 	SDL_RWops *file = SDL_RWFromFile(SAVES_PATH, "rb");
 	if (file == nullptr){
 		printf("No save file\n");
@@ -90,7 +88,7 @@ int Load_SaveFile(){
 		if (count > MAX_SAVES)
 			count = MAX_SAVES;
 		
-		SDL_RWread(file, (char *)tallennukset, sizeof(PK2SAVE)*count , 1);
+		SDL_RWread(file, tallennukset, sizeof(PK2SAVE)*count , 1);
 	}
 
 	SDL_RWclose(file);

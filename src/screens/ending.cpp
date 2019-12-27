@@ -4,7 +4,6 @@
 #include "gfx/text.hpp"
 #include "gui.hpp"
 #include "game.hpp"
-#include "sfx.hpp"
 #include "language.hpp"
 
 #include "PisteDraw.hpp"

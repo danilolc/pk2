@@ -329,38 +329,38 @@ int PK_Draw_InGame_BG(){
 
 	PDraw::screen_fill(34);//0
 
-	if (kartta->tausta == TAUSTA_STAATTINEN){
-		PDraw::image_clip(kartta->taustakuva_buffer,0,0);
-		PDraw::image_clip(kartta->taustakuva_buffer,640,0);
+	if (current_map->tausta == TAUSTA_STAATTINEN){
+		PDraw::image_clip(current_map->taustakuva_buffer,0,0);
+		PDraw::image_clip(current_map->taustakuva_buffer,640,0);
 	}
 
-	if (kartta->tausta == TAUSTA_PALLARX_HORI){
-		PDraw::image_clip(kartta->taustakuva_buffer,0   - pallarx,0);
-		PDraw::image_clip(kartta->taustakuva_buffer,640 - pallarx,0);
+	if (current_map->tausta == TAUSTA_PALLARX_HORI){
+		PDraw::image_clip(current_map->taustakuva_buffer,0   - pallarx,0);
+		PDraw::image_clip(current_map->taustakuva_buffer,640 - pallarx,0);
 
 		if (screen_width > 640)
-			PDraw::image_clip(kartta->taustakuva_buffer,640*2 - pallarx,0);
+			PDraw::image_clip(current_map->taustakuva_buffer,640*2 - pallarx,0);
 	}
 
-	if (kartta->tausta == TAUSTA_PALLARX_VERT){
-		PDraw::image_clip(kartta->taustakuva_buffer,0,0   - pallary);
-		PDraw::image_clip(kartta->taustakuva_buffer,0,480 - pallary);
+	if (current_map->tausta == TAUSTA_PALLARX_VERT){
+		PDraw::image_clip(current_map->taustakuva_buffer,0,0   - pallary);
+		PDraw::image_clip(current_map->taustakuva_buffer,0,480 - pallary);
 
 		if (screen_width > 640){
-			PDraw::image_clip(kartta->taustakuva_buffer,640,0   - pallary);
-			PDraw::image_clip(kartta->taustakuva_buffer,640,480 - pallary);
+			PDraw::image_clip(current_map->taustakuva_buffer,640,0   - pallary);
+			PDraw::image_clip(current_map->taustakuva_buffer,640,480 - pallary);
 		}
 	}
 
-	if (kartta->tausta == TAUSTA_PALLARX_VERT_JA_HORI){
-		PDraw::image_clip(kartta->taustakuva_buffer,0   - pallarx, 0-pallary);
-		PDraw::image_clip(kartta->taustakuva_buffer,640 - pallarx, 0-pallary);
-		PDraw::image_clip(kartta->taustakuva_buffer,0   - pallarx, 480-pallary);
-		PDraw::image_clip(kartta->taustakuva_buffer,640 - pallarx, 480-pallary);
+	if (current_map->tausta == TAUSTA_PALLARX_VERT_JA_HORI){
+		PDraw::image_clip(current_map->taustakuva_buffer,0   - pallarx, 0-pallary);
+		PDraw::image_clip(current_map->taustakuva_buffer,640 - pallarx, 0-pallary);
+		PDraw::image_clip(current_map->taustakuva_buffer,0   - pallarx, 480-pallary);
+		PDraw::image_clip(current_map->taustakuva_buffer,640 - pallarx, 480-pallary);
 
 		if (screen_width > 640){
-			PDraw::image_clip(kartta->taustakuva_buffer,640*2 - pallarx,0-pallary);
-			PDraw::image_clip(kartta->taustakuva_buffer,640*2 - pallarx,480-pallary);
+			PDraw::image_clip(current_map->taustakuva_buffer,640*2 - pallarx,0-pallary);
+			PDraw::image_clip(current_map->taustakuva_buffer,640*2 - pallarx,480-pallary);
 		}
 	}
 
@@ -553,14 +553,14 @@ int PK_Draw_InGame(){
 
 		Particles_DrawBG();
 
-		kartta->Piirra_Taustat(Game::camera_x,Game::camera_y,false);
+		current_map->Piirra_Taustat(Game::camera_x,Game::camera_y,false);
 
 		PK_Draw_InGame_Sprites();
 
 		//PK_Particles_Draw();
 		Particles_DrawFront();
 
-		kartta->Piirra_Seinat(Game::camera_x,Game::camera_y, false);
+		current_map->Piirra_Seinat(Game::camera_x,Game::camera_y, false);
 
 		if (Settings.nayta_tavarat)
 			PK_Draw_InGame_Lower_Menu();
@@ -698,7 +698,7 @@ int PK_Palikka_Tee_Maskit(){
 	int x,y;
 	BYTE color;
 
-	PDraw::drawimage_start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
+	PDraw::drawimage_start(current_map->palikat_buffer,*&buffer,(DWORD &)leveys);
 	for (int mask=0; mask<BLOCK_MAX_MASKEJA; mask++){
 		for (x=0; x<32; x++){
 			y=0;
@@ -716,7 +716,7 @@ int PK_Palikka_Tee_Maskit(){
 			palikkamaskit[mask].ylos[x] = 31-y;
 		}
 	}
-	PDraw::drawimage_end(kartta->palikat_buffer);
+	PDraw::drawimage_end(current_map->palikat_buffer);
 
 	return 0;
 }
@@ -725,17 +725,17 @@ int PK_Clean_TileBuffer(){
 	DWORD leveys;
 	int x,y;
 
-	PDraw::drawimage_start(kartta->palikat_buffer,*&buffer,(DWORD &)leveys);
+	PDraw::drawimage_start(current_map->palikat_buffer,*&buffer,(DWORD &)leveys);
 	for (y=0;y<480;y++)
 		for(x=0;x<320;x++)
 			if (buffer[x+y*leveys] == 254)
 				buffer[x+y*leveys] = 255;
-	PDraw::drawimage_end(kartta->palikat_buffer);
+	PDraw::drawimage_end(current_map->palikat_buffer);
 
 	return 0;
 }
 void PK_New_Save(){
-	timeout = kartta->aika;
+	timeout = current_map->aika;
 
 	if (timeout > 0)
 		aikaraja = true;
@@ -766,14 +766,14 @@ int PK_Map_Open(char *nimi) {
 	strcpy(polku,"");
 	Load_EpisodeDir(polku);
 
-	if (kartta->Lataa(polku, nimi) == 1){
+	if (current_map->Lataa(polku, nimi) == 1){
 		printf("PK2    - Error loading map '%s' at '%s'\n", current_map_name, polku);
 		return 1;
 	}
 
 	PK_New_Save();
 
-	if (strcmp(kartta->versio,"1.2") == 0 || strcmp(kartta->versio,"1.3") == 0)
+	if (strcmp(current_map->versio,"1.2") == 0 || strcmp(current_map->versio,"1.3") == 0)
 		if (Prototypes_GetAll() == 1)
 			return 1;
 
@@ -782,25 +782,25 @@ int PK_Map_Open(char *nimi) {
 	if (PK_Clean_TileBuffer()==1)
 		return 1;
 
-	kartta->Place_Sprites();
-	kartta->Select_Start();
-	kartta->Count_Keys();
-	kartta->Calculate_Edges();
+	current_map->Place_Sprites();
+	current_map->Select_Start();
+	current_map->Count_Keys();
+	current_map->Calculate_Edges();
 
 	Sprites_start_directions();
 
 	Particles_Clear();
-	Particles_LoadBG(kartta);
+	Particles_LoadBG(current_map);
 
-	if ( strcmp(kartta->musiikki, "") != 0) {
+	if ( strcmp(current_map->musiikki, "") != 0) {
 		char music_path[PE_PATH_SIZE] = "";
 		Load_EpisodeDir(music_path);
-		strcat(music_path, kartta->musiikki);
+		strcat(music_path, current_map->musiikki);
 		if (PSound::start_music(music_path) != 0) {
 
 			printf("Can't load '%s'. ", music_path);
 			strcpy(music_path, "music/");
-			strcat(music_path, kartta->musiikki);
+			strcat(music_path, current_map->musiikki);
 			printf("Trying '%s'.\n", music_path);
 
 			if (PSound::start_music(music_path) != 0) {
@@ -1148,11 +1148,11 @@ int Screen_InGame(){
 			}
 			if (PisteInput_Keydown(PI_L)) {
 				Game::keys = 0;
-				kartta->Open_Locks();
+				current_map->Open_Locks();
 				key_delay = 20;
 			}
 			if (PisteInput_Keydown(PI_K)) {
-				kartta->Change_SkullBlocks();
+				current_map->Change_SkullBlocks();
 				key_delay = 20;
 			}
 			if (PisteInput_Keydown(PI_W)) {
@@ -1165,7 +1165,7 @@ int Screen_InGame(){
 				key_delay = 20;
 			}
 			if (PisteInput_Keydown(PI_R)) {
-				kartta->Select_Start();
+				current_map->Select_Start();
 				Player_Sprite->energia = 10;
 				key_delay = 20;
 			}

@@ -3,8 +3,7 @@
 
 #include "types.hpp"
 
-#include <sys/stat.h>
-#include <fstream>
+#include <sys/stat.h> //TODO - remove
 
 #include <cstdio>
 #include <cstdlib>
@@ -23,6 +22,16 @@
 	#include <unistd.h>
 	#include <limits.h>
 #endif
+
+/*
+#ifndef toupper
+#define toupper(X) (X&~' ')
+#endif
+
+#ifndef tolower
+#define tolower(X) (X|' ')
+#endif
+*/
 
 #ifdef __ANDROID__
     #include <android/log.h>
@@ -63,7 +72,6 @@
 #ifndef strdup
 #define strdup _strdup
 #endif
-
 
 // require #include <direct.h>
 #ifndef getcwd

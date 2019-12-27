@@ -22,7 +22,7 @@ void Prototypes_ClearAll() {
 			if (Prototypes_List[i].aanet[j] > -1)
 				PSound::free_sfx(Prototypes_List[i].aanet[j]);
 		Prototypes_List[i].Uusi();
-		strcpy(kartta->protot[i],"");
+		strcpy(current_map->protot[i],"");
 	}
 
 	next_free_prototype = 0;
@@ -195,15 +195,15 @@ int  Prototypes_GetAll() {
 	int viimeinen_proto;
 
 	for (int i=0;i < MAX_PROTOTYYPPEJA;i++){
-		if (strcmp(kartta->protot[i],"") != 0){
+		if (strcmp(current_map->protot[i],"") != 0){
 			viimeinen_proto = i;
 			strcpy(polku,"");
 			Load_EpisodeDir(polku);
 
-			if (Prototypes_get(polku,kartta->protot[i])!=0){
+			if (Prototypes_get(polku,current_map->protot[i])!=0){
 				strcpy(polku,"sprites/");
-				if (Prototypes_get(polku,kartta->protot[i])!=0){
-					printf("PK2     - Can't load sprite %s. It will not appear.", kartta->protot[i]);
+				if (Prototypes_get(polku,current_map->protot[i])!=0){
+					printf("PK2    - Can't load sprite %s. It will not appear.\n", current_map->protot[i]);
 					next_free_prototype++;
 				}
 			}
