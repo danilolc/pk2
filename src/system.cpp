@@ -9,7 +9,11 @@
 int screen_width  = 800;
 int screen_height = 480;
 
-char tyohakemisto[PE_PATH_SIZE] = ".";
+char game_path[PE_PATH_SIZE] = ".";
+
+int game_assets = -1;
+int game_assets2 = -1;
+int bg_screen = -1;
 
 int mouse_x = 10;
 int mouse_y = 10;

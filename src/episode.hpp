@@ -31,6 +31,14 @@ struct PK2EPISODESCORES {
 
 namespace Episode {
 	extern bool started;
+	extern char player_name[20];
+	extern DWORD score;
+
+	void Load_Save(int save);
+	void Load_New(const char* player_name, const char* episode);
+	void Get_Dir(char *tiedosto);
+
+	void Load();
 }
 
 extern int jakso;
@@ -38,7 +46,6 @@ extern int jaksoja;
 extern int jakso_indeksi_nyt;
 extern PK2LEVEL jaksot[EPISODI_MAX_LEVELS];
 extern char episodi[PE_PATH_SIZE];
-extern bool uusinta;
 
 extern DWORD lopetusajastin;
 extern DWORD fake_pisteet;
@@ -49,14 +56,12 @@ extern bool jakso_uusi_ennatys;
 extern bool jakso_uusi_ennatysaika;
 extern bool episodi_uusi_ennatys;
 
-void PK_Fade_Quit();
+void Fade_Quit();
 
-void PK_Start_Saves();
+void Clean_Maps();
 
 void EpisodeScore_Start();
 int  EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupisteet);
 int  EpisodeScore_Open(char *filename);
 int  EpisodeScore_Save(char *filename);
-void Load_InfoText();
-void Load_Maps();
-void Load_EpisodeDir(char *tiedosto);
+void Episode::Get_Dir(char *tiedosto);

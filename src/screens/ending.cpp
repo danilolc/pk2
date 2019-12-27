@@ -27,60 +27,60 @@ int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 		frm = 1;
 		if ((degree/10)%10==rapytys) frm = 0;
 		yk = (int)sin_table[(degree%360)];
-		PDraw::image_cutclip(kuva_tausta,x+3,y+56, 4, 63, 29, 69);
+		PDraw::image_cutclip(bg_screen,x+3,y+56, 4, 63, 29, 69);
 		if (yk < 0){
 			y+=yk;
 			frm = 2;
 		}
-		PDraw::image_cutclip(kuva_tausta,x,y, 1+frm*35, 1, 32+frm*35, 59);
+		PDraw::image_cutclip(bg_screen,x,y, 1+frm*35, 1, 32+frm*35, 59);
 	}
 
 	if (tyyppi == 2){ // kana (katse oikealle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)cos_table[((degree+plus)%360)];
-		PDraw::image_cutclip(kuva_tausta,x+3,y+36, 4, 63, 29, 69);
+		PDraw::image_cutclip(bg_screen,x+3,y+36, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
 			frm = 2;
 		}
-		PDraw::image_cutclip(kuva_tausta,x,y, 106+frm*37, 1, 139+frm*37, 38);
+		PDraw::image_cutclip(bg_screen,x,y, 106+frm*37, 1, 139+frm*37, 38);
 	}
 
 	if (tyyppi == 3){ // kana (katse vasemmalle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)cos_table[((degree+plus)%360)];
-		PDraw::image_cutclip(kuva_tausta,x+3,y+36, 4, 63, 29, 69);
+		PDraw::image_cutclip(bg_screen,x+3,y+36, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
 			frm = 2;
 		}
-		PDraw::image_cutclip(kuva_tausta,x,y, 106+frm*37, 41, 139+frm*37, 77);
+		PDraw::image_cutclip(bg_screen,x,y, 106+frm*37, 41, 139+frm*37, 77);
 	}
 
 	if (tyyppi == 4){ // pikkukana (katse oikealle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)sin_table[(((degree*2)+plus)%360)];
-		PDraw::image_cutclip(kuva_tausta,x+3,y+27, 4, 63, 29, 69);
+		PDraw::image_cutclip(bg_screen,x+3,y+27, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
 			frm = 2;
 		}
-		PDraw::image_cutclip(kuva_tausta,x,y, 217+frm*29, 1, 243+frm*29, 29);
+		PDraw::image_cutclip(bg_screen,x,y, 217+frm*29, 1, 243+frm*29, 29);
 	}
 
 	if (tyyppi == 5){ // pikkukana (katse vasemmalle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
 		yk = (int)sin_table[(((degree*2)+plus)%360)];
-		PDraw::image_cutclip(kuva_tausta,x,y+27, 4, 63, 29, 69);
+		PDraw::image_cutclip(bg_screen,x,y+27, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
 			frm = 2;
 		}
-		PDraw::image_cutclip(kuva_tausta,x,y, 217+frm*29, 33, 243+frm*29, 61);
+		PDraw::image_cutclip(bg_screen,x,y, 217+frm*29, 33, 243+frm*29, 61);
 	}
 
 	return 0;
@@ -93,7 +93,7 @@ int Draw_EndGame(){
 	DWORD the_end_loppu		= the_end_alku + 3000;
 
 	PDraw::screen_fill(0);
-	PDraw::image_cutclip(kuva_tausta,320-233/2,240-233/2, 6, 229, 239, 462);
+	PDraw::image_cutclip(bg_screen,320-233/2,240-233/2, 6, 229, 239, 462);
 
 	Draw_EndGame_Image(345, 244, 3, 30, 2);
 	Draw_EndGame_Image(276, 230, 2, 50, 3);
@@ -121,7 +121,7 @@ int Screen_Ending_Init() {
 	
 	PDraw::set_xoffset(Settings.isWide? 80 : 0);
 
-	PDraw::image_load(kuva_tausta, "gfx/ending.bmp", true);
+	PDraw::image_load(bg_screen, "gfx/ending.bmp", true);
 
 	if (PSound::start_music("music/intro.xm") != 0)
 		PK2_Error("Can't load intro.xm");
@@ -144,6 +144,7 @@ int Screen_Ending(){
 	//introlaskuri = loppulaskuri; // introtekstej� varten
 
 	if (siirry_lopusta_menuun && !PDraw::is_fading()) {
+		PSound::set_musicvolume_now(Settings.music_max_volume);
 		next_screen = SCREEN_MENU;
 	}
 

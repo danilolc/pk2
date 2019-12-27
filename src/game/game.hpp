@@ -12,15 +12,8 @@
 #include "game/sprites.hpp"
 #include "settings.hpp"
 
-extern int kuva_peli;
-extern int kuva_peli2;
-extern int kuva_tausta;
-
-
 const int TIME_FPS = 100;
 const int INFO_TIME = 700;
-
-extern int lataa_peli;
 
 const BYTE BLOCK_MAX_MASKEJA = 150;
 
@@ -64,6 +57,7 @@ extern PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
 extern bool started;
 extern bool game_over;
 extern bool level_clear;
+extern bool repeating;
 
 extern DWORD timeout;
 extern int increase_time;
@@ -75,10 +69,8 @@ extern int button1;
 extern int button2;
 extern int button3;
 
-extern DWORD __score;
 extern DWORD score;
 extern DWORD score_increment;
-extern char player_name[20];
 
 extern int vibration;
 

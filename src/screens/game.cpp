@@ -131,7 +131,7 @@ int PK_Draw_InGame_Sprites() {
 				if (sprite->isku > 0 && sprite->tyyppi->tyyppi != TYYPPI_BONUS && sprite->energia < 1){
 					int framex = ((degree%12)/3) * 58;
 					DWORD hit_x = sprite->x-8, hit_y = sprite->y-8;
-					PDraw::image_cutclip(kuva_peli,hit_x-Game::camera_x-28+8, hit_y-Game::camera_y-27+8,1+framex,83,1+57+framex,83+55);
+					PDraw::image_cutclip(game_assets,hit_x-Game::camera_x-28+8, hit_y-Game::camera_y-27+8,1+framex,83,1+57+framex,83+55);
 				}
 
 				if (Game::invisibility == 0 || (!doublespeed && Game::invisibility%2 == 0) || (doublespeed && Game::invisibility%4 <= 1) || sprite != Player_Sprite/*i != pelaaja_index*/)
@@ -142,7 +142,7 @@ int PK_Draw_InGame_Sprites() {
 					for (stars=0; stars<3; stars++){
 						star_x = sprite->x-8 + (sin_table[((stars*120+degree)*2)%359])/3;
 						star_y = sprite->y-18 + (cos_table[((stars*120+degree)*2+sx)%359])/8;
-						PDraw::image_cutclip(kuva_peli,star_x-Game::camera_x, star_y-Game::camera_y,1,1,11,11);
+						PDraw::image_cutclip(game_assets,star_x-Game::camera_x, star_y-Game::camera_y,1,1,11,11);
 					}
 				}
 
@@ -216,7 +216,7 @@ int PK_Draw_InGame_DebugInfo() {
 	PDraw::font_write(fontti1, lukua, 270, 460);
 
 	char tpolku[PE_PATH_SIZE] = "";
-	Load_EpisodeDir(tpolku);
+	Episode::Get_Dir(tpolku);
 
 	PDraw::font_write(fontti1,tpolku,10,470);
 
@@ -235,35 +235,36 @@ int PK_Draw_InGame_DebugInfo() {
 }
 int PK_Draw_InGame_DevKeys() {
 
-	const char* txt0 = "dev mode";
+	const char txt0[] = "dev mode";
 	int char_w = PDraw::font_write(fontti1, txt0, 0, screen_height - 10) / strlen(txt0);
 	int char_h = 10;
 
-	const char* help = "h: help";
+	const char help[] = "h: help";
 
 	if (!PisteInput_Keydown(PI_H)) {
 		PDraw::font_write(fontti1, help, screen_width - strlen(help) * char_w, screen_height - 10);
 		return 0;
 	}
+	const char txts[][32] = {
+		"z: press buttons",
+		"x: release buttons",
+		"b: draw bounding box",
+		"l: open locks",
+		"k: open skull blocks",
+		"t: toggle speed",
+		"g: toggle transparency",
+		"w: toggle window mode",
+		"i: toggle debug info",
+		"u: go up",
+		"r: back to start",
+		"v: set invisible",
+		"e: set energy to max",
+		"end: end level",
+		"mouse: move camera",
+		"lshift: set rooster"
+	};
 
-	const char* txt1  = "z: press buttons";
-	const char* txt2  = "x: release buttons";
-	const char* txt3  = "b: draw bounding box";
-	const char* txt4  = "l: open locks";
-	const char* txt5  = "k: open skull blocks";
-	const char* txt6  = "t: toggle speed";
-	const char* txt7  = "g: toggle transparency";
-	const char* txt8  = "w: toggle window mode";
-	const char* txt9  = "i: toggle debug info";
-	const char* txt10 = "u: go up";
-	const char* txt11 = "r: back to start";
-	const char* txt12 = "v: set invisible";
-	const char* txt13 = "e: set energy to max";
-	const char* txt14 = "end: end level";
-	const char* txt15 = "lshift: set rooster";
-
-	const char* txts[] = { txt15,txt14,txt13,txt12,txt11,txt10,txt9,txt8,txt7,txt6,txt5,txt4,txt3,txt2,txt1 };
-	int nof_txt = sizeof(txts) / sizeof(const char*);
+	int nof_txt = sizeof(txts) / 32;
 
 	int last_size = 0;
 	for (int i = 0; i < nof_txt; i++)
@@ -404,7 +405,7 @@ int PK_Draw_InGame_Lower_Menu() {
 		Game::item_pannel_x--;
 
 	if (Game::item_pannel_x > -215)
-		PDraw::image_cutclip(kuva_peli,Game::item_pannel_x,screen_height-60,
+		PDraw::image_cutclip(game_assets,Game::item_pannel_x,screen_height-60,
 		                        1,216,211,266);
 	if (Game::item_pannel_x > 5)
 		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_items),15,screen_height-65);
@@ -723,7 +724,7 @@ int Screen_InGame(){
 	if (lopetusajastin == 1 && !PDraw::is_fading()) {
 		Game::started = false;
 		
-		if(test_level) PK_Fade_Quit();
+		if(test_level) Fade_Quit();
 		else if (Game::level_clear) next_screen = SCREEN_SCORING;
 		else next_screen = SCREEN_MAP;
 	}
@@ -750,8 +751,13 @@ int Screen_InGame(){
 			}
 
 			if (PisteInput_Keydown(PI_ESCAPE)) {
-				next_screen = SCREEN_MENU;
-				degree_temp = degree;
+				if(test_level)
+					Fade_Quit();
+				else {
+					next_screen = SCREEN_MENU;
+					degree_temp = degree;
+				}
+				key_delay = 20;
 			}
 		}
 

@@ -37,7 +37,7 @@ int PK_Draw_ScoreCount(){
 	int	vari = 0, kerroin;
 
 	PDraw::screen_fill(0);
-	PDraw::image_clip(kuva_tausta, 0, 0);
+	PDraw::image_clip(bg_screen, 0, 0);
 
 	for (aste=0;aste<18;aste++) {
 
@@ -45,7 +45,7 @@ int PK_Draw_ScoreCount(){
 
 		x = (int)(sin_table[(degree+aste*10)%360]*2)+kerroin;
 		y = (int)(cos_table[(degree+aste*10)%360]*2);//10 | 360 | 2
-		//PDraw::image_clip(kuva_peli,320+x,240+y,157,46,181,79);
+		//PDraw::image_clip(game_assets,320+x,240+y,157,46,181,79);
 		kuutio = (int)(sin_table[(degree+aste*3)%360]);
 		if (kuutio < 0) kuutio = -kuutio;
 
@@ -55,13 +55,13 @@ int PK_Draw_ScoreCount(){
 
 		x = (int)(sin_table[(degree+aste*10)%360]*3);
 		y = (int)(cos_table[(degree+aste*10)%360]*3);//10 | 360 | 3
-		//PDraw::image_clip(kuva_peli,320+x,240+y,157,46,181,79);
+		//PDraw::image_clip(game_assets,320+x,240+y,157,46,181,79);
 		kuutio = (int)(sin_table[(degree+aste*2)%360])+18;
 		if (kuutio < 0) kuutio = -kuutio;//0;//
 		if (kuutio > 100) kuutio = 100;
 
 		//PDraw::screen_fill(320+x,240+y,320+x+kuutio,240+y+kuutio,VARI_TURKOOSI+10);
-		PDraw::image_cutcliptransparent(kuva_peli, 247, 1, 25, 25, 320+x, 240+y, kuutio, 32);
+		PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, 320+x, 240+y, kuutio, 32);
 	}
 
 	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_title),100+2,72+2);
@@ -118,7 +118,7 @@ int PK_Draw_ScoreCount(){
 	if (pistelaskuvaihe >= 4){
 		PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100+2,192+2+my);
 		vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100,192+my);//250,80
-		ltoa(Game::__score,luku,10);
+		ltoa(Episode::score,luku,10);
 		PDraw::font_write(fontti4,luku,400+2,192+2+my);
 		PDraw::font_write(fontti2,luku,400,192+my);
 		my += 25;
@@ -158,9 +158,9 @@ int Screen_ScoreCount_Init() {
 		PDraw::set_xoffset(0);
 	PDraw::screen_fill(0);
 
-	PDraw::image_delete(kuva_tausta);
-	kuva_tausta = PDraw::image_load("gfx/menu.bmp", true);
-	PK_MenuShadow_Create(kuva_tausta, 640, 480, 30);
+	PDraw::image_delete(bg_screen);
+	bg_screen = PDraw::image_load("gfx/menu.bmp", true);
+	PK_MenuShadow_Create(bg_screen, 640, 480, 30);
 
 	jakso_uusi_ennatys = false;
 	jakso_uusi_ennatysaika = false;
@@ -177,10 +177,8 @@ int Screen_ScoreCount_Init() {
 
 	//if (jaksot[jakso_indeksi_nyt].lapaisty)
 	//if (jaksot[jakso_indeksi_nyt].jarjestys == jakso-1)
-	Game::__score += temp_pisteet;
-
-	if (uusinta)
-		Game::__score -= temp_pisteet;
+	if (!Game::repeating)
+		Episode::score += temp_pisteet;
 
 	fake_pisteet = 0;
 	pistelaskuvaihe = 0;
@@ -202,7 +200,7 @@ int Screen_ScoreCount_Init() {
 	}
 
 	/* Tutkitaan onko pelaaja rikkonut episodin piste-enn�tyksen */
-	vertailun_tulos = EpisodeScore_Compare(0, Game::__score, 0, true);
+	vertailun_tulos = EpisodeScore_Compare(0, Episode::score, 0, true);
 	if (vertailun_tulos > 0)
 		EpisodeScore_Save(pisteet_tiedosto);
 
@@ -229,7 +227,7 @@ int Screen_ScoreCount(){
 			bonuspisteet += 10;
 
 			if (degree%7==1)
-				Play_MenuSFX(pistelaskuri_aani, 70);
+				Play_MenuSFX(score_sound, 70);
 
 			if (bonuspisteet >= Game::score){
 				bonuspisteet = Game::score;
@@ -243,7 +241,7 @@ int Screen_ScoreCount(){
 			Game::timeout--;
 
 			if (degree%10==1)
-				Play_MenuSFX(pistelaskuri_aani, 70);
+				Play_MenuSFX(score_sound, 70);
 
 			if (Game::timeout == 0)
 				pistelaskudelay = 50;
@@ -254,7 +252,7 @@ int Screen_ScoreCount(){
 			energiapisteet+=300;
 			Player_Sprite->energia--;
 
-			Play_MenuSFX(pistelaskuri_aani, 70);
+			Play_MenuSFX(score_sound, 70);
 
 		} else if (Gifts_Count() > 0){
 			pistelaskuvaihe = 4;
@@ -263,7 +261,7 @@ int Screen_ScoreCount(){
 				if (Gifts_Get(i) != -1) {
 					esinepisteet += Gifts_GetProtot(i)->pisteet + 500;
 					//esineet[i] = NULL;
-					Play_MenuSFX(hyppy_aani, 100);
+					Play_MenuSFX(jump_sound, 100);
 					break;
 				}
 		}

@@ -17,9 +17,6 @@
 #include <cstring>
 
 //Screen Buffers
-int kuva_peli  = -1;
-int kuva_peli2 = -1;
-int kuva_tausta = -1;
 
 namespace Game {
 
@@ -33,6 +30,7 @@ PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
 bool started = false;
 bool game_over = false;
 bool level_clear = false;
+bool repeating = false;
 
 DWORD timeout = 0;
 int increase_time = 0;
@@ -44,10 +42,8 @@ int button1 = 0;
 int button2 = 0;
 int button3 = 0;
 
-DWORD __score = 0;
 DWORD score = 0;
 DWORD score_increment = 0;
-char player_name[20] = " ";
 
 int vibration;
 
@@ -227,7 +223,7 @@ int PK_Map_Open(char *nimi) {
 	
 	char polku[PE_PATH_SIZE];
 	strcpy(polku,"");
-	Load_EpisodeDir(polku);
+	Episode::Get_Dir(polku);
 
 	if (Game::map->Lataa(polku, nimi) == 1){
 		printf("PK2    - Error loading map '%s' at '%s'\n", Game::map_path, polku);
@@ -258,7 +254,7 @@ int PK_Map_Open(char *nimi) {
 
 	if ( strcmp(Game::map->musiikki, "") != 0) {
 		char music_path[PE_PATH_SIZE] = "";
-		Load_EpisodeDir(music_path);
+		Episode::Get_Dir(music_path);
 		strcat(music_path, Game::map->musiikki);
 		if (PSound::start_music(music_path) != 0) {
 
@@ -364,12 +360,15 @@ int PK_Calculate_Tiles() {
 
 int Game::Start() {
 
+	if (Game::map == nullptr)
+		Game::map = new PK2Kartta();
+
 	Game::level_clear = false;
 
 	if (jaksot[jakso_indeksi_nyt].lapaisty)
-		uusinta = true;
+		Game::repeating = true;
 	else
-		uusinta = false;
+		Game::repeating = false;
 
 	Gifts_Clean(); //Reset gifts
 	Sprites_clear(); //Reset sprites

@@ -39,20 +39,20 @@ int PK_Draw_Map_Button(int x, int y, int t){
 		}
 
 		if (t == 25)
-			PDraw::image_cutcliptransparent(kuva_peli, 247, 1, 25, 25, x-2, y-2, 60, 96);
+			PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-2, y-2, 60, 96);
 		if (t == 0)
-			PDraw::image_cutcliptransparent(kuva_peli, 247, 1, 25, 25, x-4, y-4, 60, 32);
+			PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-4, y-4, 60, 32);
 		if (t == 50)
-			PDraw::image_cutcliptransparent(kuva_peli, 247, 1, 25, 25, x-4, y-4, 60, 64);
+			PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-4, y-4, 60, 64);
 
 		paluu = 1;
 	}
 
 	if (t == 25)
-		PDraw::image_cutcliptransparent(kuva_peli, 247, 1, 25, 25, x-2, y-2, vilkku, 96);
+		PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-2, y-2, vilkku, 96);
 
 	if (((degree/45)+1)%4==0 || t==0)
-		PDraw::image_cutclip(kuva_peli,x,y,1+t,58,23+t,80);
+		PDraw::image_cutclip(game_assets,x,y,1+t,58,23+t,80);
 
 	return paluu;
 }
@@ -62,14 +62,14 @@ int PK_Draw_Map(){
 	int vali = 20;
 
 	PDraw::screen_fill(0);
-	PDraw::image_clip(kuva_tausta, 0, 0);
+	PDraw::image_clip(bg_screen, 0, 0);
 
 	PDraw::font_write(fontti4,episodi,100+2,72+2);
 	PDraw::font_write(fontti2,episodi,100,72);
 
 	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.map_total_score),100+2,92+2);
 	vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.map_total_score),100,92);//250,80
-	ltoa(Game::__score,luku,10);
+	ltoa(Episode::score,luku,10);
 	PDraw::font_write(fontti4,luku,100+vali+2+15,92+2);
 	PDraw::font_write(fontti2,luku,100+vali+15,92);
 
@@ -130,14 +130,14 @@ int PK_Draw_Map(){
 
 			ikoni = jaksot[i].ikoni;
 
-			//PDraw::image_clip(kuva_peli,jaksot[i].x-4,jaksot[i].y-4-30,1+(ikoni*27),452,27+(ikoni*27),478);
-			PDraw::image_cutclip(kuva_peli,jaksot[i].x-9,jaksot[i].y-14,1+(ikoni*28),452,28+(ikoni*28),479);
+			//PDraw::image_clip(game_assets,jaksot[i].x-4,jaksot[i].y-4-30,1+(ikoni*27),452,27+(ikoni*27),478);
+			PDraw::image_cutclip(game_assets,jaksot[i].x-9,jaksot[i].y-14,1+(ikoni*28),452,28+(ikoni*28),479);
 
 			if (tyyppi==1) {
 				sinx = (int)(sin_table[degree%360]/2);
 				cosy = (int)(cos_table[degree%360]/2);
 				pekkaframe = 28*((degree%360)/120);
-				PDraw::image_cutclip(kuva_peli,jaksot[i].x+sinx-12,jaksot[i].y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
+				PDraw::image_cutclip(game_assets,jaksot[i].x+sinx-12,jaksot[i].y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
 			}
 
 			paluu = PK_Draw_Map_Button(jaksot[i].x-5, jaksot[i].y-10, tyyppi);
@@ -150,10 +150,10 @@ int PK_Draw_Map(){
 					going_to_game = true;
 					PDraw::fade_out(PDraw::FADE_SLOW);
 					PSound::set_musicvolume(0);
-					Play_MenuSFX(kieku_aani,90);
+					Play_MenuSFX(doodle_sound,90);
 				}
 				else
-					Play_MenuSFX(ammuu_aani,100);
+					Play_MenuSFX(moo_sound,100);
 			}
 
 			itoa(jaksot[i].jarjestys,luku,10);
@@ -163,7 +163,7 @@ int PK_Draw_Map(){
 
 				int info_x = 489+3, info_y = 341-26;
 
-				PDraw::image_cutclip(kuva_peli,info_x-3,info_y+26,473,0,607,121);
+				PDraw::image_cutclip(game_assets,info_x-3,info_y+26,473,0,607,121);
 				PDraw::font_write(fontti1,jaksot[i].nimi,info_x,info_y+30);
 
 				if (episodipisteet.best_score[i] > 0) {
@@ -199,6 +199,7 @@ int PK_Draw_Map(){
 
 
 int Screen_Map_Init() {
+	
 	GUI_Change(UI_CURSOR);
 	if (Settings.isWide)
 		PDraw::set_xoffset(80);
@@ -207,24 +208,10 @@ int Screen_Map_Init() {
 	PDraw::screen_fill(0);
 
 	if (!Episode::started) {
-		if (lataa_peli != -1) {
-			Load_Maps();
 
-			//for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-			//	jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
-
-			//lataa_peli = -1;
-			lopetusajastin = 0;
-		}
-		else {
-			PK_Start_Saves(); // jos ladataan peli, asetetaan l�p�istyarvot jaksoille aikaisemmin
-			Load_Maps();
-		}
-
-		char topscoretiedosto[PE_PATH_SIZE] = "scores.dat";
-		EpisodeScore_Open(topscoretiedosto);
-
-		Episode::started = true;
+		printf("PK2    - ERROR - Episode not started\n");
+		Fade_Quit();
+		
 	} else {
 
 		degree = degree_temp;
@@ -232,42 +219,42 @@ int Screen_Map_Init() {
 	}
 
 	char mapkuva[PE_PATH_SIZE] = "map.bmp";
-	Load_EpisodeDir(mapkuva);
+	Episode::Get_Dir(mapkuva);
 
-	PDraw::image_load(kuva_tausta, mapkuva, true);
-	if (kuva_tausta == -1)
-		PDraw::image_load(kuva_tausta, "gfx/map.bmp", true);
+	PDraw::image_load(bg_screen, mapkuva, true);
+	if (bg_screen == -1)
+		PDraw::image_load(bg_screen, "gfx/map.bmp", true);
 
 	/* Ladataan kartan musiikki ...*/
 	char mapmusa[PE_PATH_SIZE];
 	
 	strcpy(mapmusa, "map.mp3");
-	Load_EpisodeDir(mapmusa);
+	Episode::Get_Dir(mapmusa);
 	if (PK_Check_File(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.ogg");
-	Load_EpisodeDir(mapmusa);
+	Episode::Get_Dir(mapmusa);
 	if (PK_Check_File(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.xm");
-	Load_EpisodeDir(mapmusa);
+	Episode::Get_Dir(mapmusa);
 	if (PK_Check_File(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.mod");
-	Load_EpisodeDir(mapmusa);
+	Episode::Get_Dir(mapmusa);
 	if (PK_Check_File(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.it");
-	Load_EpisodeDir(mapmusa);
+	Episode::Get_Dir(mapmusa);
 	if (PK_Check_File(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.s3m");
-	Load_EpisodeDir(mapmusa);
+	Episode::Get_Dir(mapmusa);
 	if (PK_Check_File(mapmusa))
 		goto found;
 	

@@ -7,9 +7,10 @@
 # "make" - Creates Pekka Kana 2 binary
 # "make clean" - Removes all objects, executables and dependencies
 
-#OPT = -g -O2
+#OPT = -g
 OPT = -O3
 
+C = gcc-7
 CXX = g++
 CXXFLAGS += $(shell pkg-config --cflags sdl2) $(OPT) -std=gnu++17 -w
 LDFLAGS += -lSDL2 -lSDL2_mixer -lSDL2_image
@@ -22,11 +23,13 @@ BUILD_DIR = build/
 
 # Defines the engine and src used in main codes
 ENG_SRC  = $(wildcard $(ENG_DIR)*.cpp)
+ENG_SRC += $(wildcard $(ENG_DIR)*.c)
 ENG_OBJ := $(basename $(ENG_SRC))
 ENG_OBJ := $(addsuffix .o, $(ENG_OBJ))
 ENG_OBJ := $(addprefix $(BUILD_DIR), $(ENG_OBJ))
 
 PK2_SRC  = $(wildcard $(SRC_DIR)*.cpp) $(wildcard $(SRC_DIR)*/*.cpp)
+PK2_SRC += $(wildcard $(SRC_DIR)*.c) $(wildcard $(SRC_DIR)*/*.c)
 PK2_OBJ := $(basename $(PK2_SRC))
 PK2_OBJ := $(addsuffix .o, $(PK2_OBJ))
 PK2_OBJ := $(addprefix $(BUILD_DIR), $(PK2_OBJ))
@@ -59,6 +62,12 @@ $(BUILD_DIR)%.o : %.cpp
 	@mkdir -p $(dir $@) >/dev/null
 	@$(CXX) $(CXXFLAGS) -I$(SRC_DIR) -I$(ENG_DIR) -o $@ -c $<
 	@$(CXX) -MM -MT $@ -I$(SRC_DIR) -I$(ENG_DIR) $< > $(BUILD_DIR)$*.d
+
+$(BUILD_DIR)%.o : %.c
+	@echo -Compiling $<
+	@mkdir -p $(dir $@) >/dev/null
+	@$(C) $(CXXFLAGS) -I$(SRC_DIR) -I$(ENG_DIR) -o $@ -c $<
+	@$(C) -MM -MT $@ -I$(SRC_DIR) -I$(ENG_DIR) $< > $(BUILD_DIR)$*.d
 ###########################
 
 clean:

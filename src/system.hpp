@@ -9,7 +9,11 @@
 extern int screen_width;
 extern int screen_height;
 
-extern char tyohakemisto[PE_PATH_SIZE];
+extern char game_path[PE_PATH_SIZE];
+
+extern int game_assets;
+extern int game_assets2;
+extern int bg_screen;
 
 extern int mouse_x;
 extern int mouse_y;

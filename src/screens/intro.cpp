@@ -29,10 +29,10 @@ int Draw_Intro(){
 	DWORD kaantaja_loppu	= kaantaja_alku + 300;
 
 	PDraw::screen_fill(0);
-	PDraw::image_cutclip(kuva_tausta, 280, 80, 280, 80, 640, 480);
+	PDraw::image_cutclip(bg_screen, 280, 80, 280, 80, 640, 480);
 
 	if ((introlaskuri / 10) % 50 == 0)
-		PDraw::image_cutclip(kuva_tausta,353, 313, 242, 313, 275, 432);
+		PDraw::image_cutclip(bg_screen,353, 313, 242, 313, 275, 432);
 
 	if (introlaskuri > pistelogo_alku && introlaskuri < pistelogo_loppu) {
 
@@ -43,7 +43,7 @@ int Draw_Intro(){
 		if (x > 120)
 			x = 120;
 
-		PDraw::image_cutclip(kuva_tausta,/*120*/x,230, 37, 230, 194, 442);
+		PDraw::image_cutclip(bg_screen,/*120*/x,230, 37, 230, 194, 442);
 
 		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.intro_presents), fontti1, 230, 400, pistelogo_alku, pistelogo_loppu-20, introlaskuri);
 
@@ -88,8 +88,8 @@ int Screen_Intro_Init() {
 	PDraw::screen_fill(0);
 
 	//PisteLog_Kirjoita("  - Loading picture: gfx/intro.bmp\n");
-	PDraw::image_delete(kuva_tausta);
-	kuva_tausta = PDraw::image_load("gfx/intro.bmp", true);
+	PDraw::image_delete(bg_screen);
+	bg_screen = PDraw::image_load("gfx/intro.bmp", true);
 
 	//PisteLog_Kirjoita("  - Loading music: music/INTRO.XM\n");
 

@@ -5,12 +5,11 @@
 #pragma once
 
 #include "platform.hpp"
-
 #include "episode.hpp"
 
 const int MAX_SAVES = 10;
 
-struct PK2SAVE{
+struct PK2SAVE {
 	int   jakso;
 	char  episodi[PE_PATH_SIZE];
 	char  nimi[20];
@@ -22,5 +21,4 @@ struct PK2SAVE{
 extern PK2SAVE tallennukset[MAX_SAVES];
 
 int Load_SaveFile();
-int Load_Save(int i);
 int Save_Records(int i);

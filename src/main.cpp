@@ -32,9 +32,6 @@
 #define GAME_NAME    "Pekka Kana 2"
 #define GAME_VERSION "r3"
 
-int lataa_peli = -1;
-
-
 //==================================================
 //(#10) Blocks
 //==================================================
@@ -407,7 +404,7 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 			}
 
 			Effect_Explosion(palikka.vasen+16, palikka.yla+10, 0);
-			Play_GameSFX(avaa_lukko_aani,100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+			Play_GameSFX(open_locks_sound,100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 		}
 
 		/**********************************************************************/
@@ -483,19 +480,19 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 						if (palikka.koodi == BLOCK_KYTKIN1 && Game::button1 == 0) {
 							Game::button1 = KYTKIN_ALOITUSARVO;
 							Game::button_moving = 64;
-							Play_GameSFX(kytkin_aani, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 						}
 
 						if (palikka.koodi == BLOCK_KYTKIN2 && Game::button2 == 0) {
 							Game::button2 = KYTKIN_ALOITUSARVO;
 							Game::button_moving = 64;
-							Play_GameSFX(kytkin_aani, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 						}
 
 						if (palikka.koodi == BLOCK_KYTKIN3 && Game::button3 == 0) {
 							Game::button3 = KYTKIN_ALOITUSARVO;
 							Game::button_moving = 64;
-							Play_GameSFX(kytkin_aani, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 						}
 					}
 
@@ -660,7 +657,7 @@ int PK_Sprite_Movement(int i){
 			if (PisteInput_Keydown(Settings.control_jump)) {
 				if (!sprite.kyykky) {
 					if (sprite.hyppy_ajastin == 0)
-						Play_GameSFX(hyppy_aani, 100, (int)sprite_x, (int)sprite_y,
+						Play_GameSFX(jump_sound, 100, (int)sprite_x, (int)sprite_y,
 									  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 					if (sprite.hyppy_ajastin <= 0)
@@ -860,7 +857,7 @@ int PK_Sprite_Movement(int i){
 
 	if (vedessa != sprite.vedessa) { // Sprite comes in or out from water
 		Effect_Splash((int)sprite_x,(int)sprite_y,32);
-		Play_GameSFX(loiskahdus_aani, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, true);
+		Play_GameSFX(splash_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, true);
 	}
 
 	/*****************************************************************************************/
@@ -1169,7 +1166,7 @@ int PK_Sprite_Movement(int i){
 		if (sprite_b >= 0){ //If sprite is falling
 			if (sprite.hyppy_ajastin > 0){
 				if (sprite.hyppy_ajastin >= 90+10){
-					Play_GameSFX(tomahdys_aani,30,(int)sprite_x, (int)sprite_y,
+					Play_GameSFX(pump_sound,30,(int)sprite_x, (int)sprite_y,
 				                  int(25050-sprite.paino*3000),true);
 
 					//Particles_New(	PARTICLE_DUST_CLOUDS,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
@@ -1853,7 +1850,7 @@ int PK_Sprite_Bonus_Movement(int i){
 
 		if (vedessa != sprite.vedessa) {
 			Effect_Splash((int)sprite_x,(int)sprite_y,32);
-			Play_GameSFX(loiskahdus_aani, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, true);
+			Play_GameSFX(splash_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, true);
 		}
 
 
@@ -1885,7 +1882,7 @@ int PK_Sprite_Bonus_Movement(int i){
 				{
 					sprite.hyppy_ajastin = 0;
 				//	if (/*sprite_b == 4*/!maassa)
-				//		Play_GameSFX(tomahdys_aani,20,(int)sprite_x, (int)sprite_y,
+				//		Play_GameSFX(pump_sound,20,(int)sprite_x, (int)sprite_y,
 				//				      int(25050-sprite.tyyppi->paino*4000),true);
 				}
 
@@ -2080,7 +2077,7 @@ int PK_Sprite_Bonus_Movement(int i){
 void PK_Draw_Cursor(int x, int y){
 
 	if(!PisteUtils_Is_Mobile() && Settings.isFullScreen)
-		PDraw::image_cutclip(kuva_peli,x,y,621,461,640,480);
+		PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
 	
 }
 
@@ -2088,8 +2085,9 @@ void PK_Draw_Cursor(int x, int y){
 //==================================================
 //(#16) Process Functions
 //==================================================
-
+//TODO
 void PK_Start_Test(const char* arg){
+	/*
 	if (arg == NULL) return;
 
 	char buffer[PE_PATH_SIZE];
@@ -2104,7 +2102,7 @@ void PK_Start_Test(const char* arg){
 
 	printf("PK2    - testing episode '%s' level '%s'\n", episodi, Game::map_path);
 
-	Load_InfoText();
+	Load_InfoText();*/
 }
 
 

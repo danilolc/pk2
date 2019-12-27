@@ -4,13 +4,12 @@
 //#########################
 #include "save.hpp"
 
-#include "game/game.hpp"
-
 #include <SDL_rwops.h>
 
 #include <cstring>
 
 #define SAVES_PATH "data/saves.dat"
+#define VERSION "1"
 
 PK2SAVE tallennukset[MAX_SAVES];
 
@@ -31,7 +30,7 @@ int Empty_Records() {
 
 int Save_All_Records() {
 
-	char versio[2] = "1";
+	char versio[2] = VERSION;
 	char lkm[8];
 
 	itoa(MAX_SAVES, lkm, 10);
@@ -50,26 +49,6 @@ int Save_All_Records() {
 	
 	return 0;
 
-}
-
-int Load_Save(int i){
-	if (strcmp(tallennukset[i].episodi," ")!=0) {
-
-		Episode::started = false;
-		strcpy(episodi,tallennukset[i].episodi);
-		strcpy(Game::player_name, tallennukset[i].nimi);
-		jakso = tallennukset[i].jakso;
-		Game::__score = tallennukset[i].pisteet;
-
-		for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
-				jaksot[j].lapaisty = tallennukset[i].jakso_lapaisty[j];
-		
-		PK_Start_Saves(); //TODO -?
-		
-	}
-		
-
-	return 0;
 }
 
 int Load_SaveFile(){
@@ -94,6 +73,7 @@ int Load_SaveFile(){
 			count = MAX_SAVES;
 		
 		SDL_RWread(file, tallennukset, sizeof(PK2SAVE)*count , 1);
+	
 	}
 
 	SDL_RWclose(file);
@@ -104,9 +84,9 @@ int Load_SaveFile(){
 int Save_Records(int i){
 	tallennukset[i].kaytossa = true;
 	strcpy(tallennukset[i].episodi, episodi);
-	strcpy(tallennukset[i].nimi, Game::player_name);
+	strcpy(tallennukset[i].nimi, Episode::player_name);
 	tallennukset[i].jakso = jakso;
-	tallennukset[i].pisteet = Game::__score;
+	tallennukset[i].pisteet = Episode::score;
 
 	for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
 		tallennukset[i].jakso_lapaisty[j] = jaksot[j].lapaisty;
