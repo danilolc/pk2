@@ -26,12 +26,16 @@ extern bool dev_mode;
 extern bool doublespeed; //TODO
 extern bool skip_frame;
 
+extern float fps;
+extern bool show_fps;
+
 extern bool PK2_error;
 extern const char* PK2_error_msg;
 
 void Calculate_SinCos();
 int PK2_Error(const char* msg);
 
+bool PK_Check_File(const char *filename);
 
 
 

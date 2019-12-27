@@ -130,7 +130,6 @@ int Screen_Ending_Init() {
 
 	loppulaskuri = 0;
 	siirry_lopusta_menuun = false;
-	//episode_started = false;
 
 	PDraw::fade_in(PDraw::FADE_FAST);
 }
@@ -144,15 +143,9 @@ int Screen_Ending(){
 	loppulaskuri++;
 	//introlaskuri = loppulaskuri; // introtekstej� varten
 
-	if (siirry_lopusta_menuun && !PDraw::is_fading())
-	{
+	if (siirry_lopusta_menuun && !PDraw::is_fading()) {
 		next_screen = SCREEN_MENU;
-		//menu_nyt = MENU_MAIN;
-		//episode_started = false;
 	}
-
-	if (key_delay > 0)
-		key_delay--;
 
 	if (key_delay == 0) {
 		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE)) {

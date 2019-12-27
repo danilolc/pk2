@@ -12,34 +12,15 @@
 #include "game/sprites.hpp"
 #include "settings.hpp"
 
-extern int kytkin1; //TODO - on inGame.cpp
-extern int kytkin2;
-extern int kytkin3;
-extern int kytkin_tarina;
-
 extern int kuva_peli;
 extern int kuva_peli2;
 extern int kuva_tausta;
 
+
 const int TIME_FPS = 100;
-extern DWORD timeout;
-extern int increase_time;
-extern int sekunti;
-extern bool aikaraja;
-
-extern int info_timer;
-extern char info[80];
-
-extern float fps;
-extern bool show_fps;
+const int INFO_TIME = 700;
 
 extern int lataa_peli;
-
-extern int nakymattomyys;
-
-extern DWORD pisteet;
-extern DWORD piste_lisays;
-extern char pelaajan_nimi[20];
 
 const BYTE BLOCK_MAX_MASKEJA = 150;
 
@@ -70,28 +51,59 @@ struct PK2BLOCKMASKI{
 	short int	oikealle[32];
 };
 
-extern PK2BLOCK palikat[300];
-extern PK2BLOCK	lasketut_palikat[150];//150
-extern PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
-
 //In game variables
 namespace Game {
-	
-	extern PK2Kartta* map;
-	extern char map_path[PE_PATH_SIZE];
 
-	extern int vibration;
+extern PK2Kartta* map;
+extern char map_path[PE_PATH_SIZE];
 
-	extern int camera_x;
-	extern int camera_y;
-	extern double dcamera_x;
-	extern double dcamera_y;
-	extern double dcamera_a;
-	extern double dcamera_b;
+extern PK2BLOCK      palikat[300];
+extern PK2BLOCK      lasketut_palikat[150];//150
+extern PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
 
-	extern bool paused;
+extern bool started;
+extern bool game_over;
+extern bool level_clear;
 
-	extern int keys;
+extern DWORD timeout;
+extern int increase_time;
+extern int seconds;
+extern bool has_time;
+
+extern int button_moving;
+extern int button1;
+extern int button2;
+extern int button3;
+
+extern DWORD __score;
+extern DWORD score;
+extern DWORD score_increment;
+extern char player_name[20];
+
+extern int vibration;
+
+extern int invisibility;
+
+extern int camera_x;
+extern int camera_y;
+extern double dcamera_x;
+extern double dcamera_y;
+extern double dcamera_a;
+extern double dcamera_b;
+
+extern bool paused;
+
+extern int keys;
+
+extern int info_timer;
+extern char info[80];
+
+extern int item_pannel_x;
+
+extern int Start();
+
+void Start_Info(const char *text);
+
 }
 
 
@@ -106,9 +118,7 @@ bool Draw_Menu_Text(bool active, char *teksti, int x, int y);
 int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx);
 /**/
 
+void Calculate_MovableBlocks_Position();
 
 
-
-bool PK_Check_File(char *filename);
-
-void PK_Start_Info(char *text);
+bool PK_Check_File(const char *filename);

@@ -414,6 +414,41 @@ void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y,
 	}
 }
 
+int Update_Sprites() {
+	
+	int active_sprites = 0;
+	int i;
+	PK2Sprite* sprite;
+
+	for (i = 0; i < MAX_SPRITEJA; i++){ //Activate sprite if it is on screen
+		sprite = &Sprites_List[i];
+		if (sprite->x < Game::camera_x+640+320 &&//screen_width+screen_width/2 &&
+			sprite->x > Game::camera_x-320 &&//screen_width/2 &&
+			sprite->y < Game::camera_y+480+240 &&//screen_height+screen_height/2 &&
+			sprite->y > Game::camera_y-240)//screen_height/2)
+			sprite->aktiivinen = true;
+		else
+			sprite->aktiivinen = false;
+
+		if (sprite->piilota == true)
+			sprite->aktiivinen = false;
+	}
+
+	for (i = 0; i < MAX_SPRITEJA; i++){
+		sprite = &Sprites_List[i];
+		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYYPPI_TAUSTA){
+			if (sprite->tyyppi->tyyppi == TYYPPI_BONUS)
+				PK_Sprite_Bonus_Movement(i);
+			else
+				PK_Sprite_Movement(i);
+
+			active_sprites++;
+		}
+	}
+
+	return active_sprites;
+}
+
 void Sprites_clear() {
 	int i = 0;
 

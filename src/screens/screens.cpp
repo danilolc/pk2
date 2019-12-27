@@ -9,7 +9,7 @@
 #include "gui.hpp"
 #include "language.hpp"
 #include "gfx/text.hpp"
-#include "game/game.hpp"
+#include "game/game.hpp" //
 #include "save.hpp"
 #include "system.hpp"
 
@@ -31,13 +31,14 @@ void PK_Fade_Quit() {
 	PSound::set_musicvolume(0);
 }
 
+
 int Screen_First_Start() {
 	
 	PDraw::screen_fill(0);
 	srand((unsigned)time(NULL));
 	
 	GUI_Change(UI_TOUCH_TO_START);
-	strcpy(pelaajan_nimi, tekstit->Hae_Teksti(PK_txt.player_default_name));
+	strcpy(Game::player_name, tekstit->Hae_Teksti(PK_txt.player_default_name));
 	
 	if (!test_level) {
 		strcpy(episodi, "");
@@ -106,27 +107,44 @@ int Screen_Change() {
 	return 0;
 }
 
-int Updade_Mouse(){
-	if(PisteUtils_Is_Mobile()){
+int Updade_Mouse() {
+
+	int offset = PDraw::get_xoffset();
+
+	if(PisteUtils_Is_Mobile()) {
     	float x, y;
 
 		if (PisteInput_GetTouchPos(x, y) == 0) {
-			mouse_x = screen_width * x - PDraw::get_xoffset();
+			mouse_x = screen_width * x - offset;
 			mouse_y = screen_height * y;
 			return 1;
 		}
 	}
 
-	MOUSE pos = PisteInput_UpdateMouse(current_screen == SCREEN_MAP, Settings.isFullScreen);
-	pos.x -= PDraw::get_xoffset();
+	bool keys_move = (current_screen == SCREEN_MAP);
+	bool relative = Settings.isFullScreen;
 
-	if (pos.x < 0) pos.x = 0;
-	if (pos.y < 0) pos.y = 0;
-	if (pos.x > 640-19) pos.x = 640-19;
-	if (pos.y > 480-19) pos.y = 480-19;
+	if (relative) {
 
-	mouse_x = pos.x;
-	mouse_y = pos.y;
+		MOUSE delta = PisteInput_UpdateMouse(keys_move, true);
+
+		mouse_x += delta.x;
+		mouse_y += delta.y;
+
+	} else {
+		
+		MOUSE pos = PisteInput_UpdateMouse(false, false);
+
+		mouse_x = pos.x - offset;
+		mouse_y = pos.y;
+
+	}
+	
+	if (mouse_x < -offset) mouse_x = -offset;
+	if (mouse_x > screen_width - offset - 19) mouse_x = screen_width - offset - 19;
+	
+	if (mouse_y < 0) mouse_y = 0;
+	if (mouse_y > screen_height - 19) mouse_y = screen_height - 19;
 
 	return 0;
 }
@@ -147,6 +165,9 @@ int Screen_Loop() {
 		case SCREEN_END     : Screen_Ending();     break;
 		default             : PK_Fade_Quit();      break;
 	}
+
+	if (key_delay > 0)
+		key_delay--;
 
 	/*
 	static bool wasPressed = false;

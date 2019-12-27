@@ -10,7 +10,7 @@
 
 #include <cstring>
 
-#include "game/game.hpp"
+#include "game/game.hpp" //
 #include "gfx/text.hpp"
 #include "language.hpp"
 #include "gui.hpp"
@@ -69,7 +69,7 @@ int PK_Draw_Map(){
 
 	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.map_total_score),100+2,92+2);
 	vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.map_total_score),100,92);//250,80
-	ltoa(pisteet,luku,10);
+	ltoa(Game::__score,luku,10);
 	PDraw::font_write(fontti4,luku,100+vali+2+15,92+2);
 	PDraw::font_write(fontti2,luku,100+vali+15,92);
 
@@ -93,6 +93,7 @@ int PK_Draw_Map(){
 
 	if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_return),100,430)){
 		next_screen = SCREEN_MENU;
+		degree_temp = degree;
 		//menu_nyt = MENU_MAIN;
 	}
 
@@ -178,8 +179,8 @@ int PK_Draw_Map(){
 					PDraw::font_write(fontti1,episodipisteet.fastest_player[i],info_x,info_y+110);
 
 					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_best_time),info_x,info_y+122,75);
-					min = episodipisteet.best_time[i]/60;
-					sek = episodipisteet.best_time[i]%60;
+					min = episodipisteet.best_time[i]/60; //TODO - put negative time
+					sek = episodipisteet.best_time[i]%60; //https://gitlab.com/danilolc/pekka-kana-2/commit/df30d166bb1daff236dfe22891f4b43eb64cfe4b
 
 					itoa(min,luku,10);
 					vali += PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);
@@ -205,28 +206,29 @@ int Screen_Map_Init() {
 		PDraw::set_xoffset(0);
 	PDraw::screen_fill(0);
 
-	if (!episode_started)
-	{
-		if (true) //lataa_peli != -1)
-		{
+	if (!Episode::started) {
+		if (lataa_peli != -1) {
 			Load_Maps();
 
 			//for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
 			//	jaksot[j].lapaisty = tallennukset[lataa_peli].jakso_lapaisty[j];
 
 			//lataa_peli = -1;
-			episode_started = true;
-			peli_ohi = true;
-			jakso_lapaisty = true;
 			lopetusajastin = 0;
 		}
-		else
-		{
+		else {
 			PK_Start_Saves(); // jos ladataan peli, asetetaan l�p�istyarvot jaksoille aikaisemmin
 			Load_Maps();
 		}
+
 		char topscoretiedosto[PE_PATH_SIZE] = "scores.dat";
 		EpisodeScore_Open(topscoretiedosto);
+
+		Episode::started = true;
+	} else {
+
+		degree = degree_temp;
+		
 	}
 
 	char mapkuva[PE_PATH_SIZE] = "map.bmp";
@@ -297,8 +299,6 @@ int Screen_Map(){
 	if (going_to_game && !PDraw::is_fading()) {
 		next_screen = SCREEN_GAME;
 		
-		episode_started = false;
-
 		//Draw "loading" text
 		PDraw::set_xoffset(0);
 		PDraw::screen_fill(0);
@@ -306,8 +306,13 @@ int Screen_Map(){
 		PDraw::fade_out(0);
 	}
 
-	if (key_delay > 0)
-		key_delay--;
+	if (!going_to_game && key_delay == 0){
+		if (PisteInput_Keydown(PI_ESCAPE)) {
+			next_screen = SCREEN_MENU;
+			degree_temp = degree;
+			key_delay = 20;
+		}
+	}
 
 	return 0;
 }

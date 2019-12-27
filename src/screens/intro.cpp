@@ -113,7 +113,6 @@ int Screen_Intro(){
 
 	if (siirry_introsta_menuun && !PDraw::is_fading()){
 		next_screen = SCREEN_MENU;
-		//episode_started = false;
 	}
 	if (key_delay > 0) key_delay--;
 	if (key_delay == 0)

@@ -118,7 +118,7 @@ int PK_Draw_ScoreCount(){
 	if (pistelaskuvaihe >= 4){
 		PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100+2,192+2+my);
 		vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100,192+my);//250,80
-		ltoa(pisteet,luku,10);
+		ltoa(Game::__score,luku,10);
 		PDraw::font_write(fontti4,luku,400+2,192+2+my);
 		PDraw::font_write(fontti2,luku,400,192+my);
 		my += 25;
@@ -168,8 +168,8 @@ int Screen_ScoreCount_Init() {
 
 	// Lasketaan pelaajan kokonaispisteet etuk�teen
 	DWORD temp_pisteet = 0;
-	temp_pisteet += jakso_pisteet;
-	temp_pisteet += timeout * 5;
+	temp_pisteet += Game::score;
+	temp_pisteet += Game::timeout * 5;
 	temp_pisteet += Player_Sprite->energia * 300;
 	for (int i = 0; i < MAX_GIFTS; i++)
 		if (Gifts_Get(i) != -1)
@@ -177,10 +177,10 @@ int Screen_ScoreCount_Init() {
 
 	//if (jaksot[jakso_indeksi_nyt].lapaisty)
 	//if (jaksot[jakso_indeksi_nyt].jarjestys == jakso-1)
-	pisteet += temp_pisteet;
+	Game::__score += temp_pisteet;
 
 	if (uusinta)
-		pisteet -= temp_pisteet;
+		Game::__score -= temp_pisteet;
 
 	fake_pisteet = 0;
 	pistelaskuvaihe = 0;
@@ -195,14 +195,14 @@ int Screen_ScoreCount_Init() {
 	int vertailun_tulos;
 
 	/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
-	vertailun_tulos = EpisodeScore_Compare(jakso_indeksi_nyt, temp_pisteet, Game::map->aika - timeout, false);
+	vertailun_tulos = EpisodeScore_Compare(jakso_indeksi_nyt, temp_pisteet, Game::map->aika - Game::timeout, false);
 	if (vertailun_tulos > 0)
 	{
 		EpisodeScore_Save(pisteet_tiedosto);
 	}
 
 	/* Tutkitaan onko pelaaja rikkonut episodin piste-enn�tyksen */
-	vertailun_tulos = EpisodeScore_Compare(0, pisteet, 0, true);
+	vertailun_tulos = EpisodeScore_Compare(0, Game::__score, 0, true);
 	if (vertailun_tulos > 0)
 		EpisodeScore_Save(pisteet_tiedosto);
 
@@ -223,7 +223,7 @@ int Screen_ScoreCount(){
 	int energia = Player_Sprite->energia;
 
 	if (pistelaskudelay == 0){
-		if (bonuspisteet < jakso_pisteet){
+		if (bonuspisteet < Game::score){
 			pistelaskuvaihe = 1;
 			pistelaskudelay = 0;
 			bonuspisteet += 10;
@@ -231,21 +231,21 @@ int Screen_ScoreCount(){
 			if (degree%7==1)
 				Play_MenuSFX(pistelaskuri_aani, 70);
 
-			if (bonuspisteet >= jakso_pisteet){
-				bonuspisteet = jakso_pisteet;
+			if (bonuspisteet >= Game::score){
+				bonuspisteet = Game::score;
 				pistelaskudelay = 50;
 			}
 
-		} else if (timeout > 0){
+		} else if (Game::timeout > 0){
 			pistelaskuvaihe = 2;
 			pistelaskudelay = 0;
 			aikapisteet+=5;
-			timeout--;
+			Game::timeout--;
 
 			if (degree%10==1)
 				Play_MenuSFX(pistelaskuri_aani, 70);
 
-			if (timeout == 0)
+			if (Game::timeout == 0)
 				pistelaskudelay = 50;
 
 		} else if (Player_Sprite->energia > 0){
@@ -278,19 +278,16 @@ int Screen_ScoreCount(){
 
 		if (jakso_indeksi_nyt == EPISODI_MAX_LEVELS-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
 			next_screen = SCREEN_END;
+			Episode::started = false;
 		}
-		else if (jaksot[jakso_indeksi_nyt+1].jarjestys == -1)
-			    next_screen = SCREEN_END;
-		else // jos ei niin palataan karttaan...
-		{
+		else if (jaksot[jakso_indeksi_nyt+1].jarjestys == -1) {
+			next_screen = SCREEN_END;
+			Episode::started = false;
+		}
+		else { // jos ei niin palataan karttaan...
 			next_screen = SCREEN_MAP;
-			//episode_started = false;
-			//menu_nyt = MENU_MAIN;
 		}
 	}
-
-	if (key_delay > 0)
-		key_delay--;
 
 	if (key_delay == 0){
 		if (PisteInput_Keydown(PI_RETURN) && pistelaskuvaihe == 5){
@@ -302,9 +299,9 @@ int Screen_ScoreCount(){
 
 		if (PisteInput_Keydown(PI_RETURN) && pistelaskuvaihe < 5){
 			pistelaskuvaihe = 5;
-			bonuspisteet = jakso_pisteet;
-			aikapisteet += timeout*5;
-			timeout = 0;
+			bonuspisteet = Game::score;
+			aikapisteet += Game::timeout * 5;
+			Game::timeout = 0;
 			energiapisteet += Player_Sprite->energia * 300;
 			Player_Sprite->energia = 0;
 			for (int i=0;i<MAX_GIFTS;i++)

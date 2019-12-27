@@ -175,31 +175,38 @@ MOUSE PisteInput_UpdateMouse(bool keyMove, bool relative){
 		SDL_GetMouseState(&mouse_pos.x, &mouse_pos.y);
 		return mouse_pos;
 	}
+
+	MOUSE delta;
+
+	delta.x = 0;
+	delta.y = 0;
+
 	static int lastMouseUpdate = 0, dx = 0, dy = 0;
+	
 	if(SDL_GetTicks() - lastMouseUpdate > MOUSE_SPEED) {
 		lastMouseUpdate = SDL_GetTicks();
 		SDL_GetRelativeMouseState(&dx, &dy);
-		mouse_pos.x += dx;
-		mouse_pos.y += dy;
+		delta.x += dx;
+		delta.y += dy;
 	}
 	else {
-		mouse_pos.x += dx;
-		mouse_pos.y += dy;
+		delta.x += dx;
+		delta.y += dy;
 		dx = 0;
 		dy = 0;
 	}
 
 	if(keyMove){
-		mouse_pos.x += PisteInput_Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
-		mouse_pos.y += PisteInput_Ohjain_Y(PI_PELIOHJAIN_1)/30;
+		delta.x += PisteInput_Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
+		delta.y += PisteInput_Ohjain_Y(PI_PELIOHJAIN_1)/30;
 
-		if (PisteInput_Keydown(PI_LEFT)) mouse_pos.x -= 3; //Move mouse with keys
-		if (PisteInput_Keydown(PI_RIGHT)) mouse_pos.x += 3;
-		if (PisteInput_Keydown(PI_UP)) mouse_pos.y -= 3;
-		if (PisteInput_Keydown(PI_DOWN)) mouse_pos.y += 3;
+		if (PisteInput_Keydown(PI_LEFT)) delta.x += -3; //Move mouse with keys
+		if (PisteInput_Keydown(PI_RIGHT)) delta.x += 3;
+		if (PisteInput_Keydown(PI_UP)) delta.y += -3;
+		if (PisteInput_Keydown(PI_DOWN)) delta.y += 3;
 	}
 
-	return mouse_pos;
+	return delta;
 }
 int PisteInput_ActivateWindow(bool active) {
 	if (active) {

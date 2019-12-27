@@ -22,3 +22,5 @@ void Sprites_start_directions();
 void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int emo, bool isbonus);
 void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y, int emo);
 void Sprites_clear();
+
+int Update_Sprites();

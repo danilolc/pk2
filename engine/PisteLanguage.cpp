@@ -123,7 +123,7 @@ bool PisteLanguage::Read_File(char *filename){
 	return true;
 }
 
-int PisteLanguage::Hae_Indeksi(char *otsikko){
+int PisteLanguage::Hae_Indeksi(const char *otsikko){
 	int i=0;
 
 	while (i < MAX_TEXTS && strcmp(otsikot[i],otsikko) != 0)

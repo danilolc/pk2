@@ -207,7 +207,7 @@ enum { //Color
     VARI_TURKOOSI = 192,
     VARI_NORMAALI = 255
 };
-enum { //Destruction
+enum { //Destruction Effect
     TUHOUTUMINEN_EI_TUHOUDU,
     TUHOUTUMINEN_HOYHENET,
     TUHOUTUMINEN_TAHDET_HARMAA,

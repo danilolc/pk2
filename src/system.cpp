@@ -26,6 +26,9 @@ bool dev_mode = false;
 bool doublespeed = false;
 bool skip_frame = false;
 
+float fps = 0;
+bool show_fps = false;
+
 bool PK2_error = false;
 const char* PK2_error_msg = nullptr;
 
@@ -41,7 +44,7 @@ void Calculate_SinCos(){
 }
 
 //PisteUtils
-bool PK_Check_File(char *filename){ //TODO - If isn't Windows - List directory, set lower case, test, and change "char *filename".
+bool PK_Check_File(const char *filename){ //TODO - If isn't Windows - List directory, set lower case, test, and change "char *filename".
 	struct stat st;
 	bool ret = (stat(filename, &st) == 0);
 	if(!ret) printf("PK2    - asked about non-existing file: %s\n", filename);

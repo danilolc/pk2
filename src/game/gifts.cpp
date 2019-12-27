@@ -37,7 +37,7 @@ void Gifts_Clean() {
 }
 
 bool Gifts_Add(int prototype_id) {
-	int i=0;
+	int i = 0;
 	bool lisatty = false;
 
 	char ilmo[80];
@@ -48,8 +48,8 @@ bool Gifts_Add(int prototype_id) {
 			lisatty = true;
 			gifts_list[i] = prototype_id;
 			
-			strcat(ilmo, Prototypes_List[prototype_id].nimi); //TODO
-			PK_Start_Info(ilmo);
+			//strcat(ilmo, Prototypes_List[prototype_id].nimi); //TODO
+			Game::Start_Info(ilmo);
 			gifts_count++;
 		}
 		i++;

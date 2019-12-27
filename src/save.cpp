@@ -55,10 +55,11 @@ int Save_All_Records() {
 int Load_Save(int i){
 	if (strcmp(tallennukset[i].episodi," ")!=0) {
 
+		Episode::started = false;
 		strcpy(episodi,tallennukset[i].episodi);
-		strcpy(pelaajan_nimi, tallennukset[i].nimi);
+		strcpy(Game::player_name, tallennukset[i].nimi);
 		jakso = tallennukset[i].jakso;
-		pisteet = tallennukset[i].pisteet;
+		Game::__score = tallennukset[i].pisteet;
 
 		for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
 				jaksot[j].lapaisty = tallennukset[i].jakso_lapaisty[j];
@@ -103,9 +104,9 @@ int Load_SaveFile(){
 int Save_Records(int i){
 	tallennukset[i].kaytossa = true;
 	strcpy(tallennukset[i].episodi, episodi);
-	strcpy(tallennukset[i].nimi, pelaajan_nimi);
+	strcpy(tallennukset[i].nimi, Game::player_name);
 	tallennukset[i].jakso = jakso;
-	tallennukset[i].pisteet = pisteet;
+	tallennukset[i].pisteet = Game::__score;
 
 	for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
 		tallennukset[i].jakso_lapaisty[j] = jaksot[j].lapaisty;

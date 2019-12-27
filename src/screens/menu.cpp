@@ -115,7 +115,7 @@ int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 
 int Draw_BGSquare(int left, int top, int right, int bottom, BYTE pvari){
 	
-	if (episode_started)
+	if (Episode::started)
 		return 0;
 
 	if (bg_square.left < left)
@@ -311,9 +311,9 @@ int Draw_Menu_Main() {
 
 	Draw_BGSquare(160, 200, 640-180, 410, 224);
 
-	if (episode_started){
+	if (Episode::started){
 		if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_continue),180,my)){
-			if ((!peli_ohi && !jakso_lapaisty) || lopetusajastin > 1)
+			if (Game::started)
 				next_screen = SCREEN_GAME;
 			else
 				next_screen = SCREEN_MAP;
@@ -324,14 +324,14 @@ int Draw_Menu_Main() {
 
 	if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_new_game),180,my)){
 		nimiedit = true;
-		menu_name_index = strlen(pelaajan_nimi);//   0;
+		menu_name_index = strlen(Game::player_name);//   0;
 		menu_name_last_mark = ' ';
 		menu_nyt = MENU_NAME;
 		key_delay = 30;
 	}
 	my += 20;
 
-	if (episode_started){
+	if (Episode::started){
 		if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_save_game),180,my)){
 			menu_nyt = MENU_TALLENNA;
 		}
@@ -377,7 +377,7 @@ int Draw_Menu_Name() {
 	int mx; //Text cursor
 	char merkki;
 	bool hiiri_alueella = false;
-	int nameSize = (int)strlen(pelaajan_nimi);
+	int nameSize = (int)strlen(Game::player_name);
 
 	Draw_BGSquare(90, 150, 640-90, 480-100, 224);
 
@@ -425,8 +425,8 @@ int Draw_Menu_Name() {
 		PDraw::screen_fill(mx+4, 254, mx+6, 254+20, 96+8);
 	}
 
-	WavetextSlow_Draw(pelaajan_nimi,fontti2,180,255);
-	PDraw::font_writealpha(fontti3,pelaajan_nimi,180,255,15);
+	WavetextSlow_Draw(Game::player_name,fontti2,180,255);
+	PDraw::font_writealpha(fontti3,Game::player_name,180,255,15);
 
 	merkki = PisteInput_Lue_Nappaimisto();
 
@@ -439,30 +439,30 @@ int Draw_Menu_Name() {
 		key_delay = 15;
 
 		for(int c = nameSize; c > menu_name_index; c--)
-			pelaajan_nimi[c] = pelaajan_nimi[c-1];
+			Game::player_name[c] = Game::player_name[c-1];
 
-		pelaajan_nimi[menu_name_index] = merkki;
+		Game::player_name[menu_name_index] = merkki;
 		menu_name_index++;
 	}
 
 	if (key_delay == 0){
 		if (PisteInput_Keydown(PI_DELETE)) {
 			for (int c=menu_name_index;c<19;c++)
-				pelaajan_nimi[c] = pelaajan_nimi[c+1];
-			pelaajan_nimi[19] = '\0';
+				Game::player_name[c] = Game::player_name[c+1];
+			Game::player_name[19] = '\0';
 			key_delay = 10;
 		}
 
 		if (PisteInput_Keydown(PI_BACK) && menu_name_index != 0) {
 			for (int c=menu_name_index-1;c<19;c++)
-				pelaajan_nimi[c] = pelaajan_nimi[c+1];
-			pelaajan_nimi[19] = '\0';
-			if(pelaajan_nimi[menu_name_index] == '\0') pelaajan_nimi[menu_name_index-1] = '\0';
+				Game::player_name[c] = Game::player_name[c+1];
+			Game::player_name[19] = '\0';
+			if(Game::player_name[menu_name_index] == '\0') Game::player_name[menu_name_index-1] = '\0';
 			menu_name_index--;
 			key_delay = 10;
 		}
 
-		if (PisteInput_Keydown(PI_RETURN) && pelaajan_nimi[0] != '\0') {
+		if (PisteInput_Keydown(PI_RETURN) && Game::player_name[0] != '\0') {
 			key_delay = 10;
 			merkki = '\0';
 			nimiedit = false;
@@ -479,14 +479,13 @@ int Draw_Menu_Name() {
 
 		if (episode_count == 1) {
 			strcpy(episodi,episodes[2]);
+			Episode::started = false;
 			next_screen = SCREEN_MAP;
-			episode_started = false;
-			PK_New_Game();
 		}
 	}
 
 	if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.playermenu_clear),340,300)) {
-		memset(pelaajan_nimi,'\0',sizeof(pelaajan_nimi));
+		memset(Game::player_name,'\0',sizeof(Game::player_name));
 		menu_name_index = 0;
 	}
 
@@ -522,7 +521,6 @@ int Draw_Menu_Load() {
 			Load_Save(i);
 			next_screen = SCREEN_MAP;
 			lataa_peli = i;
-			//episode_started = false;
 		}
 
 		if (strcmp(tallennukset[i].episodi," ")!=0) {
@@ -685,7 +683,7 @@ int Draw_Menu_Graphics() {
 			PK2Kartta_Set_Screen_Size(screen_width, screen_height);
 			PDraw::change_resolution(screen_width, screen_height);
 			
-			if(episode_started)
+			if(Episode::started)
 				PDraw::image_fill(kuva_tausta, 0);
 			
 			if (Settings.isWide) PDraw::set_xoffset(80);
@@ -1025,9 +1023,8 @@ int Draw_Menu_Episodes() {
 			if (Draw_Menu_Text(true,episodes[i],220,90+my)){
 				strcpy(episodi,episodes[i]);
 				Load_InfoText();
+				Episode::started = false;
 				next_screen = SCREEN_MAP;
-				episode_started = false;
-				PK_New_Game();
 				//PDraw::fade_in(PD_FADE_NORMAL);
 			}
 			my += 20;
@@ -1099,7 +1096,7 @@ int Draw_Menu_Language() {
 int Draw_Menu() {
 
 	PDraw::screen_fill(0);
-	PDraw::image_clip(kuva_tausta, (episode_started && Settings.isWide)? -80 : 0, 0);
+	PDraw::image_clip(kuva_tausta, (Episode::started && Settings.isWide)? -80 : 0, 0);
 
 	menu_valinta_id = 1;
 
@@ -1194,7 +1191,7 @@ int Screen_Menu_Init() {
 	Search_Episode();
 	Search_Languages();
 
-	if (!episode_started) {
+	if (!Episode::started) {
 
 		PDraw::image_load(kuva_tausta, "gfx/menu.bmp", true);
 		PSound::start_music("music/song09.xm");
@@ -1249,7 +1246,7 @@ int Screen_Menu() {
 		}
 	}
 
-	if (nimiedit || menu_lue_kontrollit > 0){
+	if (nimiedit || menu_lue_kontrollit > 0) {
 		menu_valittu_id = 0;
 	}
 
@@ -1267,9 +1264,6 @@ int Screen_Menu() {
 
 	if (doublespeed)
 		degree = 1 + degree % 360;
-
-	if (key_delay > 0)
-		key_delay--;
 
 	return 0;
 }

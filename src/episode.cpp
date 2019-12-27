@@ -6,7 +6,7 @@
 
 #include "game/map.hpp"
 #include "language.hpp"
-#include "game/game.hpp"
+#include "game/game.hpp" //
 #include "system.hpp"
 
 #include "PisteUtils.hpp"
@@ -20,13 +20,11 @@ int	jakso = 1;
 int jaksoja = 1;
 int jakso_indeksi_nyt = 1;
 PK2LEVEL jaksot[EPISODI_MAX_LEVELS];
-bool jakso_lapaisty = false;
 
 char episodi[PE_PATH_SIZE];
 bool uusinta = false;
-bool peli_ohi = false;
+
 DWORD lopetusajastin = 0;
-DWORD jakso_pisteet = 0;
 DWORD fake_pisteet = 0;
 
 PK2EPISODESCORES episodipisteet;
@@ -34,9 +32,10 @@ PK2EPISODESCORES episodipisteet;
 bool jakso_uusi_ennatys = false;
 bool jakso_uusi_ennatysaika = false;
 bool episodi_uusi_ennatys = false;
-bool episodi_uusi_ennatys_naytetty = false;
 
-bool episode_started = false;
+namespace Episode {
+	bool started = false;
+}
 
 void PK_Start_Saves(){
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
@@ -61,17 +60,17 @@ void EpisodeScore_Start(){
 	episodipisteet.episode_top_score = 0;
 	strcpy(episodipisteet.episode_top_player," ");
 }
-int  EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupisteet){
+int EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupisteet){
 	int paluu = 0;
 	if (!loppupisteet) {
 		if (episteet > episodipisteet.best_score[jakso]) {
-			strcpy(episodipisteet.top_player[jakso],pelaajan_nimi);
+			strcpy(episodipisteet.top_player[jakso],Game::player_name);
 			episodipisteet.best_score[jakso] = episteet;
 			jakso_uusi_ennatys = true;
 			paluu++;
 		}
 		if ((aika < episodipisteet.best_time[jakso] || episodipisteet.best_time[jakso] == 0) && Game::map->aika > 0) {
-			strcpy(episodipisteet.fastest_player[jakso],pelaajan_nimi);
+			strcpy(episodipisteet.fastest_player[jakso],Game::player_name);
 			episodipisteet.best_time[jakso] = aika;
 			jakso_uusi_ennatysaika = true;
 			paluu++;
@@ -80,7 +79,7 @@ int  EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupiste
 	else {
 		if (episteet > episodipisteet.episode_top_score) {
 		    episodipisteet.episode_top_score = episteet;
-			strcpy(episodipisteet.episode_top_player,pelaajan_nimi);
+			strcpy(episodipisteet.episode_top_player,Game::player_name);
 			episodi_uusi_ennatys = true;
 			paluu++;
 		}
