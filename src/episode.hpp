@@ -6,7 +6,6 @@
 
 #include "platform.hpp"
 
-
 const int EPISODI_MAX_LEVELS = 100; //50;
 const int MAX_EPISODEJA	= 300;
 
@@ -19,6 +18,7 @@ struct PK2LEVEL {
 	int   ikoni;
 };
 
+//TODO - Make Scores 1.1
 struct PK2EPISODESCORES {
 	DWORD best_score[EPISODI_MAX_LEVELS];         // the best score of each level in episode
 	char  top_player[EPISODI_MAX_LEVELS][20];     // the name of the player with more score in each level on episode

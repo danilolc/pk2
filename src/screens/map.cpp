@@ -179,8 +179,15 @@ int PK_Draw_Map(){
 					PDraw::font_write(fontti1,episode_scores.fastest_player[i],info_x,info_y+110);
 
 					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_best_time),info_x,info_y+122,75);
-					min = episode_scores.best_time[i]/60; //TODO - put negative time
-					sek = episode_scores.best_time[i]%60; //https://gitlab.com/danilolc/pekka-kana-2/commit/df30d166bb1daff236dfe22891f4b43eb64cfe4b
+
+					int time = (int)episode_scores.best_time[i];
+					if (time < 0) {
+						time = -time;
+						vali += PDraw::font_write(fontti1,"-",info_x+vali,info_y+122);
+					}
+
+					min = time / 60;
+					sek = time % 60;
 
 					itoa(min,luku,10);
 					vali += PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);
