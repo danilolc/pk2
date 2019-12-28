@@ -64,8 +64,8 @@ int PK_Draw_Map(){
 	PDraw::screen_fill(0);
 	PDraw::image_clip(bg_screen, 0, 0);
 
-	PDraw::font_write(fontti4,episodi,100+2,72+2);
-	PDraw::font_write(fontti2,episodi,100,72);
+	PDraw::font_write(fontti4,Episode::name,100+2,72+2);
+	PDraw::font_write(fontti2,Episode::name,100,72);
 
 	PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.map_total_score),100+2,92+2);
 	vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.map_total_score),100,92);//250,80
@@ -73,11 +73,11 @@ int PK_Draw_Map(){
 	PDraw::font_write(fontti4,luku,100+vali+2+15,92+2);
 	PDraw::font_write(fontti2,luku,100+vali+15,92);
 
-	if (episodipisteet.episode_top_score > 0) {
+	if (episode_scores.episode_top_score > 0) {
 		vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.map_episode_best_player),360,72);
-		PDraw::font_write(fontti1,episodipisteet.episode_top_player,360+vali+10,72);
+		PDraw::font_write(fontti1,episode_scores.episode_top_player,360+vali+10,72);
 		vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.map_episode_hiscore),360,92);
-		ltoa(episodipisteet.episode_top_score,luku,10);
+		ltoa(episode_scores.episode_top_score,luku,10);
 		PDraw::font_write(fontti2,luku,360+vali+15,92);
 	}
 
@@ -166,21 +166,21 @@ int PK_Draw_Map(){
 				PDraw::image_cutclip(game_assets,info_x-3,info_y+26,473,0,607,121);
 				PDraw::font_write(fontti1,jaksot[i].nimi,info_x,info_y+30);
 
-				if (episodipisteet.best_score[i] > 0) {
+				if (episode_scores.best_score[i] > 0) {
 					PDraw::font_writealpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_best_player),info_x,info_y+50,75);
-					PDraw::font_write(fontti1,episodipisteet.top_player[i],info_x,info_y+62);
+					PDraw::font_write(fontti1,episode_scores.top_player[i],info_x,info_y+62);
 					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_hiscore),info_x,info_y+74,75);
-					ltoa(episodipisteet.best_score[i],luku,10);
+					ltoa(episode_scores.best_score[i],luku,10);
 					PDraw::font_write(fontti1,luku,info_x+vali,info_y+75);
 				}
 
-				if (episodipisteet.best_time[i] > 0) {
+				if (episode_scores.best_time[i] > 0) {
 					PDraw::font_writealpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_fastest_player),info_x,info_y+98,75);
-					PDraw::font_write(fontti1,episodipisteet.fastest_player[i],info_x,info_y+110);
+					PDraw::font_write(fontti1,episode_scores.fastest_player[i],info_x,info_y+110);
 
 					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Hae_Teksti(PK_txt.map_level_best_time),info_x,info_y+122,75);
-					min = episodipisteet.best_time[i]/60; //TODO - put negative time
-					sek = episodipisteet.best_time[i]%60; //https://gitlab.com/danilolc/pekka-kana-2/commit/df30d166bb1daff236dfe22891f4b43eb64cfe4b
+					min = episode_scores.best_time[i]/60; //TODO - put negative time
+					sek = episode_scores.best_time[i]%60; //https://gitlab.com/danilolc/pekka-kana-2/commit/df30d166bb1daff236dfe22891f4b43eb64cfe4b
 
 					itoa(min,luku,10);
 					vali += PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);

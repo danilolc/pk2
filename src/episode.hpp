@@ -31,6 +31,7 @@ struct PK2EPISODESCORES {
 
 namespace Episode {
 	extern bool started;
+	extern char name[PE_PATH_SIZE];
 	extern char player_name[20];
 	extern DWORD score;
 
@@ -45,20 +46,16 @@ extern int jakso;
 extern int jaksoja;
 extern int jakso_indeksi_nyt;
 extern PK2LEVEL jaksot[EPISODI_MAX_LEVELS];
-extern char episodi[PE_PATH_SIZE];
 
-extern DWORD lopetusajastin;
 extern DWORD fake_pisteet;
 
-extern PK2EPISODESCORES episodipisteet;
+extern PK2EPISODESCORES episode_scores;
 
-extern bool jakso_uusi_ennatys;
-extern bool jakso_uusi_ennatysaika;
-extern bool episodi_uusi_ennatys;
+extern bool map_new_record;
+extern bool map_new_time_record;
+extern bool episode_new_record;
 
 void Fade_Quit();
-
-void Clean_Maps();
 
 void EpisodeScore_Start();
 int  EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupisteet);

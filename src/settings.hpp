@@ -49,5 +49,5 @@ struct PK2SETTINGS {
 
 extern PK2SETTINGS Settings;
 
-int settings_open();
-int settings_save();
+int Settings_Open();
+int Settings_Save();

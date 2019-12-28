@@ -32,6 +32,8 @@ bool game_over = false;
 bool level_clear = false;
 bool repeating = false;
 
+DWORD exit_timer;
+
 DWORD timeout = 0;
 int increase_time = 0;
 int seconds = 0;
@@ -200,7 +202,7 @@ void PK_New_Save() {
 	else
 		Game::has_time = false;
 
-	lopetusajastin = 0;
+	Game::exit_timer = 0;
 
 	Game::seconds = TIME_FPS;
 	Game::score = 0;

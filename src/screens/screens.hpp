@@ -32,5 +32,5 @@ int Screen_InGame();
 int Screen_ScoreCount();
 int Screen_Ending();
 
-int Screen_Change();
+int Screen_First_Start();
 int Screen_Loop();

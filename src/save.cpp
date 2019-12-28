@@ -11,18 +11,18 @@
 #define SAVES_PATH "data/saves.dat"
 #define VERSION "1"
 
-PK2SAVE tallennukset[MAX_SAVES];
+PK2SAVE saves_list[MAX_SAVES];
 
 int Empty_Records() {
 
 	for (int i = 0; i < MAX_SAVES; i++){
-		tallennukset[i].kaytossa = false;
-		strcpy(tallennukset[i].episodi," ");
-		strcpy(tallennukset[i].nimi,"empty");
-		tallennukset[i].jakso = 0;
-		tallennukset[i].pisteet = 0;
+		saves_list[i].kaytossa = false;
+		strcpy(saves_list[i].episodi," ");
+		strcpy(saves_list[i].nimi,"empty");
+		saves_list[i].jakso = 0;
+		saves_list[i].pisteet = 0;
 		for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-			tallennukset[i].jakso_lapaisty[j] = false;
+			saves_list[i].jakso_lapaisty[j] = false;
 	}
 
 	return 0;
@@ -43,7 +43,7 @@ int Save_All_Records() {
 	
 	SDL_RWwrite(file, versio, 1, sizeof(versio));
 	SDL_RWwrite(file, lkm, 1, sizeof(lkm));
-	SDL_RWwrite(file, tallennukset, 1, sizeof(tallennukset));
+	SDL_RWwrite(file, saves_list, 1, sizeof(saves_list));
 	
 	SDL_RWclose(file);
 	
@@ -72,7 +72,7 @@ int Load_SaveFile(){
 		if (count > MAX_SAVES)
 			count = MAX_SAVES;
 		
-		SDL_RWread(file, tallennukset, sizeof(PK2SAVE)*count , 1);
+		SDL_RWread(file, saves_list, sizeof(PK2SAVE)*count , 1);
 	
 	}
 
@@ -82,14 +82,14 @@ int Load_SaveFile(){
 }
 
 int Save_Records(int i){
-	tallennukset[i].kaytossa = true;
-	strcpy(tallennukset[i].episodi, episodi);
-	strcpy(tallennukset[i].nimi, Episode::player_name);
-	tallennukset[i].jakso = jakso;
-	tallennukset[i].pisteet = Episode::score;
+	saves_list[i].kaytossa = true;
+	strcpy(saves_list[i].episodi, Episode::name);
+	strcpy(saves_list[i].nimi, Episode::player_name);
+	saves_list[i].jakso = jakso;
+	saves_list[i].pisteet = Episode::score;
 
 	for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
-		tallennukset[i].jakso_lapaisty[j] = jaksot[j].lapaisty;
+		saves_list[i].jakso_lapaisty[j] = jaksot[j].lapaisty;
 
 	Save_All_Records();
 

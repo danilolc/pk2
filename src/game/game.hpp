@@ -59,6 +59,8 @@ extern bool game_over;
 extern bool level_clear;
 extern bool repeating;
 
+extern DWORD exit_timer;
+
 extern DWORD timeout;
 extern int increase_time;
 extern int seconds;
@@ -100,7 +102,6 @@ void Start_Info(const char *text);
 
 
 /**/
-void PK_New_Game();
 void PK_Draw_Cursor(int x, int y);
 
 int PK_Sprite_Bonus_Movement(int i);

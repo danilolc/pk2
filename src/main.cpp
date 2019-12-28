@@ -2108,7 +2108,7 @@ void PK_Start_Test(const char* arg){
 
 
 void quit(int ret) {
-	settings_save();
+	Settings_Save();
 
 	PSound::stop_music();
 	delete Game::map;
@@ -2177,9 +2177,8 @@ int main(int argc, char *argv[]) {
 	if(!path_set)
 		PisteUtils_Setcwd();
 
-	settings_open();
+	Settings_Open();
 
-	PSound::set_musicvolume_now(Settings.music_max_volume);
 	screen_width = Settings.isWide ? 800 : 640;
 
 	if (PisteUtils_Is_Mobile())
@@ -2206,8 +2205,6 @@ int main(int argc, char *argv[]) {
 	}
 	Load_Fonts(tekstit);
 
-	Screen_Change(); //TODO - don't call
-
 	if(PisteUtils_Is_Mobile())
 		GUI_Load();
 
@@ -2215,11 +2212,13 @@ int main(int argc, char *argv[]) {
 	if (dev_mode)
 		next_screen = SCREEN_MENU;
 	if (test_level) {
-		next_screen = SCREEN_GAME;
 		PK_Start_Test(test_path);
+		next_screen = SCREEN_GAME;
 	}
 
-	Piste::loop(Screen_Loop); //The game loop calls PK_MainScreen().
+	Screen_First_Start();
+	
+	Piste::loop(Screen_Loop); //The game loop
 
 	if(PK2_error){
 		printf("PK2    - Error!\n");

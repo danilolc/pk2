@@ -49,12 +49,12 @@ void settings_init() {
 	Settings.sfx_max_volume = 90;
 }
 
-int settings_open() {
+int Settings_Open() {
 	SDL_RWops *file = SDL_RWFromFile(SETTINGS_PATH, "rb");
 
 	if (file == nullptr){
 		settings_init();
-		settings_save();
+		Settings_Save();
 		return 1;
 	}
 
@@ -63,7 +63,7 @@ int settings_open() {
 	if (strcmp(Settings.versio, SETTINGS_VERSION) != 0) { 
 		// If settings isn't in current version
 		settings_init();
-        settings_save();
+        Settings_Save();
 		return 2;
 	}
 	
@@ -76,7 +76,7 @@ int settings_open() {
 	return 0;
 }
 
-int settings_save() {
+int Settings_Save() {
     PisteUtils_CreateDir("data");
 	
 	SDL_RWops *file = SDL_RWFromFile(SETTINGS_PATH, "wb");

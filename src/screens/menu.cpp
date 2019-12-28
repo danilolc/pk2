@@ -521,20 +521,20 @@ int Draw_Menu_Load() {
 		strcpy(number,ind);
 		strcat(number,". ");
 
-		strcat(number,tallennukset[i].nimi);
+		strcat(number,saves_list[i].nimi);
 
 		if (Draw_Menu_Text(true,number,100,150+my)) {
 			Episode::Load_Save(i);
 			next_screen = SCREEN_MAP;
 		}
 
-		if (strcmp(tallennukset[i].episodi," ") != 0) {
+		if (strcmp(saves_list[i].episodi," ") != 0) {
 			vali = 0;
 			vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_episode),400,150+my);
-			vali += PDraw::font_write(fontti1,tallennukset[i].episodi,400+vali,150+my);
+			vali += PDraw::font_write(fontti1,saves_list[i].episodi,400+vali,150+my);
 			vali = 0;
 			vali += PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.loadgame_level),400+vali,160+my);
-			itoa(tallennukset[i].jakso,jaksoc,10);
+			itoa(saves_list[i].jakso,jaksoc,10);
 			vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
 		}
 
@@ -568,19 +568,19 @@ int Draw_Menu_Save() {
 		strcpy(number,ind);
 		strcat(number,". ");
 
-		strcat(number,tallennukset[i].nimi);
+		strcat(number,saves_list[i].nimi);
 
 		if (Draw_Menu_Text(true,number,100,150+my))
 			Save_Records(i);
 
-		if (strcmp(tallennukset[i].episodi," ")!=0) {
+		if (strcmp(saves_list[i].episodi," ")!=0) {
 
 			vali = 0;
 			vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_episode),400,150+my);
-			vali += PDraw::font_write(fontti1,tallennukset[i].episodi,400+vali,150+my);
+			vali += PDraw::font_write(fontti1,saves_list[i].episodi,400+vali,150+my);
 			vali = 0;
 			vali += PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.savegame_level),400+vali,160+my);
-			itoa(tallennukset[i].jakso,jaksoc,10);
+			itoa(saves_list[i].jakso,jaksoc,10);
 			vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
 
 		}

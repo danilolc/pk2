@@ -123,15 +123,15 @@ int PK_Draw_ScoreCount(){
 		PDraw::font_write(fontti2,luku,400,192+my);
 		my += 25;
 
-		if (jakso_uusi_ennatys) {
+		if (map_new_record) {
 			PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_new_level_hiscore),100+rand()%2,192+my+rand()%2);
 			my += 25;
 		}
-		if (jakso_uusi_ennatysaika) {
+		if (map_new_time_record) {
 			PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_new_level_best_time),100+rand()%2,192+my+rand()%2);
 			my += 25;
 		}
-		if (episodi_uusi_ennatys) {
+		if (episode_new_record) {
 			PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_new_episode_hiscore),100+rand()%2,192+my+rand()%2);
 			my += 25;
 		}
@@ -162,9 +162,9 @@ int Screen_ScoreCount_Init() {
 	bg_screen = PDraw::image_load("gfx/menu.bmp", true);
 	PK_MenuShadow_Create(bg_screen, 640, 480, 30);
 
-	jakso_uusi_ennatys = false;
-	jakso_uusi_ennatysaika = false;
-	episodi_uusi_ennatys = false;
+	map_new_record = false;
+	map_new_time_record = false;
+	episode_new_record = false;
 
 	// Lasketaan pelaajan kokonaispisteet etuk�teen
 	DWORD temp_pisteet = 0;

@@ -22,69 +22,55 @@ int jaksoja = 1;
 int jakso_indeksi_nyt = 1;
 PK2LEVEL jaksot[EPISODI_MAX_LEVELS];
 
-char episodi[PE_PATH_SIZE];
-
-DWORD lopetusajastin = 0;
 DWORD fake_pisteet = 0;
 
-PK2EPISODESCORES episodipisteet;
+PK2EPISODESCORES episode_scores;
 
-bool jakso_uusi_ennatys = false;
-bool jakso_uusi_ennatysaika = false;
-bool episodi_uusi_ennatys = false;
+bool map_new_record = false;
+bool map_new_time_record = false;
+bool episode_new_record = false;
 
 namespace Episode {
 	bool started = false;
 
+	char name[PE_PATH_SIZE] = " ";
 	char player_name[20] = " ";
-
+	
 	DWORD score = 0;
-}
-
-void Clean_Maps(){
-	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
-		strcpy(jaksot[i].nimi,"");
-		strcpy(jaksot[i].tiedosto,"");
-		jaksot[i].x = 0;
-		jaksot[i].y = 0;
-		jaksot[i].jarjestys = -1;
-		jaksot[i].lapaisty = false;
-		jaksot[i].ikoni = 0;
-	}
 }
 
 void EpisodeScore_Start(){
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
-		episodipisteet.best_score[i] = 0;
-		episodipisteet.best_time[i] = 0;
-		strcpy(episodipisteet.top_player[i]," ");
-		strcpy(episodipisteet.fastest_player[i]," ");
+		episode_scores.best_score[i] = 0;
+		episode_scores.best_time[i] = 0;
+		strcpy(episode_scores.top_player[i]," ");
+		strcpy(episode_scores.fastest_player[i]," ");
 	}
 
-	episodipisteet.episode_top_score = 0;
-	strcpy(episodipisteet.episode_top_player," ");
+	episode_scores.episode_top_score = 0;
+	strcpy(episode_scores.episode_top_player," ");
 }
 int EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupisteet){
 	int paluu = 0;
 	if (!loppupisteet) {
-		if (episteet > episodipisteet.best_score[jakso]) {
-			strcpy(episodipisteet.top_player[jakso],Episode::player_name);
-			episodipisteet.best_score[jakso] = episteet;
-			jakso_uusi_ennatys = true;
+		if (episteet > episode_scores.best_score[jakso]) {
+			strcpy(episode_scores.top_player[jakso],Episode::player_name);
+			episode_scores.best_score[jakso] = episteet;
+			map_new_record = true;
 			paluu++;
 		}
-		if ((aika < episodipisteet.best_time[jakso] || episodipisteet.best_time[jakso] == 0) && Game::map->aika > 0) {
-			strcpy(episodipisteet.fastest_player[jakso],Episode::player_name);
-			episodipisteet.best_time[jakso] = aika;
-			jakso_uusi_ennatysaika = true;
+		if ((aika < episode_scores.best_time[jakso] || episode_scores.best_time[jakso] == 0) && Game::map->aika > 0) {
+			strcpy(episode_scores.fastest_player[jakso],Episode::player_name);
+			episode_scores.best_time[jakso] = aika;
+			map_new_time_record = true;
 			paluu++;
 		}
 	}
 	else {
-		if (episteet > episodipisteet.episode_top_score) {
-		    episodipisteet.episode_top_score = episteet;
-			strcpy(episodipisteet.episode_top_player,Episode::player_name);
-			episodi_uusi_ennatys = true;
+		if (episteet > episode_scores.episode_top_score) {
+		    episode_scores.episode_top_score = episteet;
+			strcpy(episode_scores.episode_top_player,Episode::player_name);
+			episode_new_record = true;
 			paluu++;
 		}
 	}
@@ -109,7 +95,7 @@ int EpisodeScore_Open(char *filename) {
 		return 2;
 	}
 	
-	SDL_RWread(file, &episodipisteet, sizeof(episodipisteet), 1);
+	SDL_RWread(file, &episode_scores, sizeof(episode_scores), 1);
 	SDL_RWclose(file);
 
 	return 0;
@@ -126,7 +112,7 @@ int EpisodeScore_Save(char *filename) {
 	}
 
 	SDL_RWwrite(file, "1.0", 1, 4);
-	SDL_RWwrite(file, &episodipisteet, 1, sizeof(episodipisteet));
+	SDL_RWwrite(file, &episode_scores, 1, sizeof(episode_scores));
 	
 	SDL_RWclose(file);
 
@@ -226,20 +212,20 @@ void Episode::Load() {
 
 void Episode::Load_Save(int save) {
 
-	strcpy(episodi,tallennukset[save].episodi);
-	strcpy(Episode::player_name, tallennukset[save].nimi);
-	jakso = tallennukset[save].jakso;
-	Episode::score = tallennukset[save].pisteet;
+	strcpy(Episode::name,saves_list[save].episodi);
+	strcpy(Episode::player_name, saves_list[save].nimi);
+	jakso = saves_list[save].jakso;
+	Episode::score = saves_list[save].pisteet;
 
 	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-			jaksot[j].lapaisty = tallennukset[save].jakso_lapaisty[j];
+			jaksot[j].lapaisty = saves_list[save].jakso_lapaisty[j];
 
 	Episode::Load();
 
 }
 void Episode::Load_New(const char* player_name, const char* episode) {
 
-	strcpy(episodi, episode);
+	strcpy(Episode::name, episode);
 	strcpy(Episode::player_name, player_name);
 	jakso = 1;
 	Episode::score = 0;
@@ -256,7 +242,7 @@ void Episode::Get_Dir(char *tiedosto){
 
 	strcpy(uusi_tiedosto, game_path);
 	strcat(uusi_tiedosto, "/episodes/");
-	strcat(uusi_tiedosto, episodi);
+	strcat(uusi_tiedosto, Episode::name);
 	strcat(uusi_tiedosto, "/");
 	strcat(uusi_tiedosto, tiedosto);
 	strcpy(tiedosto, uusi_tiedosto);

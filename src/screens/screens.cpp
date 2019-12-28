@@ -2,7 +2,7 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-#include "screens.hpp"
+#include "screens/screens.hpp"
 
 #include "sfx.hpp"
 #include "settings.hpp"
@@ -19,8 +19,8 @@
 #include <cstring>
 #include <ctime>
 
-int current_screen = SCREEN_NOT_SET;
-int next_screen = SCREEN_FIRST_START;
+int current_screen = SCREEN_FIRST_START;
+int next_screen = SCREEN_NOT_SET;
 
 bool closing_game = false;
 
@@ -113,6 +113,7 @@ int Screen_First_Start() {
 	Load_SaveFile();
 
 	PDraw::fade_in(PDraw::FADE_SLOW);
+	PSound::set_musicvolume_now(Settings.music_max_volume);
 	
 }
 
@@ -122,7 +123,6 @@ int Screen_Change() {
 	PDraw::fade_in(PDraw::FADE_NORMAL);
 
 	switch (next_screen){
-		case SCREEN_FIRST_START : Screen_First_Start();     break;
 		case SCREEN_INTRO       : Screen_Intro_Init();      break;
 		case SCREEN_MENU        : Screen_Menu_Init();       break;
 		case SCREEN_MAP         : Screen_Map_Init();        break;

@@ -18,7 +18,7 @@ struct PK2SAVE {
 	DWORD pisteet;
 };
 
-extern PK2SAVE tallennukset[MAX_SAVES];
+extern PK2SAVE saves_list[MAX_SAVES];
 
 int Load_SaveFile();
 int Save_Records(int i);

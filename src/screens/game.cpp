@@ -27,7 +27,6 @@ int debug_drawn_sprites = 0;
 
 int palikka_animaatio = 0;
 
-
 int PK_Draw_InGame_BGSprites() {
 
 	double xl, yl, alku_x, alku_y, yk;
@@ -704,24 +703,24 @@ int Screen_InGame(){
 	}
 
 	if (Game::level_clear || Game::game_over){
-		if (lopetusajastin > 1)
-			lopetusajastin--;
+		if (Game::exit_timer > 1)
+			Game::exit_timer--;
 
-		if (lopetusajastin == 0)
-			lopetusajastin = 800;//2000;
+		if (Game::exit_timer == 0)
+			Game::exit_timer = 500;//800;//2000;
 
 		if (PisteInput_Keydown(Settings.control_attack1) || PisteInput_Keydown(Settings.control_attack2) ||
 			PisteInput_Keydown(Settings.control_jump) || PisteInput_Keydown(PI_RETURN))
-			if (lopetusajastin > 2 && lopetusajastin < 600/*1900*/ && key_delay == 0)
-				lopetusajastin = 2;
+			if (Game::exit_timer > 2 && Game::exit_timer < 400/*600*//*1900*/ && key_delay == 0)
+				Game::exit_timer = 2;
 
-		if (lopetusajastin == 2) {
+		if (Game::exit_timer == 2) {
 			PDraw::fade_out(PDraw::FADE_NORMAL);
 			//PSound::set_musicvolume(0);
 		
 		}
 	}
-	if (lopetusajastin == 1 && !PDraw::is_fading()) {
+	if (Game::exit_timer == 1 && !PDraw::is_fading()) {
 		Game::started = false;
 		
 		if(test_level) Fade_Quit();
