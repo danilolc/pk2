@@ -145,7 +145,8 @@ int Screen_Ending(){
 
 	if (siirry_lopusta_menuun && !PDraw::is_fading()) {
 		PSound::set_musicvolume_now(Settings.music_max_volume);
-		next_screen = SCREEN_MENU;
+		//next_screen = SCREEN_MENU;
+		next_screen = SCREEN_MAP;
 	}
 
 	if (key_delay == 0) {

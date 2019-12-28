@@ -276,11 +276,11 @@ int Screen_ScoreCount(){
 
 		if (jakso_indeksi_nyt == EPISODI_MAX_LEVELS-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
 			next_screen = SCREEN_END;
-			Episode::started = false;
+			//Episode::started = false;
 		}
 		else if (jaksot[jakso_indeksi_nyt+1].jarjestys == -1) {
 			next_screen = SCREEN_END;
-			Episode::started = false;
+			//Episode::started = false;
 		}
 		else { // jos ei niin palataan karttaan...
 			next_screen = SCREEN_MAP;
