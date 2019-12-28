@@ -4,6 +4,10 @@
 //#########################
 #include "PisteDraw.hpp"
 
+#include "filters/hqx.h"
+#include "PisteInput.hpp"
+#include <thread>
+
 #include "PisteFont.hpp"
 #include "PisteGui.hpp"
 
@@ -23,6 +27,10 @@ SDL_Surface* window_icon;
 
 SDL_Surface* frameBuffer8 = NULL;
 SDL_Palette* game_palette = NULL;
+
+uint8_t* hqx_src = NULL;
+uint32_t* hqx_dst = NULL;
+uint32_t* game_palette_yuv = NULL;
 
 std::vector<SDL_Surface*> imageList;
 std::vector<PFont*> fontList;
@@ -61,6 +69,22 @@ int findfreefont(){
     return size;
 }
 
+uint32_t rgb_to_yuv(uint32_t r, uint32_t g, uint32_t b) {
+    uint32_t y, u, v;
+
+    y = (uint32_t)(0.299*r + 0.587*g + 0.114*b);
+    u = (uint32_t)(-0.169*r - 0.331*g + 0.5*b) + 128;
+    v = (uint32_t)(0.5*r - 0.419*g - 0.081*b) + 128;
+    return (y << 16) + (u << 8) + v;
+}
+void update_yuv_palette() {
+    SDL_Color* colors = game_palette->colors;
+    //for (int i = 0; i < 256; i++)
+    //    game_palette_yuv[i] = rgb_to_yuv(colors[i].r, colors[i].g, colors[i].b);
+    for (int i = 0; i < 256; i++)
+        game_palette_yuv[i] = (colors[i].r << 16) + (colors[i].g << 8) + colors[i].b;
+}
+
 bool is_fading(){
   if (alpha > 0 && fade_speed < 0)
     return true;
@@ -89,6 +113,7 @@ void rotate_palette(BYTE start, BYTE end){
         game_colors[i] = game_colors[i-1];
 
     game_colors[start] = temp_color;
+    update_yuv_palette();
 }
 
 int image_new(int w, int h){
@@ -131,6 +156,7 @@ int image_load(const char* filename, bool getPalette){
         pal = imageList[index]->format->palette;
         for(i=0;i<256;i++)
             game_palette->colors[i] = pal->colors[i];
+        update_yuv_palette();
     }
 
     imageList[index]->userdata = (void*)imageList[index]->format->palette; //Put allocated pallete in userdata
@@ -473,6 +499,11 @@ int init(int width, int height, const char* name, const char* icon) {
             game_palette->colors[i] = {(Uint8)i,(Uint8)i,(Uint8)i,(Uint8)i};
     }
 
+    if (game_palette_yuv == NULL) {
+        game_palette_yuv = new uint32_t[256];
+        update_yuv_palette();
+    }
+
     window_name = name;
     #ifdef __ANDROID__
 
@@ -542,6 +573,9 @@ int terminate(){
 
     clear_fonts();
 
+    SDL_FreePalette(game_palette);
+    delete game_palette_yuv;
+
     frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
     SDL_FreeSurface(frameBuffer8);
     SDL_DestroyRenderer(renderer);
@@ -552,6 +586,33 @@ int terminate(){
     ready = false;
     return 0;
 }
+
+//SDL_Surface* hqx_dst_s = SDL_CreateRGBSurfaceWithFormat(0, 800, 480, 32, SDL_PIXELFORMAT_RGBA32);
+uint8_t* hqx_src8 = (uint8_t*)malloc(800 * 480 * 2);
+uint32_t* hqx_doneb = (uint32_t*)malloc(800 * 480 * 4 * sizeof(uint32_t));
+uint32_t* hqx_dst2 = (uint32_t*)malloc(800 * 480 * 4 * sizeof(uint32_t));
+bool hqx_done = true;
+
+void draw_thread_f() {
+
+    while(1) {
+
+        while(hqx_done);
+
+        int w = frameBuffer8->w;
+        int h = frameBuffer8->h;
+        
+        int s_pitch = frameBuffer8->pitch;
+        int d_pitch = 2 * w * sizeof(uint32_t);
+        
+        hq2x_32( hqx_src8, s_pitch, hqx_dst2, d_pitch, game_palette_yuv, w, h);
+        memcpy(hqx_doneb, hqx_dst2, 800 * 480 * 4 * sizeof(uint32_t));
+        hqx_done = true;
+    }
+}
+
+std::thread draw_thread(draw_thread_f);
+
 void update(bool draw){
     if(!ready) return;
 
@@ -559,7 +620,23 @@ void update(bool draw){
         SDL_Texture* texture;
         BYTE alpha2 = (BYTE)(alpha*255/100);
 
-        texture = SDL_CreateTextureFromSurface(renderer,frameBuffer8);
+        if (PisteInput_Keydown(PI_H)) {
+            int w = frameBuffer8->w;
+            int h = frameBuffer8->h;
+            int d_pitch = 2 * w * sizeof(uint32_t);
+            memcpy(hqx_src8, frameBuffer8->pixels, frameBuffer8->pitch * h);
+            SDL_Surface* s = SDL_CreateRGBSurfaceWithFormatFrom(hqx_doneb, w*2, h*2, 32, d_pitch, SDL_PIXELFORMAT_RGB888);
+            texture = SDL_CreateTextureFromSurface(renderer, s);
+            SDL_FreeSurface(s);
+
+            hqx_done = false;
+
+            //free(hqx_dst);
+
+        } else {
+            texture = SDL_CreateTextureFromSurface(renderer,frameBuffer8);
+        }
+        
         SDL_SetTextureColorMod(texture,alpha2,alpha2,alpha2);
 
         SDL_RenderClear(renderer);

@@ -12,8 +12,8 @@ OPT = -g
 
 C = gcc
 CXX = g++
-CXXFLAGS += $(shell pkg-config --cflags sdl2) $(OPT) -std=gnu++17 -w
-LDFLAGS += -lSDL2 -lSDL2_mixer -lSDL2_image
+CXXFLAGS += $(shell pkg-config --cflags sdl2) $(OPT) -std=gnu++11 -w
+LDFLAGS += -lSDL2 -lSDL2_mixer -lSDL2_image -pthread
 
 # Defines directories
 SRC_DIR = src/
