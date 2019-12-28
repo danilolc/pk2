@@ -4,8 +4,13 @@
 //#########################
 #include "PisteDraw.hpp"
 
+extern "C" {
+    #include "hqx/hqx.h"
+}
+
 #include "PisteFont.hpp"
 #include "PisteGui.hpp"
+#include "PisteInput.hpp"
 
 #include <algorithm>
 #include <vector>
@@ -17,6 +22,8 @@ namespace PDraw {
 const char* window_name;
 
 SDL_Window* window = NULL;
+SDL_Texture* texture = NULL;
+SDL_Texture* texture8 = NULL;
 SDL_Renderer* renderer = NULL;
 
 SDL_Surface* window_icon; 
@@ -467,6 +474,8 @@ void set_xoffset(int x) {
 int init(int width, int height, const char* name, const char* icon) {
     if (ready) return -1;
 
+    hqxInit();
+
     if (game_palette == NULL) {
         game_palette = SDL_AllocPalette(256);
         for(int i = 0; i < 256; i++)
@@ -499,6 +508,9 @@ int init(int width, int height, const char* name, const char* icon) {
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     SDL_RenderClear(renderer);
+
+    texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, 2*width, 2*height);
+    texture8 = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_INDEX8, SDL_TEXTUREACCESS_STATIC, width, height);
 
     frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
     frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
@@ -552,28 +564,61 @@ int terminate(){
     ready = false;
     return 0;
 }
+
+SDL_Surface* dest = SDL_CreateRGBSurfaceWithFormat(0, 800*2, 480*2, 32, SDL_PIXELFORMAT_RGBA32);
+
+void draw_thread() {
+    
+
+}
+
 void update(bool draw){
     if(!ready) return;
 
-    if(draw){
-        SDL_Texture* texture;
+    if(draw) {
+        SDL_Texture* curr_tex = NULL;
+
         BYTE alpha2 = (BYTE)(alpha*255/100);
 
-        texture = SDL_CreateTextureFromSurface(renderer,frameBuffer8);
-        SDL_SetTextureColorMod(texture,alpha2,alpha2,alpha2);
+       if (PisteInput_Keydown(PI_H)) {
+
+            SDL_Surface* s = SDL_ConvertSurfaceFormat(frameBuffer8, SDL_PIXELFORMAT_RGBA32, 0);
+            
+            SDL_LockSurface(dest);
+            hq2x_32((uint32_t*)s->pixels, (uint32_t*)dest->pixels, 800, 480);
+            SDL_UnlockSurface(dest);
+
+            SDL_FreeSurface(s);
+
+            SDL_LockSurface(dest);
+            SDL_UpdateTexture(texture, NULL, dest->pixels, dest->pitch);
+            SDL_UnlockSurface(dest);
+
+            curr_tex = texture;
+            //texture = SDL_CreateTextureFromSurface(renderer,dest);
+
+        } else {
+            SDL_LockSurface(frameBuffer8);
+            SDL_UpdateTexture(texture8, NULL, frameBuffer8->pixels, frameBuffer8->pitch);
+            SDL_UnlockSurface(frameBuffer8);
+
+            curr_tex = texture8;
+        }
+        
+        SDL_SetTextureColorMod(curr_tex, alpha2, alpha2, alpha2);
 
         SDL_RenderClear(renderer);
 
         if(screen_fit)
-            SDL_RenderCopy(renderer, texture, NULL, NULL);
+            SDL_RenderCopy(renderer, curr_tex, NULL, NULL);
         else
-            SDL_RenderCopy(renderer, texture, NULL, &screen_dest);
+            SDL_RenderCopy(renderer, curr_tex, NULL, &screen_dest);
 
         PGui::draw(alpha2);
 
         SDL_RenderPresent(renderer);
 
-        SDL_DestroyTexture(texture);
+        SDL_DestroyTexture(curr_tex);
     }
 
     if (is_fading()){

@@ -10,9 +10,12 @@
 #OPT = -g
 OPT = -O3
 
-C = gcc-7
+C = gcc
+CFLAGS += $(shell pkg-config --cflags sdl2) $(OPT) -w
+
 CXX = g++
 CXXFLAGS += $(shell pkg-config --cflags sdl2) $(OPT) -std=gnu++17 -w
+
 LDFLAGS += -lSDL2 -lSDL2_mixer -lSDL2_image
 
 # Defines directories
@@ -66,7 +69,7 @@ $(BUILD_DIR)%.o : %.cpp
 $(BUILD_DIR)%.o : %.c
 	@echo -Compiling $<
 	@mkdir -p $(dir $@) >/dev/null
-	@$(C) $(CXXFLAGS) -I$(SRC_DIR) -I$(ENG_DIR) -o $@ -c $<
+	@$(C) $(CFLAGS) -I$(SRC_DIR) -I$(ENG_DIR) -o $@ -c $<
 	@$(C) -MM -MT $@ -I$(SRC_DIR) -I$(ENG_DIR) $< > $(BUILD_DIR)$*.d
 ###########################
 
