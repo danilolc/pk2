@@ -192,8 +192,8 @@ int PK_Draw_InGame_DebugInfo() {
 	}
 
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++)
-		if (strcmp(jaksot[i].nimi,"")!=0)
-			PDraw::font_write(fontti1,jaksot[i].nimi,0,240+i*10);
+		if (strcmp(Episode::levels_list[i].nimi,"")!=0)
+			PDraw::font_write(fontti1,Episode::levels_list[i].nimi,0,240+i*10);
 
 	char dluku[50];
 
@@ -823,9 +823,9 @@ int Screen_InGame(){
 					PK2_error_msg = "Can't find hiscore.xm";
 				}
 				Game::level_clear = true;
-				jaksot[jakso_indeksi_nyt].lapaisty = true;
-				if (jaksot[jakso_indeksi_nyt].jarjestys == jakso)
-					jakso++;
+				Episode::levels_list[Game::level_id].lapaisty = true;
+				if (Episode::levels_list[Game::level_id].jarjestys == Episode::level)
+					Episode::level++;
 				PSound::set_musicvolume_now(Settings.music_max_volume);
 			}
 			if (PisteInput_Keydown(PI_LSHIFT)/* && key_delay == 0*/) {

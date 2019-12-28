@@ -24,6 +24,10 @@ SDL_Surface* window_icon;
 SDL_Surface* frameBuffer8 = NULL;
 SDL_Palette* game_palette = NULL;
 
+// All images have its original palette on
+// 'userdata' and game_palette on 'palette'.
+// The original palette is stored to properly
+// free the image on the end. 
 std::vector<SDL_Surface*> imageList;
 std::vector<PFont*> fontList;
 
@@ -541,6 +545,8 @@ int terminate(){
         }
 
     clear_fonts();
+
+    SDL_FreePalette(game_palette);
 
     frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
     SDL_FreeSurface(frameBuffer8);

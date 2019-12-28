@@ -30,10 +30,16 @@ struct PK2EPISODESCORES {
 };
 
 namespace Episode {
+
 	extern bool started;
 	extern char name[PE_PATH_SIZE];
 	extern char player_name[20];
-	extern DWORD score;
+	extern DWORD player_score;
+
+	extern int level;
+	extern int level_count;
+	extern PK2LEVEL levels_list[EPISODI_MAX_LEVELS];
+	extern PK2EPISODESCORES scores;
 
 	void Load_Save(int save);
 	void Load_New(const char* player_name, const char* episode);
@@ -42,14 +48,7 @@ namespace Episode {
 	void Load();
 }
 
-extern int jakso;
-extern int jaksoja;
-extern int jakso_indeksi_nyt;
-extern PK2LEVEL jaksot[EPISODI_MAX_LEVELS];
-
 extern DWORD fake_pisteet;
-
-extern PK2EPISODESCORES episode_scores;
 
 extern bool map_new_record;
 extern bool map_new_time_record;

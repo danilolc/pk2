@@ -17,14 +17,7 @@
 #include <cstring>
 #include <memory>
 
-int	jakso = 1;
-int jaksoja = 1;
-int jakso_indeksi_nyt = 1;
-PK2LEVEL jaksot[EPISODI_MAX_LEVELS];
-
 DWORD fake_pisteet = 0;
-
-PK2EPISODESCORES episode_scores;
 
 bool map_new_record = false;
 bool map_new_time_record = false;
@@ -35,41 +28,46 @@ namespace Episode {
 
 	char name[PE_PATH_SIZE] = " ";
 	char player_name[20] = " ";
+	DWORD player_score = 0;
+
+	int level = 1;
+	int level_count = 0;
+	PK2LEVEL levels_list[EPISODI_MAX_LEVELS];
+	PK2EPISODESCORES scores;
 	
-	DWORD score = 0;
 }
 
 void EpisodeScore_Start(){
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
-		episode_scores.best_score[i] = 0;
-		episode_scores.best_time[i] = 0;
-		strcpy(episode_scores.top_player[i]," ");
-		strcpy(episode_scores.fastest_player[i]," ");
+		Episode::scores.best_score[i] = 0;
+		Episode::scores.best_time[i] = 0;
+		strcpy(Episode::scores.top_player[i]," ");
+		strcpy(Episode::scores.fastest_player[i]," ");
 	}
 
-	episode_scores.episode_top_score = 0;
-	strcpy(episode_scores.episode_top_player," ");
+	Episode::scores.episode_top_score = 0;
+	strcpy(Episode::scores.episode_top_player," ");
 }
 int EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupisteet){
 	int paluu = 0;
 	if (!loppupisteet) {
-		if (episteet > episode_scores.best_score[jakso]) {
-			strcpy(episode_scores.top_player[jakso],Episode::player_name);
-			episode_scores.best_score[jakso] = episteet;
+		if (episteet > Episode::scores.best_score[jakso]) {
+			strcpy(Episode::scores.top_player[jakso],Episode::player_name);
+			Episode::scores.best_score[jakso] = episteet;
 			map_new_record = true;
 			paluu++;
 		}
-		if ((aika < episode_scores.best_time[jakso] || episode_scores.best_time[jakso] == 0) && Game::map->aika > 0) {
-			strcpy(episode_scores.fastest_player[jakso],Episode::player_name);
-			episode_scores.best_time[jakso] = aika;
+		if ((aika < Episode::scores.best_time[jakso] || Episode::scores.best_time[jakso] == 0) && Game::map->aika > 0) {
+			strcpy(Episode::scores.fastest_player[jakso],Episode::player_name);
+			Episode::scores.best_time[jakso] = aika;
 			map_new_time_record = true;
 			paluu++;
 		}
 	}
 	else {
-		if (episteet > episode_scores.episode_top_score) {
-		    episode_scores.episode_top_score = episteet;
-			strcpy(episode_scores.episode_top_player,Episode::player_name);
+		if (episteet > Episode::scores.episode_top_score) {
+		    Episode::scores.episode_top_score = episteet;
+			strcpy(Episode::scores.episode_top_player,Episode::player_name);
 			episode_new_record = true;
 			paluu++;
 		}
@@ -95,7 +93,7 @@ int EpisodeScore_Open(char *filename) {
 		return 2;
 	}
 	
-	SDL_RWread(file, &episode_scores, sizeof(episode_scores), 1);
+	SDL_RWread(file, &Episode::scores, sizeof(Episode::scores), 1);
 	SDL_RWclose(file);
 
 	return 0;
@@ -112,7 +110,7 @@ int EpisodeScore_Save(char *filename) {
 	}
 
 	SDL_RWwrite(file, "1.0", 1, 4);
-	SDL_RWwrite(file, &episode_scores, 1, sizeof(episode_scores));
+	SDL_RWwrite(file, &Episode::scores, 1, sizeof(Episode::scores));
 	
 	SDL_RWclose(file);
 
@@ -159,30 +157,30 @@ void Episode::Load() {
 
 	strcpy(hakemisto,"");
 	Episode::Get_Dir(hakemisto);
-	jaksoja = PisteUtils_Scandir(".map", hakemisto, list, EPISODI_MAX_LEVELS);
+	Episode::level_count = PisteUtils_Scandir(".map", hakemisto, list, EPISODI_MAX_LEVELS);
 
 	PK2Kartta *temp = new PK2Kartta();
 
-	for (i = 0; i <= jaksoja; i++){
-		strcpy(jaksot[i].tiedosto, list[i]);
-		if (temp->Lataa_Pelkat_Tiedot(hakemisto,jaksot[i].tiedosto) == 0){
-			strcpy(jaksot[i].nimi, temp->nimi);
-			jaksot[i].x = temp->x;//   142 + i*35;
-			jaksot[i].y = temp->y;// 270;
-			jaksot[i].jarjestys = temp->jakso;
-			jaksot[i].ikoni = temp->ikoni;
+	for (i = 0; i <= Episode::level_count; i++){
+		strcpy(Episode::levels_list[i].tiedosto, list[i]);
+		if (temp->Lataa_Pelkat_Tiedot(hakemisto,Episode::levels_list[i].tiedosto) == 0){
+			strcpy(Episode::levels_list[i].nimi, temp->nimi);
+			Episode::levels_list[i].x = temp->x;//   142 + i*35;
+			Episode::levels_list[i].y = temp->y;// 270;
+			Episode::levels_list[i].jarjestys = temp->jakso;
+			Episode::levels_list[i].ikoni = temp->ikoni;
 		}
 	}
 
 	delete temp;
 
 	for (; i < EPISODI_MAX_LEVELS; i++){
-		strcpy(jaksot[i].nimi,"");
-		strcpy(jaksot[i].tiedosto,"");
-		jaksot[i].x = 0;
-		jaksot[i].y = 0;
-		jaksot[i].jarjestys = -1;
-		jaksot[i].ikoni = 0;
+		strcpy(Episode::levels_list[i].nimi,"");
+		strcpy(Episode::levels_list[i].tiedosto,"");
+		Episode::levels_list[i].x = 0;
+		Episode::levels_list[i].y = 0;
+		Episode::levels_list[i].jarjestys = -1;
+		Episode::levels_list[i].ikoni = 0;
 	}
 
 	PK2LEVEL jakso;
@@ -192,11 +190,11 @@ void Episode::Load() {
 	while (!lopeta){
 		lopeta = true;
 
-		for (i=0;i<jaksoja;i++){
-			if (jaksot[i].jarjestys > jaksot[i+1].jarjestys){
-				jakso = jaksot[i];
-				jaksot[i] = jaksot[i+1];
-				jaksot[i+1] = jakso;
+		for (i=0;i<Episode::level_count;i++){
+			if (Episode::levels_list[i].jarjestys > Episode::levels_list[i+1].jarjestys){
+				jakso = Episode::levels_list[i];
+				Episode::levels_list[i] = Episode::levels_list[i+1];
+				Episode::levels_list[i+1] = jakso;
 				lopeta = false;
 			}
 		}
@@ -214,11 +212,11 @@ void Episode::Load_Save(int save) {
 
 	strcpy(Episode::name,saves_list[save].episodi);
 	strcpy(Episode::player_name, saves_list[save].nimi);
-	jakso = saves_list[save].jakso;
-	Episode::score = saves_list[save].pisteet;
+	Episode::level = saves_list[save].jakso;
+	Episode::player_score = saves_list[save].pisteet;
 
 	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-			jaksot[j].lapaisty = saves_list[save].jakso_lapaisty[j];
+			Episode::levels_list[j].lapaisty = saves_list[save].jakso_lapaisty[j];
 
 	Episode::Load();
 
@@ -227,11 +225,11 @@ void Episode::Load_New(const char* player_name, const char* episode) {
 
 	strcpy(Episode::name, episode);
 	strcpy(Episode::player_name, player_name);
-	jakso = 1;
-	Episode::score = 0;
+	Episode::level = 1;
+	Episode::player_score = 0;
 
 	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-		jaksot[j].lapaisty = 0;
+		Episode::levels_list[j].lapaisty = 0;
 	
 	Episode::Load();
 	

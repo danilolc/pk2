@@ -47,6 +47,7 @@ struct PK2BLOCKMASKI{
 //In game variables
 namespace Game {
 
+extern int level_id;
 extern PK2Kartta* map;
 extern char map_path[PE_PATH_SIZE];
 

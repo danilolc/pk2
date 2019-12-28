@@ -349,9 +349,9 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 					PK2_error_msg = "Can't find hiscore.xm";
 				}
 				Game::level_clear = true;
-				jaksot[jakso_indeksi_nyt].lapaisty = true;
-				if (jaksot[jakso_indeksi_nyt].jarjestys == jakso)
-					jakso++; //Increase level
+				Episode::levels_list[Game::level_id].lapaisty = true;
+				if (Episode::levels_list[Game::level_id].jarjestys == Episode::level)
+					Episode::level++; //Increase level
 				PSound::set_musicvolume_now(Settings.music_max_volume);
 			}
 		}

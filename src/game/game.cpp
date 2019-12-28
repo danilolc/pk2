@@ -20,6 +20,7 @@
 
 namespace Game {
 
+int level_id;
 PK2Kartta* map;
 char map_path[PE_PATH_SIZE];
 
@@ -367,7 +368,7 @@ int Game::Start() {
 
 	Game::level_clear = false;
 
-	if (jaksot[jakso_indeksi_nyt].lapaisty)
+	if (Episode::levels_list[Game::level_id].lapaisty)
 		Game::repeating = true;
 	else
 		Game::repeating = false;
