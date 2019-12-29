@@ -64,7 +64,7 @@ int Load_SFX() {
 
 void Play_GameSFX(int sound, int volume, int x, int y, int freq, bool random_freq){
 	if (sound > -1 && Settings.sfx_max_volume > 0 && volume > 0){
-		if (x < Game::camera_x + screen_width && x > Game::camera_x && y < Game::camera_y + screen_height && y > Game::camera_y){
+		if (x < Game->camera_x + screen_width && x > Game->camera_x && y < Game->camera_y + screen_height && y > Game->camera_y){
 			volume = volume / (100 / Settings.sfx_max_volume);
 
 			if (volume > 100)
@@ -73,7 +73,7 @@ void Play_GameSFX(int sound, int volume, int x, int y, int freq, bool random_fre
 			if (volume < 0)
 				volume = 0;
 
-			int pan = Game::camera_x + (screen_width / 2) - x;
+			int pan = Game->camera_x + (screen_width / 2) - x;
 			pan *= -2;
 
 			if (random_freq)

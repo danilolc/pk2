@@ -1115,10 +1115,10 @@ void PK2Kartta::Select_Start() {
 	Player_Sprite->x = pos_x + Player_Sprite->tyyppi->leveys/2;
 	Player_Sprite->y = pos_y - Player_Sprite->tyyppi->korkeus/2;
 
-	Game::camera_x = (int)Player_Sprite->x;
-	Game::camera_y = (int)Player_Sprite->y;
-	Game::dcamera_x = Game::camera_x;
-	Game::dcamera_y = Game::camera_y;
+	Game->camera_x = (int)Player_Sprite->x;
+	Game->camera_y = (int)Player_Sprite->y;
+	Game->dcamera_x = Game->camera_x;
+	Game->dcamera_y = Game->camera_y;
 
 }
 
@@ -1161,10 +1161,10 @@ void PK2Kartta::Change_SkullBlocks() {
 				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = BLOCK_KALLOSEINA;
 		}
 
-	Game::vibration = 90;//60
+	Game->vibration = 90;//60
 	PisteInput_Vibrate();
 
-	//Game::Show_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
+	//Game->Show_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
 
 	Calculate_Edges();
 }
@@ -1182,10 +1182,10 @@ void PK2Kartta::Open_Locks() {
 			}
 		}
 
-	Game::vibration = 90;//60
+	Game->vibration = 90;//60
 	PisteInput_Vibrate();
 
-	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
+	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
 
 	Calculate_Edges();
 

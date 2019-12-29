@@ -26,7 +26,7 @@ void Prototypes_ClearAll() {
 			if (Prototypes_List[i].aanet[j] > -1)
 				PSound::free_sfx(Prototypes_List[i].aanet[j]);
 		Prototypes_List[i].Uusi();
-		strcpy(Game::map->protot[i],"");
+		strcpy(Game->map->protot[i],"");
 	}
 
 	next_free_prototype = 0;
@@ -199,15 +199,15 @@ int  Prototypes_GetAll() {
 	int viimeinen_proto;
 
 	for (int i=0;i < MAX_PROTOTYYPPEJA;i++){
-		if (strcmp(Game::map->protot[i],"") != 0){
+		if (strcmp(Game->map->protot[i],"") != 0){
 			viimeinen_proto = i;
 			strcpy(polku,"");
 			Episode::Get_Dir(polku);
 
-			if (Prototypes_get(polku,Game::map->protot[i])!=0){
+			if (Prototypes_get(polku,Game->map->protot[i])!=0){
 				strcpy(polku,"sprites/");
-				if (Prototypes_get(polku,Game::map->protot[i])!=0){
-					printf("PK2    - Can't load sprite %s. It will not appear.\n", Game::map->protot[i]);
+				if (Prototypes_get(polku,Game->map->protot[i])!=0){
+					printf("PK2    - Can't load sprite %s. It will not appear.\n", Game->map->protot[i]);
 					next_free_prototype++;
 				}
 			}
@@ -422,10 +422,10 @@ int Update_Sprites() {
 
 	for (i = 0; i < MAX_SPRITEJA; i++){ //Activate sprite if it is on screen
 		sprite = &Sprites_List[i];
-		if (sprite->x < Game::camera_x+640+320 &&//screen_width+screen_width/2 &&
-			sprite->x > Game::camera_x-320 &&//screen_width/2 &&
-			sprite->y < Game::camera_y+480+240 &&//screen_height+screen_height/2 &&
-			sprite->y > Game::camera_y-240)//screen_height/2)
+		if (sprite->x < Game->camera_x+640+320 &&//screen_width+screen_width/2 &&
+			sprite->x > Game->camera_x-320 &&//screen_width/2 &&
+			sprite->y < Game->camera_y+480+240 &&//screen_height+screen_height/2 &&
+			sprite->y > Game->camera_y-240)//screen_height/2)
 			sprite->aktiivinen = true;
 		else
 			sprite->aktiivinen = false;

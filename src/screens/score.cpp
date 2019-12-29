@@ -47,7 +47,7 @@ int EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool final_score
 			map_new_record = true;
 			ret++;
 		}
-		if ((aika < Episode::scores.best_time[jakso] || Episode::scores.best_time[jakso] == 0) && Game::map->aika > 0) {
+		if ((aika < Episode::scores.best_time[jakso] || Episode::scores.best_time[jakso] == 0) && Game->map->aika > 0) {
 			strcpy(Episode::scores.fastest_player[jakso],Episode::player_name);
 			Episode::scores.best_time[jakso] = aika;
 			map_new_time_record = true;
@@ -204,16 +204,16 @@ int Screen_ScoreCount_Init() {
 
 	// Lasketaan pelaajan kokonaispisteet etuk�teen
 	DWORD temp_pisteet = 0;
-	temp_pisteet += Game::score;
-	temp_pisteet += Game::timeout * 5;
+	temp_pisteet += Game->score;
+	temp_pisteet += Game->timeout * 5;
 	temp_pisteet += Player_Sprite->energia * 300;
 	for (int i = 0; i < MAX_GIFTS; i++)
 		if (Gifts_Get(i) != -1)
 			temp_pisteet += Gifts_GetProtot(i)->pisteet + 500;
 
-	//if (Episode::levels_list[Game::level_id].lapaisty)
-	//if (Episode::levels_list[Game::level_id].jarjestys == jakso-1)
-	if (!Game::repeating)
+	//if (Episode::levels_list[Game->level_id].lapaisty)
+	//if (Episode::levels_list[Game->level_id].jarjestys == jakso-1)
+	if (!Game->repeating)
 		Episode::player_score += temp_pisteet;
 
 	fake_pisteet = 0;
@@ -229,7 +229,7 @@ int Screen_ScoreCount_Init() {
 	int vertailun_tulos;
 
 	/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
-	vertailun_tulos = EpisodeScore_Compare(Game::level_id, temp_pisteet, Game::map->aika - Game::timeout, false);
+	vertailun_tulos = EpisodeScore_Compare(Game->level_id, temp_pisteet, Game->map->aika - Game->timeout, false);
 	if (vertailun_tulos > 0) {
 		Episode::Save_Scores(pisteet_tiedosto);
 	}
@@ -256,7 +256,7 @@ int Screen_ScoreCount(){
 	int energia = Player_Sprite->energia;
 
 	if (pistelaskudelay == 0){
-		if (bonuspisteet < Game::score){
+		if (bonuspisteet < Game->score){
 			pistelaskuvaihe = 1;
 			pistelaskudelay = 0;
 			bonuspisteet += 10;
@@ -264,21 +264,21 @@ int Screen_ScoreCount(){
 			if (degree%7==1)
 				Play_MenuSFX(score_sound, 70);
 
-			if (bonuspisteet >= Game::score){
-				bonuspisteet = Game::score;
+			if (bonuspisteet >= Game->score){
+				bonuspisteet = Game->score;
 				pistelaskudelay = 50;
 			}
 
-		} else if (Game::timeout > 0){
+		} else if (Game->timeout > 0){
 			pistelaskuvaihe = 2;
 			pistelaskudelay = 0;
 			aikapisteet+=5;
-			Game::timeout--;
+			Game->timeout--;
 
 			if (degree%10==1)
 				Play_MenuSFX(score_sound, 70);
 
-			if (Game::timeout == 0)
+			if (Game->timeout == 0)
 				pistelaskudelay = 50;
 
 		} else if (Player_Sprite->energia > 0){
@@ -305,11 +305,11 @@ int Screen_ScoreCount(){
 	if (siirry_pistelaskusta_karttaan && !PDraw::is_fading()){
 		/*tarkistetaan oliko viimeinen jakso*/
 
-		if (Game::level_id == EPISODI_MAX_LEVELS-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
+		if (Game->level_id == EPISODI_MAX_LEVELS-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
 			next_screen = SCREEN_END;
 			//Episode::started = false;
 		}
-		else if (Episode::levels_list[Game::level_id+1].jarjestys == -1) {
+		else if (Episode::levels_list[Game->level_id+1].jarjestys == -1) {
 			next_screen = SCREEN_END;
 			//Episode::started = false;
 		}
@@ -328,9 +328,9 @@ int Screen_ScoreCount(){
 
 		if (PisteInput_Keydown(PI_RETURN) && pistelaskuvaihe < 5){
 			pistelaskuvaihe = 5;
-			bonuspisteet = Game::score;
-			aikapisteet += Game::timeout * 5;
-			Game::timeout = 0;
+			bonuspisteet = Game->score;
+			aikapisteet += Game->timeout * 5;
+			Game->timeout = 0;
 			energiapisteet += Player_Sprite->energia * 300;
 			Player_Sprite->energia = 0;
 			for (int i = 0; i < Gifts_Count(); i++)

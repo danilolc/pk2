@@ -188,8 +188,8 @@ int Fadetext_Draw(){
 			else
 				pros = fadetekstit[i].ajastin * 2;
 
-			x = fadetekstit[i].ui ? fadetekstit[i].x : fadetekstit[i].x - Game::camera_x;
-			y = fadetekstit[i].ui ? fadetekstit[i].y : fadetekstit[i].y - Game::camera_y;
+			x = fadetekstit[i].ui ? fadetekstit[i].x : fadetekstit[i].x - Game->camera_x;
+			y = fadetekstit[i].ui ? fadetekstit[i].y : fadetekstit[i].y - Game->camera_y;
 
 			if (Settings.lapinakyvat_objektit && pros < 100)
 				PDraw::font_writealpha(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y, pros);
@@ -208,8 +208,8 @@ void Fadetext_Update(){
 			if (fadetekstit[i].ajastin%2 == 0)
 				fadetekstit[i].y--;
 
-			if (fadetekstit[i].x < Game::camera_x || fadetekstit[i].x > Game::camera_x + screen_width ||
-				fadetekstit[i].y < Game::camera_y || fadetekstit[i].y > Game::camera_y + screen_height)
+			if (fadetekstit[i].x < Game->camera_x || fadetekstit[i].x > Game->camera_x + screen_width ||
+				fadetekstit[i].y < Game->camera_y || fadetekstit[i].y > Game->camera_y + screen_height)
 				if(!fadetekstit[i].ui) fadetekstit[i].ajastin = 0;
 		}
 }

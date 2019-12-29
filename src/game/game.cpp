@@ -15,28 +15,29 @@
 
 #include <cstring>
 
+GameClass* Game = nullptr;
 
-Game::Game(int idx) {
+GameClass::GameClass(int idx) {
 
 	this->level_id = idx;
 	this->from_index = true;
 
 }
 
-Game::Game(const char* map) {
+GameClass::GameClass(const char* map) {
 
 	strcpy(this->map_path, map);
 	this->from_index = false;
 
 }
 
-Game::~Game() {
+GameClass::~GameClass() {
 
 	delete map;
 
 }
 
-int Game::Start() {
+int GameClass::Start() {
 
 	if (this->started)
 		return 1;
@@ -44,6 +45,7 @@ int Game::Start() {
 	this->map = new PK2Kartta();
 
 	if(this->from_index) {
+
 		int index = this->level_id;
 
 		strcpy(this->map_path, Episode::levels_list[index].tiedosto);
@@ -69,11 +71,13 @@ int Game::Start() {
 	PSound::set_musicvolume(Settings.music_max_volume);
 
 	this->started = true;
+
+	return 0;
 	
 }
 
 
-int Game::Calculete_TileMasks(){
+int GameClass::Calculete_TileMasks(){
 	
 	BYTE *buffer = nullptr;
 	DWORD leveys;
@@ -104,7 +108,7 @@ int Game::Calculete_TileMasks(){
 }
 
 //PK2KARTTA::Clean_TileBuffer()
-int Game::Clean_TileBuffer() {
+int GameClass::Clean_TileBuffer() {
 
 	BYTE *buffer = NULL;
 	DWORD leveys;
@@ -120,7 +124,8 @@ int Game::Clean_TileBuffer() {
 	return 0;
 }
 
-int Game::Move_Blocks() {
+int GameClass::Move_Blocks() {
+
 	this->lasketut_palikat[BLOCK_HISSI_HORI].vasen = (int)cos_table[degree%360];
 	this->lasketut_palikat[BLOCK_HISSI_HORI].oikea = (int)cos_table[degree%360];
 
@@ -189,7 +194,7 @@ int Game::Move_Blocks() {
 	this->lasketut_palikat[BLOCK_KYTKIN3].yla = kytkin3_x;
 }
 
-int Game::Calculate_Tiles() {
+int GameClass::Calculate_Tiles() {
 	PK2BLOCK palikka;
 
 	for (int i=0;i<150;i++){
@@ -270,7 +275,7 @@ int Game::Calculate_Tiles() {
 	return 0;
 }
 
-int Game::Open_Map() {
+int GameClass::Open_Map() {
 	
 	char path[PE_PATH_SIZE] = "";
 	Episode::Get_Dir(path);
@@ -331,7 +336,7 @@ int Game::Open_Map() {
 	return 0;
 }
 
-void Game::Show_Info(const char *text) {
+void GameClass::Show_Info(const char *text) {
 
 	if (strcmp(text, info) != 0 || info_timer == 0) {
 
@@ -339,4 +344,10 @@ void Game::Show_Info(const char *text) {
 		info_timer = INFO_TIME;
 	
 	}
+}
+
+bool GameClass::isStarted() {
+
+	return started;
+
 }

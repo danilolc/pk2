@@ -32,7 +32,7 @@ class Particle {
 
 		Particle(int type, double x, double y, double a, double b, int anim, int time, double weight, int color);
 		~Particle();
-		void draw();
+		void draw(int cam_x, int cam_y);
 		void update();
 
 		void set_type(int type);
@@ -49,6 +49,8 @@ class Particle {
 		double weight;
 		int color;
 		int alpha;
+
+		int cam_x, cam_y;
 
 		//Draw FG
 		void draw_dot();

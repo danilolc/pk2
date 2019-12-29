@@ -6,7 +6,7 @@
 
 #include "PisteDraw.hpp"
 
-#include "game/game.hpp"
+#include "settings.hpp"
 #include "system.hpp"
 
 Particle::Particle(int type, double x, double y, double a, double b, int anim, int time, double weight, int color) {
@@ -23,10 +23,13 @@ Particle::Particle(int type, double x, double y, double a, double b, int anim, i
 
 Particle::~Particle() {}
 
-void Particle::draw() {
+void Particle::draw(int camera_x, int camera_y) {
 
 	alpha = time;
 	if (alpha > 100) alpha = 100;
+
+	this->cam_x = camera_x;
+	this->cam_y = camera_y;
 
 	if (time > 0)
 		switch (this->type) {
@@ -88,32 +91,32 @@ bool Particle::time_over() {
 
 void Particle::draw_dot() {
 
-	PDraw::screen_fill(x-Game::camera_x, y-Game::camera_y, x-Game::camera_x+1, y-Game::camera_y+1, color+25);
+	PDraw::screen_fill(x-cam_x, y-cam_y, x-cam_x+1, y-cam_y+1, color+25);
 
 }
 
 void Particle::draw_star() {
 
 	if (color > 99 || !Settings.lapinakyvat_objektit)
-		PDraw::image_cutclip(game_assets, x-Game::camera_x, y-Game::camera_y, 1, 1, 11, 11);
+		PDraw::image_cutclip(game_assets, x-cam_x, y-cam_y, 1, 1, 11, 11);
 	else
-		PDraw::image_cutcliptransparent(game_assets, 2, 2, 10, 10, x-Game::camera_x, y-Game::camera_y, alpha, color);
+		PDraw::image_cutcliptransparent(game_assets, 2, 2, 10, 10, x-cam_x, y-cam_y, alpha, color);
 
 }
 
 void Particle::draw_hit() {
 
 	int framex = ((degree%12)/3) * 58;
-	PDraw::image_cutclip(game_assets,x-Game::camera_x-28+8, y-Game::camera_y-27+8,1+framex,83,1+57+framex,83+55);
+	PDraw::image_cutclip(game_assets,x-cam_x-28+8, y-cam_y-27+8,1+framex,83,1+57+framex,83+55);
 }
 
 void Particle::draw_light() {
 
 	if (Settings.lapinakyvat_objektit)
-		PDraw::image_cutcliptransparent(game_assets, 1, 14, 13, 13, x-Game::camera_x, y-Game::camera_y, alpha, color);
+		PDraw::image_cutcliptransparent(game_assets, 1, 14, 13, 13, x-cam_x, y-cam_y, alpha, color);
 	else{
 		int vx = (color/32) * 14;
-		PDraw::image_cutclip(game_assets,x-Game::camera_x, y-Game::camera_y,1+vx,14+14,14+vx,27+14);
+		PDraw::image_cutclip(game_assets,x-cam_x, y-cam_y,1+vx,14+14,14+vx,27+14);
 	}
 
 }
@@ -121,10 +124,10 @@ void Particle::draw_light() {
 void Particle::draw_spark() {
 
 	if (Settings.lapinakyvat_objektit)
-		PDraw::image_cutcliptransparent(game_assets, 99, 14, 7, 7, x-Game::camera_x, y-Game::camera_y, alpha, color);
+		PDraw::image_cutcliptransparent(game_assets, 99, 14, 7, 7, x-cam_x, y-cam_y, alpha, color);
 	else{
 		int vx = (color/32) * 8;
-		PDraw::image_cutclip(game_assets,x-Game::camera_x, y-Game::camera_y,99+vx,14+14,106+vx,21+14);
+		PDraw::image_cutclip(game_assets,x-cam_x, y-cam_y,99+vx,14+14,106+vx,21+14);
 	}
 
 }
@@ -132,7 +135,7 @@ void Particle::draw_spark() {
 void Particle::draw_feather() {
 
 	int xplus = (anim/7) * 21;
-	PDraw::image_cutclip(game_assets,x-Game::camera_x,y-Game::camera_y,14+xplus,1,34+xplus,12);
+	PDraw::image_cutclip(game_assets,x-cam_x,y-cam_y,14+xplus,1,34+xplus,12);
 	anim++;
 	if (anim > 63)
 		anim = 0;
@@ -150,7 +153,7 @@ void Particle::draw_smoke() {
 		if (frame > 16)
 			yplus = 32;
 
-		PDraw::image_cutclip(game_assets,x-Game::camera_x,y-Game::camera_y,1+xplus,338+yplus,34+xplus,366+yplus);
+		PDraw::image_cutclip(game_assets,x-cam_x,y-cam_y,1+xplus,338+yplus,34+xplus,366+yplus);
 		anim++;
 	}
 
@@ -159,17 +162,17 @@ void Particle::draw_smoke() {
 void Particle::draw_dust() {
 
 	if (alpha > 99 || !Settings.lapinakyvat_objektit)
-		PDraw::image_cutclip(game_assets,x-Game::camera_x,y-Game::camera_y,226,2,224,49);
+		PDraw::image_cutclip(game_assets,x-cam_x,y-cam_y,226,2,224,49);
 	else
-		PDraw::image_cutcliptransparent(game_assets, 226, 2, 18, 19, x-Game::camera_x, y-Game::camera_y, alpha, color);
-	PDraw::image_cutclip(game_assets,x-Game::camera_x,y-Game::camera_y,226, 2, 18, 19);
+		PDraw::image_cutcliptransparent(game_assets, 226, 2, 18, 19, x-cam_x, y-cam_y, alpha, color);
+	PDraw::image_cutclip(game_assets,x-cam_x,y-cam_y,226, 2, 18, 19);
 
 }
 
 void Particle::draw_waterdrop() {
 
-	int kx = (int)(x-Game::camera_x);
-	int ky = (int)(y-Game::camera_y);
+	int kx = (int)(x-cam_x);
+	int ky = (int)(y-cam_y);
 
 	PDraw::screen_fill(kx,ky,kx+1,ky+4,40+(int)b);
 
@@ -177,8 +180,8 @@ void Particle::draw_waterdrop() {
 
 void Particle::draw_leaf1() {
 
-	int kx = (int)(x-Game::camera_x),
-		ky = (int)(y-Game::camera_y);
+	int kx = (int)(x-cam_x),
+		ky = (int)(y-cam_y);
 
 	PDraw::screen_fill(kx,ky,kx+2,ky+2,96+6+(int)b+(int)(x+y)%10);
 
@@ -186,8 +189,8 @@ void Particle::draw_leaf1() {
 
 void Particle::draw_leaf2() {
 
-	int kx = (int)(x-Game::camera_x),
-		ky = (int)(y-Game::camera_y),
+	int kx = (int)(x-cam_x),
+		ky = (int)(y-cam_y),
 		frame = (int(y/10)%4)*23;
 
 	PDraw::image_cutclip(game_assets,kx,ky,1+frame,141,21+frame,152);
@@ -196,8 +199,8 @@ void Particle::draw_leaf2() {
 
 void Particle::draw_leaf3() {
 
-	int kx = (int)(x-Game::camera_x),
-		ky = (int)(y-Game::camera_y),
+	int kx = (int)(x-cam_x),
+		ky = (int)(y-cam_y),
 		frame = (int(y/5)%4)*20;
 
 	PDraw::image_cutclip(game_assets,kx,ky,93+frame,141,109+frame,150);
@@ -206,8 +209,8 @@ void Particle::draw_leaf3() {
 
 void Particle::draw_leaf4() {
 
-	int kx = (int)(x-Game::camera_x),
-		ky = (int)(y-Game::camera_y),
+	int kx = (int)(x-cam_x),
+		ky = (int)(y-cam_y),
 		frame = (int(y/5)%2)*14;
 
 	PDraw::image_cutclip(game_assets,kx,ky,173+frame,141,183+frame,150);
@@ -216,8 +219,8 @@ void Particle::draw_leaf4() {
 
 void Particle::draw_flake1() {
 
-	int kx = (int)(x-Game::camera_x),
-		ky = (int)(y-Game::camera_y);
+	int kx = (int)(x-cam_x),
+		ky = (int)(y-cam_y);
 
 	PDraw::image_cutclip(game_assets,kx,ky,1,155,8,162);
 
@@ -225,8 +228,8 @@ void Particle::draw_flake1() {
 
 void Particle::draw_flake2() {
 
-	int kx = (int)(x-Game::camera_x),
-		ky = (int)(y-Game::camera_y);
+	int kx = (int)(x-cam_x),
+		ky = (int)(y-cam_y);
 
 	PDraw::image_cutclip(game_assets,kx,ky,11,155,16,160);
 
@@ -234,8 +237,8 @@ void Particle::draw_flake2() {
 
 void Particle::draw_flake3() {
 
-	int kx = (int)(x-Game::camera_x),
-		ky = (int)(y-Game::camera_y);
+	int kx = (int)(x-cam_x),
+		ky = (int)(y-cam_y);
 
 	PDraw::image_cutclip(game_assets,kx,ky,19,155,22,158);
 
@@ -243,8 +246,8 @@ void Particle::draw_flake3() {
 
 void Particle::draw_flake4() {
 
-	int kx = (int)(x-Game::camera_x),
-		ky = (int)(y-Game::camera_y);
+	int kx = (int)(x-cam_x),
+		ky = (int)(y-cam_y);
 
 	PDraw::screen_fill(kx,ky,kx+2,ky+2,20+(int)b);
 
@@ -324,14 +327,14 @@ void Particle::update_fg() {
 
 void Particle::update_bg() {
 
-	if ( x  >  Game::camera_x + screen_width )
-		x  =  Game::camera_x + int(x - Game::camera_x + screen_width) % screen_width;
-	if ( x  <  Game::camera_x )
-		x  =  Game::camera_x + screen_width - int(Game::camera_x - x) % screen_width;
-	if ( y  >  Game::camera_y + screen_height )
-		y  =  Game::camera_y + int(y - Game::camera_y + screen_height) % screen_height;
-	if ( y  <  Game::camera_y )
-		y  =  Game::camera_y + screen_height - int(Game::camera_y - y) % screen_height;
+	if ( x  >  cam_x + screen_width )
+		x  =  cam_x + int(x - cam_x + screen_width) % screen_width;
+	if ( x  <  cam_x )
+		x  =  cam_x + screen_width - int(cam_x - x) % screen_width;
+	if ( y  >  cam_y + screen_height )
+		y  =  cam_y + int(y - cam_y + screen_height) % screen_height;
+	if ( y  <  cam_y )
+		y  =  cam_y + screen_height - int(cam_y - y) % screen_height;
 	
 }
 

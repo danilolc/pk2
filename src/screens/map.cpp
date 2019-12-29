@@ -145,7 +145,7 @@ int PK_Draw_Map(){
 			// if clicked
 			if (paluu == 2) {
 				if (tyyppi != 2 || dev_mode) {
-					Game::Start(i);
+					Game = new GameClass(i);
 					
 					going_to_game = true;
 					PDraw::fade_out(PDraw::FADE_SLOW);

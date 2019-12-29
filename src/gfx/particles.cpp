@@ -4,7 +4,7 @@
 //#########################
 #include "gfx/particle.hpp"
 
-#include "game/game.hpp"
+#include "game/map.hpp"
 #include "settings.hpp"
 #include "system.hpp"
 
@@ -17,15 +17,14 @@ const int nof_bg_particles = 300;
 
 void Particles_Update() {
 	
-	if (!Game::paused)
-		for (int i = 0; i < Particles.size();) {
-			Particles[i]->update();
-			//if (Particles[i]->time_over) {
-			//	Particles.erase(i);
-			//	continue;
-			//}
-			i++;
-		}
+	for (int i = 0; i < Particles.size();) {
+		Particles[i]->update();
+		//if (Particles[i]->time_over) {
+		//	Particles.erase(i);
+		//	continue;
+		//}
+		i++;
+	}
 
 	//Todo - clean "time_over" particles - use deque on Particles
 
@@ -42,19 +41,19 @@ void Particles_New(int type, double x, double y, double a, double b, int time, d
 
 }
 
-void Particles_DrawFront() {
+void Particles_DrawFront(int cam_x, int cam_y) {
 
 	for (Particle* particle : Particles)
-		particle->draw();
+		particle->draw(cam_x, cam_y);
 
 }
 
-void Particles_DrawBG() {
+void Particles_DrawBG(int cam_x, int cam_y) {
 
 	if (!Settings.saa_efektit) return;
 
 	for (Particle* particle : BGParticles)
-		particle->draw();
+		particle->draw(cam_x, cam_y);
 
 }
 

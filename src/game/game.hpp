@@ -44,79 +44,82 @@ struct PK2BLOCKMASKI{
 	short int	oikealle[32];
 };
 
-//In game variables
-class Game {
+class GameClass {
 
-	int level_id;
-	PK2Kartta* map;
-	char map_path[PE_PATH_SIZE];
+	public:
 
-	PK2BLOCK      palikat[300];
-	PK2BLOCK      lasketut_palikat[150];//150
-	PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
+		int level_id;
+		PK2Kartta* map;
+		char map_path[PE_PATH_SIZE];
 
-	bool game_over = false;
-	bool level_clear = false;
-	bool repeating = false;
+		PK2BLOCK      palikat[300];
+		PK2BLOCK      lasketut_palikat[150];//150
+		PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
 
-	DWORD exit_timer;
+		bool game_over = false;
+		bool level_clear = false;
+		bool repeating = false;
 
-	DWORD timeout = 0;
-	int increase_time = 0;
-	int seconds = 0;
-	bool has_time = false;
+		DWORD exit_timer;
 
-	int button_moving = 0;
-	int button1 = 0;
-	int button2 = 0;
-	int button3 = 0;
+		DWORD timeout = 0;
+		int increase_time = 0;
+		int seconds = 0;
+		bool has_time = false;
 
-	DWORD score = 0;
-	DWORD score_increment = 0;
+		int button_moving = 0;
+		int button1 = 0;
+		int button2 = 0;
+		int button3 = 0;
 
-	int vibration;
+		DWORD score = 0;
+		DWORD score_increment = 0;
 
-	int invisibility = 0;
+		int vibration;
 
-	int camera_x;
-	int camera_y;
-	double dcamera_x;
-	double dcamera_y;
-	double dcamera_a;
-	double dcamera_b;
+		int invisibility = 0;
 
-	bool paused = false;
+		int camera_x;
+		int camera_y;
+		double dcamera_x;
+		double dcamera_y;
+		double dcamera_a;
+		double dcamera_b;
 
-	int keys = 0;
+		bool paused = false;
 
-	int info_timer = 0;
-	char info[80] = " ";
+		int keys = 0;
 
-	int item_pannel_x = -215;
+		int info_timer = 0;
+		char info[80] = " ";
 
-	Game(int idx);
-	Game(const char* map);
-	
-	int Start();
-	void Show_Info(const char *text);
+		int item_pannel_x = -215;
 
-	bool started();
+		GameClass(int idx);
+		GameClass(const char* map);
+		~GameClass();
 
-	~Game();
+		int Start();
 
-private:
-	
-	bool started = false;
-	bool from_index;
-	
-	int Calculete_TileMasks();
-	int Clean_TileBuffer();
+		int Move_Blocks();
+		void Show_Info(const char *text);
 
-	int Move_Blocks();
-	int Calculate_Tiles();
-	int Open_Map();
+		bool isStarted();
+
+	private:
+		
+		bool started = false;
+		bool from_index;
+		
+		int Calculete_TileMasks();
+		int Clean_TileBuffer();
+
+		int Calculate_Tiles();
+		int Open_Map();
 
 };
+
+extern GameClass* Game;
 
 /**/
 int PK_Sprite_Bonus_Movement(int i);
