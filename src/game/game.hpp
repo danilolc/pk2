@@ -48,7 +48,7 @@ class GameClass {
 
 	public:
 
-		int level_id;
+		int level_id = -1;
 		PK2Kartta* map;
 		char map_path[PE_PATH_SIZE];
 
@@ -60,7 +60,7 @@ class GameClass {
 		bool level_clear = false;
 		bool repeating = false;
 
-		DWORD exit_timer;
+		DWORD exit_timer = 0;
 
 		DWORD timeout = 0;
 		int increase_time = 0;
@@ -75,7 +75,7 @@ class GameClass {
 		DWORD score = 0;
 		DWORD score_increment = 0;
 
-		int vibration;
+		int vibration = 0;
 
 		int invisibility = 0;
 

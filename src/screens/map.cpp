@@ -145,6 +145,7 @@ int PK_Draw_Map(){
 			// if clicked
 			if (paluu == 2) {
 				if (tyyppi != 2 || dev_mode) {
+
 					Game = new GameClass(i);
 					
 					going_to_game = true;

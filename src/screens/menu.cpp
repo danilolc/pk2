@@ -316,7 +316,7 @@ int Draw_Menu_Main() {
 
 	if (Episode::started){
 		if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_continue),180,my)){
-			if (Game->isStarted())
+			if (Game)
 				next_screen = SCREEN_GAME;
 			else
 				next_screen = SCREEN_MAP;
@@ -479,15 +479,23 @@ int Draw_Menu_Name() {
 
 
 	if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.playermenu_continue),180,300)) {
-		menu_nyt = MENU_EPISODES;
-		menu_name_index = 0;
 		nimiedit = false;
-		menu_valittu_id = menu_valinta_id = 1;
-
+		
 		if (episode_count == 1) {
-			//Game->started = false;
+		
+			if (Game) {
+				delete Game;
+				Game = nullptr;
+			}
 			Episode::Load_New(menu_name, episodes[2]);
 			next_screen = SCREEN_MAP;
+		
+		}
+		else {
+
+			menu_nyt = MENU_EPISODES;
+			menu_valittu_id = menu_valinta_id = 1;
+		
 		}
 	}
 
@@ -525,7 +533,10 @@ int Draw_Menu_Load() {
 		strcat(number,saves_list[i].nimi);
 
 		if (Draw_Menu_Text(true,number,100,150+my)) {
-			//Game->started() = false;
+			if (Game) {
+				delete Game;
+				Game = nullptr;
+			}
 			Episode::Load_Save(i);
 			next_screen = SCREEN_MAP;
 		}
@@ -1028,7 +1039,11 @@ int Draw_Menu_Episodes() {
 	for (int i=(episode_page*10)+2;i<(episode_page*10)+12;i++){
 		if (strcmp(episodes[i],"") != 0){
 			if (Draw_Menu_Text(true,episodes[i],220,90+my)) {
-				//Game::started = false;
+				
+				if (Game) {
+					delete Game;
+					Game = nullptr;
+				}
 				Episode::Load_New(menu_name, episodes[i]);
 				next_screen = SCREEN_MAP;
 			}

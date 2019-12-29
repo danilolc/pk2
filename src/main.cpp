@@ -2099,7 +2099,7 @@ void PK_Start_Test(const char* arg){
 	Episode::Load_New("test", episode);
 
 	map = buffer + i + 1;
-	//Game->Start(map);
+	Game = new GameClass(map);
 
 	printf("PK2    - testing episode '%s' level '%s'\n", episode, map);
 
@@ -2111,7 +2111,12 @@ void quit(int ret) {
 	Settings_Save();
 
 	PSound::stop_music();
-	delete Game->map;
+
+	if (Game) {
+		delete Game;
+		Game = nullptr;
+	}
+	
 	delete tekstit;
 
 	Piste::terminate();

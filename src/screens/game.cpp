@@ -265,18 +265,19 @@ int PK_Draw_InGame_DevKeys() {
 
 	int nof_txt = sizeof(txts) / 32;
 
-	int last_size = 0;
+	int max_size = 0;
+	
 	for (int i = 0; i < nof_txt; i++)
-		if (strlen(txts[i]) > last_size) last_size = strlen(txts[i]);
+		if (strlen(txts[i]) > max_size) max_size = strlen(txts[i]);
 
-	int posx = screen_width - last_size * char_w;
+	int posx = screen_width - max_size * char_w;
 	int posy = screen_height - char_h * nof_txt;
 
 	PDraw::screen_fill(posx - 4, posy - 4, screen_width, screen_height, 0);
 	PDraw::screen_fill(posx - 2, posy - 2, screen_width, screen_height, 38);
 	
 	for (int i = 0; i < nof_txt; i++)
-		PDraw::font_write(fontti1, txts[i], posx, screen_height - (i+1)*10);
+		PDraw::font_write(fontti1, txts[i], posx, posy + i*10);
 
 	return 0;
 }
@@ -717,13 +718,6 @@ int Screen_InGame(){
 		
 		}
 	}
-	if (Game->exit_timer == 1 && !PDraw::is_fading()) {
-		//Game->started = false;
-		
-		if(test_level) Fade_Quit();
-		else if (Game->level_clear) next_screen = SCREEN_SCORING;
-		else next_screen = SCREEN_MAP;
-	}
 
 	if (key_delay == 0){
 		if (!Game->game_over && !Game->level_clear) {
@@ -838,6 +832,22 @@ int Screen_InGame(){
 			Player_Sprite->energia = Player_Sprite->tyyppi->energia;
 		if (PisteInput_Keydown(PI_V))
 			Game->invisibility = 3000;
+	}
+
+	if (Game->exit_timer == 1 && !PDraw::is_fading()) {
+		//Game->started = false;
+		
+		if (Game->level_clear) next_screen = SCREEN_SCORING;
+		else {
+			
+			delete Game;
+			Game = nullptr;
+
+			if(test_level) Fade_Quit();
+			else next_screen = SCREEN_MAP;
+		
+		}
+
 	}
 
 	return 0;

@@ -302,22 +302,6 @@ int Screen_ScoreCount(){
 	if (pistelaskudelay > 0)
 		pistelaskudelay--;
 
-	if (siirry_pistelaskusta_karttaan && !PDraw::is_fading()){
-		/*tarkistetaan oliko viimeinen jakso*/
-
-		if (Game->level_id == EPISODI_MAX_LEVELS-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
-			next_screen = SCREEN_END;
-			//Episode::started = false;
-		}
-		else if (Episode::levels_list[Game->level_id+1].jarjestys == -1) {
-			next_screen = SCREEN_END;
-			//Episode::started = false;
-		}
-		else { // jos ei niin palataan karttaan...
-			next_screen = SCREEN_MAP;
-		}
-	}
-
 	if (key_delay == 0){
 		if (PisteInput_Keydown(PI_RETURN) && pistelaskuvaihe == 5){
 			siirry_pistelaskusta_karttaan = true;
@@ -340,6 +324,25 @@ int Screen_ScoreCount(){
 
 			key_delay = 20;
 		}
+	}
+
+	if (siirry_pistelaskusta_karttaan && !PDraw::is_fading()){
+		/*tarkistetaan oliko viimeinen jakso*/
+
+		if (Game->level_id == EPISODI_MAX_LEVELS-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
+			next_screen = SCREEN_END;
+			//Episode::started = false;
+		}
+		else if (Episode::levels_list[Game->level_id+1].jarjestys == -1) {
+			next_screen = SCREEN_END;
+			//Episode::started = false;
+		}
+		else { // jos ei niin palataan karttaan...
+			next_screen = SCREEN_MAP;
+		}
+
+		delete Game;
+		Game = nullptr;
 	}
 
 	return 0;
