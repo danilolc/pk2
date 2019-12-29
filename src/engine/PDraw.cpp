@@ -2,10 +2,10 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-#include "PisteDraw.hpp"
+#include "engine/PDraw.hpp"
 
-#include "PisteFont.hpp"
-#include "PisteGui.hpp"
+#include "engine/PFont.hpp"
+#include "engine/PGui.hpp"
 
 #include <algorithm>
 #include <vector>

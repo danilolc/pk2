@@ -2,12 +2,12 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-#include "PisteGui.hpp"
+#include "engine/PGui.hpp"
 
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include "platform.hpp"
+#include "engine/platform.hpp"
 
 namespace PGui {
 

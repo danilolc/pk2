@@ -4,7 +4,7 @@
 //#########################
 #pragma once
 
-#include "PisteLanguage.hpp"
+#include "engine/PLang.hpp"
 
 extern PisteLanguage *tekstit;
 

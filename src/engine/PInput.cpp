@@ -2,10 +2,10 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-#include "PisteInput.hpp"
+#include "engine/PInput.hpp"
 
-#include "PisteGui.hpp"
-#include "platform.hpp"
+#include "engine/PGui.hpp"
+#include "engine/platform.hpp"
 
 #include <SDL.h>
 
@@ -375,7 +375,7 @@ bool PisteInput_Lue_Eventti(){
 
 char* PisteInput_Lue_Kontrollin_Nimi(unsigned char k){
 //	SDL_GetKeyName( key->keysym.sym )
-	return " ";
+	return nullptr;
 }
 
 int PisteInput_Exit(){

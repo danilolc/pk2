@@ -4,7 +4,7 @@
 //#########################
 #pragma once
 
-#include "types.hpp"
+#include "engine/types.hpp"
 
 void Effect_Feathers(DWORD x, DWORD y);
 void Effect_Splash(DWORD x, DWORD y, BYTE color);

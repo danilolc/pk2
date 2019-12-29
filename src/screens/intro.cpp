@@ -10,9 +10,9 @@
 #include "language.hpp"
 #include "system.hpp"
 
-#include "PisteDraw.hpp"
-#include "PisteInput.hpp"
-#include "PisteSound.hpp"
+#include "engine/PDraw.hpp"
+#include "engine/PInput.hpp"
+#include "engine/PSound.hpp"
 
 DWORD introlaskuri = 0;
 bool siirry_introsta_menuun = false;

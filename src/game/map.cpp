@@ -10,9 +10,9 @@
 #include "language.hpp"
 #include "system.hpp"
 
-#include "PisteDraw.hpp"
-#include "PisteUtils.hpp"
-#include "PisteInput.hpp"
+#include "engine/PDraw.hpp"
+#include "engine/PUtils.hpp"
+#include "engine/PInput.hpp"
 
 #include <SDL_rwops.h>
 

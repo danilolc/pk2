@@ -4,14 +4,14 @@
 //#########################
 #pragma once
 
-#include "platform.hpp"
+#include "engine/platform.hpp"
 
-#include "PisteDraw.hpp"
-#include "PisteInput.hpp"
-#include "PisteGui.hpp"
-#include "PisteSound.hpp"
-#include "PisteUtils.hpp"
-#include "PisteLanguage.hpp"
+#include "engine/PDraw.hpp"
+#include "engine/PInput.hpp"
+#include "engine/PGui.hpp"
+#include "engine/PSound.hpp"
+#include "engine/PUtils.hpp"
+#include "engine/PLang.hpp"
 
 namespace Piste {
 

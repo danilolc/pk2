@@ -4,7 +4,7 @@
 //#########################
 #pragma once
 
-#include "platform.hpp"
+#include "engine/platform.hpp"
 
 #define		PI_VIRHE -1000
 

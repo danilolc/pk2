@@ -8,7 +8,7 @@
 #include "settings.hpp"
 #include "game/game.hpp"
 
-#include "PisteSound.hpp"
+#include "engine/PSound.hpp"
 
 int switch_sound;
 int jump_sound;

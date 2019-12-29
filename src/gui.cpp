@@ -6,8 +6,8 @@
 
 #include "settings.hpp"
 
-#include "PisteGui.hpp"
-#include "PisteInput.hpp"
+#include "engine/PGui.hpp"
+#include "engine/PInput.hpp"
 
 int gui_touch  = -1;
 int gui_egg    = -1;

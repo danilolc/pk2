@@ -2,14 +2,14 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-#include "PisteLanguage.hpp"
+#include "engine/PLang.hpp"
 
 #include <SDL.h>
 #include <cstring>
 
 using namespace std;
 
-const int	LUE_SKIP    = 0,
+const int LUE_SKIP    = 0,
           LUE_OTSIKKO = 1,
           LUE_TEKSTI  = 2;
 

@@ -14,9 +14,9 @@
 #include "game/sprites.hpp"
 #include "system.hpp"
 
-#include "PisteDraw.hpp"
-#include "PisteInput.hpp"
-#include "PisteSound.hpp"
+#include "engine/PDraw.hpp"
+#include "engine/PInput.hpp"
+#include "engine/PSound.hpp"
 
 #include <cstring>
 

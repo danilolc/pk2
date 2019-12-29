@@ -15,10 +15,10 @@
 #include "save.hpp"
 #include "system.hpp"
 
-#include "PisteDraw.hpp"
-#include "PisteInput.hpp"
-#include "PisteUtils.hpp"
-#include "PisteSound.hpp"
+#include "engine/PDraw.hpp"
+#include "engine/PInput.hpp"
+#include "engine/PUtils.hpp"
+#include "engine/PSound.hpp"
 
 #include <cstring>
 

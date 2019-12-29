@@ -2,9 +2,9 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-#include "PisteEngine.hpp"
+#include "engine/Piste.hpp"
 
-#include "platform.hpp"
+#include "engine/platform.hpp"
 
 #include <SDL.h>
 

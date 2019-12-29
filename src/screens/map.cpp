@@ -4,9 +4,9 @@
 //#########################
 #include "screens/screens.hpp"
 
-#include "PisteDraw.hpp"
-#include "PisteInput.hpp"
-#include "PisteSound.hpp"
+#include "engine/PDraw.hpp"
+#include "engine/PInput.hpp"
+#include "engine/PSound.hpp"
 
 #include <cstring>
 

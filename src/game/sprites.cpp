@@ -4,7 +4,7 @@
 //#########################
 #include "game/sprites.hpp"
 
-#include "PisteSound.hpp"
+#include "engine/PSound.hpp"
 
 #include "game/game.hpp"
 #include "episode.hpp"

@@ -4,9 +4,9 @@
 //#########################
 #pragma once
 
-#include "PisteLanguage.hpp"
-#include "types.hpp"
-#include "platform.hpp"
+#include "engine/PLang.hpp"
+#include "engine/types.hpp"
+#include "engine/platform.hpp"
 
 #include "game/map.hpp"
 #include "game/sprites.hpp"

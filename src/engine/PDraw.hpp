@@ -4,8 +4,8 @@
 //#########################
 #pragma once
 
-#include "PisteFont.hpp"
-#include "platform.hpp"
+#include "engine/PFont.hpp"
+#include "engine/platform.hpp"
 
 namespace PDraw {
 

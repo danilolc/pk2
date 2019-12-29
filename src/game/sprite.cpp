@@ -4,8 +4,8 @@
 //#########################
 #include "game/sprites.hpp"
 
-#include "PisteDraw.hpp"
-#include "platform.hpp"
+#include "engine/PDraw.hpp"
+#include "engine/platform.hpp"
 
 #include <cstring>
 

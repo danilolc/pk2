@@ -10,11 +10,11 @@
 #include "language.hpp"
 #include "system.hpp"
 
-#include "PisteDraw.hpp"
-#include "PisteInput.hpp"
-#include "PisteSound.hpp"
+#include "engine/PDraw.hpp"
+#include "engine/PInput.hpp"
+#include "engine/PSound.hpp"
 
-#include "types.hpp"
+#include "engine/types.hpp"
 
 DWORD loppulaskuri = 0;
 bool siirry_lopusta_menuun = false;

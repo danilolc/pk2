@@ -10,8 +10,8 @@
 #include "gfx/particles.hpp"
 #include "episode.hpp"
 
-#include "PisteSound.hpp"
-#include "PisteDraw.hpp"
+#include "engine/PSound.hpp"
+#include "engine/PDraw.hpp"
 
 #include <cstring>
 

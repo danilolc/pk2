@@ -14,7 +14,7 @@
 
 #include "game/map.hpp"
 
-#include "PisteEngine.hpp"
+#include "engine/Piste.hpp"
 
 #include <cstring>
 #include <ctime>

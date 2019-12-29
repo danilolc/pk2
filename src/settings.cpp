@@ -4,8 +4,8 @@
 //#########################
 #include "settings.hpp"
 
-#include "PisteInput.hpp"
-#include "PisteUtils.hpp"
+#include "engine/PInput.hpp"
+#include "engine/PUtils.hpp"
 
 #include <SDL_rwops.h>
 #include <cstring>
