@@ -4,6 +4,10 @@
 //#########################
 #include "system.hpp"
 
+#include "PisteUtils.hpp"
+#include "PisteDraw.hpp"
+#include "settings.hpp"
+
 #include <cmath>
 
 int screen_width  = 800;
@@ -53,4 +57,11 @@ bool PK_Check_File(const char *filename){ //TODO - If isn't Windows - List direc
 	bool ret = (stat(filename, &st) == 0);
 	if(!ret) printf("PK2    - asked about non-existing file: %s\n", filename);
 	return ret;
+}
+
+void PK_Draw_Cursor(int x, int y){
+
+	if(!PisteUtils_Is_Mobile() && Settings.isFullScreen)
+		PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
+	
 }

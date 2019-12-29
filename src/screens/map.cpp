@@ -145,8 +145,8 @@ int PK_Draw_Map(){
 			// if clicked
 			if (paluu == 2) {
 				if (tyyppi != 2 || dev_mode) {
-					strcpy(Game::map_path,Episode::levels_list[i].tiedosto);
-					Game::level_id = i;
+					Game::Start(i);
+					
 					going_to_game = true;
 					PDraw::fade_out(PDraw::FADE_SLOW);
 					PSound::set_musicvolume(0);
@@ -159,6 +159,7 @@ int PK_Draw_Map(){
 			itoa(Episode::levels_list[i].jarjestys,luku,10);
 			PDraw::font_write(fontti1,luku,Episode::levels_list[i].x-12+2,Episode::levels_list[i].y-29+2);
 
+			// if mouse hoover
 			if (paluu > 0) {
 
 				int info_x = 489+3, info_y = 341-26;
@@ -204,35 +205,7 @@ int PK_Draw_Map(){
 	return 0;
 }
 
-
-int Screen_Map_Init() {
-	
-	GUI_Change(UI_CURSOR);
-	if (Settings.isWide)
-		PDraw::set_xoffset(80);
-	else
-		PDraw::set_xoffset(0);
-	PDraw::screen_fill(0);
-
-	if (!Episode::started) {
-
-		printf("PK2    - ERROR - Episode not started\n");
-		Fade_Quit();
-		
-	} else {
-
-		degree = degree_temp;
-		
-	}
-
-	char mapkuva[PE_PATH_SIZE] = "map.bmp";
-	Episode::Get_Dir(mapkuva);
-
-	PDraw::image_load(bg_screen, mapkuva, true);
-	if (bg_screen == -1)
-		PDraw::image_load(bg_screen, "gfx/map.bmp", true);
-
-	/* Ladataan kartan musiikki ...*/
+int Play_Music() {
 	char mapmusa[PE_PATH_SIZE];
 	
 	strcpy(mapmusa, "map.mp3");
@@ -279,10 +252,38 @@ int Screen_Map_Init() {
 
 	PSound::start_music(mapmusa);
 	PSound::set_musicvolume_now(Settings.music_max_volume);
+}
+
+int Screen_Map_Init() {
+
+	if (!Episode::started) {
+		PK2_Error("PK2    - ERROR - Episode not started\n");
+		return 1;
+	}
+
+	GUI_Change(UI_CURSOR);
+	if (Settings.isWide)
+		PDraw::set_xoffset(80);
+	else
+		PDraw::set_xoffset(0);
+	PDraw::screen_fill(0);
+
+	degree = degree_temp;
+	
+	char mapkuva[PE_PATH_SIZE] = "map.bmp";
+	Episode::Get_Dir(mapkuva);
+
+	PDraw::image_load(bg_screen, mapkuva, true);
+	if (bg_screen == -1)
+		PDraw::image_load(bg_screen, "gfx/map.bmp", true);
+
+	Play_Music();
 
 	going_to_game = false;
 
 	PDraw::fade_in(PDraw::FADE_SLOW);
+
+	return 0;
 }
 
 int Screen_Map(){

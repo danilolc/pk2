@@ -123,13 +123,13 @@ int Screen_Change() {
 	PDraw::fade_in(PDraw::FADE_NORMAL);
 
 	switch (next_screen){
-		case SCREEN_INTRO       : Screen_Intro_Init();      break;
-		case SCREEN_MENU        : Screen_Menu_Init();       break;
-		case SCREEN_MAP         : Screen_Map_Init();        break;
-		case SCREEN_GAME        : Screen_InGame_Init();     break;
-		case SCREEN_SCORING     : Screen_ScoreCount_Init(); break;
-		case SCREEN_END         : Screen_Ending_Init();     break;
-		default                 : Fade_Quit();              break;
+		case SCREEN_INTRO   : Screen_Intro_Init();      break;
+		case SCREEN_MENU    : Screen_Menu_Init();       break;
+		case SCREEN_MAP     : Screen_Map_Init();        break;
+		case SCREEN_GAME    : Screen_InGame_Init();     break;
+		case SCREEN_SCORING : Screen_ScoreCount_Init(); break;
+		case SCREEN_END     : Screen_Ending_Init();     break;
+		default             : Fade_Quit();              break;
 	}
 
 	current_screen = next_screen;
@@ -137,15 +137,15 @@ int Screen_Change() {
 	return 0;
 }
 
-#include "game/game.hpp"
-
 //Main Loop
 int Screen_Loop() {
 
-	if (next_screen != current_screen) Screen_Change();
-	
 	Updade_Mouse();
 	
+	if (next_screen != current_screen) Screen_Change();
+	
+	if (PK2_error) return 1;
+
 	switch (current_screen){
 		case SCREEN_INTRO   : Screen_Intro();      break;
 		case SCREEN_MENU    : Screen_Menu();       break;
@@ -156,10 +156,12 @@ int Screen_Loop() {
 		default             : Fade_Quit();         break;
 	}
 
+	if (PK2_error) return 1;
+
 	if (key_delay > 0)
 		key_delay--;
 
-	if ((closing_game && !PDraw::is_fading()) || PK2_error)
+	if ((closing_game && !PDraw::is_fading()))
 		Piste::stop();
 
 	return 0;

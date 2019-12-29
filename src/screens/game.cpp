@@ -564,21 +564,19 @@ int PK_Draw_InGame(){
 
 
 
-
-
-
-//
-
-
 int Screen_InGame_Init(){
+
 	GUI_Change(UI_GAME_BUTTONS);
 	PDraw::set_xoffset(0);
 
-	if (!Game::started)
+	if (!Game::started) {
 		Game::Start();
-	else
+		degree = 0;
+	} else {
 		degree = degree_temp;
-
+	}
+	
+	return 0;
 }
 
 int Update_Camera(){
@@ -659,7 +657,7 @@ int Screen_InGame(){
 
 	PK_Draw_InGame();
 
-	Calculate_MovableBlocks_Position();
+	Game::Move_Blocks();
 
 	if (!Game::paused){
 		degree = 1 + degree % 360;//359;
@@ -818,9 +816,8 @@ int Screen_InGame(){
 			}
 			if (PisteInput_Keydown(PI_END)) {
 				key_delay = 20;
-				if (PSound::start_music("music/hiscore.xm") != 0){
-					PK2_error = true;
-					PK2_error_msg = "Can't find hiscore.xm";
+				if (PSound::start_music("music/hiscore.xm") != 0){ //TODO - put it on a function
+					PK2_Error("Can't find hiscore.xm");
 				}
 				Game::level_clear = true;
 				Episode::levels_list[Game::level_id].lapaisty = true;

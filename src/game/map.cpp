@@ -1164,7 +1164,7 @@ void PK2Kartta::Change_SkullBlocks() {
 	Game::vibration = 90;//60
 	PisteInput_Vibrate();
 
-	//Game::Start_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
+	//Game::Show_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
 
 	Calculate_Edges();
 }
@@ -1185,7 +1185,7 @@ void PK2Kartta::Open_Locks() {
 	Game::vibration = 90;//60
 	PisteInput_Vibrate();
 
-	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
+	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
 
 	Calculate_Edges();
 

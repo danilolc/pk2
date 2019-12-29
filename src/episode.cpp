@@ -87,6 +87,8 @@ int Episode::Save_Scores(char *filename) {
 
 }
 
+
+
 //TODO - Load info from different languages
 void Episode::Load_Info() { 
 	PisteLanguage* temp;

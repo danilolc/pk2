@@ -45,74 +45,85 @@ struct PK2BLOCKMASKI{
 };
 
 //In game variables
-namespace Game {
+class Game {
 
-extern int level_id;
-extern PK2Kartta* map;
-extern char map_path[PE_PATH_SIZE];
+	int level_id;
+	PK2Kartta* map;
+	char map_path[PE_PATH_SIZE];
 
-extern PK2BLOCK      palikat[300];
-extern PK2BLOCK      lasketut_palikat[150];//150
-extern PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
+	PK2BLOCK      palikat[300];
+	PK2BLOCK      lasketut_palikat[150];//150
+	PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
 
-extern bool started;
-extern bool game_over;
-extern bool level_clear;
-extern bool repeating;
+	bool game_over = false;
+	bool level_clear = false;
+	bool repeating = false;
 
-extern DWORD exit_timer;
+	DWORD exit_timer;
 
-extern DWORD timeout;
-extern int increase_time;
-extern int seconds;
-extern bool has_time;
+	DWORD timeout = 0;
+	int increase_time = 0;
+	int seconds = 0;
+	bool has_time = false;
 
-extern int button_moving;
-extern int button1;
-extern int button2;
-extern int button3;
+	int button_moving = 0;
+	int button1 = 0;
+	int button2 = 0;
+	int button3 = 0;
 
-extern DWORD score;
-extern DWORD score_increment;
+	DWORD score = 0;
+	DWORD score_increment = 0;
 
-extern int vibration;
+	int vibration;
 
-extern int invisibility;
+	int invisibility = 0;
 
-extern int camera_x;
-extern int camera_y;
-extern double dcamera_x;
-extern double dcamera_y;
-extern double dcamera_a;
-extern double dcamera_b;
+	int camera_x;
+	int camera_y;
+	double dcamera_x;
+	double dcamera_y;
+	double dcamera_a;
+	double dcamera_b;
 
-extern bool paused;
+	bool paused = false;
 
-extern int keys;
+	int keys = 0;
 
-extern int info_timer;
-extern char info[80];
+	int info_timer = 0;
+	char info[80] = " ";
 
-extern int item_pannel_x;
+	int item_pannel_x = -215;
 
-extern int Start();
+	Game(int idx);
+	Game(const char* map);
+	
+	int Start();
+	void Show_Info(const char *text);
 
-void Start_Info(const char *text);
+	bool started();
 
-}
+	~Game();
 
+private:
+	
+	bool started = false;
+	bool from_index;
+	
+	int Calculete_TileMasks();
+	int Clean_TileBuffer();
+
+	int Move_Blocks();
+	int Calculate_Tiles();
+	int Open_Map();
+
+};
 
 /**/
-void PK_Draw_Cursor(int x, int y);
-
 int PK_Sprite_Bonus_Movement(int i);
 int PK_Sprite_Movement(int i);
 
 bool Draw_Menu_Text(bool active, char *teksti, int x, int y);
 int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx);
-/**/
-
-void Calculate_MovableBlocks_Position();
-
 
 bool PK_Check_File(const char *filename);
+/**/

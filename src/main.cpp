@@ -36,7 +36,7 @@
 //(#10) Blocks
 //==================================================
 
-void     PK_Block_Set_Barriers(PK2BLOCK &palikka) {
+void PK_Block_Set_Barriers(PK2BLOCK &palikka) {
 	palikka.tausta = false;
 
 	palikka.oikealle	= BLOCK_SEINA;
@@ -345,8 +345,7 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 		if (palikka.koodi == BLOCK_LOPETUS && sprite.pelaaja != 0){
 			if (!Game::level_clear){
 				if (PSound::start_music("music/hiscore.xm") != 0){
-					PK2_error = true;
-					PK2_error_msg = "Can't find hiscore.xm";
+					PK2_Error("Can't find song01.xm");
 				}
 				Game::level_clear = true;
 				Episode::levels_list[Game::level_id].lapaisty = true;
@@ -1442,25 +1441,25 @@ int PK_Sprite_Movement(int i){
 				case AI_EVIL_ONE:					if (sprite.energia < 1) PSound::set_musicvolume(0);
 													break;
 
-				case AI_INFO1:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info01));break;
-				case AI_INFO2:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info02));break;
-				case AI_INFO3:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info03));break;
-				case AI_INFO4:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info04));break;
-				case AI_INFO5:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info05));break;
-				case AI_INFO6:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info06));break;
-				case AI_INFO7:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info07));break;
-				case AI_INFO8:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info08));break;
-				case AI_INFO9:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info09));break;
-				case AI_INFO10:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info10));break;
-				case AI_INFO11:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info11));break;
-				case AI_INFO12:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info12));break;
-				case AI_INFO13:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info13));break;
-				case AI_INFO14:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info14));break;
-				case AI_INFO15:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info15));break;
-				case AI_INFO16:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info16));break;
-				case AI_INFO17:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info17));break;
-				case AI_INFO18:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info18));break;
-				case AI_INFO19:						if (sprite.AI_Info(*Player_Sprite))	Game::Start_Info(tekstit->Hae_Teksti(PK_txt.info19));break;
+				case AI_INFO1:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info01));break;
+				case AI_INFO2:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info02));break;
+				case AI_INFO3:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info03));break;
+				case AI_INFO4:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info04));break;
+				case AI_INFO5:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info05));break;
+				case AI_INFO6:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info06));break;
+				case AI_INFO7:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info07));break;
+				case AI_INFO8:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info08));break;
+				case AI_INFO9:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info09));break;
+				case AI_INFO10:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info10));break;
+				case AI_INFO11:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info11));break;
+				case AI_INFO12:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info12));break;
+				case AI_INFO13:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info13));break;
+				case AI_INFO14:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info14));break;
+				case AI_INFO15:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info15));break;
+				case AI_INFO16:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info16));break;
+				case AI_INFO17:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info17));break;
+				case AI_INFO18:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info18));break;
+				case AI_INFO19:						if (sprite.AI_Info(*Player_Sprite))	Game::Show_Info(tekstit->Hae_Teksti(PK_txt.info19));break;
 
 				default:							break;
 			}
@@ -2002,7 +2001,7 @@ int PK_Sprite_Bonus_Movement(int i){
 
 				if (sprite.tyyppi->bonus != -1)
 					if (Gifts_Add(sprite.tyyppi->bonus))
-						Game::Start_Info(tekstit->Hae_Teksti(PK_txt.game_newitem));
+						Game::Show_Info(tekstit->Hae_Teksti(PK_txt.game_newitem));
 
 				if (sprite.tyyppi->muutos != -1)
 				{
@@ -2013,20 +2012,20 @@ int PK_Sprite_Bonus_Movement(int i){
 						Player_Sprite->ammus2 = Player_Sprite->tyyppi->ammus2;
 						Player_Sprite->alkupaino = Player_Sprite->tyyppi->paino;
 						Player_Sprite->y -= Player_Sprite->tyyppi->korkeus/2;
-						//Game::Start_Info("pekka has been transformed!");
+						//Game::Show_Info("pekka has been transformed!");
 					}
 				}
 
 				if (sprite.tyyppi->ammus1 != -1)
 				{
 					Player_Sprite->ammus1 = sprite.tyyppi->ammus1;
-					Game::Start_Info(tekstit->Hae_Teksti(PK_txt.game_newegg));
+					Game::Show_Info(tekstit->Hae_Teksti(PK_txt.game_newegg));
 				}
 
 				if (sprite.tyyppi->ammus2 != -1)
 				{
 					Player_Sprite->ammus2 = sprite.tyyppi->ammus2;
-					Game::Start_Info(tekstit->Hae_Teksti(PK_txt.game_newdoodle));
+					Game::Show_Info(tekstit->Hae_Teksti(PK_txt.game_newdoodle));
 				}
 
 				Play_GameSFX(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
@@ -2075,12 +2074,7 @@ int PK_Sprite_Bonus_Movement(int i){
 //==================================================
 
 
-void PK_Draw_Cursor(int x, int y){
 
-	if(!PisteUtils_Is_Mobile() && Settings.isFullScreen)
-		PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
-	
-}
 
 
 //==================================================
@@ -2088,22 +2082,27 @@ void PK_Draw_Cursor(int x, int y){
 //==================================================
 //TODO
 void PK_Start_Test(const char* arg){
-	/*
 	if (arg == NULL) return;
 
 	char buffer[PE_PATH_SIZE];
-	int sepindex;
+	char *episode, *map;
 
 	strcpy(buffer, arg);
-	for (sepindex = 0; sepindex < PE_PATH_SIZE; sepindex++)
-		if(buffer[sepindex]=='/') break;
 
-	strcpy(episodi, buffer); episodi[sepindex] = '\0';
-	strcpy(Game::map_path, buffer + sepindex + 1);
+	int i;
+	for (i = 0; i < PE_PATH_SIZE; i++)
+		if(buffer[i]=='/' || buffer[i] == '\\')
+			break;
+	buffer[i] = '\0';
 
-	printf("PK2    - testing episode '%s' level '%s'\n", episodi, Game::map_path);
+	episode = buffer;
+	Episode::Load_New("test", episode);
 
-	Episode::Load_Info();*/
+	map = buffer + i + 1;
+	//Game::Start(map);
+
+	printf("PK2    - testing episode '%s' level '%s'\n", episode, map);
+
 }
 
 

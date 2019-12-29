@@ -47,6 +47,7 @@ void terminate() {
 
 void loop(int (*GameLogic)()) {
 	
+	int error = 0;
 	int last_time = 0;
 	int count = 0; // Count how much frames elapsed
 	float real_fps = 0;
@@ -57,7 +58,9 @@ void loop(int (*GameLogic)()) {
 
 		count++;
 
-		GameLogic();
+		error = GameLogic();
+		if (error) break;
+		
 		logic();
 
 		if (draw) {
