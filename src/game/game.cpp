@@ -48,8 +48,8 @@ int GameClass::Start() {
 
 		int index = this->level_id;
 
-		strcpy(this->map_path, Episode::levels_list[index].tiedosto);
-		if (Episode::levels_list[index].lapaisty)
+		strcpy(this->map_path, Episode->levels_list[index].tiedosto);
+		if (Episode->levels_list[index].lapaisty)
 			this->repeating = true;
 		else
 			this->repeating = false;
@@ -278,7 +278,7 @@ int GameClass::Calculate_Tiles() {
 int GameClass::Open_Map() {
 	
 	char path[PE_PATH_SIZE] = "";
-	Episode::Get_Dir(path);
+	Episode->Get_Dir(path);
 
 	if (map->Lataa(path, map_path) == 1){
 		printf("PK2    - Error loading map '%s' at '%s'\n", map_path, path);
@@ -314,7 +314,7 @@ int GameClass::Open_Map() {
 
 	if ( strcmp(map->musiikki, "") != 0 ) {
 		char music_path[PE_PATH_SIZE] = "";
-		Episode::Get_Dir(music_path);
+		Episode->Get_Dir(music_path);
 		strcat(music_path, map->musiikki);
 		if (PSound::start_music(music_path) != 0) {
 

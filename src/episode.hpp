@@ -29,29 +29,37 @@ struct PK2EPISODESCORES {
 	char  episode_top_player[20];
 };
 
-namespace Episode {
+class EpisodeClass {
 
-	extern bool started;
+	public:
 	
-	extern char name[PE_PATH_SIZE];
-	
-	extern char player_name[20];
-	extern DWORD player_score;
+		char name[PE_PATH_SIZE] = " ";
+		
+		char player_name[20] = " ";
+		DWORD player_score = 0;
 
-	extern int level;
-	extern int level_count;
-	extern PK2LEVEL levels_list[EPISODI_MAX_LEVELS];
-	extern PK2EPISODESCORES scores;
+		int level = 1;
+		int level_count = 0;
+		PK2LEVEL levels_list[EPISODI_MAX_LEVELS];
+		PK2EPISODESCORES scores;
 
-	void Load_Info();
-	void Load_Save(int save);
-	void Load_New(const char* player_name, const char* episode);
-	void Get_Dir(char *tiedosto);
+		EpisodeClass(int save);
+		EpisodeClass(const char* player_name, const char* episode);
+		~EpisodeClass();
 
-	void Clear_Scores();
-	int  Open_Scores(char *filename);
-	int  Save_Scores(char *filename);
+		void Load();
 
-	void Load();
-}
+		void Load_Info();
 
+		void Get_Dir(char *tiedosto);
+
+		int  Open_Scores(const char *filename);
+		int  Save_Scores(const char *filename);
+
+	private:
+		
+		void Clear_Scores();
+
+};
+
+extern EpisodeClass* Episode;

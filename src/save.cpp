@@ -83,13 +83,13 @@ int Load_SaveFile(){
 
 int Save_Records(int i){
 	saves_list[i].kaytossa = true;
-	strcpy(saves_list[i].episodi, Episode::name);
-	strcpy(saves_list[i].nimi, Episode::player_name);
-	saves_list[i].jakso = Episode::level;
-	saves_list[i].pisteet = Episode::player_score;
+	strcpy(saves_list[i].episodi, Episode->name);
+	strcpy(saves_list[i].nimi, Episode->player_name);
+	saves_list[i].jakso = Episode->level;
+	saves_list[i].pisteet = Episode->player_score;
 
 	for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
-		saves_list[i].jakso_lapaisty[j] = Episode::levels_list[j].lapaisty;
+		saves_list[i].jakso_lapaisty[j] = Episode->levels_list[j].lapaisty;
 
 	Save_All_Records();
 

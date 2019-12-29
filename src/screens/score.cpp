@@ -41,23 +41,23 @@ int EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool final_score
 	int ret = 0;
 
 	if (!final_score) {
-		if (episteet > Episode::scores.best_score[jakso]) {
-			strcpy(Episode::scores.top_player[jakso],Episode::player_name);
-			Episode::scores.best_score[jakso] = episteet;
+		if (episteet > Episode->scores.best_score[jakso]) {
+			strcpy(Episode->scores.top_player[jakso],Episode->player_name);
+			Episode->scores.best_score[jakso] = episteet;
 			map_new_record = true;
 			ret++;
 		}
-		if ((aika < Episode::scores.best_time[jakso] || Episode::scores.best_time[jakso] == 0) && Game->map->aika > 0) {
-			strcpy(Episode::scores.fastest_player[jakso],Episode::player_name);
-			Episode::scores.best_time[jakso] = aika;
+		if ((aika < Episode->scores.best_time[jakso] || Episode->scores.best_time[jakso] == 0) && Game->map->aika > 0) {
+			strcpy(Episode->scores.fastest_player[jakso],Episode->player_name);
+			Episode->scores.best_time[jakso] = aika;
 			map_new_time_record = true;
 			ret++;
 		}
 	}
 	else {
-		if (episteet > Episode::scores.episode_top_score) {
-		    Episode::scores.episode_top_score = episteet;
-			strcpy(Episode::scores.episode_top_player,Episode::player_name);
+		if (episteet > Episode->scores.episode_top_score) {
+		    Episode->scores.episode_top_score = episteet;
+			strcpy(Episode->scores.episode_top_player,Episode->player_name);
 			episode_new_record = true;
 			ret++;
 		}
@@ -154,7 +154,7 @@ int PK_Draw_ScoreCount(){
 	if (pistelaskuvaihe >= 4){
 		PDraw::font_write(fontti4,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100+2,192+2+my);
 		vali = PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.score_screen_total_score),100,192+my);//250,80
-		ltoa(Episode::player_score,luku,10);
+		ltoa(Episode->player_score,luku,10);
 		PDraw::font_write(fontti4,luku,400+2,192+2+my);
 		PDraw::font_write(fontti2,luku,400,192+my);
 		my += 25;
@@ -211,10 +211,10 @@ int Screen_ScoreCount_Init() {
 		if (Gifts_Get(i) != -1)
 			temp_pisteet += Gifts_GetProtot(i)->pisteet + 500;
 
-	//if (Episode::levels_list[Game->level_id].lapaisty)
-	//if (Episode::levels_list[Game->level_id].jarjestys == jakso-1)
+	//if (Episode->levels_list[Game->level_id].lapaisty)
+	//if (Episode->levels_list[Game->level_id].jarjestys == jakso-1)
 	if (!Game->repeating)
-		Episode::player_score += temp_pisteet;
+		Episode->player_score += temp_pisteet;
 
 	fake_pisteet = 0;
 	pistelaskuvaihe = 0;
@@ -231,13 +231,13 @@ int Screen_ScoreCount_Init() {
 	/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
 	vertailun_tulos = EpisodeScore_Compare(Game->level_id, temp_pisteet, Game->map->aika - Game->timeout, false);
 	if (vertailun_tulos > 0) {
-		Episode::Save_Scores(pisteet_tiedosto);
+		Episode->Save_Scores(pisteet_tiedosto);
 	}
 
 	/* Tutkitaan onko pelaaja rikkonut episodin piste-enn�tyksen */
-	vertailun_tulos = EpisodeScore_Compare(0, Episode::player_score, 0, true);
+	vertailun_tulos = EpisodeScore_Compare(0, Episode->player_score, 0, true);
 	if (vertailun_tulos > 0)
-		Episode::Save_Scores(pisteet_tiedosto);
+		Episode->Save_Scores(pisteet_tiedosto);
 
 	PSound::set_musicvolume(Settings.music_max_volume);
 
@@ -331,11 +331,11 @@ int Screen_ScoreCount(){
 
 		if (Game->level_id == EPISODI_MAX_LEVELS-1) { // ihan niin kuin joku tekisi n�in monta jaksoa...
 			next_screen = SCREEN_END;
-			//Episode::started = false;
+			//Episode->started = false;
 		}
-		else if (Episode::levels_list[Game->level_id+1].jarjestys == -1) {
+		else if (Episode->levels_list[Game->level_id+1].jarjestys == -1) {
 			next_screen = SCREEN_END;
-			//Episode::started = false;
+			//Episode->started = false;
 		}
 		else { // jos ei niin palataan karttaan...
 			next_screen = SCREEN_MAP;

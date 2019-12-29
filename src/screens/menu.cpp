@@ -118,7 +118,7 @@ int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 
 int Draw_BGSquare(int left, int top, int right, int bottom, BYTE pvari){
 	
-	if (Episode::started)
+	if (Episode)
 		return 0;
 
 	if (bg_square.left < left)
@@ -314,7 +314,7 @@ int Draw_Menu_Main() {
 
 	Draw_BGSquare(160, 200, 640-180, 410, 224);
 
-	if (Episode::started){
+	if (Episode){
 		if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_continue),180,my)){
 			if (Game)
 				next_screen = SCREEN_GAME;
@@ -336,7 +336,7 @@ int Draw_Menu_Main() {
 	}
 	my += 20;
 
-	if (Episode::started){
+	if (Episode){
 		if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_save_game),180,my)){
 			menu_nyt = MENU_TALLENNA;
 		}
@@ -487,7 +487,12 @@ int Draw_Menu_Name() {
 				delete Game;
 				Game = nullptr;
 			}
-			Episode::Load_New(menu_name, episodes[2]);
+			if (Episode) {
+				delete Episode;
+				Episode = nullptr;
+			}
+
+			Episode = new EpisodeClass(menu_name, episodes[2]);
 			next_screen = SCREEN_MAP;
 		
 		}
@@ -537,7 +542,12 @@ int Draw_Menu_Load() {
 				delete Game;
 				Game = nullptr;
 			}
-			Episode::Load_Save(i);
+			if (Episode) {
+				delete Episode;
+				Episode = nullptr;
+			}
+
+			Episode = new EpisodeClass(i);
 			next_screen = SCREEN_MAP;
 		}
 
@@ -701,7 +711,7 @@ int Draw_Menu_Graphics() {
 			PK2Kartta_Set_Screen_Size(screen_width, screen_height);
 			PDraw::change_resolution(screen_width, screen_height);
 			
-			if(Episode::started)
+			if(Episode)
 				PDraw::image_fill(bg_screen, 0);
 			
 			if (Settings.isWide) PDraw::set_xoffset(80);
@@ -1044,7 +1054,12 @@ int Draw_Menu_Episodes() {
 					delete Game;
 					Game = nullptr;
 				}
-				Episode::Load_New(menu_name, episodes[i]);
+				if (Episode) {
+					delete Episode;
+					Episode = nullptr;
+				}
+				
+				Episode = new EpisodeClass(menu_name, episodes[i]);
 				next_screen = SCREEN_MAP;
 			}
 			my += 20;
@@ -1116,7 +1131,7 @@ int Draw_Menu_Language() {
 int Draw_Menu() {
 
 	PDraw::screen_fill(0);
-	PDraw::image_clip(bg_screen, (Episode::started && Settings.isWide)? -80 : 0, 0);
+	PDraw::image_clip(bg_screen, (Episode && Settings.isWide)? -80 : 0, 0);
 
 	menu_valinta_id = 1;
 
@@ -1211,7 +1226,7 @@ int Screen_Menu_Init() {
 	Search_Episode();
 	Search_Languages();
 
-	if (!Episode::started) {
+	if (!Episode) {
 
 		PDraw::image_load(bg_screen, "gfx/menu.bmp", true);
 		PSound::start_music("music/song09.xm");

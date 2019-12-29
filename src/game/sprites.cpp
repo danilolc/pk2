@@ -106,7 +106,7 @@ void Prototypes_get_transformation(int i) {
 		if (!loaded) {
 			char polku[PE_PATH_SIZE];
 			strcpy(polku,"sprites/");
-			//Episode::Get_Dir(polku);
+			//Episode->Get_Dir(polku);
 
 			if (Prototypes_get(polku, Prototypes_List[i].muutos_sprite)==0)
 				Prototypes_List[i].muutos = next_free_prototype-1; // jokainen lataus kasvattaa next_free_prototype:a
@@ -133,7 +133,7 @@ void Prototypes_get_bonus(int i) {
 		if (!loaded){
 			char polku[PE_PATH_SIZE];
 			strcpy(polku,"sprites/");
-			//Episode::Get_Dir(polku);
+			//Episode->Get_Dir(polku);
 
 			if (Prototypes_get(polku, Prototypes_List[i].bonus_sprite)==0)
 				Prototypes_List[i].bonus = next_free_prototype-1;
@@ -202,7 +202,7 @@ int  Prototypes_GetAll() {
 		if (strcmp(Game->map->protot[i],"") != 0){
 			viimeinen_proto = i;
 			strcpy(polku,"");
-			Episode::Get_Dir(polku);
+			Episode->Get_Dir(polku);
 
 			if (Prototypes_get(polku,Game->map->protot[i])!=0){
 				strcpy(polku,"sprites/");

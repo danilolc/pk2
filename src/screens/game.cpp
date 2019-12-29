@@ -192,8 +192,8 @@ int PK_Draw_InGame_DebugInfo() {
 	}
 
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++)
-		if (strcmp(Episode::levels_list[i].nimi,"")!=0)
-			PDraw::font_write(fontti1,Episode::levels_list[i].nimi,0,240+i*10);
+		if (strcmp(Episode->levels_list[i].nimi,"")!=0)
+			PDraw::font_write(fontti1,Episode->levels_list[i].nimi,0,240+i*10);
 
 	char dluku[50];
 
@@ -215,7 +215,7 @@ int PK_Draw_InGame_DebugInfo() {
 	PDraw::font_write(fontti1, lukua, 270, 460);
 
 	char tpolku[PE_PATH_SIZE] = "";
-	Episode::Get_Dir(tpolku);
+	Episode->Get_Dir(tpolku);
 
 	PDraw::font_write(fontti1,tpolku,10,470);
 
@@ -813,9 +813,9 @@ int Screen_InGame(){
 					PK2_Error("Can't find hiscore.xm");
 				}
 				Game->level_clear = true;
-				Episode::levels_list[Game->level_id].lapaisty = true;
-				if (Episode::levels_list[Game->level_id].jarjestys == Episode::level)
-					Episode::level++;
+				Episode->levels_list[Game->level_id].lapaisty = true;
+				if (Episode->levels_list[Game->level_id].jarjestys == Episode->level)
+					Episode->level++;
 				PSound::set_musicvolume_now(Settings.music_max_volume);
 			}
 			if (PisteInput_Keydown(PI_LSHIFT)/* && key_delay == 0*/) {

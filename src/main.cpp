@@ -348,9 +348,9 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 					PK2_Error("Can't find song01.xm");
 				}
 				Game->level_clear = true;
-				Episode::levels_list[Game->level_id].lapaisty = true;
-				if (Episode::levels_list[Game->level_id].jarjestys == Episode::level)
-					Episode::level++; //Increase level
+				Episode->levels_list[Game->level_id].lapaisty = true;
+				if (Episode->levels_list[Game->level_id].jarjestys == Episode->level)
+					Episode->level++; //Increase level
 				PSound::set_musicvolume_now(Settings.music_max_volume);
 			}
 		}
@@ -2085,7 +2085,7 @@ void PK_Start_Test(const char* arg){
 	if (arg == NULL) return;
 
 	char buffer[PE_PATH_SIZE];
-	char *episode, *map;
+	char *episode_path, *map_path;
 
 	strcpy(buffer, arg);
 
@@ -2095,13 +2095,13 @@ void PK_Start_Test(const char* arg){
 			break;
 	buffer[i] = '\0';
 
-	episode = buffer;
-	Episode::Load_New("test", episode);
+	episode_path = buffer;
+	Episode = new EpisodeClass("test", episode_path);
 
-	map = buffer + i + 1;
-	Game = new GameClass(map);
+	map_path = buffer + i + 1;
+	Game = new GameClass(map_path);
 
-	printf("PK2    - testing episode '%s' level '%s'\n", episode, map);
+	printf("PK2    - testing episode_path '%s' level '%s'\n", episode_path, map_path);
 
 }
 
@@ -2115,6 +2115,10 @@ void quit(int ret) {
 	if (Game) {
 		delete Game;
 		Game = nullptr;
+	}
+	if (Episode) {
+		delete Episode;
+		Episode = nullptr;
 	}
 	
 	delete tekstit;

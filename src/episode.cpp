@@ -15,71 +15,65 @@
 
 #include <cstring>
 
-namespace Episode {
-	bool started = false;
+EpisodeClass* Episode = nullptr;
 
-	char name[PE_PATH_SIZE] = " ";
-	
-	char player_name[20] = " ";
-	DWORD player_score = 0;
+void EpisodeClass::Clear_Scores() {
 
-	int level = 1;
-	int level_count = 0;
-	PK2LEVEL levels_list[EPISODI_MAX_LEVELS];
-	PK2EPISODESCORES scores;
-	
-}
-
-void Episode::Clear_Scores(){
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
-		Episode::scores.best_score[i] = 0;
-		Episode::scores.best_time[i] = 0;
-		strcpy(Episode::scores.top_player[i]," ");
-		strcpy(Episode::scores.fastest_player[i]," ");
+		this->scores.best_score[i] = 0;
+		this->scores.best_time[i] = 0;
+		strcpy(this->scores.top_player[i]," ");
+		strcpy(this->scores.fastest_player[i]," ");
 	}
 
-	Episode::scores.episode_top_score = 0;
-	strcpy(Episode::scores.episode_top_player," ");
+	this->scores.episode_top_score = 0;
+	strcpy(this->scores.episode_top_player," ");
 }
 
-int Episode::Open_Scores(char *filename) {
+int EpisodeClass::Open_Scores(const char *filename) {
 
 	char versio[4];
 
-	Episode::Get_Dir(filename);
+	char path[PE_PATH_SIZE];
+
+	strcpy(path, filename);
+	this->Get_Dir(path);
 	
-	SDL_RWops *file = SDL_RWFromFile(filename, "r");
+	SDL_RWops *file = SDL_RWFromFile(path, "r");
 	if (file == nullptr){
-		Episode::Clear_Scores();
+		this->Clear_Scores();
 		return 1;
 	}
 
 	SDL_RWread(file, versio, 4, 1);
 	if (strcmp(versio, "1.0") != 0) {
-		Episode::Clear_Scores();
+		this->Clear_Scores();
 		SDL_RWclose(file);
 		return 2;
 	}
 	
-	SDL_RWread(file, &Episode::scores, sizeof(Episode::scores), 1);
+	SDL_RWread(file, &this->scores, sizeof(this->scores), 1);
 	SDL_RWclose(file);
 
 	return 0;
 
 }
 
-int Episode::Save_Scores(char *filename) {
+int EpisodeClass::Save_Scores(const char *filename) {
+	
+	char path[PE_PATH_SIZE];
+	strcpy(path, filename);
 
-	Episode::Get_Dir(filename);
+	this->Get_Dir(path);
 
-	SDL_RWops *file = SDL_RWFromFile(filename, "w");
+	SDL_RWops *file = SDL_RWFromFile(path, "w");
 	if (file == nullptr) {
 		printf("Error saving scores\n");
 		return 1;
 	}
 
 	SDL_RWwrite(file, "1.0", 1, 4);
-	SDL_RWwrite(file, &Episode::scores, 1, sizeof(Episode::scores));
+	SDL_RWwrite(file, &this->scores, 1, sizeof(this->scores));
 	
 	SDL_RWclose(file);
 
@@ -87,17 +81,17 @@ int Episode::Save_Scores(char *filename) {
 
 }
 
-
-
 //TODO - Load info from different languages
-void Episode::Load_Info() { 
+void EpisodeClass::Load_Info() {
+
 	PisteLanguage* temp;
+
 	char infofile[PE_PATH_SIZE] = "infosign.txt";
 	char otsikko[] = "info00";
 	int indeksi1, indeksi2, i;
 
 	temp = new PisteLanguage();
-	Episode::Get_Dir(infofile);
+	this->Get_Dir(infofile);
 
 	if (PK_Check_File(infofile)){
 		if (temp->Read_File(infofile)){
@@ -115,103 +109,106 @@ void Episode::Load_Info() {
 		}
 	}
 
-	delete (temp);
+	delete temp;
+
 }
 
-void Episode::Load() {
+void EpisodeClass::Load() {
 	
 	int i = 0;
-	char hakemisto[PE_PATH_SIZE];
+	char path[PE_PATH_SIZE];
 	char list[EPISODI_MAX_LEVELS][PE_PATH_SIZE];
 	
 	memset(list, '\0', sizeof(list));
 
-	strcpy(hakemisto,"");
-	Episode::Get_Dir(hakemisto);
-	Episode::level_count = PisteUtils_Scandir(".map", hakemisto, list, EPISODI_MAX_LEVELS);
+	strcpy(path,"");
+	this->Get_Dir(path);
+	this->level_count = PisteUtils_Scandir(".map", path, list, EPISODI_MAX_LEVELS);
 
 	PK2Kartta *temp = new PK2Kartta();
 
-	for (i = 0; i <= Episode::level_count; i++){
-		strcpy(Episode::levels_list[i].tiedosto, list[i]);
-		if (temp->Lataa_Pelkat_Tiedot(hakemisto,Episode::levels_list[i].tiedosto) == 0){
-			strcpy(Episode::levels_list[i].nimi, temp->nimi);
-			Episode::levels_list[i].x = temp->x;//   142 + i*35;
-			Episode::levels_list[i].y = temp->y;// 270;
-			Episode::levels_list[i].jarjestys = temp->jakso;
-			Episode::levels_list[i].ikoni = temp->ikoni;
+	for (i = 0; i <= this->level_count; i++){
+		strcpy(this->levels_list[i].tiedosto, list[i]);
+		if (temp->Lataa_Pelkat_Tiedot(path,this->levels_list[i].tiedosto) == 0){
+			strcpy(this->levels_list[i].nimi, temp->nimi);
+			this->levels_list[i].x = temp->x;//   142 + i*35;
+			this->levels_list[i].y = temp->y;// 270;
+			this->levels_list[i].jarjestys = temp->jakso;
+			this->levels_list[i].ikoni = temp->ikoni;
 		}
 	}
 
 	delete temp;
 
 	for (; i < EPISODI_MAX_LEVELS; i++){
-		strcpy(Episode::levels_list[i].nimi,"");
-		strcpy(Episode::levels_list[i].tiedosto,"");
-		Episode::levels_list[i].x = 0;
-		Episode::levels_list[i].y = 0;
-		Episode::levels_list[i].jarjestys = -1;
-		Episode::levels_list[i].ikoni = 0;
+		strcpy(this->levels_list[i].nimi,"");
+		strcpy(this->levels_list[i].tiedosto,"");
+		this->levels_list[i].x = 0;
+		this->levels_list[i].y = 0;
+		this->levels_list[i].jarjestys = -1;
+		this->levels_list[i].ikoni = 0;
 	}
 
-	PK2LEVEL jakso;
+	PK2LEVEL temp2;
 
-	bool lopeta = false;
+	bool stop = false;
 
-	while (!lopeta){
-		lopeta = true;
+	while (!stop){
+		stop = true;
 
-		for (i=0;i<Episode::level_count;i++){
-			if (Episode::levels_list[i].jarjestys > Episode::levels_list[i+1].jarjestys){
-				jakso = Episode::levels_list[i];
-				Episode::levels_list[i] = Episode::levels_list[i+1];
-				Episode::levels_list[i+1] = jakso;
-				lopeta = false;
+		for (i=0;i<this->level_count;i++){
+			if (this->levels_list[i].jarjestys > this->levels_list[i+1].jarjestys){
+				temp2 = this->levels_list[i];
+				this->levels_list[i] = this->levels_list[i+1];
+				this->levels_list[i+1] = temp2;
+				stop = false;
 			}
 		}
 	}
 	
-	char topscoretiedosto[PE_PATH_SIZE] = "scores.dat";
-	Episode::Open_Scores(topscoretiedosto);
+	this->Open_Scores("scores.dat");
+	this->Load_Info();
 
-	Episode::Load_Info();
-	
-	Episode::started = true;
 }
 
-void Episode::Load_Save(int save) {
+EpisodeClass::EpisodeClass(int save) {
 
-	strcpy(Episode::name,saves_list[save].episodi);
-	strcpy(Episode::player_name, saves_list[save].nimi);
-	Episode::level = saves_list[save].jakso;
-	Episode::player_score = saves_list[save].pisteet;
+	strcpy(this->name,saves_list[save].episodi);
+	strcpy(this->player_name, saves_list[save].nimi);
+	this->level = saves_list[save].jakso;
+	this->player_score = saves_list[save].pisteet;
 
 	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-			Episode::levels_list[j].lapaisty = saves_list[save].jakso_lapaisty[j];
+		this->levels_list[j].lapaisty = saves_list[save].jakso_lapaisty[j];
 
-	Episode::Load();
+	this->Load();
 
 }
-void Episode::Load_New(const char* player_name, const char* episode) {
 
-	strcpy(Episode::name, episode);
-	strcpy(Episode::player_name, player_name);
-	Episode::level = 1;
-	Episode::player_score = 0;
+EpisodeClass::EpisodeClass(const char* player_name, const char* episode) {
+
+	strcpy(this->name, episode);
+	strcpy(this->player_name, player_name);
 
 	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-		Episode::levels_list[j].lapaisty = 0;
+		this->levels_list[j].lapaisty = 0;
 	
-	Episode::Load();
+	this->Load();
 	
 }
 
-void Episode::Get_Dir(char *tiedosto){
+EpisodeClass::~EpisodeClass() {
+
+
+
+}
+
+void EpisodeClass::Get_Dir(char *tiedosto){
 	char uusi_tiedosto[255];
 
 	strcpy(uusi_tiedosto, game_path);
 	strcat(uusi_tiedosto, "/episodes/");
-	strcat(uusi_tiedosto, Episode::name);
+	strcat(uusi_tiedosto, EpisodeClass::name);
 	strcat(uusi_tiedosto, "/");
 	strcat(uusi_tiedosto, tiedosto);
 	strcpy(tiedosto, uusi_tiedosto);
