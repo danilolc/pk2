@@ -107,7 +107,7 @@ bool PisteUtils_Find(char *filename) {
 	return false;
 }
 
-//This need to receive just the filename, not the path
+//Habe to receive just the filename, not the path
 void getext(char* string){
 	int i, b = -1, len;
 	for(i=0; string[i]!='\0'; i++)
@@ -154,7 +154,7 @@ int PisteUtils_Scandir(const char* type, const char* dir, char (*list)[PE_PATH_S
 
 	return i;
 }
-int PisteUtils_CreateDir(char *directory){
+int PisteUtils_CreateDir(const char *directory){
 	CreateDirectory(directory, NULL);
 	return 0;
 }
@@ -191,7 +191,7 @@ int PisteUtils_Scandir(const char* type, const char* dir, char (*list)[PE_PATH_S
 
 	return files;
 }
-int PisteUtils_CreateDir(char *directory){
+int PisteUtils_CreateDir(const char *directory){
 	char shell[PE_PATH_SIZE];
 	strcpy(shell,"mkdir -p ");
 	strcat(shell,directory);
@@ -224,22 +224,18 @@ bool PisteUtils_Is_Mobile() {
 
 }
 
-int PisteUtils_Alphabetical_Compare(char *a, char *b) {
+int PisteUtils_Alphabetical_Compare(const char *a, const char *b) {
 	
 	int a_size, b_size;
-
-	for(a_size = 0; a[a_size] != '\0'; a_size++)
-		a[a_size] |= ' '; //Lower case
-
-	for(b_size = 0; b[b_size] != '\0'; b_size++)
-		b[b_size] |= ' ';
 	
 	int min_size = a_size < b_size? a_size : b_size;
 
 	for (int i = 0; i < min_size; i++) {
-		if (a[i] < b[i])
+		char ac = a[i] | ' '; //lower case
+		char bc = b[i] | ' ';
+		if (ac < bc) 
 			return 2;
-		if (a[i] > b[i])
+		if (ac > bc)
 			return 1;
 	}
 

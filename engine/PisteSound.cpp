@@ -60,7 +60,7 @@ int Change_Frequency(int index, int freq){
 	else return 1; // Dont need to change frequency
 }
 
-int load_sfx(char* filename){
+int load_sfx(const char* filename){
 	int i = -1;
 	for(i=0;i<MAX_SOUNDS;i++)
 		if (indexes[i] == NULL){
@@ -120,11 +120,15 @@ void reset_sfx(){
 		free_sfx(i);
 }
 
-int start_music(char* filename){
-	PisteUtils_RemoveSpace(filename);
-	if(!strcmp(playingMusic,filename)) return 0;
+int start_music(const char* filename){
 
-	music = Mix_LoadMUS(filename);
+	char temp[PE_PATH_SIZE];
+	strcpy(temp, filename);
+
+	PisteUtils_RemoveSpace(temp);
+	if(!strcmp(playingMusic,temp)) return 0;
+
+	music = Mix_LoadMUS(temp);
 	if (music == NULL){
 		printf("PS     - Music load error: %s\n",Mix_GetError());
 		return -1;
@@ -134,9 +138,10 @@ int start_music(char* filename){
 		return -1;
 	}
 
-	printf("PS     - Loaded %s\n",filename);
-	strcpy(playingMusic,filename);
+	printf("PS     - Loaded %s\n",temp);
+	strcpy(playingMusic, temp);
 	return 0;
+	
 }
 void set_musicvolume(int volume){
 	mus_volume = volume;

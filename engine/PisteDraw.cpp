@@ -361,7 +361,7 @@ int font_create(int image, int x, int y, int char_w, int char_h, int count){
   fontList[index] = new PFont(image, x, y, char_w, char_h, count);
   return index;
 }
-int font_create(char* path, char* file){
+int font_create(const char* path, const char* file){
     printf("PD     - Creating font with path %s e file %s\n",path,file);
     int index;
 

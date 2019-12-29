@@ -17,8 +17,8 @@ class PisteLanguage{
 		~PisteLanguage();
 		bool Read_File(char *filename);
 		int Hae_Indeksi(const char *title);
-		char* Hae_Teksti(int index);
-		void Korvaa_Teksti(int index, char *teksti);
+		const char* Hae_Teksti(int index);
+		void Replace_Text(int index, const char *teksti);
 
 	private:
 		char tekstit[MAX_TEXTS][MAX_TEXT_LENGTH+1];

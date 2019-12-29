@@ -104,7 +104,7 @@ void EpisodeClass::Load_Info() {
 				indeksi2 = temp->Hae_Indeksi(otsikko);
 
 				if (indeksi1 != -1 && indeksi2 != -1)
-					tekstit->Korvaa_Teksti(indeksi1,temp->Hae_Teksti(indeksi2));
+					tekstit->Replace_Text(indeksi1,temp->Hae_Teksti(indeksi2));
 			}
 		}
 	}

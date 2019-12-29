@@ -95,7 +95,7 @@ int Load_Fonts(PisteLanguage* lang) {
 	return 0;
 }
 
-int CreditsText_Draw(char *text, int font, int x, int y, DWORD start, DWORD end, DWORD time){
+int CreditsText_Draw(const char *text, int font, int x, int y, DWORD start, DWORD end, DWORD time){
 	int pros = 100;
 	if (time > start && time < end) {
 
@@ -116,7 +116,7 @@ int CreditsText_Draw(char *text, int font, int x, int y, DWORD start, DWORD end,
 	return 0;
 }
 
-int Wavetext_Draw(char *teksti, int fontti, int x, int y){
+int Wavetext_Draw(const char *teksti, int fontti, int x, int y){
 	int pituus = strlen(teksti);
 	int vali = 0;
 	char kirjain[3] = " \0";
@@ -134,7 +134,7 @@ int Wavetext_Draw(char *teksti, int fontti, int x, int y){
 	return vali;
 }
 
-int WavetextSlow_Draw(char *teksti, int fontti, int x, int y){
+int WavetextSlow_Draw(const char *teksti, int fontti, int x, int y){
 	int pituus = strlen(teksti);
 	int vali = 0;
 	char kirjain[3] = " \0";

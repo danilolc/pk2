@@ -125,7 +125,7 @@ extern GameClass* Game;
 int PK_Sprite_Bonus_Movement(int i);
 int PK_Sprite_Movement(int i);
 
-bool Draw_Menu_Text(bool active, char *teksti, int x, int y);
+bool Draw_Menu_Text(bool active, const char *teksti, int x, int y);
 int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx);
 
 bool PK_Check_File(const char *filename);

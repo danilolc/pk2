@@ -203,7 +203,7 @@ int Draw_BGSquare(int left, int top, int right, int bottom, BYTE pvari){
 
 }
 
-bool Draw_Menu_Text(bool active, char *teksti, int x, int y) {
+bool Draw_Menu_Text(bool active, const char *teksti, int x, int y) {
 
 	if(!active) {
 		WavetextSlow_Draw(teksti, fontti2, x, y);
@@ -1058,7 +1058,7 @@ int Draw_Menu_Episodes() {
 					delete Episode;
 					Episode = nullptr;
 				}
-				
+
 				Episode = new EpisodeClass(menu_name, episodes[i]);
 				next_screen = SCREEN_MAP;
 			}

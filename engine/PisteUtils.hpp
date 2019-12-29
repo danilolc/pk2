@@ -10,7 +10,8 @@ int PisteUtils_Setcwd();
 void  PisteUtils_Lower(char* string);
 void  PisteUtils_RemoveSpace(char* string);
 bool  PisteUtils_Find(char *filename);
-int   PisteUtils_CreateDir(char *directory);
+
+int   PisteUtils_CreateDir(const char *directory);
 void  PisteUtils_Show_Error(const char* txt);
 
 //type:
@@ -21,4 +22,4 @@ int  PisteUtils_Scandir(const char* type, const char* dir, char (*list)[PE_PATH_
 
 void PisteUtils_Force_Mobile();
 bool PisteUtils_Is_Mobile();
-int PisteUtils_Alphabetical_Compare(char *a, char *b);
+int PisteUtils_Alphabetical_Compare(const char *a, const char *b);

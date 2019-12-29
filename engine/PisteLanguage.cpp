@@ -136,14 +136,14 @@ int PisteLanguage::Hae_Indeksi(const char *otsikko){
 
 }
 
-char* PisteLanguage::Hae_Teksti(int index){
+const char* PisteLanguage::Hae_Teksti(int index){
 	if (index >= 0 && index < MAX_TEXTS)
 		return tekstit[index];
 	else
 		return ".....";
 }
 
-void PisteLanguage::Korvaa_Teksti(int index, char *teksti){
+void PisteLanguage::Replace_Text(int index, const char *teksti){
 	if (index >= 0 && index < MAX_TEXTS)
-		strcpy(tekstit[index],teksti);
+		strcpy(tekstit[index], teksti);
 }

@@ -57,7 +57,7 @@ int   drawimage_end(int index);
 BYTE  blend_colors(BYTE color, BYTE colBack,int alpha);
 
 int   font_create(int image, int x, int y, int width, int height, int count);
-int   font_create(char* path, char* file);
+int   font_create(const char* path, const char* file);
 int   font_write(int font_index, const char* text, int x, int y);
 int   font_writealpha(int font_index, const char* text, int x, int y, BYTE alpha);
 
