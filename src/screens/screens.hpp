@@ -18,6 +18,8 @@ enum SCREEN{
 extern int current_screen;
 extern int next_screen;
 
+void Fade_Quit();
+
 int Screen_Intro_Init();
 int Screen_Menu_Init();
 int Screen_Map_Init();

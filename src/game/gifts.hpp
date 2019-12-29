@@ -14,6 +14,7 @@ void Gifts_Clean();
 int Gifts_Count();
 
 int Gifts_Get(int i);
+void Gifts_Remove(int i);
 PK2Sprite_Prototyyppi* Gifts_GetProtot(int i);
 void Gifts_Draw(int i, int x, int y);
 int Gifts_ChangeOrder();

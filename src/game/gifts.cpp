@@ -5,8 +5,6 @@
 #include "game/gifts.hpp"
 
 #include "game/sprites.hpp"
-#include "game/game.hpp"
-#include "language.hpp"
 
 #include <cstring>
 
@@ -38,23 +36,31 @@ void Gifts_Clean() {
 
 bool Gifts_Add(int prototype_id) {
 	int i = 0;
-	bool lisatty = false;
+	bool success = false;
 
-	char ilmo[80];
-	strcpy(ilmo,tekstit->Hae_Teksti(PK_txt.game_newitem));  //"a new item: ";
-
-	while (i < MAX_GIFTS && !lisatty) {
+	while (i < MAX_GIFTS && !success) {
 		if (gifts_list[i] == -1) {
-			lisatty = true;
+			success = true;
 			gifts_list[i] = prototype_id;
-			
-			//strcat(ilmo, Prototypes_List[prototype_id].nimi); //TODO
-			Game::Start_Info(ilmo);
 			gifts_count++;
 		}
 		i++;
 	}
-	return lisatty;
+	return success;
+}
+
+void Gifts_Remove(int i) {
+
+	if(gifts_list[i] == -1)
+		return;
+
+	for (int i = 0; i < MAX_GIFTS - 1; i++)
+		gifts_list[i] = gifts_list[i+1];
+	
+	gifts_list[MAX_GIFTS - 1] = -1;
+	
+	gifts_count--;
+
 }
 
 int Gifts_Use() {
@@ -65,12 +71,7 @@ int Gifts_Use() {
 			Player_Sprite->y,
 			MAX_SPRITEJA, false);
 
-		for (int i = 0; i < MAX_GIFTS - 1; i++)
-			gifts_list[i] = gifts_list[i+1];
-
-		gifts_list[MAX_GIFTS-1] = -1;
-
-		gifts_count--;
+		Gifts_Remove(0);
 	}
 
 	return 0;

@@ -3,7 +3,7 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-#include "screens.hpp"
+#include "screens/screens.hpp"
 
 #include "settings.hpp"
 #include "gui.hpp"

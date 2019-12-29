@@ -21,40 +21,40 @@
 
 bool going_to_game = false;
 
-int PK_Draw_Map_Button(int x, int y, int t){
-	int paluu = 0;
+int PK_Draw_Map_Button(int x, int y, int type){
 
-	t = t * 25;
-
-	int vilkku = 50 + (int)(sin_table[degree%360]*2);
-
-	if (vilkku < 0)
-		vilkku = 0;
-
-	if (mouse_x > x && mouse_x < x+17 && mouse_y > y && mouse_y < y+17){
+	const int BORDER = 17;
+	int ret = 0;
+	
+	if (mouse_x > x && mouse_x < x+ BORDER && mouse_y > y && mouse_y < y + BORDER){
 		if (key_delay == 0 && (PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE)
 													    || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))){
 			key_delay = 30;
 			return 2;
 		}
 
-		if (t == 25)
-			PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-2, y-2, 60, 96);
-		if (t == 0)
+		if (type == 0)
 			PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-4, y-4, 60, 32);
-		if (t == 50)
+		if (type == 1)
+			PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-2, y-2, 60, 96);
+		if (type == 2)
 			PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-4, y-4, 60, 64);
 
-		paluu = 1;
+		ret = 1;
 	}
 
-	if (t == 25)
-		PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-2, y-2, vilkku, 96);
+	int flash = 50 + (int)(sin_table[degree%360]*2);
 
-	if (((degree/45)+1)%4==0 || t==0)
-		PDraw::image_cutclip(game_assets,x,y,1+t,58,23+t,80);
+	if (flash < 0)
+		flash = 0;
+	
+	if (type == 1)
+		PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-2, y-2, flash, 96);
 
-	return paluu;
+	if (((degree/45)+1)%4==0 || type==0)
+		PDraw::image_cutclip(game_assets,x,y,1 + 25*type,58,23 + 25*type,80);
+
+	return ret;
 }
 
 int PK_Draw_Map(){

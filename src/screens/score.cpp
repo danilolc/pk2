@@ -2,7 +2,7 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-#include "screens.hpp"
+#include "screens/screens.hpp"
 
 #include "gfx/text.hpp"
 #include "language.hpp"
@@ -18,16 +18,54 @@
 #include "PisteInput.hpp"
 #include "PisteSound.hpp"
 
+#include <cstring>
+
 bool siirry_pistelaskusta_karttaan = false;
 
 int pistelaskuvaihe = 0;
 int pistelaskudelay = 0;
 
+DWORD fake_pisteet = 0;
 DWORD bonuspisteet = 0;
 DWORD aikapisteet = 0;
 DWORD energiapisteet = 0;
 DWORD esinepisteet = 0;
 DWORD pelastuspisteet = 0;
+
+bool map_new_record = false;
+bool map_new_time_record = false;
+bool episode_new_record = false;
+
+int EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool final_score){
+	
+	int ret = 0;
+
+	if (!final_score) {
+		if (episteet > Episode::scores.best_score[jakso]) {
+			strcpy(Episode::scores.top_player[jakso],Episode::player_name);
+			Episode::scores.best_score[jakso] = episteet;
+			map_new_record = true;
+			ret++;
+		}
+		if ((aika < Episode::scores.best_time[jakso] || Episode::scores.best_time[jakso] == 0) && Game::map->aika > 0) {
+			strcpy(Episode::scores.fastest_player[jakso],Episode::player_name);
+			Episode::scores.best_time[jakso] = aika;
+			map_new_time_record = true;
+			ret++;
+		}
+	}
+	else {
+		if (episteet > Episode::scores.episode_top_score) {
+		    Episode::scores.episode_top_score = episteet;
+			strcpy(Episode::scores.episode_top_player,Episode::player_name);
+			episode_new_record = true;
+			ret++;
+		}
+	}
+
+	return ret;
+
+}
 
 int PK_Draw_ScoreCount(){
 	char luku[20];
@@ -107,9 +145,7 @@ int PK_Draw_ScoreCount(){
 
 	for (int i = 0; i < MAX_GIFTS; i++)
 		if (Gifts_Get(i) != -1)	{
-			//PK2Sprite_Prototyyppi* prot = Gifts_GetProtot(i);
 			Gifts_Draw(i, x, y);
-			//prot->Piirra(x - prot->leveys/2, y - prot->korkeus / 2, 0);
 			x += 38;
 		}
 
@@ -194,15 +230,14 @@ int Screen_ScoreCount_Init() {
 
 	/* Tutkitaan onko pelaajarikkonut kent�n piste- tai nopeusenn�tyksen */
 	vertailun_tulos = EpisodeScore_Compare(Game::level_id, temp_pisteet, Game::map->aika - Game::timeout, false);
-	if (vertailun_tulos > 0)
-	{
-		EpisodeScore_Save(pisteet_tiedosto);
+	if (vertailun_tulos > 0) {
+		Episode::Save_Scores(pisteet_tiedosto);
 	}
 
 	/* Tutkitaan onko pelaaja rikkonut episodin piste-enn�tyksen */
 	vertailun_tulos = EpisodeScore_Compare(0, Episode::player_score, 0, true);
 	if (vertailun_tulos > 0)
-		EpisodeScore_Save(pisteet_tiedosto);
+		Episode::Save_Scores(pisteet_tiedosto);
 
 	PSound::set_musicvolume(Settings.music_max_volume);
 
@@ -257,13 +292,9 @@ int Screen_ScoreCount(){
 		} else if (Gifts_Count() > 0){
 			pistelaskuvaihe = 4;
 			pistelaskudelay = 30;
-			for (int i = 0; i < MAX_GIFTS; i++)
-				if (Gifts_Get(i) != -1) {
-					esinepisteet += Gifts_GetProtot(i)->pisteet + 500;
-					//esineet[i] = NULL;
-					Play_MenuSFX(jump_sound, 100);
-					break;
-				}
+			esinepisteet += Gifts_GetProtot(0)->pisteet + 500;
+			Gifts_Remove(0); 
+			Play_MenuSFX(jump_sound, 100);
 		}
 		else pistelaskuvaihe = 5;
 	}
@@ -302,9 +333,8 @@ int Screen_ScoreCount(){
 			Game::timeout = 0;
 			energiapisteet += Player_Sprite->energia * 300;
 			Player_Sprite->energia = 0;
-			for (int i=0;i<MAX_GIFTS;i++)
-				if (Gifts_Get(i) != -1)
-					esinepisteet += Gifts_GetProtot(i)->pisteet + 500;
+			for (int i = 0; i < Gifts_Count(); i++)
+				esinepisteet += Gifts_GetProtot(i)->pisteet + 500;
 			
 			Gifts_Clean(); //TODO esineita = 0;
 

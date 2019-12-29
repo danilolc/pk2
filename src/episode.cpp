@@ -6,7 +6,6 @@
 
 #include "game/map.hpp"
 #include "language.hpp"
-#include "game/game.hpp" //
 #include "system.hpp"
 #include "save.hpp"
 
@@ -15,18 +14,12 @@
 #include <SDL_rwops.h>
 
 #include <cstring>
-#include <memory>
-
-DWORD fake_pisteet = 0;
-
-bool map_new_record = false;
-bool map_new_time_record = false;
-bool episode_new_record = false;
 
 namespace Episode {
 	bool started = false;
 
 	char name[PE_PATH_SIZE] = " ";
+	
 	char player_name[20] = " ";
 	DWORD player_score = 0;
 
@@ -37,7 +30,7 @@ namespace Episode {
 	
 }
 
-void EpisodeScore_Start(){
+void Episode::Clear_Scores(){
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
 		Episode::scores.best_score[i] = 0;
 		Episode::scores.best_time[i] = 0;
@@ -48,33 +41,8 @@ void EpisodeScore_Start(){
 	Episode::scores.episode_top_score = 0;
 	strcpy(Episode::scores.episode_top_player," ");
 }
-int EpisodeScore_Compare(int jakso, DWORD episteet, DWORD aika, bool loppupisteet){
-	int paluu = 0;
-	if (!loppupisteet) {
-		if (episteet > Episode::scores.best_score[jakso]) {
-			strcpy(Episode::scores.top_player[jakso],Episode::player_name);
-			Episode::scores.best_score[jakso] = episteet;
-			map_new_record = true;
-			paluu++;
-		}
-		if ((aika < Episode::scores.best_time[jakso] || Episode::scores.best_time[jakso] == 0) && Game::map->aika > 0) {
-			strcpy(Episode::scores.fastest_player[jakso],Episode::player_name);
-			Episode::scores.best_time[jakso] = aika;
-			map_new_time_record = true;
-			paluu++;
-		}
-	}
-	else {
-		if (episteet > Episode::scores.episode_top_score) {
-		    Episode::scores.episode_top_score = episteet;
-			strcpy(Episode::scores.episode_top_player,Episode::player_name);
-			episode_new_record = true;
-			paluu++;
-		}
-	}
-	return paluu;
-}
-int EpisodeScore_Open(char *filename) {
+
+int Episode::Open_Scores(char *filename) {
 
 	char versio[4];
 
@@ -82,13 +50,13 @@ int EpisodeScore_Open(char *filename) {
 	
 	SDL_RWops *file = SDL_RWFromFile(filename, "r");
 	if (file == nullptr){
-		EpisodeScore_Start();
+		Episode::Clear_Scores();
 		return 1;
 	}
 
 	SDL_RWread(file, versio, 4, 1);
 	if (strcmp(versio, "1.0") != 0) {
-		EpisodeScore_Start();
+		Episode::Clear_Scores();
 		SDL_RWclose(file);
 		return 2;
 	}
@@ -99,7 +67,8 @@ int EpisodeScore_Open(char *filename) {
 	return 0;
 
 }
-int EpisodeScore_Save(char *filename) {
+
+int Episode::Save_Scores(char *filename) {
 
 	Episode::Get_Dir(filename);
 
@@ -119,7 +88,7 @@ int EpisodeScore_Save(char *filename) {
 }
 
 //TODO - Load info from different languages
-void Load_InfoText() { 
+void Episode::Load_Info() { 
 	PisteLanguage* temp;
 	char infofile[PE_PATH_SIZE] = "infosign.txt";
 	char otsikko[] = "info00";
@@ -201,9 +170,9 @@ void Episode::Load() {
 	}
 	
 	char topscoretiedosto[PE_PATH_SIZE] = "scores.dat";
-	EpisodeScore_Open(topscoretiedosto);
+	Episode::Open_Scores(topscoretiedosto);
 
-	Load_InfoText();
+	Episode::Load_Info();
 	
 	Episode::started = true;
 }

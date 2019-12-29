@@ -2000,8 +2000,9 @@ int PK_Sprite_Bonus_Movement(int i){
 
 				}
 
-				if (sprite.tyyppi->bonus  != -1)
-					Gifts_Add(sprite.tyyppi->bonus);
+				if (sprite.tyyppi->bonus != -1)
+					if (Gifts_Add(sprite.tyyppi->bonus))
+						Game::Start_Info(tekstit->Hae_Teksti(PK_txt.game_newitem));
 
 				if (sprite.tyyppi->muutos != -1)
 				{
@@ -2102,7 +2103,7 @@ void PK_Start_Test(const char* arg){
 
 	printf("PK2    - testing episode '%s' level '%s'\n", episodi, Game::map_path);
 
-	Load_InfoText();*/
+	Episode::Load_Info();*/
 }
 
 

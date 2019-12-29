@@ -226,7 +226,7 @@ int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, int color
 }
 
 int image_cutcliptransparent(int index, DWORD src_x, DWORD src_y, DWORD src_w, DWORD src_h,
-						 DWORD dst_x, DWORD dst_y, int alpha, BYTE colorsum){
+						 DWORD dst_x, DWORD dst_y, int alpha, BYTE colorsum) {
     BYTE *imagePix = nullptr;
     BYTE *screenPix = nullptr;
     BYTE color1, color2;
@@ -234,7 +234,7 @@ int image_cutcliptransparent(int index, DWORD src_x, DWORD src_y, DWORD src_w, D
     int posx, posy;
 
     int x_start = dst_x + x_offset;
-    int x_end = dst_x + src_w;
+    int x_end = dst_x + src_w + x_offset;
     int y_start = dst_y;
     int y_end = dst_y + src_h;
 
