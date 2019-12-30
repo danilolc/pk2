@@ -6,8 +6,6 @@
 
 #include "engine/types.hpp"
 
-#include "game/sprite.hpp"
-
 const BYTE BLOCK_MAX_MASKS = 150;
 
 enum BLOCKS {
@@ -43,10 +41,6 @@ struct PK2BLOCKMASK {
 
 };
 
-void PK_Block_Set_Barriers(PK2BLOCK &palikka);
+void Block_Set_Barriers(PK2BLOCK &palikka);
 
-PK2BLOCK PK_Block_Get(int x, int y);
-
-void PK_Check_Blocks2(PK2Sprite &sprite, PK2BLOCK &palikka);
-
-void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka);
+PK2BLOCK Block_Get(int x, int y);

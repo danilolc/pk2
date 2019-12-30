@@ -106,11 +106,11 @@ int Draw_EndGame(){
 	Draw_EndGame_Image(360, 284, 5, 60, 2);
 
 	if (loppulaskuri > onnittelut_alku) {
-		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.end_congratulations), fontti2, 220, 380, onnittelut_alku, onnittelut_loppu, loppulaskuri);
-		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.end_chickens_saved), fontti1, 220, 402, onnittelut_alku+30, onnittelut_loppu+30, loppulaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.end_congratulations), fontti2, 220, 380, onnittelut_alku, onnittelut_loppu, loppulaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.end_chickens_saved), fontti1, 220, 402, onnittelut_alku+30, onnittelut_loppu+30, loppulaskuri);
 	}
 	if (loppulaskuri > the_end_alku) {
-		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.end_the_end), fontti2, 280, 190, the_end_alku, the_end_loppu, loppulaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.end_the_end), fontti2, 280, 190, the_end_alku, the_end_loppu, loppulaskuri);
 	}
 
 	return 0;

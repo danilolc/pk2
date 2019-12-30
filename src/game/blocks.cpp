@@ -8,7 +8,7 @@
 #include "game/map.hpp"
 #include "system.hpp"
 
-void PK_Block_Set_Barriers(PK2BLOCK &block) {
+void Block_Set_Barriers(PK2BLOCK &block) {
 
 	block.tausta = false;
 
@@ -142,21 +142,23 @@ void PK_Block_Set_Barriers(PK2BLOCK &block) {
 
 }
 
-PK2BLOCK PK_Block_Get(int x, int y) {
+PK2BLOCK Block_Get(int x, int y) {
 
 	PK2BLOCK block;
 
     // Outside the screen
 	if (x < 0 || x > PK2KARTTA_KARTTA_LEVEYS || y < 0 || y > PK2KARTTA_KARTTA_KORKEUS) {
+		
 		block.koodi  = 255;
 		block.tausta = true;
 		block.vasen  = x*32;
 		block.oikea  = x*32+32;
 		block.yla	   = y*32;
 		block.ala    = y*32+32;
-		block.water   = true;//
+		block.water   = false;
 		block.border  = true;
 		return block;
+
 	}
 
 	BYTE i = Game->map->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];

@@ -15,6 +15,7 @@ extern int moo_sound;
 extern int doodle_sound;
 extern int pump_sound;
 extern int score_sound;
+extern int apple_sound;
 
 int Load_SFX();
 

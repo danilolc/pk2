@@ -136,7 +136,7 @@ int PLang::Hae_Indeksi(const char *otsikko){
 
 }
 
-const char* PLang::Hae_Teksti(int index){
+const char* PLang::Get_Text(int index){
 	if (index >= 0 && index < MAX_TEXTS)
 		return tekstit[index];
 	else

@@ -98,29 +98,29 @@ int PFont::load(const char* file_path, const char* file){
 	}
 
 	i = param_file->Hae_Indeksi("image width");
-	buf_width = atoi(param_file->Hae_Teksti(i));
+	buf_width = atoi(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("image x");
-	buf_x = atoi(param_file->Hae_Teksti(i));
+	buf_x = atoi(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("image y");
-	buf_y = atoi(param_file->Hae_Teksti(i));
+	buf_y = atoi(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("letters");
-	char_count = strlen(param_file->Hae_Teksti(i));
+	char_count = strlen(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("letter width");
-	char_w = atoi(param_file->Hae_Teksti(i));
+	char_w = atoi(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("letter height");
-	char_h = atoi(param_file->Hae_Teksti(i));
+	char_h = atoi(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("letters");
-	strcpy(chars,param_file->Hae_Teksti(i));
+	strcpy(chars,param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("image");
 	strcpy(path,file_path);
-	strcat(path,param_file->Hae_Teksti(i));
+	strcat(path,param_file->Get_Text(i));
 
 	delete param_file;
 

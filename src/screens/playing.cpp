@@ -360,11 +360,11 @@ int PK_Draw_InGame_Lower_Menu() {
 
 		x = screen_width / 2 - 546 / 2 + 342;
 		y = screen_height-39;
-		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_time),x,y-20);
+		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_time),x,y-20);
 
 		itoa(min,luku,10);
-		PDraw::font_write(        fontti4,luku,x+1,y+1);
-		vali += PDraw::font_write(fontti2,luku,x,y);
+		
+		vali += ShadowedText_Draw(luku, x, y);
 		vali += PDraw::font_write(fontti1,":",x+vali,y+9);
 
 		if (Game->increase_time > 0) {
@@ -373,14 +373,11 @@ int PK_Draw_InGame_Lower_Menu() {
 			Game->increase_time = 0;
 		}
 
-		if (sek < 10){
-			PDraw::font_write(        fontti4,"0",x+vali+1,y+1);
-			vali += PDraw::font_write(fontti2,"0",x+vali,y);
-		}
+		if (sek < 10)
+			vali += ShadowedText_Draw("0", x + vali, y);
+		
 		itoa(sek,luku,10);
-
-		PDraw::font_write(        fontti4,luku,x+vali+1,y+1);
-		vali += PDraw::font_write(fontti2,luku,x+vali,y);
+		vali += ShadowedText_Draw(luku, x + vali, y);
 	}
 
 	/////////////////
@@ -389,11 +386,10 @@ int PK_Draw_InGame_Lower_Menu() {
 	if (Game->keys > 0){
 		x = screen_width / 2 - 546 / 2 + 483;
 		y = screen_height-39;
-		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_keys),x,y-20);
+		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_keys),x,y-20);
 
 		itoa(Game->keys,luku,10);
-		PDraw::font_write(fontti4,luku,x+1,y+1);
-		PDraw::font_write(fontti2,luku,x,y);
+		ShadowedText_Draw(luku, x, y);
 	}
 
 	/////////////////
@@ -409,7 +405,7 @@ int PK_Draw_InGame_Lower_Menu() {
 		PDraw::image_cutclip(game_assets,Game->item_pannel_x,screen_height-60,
 		                        1,216,211,266);
 	if (Game->item_pannel_x > 5)
-		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_items),15,screen_height-65);
+		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_items),15,screen_height-65);
 
 	PK_Draw_InGame_Gifts();
 
@@ -424,10 +420,9 @@ int PK_Draw_InGame_UI(){
 	/////////////////
 	// Draw Energy
 	/////////////////
-	vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_energy),40,my);
+	vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_energy),40,my);
 	ltoa(Player_Sprite->energia,luku,10);
-	PDraw::font_write(fontti4,luku,40+vali+1,my+1);
-	PDraw::font_write(fontti2,luku,40+vali,my);
+	ShadowedText_Draw(luku, 40 + vali, my);
 
 	/////////////////
 	// Draw Invisible
@@ -442,21 +437,20 @@ int PK_Draw_InGame_UI(){
 	/////////////////
 	// Draw Score
 	/////////////////
-	vali = PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_score),230,my);
+	vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_score),230,my);
 	ltoa(Game->score,luku,10);
-	PDraw::font_write(fontti4,luku,230+vali+1,my+1);
-	PDraw::font_write(fontti2,luku,230+vali,my);
+	ShadowedText_Draw(luku, 230 + vali, my);
 
 	/////////////////
 	// Draw Ammunition
 	/////////////////
 	if (Player_Sprite->ammus2 != -1){
-		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack1), screen_width-170,my);
+		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_attack1), screen_width-170,my);
 		Prototypes_List[Player_Sprite->ammus2].Piirra(screen_width-170,my+10,0);
 	}
 
 	if (Player_Sprite->ammus1 != -1){
-		PDraw::font_write(fontti1,tekstit->Hae_Teksti(PK_txt.game_attack2), screen_width-90,my+15);
+		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_attack2), screen_width-90,my+15);
 		Prototypes_List[Player_Sprite->ammus1].Piirra(screen_width-90,my+25,0);
 	}
 
@@ -507,7 +501,6 @@ int PK_Draw_InGame(){
 
 		PK_Draw_InGame_Sprites();
 
-		//PK_Particles_Draw();
 		Particles_DrawFront(Game->camera_x, Game->camera_y);
 
 		Game->map->Piirra_Seinat(Game->camera_x,Game->camera_y, false);
@@ -538,19 +531,19 @@ int PK_Draw_InGame(){
 		}
 
 		if (Game->paused)
-			PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.game_paused),screen_width/2-82,screen_height/2-9);
+			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.game_paused),screen_width/2-82,screen_height/2-9);
 
 		if (Game->level_clear)
-			Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
+			Wavetext_Draw(tekstit->Get_Text(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
 		else
 			if (Game->game_over){
 				if (Player_Sprite->energia < 1)
-					Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
+					Wavetext_Draw(tekstit->Get_Text(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
 				else
 					if (Game->timeout < 1 && Game->has_time)
-						Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
+						Wavetext_Draw(tekstit->Get_Text(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
 
-				Wavetext_Draw(tekstit->Hae_Teksti(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
+				Wavetext_Draw(tekstit->Get_Text(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
 			}
 	}
 	
@@ -650,10 +643,12 @@ int Screen_InGame(){
 	Update_Camera();
 
 	if (!Game->paused) {
+
 		Particles_Update();
 		if (!Game->level_clear && (!Game->has_time || Game->timeout > 0))
 			Update_Sprites();
 		Fadetext_Update();
+
 	}
 
 	PK_Draw_InGame();
@@ -706,11 +701,11 @@ int Screen_InGame(){
 			Game->exit_timer--;
 
 		if (Game->exit_timer == 0)
-			Game->exit_timer = 500;//800;//2000;
+			Game->exit_timer = 700;//800;//2000;
 
 		if (PisteInput_Keydown(Settings.control_attack1) || PisteInput_Keydown(Settings.control_attack2) ||
 			PisteInput_Keydown(Settings.control_jump) || PisteInput_Keydown(PI_RETURN))
-			if (Game->exit_timer > 2 && Game->exit_timer < 400/*600*//*1900*/ && key_delay == 0)
+			if (Game->exit_timer > 2 && Game->exit_timer < 500/*600*//*1900*/ && key_delay == 0)
 				Game->exit_timer = 2;
 
 		if (Game->exit_timer == 2) {
@@ -810,14 +805,7 @@ int Screen_InGame(){
 			}
 			if (PisteInput_Keydown(PI_END)) {
 				key_delay = 20;
-				if (PSound::start_music("music/hiscore.xm") != 0){ //TODO - put it on a function
-					PK2_Error("Can't find hiscore.xm");
-				}
-				Game->level_clear = true;
-				Episode->levels_list[Game->level_id].cleared = true;
-				if (Episode->levels_list[Game->level_id].order == Episode->level)
-					Episode->level++;
-				PSound::set_musicvolume_now(Settings.music_max_volume);
+				Game->Finnish();
 			}
 			if (PisteInput_Keydown(PI_LSHIFT)/* && key_delay == 0*/) {
 				//key_delay = 20;

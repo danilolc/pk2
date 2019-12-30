@@ -22,6 +22,8 @@
 #include "engine/PSound.hpp"
 #include "engine/PDraw.hpp"
 
+#include <cstring>
+
 double sprite_x;
 double sprite_y;
 double sprite_a;
@@ -48,7 +50,266 @@ bool alas;
 bool vedessa;
 
 BYTE max_nopeus;
+void Check_Blocks2(PK2Sprite &sprite, PK2BLOCK &palikka) {
 
+	//left and right
+	if (sprite_yla < palikka.ala && sprite_ala-1 > palikka.yla){
+		if (sprite_oikea+sprite_a-1 > palikka.vasen && sprite_vasen+sprite_a < palikka.oikea){
+			// Tutkitaan onko sprite menossa oikeanpuoleisen palikan sis��n.
+			if (sprite_oikea+sprite_a < palikka.oikea){
+				// Onko palikka sein�?
+				if (palikka.oikealle == BLOCK_WALL){
+					oikealle = false;
+					if (palikka.koodi == BLOCK_HISSI_HORI)
+						sprite_x = palikka.vasen - sprite_leveys/2;
+				}
+			}
+
+			if (sprite_vasen+sprite_a > palikka.vasen){
+				if (palikka.vasemmalle == BLOCK_WALL){
+					vasemmalle = false;
+
+					if (palikka.koodi == BLOCK_HISSI_HORI)
+						sprite_x = palikka.oikea + sprite_leveys/2;
+
+				}
+			}
+		}
+	}
+
+	sprite_vasen = sprite_x-sprite_leveys/2;
+	sprite_oikea = sprite_x+sprite_leveys/2;
+
+	//ceil and floor
+
+	if (sprite_vasen < palikka.oikea && sprite_oikea-1 > palikka.vasen){
+		if (sprite_ala+sprite_b-1 >= palikka.yla && sprite_yla+sprite_b <= palikka.ala){
+			if (sprite_ala+sprite_b-1 <= palikka.ala){
+				if (palikka.alas == BLOCK_WALL){
+					alas = false;
+
+					if (palikka.koodi == BLOCK_HISSI_VERT)
+						sprite_y = palikka.yla - sprite_korkeus /2;
+
+					if (sprite_ala-1 >= palikka.yla && sprite_b >= 0)
+						if (palikka.koodi != BLOCK_HISSI_HORI)
+							sprite_y = palikka.yla - sprite_korkeus /2;
+				}
+			}
+
+			if (sprite_yla+sprite_b > palikka.yla){
+				if (palikka.ylos == BLOCK_WALL){
+					ylos = false;
+
+					if (sprite_yla < palikka.ala)
+						if (palikka.koodi != BLOCK_HISSI_HORI)
+							sprite.kyykky = true;
+				}
+			}
+		}
+	}
+}
+
+void Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
+	int mask_index;
+
+	//If sprite is in the block
+	if (sprite_x <= palikka.oikea && sprite_x >= palikka.vasen && sprite_y <= palikka.ala && sprite_y >= palikka.yla){
+
+		/**********************************************************************/
+		/* Examine if block is water background                               */
+		/**********************************************************************/
+		if (palikka.water)
+			sprite.vedessa = true;
+
+		/**********************************************************************/
+		/* Examine if it touches the fire                                     */
+		/**********************************************************************/
+		if (palikka.koodi == BLOCK_TULI && Game->button1 == 0 && sprite.isku == 0){
+			sprite.saatu_vahinko = 2;
+			sprite.saatu_vahinko_tyyppi = VAHINKO_TULI;
+		}
+
+		/**********************************************************************/
+		/* Examine if bloc is hideway                                         */
+		/**********************************************************************/
+		if (palikka.koodi == BLOCK_PIILO)
+			sprite.piilossa = true;
+
+		/**********************************************************************/
+		/* Examine if block is the exit                                       */
+		/**********************************************************************/
+		if (palikka.koodi == BLOCK_LOPETUS && sprite.pelaaja != 0){
+			if (!Game->level_clear) {
+				Game->Finnish();
+			}
+		}
+	}
+
+	//If sprite is thouching the block
+	if (sprite_vasen <= palikka.oikea-4 && sprite_oikea >= palikka.vasen+4 && sprite_yla <= palikka.ala && sprite_ala >= palikka.yla+16){
+		/**********************************************************************/
+		/* Examine if it touches the fire                                     */
+		/**********************************************************************/
+		if (palikka.koodi == BLOCK_TULI && Game->button1 == 0 && sprite.isku == 0){
+			sprite.saatu_vahinko = 2;
+			sprite.saatu_vahinko_tyyppi = VAHINKO_TULI;
+		}
+	}
+
+	//Examine if there is a block on bottom
+	if ((palikka.koodi<80 || palikka.koodi>139) && palikka.koodi != BLOCK_ESTO_ALAS && palikka.koodi < 150){
+		mask_index = (int)(sprite_x+sprite_a) - palikka.vasen;
+
+		if (mask_index < 0)
+			mask_index = 0;
+
+		if (mask_index > 31)
+			mask_index = 31;
+
+		palikka.yla += Game->palikkamaskit[palikka.koodi].alas[mask_index];
+
+		if (palikka.yla >= palikka.ala-2)
+			palikka.alas = BLOCK_BACKGROUND;
+
+		palikka.ala -= Game->palikkamaskit[palikka.koodi].ylos[mask_index];
+	}
+
+	//If sprite is thouching the block (again?)
+	if (sprite_vasen <= palikka.oikea+2 && sprite_oikea >= palikka.vasen-2 && sprite_yla <= palikka.ala && sprite_ala >= palikka.yla){
+		/**********************************************************************/
+		/* Examine if it is a key and touches lock wall                       */
+		/**********************************************************************/
+		if (palikka.koodi == BLOCK_LUKKO && sprite.tyyppi->avain){
+			Game->map->seinat[palikka.vasen/32+(palikka.yla/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
+			Game->map->Calculate_Edges();
+
+			sprite.piilota = true;
+
+			if (sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU) {
+				Game->keys--;
+				if (Game->keys < 1)
+					Game->map->Open_Locks();
+			}
+
+			Effect_Explosion(palikka.vasen+16, palikka.yla+10, 0);
+			Play_GameSFX(open_locks_sound,100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+		}
+
+		/**********************************************************************/
+		/* Make wind effects                                                  */
+		/**********************************************************************/
+		if (palikka.koodi == BLOCK_VIRTA_VASEMMALLE && vasemmalle)
+			sprite_a -= 0.02;
+
+		if (palikka.koodi == BLOCK_VIRTA_OIKEALLE && oikealle)
+			sprite_a += 0.02;	//0.05
+
+		/*********************************************************************/
+		/* Examine if sprite is on the border to fall                        */
+		/*********************************************************************/
+		if (palikka.border && sprite.hyppy_ajastin <= 0 && sprite_y < palikka.ala && sprite_y > palikka.yla){
+			/* && sprite_ala <= palikka.ala+2)*/ // onko sprite tullut borderlle
+			if (sprite_vasen > palikka.vasen)
+				sprite.reuna_vasemmalla = true;
+
+			if (sprite_oikea < palikka.oikea)
+				sprite.reuna_oikealla = true;
+		}
+	}
+
+	//Examine walls on left and right
+
+	if (sprite_yla < palikka.ala && sprite_ala-1 > palikka.yla) {
+		if (sprite_oikea+sprite_a-1 > palikka.vasen && sprite_vasen+sprite_a < palikka.oikea) {
+			// Examine whether the sprite going in the right side of the block.
+			if (sprite_oikea+sprite_a < palikka.oikea) {
+				// Onko palikka sein�?
+				if (palikka.oikealle == BLOCK_WALL) {
+					oikealle = false;
+
+					if (palikka.koodi == BLOCK_HISSI_HORI)
+						sprite_x = palikka.vasen - sprite_leveys/2;
+				}
+			}
+			// Examine whether the sprite going in the left side of the block.
+			if (sprite_vasen+sprite_a > palikka.vasen) {
+				if (palikka.vasemmalle == BLOCK_WALL) {
+					vasemmalle = false;
+
+					if (palikka.koodi == BLOCK_HISSI_HORI)
+						sprite_x = palikka.oikea + sprite_leveys/2;
+
+				}
+			}
+		}
+	}
+
+	sprite_vasen = sprite_x - sprite_leveys/2;
+	sprite_oikea = sprite_x + sprite_leveys/2;
+
+	//Examine walls on up and down
+
+	if (sprite_vasen < palikka.oikea && sprite_oikea-1 > palikka.vasen) { //Remove the left and right blocks
+		if (sprite_ala+sprite_b-1 >= palikka.yla && sprite_yla+sprite_b <= palikka.ala) { //Get the up and down blocks
+			if (sprite_ala+sprite_b-1 <= palikka.ala) { //Just in the sprite's foot
+				if (palikka.alas == BLOCK_WALL) { //If it is a wall
+					alas = false;
+					if (palikka.koodi == BLOCK_HISSI_VERT)
+						sprite_y = palikka.yla - sprite_korkeus /2;
+
+					if (sprite_ala-1 >= palikka.yla && sprite_b >= 0) {
+						//sprite_y -= sprite_ala - palikka.yla;
+						if (palikka.koodi != BLOCK_HISSI_HORI) {
+							sprite_y = palikka.yla - sprite_korkeus /2;
+						}
+					}
+
+					if (sprite.kytkinpaino >= 1) { // Sprite can press the buttons
+						if (palikka.koodi == BLOCK_KYTKIN1 && Game->button1 == 0) {
+							Game->button1 = KYTKIN_ALOITUSARVO;
+							Game->button_moving = 64;
+							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+						}
+
+						if (palikka.koodi == BLOCK_KYTKIN2 && Game->button2 == 0) {
+							Game->button2 = KYTKIN_ALOITUSARVO;
+							Game->button_moving = 64;
+							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+						}
+
+						if (palikka.koodi == BLOCK_KYTKIN3 && Game->button3 == 0) {
+							Game->button3 = KYTKIN_ALOITUSARVO;
+							Game->button_moving = 64;
+							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+						}
+					}
+
+				}
+			}
+
+			if (sprite_yla+sprite_b > palikka.yla) {
+				if (palikka.ylos == BLOCK_WALL) {
+					ylos = false;
+
+					if (sprite_yla < palikka.ala) {
+						if (palikka.koodi == BLOCK_HISSI_VERT && sprite.kyykky) {
+							sprite.saatu_vahinko = 2;
+							sprite.saatu_vahinko_tyyppi = VAHINKO_ISKU;
+						}
+
+						if (palikka.koodi != BLOCK_HISSI_HORI) {
+							//if (sprite.kyykky)
+							//	sprite_y = palikka.ala + sprite_korkeus /2;
+
+							sprite.kyykky = true;
+						}
+					}
+				}
+			}
+		}
+	}
+}
 int Sprite_Movement(int i){
 	if (i >= MAX_SPRITEJA || i < 0)
 		return -1;
@@ -342,7 +603,7 @@ int Sprite_Movement(int i){
 
 		for (y=0;y<palikat_y_lkm;y++)
 			for (x=0;x<palikat_x_lkm;x++) //For each block, create a array of blocks around the sprite
-				Game->palikat[x+(y*palikat_x_lkm)] = PK_Block_Get(map_vasen+x-1,map_yla+y-1); //x = 0, y = 0
+				Game->palikat[x+(y*palikat_x_lkm)] = Block_Get(map_vasen+x-1,map_yla+y-1); //x = 0, y = 0
 
 		/*****************************************************************************************/
 		/* Going through the blocks around the sprite.                                           */
@@ -354,7 +615,7 @@ int Sprite_Movement(int i){
 				p = x+y*palikat_x_lkm;
 				if (p<300)// && p>=0)//{
 					//if(sprite.pelaaja == 1) printf("%i\n",palikat_lkm);
-					PK_Check_Blocks(sprite, Game->palikat[p]);
+					Check_Blocks(sprite, Game->palikat[p]);
 				//}
 			}
 		}
@@ -434,7 +695,7 @@ int Sprite_Movement(int i){
 
 					//spritepalikka.koodi = BLOCK_HISSI_VERT;
 					/*
-					PK_Block_Set_Barriers(spritepalikka);
+					Block_Set_Barriers(spritepalikka);
 
 					if (!sprite.tyyppi->este)
 					{
@@ -449,7 +710,7 @@ int Sprite_Movement(int i){
 					}
 					*/
 
-					PK_Block_Set_Barriers(spritepalikka);
+					Block_Set_Barriers(spritepalikka);
 
 					if (!sprite.tyyppi->este){
 						if (!sprite2->tyyppi->este_alas)
@@ -468,7 +729,7 @@ int Sprite_Movement(int i){
 					if (sprite2->b > 0)
 						spritepalikka.koodi = BLOCK_HISSI_VERT;
 
-					PK_Check_Blocks2(sprite, spritepalikka); //Colision sprite and sprite block
+					Check_Blocks2(sprite, spritepalikka); //Colision sprite and sprite block
 				}
 			}
 
@@ -969,25 +1230,25 @@ int Sprite_Movement(int i){
 				case AI_EVIL_ONE:					if (sprite.energia < 1) PSound::set_musicvolume(0);
 													break;
 
-				case AI_INFO1:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info01));break;
-				case AI_INFO2:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info02));break;
-				case AI_INFO3:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info03));break;
-				case AI_INFO4:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info04));break;
-				case AI_INFO5:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info05));break;
-				case AI_INFO6:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info06));break;
-				case AI_INFO7:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info07));break;
-				case AI_INFO8:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info08));break;
-				case AI_INFO9:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info09));break;
-				case AI_INFO10:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info10));break;
-				case AI_INFO11:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info11));break;
-				case AI_INFO12:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info12));break;
-				case AI_INFO13:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info13));break;
-				case AI_INFO14:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info14));break;
-				case AI_INFO15:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info15));break;
-				case AI_INFO16:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info16));break;
-				case AI_INFO17:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info17));break;
-				case AI_INFO18:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info18));break;
-				case AI_INFO19:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.info19));break;
+				case AI_INFO1:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info01));break;
+				case AI_INFO2:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info02));break;
+				case AI_INFO3:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info03));break;
+				case AI_INFO4:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info04));break;
+				case AI_INFO5:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info05));break;
+				case AI_INFO6:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info06));break;
+				case AI_INFO7:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info07));break;
+				case AI_INFO8:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info08));break;
+				case AI_INFO9:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info09));break;
+				case AI_INFO10:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info10));break;
+				case AI_INFO11:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info11));break;
+				case AI_INFO12:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info12));break;
+				case AI_INFO13:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info13));break;
+				case AI_INFO14:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info14));break;
+				case AI_INFO15:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info15));break;
+				case AI_INFO16:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info16));break;
+				case AI_INFO17:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info17));break;
+				case AI_INFO18:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info18));break;
+				case AI_INFO19:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info19));break;
 
 				default:							break;
 			}
@@ -1273,8 +1534,8 @@ int BonusSprite_Movement(int i){
 
 						spritepalikka.water  = false;
 
-						PK_Block_Set_Barriers(spritepalikka);
-						PK_Check_Blocks2(sprite, spritepalikka); //Colision bonus and sprite block
+						Block_Set_Barriers(spritepalikka);
+						Check_Blocks2(sprite, spritepalikka); //Colision bonus and sprite block
 					}
 				}
 
@@ -1345,16 +1606,16 @@ int BonusSprite_Movement(int i){
 			for (y=0;y<palikat_y_lkm;y++)
 				for (x=0;x<palikat_x_lkm;x++)
 				{
-					Game->palikat[x+y*palikat_x_lkm] = PK_Block_Get(map_vasen+x-1,map_yla+y-1);
+					Game->palikat[x+y*palikat_x_lkm] = Block_Get(map_vasen+x-1,map_yla+y-1);
 				}
 
 			// Tutkitaan t�rm��k� palikkaan
 
 			for (y=0;y<palikat_y_lkm;y++)
 				for (x=0;x<palikat_x_lkm;x++)
-					PK_Check_Blocks(sprite, Game->palikat[x+y*palikat_x_lkm]);
+					Check_Blocks(sprite, Game->palikat[x+y*palikat_x_lkm]);
 			/*
-			PK_Check_Blocks_Debug(sprite, palikat[x+y*palikat_x_lkm],
+			Check_Blocks_Debug(sprite, palikat[x+y*palikat_x_lkm],
 					sprite_x,
 					sprite_y,
 					sprite_a,
@@ -1472,7 +1733,12 @@ int BonusSprite_Movement(int i){
 	{
 		if (sprite.energia > 0 && Player_Sprite->energia > 0)
 		{
-			if (sprite.tyyppi->pisteet != 0){
+			if (sprite.tyyppi->pisteet != 0) {
+
+				char* name = sprite.tyyppi->nimi;
+				if (strcmp(name, "big apple") == 0 || strcmp(name, "big apple 2") == 0)
+					Game->apples_got++;
+
 				Game->score_increment += sprite.tyyppi->pisteet;
 				char luku[6];
 				itoa(sprite.tyyppi->pisteet,luku,10);
@@ -1529,7 +1795,7 @@ int BonusSprite_Movement(int i){
 
 				if (sprite.tyyppi->bonus != -1)
 					if (Gifts_Add(sprite.tyyppi->bonus))
-						Game->Show_Info(tekstit->Hae_Teksti(PK_txt.game_newitem));
+						Game->Show_Info(tekstit->Get_Text(PK_txt.game_newitem));
 
 				if (sprite.tyyppi->muutos != -1)
 				{
@@ -1547,13 +1813,13 @@ int BonusSprite_Movement(int i){
 				if (sprite.tyyppi->ammus1 != -1)
 				{
 					Player_Sprite->ammus1 = sprite.tyyppi->ammus1;
-					Game->Show_Info(tekstit->Hae_Teksti(PK_txt.game_newegg));
+					Game->Show_Info(tekstit->Get_Text(PK_txt.game_newegg));
 				}
 
 				if (sprite.tyyppi->ammus2 != -1)
 				{
 					Player_Sprite->ammus2 = sprite.tyyppi->ammus2;
-					Game->Show_Info(tekstit->Hae_Teksti(PK_txt.game_newdoodle));
+					Game->Show_Info(tekstit->Get_Text(PK_txt.game_newdoodle));
 				}
 
 				Play_GameSFX(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
@@ -1593,270 +1859,3 @@ int BonusSprite_Movement(int i){
 	return 0;
 }
 
-void PK_Check_Blocks2(PK2Sprite &sprite, PK2BLOCK &palikka) {
-
-	//left and right
-	if (sprite_yla < palikka.ala && sprite_ala-1 > palikka.yla){
-		if (sprite_oikea+sprite_a-1 > palikka.vasen && sprite_vasen+sprite_a < palikka.oikea){
-			// Tutkitaan onko sprite menossa oikeanpuoleisen palikan sis��n.
-			if (sprite_oikea+sprite_a < palikka.oikea){
-				// Onko palikka sein�?
-				if (palikka.oikealle == BLOCK_WALL){
-					oikealle = false;
-					if (palikka.koodi == BLOCK_HISSI_HORI)
-						sprite_x = palikka.vasen - sprite_leveys/2;
-				}
-			}
-
-			if (sprite_vasen+sprite_a > palikka.vasen){
-				if (palikka.vasemmalle == BLOCK_WALL){
-					vasemmalle = false;
-
-					if (palikka.koodi == BLOCK_HISSI_HORI)
-						sprite_x = palikka.oikea + sprite_leveys/2;
-
-				}
-			}
-		}
-	}
-
-	sprite_vasen = sprite_x-sprite_leveys/2;
-	sprite_oikea = sprite_x+sprite_leveys/2;
-
-	//ceil and floor
-
-	if (sprite_vasen < palikka.oikea && sprite_oikea-1 > palikka.vasen){
-		if (sprite_ala+sprite_b-1 >= palikka.yla && sprite_yla+sprite_b <= palikka.ala){
-			if (sprite_ala+sprite_b-1 <= palikka.ala){
-				if (palikka.alas == BLOCK_WALL){
-					alas = false;
-
-					if (palikka.koodi == BLOCK_HISSI_VERT)
-						sprite_y = palikka.yla - sprite_korkeus /2;
-
-					if (sprite_ala-1 >= palikka.yla && sprite_b >= 0)
-						if (palikka.koodi != BLOCK_HISSI_HORI)
-							sprite_y = palikka.yla - sprite_korkeus /2;
-				}
-			}
-
-			if (sprite_yla+sprite_b > palikka.yla){
-				if (palikka.ylos == BLOCK_WALL){
-					ylos = false;
-
-					if (sprite_yla < palikka.ala)
-						if (palikka.koodi != BLOCK_HISSI_HORI)
-							sprite.kyykky = true;
-				}
-			}
-		}
-	}
-}
-
-void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
-	int mask_index;
-
-	//If sprite is in the block
-	if (sprite_x <= palikka.oikea && sprite_x >= palikka.vasen && sprite_y <= palikka.ala && sprite_y >= palikka.yla){
-
-		/**********************************************************************/
-		/* Examine if block is water background                               */
-		/**********************************************************************/
-		if (palikka.water)
-			sprite.vedessa = true;
-
-		/**********************************************************************/
-		/* Examine if it touches the fire                                     */
-		/**********************************************************************/
-		if (palikka.koodi == BLOCK_TULI && Game->button1 == 0 && sprite.isku == 0){
-			sprite.saatu_vahinko = 2;
-			sprite.saatu_vahinko_tyyppi = VAHINKO_TULI;
-		}
-
-		/**********************************************************************/
-		/* Examine if bloc is hideway                                         */
-		/**********************************************************************/
-		if (palikka.koodi == BLOCK_PIILO)
-			sprite.piilossa = true;
-
-		/**********************************************************************/
-		/* Examine if block is the exit                                       */
-		/**********************************************************************/
-		if (palikka.koodi == BLOCK_LOPETUS && sprite.pelaaja != 0){
-			if (!Game->level_clear){
-				if (PSound::start_music("music/hiscore.xm") != 0){
-					PK2_Error("Can't find song01.xm");
-				}
-				Game->level_clear = true;
-				Episode->levels_list[Game->level_id].cleared = true;
-				if (Episode->levels_list[Game->level_id].order == Episode->level)
-					Episode->level++; //Increase level
-				PSound::set_musicvolume_now(Settings.music_max_volume);
-			}
-		}
-	}
-
-	//If sprite is thouching the block
-	if (sprite_vasen <= palikka.oikea-4 && sprite_oikea >= palikka.vasen+4 && sprite_yla <= palikka.ala && sprite_ala >= palikka.yla+16){
-		/**********************************************************************/
-		/* Examine if it touches the fire                                     */
-		/**********************************************************************/
-		if (palikka.koodi == BLOCK_TULI && Game->button1 == 0 && sprite.isku == 0){
-			sprite.saatu_vahinko = 2;
-			sprite.saatu_vahinko_tyyppi = VAHINKO_TULI;
-		}
-	}
-
-	//Examine if there is a block on bottom
-	if ((palikka.koodi<80 || palikka.koodi>139) && palikka.koodi != BLOCK_ESTO_ALAS && palikka.koodi < 150){
-		mask_index = (int)(sprite_x+sprite_a) - palikka.vasen;
-
-		if (mask_index < 0)
-			mask_index = 0;
-
-		if (mask_index > 31)
-			mask_index = 31;
-
-		palikka.yla += Game->palikkamaskit[palikka.koodi].alas[mask_index];
-
-		if (palikka.yla >= palikka.ala-2)
-			palikka.alas = BLOCK_BACKGROUND;
-
-		palikka.ala -= Game->palikkamaskit[palikka.koodi].ylos[mask_index];
-	}
-
-	//If sprite is thouching the block (again?)
-	if (sprite_vasen <= palikka.oikea+2 && sprite_oikea >= palikka.vasen-2 && sprite_yla <= palikka.ala && sprite_ala >= palikka.yla){
-		/**********************************************************************/
-		/* Examine if it is a key and touches lock wall                       */
-		/**********************************************************************/
-		if (palikka.koodi == BLOCK_LUKKO && sprite.tyyppi->avain){
-			Game->map->seinat[palikka.vasen/32+(palikka.yla/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
-			Game->map->Calculate_Edges();
-
-			sprite.piilota = true;
-
-			if (sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU) {
-				Game->keys--;
-				if (Game->keys < 1)
-					Game->map->Open_Locks();
-			}
-
-			Effect_Explosion(palikka.vasen+16, palikka.yla+10, 0);
-			Play_GameSFX(open_locks_sound,100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
-		}
-
-		/**********************************************************************/
-		/* Make wind effects                                                  */
-		/**********************************************************************/
-		if (palikka.koodi == BLOCK_VIRTA_VASEMMALLE && vasemmalle)
-			sprite_a -= 0.02;
-
-		if (palikka.koodi == BLOCK_VIRTA_OIKEALLE && oikealle)
-			sprite_a += 0.02;	//0.05
-
-		/*********************************************************************/
-		/* Examine if sprite is on the border to fall                        */
-		/*********************************************************************/
-		if (palikka.border && sprite.hyppy_ajastin <= 0 && sprite_y < palikka.ala && sprite_y > palikka.yla){
-			/* && sprite_ala <= palikka.ala+2)*/ // onko sprite tullut borderlle
-			if (sprite_vasen > palikka.vasen)
-				sprite.reuna_vasemmalla = true;
-
-			if (sprite_oikea < palikka.oikea)
-				sprite.reuna_oikealla = true;
-		}
-	}
-
-	//Examine walls on left and right
-
-	if (sprite_yla < palikka.ala && sprite_ala-1 > palikka.yla) {
-		if (sprite_oikea+sprite_a-1 > palikka.vasen && sprite_vasen+sprite_a < palikka.oikea) {
-			// Examine whether the sprite going in the right side of the block.
-			if (sprite_oikea+sprite_a < palikka.oikea) {
-				// Onko palikka sein�?
-				if (palikka.oikealle == BLOCK_WALL) {
-					oikealle = false;
-
-					if (palikka.koodi == BLOCK_HISSI_HORI)
-						sprite_x = palikka.vasen - sprite_leveys/2;
-				}
-			}
-			// Examine whether the sprite going in the left side of the block.
-			if (sprite_vasen+sprite_a > palikka.vasen) {
-				if (palikka.vasemmalle == BLOCK_WALL) {
-					vasemmalle = false;
-
-					if (palikka.koodi == BLOCK_HISSI_HORI)
-						sprite_x = palikka.oikea + sprite_leveys/2;
-
-				}
-			}
-		}
-	}
-
-	sprite_vasen = sprite_x - sprite_leveys/2;
-	sprite_oikea = sprite_x + sprite_leveys/2;
-
-	//Examine walls on up and down
-
-	if (sprite_vasen < palikka.oikea && sprite_oikea-1 > palikka.vasen) { //Remove the left and right blocks
-		if (sprite_ala+sprite_b-1 >= palikka.yla && sprite_yla+sprite_b <= palikka.ala) { //Get the up and down blocks
-			if (sprite_ala+sprite_b-1 <= palikka.ala) { //Just in the sprite's foot
-				if (palikka.alas == BLOCK_WALL) { //If it is a wall
-					alas = false;
-					if (palikka.koodi == BLOCK_HISSI_VERT)
-						sprite_y = palikka.yla - sprite_korkeus /2;
-
-					if (sprite_ala-1 >= palikka.yla && sprite_b >= 0) {
-						//sprite_y -= sprite_ala - palikka.yla;
-						if (palikka.koodi != BLOCK_HISSI_HORI) {
-							sprite_y = palikka.yla - sprite_korkeus /2;
-						}
-					}
-
-					if (sprite.kytkinpaino >= 1) { // Sprite can press the buttons
-						if (palikka.koodi == BLOCK_KYTKIN1 && Game->button1 == 0) {
-							Game->button1 = KYTKIN_ALOITUSARVO;
-							Game->button_moving = 64;
-							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
-						}
-
-						if (palikka.koodi == BLOCK_KYTKIN2 && Game->button2 == 0) {
-							Game->button2 = KYTKIN_ALOITUSARVO;
-							Game->button_moving = 64;
-							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
-						}
-
-						if (palikka.koodi == BLOCK_KYTKIN3 && Game->button3 == 0) {
-							Game->button3 = KYTKIN_ALOITUSARVO;
-							Game->button_moving = 64;
-							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
-						}
-					}
-
-				}
-			}
-
-			if (sprite_yla+sprite_b > palikka.yla) {
-				if (palikka.ylos == BLOCK_WALL) {
-					ylos = false;
-
-					if (sprite_yla < palikka.ala) {
-						if (palikka.koodi == BLOCK_HISSI_VERT && sprite.kyykky) {
-							sprite.saatu_vahinko = 2;
-							sprite.saatu_vahinko_tyyppi = VAHINKO_ISKU;
-						}
-
-						if (palikka.koodi != BLOCK_HISSI_HORI) {
-							//if (sprite.kyykky)
-							//	sprite_y = palikka.ala + sprite_korkeus /2;
-
-							sprite.kyykky = true;
-						}
-					}
-				}
-			}
-		}
-	}
-}

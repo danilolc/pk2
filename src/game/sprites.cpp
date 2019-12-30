@@ -306,17 +306,19 @@ void Sprites_start_directions() {
 }
 
 void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int emo, bool isbonus) {
+	
 	PK2Sprite_Prototyyppi& proto = Prototypes_List[protoype_id];
-	bool lisatty = false;
+	bool added = false;
 	int i = 0;
 
-	while (!lisatty && i < MAX_SPRITEJA){
+	while (!added && i < MAX_SPRITEJA){
 		if (Sprites_List[i].piilota){
 			Sprites_List[i] = PK2Sprite(&proto,is_Player_Sprite,false,x,y);
 
 			if (is_Player_Sprite) Player_Sprite = &Sprites_List[i];
 
-			if(isbonus){ //If it is a bonus dropped by enemy
+			if(isbonus) { //If it is a bonus dropped by enemy
+
 				Sprites_List[i].x += Sprites_List[i].tyyppi->leveys;
 				Sprites_List[i].y += Sprites_List[i].tyyppi->korkeus/2;
 				Sprites_List[i].alku_x = Sprites_List[i].x;
@@ -324,11 +326,14 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 				Sprites_List[i].hyppy_ajastin = 1;
 				Sprites_List[i].a = rand()%2 - rand()%4;
 				Sprites_List[i].isku = 35;//25
-			} else{
+
+			} else {
+
 				Sprites_List[i].x = x + 16 + 1;
 				Sprites_List[i].y += Sprites_List[i].tyyppi->korkeus/2;
 				Sprites_List[i].alku_x = Sprites_List[i].x;
 				Sprites_List[i].alku_y = Sprites_List[i].y;
+				
 			}
 
 			if (proto.tyyppi == TYYPPI_TAUSTA)
@@ -339,7 +344,8 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 			else
 				Sprites_List[i].emosprite = i;
 
-			lisatty = true;
+			added = true;
+
 		}
 		else
 			i++;

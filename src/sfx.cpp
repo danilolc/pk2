@@ -19,6 +19,7 @@ int moo_sound;
 int doodle_sound;
 int pump_sound;
 int score_sound;
+int apple_sound;
 
 int Load_SFX() {
 
@@ -58,6 +59,11 @@ int Load_SFX() {
     score_sound = PSound::load_sfx("sfx/counter.wav");
     if (score_sound == -1) {
         PK2_Error("Can't find counter.wav");
+    }
+
+    apple_sound = PSound::load_sfx("sfx/app_bite.wav");
+    if (apple_sound == -1) {
+        PK2_Error("Can't find app_bite.wav");
     }
 
 }

@@ -102,7 +102,7 @@ int Load_SaveFile() {
 
 			for (int j = 0; j < EPISODI_MAX_LEVELS;j++) {
 				saves_list[i].level_cleared[j] = temp[i].jakso_cleared[j];
-				saves_list[i].all_apples[j] = true;
+				saves_list[i].all_apples[j] = false;
 			}
 
 		}

@@ -1060,20 +1060,25 @@ void PK2Kartta::Kopioi(PK2Kartta &kartta){
 /* Pekka Kana 2 funcitons ---------------------------------------------------------------*/
 
 
-
+// Put in GameClass
 void PK2Kartta::Place_Sprites() {
 
 	Sprites_clear();
 	Sprites_add(this->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
 
-	int sprite;
+	for (int x = 0; x < PK2KARTTA_KARTTA_LEVEYS; x++) {
+		for (int y = 0; y < PK2KARTTA_KARTTA_KORKEUS; y++) {
 
-	for (int x = 0; x < PK2KARTTA_KARTTA_LEVEYS; x++){
-		for (int y = 0; y < PK2KARTTA_KARTTA_KORKEUS; y++){
-			sprite = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
+			int sprite = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
-			if (sprite != 255 && Prototypes_List[sprite].korkeus > 0){
+			if (sprite != 255 && Prototypes_List[sprite].korkeus > 0) {
+
+				char* name = Prototypes_List[sprite].nimi;
+				if (strcmp(name, "big apple") == 0 || strcmp(name, "big apple 2") == 0)
+					Game->apples_count++;
+
 				Sprites_add(sprite, 0, x*32, y*32 - Prototypes_List[sprite].korkeus+32, MAX_SPRITEJA, false);
+				
 			}
 		}
 	}
@@ -1157,10 +1162,11 @@ void PK2Kartta::Change_SkullBlocks() {
 				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = BLOCK_KALLOSEINA;
 		}
 
+	//Put in game
 	Game->vibration = 90;//60
 	PisteInput_Vibrate();
 
-	//Game->Show_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
+	//Game->Show_Info(tekstit->Get_Text(PK_txt.game_locksopen));
 
 	Calculate_Edges();
 }
@@ -1178,10 +1184,11 @@ void PK2Kartta::Open_Locks() {
 			}
 		}
 
+	//Put in game
 	Game->vibration = 90;//60
 	PisteInput_Vibrate();
 
-	Game->Show_Info(tekstit->Hae_Teksti(PK_txt.game_locksopen));
+	Game->Show_Info(tekstit->Get_Text(PK_txt.game_locksopen));
 
 	Calculate_Edges();
 

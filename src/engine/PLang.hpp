@@ -17,7 +17,7 @@ class PLang{
 		~PLang();
 		bool Read_File(char *filename);
 		int Hae_Indeksi(const char *title);
-		const char* Hae_Teksti(int index);
+		const char* Get_Text(int index);
 		void Replace_Text(int index, const char *teksti);
 
 	private:

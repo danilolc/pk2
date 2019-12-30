@@ -34,7 +34,8 @@ GameClass::GameClass(const char* map) {
 
 GameClass::~GameClass() {
 
-	delete map;
+	if (map)
+		delete map;
 
 }
 
@@ -77,6 +78,28 @@ int GameClass::Start() {
 	
 }
 
+int GameClass::Finnish() {
+
+	if (PSound::start_music("music/hiscore.xm") != 0) {
+
+		PK2_Error("Can't find song01.xm");
+	
+	}
+	
+	this->level_clear = true;
+	
+	Episode->levels_list[this->level_id].cleared = true;
+	
+	if (this->apples_count > 0)
+		if (this->apples_got >= this->apples_count)
+			Episode->levels_list[this->level_id].all_apples = true;
+
+	if (Episode->levels_list[this->level_id].order == Episode->level)
+		Episode->level++;
+	
+	PSound::set_musicvolume_now(Settings.music_max_volume);
+
+}
 
 int GameClass::Calculete_TileMasks(){
 	

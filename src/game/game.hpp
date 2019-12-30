@@ -18,11 +18,11 @@ class GameClass {
 	public:
 
 		int level_id = -1;
-		PK2Kartta* map;
+		PK2Kartta* map = nullptr;
 		char map_path[PE_PATH_SIZE];
 
-		PK2BLOCK      palikat[300];
-		PK2BLOCK      lasketut_palikat[150];//150
+		PK2BLOCK     palikat[300];
+		PK2BLOCK     lasketut_palikat[150];//150
 		PK2BLOCKMASK palikkamaskit[BLOCK_MAX_MASKS];
 
 		bool game_over = false;
@@ -43,6 +43,9 @@ class GameClass {
 
 		DWORD score = 0;
 		DWORD score_increment = 0;
+
+		DWORD apples_count = 0;
+		DWORD apples_got = 0;
 
 		int vibration = 0;
 
@@ -69,6 +72,7 @@ class GameClass {
 		~GameClass();
 
 		int Start();
+		int Finnish();
 
 		int Move_Blocks();
 		void Show_Info(const char *text);

@@ -46,14 +46,14 @@ int Draw_Intro(){
 
 		PDraw::image_cutclip(bg_screen,/*120*/x,230, 37, 230, 194, 442);
 
-		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.intro_presents), fontti1, 230, 400, pistelogo_alku, pistelogo_loppu-20, introlaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.intro_presents), fontti1, 230, 400, pistelogo_alku, pistelogo_loppu-20, introlaskuri);
 
 	}
 
 	if (introlaskuri > tekijat_alku) {
-		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.intro_a_game_by),fontti1, 120, 200, tekijat_alku, tekijat_loppu, introlaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.intro_a_game_by),fontti1, 120, 200, tekijat_alku, tekijat_loppu, introlaskuri);
 		CreditsText_Draw("janne kivilahti 2003",		            fontti1, 120, 220, tekijat_alku+20, tekijat_loppu+20, introlaskuri);
-		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.intro_original), fontti1, 120, 245, tekijat_alku+40, tekijat_loppu+40, introlaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.intro_original), fontti1, 120, 245, tekijat_alku+40, tekijat_loppu+40, introlaskuri);
 		CreditsText_Draw("antti suuronen 1998",		            fontti1, 120, 265, tekijat_alku+50, tekijat_loppu+50, introlaskuri);
 		CreditsText_Draw("sdl porting by",		                fontti1, 120, 290, tekijat_alku+70, tekijat_loppu+70, introlaskuri);
 		CreditsText_Draw("samuli tuomola 2010",		            fontti1, 120, 310, tekijat_alku+80, tekijat_loppu+80, introlaskuri);
@@ -62,19 +62,19 @@ int Draw_Intro(){
 	}
 
 	if (introlaskuri > testaajat_alku) {
-		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.intro_tested_by),fontti1, 120, 230, testaajat_alku, testaajat_loppu, introlaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.intro_tested_by),fontti1, 120, 230, testaajat_alku, testaajat_loppu, introlaskuri);
 		CreditsText_Draw("antti suuronen",			fontti1, 120, 250, testaajat_alku+10, testaajat_loppu+10, introlaskuri);
 		CreditsText_Draw("toni hurskainen",			fontti1, 120, 260, testaajat_alku+20, testaajat_loppu+20, introlaskuri);
 		CreditsText_Draw("juho rytk�nen",				fontti1, 120, 270, testaajat_alku+30, testaajat_loppu+30, introlaskuri);
 		CreditsText_Draw("annukka korja",				fontti1, 120, 280, testaajat_alku+40, testaajat_loppu+40, introlaskuri);
-		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.intro_thanks_to),fontti1, 120, 300, testaajat_alku+70, testaajat_loppu+70, introlaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.intro_thanks_to),fontti1, 120, 300, testaajat_alku+70, testaajat_loppu+70, introlaskuri);
 		CreditsText_Draw("oskari raunio",				fontti1, 120, 310, testaajat_alku+70, testaajat_loppu+70, introlaskuri);
 		CreditsText_Draw("assembly organization",		fontti1, 120, 320, testaajat_alku+70, testaajat_loppu+70, introlaskuri);
 	}
 
 	if (introlaskuri > kaantaja_alku) {
-		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.intro_translation), fontti1, 120, 230, kaantaja_alku, kaantaja_loppu, introlaskuri);
-		CreditsText_Draw(tekstit->Hae_Teksti(PK_txt.intro_translator),  fontti1, 120, 250, kaantaja_alku+20, kaantaja_loppu+20, introlaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.intro_translation), fontti1, 120, 230, kaantaja_alku, kaantaja_loppu, introlaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.intro_translator),  fontti1, 120, 250, kaantaja_alku+20, kaantaja_loppu+20, introlaskuri);
 	}
 	return 0;
 }

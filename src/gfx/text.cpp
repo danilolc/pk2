@@ -46,7 +46,7 @@ int Load_Fonts(PLang* lang) {
 			PK2_Error("Can't create font 1 from ScandicSmall.txt");
 	}
 	else {
-        fontti1 = PDraw::font_create(lang->Hae_Teksti(ind_path), lang->Hae_Teksti(ind_font));
+        fontti1 = PDraw::font_create(lang->Get_Text(ind_path), lang->Get_Text(ind_font));
 		if (fontti1 == -1)
 			PK2_Error("Can't create font 1");
 	}
@@ -58,7 +58,7 @@ int Load_Fonts(PLang* lang) {
 			PK2_Error("Can't create font 1 from ScandicBig1.txt");
 	}
 	else {
-        fontti2 = PDraw::font_create(lang->Hae_Teksti(ind_path), lang->Hae_Teksti(ind_font));
+        fontti2 = PDraw::font_create(lang->Get_Text(ind_path), lang->Get_Text(ind_font));
 		if (fontti2 == -1) {
 			PK2_Error("Can't create font 2");
 		}
@@ -72,7 +72,7 @@ int Load_Fonts(PLang* lang) {
 		}
 	}
 	else {
-        fontti3 = PDraw::font_create(lang->Hae_Teksti(ind_path), lang->Hae_Teksti(ind_font));
+        fontti3 = PDraw::font_create(lang->Get_Text(ind_path), lang->Get_Text(ind_font));
 		if (fontti3 == -1) {
 			PK2_Error("Can't create font 3");
 		}
@@ -86,7 +86,7 @@ int Load_Fonts(PLang* lang) {
 		}
 	}
 	else {
-        fontti4 = PDraw::font_create(lang->Hae_Teksti(ind_path), lang->Hae_Teksti(ind_font));
+        fontti4 = PDraw::font_create(lang->Get_Text(ind_path), lang->Get_Text(ind_font));
 		if (fontti4 == -1) {
 			PK2_Error("Can't create font 4");
 		}
@@ -157,6 +157,13 @@ int WavetextSlow_Draw(const char *teksti, int fontti, int x, int y){
 		}
 	}
 	return vali;
+}
+
+int ShadowedText_Draw(const char* text, int x, int y) {
+
+	PDraw::font_write(fontti4, text, x + 2, y + 2);
+	return PDraw::font_write(fontti2, text, x, y);
+
 }
 
 void Fadetext_Init(){
