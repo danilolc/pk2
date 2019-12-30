@@ -159,7 +159,7 @@ int PK_Draw_Map(){
 					
 					going_to_game = true;
 					PDraw::fade_out(PDraw::FADE_SLOW);
-					PSound::set_musicvolume_now(0);
+					PSound::set_musicvolume(0);
 					Play_MenuSFX(doodle_sound,90);
 				
 				} else {
