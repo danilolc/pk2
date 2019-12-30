@@ -168,13 +168,17 @@ void EpisodeClass::Load() {
 
 EpisodeClass::EpisodeClass(int save) {
 
-	strcpy(this->name,saves_list[save].episodi);
-	strcpy(this->player_name, saves_list[save].nimi);
-	this->level = saves_list[save].jakso;
-	this->player_score = saves_list[save].pisteet;
+	strcpy(this->name,saves_list[save].episode);
+	strcpy(this->player_name, saves_list[save].name);
+	this->level = saves_list[save].level;
+	this->player_score = saves_list[save].score;
 
-	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-		this->levels_list[j].cleared = saves_list[save].jakso_cleared[j];
+	for (int j = 0; j < EPISODI_MAX_LEVELS; j++) {
+
+		this->levels_list[j].cleared = saves_list[save].level_cleared[j];
+		this->levels_list[j].all_apples = saves_list[save].all_apples[j];
+
+	}
 
 	this->Load();
 

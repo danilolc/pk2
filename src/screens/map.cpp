@@ -99,7 +99,6 @@ int PK_Draw_Map(){
 	}
 
 	int nuppi_x = 0, nuppi_y = 0;
-	int tyyppi = 0;
 	int paluu;
 	int min = 0, sek = 0;
 	int icon;
@@ -116,13 +115,14 @@ int PK_Draw_Map(){
 
 	for (int i = 0; i < Episode->level_count; i++) {
 		if (strcmp(Episode->levels_list[i].nimi,"")!=0 && Episode->levels_list[i].order > 0) {
-			tyyppi = 0;							//0 harmaa
+			
+			int type;
 			if (Episode->levels_list[i].order == Episode->level)
-				tyyppi = 1;						//1 vihre�
+				type = 1;
 			if (Episode->levels_list[i].order > Episode->level)
-				tyyppi = 2;						//2 oranssi
+				type = 2;
 			if (Episode->levels_list[i].cleared)
-				tyyppi = 0;
+				type = 0;
 
 			if (Episode->levels_list[i].x == 0)
 				Episode->levels_list[i].x = 172+i*30;
@@ -135,18 +135,23 @@ int PK_Draw_Map(){
 			//PDraw::image_clip(game_assets,Episode->levels_list[i].x-4,Episode->levels_list[i].y-4-30,1+(icon*27),452,27+(icon*27),478);
 			PDraw::image_cutclip(game_assets,Episode->levels_list[i].x-9,Episode->levels_list[i].y-14,1+(icon*28),452,28+(icon*28),479);
 
-			if (tyyppi==1) {
+			if ( type == 1 ) {
 				sinx = (int)(sin_table[degree%360]/2);
 				cosy = (int)(cos_table[degree%360]/2);
 				pekkaframe = 28*((degree%360)/120);
 				PDraw::image_cutclip(game_assets,Episode->levels_list[i].x+sinx-12,Episode->levels_list[i].y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
 			}
 
-			paluu = PK_Draw_Map_Button(Episode->levels_list[i].x-5, Episode->levels_list[i].y-10, tyyppi);
+			paluu = PK_Draw_Map_Button(Episode->levels_list[i].x-5, Episode->levels_list[i].y-10, type);
+
+			if (type == 0 && Episode->levels_list[i].all_apples)
+				PDraw::image_cutclip(game_assets2, 
+					Episode->levels_list[i].x - 9,
+					Episode->levels_list[i].y, 45, 379, 58, 394);
 
 			// if clicked
 			if (paluu == 2) {
-				if (tyyppi != 2 || dev_mode) {
+				if (type != 2 || dev_mode) {
 
 					Game = new GameClass(i);
 					

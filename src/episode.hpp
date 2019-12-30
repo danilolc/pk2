@@ -10,12 +10,15 @@ const int EPISODI_MAX_LEVELS = 100; //50;
 const int MAX_EPISODEJA	= 300;
 
 struct PK2LEVEL {
+
 	char  tiedosto[PE_PATH_SIZE];
 	char  nimi[40];
-	int   x,y;
+	int   x, y;
 	int   order;
 	bool  cleared;
+	bool  all_apples;
 	int   icon;
+	
 };
 
 //TODO - Make Scores 1.1

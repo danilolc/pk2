@@ -9,7 +9,7 @@
 #include <cstring>
 
 #define SAVES_PATH "data/saves.dat"
-#define VERSION "1"
+#define VERSION "2"
 
 PK2SAVE saves_list[MAX_SAVES];
 
@@ -17,35 +17,42 @@ int Empty_Records() {
 
 	for (int i = 0; i < MAX_SAVES; i++) {
 
-		saves_list[i].kaytossa = false;
-		strcpy(saves_list[i].episodi," ");
-		strcpy(saves_list[i].nimi,"empty");
-		saves_list[i].jakso = 0;
-		saves_list[i].pisteet = 0;
-		for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-			saves_list[i].jakso_cleared[j] = false;
+		saves_list[i].empty = true;
+		strcpy(saves_list[i].episode," ");
+		strcpy(saves_list[i].name,"empty");
+		saves_list[i].level = 0;
+		saves_list[i].score = 0;
+		for (int j = 0; j < EPISODI_MAX_LEVELS; j++) {
+
+			saves_list[i].level_cleared[j] = false;
+			saves_list[i].all_apples[j] = false;
+
+		}
 		
 	}
 
 	return 0;
+	
 }
 
 int Save_All_Records() {
 
 	char versio[2] = VERSION;
-	char lkm[8];
+	char count_c[8];
 
-	itoa(MAX_SAVES, lkm, 10);
+	itoa(MAX_SAVES, count_c, 10);
 
 	SDL_RWops *file = SDL_RWFromFile(SAVES_PATH, "wb");
 	if (file == nullptr) {
+
 		printf("Error saving records\n");
 		return 1;
+
 	}
 	
-	SDL_RWwrite(file, versio, 1, sizeof(versio));
-	SDL_RWwrite(file, lkm, 1, sizeof(lkm));
-	SDL_RWwrite(file, saves_list, 1, sizeof(saves_list));
+	SDL_RWwrite(file, versio, 1, sizeof(versio)); // Write version "2"
+	SDL_RWwrite(file, count_c, 1, sizeof(count_c)); // Write count "10"
+	SDL_RWwrite(file, saves_list, 1, sizeof(saves_list)); // Write saves
 	
 	SDL_RWclose(file);
 	
@@ -53,7 +60,8 @@ int Save_All_Records() {
 
 }
 
-int Load_SaveFile(){
+int Load_SaveFile() {
+
 	char versio[2];
 	char count_c[8];
 	int count, i;
@@ -68,32 +76,62 @@ int Load_SaveFile(){
 
 	SDL_RWread(file, versio, sizeof(versio), 1);
 
-	if (strcmp(versio,"1")==0) {
+	if (strcmp(versio,"2") == 0) {
+
+		SDL_RWread(file, count_c, sizeof(count_c), 1);
+		SDL_RWread(file, saves_list, sizeof(PK2SAVE) * count , 1);
+	
+	} else if (strcmp(versio,"1") == 0) {
+
 		SDL_RWread(file, count_c, sizeof(count_c), 1);
 		count = atoi(count_c);
 		if (count > MAX_SAVES)
 			count = MAX_SAVES;
-		
-		SDL_RWread(file, saves_list, sizeof(PK2SAVE)*count , 1);
+
+		PK2SAVE_V1 temp[MAX_SAVES];
+
+		SDL_RWread(file, temp, sizeof(PK2SAVE_V1) * count , 1);
+
+		for (int i = 0; i < count; i++) {
+			
+			saves_list[i].empty = !temp[i].kaytossa;
+			saves_list[i].level = temp[i].jakso;
+			strcpy(saves_list[i].episode, temp[i].episodi);
+			strcpy(saves_list[i].name, temp[i].nimi);
+			saves_list[i].score = temp[i].pisteet;
+
+			for (int j = 0; j < EPISODI_MAX_LEVELS;j++) {
+				saves_list[i].level_cleared[j] = temp[i].jakso_cleared[j];
+				saves_list[i].all_apples[j] = true;
+			}
+
+		}
 	
 	}
 
 	SDL_RWclose(file);
 
 	return 0;
+
 }
 
-int Save_Records(int i){
-	saves_list[i].kaytossa = true;
-	strcpy(saves_list[i].episodi, Episode->name);
-	strcpy(saves_list[i].nimi, Episode->player_name);
-	saves_list[i].jakso = Episode->level;
-	saves_list[i].pisteet = Episode->player_score;
+int Save_Records(int i) {
 
-	for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
-		saves_list[i].jakso_cleared[j] = Episode->levels_list[j].cleared;
+	saves_list[i].empty = false;
+	strcpy(saves_list[i].episode, Episode->name);
+	strcpy(saves_list[i].name, Episode->player_name);
+	saves_list[i].level = Episode->level;
+	saves_list[i].score = Episode->player_score;
+
+	for (int j = 0;j < EPISODI_MAX_LEVELS;j++) {
+
+		saves_list[i].level_cleared[j] = Episode->levels_list[j].cleared;
+		saves_list[i].all_apples[j] = Episode->levels_list[j].all_apples;
+
+	}
 
 	Save_All_Records();
 
 	return 0;
+
 }
