@@ -587,8 +587,8 @@ int Update_Camera(){
 	Game->camera_y = (int)Player_Sprite->y-screen_height / 2;
 	
 	if(dev_mode && PisteInput_Hiiri_Vasen()) {
-		Game->camera_x += (mouse_x - screen_width / 2);
-		Game->camera_y += (mouse_y - screen_height / 2);
+		Game->camera_x += 2*(mouse_x - screen_width / 2);
+		Game->camera_y += 2*(mouse_y - screen_height / 2);
 	}
 
 	if (Game->vibration > 0) {

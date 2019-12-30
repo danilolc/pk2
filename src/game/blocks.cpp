@@ -154,7 +154,7 @@ PK2BLOCK PK_Block_Get(int x, int y) {
 		block.oikea  = x*32+32;
 		block.yla	   = y*32;
 		block.ala    = y*32+32;
-		block.water   = false;
+		block.water   = true;//
 		block.border  = true;
 		return block;
 	}

@@ -13,9 +13,7 @@ int update();
 int terminate();
 
 int  load_sfx(const char* filename); //0 success, -1 fail
-int  play_sfx(int index);
 int  play_sfx(int index, int volume, int panoramic, int freq);
-void set_sfxvolume(int volume);
 int  free_sfx(int index);
 void reset_sfx();
 

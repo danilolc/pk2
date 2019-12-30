@@ -28,7 +28,8 @@ Mix_Music* music = NULL;
 char playingMusic[PE_PATH_SIZE] = "";
 
 //Change the chunk frequency
-int Change_Frequency(int index, int freq){
+int Change_Frequency(int index, int freq) {
+
 	int channel;
 	SDL_AudioCVT cvt;
 
@@ -56,33 +57,43 @@ int Change_Frequency(int index, int freq){
 		freq_chunks[channel] = cvt.buf; //Save the buffer to delete it after play
 
 		return channel;
+		
 	}
+
 	else return 1; // Dont need to change frequency
+
 }
 
-int load_sfx(const char* filename){
+int load_sfx(const char* filename) {
+
 	int i = -1;
+
 	for(i=0;i<MAX_SOUNDS;i++)
-		if (indexes[i] == NULL){
+		if (indexes[i] == NULL) {
+
 			indexes[i] = Mix_LoadWAV(filename);
 			break;
+
 		}
 	return i;
 }
-int play_sfx(int index){
-	return play_sfx(index, sfx_volume, 0, def_freq);
-}
-int play_sfx(int index, int volume, int panoramic, int freq){
-	//panoramic from -10000 to 10000
 
+int play_sfx(int index, int volume, int panoramic, int freq){
+	//panoramic from -1000 to 1000
+	
 	if(index == -1) return 1;
 	if(indexes[index] == NULL) return 2;
 
 	volume = volume * 128 / 100;
 	indexes[index]->volume = volume;
 
-	BYTE pan_left = 255; //TODO
-	BYTE pan_right = 255;
+	int pan_left = (panoramic + 1000) * 255 / 2000; //TODO
+	int pan_right = 256 - pan_left;
+
+	if (pan_left < 0) pan_left = 0;
+	if (pan_left > 255) pan_left = 255;
+	if (pan_right < 0) pan_right = 0;
+	if (pan_right > 255) pan_right = 255;
 
 	//Save a backup of the parameter that will be ovewrited
 	Uint8* bkp_buf = indexes[index]->abuf;
@@ -97,30 +108,36 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 
 	Mix_SetPanning(channel, pan_left, pan_right);
 
-	if(Mix_PlayChannel(channel, indexes[index], 0) == -1)
-		return -1;
+	int error = Mix_PlayChannel(channel, indexes[index], 0);
 
 	indexes[index]->abuf = bkp_buf;
 	indexes[index]->alen = bkp_len;
 
-	return 0;
-}
-void set_sfxvolume(int volume){
-	sfx_volume = volume;
-}
-int free_sfx(int index){
-	if(indexes[index] != NULL)
-		Mix_FreeChunk(indexes[index]);
-	indexes[index] = NULL;
-	return 0;
-}
-void reset_sfx(){
-	int i;
-	for(i=0;i<MAX_SOUNDS;i++)
-		free_sfx(i);
+	return error;
+
 }
 
-int start_music(const char* filename){
+int free_sfx(int index) {
+
+	if(indexes[index] != NULL) {
+		
+		Mix_FreeChunk(indexes[index]);
+		indexes[index] = NULL;
+	
+	}
+
+	return 0;
+
+}
+
+void reset_sfx() {
+
+	for(int i = 0; i < MAX_SOUNDS; i++)
+		free_sfx(i);
+
+}
+
+int start_music(const char* filename) {
 
 	char temp[PE_PATH_SIZE];
 	strcpy(temp, filename);
@@ -140,23 +157,32 @@ int start_music(const char* filename){
 
 	printf("PS     - Loaded %s\n",temp);
 	strcpy(playingMusic, temp);
+
 	return 0;
 	
 }
-void set_musicvolume(int volume){
+
+void set_musicvolume(int volume) {
+
 	mus_volume = volume;
+
 }
-void set_musicvolume_now(int volume){
+
+void set_musicvolume_now(int volume) {
+
 	mus_volume = volume;
 	mus_volume_now = volume;
 	Mix_VolumeMusic(volume * 128 / 100);
 	
 }
 void stop_music(){
+
 	Mix_FadeOutMusic(0);
+
 }
 
-int init(){
+int init() {
+
 	if(Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, 4096) < 0){
 		printf("PS     - Unable to init Mixer: %s\n", Mix_GetError());
 		return -1;
@@ -164,9 +190,11 @@ int init(){
 
 	Mix_Init(MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG);
 	return 0;
+
 }
-int update(){
-	for(int i=0;i<MIX_CHANNELS;i++)
+int update() {
+
+	for(int i=0; i < MIX_CHANNELS; i++)
 		if(!Mix_Playing(i) && freq_chunks[i] != NULL){
 				SDL_free(freq_chunks[i]); //Make sure that all allocated chunks will be deleted after playing
 				freq_chunks[i] = NULL;
@@ -179,8 +207,11 @@ int update(){
 		Mix_VolumeMusic(--mus_volume_now * 128 / 100);
 
 	return 0;
+
 }
-int terminate(){
+
+int terminate() {
+
 	reset_sfx();
 	
 	if(music != NULL) Mix_FreeMusic(music);
@@ -188,6 +219,7 @@ int terminate(){
 	
 	Mix_CloseAudio();
 	return 0;
+
 }
 
 }

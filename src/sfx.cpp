@@ -63,26 +63,45 @@ int Load_SFX() {
 }
 
 void Play_GameSFX(int sound, int volume, int x, int y, int freq, bool random_freq){
-	if (sound > -1 && Settings.sfx_max_volume > 0 && volume > 0){
-		if (x < Game->camera_x + screen_width && x > Game->camera_x && y < Game->camera_y + screen_height && y > Game->camera_y){
-			volume = volume / (100 / Settings.sfx_max_volume);
+	if (sound > -1 && Settings.sfx_max_volume > 0 && volume > 0) {
 
-			if (volume > 100)
-				volume = 100;
+        const int max_dist = 50;
 
-			if (volume < 0)
-				volume = 0;
+        int sta_x = Game->camera_x;
+        int sta_y = Game->camera_y;
+        int end_x = Game->camera_x + screen_width;
+        int end_y = Game->camera_y + screen_height;
 
-			int pan = Game->camera_x + (screen_width / 2) - x;
-			pan *= -2;
+        if (x < sta_x)
+            volume /= float(sta_x - x + max_dist) / (max_dist);
 
-			if (random_freq)
-				freq = freq + rand()%4000 - rand()%2000;
+        if (x > end_x)
+            volume /= float(x - end_x + max_dist) / (max_dist);
+        
+        if (y < sta_y)
+            volume /= float(sta_y - y + max_dist) / (max_dist);
+        
+        if (y > end_y)
+            volume /= float(y - end_y + max_dist) / (max_dist);
+        
+        volume *= float(Settings.sfx_max_volume) / 100;
 
-			int err = PSound::play_sfx(sound, Settings.sfx_max_volume, pan, freq);
-			if (err)
-				printf("PK2     - Error playing sound. Error %i\n", err);
-		}
+        if (volume < 0)
+			return;
+
+        if (volume > 100)
+			volume = 100;
+        
+		int pan = Game->camera_x - x + (screen_width / 2);
+        pan *= 2;
+
+        if (random_freq)
+			freq = freq + rand()%4000 - rand()%2000;
+
+        int err = PSound::play_sfx(sound, volume, pan, freq);
+		if (err)
+			printf("PK2     - Error playing sound. Error %i\n", err);
+			
 	}
 }
 
@@ -101,5 +120,7 @@ void Play_MenuSFX(int sound, int volume){
 		int err = PSound::play_sfx(sound, Settings.sfx_max_volume, 0, freq);
 		if (err)
 			printf("PK2     - Error playing sound. Error %i\n", err);
+
 	}
+
 }
