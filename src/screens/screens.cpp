@@ -13,6 +13,8 @@
 #include "system.hpp"
 
 #include "game/map.hpp"
+#include "episode.hpp"
+#include "language.hpp"
 
 #include "engine/Piste.hpp"
 
@@ -25,9 +27,11 @@ int next_screen = SCREEN_NOT_SET;
 bool closing_game = false;
 
 void Fade_Quit() {
+
 	if(!closing_game) PDraw::fade_out(PDraw::FADE_FAST);
 	closing_game = true;
 	PSound::set_musicvolume(0);
+	
 }
 
 int Updade_Mouse() {
@@ -96,19 +100,8 @@ int Screen_First_Start() {
 
 	PDraw::image_load(game_assets, "gfx/pk2stuff.bmp", false);
 	PDraw::image_load(game_assets2, "gfx/pk2stuff2.bmp", false);
-	//PDraw::image_load(bg_screen, "gfx/menu.bmp", true);
-
-	//Sprites_clear();
-	//Gifts_Clean();
-	//Particles_Clear();
-
-	//PK_Search_Episode();
-	//Clean_Maps();
-	//Load_Episode();
 
 	Load_SFX();
-
-	//PK_Calculate_Tiles();
 
 	Load_SaveFile();
 

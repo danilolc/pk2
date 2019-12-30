@@ -4,45 +4,14 @@
 //#########################
 #pragma once
 
-#include "engine/PLang.hpp"
 #include "engine/types.hpp"
-#include "engine/platform.hpp"
 
 #include "game/map.hpp"
 #include "game/sprites.hpp"
-#include "settings.hpp"
+#include "game/blocks.hpp"
 
 const int TIME_FPS = 100;
 const int INFO_TIME = 700;
-
-const BYTE BLOCK_MAX_MASKEJA = 150;
-
-enum BLOCKS{
-	BLOCK_TAUSTA,          //BLOCK_BACKGROUND
-	BLOCK_SEINA,           //BLOCK_WALL
-	BLOCK_MAKI_OIKEA_YLOS, //BLOCK_MAX
-	BLOCK_MAKI_VASEN_YLOS, //BLOCK_MAX_
-	BLOCK_MAKI_OIKEA_ALAS, //BLOCK_MAX_
-	BLOCK_MAKI_VASEN_ALAS, //BLOCK_MAX_ 
-	BLOCK_MAKI_YLOS,       //BLOCK_MAX_UP
-	BLOCK_MAKI_ALAS        //BLOCK_MAX_DOWN
-};
-
-struct PK2BLOCK{
-	BYTE	koodi;
-	bool	tausta;
-	BYTE	vasemmalle, oikealle, ylos, alas;
-	int 	vasen, oikea, yla, ala;
-	bool	vesi;
-	bool	reuna;
-};
-
-struct PK2BLOCKMASKI{
-	short int	ylos[32];
-	short int	alas[32];
-	short int	vasemmalle[32];
-	short int	oikealle[32];
-};
 
 class GameClass {
 
@@ -54,7 +23,7 @@ class GameClass {
 
 		PK2BLOCK      palikat[300];
 		PK2BLOCK      lasketut_palikat[150];//150
-		PK2BLOCKMASKI palikkamaskit[BLOCK_MAX_MASKEJA];
+		PK2BLOCKMASK palikkamaskit[BLOCK_MAX_MASKS];
 
 		bool game_over = false;
 		bool level_clear = false;
@@ -122,9 +91,6 @@ class GameClass {
 extern GameClass* Game;
 
 /**/
-int PK_Sprite_Bonus_Movement(int i);
-int PK_Sprite_Movement(int i);
-
 bool Draw_Menu_Text(bool active, const char *teksti, int x, int y);
 int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx);
 /**/

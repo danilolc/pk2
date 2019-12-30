@@ -11,7 +11,8 @@
 
 #include <cstring>
 
-#include "game/game.hpp" //
+#include "game/game.hpp"
+#include "settings.hpp"
 #include "gfx/text.hpp"
 #include "language.hpp"
 #include "gui.hpp"

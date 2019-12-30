@@ -22,11 +22,11 @@ void settings_init() {
 
 	strcpy(Settings.kieli, "english.txt");
 
-	Settings.lapinakyvat_objektit = true;
-	Settings.lapinakyvat_menutekstit = false;
-	Settings.saa_efektit = true;
-	Settings.nayta_tavarat = true;
-	Settings.tausta_spritet = true;
+	Settings.draw_transparent = true;
+	Settings.transparent_text = false;
+	Settings.draw_weather = true;
+	Settings.draw_itembar = true;
+	Settings.bg_sprites = true;
 
 	Settings.aanet = true;
 	Settings.musiikki = true;
@@ -47,9 +47,11 @@ void settings_init() {
 
 	Settings.music_max_volume = 64;
 	Settings.sfx_max_volume = 90;
+
 }
 
 int Settings_Open() {
+
 	SDL_RWops *file = SDL_RWFromFile(SETTINGS_PATH, "rb");
 
 	if (file == nullptr){
@@ -74,9 +76,11 @@ int Settings_Open() {
 	SDL_RWclose(file);
 	
 	return 0;
+
 }
 
 int Settings_Save() {
+
     PisteUtils_CreateDir("data");
 	
 	SDL_RWops *file = SDL_RWFromFile(SETTINGS_PATH, "wb");
@@ -92,4 +96,5 @@ int Settings_Save() {
 	SDL_RWclose(file);
 
 	return 0;
+
 }

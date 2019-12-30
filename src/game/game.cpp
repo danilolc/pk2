@@ -9,6 +9,7 @@
 #include "gfx/text.hpp"
 #include "gfx/particles.hpp"
 #include "episode.hpp"
+#include "settings.hpp"
 
 #include "engine/PSound.hpp"
 #include "engine/PDraw.hpp"
@@ -85,7 +86,7 @@ int GameClass::Calculete_TileMasks(){
 	BYTE color;
 
 	PDraw::drawimage_start(map->palikat_buffer, buffer, leveys);
-	for (int mask=0; mask<BLOCK_MAX_MASKEJA; mask++){
+	for (int mask=0; mask<BLOCK_MAX_MASKS; mask++){
 		for (x=0; x<32; x++){
 			y=0;
 			while (y<31 && (color = buffer[x+(mask%10)*32 + (y+(mask/10)*32)*leveys])==255)
@@ -210,62 +211,62 @@ int GameClass::Calculate_Tiles() {
 		if ((i < 80 || i > 139) && i != 255){
 			palikka.tausta = false;
 
-			palikka.oikealle	= BLOCK_SEINA;
-			palikka.vasemmalle	= BLOCK_SEINA;
-			palikka.ylos		= BLOCK_SEINA;
-			palikka.alas		= BLOCK_SEINA;
+			palikka.oikealle	= BLOCK_WALL;
+			palikka.vasemmalle	= BLOCK_WALL;
+			palikka.ylos		= BLOCK_WALL;
+			palikka.alas		= BLOCK_WALL;
 
 			// Erikoislattiat
 
 			if (i > 139){
-				palikka.oikealle	= BLOCK_TAUSTA;
-				palikka.vasemmalle	= BLOCK_TAUSTA;
-				palikka.ylos		= BLOCK_TAUSTA;
-				palikka.alas		= BLOCK_TAUSTA;
+				palikka.oikealle	= BLOCK_BACKGROUND;
+				palikka.vasemmalle	= BLOCK_BACKGROUND;
+				palikka.ylos		= BLOCK_BACKGROUND;
+				palikka.alas		= BLOCK_BACKGROUND;
 			}
 
 			// L�pik�velt�v� lattia
 
 			if (i == BLOCK_ESTO_ALAS){
-				palikka.oikealle	= BLOCK_TAUSTA;
-				palikka.ylos		= BLOCK_TAUSTA;
-				palikka.alas		= BLOCK_SEINA;
-				palikka.vasemmalle	= BLOCK_TAUSTA;
+				palikka.oikealle	= BLOCK_BACKGROUND;
+				palikka.ylos		= BLOCK_BACKGROUND;
+				palikka.alas		= BLOCK_WALL;
+				palikka.vasemmalle	= BLOCK_BACKGROUND;
 				palikka.ala -= 27;
 			}
 
 			// M�et
 
 			if (i > 49 && i < 60){
-				palikka.oikealle	= BLOCK_TAUSTA;
-				palikka.ylos		= BLOCK_SEINA;
-				palikka.alas		= BLOCK_SEINA;
-				palikka.vasemmalle	= BLOCK_TAUSTA;
+				palikka.oikealle	= BLOCK_BACKGROUND;
+				palikka.ylos		= BLOCK_WALL;
+				palikka.alas		= BLOCK_WALL;
+				palikka.vasemmalle	= BLOCK_BACKGROUND;
 				palikka.ala += 1;
 			}
 
 			// Kytkimet
 
 			if (i >= BLOCK_KYTKIN1 && i <= BLOCK_KYTKIN3){
-				palikka.oikealle	= BLOCK_SEINA;
-				palikka.ylos		= BLOCK_SEINA;
-				palikka.alas		= BLOCK_SEINA;
-				palikka.vasemmalle	= BLOCK_SEINA;
+				palikka.oikealle	= BLOCK_WALL;
+				palikka.ylos		= BLOCK_WALL;
+				palikka.alas		= BLOCK_WALL;
+				palikka.vasemmalle	= BLOCK_WALL;
 			}
 		}
 		else{
 			palikka.tausta = true;
 
-			palikka.oikealle	= BLOCK_TAUSTA;
-			palikka.vasemmalle	= BLOCK_TAUSTA;
-			palikka.ylos		= BLOCK_TAUSTA;
-			palikka.alas		= BLOCK_TAUSTA;
+			palikka.oikealle	= BLOCK_BACKGROUND;
+			palikka.vasemmalle	= BLOCK_BACKGROUND;
+			palikka.ylos		= BLOCK_BACKGROUND;
+			palikka.alas		= BLOCK_BACKGROUND;
 		}
 
 		if (i > 131 && i < 140)
-			palikka.vesi = true;
+			palikka.water = true;
 		else
-			palikka.vesi = false;
+			palikka.water = false;
 
 		this->lasketut_palikat[i] = palikka;
 	}

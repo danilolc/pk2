@@ -18,6 +18,7 @@
 #include "language.hpp"
 #include "sfx.hpp"
 #include "system.hpp"
+#include "settings.hpp"
 
 int debug_active_sprites = 0;
 
@@ -497,7 +498,7 @@ int PK_Draw_InGame(){
 
 		PK_Draw_InGame_BG();
 
-		if (Settings.tausta_spritet)
+		if (Settings.bg_sprites)
 			PK_Draw_InGame_BGSprites();
 
 		Particles_DrawBG(Game->camera_x, Game->camera_y);
@@ -511,7 +512,7 @@ int PK_Draw_InGame(){
 
 		Game->map->Piirra_Seinat(Game->camera_x,Game->camera_y, false);
 
-		if (Settings.nayta_tavarat)
+		if (Settings.draw_itembar)
 			PK_Draw_InGame_Lower_Menu();
 
 		Fadetext_Draw();
@@ -781,7 +782,7 @@ int Screen_InGame(){
 				key_delay = 20;
 			}
 			if (PisteInput_Keydown(PI_G)) {
-				Settings.lapinakyvat_objektit = !Settings.lapinakyvat_objektit;
+				Settings.draw_transparent = !Settings.draw_transparent;
 				key_delay = 20;
 			}
 			if (PisteInput_Keydown(PI_L)) {
@@ -835,16 +836,21 @@ int Screen_InGame(){
 	}
 
 	if (Game->exit_timer == 1 && !PDraw::is_fading()) {
-		//Game->started = false;
 		
-		if (Game->level_clear) next_screen = SCREEN_SCORING;
-		else {
+		if(test_level) {
+
+			Piste::stop();
+
+		} else if (Game->level_clear) {
+
+			next_screen = SCREEN_SCORING;
+
+		} else {
 			
 			delete Game;
 			Game = nullptr;
 
-			if(test_level) Fade_Quit();
-			else next_screen = SCREEN_MAP;
+			next_screen = SCREEN_MAP;
 		
 		}
 

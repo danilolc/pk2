@@ -15,7 +15,8 @@ PK2SAVE saves_list[MAX_SAVES];
 
 int Empty_Records() {
 
-	for (int i = 0; i < MAX_SAVES; i++){
+	for (int i = 0; i < MAX_SAVES; i++) {
+
 		saves_list[i].kaytossa = false;
 		strcpy(saves_list[i].episodi," ");
 		strcpy(saves_list[i].nimi,"empty");
@@ -23,6 +24,7 @@ int Empty_Records() {
 		saves_list[i].pisteet = 0;
 		for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
 			saves_list[i].jakso_cleared[j] = false;
+		
 	}
 
 	return 0;

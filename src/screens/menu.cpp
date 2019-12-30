@@ -726,67 +726,67 @@ int Draw_Menu_Graphics() {
 	}
 	else {
 
-		if (Settings.lapinakyvat_objektit){
+		if (Settings.draw_transparent){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_tfx_on),180,my))
-				Settings.lapinakyvat_objektit = false;
+				Settings.draw_transparent = false;
 		} else{
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_tfx_off),180,my))
-				Settings.lapinakyvat_objektit = true;
+				Settings.draw_transparent = true;
 		}
-		if (Draw_BoolBox(100, my, Settings.lapinakyvat_objektit, true)) {
-			Settings.lapinakyvat_objektit = !Settings.lapinakyvat_objektit;
+		if (Draw_BoolBox(100, my, Settings.draw_transparent, true)) {
+			Settings.draw_transparent = !Settings.draw_transparent;
 		}
 		my += 30;
 
 
-		if (Settings.lapinakyvat_menutekstit){
+		if (Settings.transparent_text){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_tmenus_on),180,my))
-				Settings.lapinakyvat_menutekstit = false;
+				Settings.transparent_text = false;
 		} else{
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_tmenus_off),180,my))
-				Settings.lapinakyvat_menutekstit = true;
+				Settings.transparent_text = true;
 		}
-		if (Draw_BoolBox(100, my, Settings.lapinakyvat_menutekstit, true)) {
-			Settings.lapinakyvat_menutekstit = !Settings.lapinakyvat_menutekstit;
+		if (Draw_BoolBox(100, my, Settings.transparent_text, true)) {
+			Settings.transparent_text = !Settings.transparent_text;
 		}
 		my += 30;
 
 
-		if (Settings.nayta_tavarat){
+		if (Settings.draw_itembar){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_items_on),180,my))
-				Settings.nayta_tavarat = false;
+				Settings.draw_itembar = false;
 		} else{
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_items_off),180,my))
-				Settings.nayta_tavarat = true;
+				Settings.draw_itembar = true;
 		}
-		if (Draw_BoolBox(100, my, Settings.nayta_tavarat, true)) {
-			Settings.nayta_tavarat = !Settings.nayta_tavarat;
+		if (Draw_BoolBox(100, my, Settings.draw_itembar, true)) {
+			Settings.draw_itembar = !Settings.draw_itembar;
 		}
 		my += 30;
 
 
-		if (Settings.saa_efektit){
+		if (Settings.draw_weather){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_weather_on),180,my))
-				Settings.saa_efektit = false;
+				Settings.draw_weather = false;
 		} else{
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_weather_off),180,my))
-				Settings.saa_efektit = true;
+				Settings.draw_weather = true;
 		}
-		if (Draw_BoolBox(100, my, Settings.saa_efektit, true)) {
-			Settings.saa_efektit = !Settings.saa_efektit;
+		if (Draw_BoolBox(100, my, Settings.draw_weather, true)) {
+			Settings.draw_weather = !Settings.draw_weather;
 		}
 		my += 30;
 
 
-		if (Settings.tausta_spritet){
+		if (Settings.bg_sprites){
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_bgsprites_on),180,my))
-				Settings.tausta_spritet = false;
+				Settings.bg_sprites = false;
 		} else{
 			if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.gfx_bgsprites_off),180,my))
-				Settings.tausta_spritet = true;
+				Settings.bg_sprites = true;
 		}
-		if (Draw_BoolBox(100, my, Settings.tausta_spritet, true)) {
-			Settings.tausta_spritet = !Settings.tausta_spritet;
+		if (Draw_BoolBox(100, my, Settings.bg_sprites, true)) {
+			Settings.bg_sprites = !Settings.bg_sprites;
 		}
 		my += 30;
 
@@ -1212,7 +1212,7 @@ int Screen_Menu_Init() {
 	
 	GUI_Change(UI_CURSOR);
 	PDraw::set_xoffset(Settings.isWide? 80 : 0);
-//Call when started
+	
 	Search_Episode();
 	Search_Languages();
 

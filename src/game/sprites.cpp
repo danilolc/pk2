@@ -9,6 +9,7 @@
 
 #include "game/game.hpp"
 #include "episode.hpp"
+#include "physics.hpp"
 
 #include <cstring>
 
@@ -439,9 +440,9 @@ int Update_Sprites() {
 		sprite = &Sprites_List[i];
 		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYYPPI_TAUSTA){
 			if (sprite->tyyppi->tyyppi == TYYPPI_BONUS)
-				PK_Sprite_Bonus_Movement(i);
+				BonusSprite_Movement(i);
 			else
-				PK_Sprite_Movement(i);
+				Sprite_Movement(i);
 
 			active_sprites++;
 		}

@@ -28,7 +28,7 @@ void Particles_Update() {
 
 	//Todo - clean "time_over" particles - use deque on Particles
 
-	if (Settings.saa_efektit)
+	if (Settings.draw_weather)
 		for (Particle* particle : BGParticles)
 			particle->update();
 
@@ -50,7 +50,7 @@ void Particles_DrawFront(int cam_x, int cam_y) {
 
 void Particles_DrawBG(int cam_x, int cam_y) {
 
-	if (!Settings.saa_efektit) return;
+	if (!Settings.draw_weather) return;
 
 	for (Particle* particle : BGParticles)
 		particle->draw(cam_x, cam_y);

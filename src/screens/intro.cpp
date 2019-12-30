@@ -9,6 +9,7 @@
 #include "game/game.hpp"
 #include "language.hpp"
 #include "system.hpp"
+#include "settings.hpp"
 
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"

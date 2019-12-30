@@ -13,6 +13,7 @@
 #include "sfx.hpp"
 #include "game/sprites.hpp"
 #include "system.hpp"
+#include "settings.hpp"
 
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"

@@ -14,11 +14,11 @@ struct PK2SETTINGS {
 	// grafiikka
 	DWORD ruudun_korkeus; //Not used
 	DWORD ruudun_leveys; //Not used
-	bool  lapinakyvat_objektit;
-	bool  lapinakyvat_menutekstit;
-	bool  saa_efektit;
-	bool  nayta_tavarat;
-	bool  tausta_spritet;
+	bool  draw_transparent;
+	bool  transparent_text;
+	bool  draw_weather;
+	bool  draw_itembar;
+	bool  bg_sprites;
 
 	// kontrollit
 	DWORD control_left;
@@ -31,8 +31,8 @@ struct PK2SETTINGS {
 	DWORD control_open_gift;
 
 	// audio
-	bool musiikki;
-	bool aanet;
+	bool musiikki; //Not used
+	bool aanet; //Not used
 
 	//Version 1.1
 	bool isFullScreen;

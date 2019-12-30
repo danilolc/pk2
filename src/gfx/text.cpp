@@ -146,7 +146,7 @@ int WavetextSlow_Draw(const char *teksti, int fontti, int x, int y){
 			xs = (int)(cos_table[((i+degree)*4)%360])/11;
 			kirjain[0] = teksti[i];
 
-			if (Settings.lapinakyvat_menutekstit)
+			if (Settings.transparent_text)
 				vali += PDraw::font_writealpha(fontti,kirjain,x+vali-xs,y+ys,75);
 			else{
 				PDraw::font_write(fontti4,kirjain,x+vali-xs+1,y+ys+1);
@@ -191,7 +191,7 @@ int Fadetext_Draw(){
 			x = fadetekstit[i].ui ? fadetekstit[i].x : fadetekstit[i].x - Game->camera_x;
 			y = fadetekstit[i].ui ? fadetekstit[i].y : fadetekstit[i].y - Game->camera_y;
 
-			if (Settings.lapinakyvat_objektit && pros < 100)
+			if (Settings.draw_transparent && pros < 100)
 				PDraw::font_writealpha(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y, pros);
 			else
 				PDraw::font_write(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y);
