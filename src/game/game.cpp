@@ -49,7 +49,7 @@ int GameClass::Start() {
 		int index = this->level_id;
 
 		strcpy(this->map_path, Episode->levels_list[index].tiedosto);
-		if (Episode->levels_list[index].lapaisty)
+		if (Episode->levels_list[index].cleared)
 			this->repeating = true;
 		else
 			this->repeating = false;

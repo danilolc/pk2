@@ -84,16 +84,16 @@ int EpisodeClass::Save_Scores(const char *filename) {
 //TODO - Load info from different languages
 void EpisodeClass::Load_Info() {
 
-	PisteLanguage* temp;
+	PLang* temp;
 
 	char infofile[PE_PATH_SIZE] = "infosign.txt";
 	char otsikko[] = "info00";
 	int indeksi1, indeksi2, i;
 
-	temp = new PisteLanguage();
+	temp = new PLang();
 	this->Get_Dir(infofile);
 
-	if (PK_Check_File(infofile)){
+	if (PisteUtils_Find(infofile)){
 		if (temp->Read_File(infofile)){
 
 			for (i = 0 ; i<19 ; i++){
@@ -116,53 +116,48 @@ void EpisodeClass::Load_Info() {
 void EpisodeClass::Load() {
 	
 	int i = 0;
-	char path[PE_PATH_SIZE];
-	char list[EPISODI_MAX_LEVELS][PE_PATH_SIZE];
 	
-	memset(list, '\0', sizeof(list));
-
-	strcpy(path,"");
+	char path[PE_PATH_SIZE] = "";
 	this->Get_Dir(path);
-	this->level_count = PisteUtils_Scandir(".map", path, list, EPISODI_MAX_LEVELS);
+	char* list = PisteUtils_Scandir(this->level_count, ".map", path, EPISODI_MAX_LEVELS);
 
 	PK2Kartta *temp = new PK2Kartta();
 
-	for (i = 0; i <= this->level_count; i++){
-		strcpy(this->levels_list[i].tiedosto, list[i]);
-		if (temp->Lataa_Pelkat_Tiedot(path,this->levels_list[i].tiedosto) == 0){
+	for (i = 0; i < this->level_count; i++) {
+
+		strcpy(this->levels_list[i].tiedosto, &list[i * PE_PATH_SIZE]);
+		if (temp->Lataa_Pelkat_Tiedot(path, this->levels_list[i].tiedosto) == 0) {
+
 			strcpy(this->levels_list[i].nimi, temp->nimi);
 			this->levels_list[i].x = temp->x;//   142 + i*35;
 			this->levels_list[i].y = temp->y;// 270;
-			this->levels_list[i].jarjestys = temp->jakso;
-			this->levels_list[i].ikoni = temp->ikoni;
+			this->levels_list[i].order = temp->jakso;
+			this->levels_list[i].icon = temp->icon;
+
 		}
+
 	}
 
+	delete list;
 	delete temp;
 
-	for (; i < EPISODI_MAX_LEVELS; i++){
-		strcpy(this->levels_list[i].nimi,"");
-		strcpy(this->levels_list[i].tiedosto,"");
-		this->levels_list[i].x = 0;
-		this->levels_list[i].y = 0;
-		this->levels_list[i].jarjestys = -1;
-		this->levels_list[i].ikoni = 0;
-	}
-
 	PK2LEVEL temp2;
-
 	bool stop = false;
 
 	while (!stop){
 		stop = true;
 
-		for (i=0;i<this->level_count;i++){
-			if (this->levels_list[i].jarjestys > this->levels_list[i+1].jarjestys){
+		for (i = 0; i < this->level_count - 1; i++) {
+
+			if (this->levels_list[i].order > this->levels_list[i+1].order) {
+
 				temp2 = this->levels_list[i];
 				this->levels_list[i] = this->levels_list[i+1];
 				this->levels_list[i+1] = temp2;
 				stop = false;
+
 			}
+
 		}
 	}
 	
@@ -179,7 +174,7 @@ EpisodeClass::EpisodeClass(int save) {
 	this->player_score = saves_list[save].pisteet;
 
 	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-		this->levels_list[j].lapaisty = saves_list[save].jakso_lapaisty[j];
+		this->levels_list[j].cleared = saves_list[save].jakso_cleared[j];
 
 	this->Load();
 
@@ -191,7 +186,7 @@ EpisodeClass::EpisodeClass(const char* player_name, const char* episode) {
 	strcpy(this->player_name, player_name);
 
 	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-		this->levels_list[j].lapaisty = 0;
+		this->levels_list[j].cleared = 0;
 	
 	this->Load();
 	

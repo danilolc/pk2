@@ -45,7 +45,7 @@
     <ClCompile Include="..\engine\PisteInput.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\PisteLanguage.cpp">
+    <ClCompile Include="..\engine\PLang.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="..\engine\PisteSound.cpp">
@@ -74,28 +74,28 @@
     <ClInclude Include="..\engine\PisteDraw.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\PisteEngine.hpp">
+    <ClInclude Include="..\engine\engine/Piste.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\PisteFont.hpp">
+    <ClInclude Include="..\engine\engine/PFont.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\PisteInput.hpp">
+    <ClInclude Include="..\engine\engine/PInput.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\PisteLanguage.hpp">
+    <ClInclude Include="..\engine\engine/PLang.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\platform.hpp">
+    <ClInclude Include="..\engine\engine/platform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\PisteSound.hpp">
+    <ClInclude Include="..\engine\engine/PSound.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\PisteUtils.hpp">
+    <ClInclude Include="..\engine\engine/PUtils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\types.hpp">
+    <ClInclude Include="..\engine\engine/types.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\map.hpp">

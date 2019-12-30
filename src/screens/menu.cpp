@@ -492,7 +492,7 @@ int Draw_Menu_Name() {
 				Episode = nullptr;
 			}
 
-			Episode = new EpisodeClass(menu_name, episodes[2]);
+			Episode = new EpisodeClass(menu_name, episodes[0]);
 			next_screen = SCREEN_MAP;
 		
 		}
@@ -1023,7 +1023,7 @@ int Draw_Menu_Episodes() {
 	PDraw::font_write(fontti2,tekstit->Hae_Teksti(PK_txt.episodes_choose_episode),50,90);
 	my += 80;
 
-	if (episode_count-2 > 10) {
+	if (episode_count > 10) {
 		
 		char luku[20];
 		int vali = 90;
@@ -1046,7 +1046,7 @@ int Draw_Menu_Episodes() {
 			episode_page++;
 	}
 
-	for (int i=(episode_page*10)+2;i<(episode_page*10)+12;i++){
+	for (int i = episode_page*10; i < (episode_page+1)*10; i++){
 		if (strcmp(episodes[i],"") != 0){
 			if (Draw_Menu_Text(true,episodes[i],220,90+my)) {
 				
@@ -1168,7 +1168,7 @@ int Order_Episodes() {
 			done = true;
 
 			//for (t=0;t<i;t++) {
-			for (int t=2 ; t<i+2 ; t++) {
+			for (int t = 0 ; t < i; t++) {
 				if (PisteUtils_Alphabetical_Compare(episodes[t], episodes[t+1]) == 1) {
 					strcpy(temp, episodes[t]);
 					strcpy(episodes[t], episodes[t+1]);
@@ -1186,34 +1186,24 @@ int Order_Episodes() {
 }
 
 void Search_Episode() {
-	
-	static bool episodes_loaded = false;
-	if (episodes_loaded) return;
 
-	for (int i = 0; i < MAX_EPISODEJA; i++)
-		strcpy(episodes[i], "");
+	char* list = PisteUtils_Scandir(episode_count, "/", "episodes/", MAX_EPISODEJA);
+	memcpy(episodes, list, episode_count * PE_PATH_SIZE);
+	delete list;
 
-	episode_count = PisteUtils_Scandir("/", "episodes/", episodes, MAX_EPISODEJA) - 2;
-
-	Order_Episodes();
-
-	episodes_loaded = true;
+	//Order_Episodes();
 
 }
 
 
 void Search_Languages() {
 
-	static bool languages_loaded = false;
-	if (languages_loaded) return;
+	char* list = PisteUtils_Scandir(totallangs, ".txt", "language/", 60);
+	memcpy(langlist, list, totallangs * PE_PATH_SIZE);
+	delete list;
 
-	if(totallangs == 0) {
-		totallangs = PisteUtils_Scandir(".txt", "language/", langlist, 60);
-		for(int i = 0; i < 10; i++)
-			strcpy(langmenulist[i], langlist[i]);
-	}
-
-	languages_loaded = true;
+	for(int i = 0; i < 10; i++)
+		strcpy(langmenulist[i], langlist[i]);
 
 }
 
@@ -1222,7 +1212,7 @@ int Screen_Menu_Init() {
 	
 	GUI_Change(UI_CURSOR);
 	PDraw::set_xoffset(Settings.isWide? 80 : 0);
-
+//Call when started
 	Search_Episode();
 	Search_Languages();
 

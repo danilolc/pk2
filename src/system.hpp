@@ -41,8 +41,6 @@ int PK2_Error(const char* msg);
 
 void PK_Draw_Cursor(int x, int y);
 
-bool PK_Check_File(const char *filename);
-
 
 
 

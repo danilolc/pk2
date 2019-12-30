@@ -26,16 +26,6 @@
 	#include <limits.h>
 #endif
 
-/*
-#ifndef toupper
-#define toupper(X) (X&~' ')
-#endif
-
-#ifndef tolower
-#define tolower(X) (X|' ')
-#endif
-*/
-
 #ifdef __ANDROID__
     #include <android/log.h>
     #undef printf

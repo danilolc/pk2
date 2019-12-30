@@ -98,7 +98,7 @@ class PK2Kartta
 	int			palikat_vesi_buffer; // index of water palette
 
 	int	  x,y;						// map icon pos
-	int	  ikoni;					// map icon id
+	int	  icon;					// map icon id
 
 	//static char	pk2_hakemisto[256]; // PK2.exe:n sis�lt�v� hakemisto
 

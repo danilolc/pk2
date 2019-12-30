@@ -14,7 +14,7 @@ struct PK2SAVE {
 	char  episodi[PE_PATH_SIZE];
 	char  nimi[20];
 	bool  kaytossa;
-	bool  jakso_lapaisty[EPISODI_MAX_LEVELS];
+	bool  jakso_cleared[EPISODI_MAX_LEVELS];
 	DWORD pisteet;
 };
 

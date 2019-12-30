@@ -211,8 +211,8 @@ int Screen_ScoreCount_Init() {
 		if (Gifts_Get(i) != -1)
 			temp_pisteet += Gifts_GetProtot(i)->pisteet + 500;
 
-	//if (Episode->levels_list[Game->level_id].lapaisty)
-	//if (Episode->levels_list[Game->level_id].jarjestys == jakso-1)
+	//if (Episode->levels_list[Game->level_id].cleared)
+	//if (Episode->levels_list[Game->level_id].order == jakso-1)
 	if (!Game->repeating)
 		Episode->player_score += temp_pisteet;
 
@@ -333,7 +333,7 @@ int Screen_ScoreCount(){
 			next_screen = SCREEN_END;
 			//Episode->started = false;
 		}
-		else if (Episode->levels_list[Game->level_id+1].jarjestys == -1) {
+		else if (Episode->levels_list[Game->level_id+1].order == -1) {
 			next_screen = SCREEN_END;
 			//Episode->started = false;
 		}

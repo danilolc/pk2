@@ -13,7 +13,7 @@ extern int fontti3;
 extern int fontti4;
 extern int fontti5;
 
-int Load_Fonts(PisteLanguage* lang);
+int Load_Fonts(PLang* lang);
 
 int CreditsText_Draw(const char *text, int font, int x, int y, DWORD start, DWORD end, DWORD time);
 int Wavetext_Draw(const char *teksti, int fontti, int x, int y);

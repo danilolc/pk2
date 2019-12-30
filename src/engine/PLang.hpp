@@ -10,11 +10,11 @@ const int MAX_TEXTS = 200;
 const int MAX_TEXT_LENGTH = 80;
 const int MAX_HEAD_LENGTH = 50;
 
-class PisteLanguage{
+class PLang{
 	public:
-		PisteLanguage();
-		PisteLanguage(char *filename);
-		~PisteLanguage();
+		PLang();
+		PLang(char *filename);
+		~PLang();
 		bool Read_File(char *filename);
 		int Hae_Indeksi(const char *title);
 		const char* Hae_Teksti(int index);

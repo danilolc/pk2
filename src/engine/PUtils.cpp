@@ -17,14 +17,17 @@ bool force_mobile = false;
 #ifdef __ANDROID__
 
 int PisteUtils_Setcwd() {
+
 	char path[PE_PATH_SIZE];
 	strcpy(path,"./");
 	return 0; //chdir(path);
+
 }
 
 #elif _WIN32
 
 int PisteUtils_Setcwd() {
+
 	char exepath[PE_PATH_SIZE];
 	int find;
 
@@ -34,11 +37,13 @@ int PisteUtils_Setcwd() {
 	exepath[find] = '\0';
 	chdir(exepath);
 	return chdir("../res");
+
 }
 
 #else
 
 int PisteUtils_Setcwd() {
+
 	char exepath[PE_PATH_SIZE];
 	int find;
 
@@ -48,82 +53,78 @@ int PisteUtils_Setcwd() {
 	find = string(exepath).find_last_of("/\\");
 	exepath[find] = '\0';
 	chdir(exepath);
+
 	return chdir("../res");
+
 }
 
 #endif
 
 void PisteUtils_Lower(char* string) {
+
 	for(; *string != '\0'; string++)
 		*string |= ' ';
+	
 }
 
 void PisteUtils_RemoveSpace(char* string) {
+
 	int len = strlen(string);
+
 	while(string[len-2] == ' '){
 		string[len-2] = '\0';
 		len--;
 	}
+
 }
 
-bool PisteUtils_Find(char *filename) {
+bool PisteUtils_Compare(const char* a, const char* b) {
 
-	//printf("\n\nFinding %s\n",filename);
+	int sa = strlen(a);
+	int sb = strlen(b);
 
-	char dir[PE_PATH_SIZE];
-	char file[PE_PATH_SIZE];
+	if (sa != sb) return false;
 
-	int find = string(filename).find_last_of("/\\");
-	strcpy(dir, filename);
-	dir[find+1] = '\0';
+	for (int i = 0; i < sa; i++) {
 
-	strcpy(file, &filename[find+1]);
+		if ((a[i] | ' ') != (b[i] | ' '))
+			return false;
 
-	//printf("\nDir %s, File %s\n",dir, file);
-
-	char list[128][PE_PATH_SIZE];
-	char list_lower[128][PE_PATH_SIZE];
-
-	int noffiles = PisteUtils_Scandir("", dir, list, 60);
-
-	memcpy(list_lower, list, noffiles*PE_PATH_SIZE);
-
-	for(int i = 0; i < noffiles; i++)
-		PisteUtils_Lower(list_lower[i]);
-
-	PisteUtils_Lower(file);
-
-	for(int i = 0; i < noffiles; i++){
-		//printf("Is %s, %s?\n",list_lower[i],list[i]);
-		if(strcmp(list_lower[i], file) == 0){
-			strcpy(file, list[i]);
-			strcpy(filename, dir);
-			strcat(filename, file);
-			//printf("GOOD!!\n");
-			return true;
-		}
 	}
-	//printf("Not good.\n");
-	return false;
+
+	return true;
+
 }
 
-//Habe to receive just the filename, not the path
-void getext(char* string){
-	int i, b = -1, len;
-	for(i=0; string[i]!='\0'; i++)
-		if(string[i]=='.') b = i;
+int PisteUtils_Alphabetical_Compare(const char *a, const char *b) {
+	
+	int a_size, b_size;
+	
+	int min_size = a_size < b_size? a_size : b_size;
 
-	if (b == -1) len = -1;
-	else len = i - b;
+	for (int i = 0; i < min_size; i++) {
+		char ac = a[i] | ' '; //lower case
+		char bc = b[i] | ' ';
+		if (ac > bc) 
+			return 2;
+		if (ac < bc)
+			return 1;
+	}
 
-	for(i=0; i<len; i++)
-		string[i] = string[b+i];
-	string[i] = '\0';
+	if (a_size > b_size)
+		return 1;
+
+	if (a_size < b_size)
+		return 2;
+
+	return 0;
 }
+
+
 
 #ifdef _WIN32
 
-int PisteUtils_Scandir(const char* type, const char* dir, char (*list)[PE_PATH_SIZE], int length){
+//int PisteUtils_Scandir(const char* type, const char* dir, char (*list)[PE_PATH_SIZE], int length){
     struct _finddata_t map_file;
     long hFile;
 
@@ -161,49 +162,160 @@ int PisteUtils_CreateDir(const char *directory){
 
 #else
 
-int PisteUtils_Scandir(const char* type, const char* dir, char (*list)[PE_PATH_SIZE], int length){
-	int i, numb = 0, files = 0;
-	char ext[128];
+char* Get_Extension(char* string) {
+
+	int len = strlen(string);
+	char* end = string + len;
+	
+	for( int i = 0; i < len; i++ ) {
+
+		if (*(end - i) == '.' 
+			|| *(end - i) == '/'
+			|| *(end - i) == '\\') {
+
+			return end - i;
+
+		}
+
+	}
+
+	return string;
+
+}
+
+char* PisteUtils_Scandir(int& count, const char* type, const char* dir, int max) {
 
 	struct dirent **namelist;
 
-	numb = scandir(dir, &namelist, 0, alphasort);
-	if(numb < 1) return -1;
+	int numb = scandir(dir, &namelist, 0, alphasort);
+	count = 0;
 
-	for(i=0; i<numb; i++){
-		strcpy(ext,namelist[i]->d_name);
-		getext(ext);
-		if(type[0] == '/' && namelist[i]->d_type == DT_DIR && i < length){
-			strcpy(list[files], namelist[i]->d_name);
-			files++;
+	if (max != -1)
+		if (numb > max) 
+			numb = max;
+
+	for( int i = 0; i < numb; i++ ) {
+
+		if( namelist[i]->d_name[0] != '.' ) {
+
+			if(type[0] == '/' && namelist[i]->d_type == DT_DIR) {
+
+				count++;
+				continue;
+
+			} else if(type[0] == '\0') {
+			
+				count++;
+				continue;
+			
+			} else {
+
+				char* ext = Get_Extension(namelist[i]->d_name);
+				if(strcmp(ext, type) == 0) {
+
+					count++;
+					continue;
+
+				}
+
+			}
+			
 		}
-		else if(type[0] == '\0'){
-			strcpy(list[files], namelist[i]->d_name);
-			files++;
-		}
-		else if(strcmp(ext, type) == 0 && i < length){
-			strcpy(list[files], namelist[i]->d_name);
-			files++;
-		}
-		delete namelist[i];
+
+		namelist[i]->d_name[0] = '\0';
+
 	}
-	delete namelist;
 
-	return files;
+	int j = 0;
+	char *list = new char[count * PE_PATH_SIZE];
+	if ( !list ) {
+
+		printf("PUtils - Can't alloc files list\n");
+
+		for( int i = 0; i < numb; i++ )
+			delete namelist[i];
+		
+		delete namelist;
+		return list;
+
+	}
+	
+	for( int i = 0; i < numb; i++ ) {
+
+		if(namelist[i]->d_name[0] != '\0') {
+
+			strcpy(&list[j * PE_PATH_SIZE], namelist[i]->d_name);
+			j++;
+
+		}
+
+		delete namelist[i];
+
+	}
+
+	delete namelist;
+	return list;
+
 }
-int PisteUtils_CreateDir(const char *directory){
+
+int PisteUtils_CreateDir(const char *directory) {
+
 	char shell[PE_PATH_SIZE];
-	strcpy(shell,"mkdir -p ");
-	strcat(shell,directory);
+	
+	strcpy(shell, "mkdir -p ");
+	strcat(shell, directory);
 	system(shell);
+	
 	return 0;
+
 }
+
+bool PisteUtils_Find(char *filename) {
+
+	printf("PUtils - Find %s\n", filename);
+
+	char dir[PE_PATH_SIZE];
+	char file[PE_PATH_SIZE];
+
+	int find = string(filename).find_last_of("/\\");
+	strcpy(dir, filename);
+	dir[find+1] = '\0';
+
+	strcpy(file, &filename[find+1]);
+
+	int noffiles;
+	char *list = PisteUtils_Scandir(noffiles, "", dir, -1);
+	if( !list ) {
+
+		printf("PUtils - No memory to find file");
+		return false;
+
+	}
+
+	for(int i = 0; i < noffiles; i++){
+		if(PisteUtils_Compare(&list[i * PE_PATH_SIZE], file)){
+			strcpy(file, &list[i * PE_PATH_SIZE]);
+			strcpy(filename, dir);
+			strcat(filename, file);
+			printf("PUtils - Found on %s \n", filename);
+
+			delete list;
+			return true;
+		}
+	}
+
+	printf("PUtils - %s not found\n", filename);
+
+	delete list;
+	return false;
+	
+}
+
 
 #endif
 
 void PisteUtils_Show_Error(const char* txt) {
-	//const SDL_MessageBoxButtonData buttons[] = {{ 0, 0, "ok" }};
-
+	
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", txt, NULL);
 
 }
@@ -216,34 +328,11 @@ void PisteUtils_Force_Mobile() {
 
 bool PisteUtils_Is_Mobile() {
 
-#ifdef __ANDROID__
-	return true;
-#else
-	return force_mobile;
-#endif
+	#ifdef __ANDROID__
+		return true;
+	#else
+		return force_mobile;
+	#endif
 
 }
 
-int PisteUtils_Alphabetical_Compare(const char *a, const char *b) {
-	
-	int a_size, b_size;
-	
-	int min_size = a_size < b_size? a_size : b_size;
-
-	for (int i = 0; i < min_size; i++) {
-		char ac = a[i] | ' '; //lower case
-		char bc = b[i] | ' ';
-		if (ac < bc) 
-			return 2;
-		if (ac > bc)
-			return 1;
-	}
-
-	if (a_size > b_size)
-		return 1;
-
-	if (a_size < b_size)
-		return 2;
-
-	return 0;
-}

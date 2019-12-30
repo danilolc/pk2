@@ -10,7 +10,7 @@
 
 #include <cstring>
 
-PisteLanguage *tekstit;
+PLang *tekstit;
 LANGUAGE PK_txt;
 
 bool Load_Language(){

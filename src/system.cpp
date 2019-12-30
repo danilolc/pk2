@@ -51,14 +51,6 @@ void Calculate_SinCos(){
 	for (i=0; i<360; i++) sin_table[i] = sin(M_PI*2* (i%360)/180)*33;
 }
 
-//PisteUtils
-bool PK_Check_File(const char *filename){ //TODO - If isn't Windows - List directory, set lower case, test, and change "char *filename".
-	struct stat st;
-	bool ret = (stat(filename, &st) == 0);
-	if(!ret) printf("PK2    - asked about non-existing file: %s\n", filename);
-	return ret;
-}
-
 void PK_Draw_Cursor(int x, int y){
 
 	if(!PisteUtils_Is_Mobile() && Settings.isFullScreen)

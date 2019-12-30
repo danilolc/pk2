@@ -6,7 +6,7 @@
 
 #include "engine/PLang.hpp"
 
-extern PisteLanguage *tekstit;
+extern PLang *tekstit;
 
 struct LANGUAGE{
 	int setup_options,

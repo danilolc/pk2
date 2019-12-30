@@ -348,8 +348,8 @@ void PK_Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
 					PK2_Error("Can't find song01.xm");
 				}
 				Game->level_clear = true;
-				Episode->levels_list[Game->level_id].lapaisty = true;
-				if (Episode->levels_list[Game->level_id].jarjestys == Episode->level)
+				Episode->levels_list[Game->level_id].cleared = true;
+				if (Episode->levels_list[Game->level_id].order == Episode->level)
 					Episode->level++; //Increase level
 				PSound::set_musicvolume_now(Settings.music_max_volume);
 			}
@@ -2130,6 +2130,7 @@ void quit(int ret) {
 }
 
 int main(int argc, char *argv[]) {
+
 	char* test_path = NULL;
 	bool path_set = false;
 
@@ -2202,7 +2203,7 @@ int main(int argc, char *argv[]) {
 
 	if (dev_mode) Piste::set_debug(true);
 
-	tekstit = new PisteLanguage();
+	tekstit = new PLang();
 
 	if (!Load_Language()){
 		printf("PK2    - Could not find %s!\n",Settings.kieli);

@@ -31,7 +31,7 @@ int fontti3;
 int fontti4;
 int fontti5;
 
-int Load_Fonts(PisteLanguage* lang) {
+int Load_Fonts(PLang* lang) {
 
 	int ind_font = 0,
 		ind_path = 0;

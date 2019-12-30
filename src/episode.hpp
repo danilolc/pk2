@@ -13,9 +13,9 @@ struct PK2LEVEL {
 	char  tiedosto[PE_PATH_SIZE];
 	char  nimi[40];
 	int   x,y;
-	int   jarjestys;
-	bool  lapaisty;
-	int   ikoni;
+	int   order;
+	bool  cleared;
+	int   icon;
 };
 
 //TODO - Make Scores 1.1

@@ -92,7 +92,7 @@
     <ClCompile Include="..\engine\PisteEngine.cpp" />
     <ClCompile Include="..\engine\PisteFont.cpp" />
     <ClCompile Include="..\engine\PisteInput.cpp" />
-    <ClCompile Include="..\engine\PisteLanguage.cpp" />
+    <ClCompile Include="..\engine\PLang.cpp" />
     <ClCompile Include="..\engine\PisteSound.cpp" />
     <ClCompile Include="..\engine\PisteUtils.cpp" />
     <ClCompile Include="..\src\map.cpp" />
@@ -101,14 +101,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\engine\PisteDraw.hpp" />
-    <ClInclude Include="..\engine\PisteEngine.hpp" />
-    <ClInclude Include="..\engine\PisteFont.hpp" />
-    <ClInclude Include="..\engine\PisteInput.hpp" />
-    <ClInclude Include="..\engine\PisteLanguage.hpp" />
-    <ClInclude Include="..\engine\platform.hpp" />
-    <ClInclude Include="..\engine\PisteSound.hpp" />
-    <ClInclude Include="..\engine\PisteUtils.hpp" />
-    <ClInclude Include="..\engine\types.hpp" />
+    <ClInclude Include="..\engine\engine/Piste.hpp" />
+    <ClInclude Include="..\engine\engine/PFont.hpp" />
+    <ClInclude Include="..\engine\engine/PInput.hpp" />
+    <ClInclude Include="..\engine\engine/PLang.hpp" />
+    <ClInclude Include="..\engine\engine/platform.hpp" />
+    <ClInclude Include="..\engine\engine/PSound.hpp" />
+    <ClInclude Include="..\engine\engine/PUtils.hpp" />
+    <ClInclude Include="..\engine\engine/types.hpp" />
     <ClInclude Include="..\src\map.hpp" />
     <ClInclude Include="..\src\sprite.hpp" />
     <ClInclude Include="include\winlite.h" />

@@ -22,7 +22,7 @@ int Empty_Records() {
 		saves_list[i].jakso = 0;
 		saves_list[i].pisteet = 0;
 		for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-			saves_list[i].jakso_lapaisty[j] = false;
+			saves_list[i].jakso_cleared[j] = false;
 	}
 
 	return 0;
@@ -89,7 +89,7 @@ int Save_Records(int i){
 	saves_list[i].pisteet = Episode->player_score;
 
 	for (int j = 0;j < EPISODI_MAX_LEVELS;j++)
-		saves_list[i].jakso_lapaisty[j] = Episode->levels_list[j].lapaisty;
+		saves_list[i].jakso_cleared[j] = Episode->levels_list[j].cleared;
 
 	Save_All_Records();
 

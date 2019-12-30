@@ -82,7 +82,7 @@ PK2Kartta::PK2Kartta(){
 
 	this->x = 0;
 	this->y = 0;
-	this->ikoni = 0;
+	this->icon = 0;
 
 	memset(this->taustat, 255, sizeof(taustat));
 	memset(this->seinat , 255, sizeof(seinat));
@@ -127,7 +127,7 @@ PK2Kartta::PK2Kartta(const PK2Kartta &kartta){
 
 	this->x				= kartta.x;
 	this->y				= kartta.y;
-	this->ikoni			= kartta.ikoni;
+	this->icon			= kartta.icon;
 
 	int i;
 
@@ -362,8 +362,8 @@ int PK2Kartta::Tallenna(char *filename){
 	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
-	//itoa(this->ikoni,luku,10);
-	sprintf(luku, "%i", this->ikoni);
+	//itoa(this->icon,luku,10);
+	sprintf(luku, "%i", this->icon);
 	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
@@ -821,7 +821,7 @@ int PK2Kartta::LataaVersio13(char *filename){
 	memset(luku, 0, sizeof(luku));
 
 	SDL_RWread(file, luku, sizeof(luku), 1);
-	this->ikoni = atoi(luku);
+	this->icon = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
 	DWORD lkm;
@@ -892,7 +892,7 @@ void PK2Kartta::Tyhjenna(){
 
 	this->x = 0;
 	this->y = 0;
-	this->ikoni = 0;
+	this->icon = 0;
 
 	memset(this->taustat, 255, sizeof(taustat));
 	memset(this->seinat,  255, sizeof(seinat));
@@ -940,12 +940,8 @@ PK2Kartta &PK2Kartta::operator = (const PK2Kartta &kartta){
 int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 	int i;
 	char file[PE_PATH_SIZE];
-	strcpy(file,"");
+	
 	strcpy(file,polku);
-
-	for (i=0 ; filename[i]!='\0' ; i++)
-		filename[i] |= ' ';
-
 	strcat(file,filename);
 
 	if (!PisteUtils_Find(file)){

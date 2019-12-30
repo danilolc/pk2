@@ -5,6 +5,7 @@
 #include "game/sprites.hpp"
 
 #include "engine/PSound.hpp"
+#include "engine/PUtils.hpp"
 
 #include "game/game.hpp"
 #include "episode.hpp"
@@ -67,7 +68,7 @@ int  Prototypes_get(char *polku, char *tiedosto) {
 			strcat(testipolku,"/");
 			strcat(testipolku,Prototypes_List[next_free_prototype].aanitiedostot[i]);
 
-			if (PK_Check_File(testipolku))
+			if (PisteUtils_Find(testipolku))
 				Prototypes_List[next_free_prototype].aanet[i] = Prototypes_get_sound(aanipolku,Prototypes_List[next_free_prototype].aanitiedostot[i]);
 			else{
 				getcwd(aanipolku, PE_PATH_SIZE);
@@ -77,7 +78,7 @@ int  Prototypes_get(char *polku, char *tiedosto) {
 				strcat(testipolku,"/");
 				strcat(testipolku,Prototypes_List[next_free_prototype].aanitiedostot[i]);
 
-				if (PK_Check_File(testipolku))
+				if (PisteUtils_Find(testipolku))
 					Prototypes_List[next_free_prototype].aanet[i] = Prototypes_get_sound(aanipolku,Prototypes_List[next_free_prototype].aanitiedostot[i]);
 			}
 		}

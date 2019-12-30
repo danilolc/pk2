@@ -7,6 +7,7 @@
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
+#include "engine/PUtils.hpp"
 
 #include <cstring>
 
@@ -94,44 +95,44 @@ int PK_Draw_Map(){
 	if (Draw_Menu_Text(true,tekstit->Hae_Teksti(PK_txt.mainmenu_return),100,430)){
 		next_screen = SCREEN_MENU;
 		degree_temp = degree;
-		//menu_nyt = MENU_MAIN;
 	}
 
 	int nuppi_x = 0, nuppi_y = 0;
 	int tyyppi = 0;
 	int paluu;
 	int min = 0, sek = 0;
-	int ikoni;
+	int icon;
 	int sinx = 0, cosy = 0;
 	int pekkaframe = 0;
 
 	int njakso = Episode->level_count;
-	for (int i=1;i<=Episode->level_count;i++)
-		if (!Episode->levels_list[i].lapaisty && Episode->levels_list[i].jarjestys < njakso)
-			njakso = Episode->levels_list[i].jarjestys; // Find the first unclear level
+	for (int i = 0; i < Episode->level_count; i++)
+		if (!Episode->levels_list[i].cleared && Episode->levels_list[i].order < njakso)
+			njakso = Episode->levels_list[i].order; // Find the first unclear level
+	
 	if(Episode->level < njakso)
 		Episode->level = njakso;
 
-	for (int i=0;i<=Episode->level_count;i++) {
-		if (strcmp(Episode->levels_list[i].nimi,"")!=0 && Episode->levels_list[i].jarjestys > 0) {
+	for (int i = 0; i < Episode->level_count; i++) {
+		if (strcmp(Episode->levels_list[i].nimi,"")!=0 && Episode->levels_list[i].order > 0) {
 			tyyppi = 0;							//0 harmaa
-			if (Episode->levels_list[i].jarjestys == Episode->level)
+			if (Episode->levels_list[i].order == Episode->level)
 				tyyppi = 1;						//1 vihre�
-			if (Episode->levels_list[i].jarjestys > Episode->level)
+			if (Episode->levels_list[i].order > Episode->level)
 				tyyppi = 2;						//2 oranssi
-			if (Episode->levels_list[i].lapaisty)
+			if (Episode->levels_list[i].cleared)
 				tyyppi = 0;
 
 			if (Episode->levels_list[i].x == 0)
-				Episode->levels_list[i].x = 142+i*30;
+				Episode->levels_list[i].x = 172+i*30;
 
 			if (Episode->levels_list[i].y == 0)
 				Episode->levels_list[i].y = 270;
 
-			ikoni = Episode->levels_list[i].ikoni;
+			icon = Episode->levels_list[i].icon;
 
-			//PDraw::image_clip(game_assets,Episode->levels_list[i].x-4,Episode->levels_list[i].y-4-30,1+(ikoni*27),452,27+(ikoni*27),478);
-			PDraw::image_cutclip(game_assets,Episode->levels_list[i].x-9,Episode->levels_list[i].y-14,1+(ikoni*28),452,28+(ikoni*28),479);
+			//PDraw::image_clip(game_assets,Episode->levels_list[i].x-4,Episode->levels_list[i].y-4-30,1+(icon*27),452,27+(icon*27),478);
+			PDraw::image_cutclip(game_assets,Episode->levels_list[i].x-9,Episode->levels_list[i].y-14,1+(icon*28),452,28+(icon*28),479);
 
 			if (tyyppi==1) {
 				sinx = (int)(sin_table[degree%360]/2);
@@ -157,7 +158,7 @@ int PK_Draw_Map(){
 					Play_MenuSFX(moo_sound,100);
 			}
 
-			itoa(Episode->levels_list[i].jarjestys,luku,10);
+			itoa(Episode->levels_list[i].order,luku,10);
 			PDraw::font_write(fontti1,luku,Episode->levels_list[i].x-12+2,Episode->levels_list[i].y-29+2);
 
 			// if mouse hoover
@@ -211,40 +212,40 @@ int Play_Music() {
 	
 	strcpy(mapmusa, "map.mp3");
 	Episode->Get_Dir(mapmusa);
-	if (PK_Check_File(mapmusa))
+	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.ogg");
 	Episode->Get_Dir(mapmusa);
-	if (PK_Check_File(mapmusa))
+	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.xm");
 	Episode->Get_Dir(mapmusa);
-	if (PK_Check_File(mapmusa))
+	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.mod");
 	Episode->Get_Dir(mapmusa);
-	if (PK_Check_File(mapmusa))
+	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.it");
 	Episode->Get_Dir(mapmusa);
-	if (PK_Check_File(mapmusa))
+	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.s3m");
 	Episode->Get_Dir(mapmusa);
-	if (PK_Check_File(mapmusa))
+	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "music/map.mp3");
-	if (PK_Check_File(mapmusa))
+	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "music/map.ogg");
-	if (PK_Check_File(mapmusa))
+	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "music/map.xm");

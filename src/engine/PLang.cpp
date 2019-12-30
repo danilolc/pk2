@@ -16,7 +16,7 @@ const int LUE_SKIP    = 0,
 const char MARKER_1 = '*',
            MARKER_2 = ':';
 
-PisteLanguage::PisteLanguage(){
+PLang::PLang(){
 	read = LUE_SKIP;
 	for (int i=0;i<MAX_TEXTS;i++){
 		strcpy(tekstit[i],"");
@@ -25,7 +25,7 @@ PisteLanguage::PisteLanguage(){
 
 }
 
-PisteLanguage::PisteLanguage(char *tiedosto){
+PLang::PLang(char *tiedosto){
 	read = LUE_SKIP;
 
 	for (int i=0;i<MAX_TEXTS;i++){
@@ -36,9 +36,9 @@ PisteLanguage::PisteLanguage(char *tiedosto){
 	Read_File(tiedosto);
 }
 
-PisteLanguage::~PisteLanguage(){}
+PLang::~PLang(){}
 
-bool PisteLanguage::Read_File(char *filename){
+bool PLang::Read_File(char *filename){
 
 	SDL_RWops *io = SDL_RWFromFile(filename, "r");
 
@@ -123,7 +123,7 @@ bool PisteLanguage::Read_File(char *filename){
 	return true;
 }
 
-int PisteLanguage::Hae_Indeksi(const char *otsikko){
+int PLang::Hae_Indeksi(const char *otsikko){
 	int i=0;
 
 	while (i < MAX_TEXTS && strcmp(otsikot[i],otsikko) != 0)
@@ -136,14 +136,14 @@ int PisteLanguage::Hae_Indeksi(const char *otsikko){
 
 }
 
-const char* PisteLanguage::Hae_Teksti(int index){
+const char* PLang::Hae_Teksti(int index){
 	if (index >= 0 && index < MAX_TEXTS)
 		return tekstit[index];
 	else
 		return ".....";
 }
 
-void PisteLanguage::Replace_Text(int index, const char *teksti){
+void PLang::Replace_Text(int index, const char *teksti){
 	if (index >= 0 && index < MAX_TEXTS)
 		strcpy(tekstit[index], teksti);
 }

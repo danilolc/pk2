@@ -813,8 +813,8 @@ int Screen_InGame(){
 					PK2_Error("Can't find hiscore.xm");
 				}
 				Game->level_clear = true;
-				Episode->levels_list[Game->level_id].lapaisty = true;
-				if (Episode->levels_list[Game->level_id].jarjestys == Episode->level)
+				Episode->levels_list[Game->level_id].cleared = true;
+				if (Episode->levels_list[Game->level_id].order == Episode->level)
 					Episode->level++;
 				PSound::set_musicvolume_now(Settings.music_max_volume);
 			}

@@ -87,7 +87,7 @@ int PFont::load(const char* file_path, const char* file){
 	int font_index[256];
 	char chars[256];
 
-	PisteLanguage* param_file = new PisteLanguage();
+	PLang* param_file = new PLang();
 
 	strcpy(path,file_path);
 	strcat(path,file);
