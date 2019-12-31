@@ -22,6 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{FAE386F7-AF98-4C83-B519-F0B34C304BCA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -64,9 +65,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)..\bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)..\bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -80,21 +83,21 @@
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../SDL/SDL2/include;../../SDL/SDL2_image/include;../../SDL/SDL2_mixer/include;../src/;include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
@@ -112,9 +115,9 @@
     <ClCompile Include="..\src\game\blocks.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
     <ClCompile Include="..\src\game\gifts.cpp" />
-    <ClCompile Include="..\src\game\map.cpp" />
+    <ClCompile Include="..\src\game\mapclass.cpp" />
     <ClCompile Include="..\src\game\physics.cpp" />
-    <ClCompile Include="..\src\game\sprite.cpp" />
+    <ClCompile Include="..\src\game\spriteclass.cpp" />
     <ClCompile Include="..\src\game\sprites.cpp" />
     <ClCompile Include="..\src\gfx\effect.cpp" />
     <ClCompile Include="..\src\gfx\particle.cpp" />
@@ -150,9 +153,7 @@
     <ClInclude Include="..\src\game\blocks.hpp" />
     <ClInclude Include="..\src\game\game.hpp" />
     <ClInclude Include="..\src\game\gifts.hpp" />
-    <ClInclude Include="..\src\game\map.hpp" />
     <ClInclude Include="..\src\game\physics.hpp" />
-    <ClInclude Include="..\src\game\sprite.hpp" />
     <ClInclude Include="..\src\game\sprites.hpp" />
     <ClInclude Include="..\src\gfx\effect.hpp" />
     <ClInclude Include="..\src\gfx\particle.hpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="..\src\sfx.hpp" />
     <ClInclude Include="..\src\system.hpp" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\SDL\SDL2\lib\x86\SDL2.dll" />
@@ -187,10 +189,15 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\SDL\SDL2\lib\x86\SDL2.lib" />
-    <Library Include="..\..\SDL\SDL2\lib\x86\SDL2main.lib" />
-    <Library Include="..\..\SDL\SDL2\lib\x86\SDL2test.lib" />
     <Library Include="..\..\SDL\SDL2_image\lib\x86\SDL2_image.lib" />
     <Library Include="..\..\SDL\SDL2_mixer\lib\x86\SDL2_mixer.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\res\gfx\pk2.ico" />
+    <Image Include="icon1.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="pk2.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

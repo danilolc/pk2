@@ -46,9 +46,11 @@ int  Prototypes_get_sound(char *polku, char *tiedosto) {
 }
 
 int  Prototypes_get(char *polku, char *tiedosto) {
-	char aanipolku[255];
-	char testipolku[255];
-	strcpy(aanipolku,polku);
+	
+	char testipolku[PE_PATH_SIZE] = "";
+
+	char soundpath[PE_PATH_SIZE];
+	strcpy(soundpath,polku);
 
 	//Check if have space
 	if(next_free_prototype >= MAX_PROTOTYYPPEJA)
@@ -65,22 +67,22 @@ int  Prototypes_get(char *polku, char *tiedosto) {
 
 		if (strcmp(Prototypes_List[next_free_prototype].aanitiedostot[i],"")!=0){
 
-			strcpy(testipolku,aanipolku);
-			strcat(testipolku,"/");
-			strcat(testipolku,Prototypes_List[next_free_prototype].aanitiedostot[i]);
+			strcpy(testipolku, soundpath);
+			//strcat(testipolku, PE_SEP);
+			strcat(testipolku, Prototypes_List[next_free_prototype].aanitiedostot[i]);
 
 			if (PisteUtils_Find(testipolku))
-				Prototypes_List[next_free_prototype].aanet[i] = Prototypes_get_sound(aanipolku,Prototypes_List[next_free_prototype].aanitiedostot[i]);
-			else{
-				getcwd(aanipolku, PE_PATH_SIZE);
-				strcat(aanipolku,"/sprites/");
+				Prototypes_List[next_free_prototype].aanet[i] = Prototypes_get_sound(soundpath,Prototypes_List[next_free_prototype].aanitiedostot[i]);
+			else {
+				getcwd(soundpath, PE_PATH_SIZE);
+				strcat(soundpath, PE_SEP "sprites" PE_SEP);
 
-				strcpy(testipolku,aanipolku);
-				strcat(testipolku,"/");
-				strcat(testipolku,Prototypes_List[next_free_prototype].aanitiedostot[i]);
+				strcpy(testipolku,soundpath);
+				//strcat(testipolku,"/");
+				strcat(testipolku, Prototypes_List[next_free_prototype].aanitiedostot[i]);
 
 				if (PisteUtils_Find(testipolku))
-					Prototypes_List[next_free_prototype].aanet[i] = Prototypes_get_sound(aanipolku,Prototypes_List[next_free_prototype].aanitiedostot[i]);
+					Prototypes_List[next_free_prototype].aanet[i] = Prototypes_get_sound(soundpath,Prototypes_List[next_free_prototype].aanitiedostot[i]);
 			}
 		}
 	}
@@ -107,7 +109,7 @@ void Prototypes_get_transformation(int i) {
 
 		if (!loaded) {
 			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites/");
+			strcpy(polku,"sprites" PE_SEP);
 			//Episode->Get_Dir(polku);
 
 			if (Prototypes_get(polku, Prototypes_List[i].muutos_sprite)==0)
@@ -134,7 +136,7 @@ void Prototypes_get_bonus(int i) {
 
 		if (!loaded){
 			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites/");
+			strcpy(polku,"sprites" PE_SEP);
 			//Episode->Get_Dir(polku);
 
 			if (Prototypes_get(polku, Prototypes_List[i].bonus_sprite)==0)
@@ -161,7 +163,7 @@ void Prototypes_get_ammo1(int i) {
 
 		if (!loaded){
 			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites/");
+			strcpy(polku,"sprites" PE_SEP);
 
 
 			if (Prototypes_get(polku, Prototypes_List[i].ammus1_sprite)==0)
@@ -188,7 +190,7 @@ void Prototypes_get_ammo2(int i) {
 
 		if (!loaded){
 			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites/");
+			strcpy(polku,"sprites" PE_SEP);
 
 			if (Prototypes_get(polku, Prototypes_List[i].ammus2_sprite)==0)
 				Prototypes_List[i].ammus2 = next_free_prototype-1;
@@ -197,34 +199,43 @@ void Prototypes_get_ammo2(int i) {
 }
 
 int  Prototypes_GetAll() {
+
 	char polku[PE_PATH_SIZE];
 	int viimeinen_proto;
 
-	for (int i=0;i < MAX_PROTOTYYPPEJA;i++){
-		if (strcmp(Game->map->protot[i],"") != 0){
+	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
+		if (strcmp(Game->map->protot[i], "") != 0) {
+
 			viimeinen_proto = i;
-			strcpy(polku,"");
+			strcpy(polku, "");
 			Episode->Get_Dir(polku);
 
-			if (Prototypes_get(polku,Game->map->protot[i])!=0){
-				strcpy(polku,"sprites/");
-				if (Prototypes_get(polku,Game->map->protot[i])!=0){
+			if (Prototypes_get(polku,Game->map->protot[i]) != 0) {
+
+				strcpy(polku, "sprites" PE_SEP);
+				if (Prototypes_get(polku,Game->map->protot[i]) != 0){
 					printf("PK2    - Can't load sprite %s. It will not appear.\n", Game->map->protot[i]);
 					next_free_prototype++;
 				}
+
 			}
 		}
-		else
+		else {
+
 			next_free_prototype++;
+
+		}
 	}
 
-	next_free_prototype = viimeinen_proto+1;
+	next_free_prototype = viimeinen_proto+1; //??
 
-	for (int i=0;i<MAX_PROTOTYYPPEJA;i++){
+	for (int i=0; i < MAX_PROTOTYYPPEJA; i++) {
+
 		Prototypes_get_transformation(i);
 		Prototypes_get_bonus(i);
 		Prototypes_get_ammo1(i);
 		Prototypes_get_ammo2(i);
+
 	}
 
 	return 0;

@@ -46,7 +46,7 @@ int EpisodeClass::Open_Scores(const char *filename) {
 	}
 
 	SDL_RWread(file, versio, 4, 1);
-	if (strcmp(versio, "1.0") != 0) {
+	if (strncmp(versio, "1.0", 4) != 0) {
 		this->Clear_Scores();
 		SDL_RWclose(file);
 		return 2;
@@ -202,13 +202,15 @@ EpisodeClass::~EpisodeClass() {
 
 }
 
-void EpisodeClass::Get_Dir(char *tiedosto){
+void EpisodeClass::Get_Dir(char *tiedosto) {
+
 	char uusi_tiedosto[255];
 
 	strcpy(uusi_tiedosto, game_path);
-	strcat(uusi_tiedosto, "/episodes/");
+	strcat(uusi_tiedosto, PE_SEP "episodes" PE_SEP);
 	strcat(uusi_tiedosto, EpisodeClass::name);
-	strcat(uusi_tiedosto, "/");
+	strcat(uusi_tiedosto, PE_SEP);
 	strcat(uusi_tiedosto, tiedosto);
 	strcpy(tiedosto, uusi_tiedosto);
+
 }

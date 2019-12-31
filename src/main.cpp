@@ -23,7 +23,10 @@
 #include <cstring>
 
 #define GAME_NAME    "Pekka Kana 2"
-#define GAME_VERSION "r3"
+#define GAME_VERSION "r3-pre"
+
+#define SDL_MAIN_HANDLED
+#include <SDL.h>
 
 void Start_Test(const char* arg) {
 	

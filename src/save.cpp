@@ -8,7 +8,7 @@
 
 #include <cstring>
 
-#define SAVES_PATH "data/saves.dat"
+#define SAVES_PATH "data" PE_SEP "saves.dat"
 #define VERSION "2"
 
 PK2SAVE saves_list[MAX_SAVES];
@@ -76,12 +76,16 @@ int Load_SaveFile() {
 
 	SDL_RWread(file, versio, sizeof(versio), 1);
 
-	if (strcmp(versio,"2") == 0) {
+	if (strncmp(versio,"2", 2) == 0) {
 
 		SDL_RWread(file, count_c, sizeof(count_c), 1);
+		count = atoi(count_c);
+		if (count > MAX_SAVES)
+			count = MAX_SAVES;
+
 		SDL_RWread(file, saves_list, sizeof(PK2SAVE) * count , 1);
 	
-	} else if (strcmp(versio,"1") == 0) {
+	} else if (strncmp(versio,"1", 2) == 0) {
 
 		SDL_RWread(file, count_c, sizeof(count_c), 1);
 		count = atoi(count_c);

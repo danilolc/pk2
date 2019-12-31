@@ -16,7 +16,7 @@ LANGUAGE PK_txt;
 bool Load_Language(){
 	char path[PE_PATH_SIZE];
 
-	strcpy(path,"language/");
+	strcpy(path,"language" PE_SEP);
 	strcat(path, Settings.kieli);
 
 	if (!tekstit->Read_File(path))

@@ -267,7 +267,7 @@ MAPREC MapClass::LaskeTallennusAlue(BYTE *alue){
 	return rajat;
 }
 
-void MapClass::LueTallennusAlue(BYTE *lahde, RECT alue, int kohde){
+void MapClass::LueTallennusAlue(BYTE *lahde, MAPREC alue, int kohde){
 
 	int x,y;
 	int kartan_vasen   = alue.left,

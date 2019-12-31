@@ -94,7 +94,7 @@ int Screen_Intro_Init() {
 
 	//PisteLog_Kirjoita("  - Loading music: music/INTRO.XM\n");
 
-	if (PSound::start_music("music/intro.xm") != 0)
+	if (PSound::start_music("music" PE_SEP "intro.xm") != 0)
 		PK2_Error("Can't load intro.xm");
 
 	PSound::set_musicvolume(Settings.music_max_volume);

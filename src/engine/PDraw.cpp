@@ -44,7 +44,7 @@ int alpha = 100;
 
 int x_offset = 0;
 
-int findfreeimage(){
+int findfreeimage() {
     int size = imageList.size();
 
     for(int i = 0; i < size; i++)
@@ -185,7 +185,8 @@ int image_cut(int ImgIndex, RECT area){
 
     return index;
 }
-int image_clip(int index, int x, int y){
+int image_clip(int index, int x, int y) {
+
     SDL_Rect dstrect;
 
     dstrect.x = x + x_offset;
@@ -362,7 +363,7 @@ int font_create(int image, int x, int y, int char_w, int char_h, int count){
   return index;
 }
 int font_create(const char* path, const char* file){
-    printf("PD     - Creating font with path %s e file %s\n",path,file);
+    printf("PD     - Creating font with path %s and file %s\n",path,file);
     int index;
 
     index = findfreefont();

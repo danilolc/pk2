@@ -80,7 +80,7 @@ int GameClass::Start() {
 
 int GameClass::Finnish() {
 
-	if (PSound::start_music("music/hiscore.xm") != 0) {
+	if (PSound::start_music("music" PE_SEP "hiscore.xm") != 0) {
 
 		PK2_Error("Can't find song01.xm");
 	
@@ -348,15 +348,15 @@ int GameClass::Open_Map() {
 		if (PSound::start_music(music_path) != 0) {
 
 			printf("Can't load '%s'. ", music_path);
-			strcpy(music_path, "music/");
+			strcpy(music_path, "music" PE_SEP);
 			strcat(music_path, map->musiikki);
 			printf("Trying '%s'.\n", music_path);
 
 			if (PSound::start_music(music_path) != 0) {
 
-				printf("Can't load '%s'. Trying 'music/song01.xm'.\n", music_path);
+				printf("Can't load '%s'. Trying 'music" PE_SEP "song01.xm'.\n", music_path);
 
-				if (PSound::start_music("music/song01.xm") != 0) {
+				if (PSound::start_music("music" PE_SEP "song01.xm") != 0) {
 					PK2_Error("Can't find song01.xm");
 				}
 			}

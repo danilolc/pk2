@@ -938,9 +938,9 @@ int Draw_Menu_Controls() {
 		Settings.control_right     = PI_RIGHT;
 		Settings.control_jump      = PI_UP;
 		Settings.control_down      = PI_DOWN;
-		Settings.control_walk_slow = PI_RALT;
-		Settings.control_attack1   = PI_RCONTROL;
-		Settings.control_attack2   = PI_RSHIFT;
+		Settings.control_walk_slow = PI_LALT;
+		Settings.control_attack1   = PI_LCONTROL;
+		Settings.control_attack2   = PI_LSHIFT;
 		Settings.control_open_gift = PI_SPACE;
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
@@ -1189,7 +1189,7 @@ int Order_Episodes() {
 
 void Search_Episode() {
 
-	std::vector<string> list = PisteUtils_Scandir("/", "episodes/", MAX_EPISODEJA);
+	std::vector<string> list = PisteUtils_Scandir("/", "episodes", MAX_EPISODEJA);
 	episode_count = list.size();
 
 	//TODO - store the vector
@@ -1204,12 +1204,12 @@ void Search_Episode() {
 
 void Search_Languages() {
 
-	std::vector<string> list = PisteUtils_Scandir(".txt", "language/", 60);
+	std::vector<string> list = PisteUtils_Scandir(".txt", "language", 60);
 	totallangs = list.size();
 
 	//TODO - store the vector
 	for (int i = 0; i < totallangs; i++) {
-
+		
 		strcpy(langlist[i], list[i].c_str());
 
 	}
@@ -1230,8 +1230,8 @@ int Screen_Menu_Init() {
 
 	if (!Episode) {
 
-		PDraw::image_load(bg_screen, "gfx/menu.bmp", true);
-		PSound::start_music("music/song09.xm");
+		PDraw::image_load(bg_screen, "gfx" PE_SEP "menu.bmp", true);
+		PSound::start_music("music" PE_SEP "song09.xm");
 		PSound::set_musicvolume(Settings.music_max_volume);
 	
 	} else {

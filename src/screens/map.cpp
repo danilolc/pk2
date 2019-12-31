@@ -251,15 +251,15 @@ int Play_Music() {
 	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
-	strcpy(mapmusa, "music/map.mp3");
+	strcpy(mapmusa, "music" PE_SEP "map.mp3");
 	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
-	strcpy(mapmusa, "music/map.ogg");
+	strcpy(mapmusa, "music" PE_SEP "map.ogg");
 	if (PisteUtils_Find(mapmusa))
 		goto found;
 	
-	strcpy(mapmusa, "music/map.xm");
+	strcpy(mapmusa, "music" PE_SEP "map.xm");
 	
 	found:
 
@@ -291,7 +291,7 @@ int Screen_Map_Init() {
 
 	PDraw::image_load(bg_screen, mapkuva, true);
 	if (bg_screen == -1)
-		PDraw::image_load(bg_screen, "gfx/map.bmp", true);
+		PDraw::image_load(bg_screen, "gfx" PE_SEP "map.bmp", true);
 
 	Play_Music();
 

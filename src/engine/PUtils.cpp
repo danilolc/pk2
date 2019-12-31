@@ -98,7 +98,8 @@ bool PisteUtils_Compare(const char* a, const char* b) {
 
 int PisteUtils_Alphabetical_Compare(const char *a, const char *b) {
 	
-	int a_size, b_size;
+	int a_size = strlen(a);
+	int b_size = strlen(b);
 	
 	int min_size = a_size < b_size? a_size : b_size;
 
@@ -128,9 +129,14 @@ bool PisteUtils_Find(char* filename) {
 
 	printf("PUtils - Find %s\n", filename);
 
-	GetFileAttributes(filename);
+	int sz = strlen(filename);
 
-	if (INVALID_FILE_ATTRIBUTES == GetFileAttributes("C:\\MyFile.txt") && GetLastError() == ERROR_FILE_NOT_FOUND) {
+	for (int i = 0; i < sz; i++)
+		if (filename[i] == '/')
+			filename[i] = '\\';
+
+
+	if (INVALID_FILE_ATTRIBUTES == GetFileAttributes(filename) && GetLastError() == ERROR_FILE_NOT_FOUND) {
 
 		printf("PUtils - %s not found\n", filename);
 		return false;
@@ -143,19 +149,17 @@ bool PisteUtils_Find(char* filename) {
 }
 
 std::vector<string> PisteUtils_Scandir(const char* type, const char* dir, int max) {
-
+	
 	std::vector<string> result;
-
     struct _finddata_t map_file;
-    
 
 	char buffer[PE_PATH_SIZE];
-	if (type[0] == '/')
-		_snprintf(buffer, sizeof(buffer), "%s/*", dir);
+	if (type[0] == '/' || type[0] == '\\')
+		_snprintf(buffer, sizeof(buffer), "%s\\*", dir);
 	else if (type[0] == '\0')
-		_snprintf(buffer, sizeof(buffer), "%s/*", dir);
+		_snprintf(buffer, sizeof(buffer), "%s\\*", dir);
 	else
-		_snprintf(buffer, sizeof(buffer), "%s/*%s", dir, type);
+		_snprintf(buffer, sizeof(buffer), "%s\\*%s", dir, type);
 
 	long hFile = _findfirst(buffer, &map_file);
 	if (hFile == -1L) {
@@ -165,13 +169,15 @@ std::vector<string> PisteUtils_Scandir(const char* type, const char* dir, int ma
 	}
 	else {
 
-		result.push_back(map_file.name);
+		if (map_file.name[0] != '.') //No hidden files
+			result.push_back(map_file.name);
 	
 	}
 
 	while (result.size() < max && _findnext( hFile, &map_file ) == 0) {
 
-		result.push_back(map_file.name);
+		if (map_file.name[0] != '.')
+			result.push_back(map_file.name);
 
 	}
 

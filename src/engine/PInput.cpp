@@ -106,7 +106,7 @@ int PisteInput_Vibrate(){
 
 #ifdef _WIN32
 void SetMousePosition(int x, int y) {
-	int wx, wy;
+	int wx = 0, wy = 0;
 	//PisteDraw2_GetWindowPosition(&wx, &wy); TODO
 
 	SetCursorPos(x + wx, y+wy);

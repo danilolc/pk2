@@ -32,6 +32,10 @@ int Change_Frequency(int index, int freq) {
 
 	int channel;
 	SDL_AudioCVT cvt;
+	for (channel = 0; channel < MIX_CHANNELS; channel++) //Find a free channel
+		if (!Mix_Playing(channel)) return channel;
+
+	return -1;
 
 	SDL_BuildAudioCVT(&cvt, MIX_DEFAULT_FORMAT, 2, freq, MIX_DEFAULT_FORMAT, 2, def_freq);
 	if (cvt.needed) {

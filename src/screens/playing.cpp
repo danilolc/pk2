@@ -31,7 +31,7 @@ int palikka_animaatio = 0;
 int PK_Draw_InGame_BGSprites() {
 
 	double xl, yl, alku_x, alku_y, yk;
-	int i;
+	int i = 0;
 
 	for (int in=0; in<MAX_SPRITEJA; in++) {
 		SpriteClass* sprite = &Sprites_List[bgSprites_List[in]];

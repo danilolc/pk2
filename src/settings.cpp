@@ -10,7 +10,7 @@
 #include <SDL_rwops.h>
 #include <cstring>
 
-#define SETTINGS_PATH "data/settings.ini"
+#define SETTINGS_PATH "data" PE_SEP "settings.ini"
 #define SETTINGS_VERSION "1.2"
 
 PK2SETTINGS Settings;
@@ -35,9 +35,9 @@ void settings_init() {
 	Settings.control_right     = PI_RIGHT;
 	Settings.control_jump      = PI_UP;
 	Settings.control_down      = PI_DOWN;
-	Settings.control_walk_slow = PI_RALT;
-	Settings.control_attack1   = PI_RCONTROL;
-	Settings.control_attack2   = PI_RSHIFT;
+	Settings.control_walk_slow = PI_LALT;
+	Settings.control_attack1   = PI_LCONTROL;
+	Settings.control_attack2   = PI_LSHIFT;
 	Settings.control_open_gift = PI_SPACE;
 
 	Settings.isFiltered = true;
@@ -62,7 +62,7 @@ int Settings_Open() {
 
 	SDL_RWread(file, Settings.versio, 4, 1);
 	
-	if (strcmp(Settings.versio, SETTINGS_VERSION) != 0) { 
+	if (strncmp(Settings.versio, SETTINGS_VERSION, 4) != 0) { 
 		// If settings isn't in current version
 		settings_init();
         Settings_Save();
