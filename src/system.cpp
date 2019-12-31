@@ -43,6 +43,8 @@ const char* PK2_error_msg = nullptr;
 int PK2_Error(const char* msg) {
 	PK2_error = true;
 	PK2_error_msg = msg;
+
+	return 0;
 }
 
 void Calculate_SinCos(){

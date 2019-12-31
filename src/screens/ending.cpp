@@ -133,6 +133,9 @@ int Screen_Ending_Init() {
 	siirry_lopusta_menuun = false;
 
 	PDraw::fade_in(PDraw::FADE_FAST);
+
+	return 0;
+
 }
 
 int Screen_Ending(){

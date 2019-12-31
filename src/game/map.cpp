@@ -158,7 +158,7 @@ PK2Kartta::~PK2Kartta(){
 	PDraw::image_delete(this->palikat_vesi_buffer);
 }
 
-RECT PK2Kartta::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
+MAPREC PK2Kartta::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
 	int x,y;
 	int kartan_vasen = PK2KARTTA_KARTTA_LEVEYS,//PK2KARTTA_KARTTA_LEVEYS/2,
 		kartan_oikea = 0,
@@ -167,7 +167,7 @@ RECT PK2Kartta::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
 		kartan_korkeus = 0,
 		kartan_leveys = 0;
 
-	RECT rajat = {0,0,0,0};
+	MAPREC rajat = {0,0,0,0};
 
 	// tutkitaan kartan reunimmaiset tilet ja asetetaan reunat niiden mukaan
 	for (y=0;y<PK2KARTTA_KARTTA_KORKEUS;y++) {
@@ -216,14 +216,14 @@ RECT PK2Kartta::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
 	return rajat;
 }
 
-RECT PK2Kartta::LaskeTallennusAlue(BYTE *alue){
+MAPREC PK2Kartta::LaskeTallennusAlue(BYTE *alue){
 	DWORD x,y;
 	DWORD kartan_vasen		= PK2KARTTA_KARTTA_LEVEYS,
 		  kartan_oikea		= 0,
 		  kartan_yla		= PK2KARTTA_KARTTA_KORKEUS,
 		  kartan_ala		= 0;
 
-	RECT rajat = {0,0,0,0};
+	MAPREC rajat = {0,0,0,0};
 
 	// tutkitaan kartan reunimmaiset tilet ja asetetaan reunat niiden mukaan
 	for (y=0;y<PK2KARTTA_KARTTA_KORKEUS;y++) {
@@ -265,7 +265,7 @@ RECT PK2Kartta::LaskeTallennusAlue(BYTE *alue){
 	return rajat;
 }
 
-void PK2Kartta::LueTallennusAlue(BYTE *lahde, RECT alue, int kohde){
+void PK2Kartta::LueTallennusAlue(BYTE *lahde, MAPREC alue, int kohde){
 	int x,y;
 	int kartan_vasen   = alue.left,
 		kartan_oikea   = alue.right,
@@ -385,7 +385,7 @@ int PK2Kartta::Tallenna(char *filename){
 	// laske alue
 
 	//BYTE *alue_taustat = NULL, *alue_seinat = NULL, *alue_spritet = NULL;
-	RECT alue = {0,0,0,0};
+	MAPREC alue = {0,0,0,0};
 	DWORD /*koko, aloituskohta,*/ leveys, korkeus, x, y;
 	DWORD offset_x,offset_y;
 	char tile[1];

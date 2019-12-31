@@ -265,6 +265,9 @@ int Play_Music() {
 
 	PSound::start_music(mapmusa);
 	PSound::set_musicvolume_now(Settings.music_max_volume);
+
+	return 0;
+
 }
 
 int Screen_Map_Init() {

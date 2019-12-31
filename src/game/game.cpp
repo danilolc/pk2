@@ -99,6 +99,8 @@ int GameClass::Finnish() {
 	
 	PSound::set_musicvolume_now(Settings.music_max_volume);
 
+	return 0;
+
 }
 
 int GameClass::Calculete_TileMasks(){
@@ -216,6 +218,9 @@ int GameClass::Move_Blocks() {
 
 	this->lasketut_palikat[BLOCK_KYTKIN3].ala = kytkin3_x;
 	this->lasketut_palikat[BLOCK_KYTKIN3].yla = kytkin3_x;
+
+	return 0;
+
 }
 
 int GameClass::Calculate_Tiles() {

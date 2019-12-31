@@ -287,6 +287,9 @@ int Screen_ScoreCount_Init() {
 	siirry_pistelaskusta_karttaan = false;
 
 	PDraw::fade_in(PDraw::FADE_FAST);
+
+	return 0;
+
 }
 
 int Screen_ScoreCount() {

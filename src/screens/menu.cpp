@@ -1158,6 +1158,7 @@ int Draw_Menu() {
 
 
 int Order_Episodes() {
+
 	char temp[PE_PATH_SIZE] = "";
 	bool done;
 
@@ -1183,24 +1184,35 @@ int Order_Episodes() {
 	}
 
 	return 0;
+
 }
 
 void Search_Episode() {
 
-	char* list = PisteUtils_Scandir(episode_count, "/", "episodes/", MAX_EPISODEJA);
-	memcpy(episodes, list, episode_count * PE_PATH_SIZE);
-	delete list;
+	std::vector<string> list = PisteUtils_Scandir("/", "episodes/", MAX_EPISODEJA);
+	episode_count = list.size();
 
-	//Order_Episodes();
+	//TODO - store the vector
+	for (int i = 0; i < episode_count; i++) {
+
+		strcpy(episodes[i], list[i].c_str());
+
+	}
 
 }
 
 
 void Search_Languages() {
 
-	char* list = PisteUtils_Scandir(totallangs, ".txt", "language/", 60);
-	memcpy(langlist, list, totallangs * PE_PATH_SIZE);
-	delete list;
+	std::vector<string> list = PisteUtils_Scandir(".txt", "language/", 60);
+	totallangs = list.size();
+
+	//TODO - store the vector
+	for (int i = 0; i < totallangs; i++) {
+
+		strcpy(langlist[i], list[i].c_str());
+
+	}
 
 	for(int i = 0; i < 10; i++)
 		strcpy(langmenulist[i], langlist[i]);
@@ -1244,6 +1256,9 @@ int Screen_Menu_Init() {
 
 	PDraw::screen_fill(0);
 	menu_valittu_id = 1;
+
+	return 0;
+
 }
 
 int Screen_Menu() {

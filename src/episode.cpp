@@ -119,13 +119,14 @@ void EpisodeClass::Load() {
 	
 	char path[PE_PATH_SIZE] = "";
 	this->Get_Dir(path);
-	char* list = PisteUtils_Scandir(this->level_count, ".map", path, EPISODI_MAX_LEVELS);
+	std::vector<string> list = PisteUtils_Scandir(".map", path, EPISODI_MAX_LEVELS);
+	this->level_count = list.size();
 
 	PK2Kartta *temp = new PK2Kartta();
 
 	for (i = 0; i < this->level_count; i++) {
 
-		strcpy(this->levels_list[i].tiedosto, &list[i * PE_PATH_SIZE]);
+		strcpy(this->levels_list[i].tiedosto, list[i].c_str());
 		if (temp->Lataa_Pelkat_Tiedot(path, this->levels_list[i].tiedosto) == 0) {
 
 			strcpy(this->levels_list[i].nimi, temp->nimi);
@@ -138,7 +139,6 @@ void EpisodeClass::Load() {
 
 	}
 
-	delete list;
 	delete temp;
 
 	PK2LEVEL temp2;

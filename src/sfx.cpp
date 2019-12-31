@@ -66,6 +66,7 @@ int Load_SFX() {
         PK2_Error("Can't find app_bite.wav");
     }
 
+    return 0;
 }
 
 void Play_GameSFX(int sound, int volume, int x, int y, int freq, bool random_freq){

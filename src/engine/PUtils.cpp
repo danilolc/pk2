@@ -124,37 +124,63 @@ int PisteUtils_Alphabetical_Compare(const char *a, const char *b) {
 
 #ifdef _WIN32
 
-//int PisteUtils_Scandir(const char* type, const char* dir, char (*list)[PE_PATH_SIZE], int length){
-    struct _finddata_t map_file;
-    long hFile;
+bool PisteUtils_Find(char* filename) {
 
-	int i = 0;
-	char buffer[260];
-	if (type[0] == '/') //TODO in Windows
+	printf("PUtils - Find %s\n", filename);
+
+	GetFileAttributes(filename);
+
+	if (INVALID_FILE_ATTRIBUTES == GetFileAttributes("C:\\MyFile.txt") && GetLastError() == ERROR_FILE_NOT_FOUND) {
+
+		printf("PUtils - %s not found\n", filename);
+		return false;
+
+	}
+
+	printf("PUtils - Found on %s \n", filename);
+	return true;
+
+}
+
+std::vector<string> PisteUtils_Scandir(const char* type, const char* dir, int max) {
+
+	std::vector<string> result;
+
+    struct _finddata_t map_file;
+    
+
+	char buffer[PE_PATH_SIZE];
+	if (type[0] == '/')
 		_snprintf(buffer, sizeof(buffer), "%s/*", dir);
 	else if (type[0] == '\0')
 		_snprintf(buffer, sizeof(buffer), "%s/*", dir);
 	else
 		_snprintf(buffer, sizeof(buffer), "%s/*%s", dir, type);
 
-	if((hFile = _findfirst(buffer, &map_file )) == -1L )
-       return 1;
-	else
-	{
-		strcpy(list[i], map_file.name);
-		i++;
+	long hFile = _findfirst(buffer, &map_file);
+	if (hFile == -1L) {
+
+		return result;
+
+	}
+	else {
+
+		result.push_back(map_file.name);
+	
 	}
 
-	while (i<length && _findnext( hFile, &map_file ) == 0)
-	{
-		strcpy(list[i], map_file.name);
-		i++;
+	while (result.size() < max && _findnext( hFile, &map_file ) == 0) {
+
+		result.push_back(map_file.name);
+
 	}
 
 	_findclose( hFile );
 
-	return i;
+	return result;
+
 }
+
 int PisteUtils_CreateDir(const char *directory){
 	CreateDirectory(directory, NULL);
 	return 0;
@@ -225,6 +251,9 @@ char* PisteUtils_Scandir(int& count, const char* type, const char* dir, int max)
 		namelist[i]->d_name[0] = '\0';
 
 	}
+
+	if (count == 0)
+		return nullptr;
 
 	int j = 0;
 	char *list = new char[count * PE_PATH_SIZE];

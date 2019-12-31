@@ -11,132 +11,228 @@
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Source Files\Engine">
-      <UniqueIdentifier>{301c507f-4448-4866-9086-7b45921c76da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Game">
-      <UniqueIdentifier>{01cf021b-63c7-4bd7-b829-c6a947c0f9e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine">
-      <UniqueIdentifier>{91852f3a-d4e0-4a7b-a8fd-fa0bd992c5f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Game">
-      <UniqueIdentifier>{87c8cdfd-1afc-4e45-ae20-3e6f55e1a2ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Linked Libraries">
-      <UniqueIdentifier>{0ed88200-f0db-41d2-b262-ff173e2116d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DLL">
-      <UniqueIdentifier>{a926b592-7f0a-4b5b-80c9-64974e219377}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\engine\PisteDraw.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="..\src\episode.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\PisteEngine.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="..\src\gui.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\PisteFont.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="..\src\language.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\PisteInput.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="..\src\main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\PLang.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="..\src\save.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\PisteSound.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="..\src\settings.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\engine\PisteUtils.cpp">
-      <Filter>Source Files\Engine</Filter>
+    <ClCompile Include="..\src\sfx.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\map.cpp">
-      <Filter>Source Files\Game</Filter>
+    <ClCompile Include="..\src\system.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\pk2.cpp">
-      <Filter>Source Files\Game</Filter>
+    <ClCompile Include="..\src\engine\PDraw.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\sprite.cpp">
-      <Filter>Source Files\Game</Filter>
+    <ClCompile Include="..\src\engine\PFont.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\PGui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\PInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\Piste.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\PLang.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\PSound.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\engine\PUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\game\blocks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\game\game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\game\gifts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\game\map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\game\physics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\game\sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\game\sprites.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gfx\effect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gfx\particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gfx\particles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gfx\text.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\screens\ending.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\screens\intro.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\screens\map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\screens\menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\screens\playing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\screens\score.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\screens\screens.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\winlite.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\PisteDraw.hpp">
+    <ClInclude Include="..\src\episode.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\engine/Piste.hpp">
+    <ClInclude Include="..\src\gui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\engine/PFont.hpp">
+    <ClInclude Include="..\src\language.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\engine/PInput.hpp">
+    <ClInclude Include="..\src\save.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\engine/PLang.hpp">
+    <ClInclude Include="..\src\settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\engine/platform.hpp">
+    <ClInclude Include="..\src\sfx.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\engine/PSound.hpp">
+    <ClInclude Include="..\src\system.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\engine/PUtils.hpp">
+    <ClInclude Include="..\src\engine\PDraw.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\engine\engine/types.hpp">
+    <ClInclude Include="..\src\engine\PFont.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\map.hpp">
+    <ClInclude Include="..\src\engine\PGui.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\sprite.hpp">
+    <ClInclude Include="..\src\engine\PInput.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\Piste.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\PLang.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\platform.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\PSound.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\PUtils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\engine\types.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game\blocks.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game\game.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game\gifts.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game\map.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game\physics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game\sprite.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\game\sprites.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gfx\effect.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gfx\particle.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gfx\particles.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\gfx\text.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\screens\screens.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="pk2.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <None Include="..\..\SDL\SDL2\lib\x86\SDL2.dll" />
+    <None Include="..\..\SDL\SDL2_image\lib\x86\libjpeg-9.dll" />
+    <None Include="..\..\SDL\SDL2_image\lib\x86\libpng16-16.dll" />
+    <None Include="..\..\SDL\SDL2_image\lib\x86\libtiff-5.dll" />
+    <None Include="..\..\SDL\SDL2_image\lib\x86\libwebp-7.dll" />
+    <None Include="..\..\SDL\SDL2_image\lib\x86\SDL2_image.dll" />
+    <None Include="..\..\SDL\SDL2_image\lib\x86\zlib1.dll" />
+    <None Include="..\..\SDL\SDL2_mixer\lib\x86\libFLAC-8.dll" />
+    <None Include="..\..\SDL\SDL2_mixer\lib\x86\libmodplug-1.dll" />
+    <None Include="..\..\SDL\SDL2_mixer\lib\x86\libmpg123-0.dll" />
+    <None Include="..\..\SDL\SDL2_mixer\lib\x86\libogg-0.dll" />
+    <None Include="..\..\SDL\SDL2_mixer\lib\x86\libopus-0.dll" />
+    <None Include="..\..\SDL\SDL2_mixer\lib\x86\libopusfile-0.dll" />
+    <None Include="..\..\SDL\SDL2_mixer\lib\x86\libvorbis-0.dll" />
+    <None Include="..\..\SDL\SDL2_mixer\lib\x86\libvorbisfile-3.dll" />
+    <None Include="..\..\SDL\SDL2_mixer\lib\x86\SDL2_mixer.dll" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\README.md" />
-    <None Include="sdl2\x86\libmodplug-1.dll">
-      <Filter>DLL</Filter>
-    </None>
-    <None Include="sdl2\x86\SDL2.dll">
-      <Filter>DLL</Filter>
-    </None>
-    <None Include="sdl2\x86\SDL2_mixer.dll">
-      <Filter>DLL</Filter>
-    </None>
-    <None Include="sdl2\x86\SDL2_image.dll">
-      <Filter>DLL</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="sdl2\x86\SDL2.lib">
-      <Filter>Linked Libraries</Filter>
-    </Library>
-    <Library Include="sdl2\x86\SDL2_image.lib">
-      <Filter>Linked Libraries</Filter>
-    </Library>
-    <Library Include="sdl2\x86\SDL2_mixer.lib">
-      <Filter>Linked Libraries</Filter>
-    </Library>
-    <Library Include="sdl2\x86\SDL2main.lib">
-      <Filter>Linked Libraries</Filter>
-    </Library>
+    <Library Include="..\..\SDL\SDL2\lib\x86\SDL2.lib" />
+    <Library Include="..\..\SDL\SDL2\lib\x86\SDL2main.lib" />
+    <Library Include="..\..\SDL\SDL2\lib\x86\SDL2test.lib" />
+    <Library Include="..\..\SDL\SDL2_image\lib\x86\SDL2_image.lib" />
+    <Library Include="..\..\SDL\SDL2_mixer\lib\x86\SDL2_mixer.lib" />
   </ItemGroup>
 </Project>

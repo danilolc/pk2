@@ -8,7 +8,7 @@
 
 typedef struct {
 	int left, top, right, bottom;
-} RECT;
+} MAPREC;
 
 const char PK2KARTTA_VIIMEISIN_VERSIO[4] = "1.3";
 
@@ -115,9 +115,9 @@ class PK2Kartta
 
 	int Tallenna(char *filename);	// Save map
 	void Tyhjenna();				// clean map
-	RECT LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde);
-	RECT LaskeTallennusAlue(BYTE *alue);
-	void LueTallennusAlue(BYTE *lahde, RECT alue, int kohde);
+	MAPREC LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde);
+	MAPREC LaskeTallennusAlue(BYTE *alue);
+	void LueTallennusAlue(BYTE *lahde, MAPREC alue, int kohde);
 	int Piirra_Taustat(int, int, bool);
 	int Piirra_Seinat (int, int, bool);
 	void Kopioi(PK2Kartta &kartta);

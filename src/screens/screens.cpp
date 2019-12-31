@@ -108,6 +108,8 @@ int Screen_First_Start() {
 	PDraw::fade_in(PDraw::FADE_SLOW);
 	PSound::set_musicvolume_now(Settings.music_max_volume);
 	
+	return 0;
+
 }
 
 //If the screen change
