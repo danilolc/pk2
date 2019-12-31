@@ -60,10 +60,10 @@ const BYTE TAUSTA_PALLARX_VERT			= 1;
 const BYTE TAUSTA_PALLARX_HORI			= 2;
 const BYTE TAUSTA_PALLARX_VERT_JA_HORI	= 3;
 
-void PK2Kartta_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys);
-void PK2Kartta_Set_Screen_Size(int width, int height);
+void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys);
+void MapClass_Set_Screen_Size(int width, int height);
 
-class PK2Kartta
+class MapClass
 {
 	public:
 
@@ -104,11 +104,11 @@ class PK2Kartta
 
 	/* Metodit --------------------------*/
 
-	PK2Kartta();						// Oletusmuodostin
-	PK2Kartta(const PK2Kartta &kartta);	// Kopiointimuodostin
-	~PK2Kartta();						// Hajoitin
+	MapClass();						// Oletusmuodostin
+	MapClass(const MapClass &kartta);	// Kopiointimuodostin
+	~MapClass();						// Hajoitin
 
-	PK2Kartta &operator = (const PK2Kartta &kartta);	//Sijoitusoperaattori
+	MapClass &operator = (const MapClass &kartta);	//Sijoitusoperaattori
 
 	int Lataa(char *polku, char *nimi);		// Lataa kartta
 	int Lataa_Pelkat_Tiedot(char *polku, char *nimi);	// Lataa kartta ilman grafiikoita
@@ -120,7 +120,7 @@ class PK2Kartta
 	void LueTallennusAlue(BYTE *lahde, MAPREC alue, int kohde);
 	int Piirra_Taustat(int, int, bool);
 	int Piirra_Seinat (int, int, bool);
-	void Kopioi(PK2Kartta &kartta);
+	void Kopioi(MapClass &kartta);
 
 	//PK2 functions
 	int Count_Keys();

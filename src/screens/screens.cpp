@@ -12,7 +12,7 @@
 #include "save.hpp"
 #include "system.hpp"
 
-#include "game/map.hpp"
+#include "game/mapclass.hpp"
 #include "episode.hpp"
 #include "language.hpp"
 
@@ -87,7 +87,7 @@ int Screen_First_Start() {
 
 	Fadetext_Init();
 
-	PK2Kartta_Set_Screen_Size(screen_width, screen_height);
+	MapClass_Set_Screen_Size(screen_width, screen_height);
 	
 	if (Settings.isFiltered)
 		PDraw::set_filter(PDraw::FILTER_BILINEAR);

@@ -4,12 +4,12 @@
 //#########################
 #pragma once
 
-#include "sprite.hpp"
+#include "game/spriteclass.hpp"
 
-extern PK2Sprite* Player_Sprite;
+extern SpriteClass* Player_Sprite;
 
-extern PK2Sprite_Prototyyppi Prototypes_List[MAX_PROTOTYYPPEJA];
-extern PK2Sprite Sprites_List[MAX_SPRITEJA];
+extern PrototypeClass Prototypes_List[MAX_PROTOTYYPPEJA];
+extern SpriteClass Sprites_List[MAX_SPRITEJA];
 
 extern int bgSprites_List[MAX_SPRITEJA];
 

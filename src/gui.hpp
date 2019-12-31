@@ -10,6 +10,5 @@ enum UI_MODE {
 	UI_GAME_BUTTONS
 };
 
-void GUI_Activate(bool set);
 void GUI_Change(int ui_mode);
 void GUI_Load();

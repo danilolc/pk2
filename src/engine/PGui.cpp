@@ -9,6 +9,12 @@
 
 #include "engine/platform.hpp"
 
+
+extern int mouse_x; //TODO remove
+extern int mouse_y;
+#include "engine/PInput.hpp"
+
+
 namespace PGui {
 
 const int MAX_GUI = 15;
@@ -16,7 +22,8 @@ const int MAX_GUI = 15;
 int screen_w, screen_h;
 SDL_Renderer* renderer;
 
-struct GUI{
+struct GUI {
+
 	bool set;
 	bool active;
 
@@ -31,22 +38,45 @@ struct GUI{
 
 GUI gui_list[MAX_GUI];
 
-int alloc(){
+int alloc() {
+
 	int gui_id = -1;
 	for(int i = 0; i < MAX_GUI; i++)
 		if (!gui_list[i].set)
 			gui_id = i;
 	return gui_id;
+
+}
+
+int updatedev() {
+	GUI* gui;
+	
+	for(int i = 0; i < MAX_GUI; i++){
+		gui = gui_list + i;
+		gui->pressed = false;
+		if(gui->set && gui->active && PisteInput_Hiiri_Oikea()) {
+
+			int x = mouse_x;
+			int y = mouse_y;
+			if(x > gui->pos_x && x < gui->width+gui->pos_x && y > gui->pos_y && y < gui->height+gui->pos_y)
+				gui->pressed = true;
+		}
+	}
+
+	return 0;
+
 }
 
 int update(){
+
+	return updatedev();
+
 	GUI* gui;
-	SDL_Finger* finger = NULL;
+	SDL_Finger* finger = nullptr;
 	SDL_TouchID id = SDL_GetTouchDevice(0);
 
 	int fingers = SDL_GetNumTouchFingers(id);
 
-	int x, y;
 	for(int i = 0; i < MAX_GUI; i++){
 		gui = gui_list + i;
 		gui->pressed = false;
@@ -54,12 +84,12 @@ int update(){
 			for(int j = 0; j < fingers; j++){
 
 				finger = SDL_GetTouchFinger(id, j);
-				if(finger == NULL){
+				if(finger == nullptr){
 					printf("Can't find finger %i - %s", j, SDL_GetError());
 					SDL_ClearError();
 				} else{
-					x = finger->x * screen_w;
-					y = finger->y * screen_h;
+					int x = finger->x * screen_w;
+					int y = finger->y * screen_h;
 					if(x > gui->pos_x && x < gui->width+gui->pos_x && y > gui->pos_y && y < gui->height+gui->pos_y)
 						gui->pressed = true;
 				}
@@ -139,13 +169,16 @@ int draw(int pd_alpha){
 }
 
 bool check_key(int key) {
+
 	update();
 	for(int i = 0; i < MAX_GUI; i++)
 		if(gui_list[i].set && gui_list[i].active && gui_list[i].pressed && gui_list[i].key != NULL){
 			if(*gui_list[i].key == key)
 				return true;
 		}
+	
 	return false;
+
 }
 
 }

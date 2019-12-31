@@ -4,7 +4,7 @@
 //#########################
 #include "episode.hpp"
 
-#include "game/map.hpp"
+#include "game/mapclass.hpp"
 #include "language.hpp"
 #include "system.hpp"
 #include "save.hpp"
@@ -122,7 +122,7 @@ void EpisodeClass::Load() {
 	std::vector<string> list = PisteUtils_Scandir(".map", path, EPISODI_MAX_LEVELS);
 	this->level_count = list.size();
 
-	PK2Kartta *temp = new PK2Kartta();
+	MapClass *temp = new MapClass();
 
 	for (i = 0; i < this->level_count; i++) {
 

@@ -5,7 +5,7 @@
 #pragma once
 
 #include "gfx/particle.hpp"
-#include "game/map.hpp"
+#include "game/mapclass.hpp"
 
 void Particles_Update();
 
@@ -15,6 +15,6 @@ void Particles_DrawFront(int cam_x, int cam_y);
 
 void Particles_DrawBG(int cam_x, int cam_y);
 
-void Particles_LoadBG(PK2Kartta* map);
+void Particles_LoadBG(MapClass* map);
 
 void Particles_Clear();

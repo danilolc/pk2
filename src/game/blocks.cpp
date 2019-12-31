@@ -5,7 +5,7 @@
 #include "blocks.hpp"
 
 #include "game/game.hpp"
-#include "game/map.hpp"
+#include "game/mapclass.hpp"
 #include "system.hpp"
 
 void Block_Set_Barriers(PK2BLOCK &block) {

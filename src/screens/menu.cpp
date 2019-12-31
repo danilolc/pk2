@@ -708,7 +708,7 @@ int Draw_Menu_Graphics() {
 
 		if (wasWide != Settings.isWide) {
 			screen_width = Settings.isWide ? 800 : 640;
-			PK2Kartta_Set_Screen_Size(screen_width, screen_height);
+			MapClass_Set_Screen_Size(screen_width, screen_height);
 			PDraw::change_resolution(screen_width, screen_height);
 			
 			if(Episode)
@@ -1247,7 +1247,7 @@ int Screen_Menu_Init() {
 
 	}
 
-	menu_nyt = MENU_MAIN; //TODO - test
+	menu_nyt = MENU_MAIN;
 
 	bg_square.left = 320 - 5;
 	bg_square.top = 240 - 5;

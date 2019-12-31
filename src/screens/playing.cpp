@@ -34,7 +34,7 @@ int PK_Draw_InGame_BGSprites() {
 	int i;
 
 	for (int in=0; in<MAX_SPRITEJA; in++) {
-		PK2Sprite* sprite = &Sprites_List[bgSprites_List[in]];
+		SpriteClass* sprite = &Sprites_List[bgSprites_List[in]];
 
 		if (sprite->tyyppi != nullptr && i != -1) {
 			if (!sprite->piilota && sprite->tyyppi->tyyppi == TYYPPI_TAUSTA) {
@@ -120,7 +120,7 @@ int PK_Draw_InGame_Sprites() {
 
 	for (int i=0;i<MAX_SPRITEJA;i++){
 		// Onko sprite n�kyv�
-		PK2Sprite* sprite = &Sprites_List[i];
+		SpriteClass* sprite = &Sprites_List[i];
 		if (!sprite->piilota && sprite->tyyppi->tyyppi != TYYPPI_TAUSTA){
 			//Check whether or not sprite is on the screen
 			if (sprite->x - sprite->tyyppi->leveys/2  < Game->camera_x+screen_width &&
@@ -639,7 +639,7 @@ int Update_Camera(){
 
 int Screen_InGame(){
 
-	PK2Kartta_Animoi(degree, palikka_animaatio/7, Game->button1, Game->button2, Game->button3, false);
+	MapClass_Animoi(degree, palikka_animaatio/7, Game->button1, Game->button2, Game->button3, false);
 	Update_Camera();
 
 	if (!Game->paused) {
@@ -812,7 +812,7 @@ int Screen_InGame(){
 				for (int r = 1; r<6; r++)
 					//Particles_New(PARTICLE_SPARK, player->x + rand() % 10 - rand() % 10, player->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
 					Particles_New(PARTICLE_SPARK, Player_Sprite->x + rand() % 10 - rand() % 10, Player_Sprite->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
-				*Player_Sprite = PK2Sprite(&Prototypes_List[PROTOTYYPPI_KANA], 1, false, Player_Sprite->x, Player_Sprite->y);
+				*Player_Sprite = SpriteClass(&Prototypes_List[PROTOTYYPPI_KANA], 1, false, Player_Sprite->x, Player_Sprite->y);
 			}
 		}
 		if (PisteInput_Keydown(PI_U))
