@@ -11,7 +11,7 @@ OPT = -g
 #OPT = -O3
 
 CXX = g++
-CXXFLAGS += $(shell pkg-config --cflags sdl2) $(OPT) -std=gnu++17
+CXXFLAGS += $(shell pkg-config --cflags sdl2) $(OPT) -std=gnu++17 -w
 LDFLAGS += -lSDL2 -lSDL2_mixer -lSDL2_image
 
 # Defines directories

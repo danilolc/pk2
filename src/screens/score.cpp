@@ -26,7 +26,7 @@ bool siirry_pistelaskusta_karttaan = false;
 int counting_phase = 0;
 int counting_delay = 0;
 
-int apples_got;
+int apples_got = 0;
 
 DWORD total_score = 0;
 DWORD bonus_score = 0;
@@ -255,6 +255,7 @@ int Screen_ScoreCount_Init() {
 	if (!Game->repeating)
 		Episode->player_score += temp_score;
 
+	apples_got = 0;
 	total_score = 0;
 	counting_phase = 0;
 	counting_delay = 30;
@@ -264,19 +265,18 @@ int Screen_ScoreCount_Init() {
 	gifts_score = 0;
 
 	char pisteet_tiedosto[PE_PATH_SIZE] = "scores.dat";
-	int vertailun_tulos;
 
 	/* Check if broken level score and time record */
-	vertailun_tulos = EpisodeScore_Compare(Game->level_id, temp_score, Game->map->aika - Game->timeout, false);
-	if (vertailun_tulos > 0) {
+	int compare_result = EpisodeScore_Compare(Game->level_id, temp_score, Game->map->aika - Game->timeout, false);
+	if (compare_result > 0) {
 
 		Episode->Save_Scores(pisteet_tiedosto);
 
 	}
 
 	/* Check if broken episode score */
-	vertailun_tulos = EpisodeScore_Compare(0, Episode->player_score, 0, true);
-	if (vertailun_tulos > 0) {
+	compare_result = EpisodeScore_Compare(0, Episode->player_score, 0, true);
+	if (compare_result > 0) {
 
 		Episode->Save_Scores(pisteet_tiedosto);
 
@@ -287,6 +287,7 @@ int Screen_ScoreCount_Init() {
 	siirry_pistelaskusta_karttaan = false;
 
 	PDraw::fade_in(PDraw::FADE_FAST);
+	
 }
 
 int Screen_ScoreCount() {

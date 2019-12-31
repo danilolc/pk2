@@ -2,7 +2,7 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-#include "game/map.hpp"
+#include "game/mapclass.hpp"
 
 #include "game/sprites.hpp"
 #include "game/game.hpp"
@@ -40,7 +40,7 @@ struct PK2KARTTA{ // Vanha versio 0.1
 	BYTE		extrat [640*480];
 };
 
-void PK2Kartta_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys){
+void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys){
 	aste = degree;
 	animaatio = anim;
 	ajastin1 = aika1;
@@ -49,14 +49,14 @@ void PK2Kartta_Animoi(int degree, int anim, int aika1, int aika2, int aika3, boo
 	avaimet  = keys;
 }
 
-void PK2Kartta_Set_Screen_Size(int width, int height){
+void MapClass_Set_Screen_Size(int width, int height){
 	ruudun_leveys_palikoina  = width/32 + 1;
 	ruudun_korkeus_palikoina = height/32 + 1;
 }
 
-//char PK2Kartta::pk2_hakemisto[256] = "";
+//char MapClass::pk2_hakemisto[256] = "";
 
-PK2Kartta::PK2Kartta(){
+MapClass::MapClass(){
 
 	this->palikat_buffer = -1;
 	this->taustakuva_buffer = -1;
@@ -101,7 +101,7 @@ PK2Kartta::PK2Kartta(){
 	PDraw::image_fill(this->palikat_buffer,255);
 }
 
-PK2Kartta::PK2Kartta(const PK2Kartta &kartta){
+MapClass::MapClass(const MapClass &kartta){
 
 	this->palikat_buffer = -1;
 	this->taustakuva_buffer = -1;
@@ -152,13 +152,13 @@ PK2Kartta::PK2Kartta(const PK2Kartta &kartta){
 	PDraw::image_copy(kartta.palikat_vesi_buffer,this->palikat_vesi_buffer);
 }
 
-PK2Kartta::~PK2Kartta(){
+MapClass::~MapClass(){
 	PDraw::image_delete(this->palikat_buffer);
 	PDraw::image_delete(this->taustakuva_buffer);
 	PDraw::image_delete(this->palikat_vesi_buffer);
 }
 
-RECT PK2Kartta::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
+RECT MapClass::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
 	int x,y;
 	int kartan_vasen = PK2KARTTA_KARTTA_LEVEYS,//PK2KARTTA_KARTTA_LEVEYS/2,
 		kartan_oikea = 0,
@@ -216,7 +216,7 @@ RECT PK2Kartta::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
 	return rajat;
 }
 
-RECT PK2Kartta::LaskeTallennusAlue(BYTE *alue){
+RECT MapClass::LaskeTallennusAlue(BYTE *alue){
 	DWORD x,y;
 	DWORD kartan_vasen		= PK2KARTTA_KARTTA_LEVEYS,
 		  kartan_oikea		= 0,
@@ -265,7 +265,7 @@ RECT PK2Kartta::LaskeTallennusAlue(BYTE *alue){
 	return rajat;
 }
 
-void PK2Kartta::LueTallennusAlue(BYTE *lahde, RECT alue, int kohde){
+void MapClass::LueTallennusAlue(BYTE *lahde, RECT alue, int kohde){
 	int x,y;
 	int kartan_vasen   = alue.left,
 		kartan_oikea   = alue.right,
@@ -290,7 +290,7 @@ void PK2Kartta::LueTallennusAlue(BYTE *lahde, RECT alue, int kohde){
 	}
 }
 
-int PK2Kartta::Tallenna(char *filename){
+int MapClass::Tallenna(char *filename){
 	char luku[8]; //Size can't be changed
 	DWORD i;
 
@@ -487,7 +487,7 @@ int PK2Kartta::Tallenna(char *filename){
 	return 0;
 }
 
-int PK2Kartta::Lataa(char *polku, char *nimi){
+int MapClass::Lataa(char *polku, char *nimi){
 	
 	char path[PE_PATH_SIZE];
 	strcpy(path, polku);
@@ -534,7 +534,7 @@ int PK2Kartta::Lataa(char *polku, char *nimi){
 	return(ok);
 }
 
-int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
+int MapClass::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
 	char path[PE_PATH_SIZE];
 	strcpy(path, polku);
 	strcat(path, nimi);
@@ -567,7 +567,7 @@ int PK2Kartta::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
 	return(0);
 }
 
-int PK2Kartta::LataaVersio01(char *filename){
+int MapClass::LataaVersio01(char *filename){
 
 	PK2KARTTA kartta;
 
@@ -600,9 +600,9 @@ int PK2Kartta::LataaVersio01(char *filename){
 
 	return(0);
 }
-int PK2Kartta::LataaVersio10(char *filename){
+int MapClass::LataaVersio10(char *filename){
 	
-	PK2Kartta *kartta = new PK2Kartta();
+	MapClass *kartta = new MapClass();
 
 	SDL_RWops* file = SDL_RWFromFile(filename, "r");
 	if (file == nullptr) {
@@ -641,7 +641,7 @@ int PK2Kartta::LataaVersio10(char *filename){
 
 	return(0);
 }
-int PK2Kartta::LataaVersio11(char *filename){
+int MapClass::LataaVersio11(char *filename){
 	int virhe = 0;
 
 	SDL_RWops* file = SDL_RWFromFile(filename, "r");
@@ -688,7 +688,7 @@ int PK2Kartta::LataaVersio11(char *filename){
 
 	return (virhe);
 }
-int PK2Kartta::LataaVersio12(char *filename){
+int MapClass::LataaVersio12(char *filename){
 
 	char luku[8];
 	
@@ -752,7 +752,7 @@ int PK2Kartta::LataaVersio12(char *filename){
 
 	return 0;
 }
-int PK2Kartta::LataaVersio13(char *filename){
+int MapClass::LataaVersio13(char *filename){
 
 	char luku[8];
 	DWORD i;
@@ -871,7 +871,7 @@ int PK2Kartta::LataaVersio13(char *filename){
 	return 0;
 }
 
-void PK2Kartta::Tyhjenna(){
+void MapClass::Tyhjenna(){
 	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
 	strcpy(this->palikka_bmp,"blox.bmp");
 	strcpy(this->taustakuva, "default.bmp");
@@ -905,7 +905,7 @@ void PK2Kartta::Tyhjenna(){
 	//PDraw::image_fill(this->taustakuva_buffer,255);
 }
 
-PK2Kartta &PK2Kartta::operator = (const PK2Kartta &kartta){
+MapClass &MapClass::operator = (const MapClass &kartta){
 	if (this == &kartta) return *this;
 
 	strcpy(this->versio,		kartta.versio);
@@ -937,7 +937,7 @@ PK2Kartta &PK2Kartta::operator = (const PK2Kartta &kartta){
 	return *this;
 }
 
-int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
+int MapClass::Lataa_Taustakuva(char *polku, char *filename){
 	int i;
 	char file[PE_PATH_SIZE];
 	
@@ -945,7 +945,7 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 	strcat(file,filename);
 
 	if (!PisteUtils_Find(file)){
-		//strcpy(file,PK2Kartta::pk2_hakemisto);
+		//strcpy(file,MapClass::pk2_hakemisto);
 		strcpy(file,"gfx/scenery/");
 		strcat(file,filename);
 		if (!PisteUtils_Find(file)) return 1;
@@ -981,7 +981,7 @@ int PK2Kartta::Lataa_Taustakuva(char *polku, char *filename){
 	return 0;
 }
 
-int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
+int MapClass::Lataa_PalikkaPaletti(char *polku, char *filename){
 	int i;
 	int img;
 	char file[PE_PATH_SIZE];
@@ -990,7 +990,7 @@ int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
 	strcat(file,filename);
 
 	if (!PisteUtils_Find(file)){
-		//strcpy(file,PK2Kartta::pk2_hakemisto);
+		//strcpy(file,MapClass::pk2_hakemisto);
 		strcpy(file,"gfx/tiles/");
 		strcat(file,filename);
 		if (!PisteUtils_Find(file))
@@ -1009,12 +1009,12 @@ int PK2Kartta::Lataa_PalikkaPaletti(char *polku, char *filename){
 	return 0;
 }
 
-int PK2Kartta::Lataa_TaustaMusiikki(char *filename){
+int MapClass::Lataa_TaustaMusiikki(char *filename){
 
 	return 0;
 }
 
-void PK2Kartta::Kopioi(PK2Kartta &kartta){
+void MapClass::Kopioi(MapClass &kartta){
 	if (this != &kartta){
 		strcpy(this->versio,		kartta.versio);
 		strcpy(this->palikka_bmp,	kartta.palikka_bmp);
@@ -1061,7 +1061,7 @@ void PK2Kartta::Kopioi(PK2Kartta &kartta){
 
 
 // Put in GameClass
-void PK2Kartta::Place_Sprites() {
+void MapClass::Place_Sprites() {
 
 	Sprites_clear();
 	Sprites_add(this->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
@@ -1087,7 +1087,7 @@ void PK2Kartta::Place_Sprites() {
 
 }
 
-void PK2Kartta::Select_Start() {
+void MapClass::Select_Start() {
 	double  pos_x = 320,
 			pos_y = 196;
 	int		alkujen_maara = 0, alku = 0,
@@ -1124,7 +1124,7 @@ void PK2Kartta::Select_Start() {
 }
 
 
-int PK2Kartta::Count_Keys() {
+int MapClass::Count_Keys() {
 	BYTE sprite;
 	DWORD x;
 
@@ -1142,7 +1142,7 @@ int PK2Kartta::Count_Keys() {
 	return keys;
 }
 
-void PK2Kartta::Change_SkullBlocks() {
+void MapClass::Change_SkullBlocks() {
 	BYTE front, back;
 	DWORD x,y;
 
@@ -1171,7 +1171,7 @@ void PK2Kartta::Change_SkullBlocks() {
 	Calculate_Edges();
 }
 
-void PK2Kartta::Open_Locks() {
+void MapClass::Open_Locks() {
 	BYTE palikka;
 	DWORD x,y;
 
@@ -1194,7 +1194,7 @@ void PK2Kartta::Open_Locks() {
 
 }
 
-void PK2Kartta::Calculate_Edges(){
+void MapClass::Calculate_Edges(){
 	BYTE tile1, tile2, tile3;
 	bool edge = false;
 
@@ -1243,7 +1243,7 @@ void PK2Kartta::Calculate_Edges(){
 
 /* Kartanpiirtorutiineja ----------------------------------------------------------------*/
 //Anim Fire
-void PK2Kartta::Animoi_Tuli(void){
+void MapClass::Animoi_Tuli(void){
 	BYTE *buffer = NULL;
 	DWORD leveys;
 	int x,y;
@@ -1287,7 +1287,7 @@ void PK2Kartta::Animoi_Tuli(void){
 	PDraw::drawimage_end(palikat_buffer);
 }
 //Anim
-void PK2Kartta::Animoi_Vesiputous(void){
+void MapClass::Animoi_Vesiputous(void){
 	BYTE *buffer = NULL;
 	DWORD leveys;
 	int x,y,plus;
@@ -1329,7 +1329,7 @@ void PK2Kartta::Animoi_Vesiputous(void){
 	PDraw::drawimage_end(palikat_buffer);
 }
 //Anim
-void PK2Kartta::Animoi_Vedenpinta(void){
+void MapClass::Animoi_Vedenpinta(void){
 	BYTE *buffer = NULL;
 	DWORD leveys;
 	int x,y;
@@ -1355,7 +1355,7 @@ void PK2Kartta::Animoi_Vedenpinta(void){
 	PDraw::drawimage_end(palikat_buffer);
 }
 //Anim water
-void PK2Kartta::Animoi_Vesi(void){
+void MapClass::Animoi_Vesi(void){
 	BYTE *buffer_lahde = NULL, *buffer_kohde = NULL;
 	DWORD leveys_lahde, leveys_kohde;
 	int x, y, color1, color2,
@@ -1420,7 +1420,7 @@ void PK2Kartta::Animoi_Vesi(void){
 	PDraw::drawimage_end(palikat_vesi_buffer);
 }
 
-void PK2Kartta::Animoi_Virta_Ylos(void){
+void MapClass::Animoi_Virta_Ylos(void){
 	BYTE *buffer = NULL;
 	DWORD leveys;
 	int x,y;
@@ -1446,7 +1446,7 @@ void PK2Kartta::Animoi_Virta_Ylos(void){
 	PDraw::drawimage_end(palikat_buffer);
 }
 
-int PK2Kartta::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
+int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 	int palikka;
 	int px = 0,
 		py = 0,
@@ -1478,7 +1478,7 @@ int PK2Kartta::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 	return 0;
 }
 
-int PK2Kartta::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
+int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 	int palikka;
 	int px = 0,
 		py = 0,

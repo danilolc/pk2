@@ -247,7 +247,7 @@ struct PK2SPRITE_ANIMAATIO{
 };
 
 //.spr file structures
-struct PK2Sprite_Prototyyppi10{
+struct PrototypeClass10{
 
     DWORD		tyyppi;											// spriten tyyppi
     // Kuvatiedoston tiedot
@@ -289,7 +289,7 @@ struct PK2Sprite_Prototyyppi10{
     char		ammus2_sprite[13];								// Spriten ammuksena 2 k�ytt�m� sprite
     bool		avain;											// Voiko sprite avata lukkoja
 };
-struct PK2Sprite_Prototyyppi11{
+struct PrototypeClass11{
 
     DWORD		tyyppi;											// spriten tyyppi
     // Kuvatiedoston tiedot
@@ -338,7 +338,7 @@ struct PK2Sprite_Prototyyppi11{
     char		ammus2_sprite[13];								// Spriten ammuksena 2 k�ytt�m� sprite
 
 };
-struct PK2Sprite_Prototyyppi12{
+struct PrototypeClass12{
 
     DWORD		tyyppi;											// spriten tyyppi
     // Kuvatiedoston tiedot
@@ -397,7 +397,7 @@ struct PK2Sprite_Prototyyppi12{
     bool		este_vasemmalle;
 
 };
-struct PK2Sprite_Prototyyppi13{
+struct PrototypeClass13{
 
     DWORD		tyyppi;											// sprite type
     char		kuvatiedosto[100];								// bmp path
@@ -468,7 +468,7 @@ struct PK2Sprite_Prototyyppi13{
 };
 
 //Classes used in game
-class PK2Sprite_Prototyyppi{
+class PrototypeClass{
     public:
 
     //Version
@@ -562,30 +562,30 @@ class PK2Sprite_Prototyyppi{
     bool		osaa_uida;										// vaikuttaako painovoima vedess�?
 
     // Muodostimet
-    PK2Sprite_Prototyyppi();
-    ~PK2Sprite_Prototyyppi();
+    PrototypeClass();
+    ~PrototypeClass();
 
     // Methods
     void Uusi();
-    void Kopioi(const PK2Sprite_Prototyyppi &proto);
+    void Kopioi(const PrototypeClass &proto);
     int  Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi);
     int  Lataa(const char *dir, const char *filename);
     void Tallenna(char *tiedoston_nimi);
     int  Piirra(int x, int y, int frame);
     bool Onko_AI(int AI);
 
-    void SetProto10(PK2Sprite_Prototyyppi10 &proto);
-    void SetProto11(PK2Sprite_Prototyyppi11 &proto);
-    void SetProto12(PK2Sprite_Prototyyppi12 &proto);
-    void SetProto13(PK2Sprite_Prototyyppi13 &proto);
-    PK2Sprite_Prototyyppi13 GetProto13();
+    void SetProto10(PrototypeClass10 &proto);
+    void SetProto11(PrototypeClass11 &proto);
+    void SetProto12(PrototypeClass12 &proto);
+    void SetProto13(PrototypeClass13 &proto);
+    PrototypeClass13 GetProto13();
 };
-class PK2Sprite{
+class SpriteClass{
     public:
 
     bool		aktiivinen;			// true / false
     int			pelaaja;			// 0 = ei pelaaja, 1 = pelaaja
-    PK2Sprite_Prototyyppi *tyyppi;	// osoitin spriten prototyyppiin
+    PrototypeClass *tyyppi;	// osoitin spriten prototyyppiin
     bool		piilota;			// true = ei toiminnassa, false = toiminnassa
     double		alku_x;				// spriten alkuper�inen x sijainti
     double		alku_y;				// spriten alkuper�inen y sijainti
@@ -630,9 +630,9 @@ class PK2Sprite{
     BYTE		frame_aika;			// kuinka kauan frame on n�kynyt
     int			muutos_ajastin;		// sprite muuttuu muutosspriteksi kun t�m� nollautuu
 
-    PK2Sprite();
-    PK2Sprite(PK2Sprite_Prototyyppi *tyyppi, int pelaaja, bool piilota, double x, double y);
-    ~PK2Sprite();
+    SpriteClass();
+    SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, double x, double y);
+    ~SpriteClass();
     int Piirra(int kamera_x, int kamera_y);		// Animoi ja piirt�� spriten
     int Animaatio(int anim_i, bool nollaus);	// Vaihtaa spriten animaation
     int Animoi();								// Animoi muttei piirr� sprite�
@@ -654,25 +654,25 @@ class PK2Sprite{
     int AI_Random_Suunnanvaihto_Hori();
     int AI_Random_Hyppy();
     int AI_Random_Liikahdus_Vert_Hori();
-    int AI_Seuraa_Pelaajaa(PK2Sprite &pelaaja);
-    int AI_Seuraa_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja);
-    int AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(PK2Sprite &pelaaja);
-    int AI_Seuraa_Pelaajaa_Vert_Hori(PK2Sprite &pelaaja);
-    int AI_Jahtaa_Pelaajaa(PK2Sprite &pelaaja);
-    int AI_Pakenee_Pelaajaa_Jos_Nakee(PK2Sprite &pelaaja);
-    int AI_Muutos_Jos_Energiaa_Alle_2(PK2Sprite_Prototyyppi &muutos);
-    int AI_Muutos_Jos_Energiaa_Yli_1(PK2Sprite_Prototyyppi &muutos);
-    int AI_Muutos_Ajastin(PK2Sprite_Prototyyppi &muutos);
-    int AI_Muutos_Jos_Osuttu(PK2Sprite_Prototyyppi &muutos);
+    int AI_Seuraa_Pelaajaa(SpriteClass &pelaaja);
+    int AI_Seuraa_Pelaajaa_Jos_Nakee(SpriteClass &pelaaja);
+    int AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(SpriteClass &pelaaja);
+    int AI_Seuraa_Pelaajaa_Vert_Hori(SpriteClass &pelaaja);
+    int AI_Jahtaa_Pelaajaa(SpriteClass &pelaaja);
+    int AI_Pakenee_Pelaajaa_Jos_Nakee(SpriteClass &pelaaja);
+    int AI_Muutos_Jos_Energiaa_Alle_2(PrototypeClass &muutos);
+    int AI_Muutos_Jos_Energiaa_Yli_1(PrototypeClass &muutos);
+    int AI_Muutos_Ajastin(PrototypeClass &muutos);
+    int AI_Muutos_Jos_Osuttu(PrototypeClass &muutos);
     int AI_Hyokkays_1_Jos_Osuttu();
     int AI_Hyokkays_2_Jos_Osuttu();
     int AI_Hyokkays_1_Nonstop();
     int AI_Hyokkays_2_Nonstop();
-    int AI_Hyokkays_1_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja);
-    int AI_Hyokkays_2_Jos_Pelaaja_Edessa(PK2Sprite &pelaaja);
-    int AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(PK2Sprite &pelaaja);
+    int AI_Hyokkays_1_Jos_Pelaaja_Edessa(SpriteClass &pelaaja);
+    int AI_Hyokkays_2_Jos_Pelaaja_Edessa(SpriteClass &pelaaja);
+    int AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(SpriteClass &pelaaja);
     int AI_NonStop();
-    int AI_Hyppy_Jos_Pelaaja_Ylapuolella(PK2Sprite &pelaaja);
+    int AI_Hyppy_Jos_Pelaaja_Ylapuolella(SpriteClass &pelaaja);
     int AI_Pommi();
     int AI_Vahingoittuu_Vedesta();
     int AI_Tapa_Kaikki();
@@ -686,11 +686,11 @@ class PK2Sprite{
     int AI_Liikkuu_Y(double liike);
     int AI_Tippuu_Jos_Kytkin_Painettu(int kytkin);
     int AI_Liikkuu_Jos_Kytkin_Painettu(int kytkin, int ak, int bk);
-    int AI_Teleportti(int i, PK2Sprite *spritet, int max, PK2Sprite &pelaaja);
+    int AI_Teleportti(int i, SpriteClass *spritet, int max, SpriteClass &pelaaja);
     int AI_Kiipeilija();
     int AI_Kiipeilija2();
-    bool AI_Info(PK2Sprite &pelaaja);
-    int AI_Tuhoutuu_Jos_Emo_Tuhoutuu(PK2Sprite *spritet);
+    bool AI_Info(SpriteClass &pelaaja);
+    int AI_Tuhoutuu_Jos_Emo_Tuhoutuu(SpriteClass *spritet);
 
     int Animaatio_Perus();
     int Animaatio_Kana();

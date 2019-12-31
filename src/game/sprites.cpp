@@ -13,12 +13,12 @@
 
 #include <cstring>
 
-PK2Sprite* Player_Sprite;
+SpriteClass* Player_Sprite;
 
 int next_free_prototype = 0;
 
-PK2Sprite_Prototyyppi Prototypes_List[MAX_PROTOTYYPPEJA];
-PK2Sprite Sprites_List[MAX_SPRITEJA];
+PrototypeClass Prototypes_List[MAX_PROTOTYYPPEJA];
+SpriteClass Sprites_List[MAX_SPRITEJA];
 
 int bgSprites_List[MAX_SPRITEJA];
 
@@ -307,13 +307,13 @@ void Sprites_start_directions() {
 
 void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int emo, bool isbonus) {
 	
-	PK2Sprite_Prototyyppi& proto = Prototypes_List[protoype_id];
+	PrototypeClass& proto = Prototypes_List[protoype_id];
 	bool added = false;
 	int i = 0;
 
 	while (!added && i < MAX_SPRITEJA){
 		if (Sprites_List[i].piilota){
-			Sprites_List[i] = PK2Sprite(&proto,is_Player_Sprite,false,x,y);
+			Sprites_List[i] = SpriteClass(&proto,is_Player_Sprite,false,x,y);
 
 			if (is_Player_Sprite) Player_Sprite = &Sprites_List[i];
 
@@ -353,13 +353,13 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 }
 
 void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y, int emo) {
-	PK2Sprite_Prototyyppi& proto = Prototypes_List[protoype_id];
+	PrototypeClass& proto = Prototypes_List[protoype_id];
 	bool lisatty = false;
 	int i = 0;
 
 	while (!lisatty && i < MAX_SPRITEJA){
 		if (Sprites_List[i].piilota){
-			Sprites_List[i] = PK2Sprite(&proto,is_Player_Sprite,false,x/*-proto.leveys/2*/,y);
+			Sprites_List[i] = SpriteClass(&proto,is_Player_Sprite,false,x/*-proto.leveys/2*/,y);
 
 			//Sprites_List[i].x += Sprites_List[i].tyyppi->leveys;
 			//Sprites_List[i].y += Sprites_List[i].tyyppi->korkeus/2;
@@ -426,7 +426,7 @@ int Update_Sprites() {
 	
 	int active_sprites = 0;
 	int i;
-	PK2Sprite* sprite;
+	SpriteClass* sprite;
 
 	for (i = 0; i < MAX_SPRITEJA; i++){ //Activate sprite if it is on screen
 		sprite = &Sprites_List[i];
@@ -461,7 +461,7 @@ void Sprites_clear() {
 	int i = 0;
 
 	while (i < MAX_SPRITEJA){
-		Sprites_List[i] = PK2Sprite();
+		Sprites_List[i] = SpriteClass();
 		bgSprites_List[i] = -1;
 		i++;
 	}

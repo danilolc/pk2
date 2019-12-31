@@ -6,7 +6,7 @@
 
 #include "engine/types.hpp"
 
-#include "game/map.hpp"
+#include "game/mapclass.hpp"
 #include "game/sprites.hpp"
 #include "game/blocks.hpp"
 
@@ -18,7 +18,7 @@ class GameClass {
 	public:
 
 		int level_id = -1;
-		PK2Kartta* map = nullptr;
+		MapClass* map = nullptr;
 		char map_path[PE_PATH_SIZE];
 
 		PK2BLOCK     palikat[300];

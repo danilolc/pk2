@@ -44,7 +44,7 @@ int GameClass::Start() {
 	if (this->started)
 		return 1;
 	
-	this->map = new PK2Kartta();
+	this->map = new MapClass();
 
 	if(this->from_index) {
 

@@ -19,12 +19,12 @@ int Gifts_Get(int i) {
 	return gifts_list[i];
 }
 
-PK2Sprite_Prototyyppi* Gifts_GetProtot(int i) {
+PrototypeClass* Gifts_GetProtot(int i) {
 	return &Prototypes_List[ gifts_list[i] ];
 }
 
 void Gifts_Draw(int i, int x, int y) {
-	PK2Sprite_Prototyyppi* prot = &Prototypes_List[ gifts_list[i] ];
+	PrototypeClass* prot = &Prototypes_List[ gifts_list[i] ];
 	prot->Piirra(x - prot->leveys / 2, y - prot->korkeus / 2, 0);
 }
 

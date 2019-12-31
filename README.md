@@ -22,12 +22,25 @@ https://files.fm/f/d6mvf3qr
 ### Windows
 If you want to compile it yourself, the win32 directory have the solution files for VisualStudio. It will also need the SDL2, SDL2_mixer and SDL2_image library.
 
-### Ubuntu
-To compile PK2 on Ubuntu you will need the SDL2, SDL2_image and SDL2_mixer library instaled on the system. To get them just run the following code:
-```
-sudo apt-get install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
-```
-Now just clone the code and run `make` on pk2 directory, the PK2 binary will be in bin/ directory.
+### Debian
+To compile **Pekka Kana 2** into Debian GNU/Linux based distributions,
+you need the **SDL2**, **SDL2_image** and **SDL2_mixer** libraries installed on
+the system. To get them just run the following command on the terminal:
+
+    # apt install g++ libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev make
+
+Run the "**make**" command inside the "**Pekka Kana 2**" directory.
+
+    $ make -j$(nproc)
+
+The PK2 binary will be in "**bin/**" directory.
+
+    $ ./bin/pekka-kana-2
+
+To make the removal, within the compiled directory, execute this command:
+
+    $ make clean
+
 
 ### macOS
 Use [Homebrew](https://brew.sh/) to install SDL2 packages:
@@ -41,25 +54,22 @@ Now just clone the code and run `make` on pk2 directory, the PK2 binary will be 
 http://mapstore.the.cz/
 To add a new episode, just download the zip file and extract it to its respective path inside "res/".
 
-It can be started with the "dev" argument to start the
+It can be started with the "dev" argument to enable the
 cheats and "test" following by the episode and level to
 open directly on the level.
 
 This example starts the level13.map on dev mode:
 ```
-./PK2 dev test rooster\ island\ 2/level13.map
+./PK2 dev test "rooster island 2/level13.map"
 ```
 
 
 # TODOs and FIXMEs:
 * Fix intro screen
 * Update health before draw
-
 * Consider Sprite in Water when the water is on BG or outside the screen
 * Fix the mikmod music loop
 * Find a solution to change sfx frequency without delay
-* Increase txt buttons area
-* Make the code cleaner (and remove all the Finnish things)
 * Jump frames when FPS is slow
 * Start on language select on first start
 * Super mode - energy = 0 on touch Pekka

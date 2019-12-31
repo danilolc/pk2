@@ -50,7 +50,7 @@ bool alas;
 bool vedessa;
 
 BYTE max_nopeus;
-void Check_Blocks2(PK2Sprite &sprite, PK2BLOCK &palikka) {
+void Check_Blocks2(SpriteClass &sprite, PK2BLOCK &palikka) {
 
 	//left and right
 	if (sprite_yla < palikka.ala && sprite_ala-1 > palikka.yla){
@@ -110,7 +110,7 @@ void Check_Blocks2(PK2Sprite &sprite, PK2BLOCK &palikka) {
 	}
 }
 
-void Check_Blocks(PK2Sprite &sprite, PK2BLOCK &palikka) {
+void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 	int mask_index;
 
 	//If sprite is in the block
@@ -314,7 +314,7 @@ int Sprite_Movement(int i){
 	if (i >= MAX_SPRITEJA || i < 0)
 		return -1;
 
-	PK2Sprite &sprite = Sprites_List[i]; //address of sprite = address of spritet[i] (if change sprite, change spritet[i])
+	SpriteClass &sprite = Sprites_List[i]; //address of sprite = address of spritet[i] (if change sprite, change spritet[i])
 
 	if (!sprite.tyyppi)
 		return -1;
@@ -666,7 +666,7 @@ int Sprite_Movement(int i){
 	double sprite2_yla; // kyykistymiseen liittyv�
 	PK2BLOCK spritepalikka;
 
-	PK2Sprite *sprite2;
+	SpriteClass *sprite2;
 
 	//Compare this sprite with every sprite in the game
 	for (int sprite_index = 0; sprite_index < MAX_SPRITEJA; sprite_index++) {
@@ -1421,7 +1421,7 @@ int BonusSprite_Movement(int i){
 	map_vasen = 0;
 	map_yla   = 0;
 
-	PK2Sprite &sprite = Sprites_List[i];
+	SpriteClass &sprite = Sprites_List[i];
 
 	sprite_x = sprite.x;
 	sprite_y = sprite.y;
@@ -1503,7 +1503,7 @@ int BonusSprite_Movement(int i){
 
 		for (int sprite_index = 0; sprite_index < MAX_SPRITEJA; sprite_index++) {
 
-			PK2Sprite* sprite2 = &Sprites_List[sprite_index];
+			SpriteClass* sprite2 = &Sprites_List[sprite_index];
 			if (sprite_index != i && !sprite2->piilota) {
 				if (sprite2->tyyppi->este && sprite.tyyppi->tiletarkistus) {
 					if (sprite_x-sprite_leveys/2 +sprite_a <= sprite2->x + sprite2->tyyppi->leveys /2 &&
