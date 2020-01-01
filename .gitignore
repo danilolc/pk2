@@ -1,14 +1,14 @@
-bin/
-build/
-doc/
+/bin/
+/build/
+/doc/
 
-res/episodes/*
-!res/episodes/rooster island 1
-!res/episodes/rooster island 2
+/res/episodes/*
+!/res/episodes/rooster island 1
+!/res/episodes/rooster island 2
 
-res/data/
-res/editor/settings.dat
-res/episodes/*/scores.dat
+/res/data/
+/res/editor/settings.dat
+/res/episodes/*/scores.dat
 
 .vscode/
 .directory
@@ -33,4 +33,4 @@ win32/pk2/
 win32/.vs/
 
 # Android stuff
-android/sdl/src/
+.gradle/

@@ -1,9 +1,0 @@
-[submodule "external/SDL"]
-	path = external/SDL
-	url = https://github.com/SDL-mirror/SDL.git
-[submodule "external/SDL_image"]
-	path = external/SDL_image
-	url = https://github.com/SDL-mirror/SDL_image.git
-[submodule "external/SDL_mixer"]
-	path = external/SDL_mixer
-	url = https://github.com/SDL-mirror/SDL_mixer.git
