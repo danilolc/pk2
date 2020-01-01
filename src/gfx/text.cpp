@@ -18,7 +18,6 @@ struct PK2FADETEXT {
 	char teksti[20];
 	int fontti;
 	int x,y,ajastin;
-	bool ui;
 };
 
 PK2FADETEXT fadetekstit[MAX_FADETEKSTEJA];
@@ -171,13 +170,12 @@ void Fadetext_Init(){
 		fadetekstit[i].ajastin = 0;
 }
 
-void Fadetext_New(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin, bool ui){
+void Fadetext_New(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin){
 	fadetekstit[fadeteksti_index].fontti = fontti;
 	strcpy(fadetekstit[fadeteksti_index].teksti,teksti);
 	fadetekstit[fadeteksti_index].x = x;
 	fadetekstit[fadeteksti_index].y = y;
 	fadetekstit[fadeteksti_index].ajastin = ajastin;
-	fadetekstit[fadeteksti_index].ui = ui;
 	fadeteksti_index++;
 
 	if (fadeteksti_index >= MAX_FADETEKSTEJA)
@@ -186,7 +184,6 @@ void Fadetext_New(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin, boo
 
 int Fadetext_Draw(){
 	int pros;
-	int x, y;
 
 	for (int i=0; i<MAX_FADETEKSTEJA; i++)
 		if (fadetekstit[i].ajastin > 0){
@@ -195,8 +192,8 @@ int Fadetext_Draw(){
 			else
 				pros = fadetekstit[i].ajastin * 2;
 
-			x = fadetekstit[i].ui ? fadetekstit[i].x : fadetekstit[i].x - Game->camera_x;
-			y = fadetekstit[i].ui ? fadetekstit[i].y : fadetekstit[i].y - Game->camera_y;
+			int x = fadetekstit[i].x - Game->camera_x;
+			int y = fadetekstit[i].y - Game->camera_y;
 
 			if (Settings.draw_transparent && pros < 100)
 				PDraw::font_writealpha(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y, pros);
@@ -215,8 +212,8 @@ void Fadetext_Update(){
 			if (fadetekstit[i].ajastin%2 == 0)
 				fadetekstit[i].y--;
 
-			if (fadetekstit[i].x < Game->camera_x || fadetekstit[i].x > Game->camera_x + screen_width ||
+			/*if (fadetekstit[i].x < Game->camera_x || fadetekstit[i].x > Game->camera_x + screen_width ||
 				fadetekstit[i].y < Game->camera_y || fadetekstit[i].y > Game->camera_y + screen_height)
-				if(!fadetekstit[i].ui) fadetekstit[i].ajastin = 0;
+				fadetekstit[i].ajastin = 0;*/
 		}
 }

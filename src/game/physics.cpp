@@ -918,7 +918,7 @@ int Sprite_Movement(int i){
 				if (sprite.tyyppi->tyyppi == TYYPPI_PELIHAHMO && sprite.tyyppi->pisteet != 0){
 					char luku[10];
 					itoa(sprite.tyyppi->pisteet,luku,10);
-					Fadetext_New(fontti2,luku,(int)Sprites_List[i].x-8,(int)Sprites_List[i].y-8,80,false);
+					Fadetext_New(fontti2,luku,(int)Sprites_List[i].x-8,(int)Sprites_List[i].y-8,80);
 					Game->score_increment += sprite.tyyppi->pisteet;
 				}
 			} else
@@ -1740,17 +1740,41 @@ int BonusSprite_Movement(int i){
 					Game->apples_got++;
 
 				Game->score_increment += sprite.tyyppi->pisteet;
-				char luku[6];
-				itoa(sprite.tyyppi->pisteet,luku,10);
-				if (sprite.tyyppi->pisteet >= 50)
-					Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,100,false);
-				else
-					Fadetext_New(fontti1,luku,(int)sprite.x-8,(int)sprite.y-8,100,false);
+				
+				if (!sprite.Onko_AI(AI_BONUS_AIKA)) {
+
+					char luku[6];
+					itoa(sprite.tyyppi->pisteet,luku,10);
+					if (sprite.tyyppi->pisteet >= 50)
+						Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,100);
+					else
+						Fadetext_New(fontti1,luku,(int)sprite.x-8,(int)sprite.y-8,100);
+
+				}
 
 			}
 
-			if (sprite.Onko_AI(AI_BONUS_AIKA))
-				Game->increase_time += sprite.tyyppi->latausaika;
+			if (sprite.Onko_AI(AI_BONUS_AIKA)) {
+				
+				
+				float increase_time = sprite.tyyppi->latausaika;
+
+				Game->increase_time += increase_time;
+
+				increase_time *= float(TIME_FPS) / 60;
+
+				char min[6], sek[6];
+				itoa(int(increase_time / 60), min, 6);
+				itoa(int(increase_time) % 60, sek, 6);
+
+				//TODO - 0:01, not 0:1
+				char luku[10];
+				strcpy(luku, min);
+				strcat(luku, ":");
+				strcat(luku, sek);
+				Fadetext_New(fontti1,luku,(int)sprite.x-15,(int)sprite.y-8,100);
+				
+			}
 
 			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
 				Game->invisibility = sprite.tyyppi->latausaika;

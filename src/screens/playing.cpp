@@ -352,8 +352,11 @@ int PK_Draw_InGame_Lower_Menu() {
 	//////////////
 	// Draw time
 	//////////////
-	if (Game->timeout > 0){
+	if (Game->timeout > 0) {
+
 		Game->timeout += Game->increase_time;
+		Game->increase_time = 0;
+
 		float shown_sec = (float)(Game->timeout * TIME_FPS + Game->seconds) / 60;
 		int min = (int)shown_sec/60,
 			sek = (int)shown_sec%60;
@@ -366,12 +369,6 @@ int PK_Draw_InGame_Lower_Menu() {
 		
 		vali += ShadowedText_Draw(luku, x, y);
 		vali += PDraw::font_write(fontti1,":",x+vali,y+9);
-
-		if (Game->increase_time > 0) {
-			itoa((int)(Game->increase_time * TIME_FPS) / 60, luku, 10);
-			Fadetext_New(fontti2, luku, x + vali, y, 49, true);
-			Game->increase_time = 0;
-		}
 
 		if (sek < 10)
 			vali += ShadowedText_Draw("0", x + vali, y);
