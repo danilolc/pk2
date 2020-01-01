@@ -10,6 +10,7 @@
 #include "system.hpp"
 
 Particle::Particle(int type, double x, double y, double a, double b, int anim, int time, double weight, int color) {
+
 	this->type = type;
 	this->x = x;
 	this->y = y;
@@ -19,6 +20,7 @@ Particle::Particle(int type, double x, double y, double a, double b, int anim, i
 	this->time = time;
 	this->weight = weight;
 	this->color = color;
+	
 }
 
 Particle::~Particle() {}
@@ -314,6 +316,7 @@ void Particle::update_flake4() {
 }
 
 void Particle::update_fg() {
+
 	if (this->time > 0){
 		this->x += this->a;
 		this->y += this->b;
@@ -323,6 +326,7 @@ void Particle::update_fg() {
 
 		this->time--;
 	}
+
 }
 
 void Particle::update_bg() {

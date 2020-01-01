@@ -40,8 +40,8 @@ class Particle {
 
 	private:
 
-		int	type;
-		int	time;
+		int type;
+		int time;
 
 		double x, y, a, b;
 		int anim;
