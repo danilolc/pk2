@@ -223,40 +223,40 @@ int Play_Music() {
 	
 	strcpy(mapmusa, "map.mp3");
 	Episode->Get_Dir(mapmusa);
-	if (PisteUtils_Find(mapmusa))
+	if (PUtils::Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.ogg");
 	Episode->Get_Dir(mapmusa);
-	if (PisteUtils_Find(mapmusa))
+	if (PUtils::Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.xm");
 	Episode->Get_Dir(mapmusa);
-	if (PisteUtils_Find(mapmusa))
+	if (PUtils::Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.mod");
 	Episode->Get_Dir(mapmusa);
-	if (PisteUtils_Find(mapmusa))
+	if (PUtils::Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.it");
 	Episode->Get_Dir(mapmusa);
-	if (PisteUtils_Find(mapmusa))
+	if (PUtils::Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "map.s3m");
 	Episode->Get_Dir(mapmusa);
-	if (PisteUtils_Find(mapmusa))
+	if (PUtils::Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "music" PE_SEP "map.mp3");
-	if (PisteUtils_Find(mapmusa))
+	if (PUtils::Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "music" PE_SEP "map.ogg");
-	if (PisteUtils_Find(mapmusa))
+	if (PUtils::Find(mapmusa))
 		goto found;
 	
 	strcpy(mapmusa, "music" PE_SEP "map.xm");

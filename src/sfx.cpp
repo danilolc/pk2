@@ -105,9 +105,8 @@ void Play_GameSFX(int sound, int volume, int x, int y, int freq, bool random_fre
         if (random_freq)
 			freq = freq + rand()%4000 - rand()%2000;
 
-        int err = PSound::play_sfx(sound, volume, pan, freq);
-		if (err)
-			printf("PK2     - Error playing sound. Error %i\n", err);
+        int channel = PSound::play_sfx(sound, volume, pan, freq);
+		printf("PK2     - Sound on channel %i\n", channel);
 			
 	}
 }
@@ -124,9 +123,10 @@ void Play_MenuSFX(int sound, int volume){
 
 		int freq = 22050 + rand()%5000 - rand()%5000;
 
-		int err = PSound::play_sfx(sound, Settings.sfx_max_volume, 0, freq);
-		if (err)
-			printf("PK2     - Error playing sound. Error %i\n", err);
+		int channel = PSound::play_sfx(sound, Settings.sfx_max_volume, 0, freq);
+		
+        if (channel < 0)
+            printf("PK2     - Error playing sound\n", channel);
 
 	}
 

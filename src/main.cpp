@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
 			continue;
 		}
 		else if (strcmp(argv[i], "mobile") == 0) {
-			PisteUtils_Force_Mobile();
+			PUtils::Force_Mobile();
 		}
 		else {
 			printf("Invalid arg\n");
@@ -133,13 +133,13 @@ int main(int argc, char *argv[]) {
 	printf("PK2 Started!\n");
 
 	if(!path_set)
-		PisteUtils_Setcwd();
+		PUtils::Setcwd();
 
 	Settings_Open();
 
 	screen_width = Settings.isWide ? 800 : 640;
 
-	if (PisteUtils_Is_Mobile())
+	if (PUtils::Is_Mobile())
 		screen_width = 800;
 
 	Piste::init(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp");
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
 	}
 	Load_Fonts(tekstit);
 
-	if(PisteUtils_Is_Mobile())
+	if(PUtils::Is_Mobile())
 		GUI_Load();
 
 	next_screen = SCREEN_INTRO;
@@ -180,7 +180,7 @@ int main(int argc, char *argv[]) {
 
 	if(PK2_error){
 		printf("PK2    - Error!\n");
-		PisteUtils_Show_Error(PK2_error_msg);
+		PUtils::Show_Error(PK2_error_msg);
 		quit(1);
 	}
 	

@@ -158,7 +158,7 @@ MapClass::~MapClass(){
 	PDraw::image_delete(this->palikat_vesi_buffer);
 }
 
-MAPREC MapClass::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
+MAP_RECT MapClass::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
 
 	int x,y;
 	int kartan_vasen = PK2KARTTA_KARTTA_LEVEYS,//PK2KARTTA_KARTTA_LEVEYS/2,
@@ -168,7 +168,7 @@ MAPREC MapClass::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
 		kartan_korkeus = 0,
 		kartan_leveys = 0;
 
-	MAPREC rajat = {0,0,0,0};
+	MAP_RECT rajat = {0,0,0,0};
 
 	// tutkitaan kartan reunimmaiset tilet ja asetetaan reunat niiden mukaan
 	for (y=0;y<PK2KARTTA_KARTTA_KORKEUS;y++) {
@@ -217,7 +217,7 @@ MAPREC MapClass::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
 	return rajat;
 }
 
-MAPREC MapClass::LaskeTallennusAlue(BYTE *alue){
+MAP_RECT MapClass::LaskeTallennusAlue(BYTE *alue){
 
 	DWORD x,y;
 	DWORD kartan_vasen		= PK2KARTTA_KARTTA_LEVEYS,
@@ -225,7 +225,7 @@ MAPREC MapClass::LaskeTallennusAlue(BYTE *alue){
 		  kartan_yla		= PK2KARTTA_KARTTA_KORKEUS,
 		  kartan_ala		= 0;
 
-	MAPREC rajat = {0,0,0,0};
+	MAP_RECT rajat = {0,0,0,0};
 
 	// tutkitaan kartan reunimmaiset tilet ja asetetaan reunat niiden mukaan
 	for (y=0;y<PK2KARTTA_KARTTA_KORKEUS;y++) {
@@ -267,7 +267,7 @@ MAPREC MapClass::LaskeTallennusAlue(BYTE *alue){
 	return rajat;
 }
 
-void MapClass::LueTallennusAlue(BYTE *lahde, MAPREC alue, int kohde){
+void MapClass::LueTallennusAlue(BYTE *lahde, MAP_RECT alue, int kohde){
 
 	int x,y;
 	int kartan_vasen   = alue.left,
@@ -388,7 +388,7 @@ int MapClass::Tallenna(char *filename){
 	// laske alue
 
 	//BYTE *alue_taustat = NULL, *alue_seinat = NULL, *alue_spritet = NULL;
-	MAPREC alue = {0,0,0,0};
+	MAP_RECT alue = {0,0,0,0};
 	DWORD /*koko, aloituskohta,*/ leveys, korkeus, x, y;
 	DWORD offset_x,offset_y;
 	char tile[1];
@@ -947,11 +947,11 @@ int MapClass::Lataa_Taustakuva(char *polku, char *filename){
 	strcpy(file,polku);
 	strcat(file,filename);
 
-	if (!PisteUtils_Find(file)){
+	if (!PUtils::Find(file)){
 		//strcpy(file,MapClass::pk2_hakemisto);
 		strcpy(file,"gfx/scenery/");
 		strcat(file,filename);
-		if (!PisteUtils_Find(file)) return 1;
+		if (!PUtils::Find(file)) return 1;
 	}
 
 	i = PDraw::image_load(file,true);
@@ -992,11 +992,11 @@ int MapClass::Lataa_PalikkaPaletti(char *polku, char *filename){
 	strcpy(file,polku);
 	strcat(file,filename);
 
-	if (!PisteUtils_Find(file)){
+	if (!PUtils::Find(file)){
 		//strcpy(file,MapClass::pk2_hakemisto);
 		strcpy(file,"gfx/tiles/");
 		strcat(file,filename);
-		if (!PisteUtils_Find(file))
+		if (!PUtils::Find(file))
 			return 1;
 	}
 

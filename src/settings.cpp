@@ -81,7 +81,7 @@ int Settings_Open() {
 
 int Settings_Save() {
 
-    PisteUtils_CreateDir("data");
+    PUtils::CreateDir("data");
 	
 	SDL_RWops *file = SDL_RWFromFile(SETTINGS_PATH, "wb");
 

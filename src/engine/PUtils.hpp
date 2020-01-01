@@ -9,20 +9,24 @@
 #include <vector>
 #include <string>
 
-int PisteUtils_Setcwd();
-void PisteUtils_Lower(char* string);
-void PisteUtils_RemoveSpace(char* string);
-bool PisteUtils_Find(char *filename);
+namespace PUtils {
 
-int  PisteUtils_CreateDir(const char *directory);
-void PisteUtils_Show_Error(const char* txt);
+int Setcwd();
+void Lower(char* string);
+void RemoveSpace(char* string);
+bool Find(char *filename);
+
+int  CreateDir(const char *directory);
+void Show_Error(const char* txt);
 
 //type:
 // ""  - all files and directories
 // "/" - directory
 // ".exe" - *.exe
-std::vector<string> PisteUtils_Scandir(const char* type, const char* dir, int max);
+std::vector<string> Scandir(const char* type, const char* dir, int max);
 
-void PisteUtils_Force_Mobile();
-bool PisteUtils_Is_Mobile();
-int PisteUtils_Alphabetical_Compare(const char *a, const char *b);
+void Force_Mobile();
+bool Is_Mobile();
+int Alphabetical_Compare(const char *a, const char *b);
+
+}

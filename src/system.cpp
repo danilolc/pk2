@@ -55,7 +55,7 @@ void Calculate_SinCos(){
 
 void PK_Draw_Cursor(int x, int y){
 
-	if(!PisteUtils_Is_Mobile() && Settings.isFullScreen)
+	if(!PUtils::Is_Mobile() && Settings.isFullScreen)
 		PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
 	
 }

@@ -12,11 +12,13 @@
 
 using namespace std;
 
+namespace PUtils {
+
 bool force_mobile = false;
 
 #ifdef __ANDROID__
 
-int PisteUtils_Setcwd() {
+int Setcwd() {
 
 	char path[PE_PATH_SIZE];
 	strcpy(path,"./");
@@ -26,7 +28,7 @@ int PisteUtils_Setcwd() {
 
 #elif _WIN32
 
-int PisteUtils_Setcwd() {
+int Setcwd() {
 
 	char exepath[PE_PATH_SIZE];
 	int find;
@@ -42,7 +44,7 @@ int PisteUtils_Setcwd() {
 
 #else
 
-int PisteUtils_Setcwd() {
+int Setcwd() {
 
 	char exepath[PE_PATH_SIZE];
 	int find;
@@ -60,14 +62,14 @@ int PisteUtils_Setcwd() {
 
 #endif
 
-void PisteUtils_Lower(char* string) {
+void Lower(char* string) {
 
 	for(; *string != '\0'; string++)
 		*string |= ' ';
 	
 }
 
-void PisteUtils_RemoveSpace(char* string) {
+void RemoveSpace(char* string) {
 
 	int len = strlen(string);
 
@@ -78,7 +80,7 @@ void PisteUtils_RemoveSpace(char* string) {
 
 }
 
-bool PisteUtils_Compare(const char* a, const char* b) {
+bool NoCaseCompare(const char* a, const char* b) {
 
 	int sa = strlen(a);
 	int sb = strlen(b);
@@ -96,7 +98,7 @@ bool PisteUtils_Compare(const char* a, const char* b) {
 
 }
 
-int PisteUtils_Alphabetical_Compare(const char *a, const char *b) {
+int Alphabetical_Compare(const char *a, const char *b) {
 	
 	int a_size = strlen(a);
 	int b_size = strlen(b);
@@ -125,7 +127,7 @@ int PisteUtils_Alphabetical_Compare(const char *a, const char *b) {
 
 #ifdef _WIN32
 
-bool PisteUtils_Find(char* filename) {
+bool Find(char* filename) {
 
 	printf("PUtils - Find %s\n", filename);
 
@@ -148,7 +150,7 @@ bool PisteUtils_Find(char* filename) {
 
 }
 
-std::vector<string> PisteUtils_Scandir(const char* type, const char* dir, int max) {
+std::vector<string> Scandir(const char* type, const char* dir, int max) {
 	
 	std::vector<string> result;
     struct _finddata_t map_file;
@@ -174,7 +176,10 @@ std::vector<string> PisteUtils_Scandir(const char* type, const char* dir, int ma
 	
 	}
 
-	while (result.size() < max && _findnext( hFile, &map_file ) == 0) {
+	while (result.size() < max || max == -1 ) {
+
+		if( _findnext( hFile, &map_file ) != 0 ) //TODO - test if works
+			break;
 
 		if (map_file.name[0] != '.')
 			result.push_back(map_file.name);
@@ -187,7 +192,7 @@ std::vector<string> PisteUtils_Scandir(const char* type, const char* dir, int ma
 
 }
 
-int PisteUtils_CreateDir(const char *directory){
+int CreateDir(const char *directory){
 	CreateDirectory(directory, NULL);
 	return 0;
 }
@@ -215,13 +220,13 @@ char* Get_Extension(char* string) {
 
 }
 
-char* PisteUtils_Scandir(int& count, const char* type, const char* dir, int max) {
+std::vector<string> Scandir(const char* type, const char* dir, int max) {
 
+	std::vector<string> result;
 	struct dirent **namelist;
 
 	int numb = scandir(dir, &namelist, 0, alphasort);
-	count = 0;
-
+	
 	if (max != -1)
 		if (numb > max) 
 			numb = max;
@@ -232,12 +237,12 @@ char* PisteUtils_Scandir(int& count, const char* type, const char* dir, int max)
 
 			if(type[0] == '/' && namelist[i]->d_type == DT_DIR) {
 
-				count++;
+				result.push_back(namelist[i]->d_name);
 				continue;
 
 			} else if(type[0] == '\0') {
 			
-				count++;
+				result.push_back(namelist[i]->d_name);
 				continue;
 			
 			} else {
@@ -245,7 +250,7 @@ char* PisteUtils_Scandir(int& count, const char* type, const char* dir, int max)
 				char* ext = Get_Extension(namelist[i]->d_name);
 				if(strcmp(ext, type) == 0) {
 
-					count++;
+					result.push_back(namelist[i]->d_name);
 					continue;
 
 				}
@@ -254,46 +259,16 @@ char* PisteUtils_Scandir(int& count, const char* type, const char* dir, int max)
 			
 		}
 
-		namelist[i]->d_name[0] = '\0';
-
-	}
-
-	if (count == 0)
-		return nullptr;
-
-	int j = 0;
-	char *list = new char[count * PE_PATH_SIZE];
-	if ( !list ) {
-
-		printf("PUtils - Can't alloc files list\n");
-
-		for( int i = 0; i < numb; i++ )
-			delete namelist[i];
-		
-		delete namelist;
-		return list;
-
-	}
-	
-	for( int i = 0; i < numb; i++ ) {
-
-		if(namelist[i]->d_name[0] != '\0') {
-
-			strcpy(&list[j * PE_PATH_SIZE], namelist[i]->d_name);
-			j++;
-
-		}
-
 		delete namelist[i];
 
 	}
 
 	delete namelist;
-	return list;
+	return result;
 
 }
 
-int PisteUtils_CreateDir(const char *directory) {
+int CreateDir(const char *directory) {
 
 	char shell[PE_PATH_SIZE];
 	
@@ -305,9 +280,8 @@ int PisteUtils_CreateDir(const char *directory) {
 
 }
 
-bool PisteUtils_Find(char *filename) {
-
-	printf("PUtils - Find %s\n", filename);
+//Scans directory to find file based on case
+bool NoCaseFint(char *filename) {
 
 	char dir[PE_PATH_SIZE];
 	char file[PE_PATH_SIZE];
@@ -318,50 +292,61 @@ bool PisteUtils_Find(char *filename) {
 
 	strcpy(file, &filename[find+1]);
 
-	int noffiles;
-	char *list = PisteUtils_Scandir(noffiles, "", dir, -1);
-	if( !list ) {
+	std::vector<string> list = Scandir("", dir, -1);
 
-		printf("PUtils - No memory to find file");
-		return false;
+	for(int i = 0; i < list.size(); i++) {
+		const char* name = list[i].c_str();
+		
+		if(NoCaseCompare(name, file)) {
 
-	}
-
-	for(int i = 0; i < noffiles; i++){
-		if(PisteUtils_Compare(&list[i * PE_PATH_SIZE], file)){
-			strcpy(file, &list[i * PE_PATH_SIZE]);
 			strcpy(filename, dir);
-			strcat(filename, file);
+			strcat(filename, name);
 			printf("PUtils - Found on %s \n", filename);
 
-			delete list;
 			return true;
 		}
 	}
 
 	printf("PUtils - %s not found\n", filename);
 
-	delete list;
 	return false;
+
+}
+
+bool Find(char *filename) {
+
+	printf("PUtils - Find %s\n", filename);
+
+	struct stat buffer;
+	if(stat(filename, &buffer) == 0) {
+
+		printf("PUtils - Found on %s \n", filename);
+		return true;
+
+	}
+
+	printf("PUtils - %s not found, trying different cAsE\n", filename);
+
+	return NoCaseFint(filename);
 	
 }
 
 
 #endif
 
-void PisteUtils_Show_Error(const char* txt) {
+void Show_Error(const char* txt) {
 	
 	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", txt, NULL);
 
 }
 
-void PisteUtils_Force_Mobile() {
+void Force_Mobile() {
 
 	force_mobile = true;
 
 }
 
-bool PisteUtils_Is_Mobile() {
+bool Is_Mobile() {
 
 	#ifdef __ANDROID__
 		return true;
@@ -371,3 +356,4 @@ bool PisteUtils_Is_Mobile() {
 
 }
 
+}

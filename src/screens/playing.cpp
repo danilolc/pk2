@@ -460,7 +460,7 @@ int PK_Draw_InGame_UI(){
 	if (Game->info_timer > 0){
 		int ilm_pituus = strlen(Game->info) * 8 + 8; // 300
 
-		RECT alue = {screen_width/2-(ilm_pituus/2),60,screen_width/2+(ilm_pituus/2),60+20};
+		MAP_RECT alue = {screen_width/2-(ilm_pituus/2),60,screen_width/2+(ilm_pituus/2),60+20};
 
 		if (Game->info_timer < 20){
 			alue.top	+= (20 - Game->info_timer) / 2;

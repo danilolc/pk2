@@ -310,7 +310,7 @@ int  Draw_BackNext(int x, int y){
 }
 
 int Draw_Menu_Main() {
-	int my = PisteUtils_Is_Mobile()? 260 : 240;//250;
+	int my = PUtils::Is_Mobile()? 260 : 240;//250;
 
 	Draw_BGSquare(160, 200, 640-180, 410, 224);
 
@@ -353,7 +353,7 @@ int Draw_Menu_Main() {
 	}
 	my += 20;
 
-	if (!PisteUtils_Is_Mobile()) {
+	if (!PUtils::Is_Mobile()) {
 		if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_controls),180,my)){
 			menu_nyt = MENU_CONTROLS;
 		}
@@ -370,7 +370,7 @@ int Draw_Menu_Main() {
 	}
 	my += 20;
 
-	if (!PisteUtils_Is_Mobile()) {
+	if (!PUtils::Is_Mobile()) {
 		if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_exit),180,my))
 			Fade_Quit();
 		my += 20;
@@ -803,7 +803,7 @@ int Draw_Menu_Graphics() {
 		}
 		my += 30;
 
-		if (!PisteUtils_Is_Mobile()) {
+		if (!PUtils::Is_Mobile()) {
 			if (Draw_Menu_Text(true,"more",100,360)){
 				moreOptions = true;
 				menu_valittu_id = 0; //Set menu cursor to 0
@@ -1170,7 +1170,7 @@ int Order_Episodes() {
 
 			//for (t=0;t<i;t++) {
 			for (int t = 0 ; t < i; t++) {
-				if (PisteUtils_Alphabetical_Compare(episodes[t], episodes[t+1]) == 1) {
+				if (PUtils::Alphabetical_Compare(episodes[t], episodes[t+1]) == 1) {
 					strcpy(temp, episodes[t]);
 					strcpy(episodes[t], episodes[t+1]);
 					strcpy(episodes[t+1], temp);
@@ -1189,7 +1189,7 @@ int Order_Episodes() {
 
 void Search_Episode() {
 
-	std::vector<string> list = PisteUtils_Scandir("/", "episodes", MAX_EPISODEJA);
+	std::vector<string> list = PUtils::Scandir("/", "episodes", MAX_EPISODEJA);
 	episode_count = list.size();
 
 	//TODO - store the vector
@@ -1204,7 +1204,7 @@ void Search_Episode() {
 
 void Search_Languages() {
 
-	std::vector<string> list = PisteUtils_Scandir(".txt", "language", 60);
+	std::vector<string> list = PUtils::Scandir(".txt", "language", 60);
 	totallangs = list.size();
 
 	//TODO - store the vector

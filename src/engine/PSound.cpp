@@ -2,6 +2,9 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
+// TODO - do things in separate thread
+// crate a play stack
+// change volume of a channel while moving (sfx.cpp)
 #include "engine/PSound.hpp"
 
 #include "engine/PUtils.hpp"
@@ -21,75 +24,83 @@ int sfx_volume = 100;
 int mus_volume = 100;
 int mus_volume_now = 100;
 
-Mix_Chunk* indexes[MAX_SOUNDS]; //The original chunks loaded
+Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
 Uint8* freq_chunks[MIX_CHANNELS]; //The chunk allocated for each channel
+//TODO - change channel volume
 
 Mix_Music* music = NULL;
 char playingMusic[PE_PATH_SIZE] = "";
 
-//Change the chunk frequency
-int Change_Frequency(int index, int freq) {
-
-	int channel;
-	SDL_AudioCVT cvt;
-	for (channel = 0; channel < MIX_CHANNELS; channel++) //Find a free channel
-		if (!Mix_Playing(channel)) return channel;
+int find_channel() {
+	
+	for( int channel = 0; channel < MIX_CHANNELS; channel++ )
+		if( !Mix_Playing(channel) )
+			return channel;
 
 	return -1;
 
+}
+
+//Change the chunk frequency
+int Change_Frequency(int index, int freq) {
+
+	int channel = find_channel();
+	if (channel == -1)
+		return -1;
+
+	SDL_AudioCVT cvt;
 	SDL_BuildAudioCVT(&cvt, MIX_DEFAULT_FORMAT, 2, freq, MIX_DEFAULT_FORMAT, 2, def_freq);
+
 	if (cvt.needed) {
-		for(channel=0; channel<MIX_CHANNELS; channel++) //Find a free channel
-			if(!Mix_Playing(channel)) break;
 
-		if(channel == MIX_CHANNELS) return -1;
-
-		cvt.len = indexes[index]->alen;
+		cvt.len = chunks[index]->alen;
 		cvt.buf = (Uint8*)SDL_malloc(cvt.len * cvt.len_mult);
-		if (cvt.buf == NULL) return -2;
+		if (cvt.buf == NULL)
+			return -2;
 
-		SDL_memcpy(cvt.buf, indexes[index]->abuf, indexes[index]->alen);
-		if(SDL_ConvertAudio(&cvt) < 0){
+		SDL_memcpy(cvt.buf, chunks[index]->abuf, chunks[index]->alen);
+		if(SDL_ConvertAudio(&cvt) < 0) {
+
 			SDL_free(cvt.buf);
 			return -3;
+		
 		}
 
-		indexes[index]->abuf = cvt.buf;
-		indexes[index]->alen = cvt.len_cvt;
+		chunks[index]->abuf = cvt.buf;
+		chunks[index]->alen = cvt.len_cvt;
 
-		if(freq_chunks[channel] != NULL) SDL_free(freq_chunks[channel]); //Don't ovewrite a allocated pointer
-		freq_chunks[channel] = cvt.buf; //Save the buffer to delete it after play
+		//Save the buffer to delete it after play
+		if(freq_chunks[channel] != NULL)
+			SDL_free( freq_chunks[channel] );
+		freq_chunks[channel] = cvt.buf; 
 
-		return channel;
-		
 	}
 
-	else return 1; // Dont need to change frequency
+	return channel;
 
 }
 
 int load_sfx(const char* filename) {
 
-	int i = -1;
+	for( int i=0; i < MAX_SOUNDS; i++ )
+		if (chunks[i] == NULL) {
 
-	for(i=0;i<MAX_SOUNDS;i++)
-		if (indexes[i] == NULL) {
-
-			indexes[i] = Mix_LoadWAV(filename);
-			break;
+			chunks[i] = Mix_LoadWAV(filename);
+			return i;
 
 		}
-	return i;
+	
+	return -1;
 }
 
 int play_sfx(int index, int volume, int panoramic, int freq){
 	//panoramic from -1000 to 1000
 	
 	if(index == -1) return 1;
-	if(indexes[index] == NULL) return 2;
+	if(chunks[index] == NULL) return 2;
 
 	volume = volume * 128 / 100;
-	indexes[index]->volume = volume;
+	chunks[index]->volume = volume;
 
 	int pan_left = (panoramic + 1000) * 255 / 2000; //TODO
 	int pan_right = 256 - pan_left;
@@ -100,8 +111,8 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 	if (pan_right > 255) pan_right = 255;
 
 	//Save a backup of the parameter that will be ovewrited
-	Uint8* bkp_buf = indexes[index]->abuf;
-	Uint32 bkp_len = indexes[index]->alen;
+	Uint8* bkp_buf = chunks[index]->abuf;
+	Uint32 bkp_len = chunks[index]->alen;
 
 	int channel;
 	if (freq != def_freq){
@@ -112,21 +123,22 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 
 	Mix_SetPanning(channel, pan_left, pan_right);
 
-	int error = Mix_PlayChannel(channel, indexes[index], 0);
+	int error = Mix_PlayChannel(channel, chunks[index], 0);
+	//TODO log error
 
-	indexes[index]->abuf = bkp_buf;
-	indexes[index]->alen = bkp_len;
+	chunks[index]->abuf = bkp_buf;
+	chunks[index]->alen = bkp_len;
 
-	return error;
+	return error < 0? error : channel;
 
 }
 
 int free_sfx(int index) {
 
-	if(indexes[index] != NULL) {
+	if(chunks[index] != NULL) {
 		
-		Mix_FreeChunk(indexes[index]);
-		indexes[index] = NULL;
+		Mix_FreeChunk(chunks[index]);
+		chunks[index] = NULL;
 	
 	}
 
@@ -141,12 +153,26 @@ void reset_sfx() {
 
 }
 
+void clear_channels() {
+
+	Mix_HaltChannel(-1);
+
+	for( int i = 0; i < MIX_CHANNELS; i++ )
+		if (freq_chunks[i]) {
+
+			SDL_free(freq_chunks[i]);
+			freq_chunks[i] = NULL;
+
+		}
+
+}
+
 int start_music(const char* filename) {
 
 	char temp[PE_PATH_SIZE];
 	strcpy(temp, filename);
 
-	PisteUtils_RemoveSpace(temp);
+	PUtils::RemoveSpace(temp);
 	if(!strcmp(playingMusic,temp)) return 0;
 
 	music = Mix_LoadMUS(temp);
@@ -198,10 +224,12 @@ int init() {
 }
 int update() {
 
-	for(int i=0; i < MIX_CHANNELS; i++)
-		if(!Mix_Playing(i) && freq_chunks[i] != NULL){
+	for(int i = 0; i < MIX_CHANNELS; i++)
+		if(!Mix_Playing(i) && freq_chunks[i] != NULL) {
+
 				SDL_free(freq_chunks[i]); //Make sure that all allocated chunks will be deleted after playing
 				freq_chunks[i] = NULL;
+		
 		}
 	
 	if (mus_volume_now < mus_volume)
@@ -216,6 +244,7 @@ int update() {
 
 int terminate() {
 
+	clear_channels();
 	reset_sfx();
 	
 	if(music != NULL) Mix_FreeMusic(music);

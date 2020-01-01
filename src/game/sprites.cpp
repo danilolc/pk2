@@ -71,7 +71,7 @@ int  Prototypes_get(char *polku, char *tiedosto) {
 			//strcat(testipolku, PE_SEP);
 			strcat(testipolku, Prototypes_List[next_free_prototype].aanitiedostot[i]);
 
-			if (PisteUtils_Find(testipolku))
+			if (PUtils::Find(testipolku))
 				Prototypes_List[next_free_prototype].aanet[i] = Prototypes_get_sound(soundpath,Prototypes_List[next_free_prototype].aanitiedostot[i]);
 			else {
 				getcwd(soundpath, PE_PATH_SIZE);
@@ -81,7 +81,7 @@ int  Prototypes_get(char *polku, char *tiedosto) {
 				//strcat(testipolku,"/");
 				strcat(testipolku, Prototypes_List[next_free_prototype].aanitiedostot[i]);
 
-				if (PisteUtils_Find(testipolku))
+				if (PUtils::Find(testipolku))
 					Prototypes_List[next_free_prototype].aanet[i] = Prototypes_get_sound(soundpath,Prototypes_List[next_free_prototype].aanitiedostot[i]);
 			}
 		}

@@ -93,7 +93,7 @@ void EpisodeClass::Load_Info() {
 	temp = new PLang();
 	this->Get_Dir(infofile);
 
-	if (PisteUtils_Find(infofile)){
+	if (PUtils::Find(infofile)){
 		if (temp->Read_File(infofile)){
 
 			for (i = 0 ; i<19 ; i++){
@@ -119,7 +119,7 @@ void EpisodeClass::Load() {
 	
 	char path[PE_PATH_SIZE] = "";
 	this->Get_Dir(path);
-	std::vector<string> list = PisteUtils_Scandir(".map", path, EPISODI_MAX_LEVELS);
+	std::vector<string> list = PUtils::Scandir(".map", path, EPISODI_MAX_LEVELS);
 	this->level_count = list.size();
 
 	MapClass *temp = new MapClass();

@@ -38,7 +38,7 @@ int Updade_Mouse() {
 
 	int offset = PDraw::get_xoffset();
 
-	if(PisteUtils_Is_Mobile()) {
+	if(PUtils::Is_Mobile()) {
     	float x, y;
 
 		if (PisteInput_GetTouchPos(x, y) == 0) {
