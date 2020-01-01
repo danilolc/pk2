@@ -129,6 +129,7 @@ int PK_Draw_ScoreCount(){
 
 
 	// Draw apples
+	// TODO - put apples menu on the bottom
 	if (Game->apples_count > 0) {
 		
 		if (apples_got >= Game->apples_count) {

@@ -17,6 +17,7 @@ const int nof_bg_particles = 300;
 
 void Particles_Update() {
 	
+	//for (Particle p : Particles) { This method doesn't work
 	for (int i = 0; i < Particles.size();) {
 
 		Particles[i].update();
@@ -32,9 +33,8 @@ void Particles_Update() {
 
 	}
 
-	if (Settings.draw_weather)
-		for (Particle particle : BGParticles)
-			particle.update();
+	for (int i = 0; i < BGParticles.size(); i++)
+		BGParticles[i].update();
 
 }
 
@@ -46,17 +46,16 @@ void Particles_New(int type, double x, double y, double a, double b, int time, d
 
 void Particles_DrawFront(int cam_x, int cam_y) {
 
-	for (Particle particle : Particles)
-		particle.draw(cam_x, cam_y);
+	for (int i = 0; i < Particles.size(); i++)
+		Particles[i].draw(cam_x, cam_y);
 
 }
 
 void Particles_DrawBG(int cam_x, int cam_y) {
 
-	if (!Settings.draw_weather) return;
-
-	for (Particle particle : BGParticles)
-		particle.draw(cam_x, cam_y);
+	if (Settings.draw_weather)
+		for (int i = 0; i < BGParticles.size(); i++)
+			BGParticles[i].draw(cam_x, cam_y);
 
 }
 
