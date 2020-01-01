@@ -10,7 +10,7 @@
 #include "game/sprites.hpp"
 #include "game/blocks.hpp"
 
-const int TIME_FPS = 100;
+const int TIME_FPS = 60;
 const int INFO_TIME = 700;
 
 class GameClass {

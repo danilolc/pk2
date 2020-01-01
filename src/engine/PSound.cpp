@@ -96,7 +96,7 @@ int set_channel(int channel, int panoramic, int volume) {
 	volume = volume * 128 / 100;
 
 	int pan_left = (panoramic + 1000) * 255 / 2000;
-	int pan_right = 256 - pan_left;
+	int pan_right = 254 - pan_left;
 
 	if (pan_left < 0) pan_left = 0;
 	if (pan_left > 255) pan_left = 255;

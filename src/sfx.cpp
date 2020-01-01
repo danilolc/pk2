@@ -87,7 +87,7 @@ int Load_SFX() {
 int get_pan(int x, int y) {
 
     int pan = Game->camera_x - x + (screen_width / 2);
-    return pan * -2;
+    return pan * 2;
 
 }
 

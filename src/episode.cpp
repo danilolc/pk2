@@ -28,6 +28,7 @@ void EpisodeClass::Clear_Scores() {
 
 	this->scores.episode_top_score = 0;
 	strcpy(this->scores.episode_top_player," ");
+	
 }
 
 int EpisodeClass::Open_Scores(const char *filename) {
