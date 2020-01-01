@@ -10,6 +10,18 @@
 
 #include "engine/PSound.hpp"
 
+#include <cmath>
+
+struct GameSFX {
+
+    bool used;
+    DWORD x, y;
+    int volume;
+
+};
+
+GameSFX sfx_list[PSound::CHANNELS];
+
 int switch_sound;
 int jump_sound;
 int splash_sound;
@@ -66,47 +78,96 @@ int Load_SFX() {
         PK2_Error("Can't find app_bite.wav");
     }
 
+    for (int i = 0; i < PSound::CHANNELS; i++)
+        sfx_list[i].used = false;
+
     return 0;
+}
+
+int get_pan(int x, int y) {
+
+    int pan = Game->camera_x - x + (screen_width / 2);
+    return pan * -2;
+
+}
+
+int attenuate_volume(int volume, int x, int y) {
+
+    const int max_dist = 50;
+
+    float mult = 1;
+
+    int sta_x = Game->camera_x;
+    int sta_y = Game->camera_y;
+    int end_x = Game->camera_x + screen_width;
+    int end_y = Game->camera_y + screen_height;
+
+    if (x < sta_x)
+        mult /= float(sta_x - x + max_dist) / max_dist;
+
+    if (x > end_x)
+        mult /= float(x - end_x + max_dist) / max_dist;
+    
+    if (y < sta_y)
+        mult /= float(sta_y - y + max_dist) / max_dist;
+    
+    if (y > end_y)
+        mult /= float(y - end_y + max_dist) / max_dist;
+    
+    mult *= float(Settings.sfx_max_volume) / 100;
+
+    if (mult < 0)
+        mult = 0;
+    if (mult > 1)
+        mult = 1;
+
+    return int(mult*mult*volume);
+
+}
+
+// Set panning and volume based on x, y and volume
+void update_channel(int channel) {
+
+    int x = sfx_list[channel].x;
+    int y = sfx_list[channel].y;
+    int volume = sfx_list[channel].volume;
+
+    int pan = get_pan(x, y);
+    int vol = attenuate_volume(volume, x, y);
+
+    PSound::set_channel(channel, pan, vol);
+
+}
+
+void Update_GameSFX() {
+
+    for (int i = 0; i < PSound::CHANNELS; i++)
+        if (sfx_list[i].used)
+            update_channel(i);
+
 }
 
 void Play_GameSFX(int sound, int volume, int x, int y, int freq, bool random_freq){
 	if (sound > -1 && Settings.sfx_max_volume > 0 && volume > 0) {
 
-        const int max_dist = 50;
-
-        int sta_x = Game->camera_x;
-        int sta_y = Game->camera_y;
-        int end_x = Game->camera_x + screen_width;
-        int end_y = Game->camera_y + screen_height;
-
-        if (x < sta_x)
-            volume /= float(sta_x - x + max_dist) / (max_dist);
-
-        if (x > end_x)
-            volume /= float(x - end_x + max_dist) / (max_dist);
-        
-        if (y < sta_y)
-            volume /= float(sta_y - y + max_dist) / (max_dist);
-        
-        if (y > end_y)
-            volume /= float(y - end_y + max_dist) / (max_dist);
-        
-        volume *= float(Settings.sfx_max_volume) / 100;
-
-        if (volume < 0)
-			return;
-
-        if (volume > 100)
-			volume = 100;
-        
-		int pan = Game->camera_x - x + (screen_width / 2);
-        pan *= 2;
-
         if (random_freq)
 			freq = freq + rand()%4000 - rand()%2000;
 
-        int channel = PSound::play_sfx(sound, volume, pan, freq);
-		printf("PK2     - Sound on channel %i\n", channel);
+        int pan = get_pan(x, y);
+        int vol = attenuate_volume(volume, x, y);
+
+        int channel = PSound::play_sfx(sound, vol, pan, freq);
+        if (channel == -1) {
+
+		    printf("PK2     - Error playing sound\n");
+            return;
+
+        }
+
+        sfx_list[channel].used = true;
+        sfx_list[channel].x = x;
+        sfx_list[channel].y = y;
+        sfx_list[channel].volume = volume;
 			
 	}
 }
@@ -124,9 +185,15 @@ void Play_MenuSFX(int sound, int volume){
 		int freq = 22050 + rand()%5000 - rand()%5000;
 
 		int channel = PSound::play_sfx(sound, Settings.sfx_max_volume, 0, freq);
-		
-        if (channel < 0)
-            printf("PK2     - Error playing sound\n", channel);
+        
+        if (channel == -1) {
+        
+            printf("PK2     - Error playing menu sound\n");
+            return;
+        
+        }
+        
+        sfx_list[channel].used = false;
 
 	}
 

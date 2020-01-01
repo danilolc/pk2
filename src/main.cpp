@@ -28,7 +28,7 @@
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 
-void Start_Test(const char* arg) {
+void start_test(const char* arg) {
 	
 	if (arg == NULL) return;
 
@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
 	if (dev_mode)
 		next_screen = SCREEN_MENU;
 	if (test_level) {
-		Start_Test(test_path);
+		start_test(test_path);
 		next_screen = SCREEN_GAME;
 	}
 

@@ -25,7 +25,7 @@ int mus_volume = 100;
 int mus_volume_now = 100;
 
 Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
-Uint8* freq_chunks[MIX_CHANNELS]; //The chunk allocated for each channel
+Uint8* freq_chunks[CHANNELS]; //The chunk allocated for each channel
 //TODO - change channel volume
 
 Mix_Music* music = NULL;
@@ -33,7 +33,7 @@ char playingMusic[PE_PATH_SIZE] = "";
 
 int find_channel() {
 	
-	for( int channel = 0; channel < MIX_CHANNELS; channel++ )
+	for( int channel = 0; channel < CHANNELS; channel++ )
 		if( !Mix_Playing(channel) )
 			return channel;
 
@@ -41,12 +41,8 @@ int find_channel() {
 
 }
 
-//Change the chunk frequency
-int Change_Frequency(int index, int freq) {
-
-	int channel = find_channel();
-	if (channel == -1)
-		return -1;
+//Change the chunk frequency of sound index
+int Change_Frequency(int index, int channel, int freq) {
 
 	SDL_AudioCVT cvt;
 	SDL_BuildAudioCVT(&cvt, MIX_DEFAULT_FORMAT, 2, freq, MIX_DEFAULT_FORMAT, 2, def_freq);
@@ -76,7 +72,7 @@ int Change_Frequency(int index, int freq) {
 
 	}
 
-	return channel;
+	return 0;
 
 }
 
@@ -93,16 +89,13 @@ int load_sfx(const char* filename) {
 	return -1;
 }
 
-int play_sfx(int index, int volume, int panoramic, int freq){
-	//panoramic from -1000 to 1000
-	
-	if(index == -1) return 1;
-	if(chunks[index] == NULL) return 2;
+//panoramic from -1000 to 1000
+//volume from 0 to 100
+int set_channel(int channel, int panoramic, int volume) {
 
 	volume = volume * 128 / 100;
-	chunks[index]->volume = volume;
 
-	int pan_left = (panoramic + 1000) * 255 / 2000; //TODO
+	int pan_left = (panoramic + 1000) * 255 / 2000;
 	int pan_right = 256 - pan_left;
 
 	if (pan_left < 0) pan_left = 0;
@@ -110,26 +103,56 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 	if (pan_right < 0) pan_right = 0;
 	if (pan_right > 255) pan_right = 255;
 
+	Mix_SetPanning(channel, pan_left, pan_right);
+	Mix_Volume(channel, volume);
+	
+}
+
+int play_sfx(int index, int volume, int panoramic, int freq){
+	
+	if(index == -1) return 1;
+	if(chunks[index] == NULL) return 2;
+
+	int channel = find_channel();
+	if (channel == -1) {
+	
+		printf("PSound - Can't alloc channel\n");
+		return -1;
+	
+	}
+
 	//Save a backup of the parameter that will be ovewrited
 	Uint8* bkp_buf = chunks[index]->abuf;
 	Uint32 bkp_len = chunks[index]->alen;
 
-	int channel;
-	if (freq != def_freq){
-		channel = Change_Frequency(index, freq);
-		if (channel < 0) // Error changing frequency
-			return channel;
-	} else channel = -1;
+	if (freq != def_freq) {
 
-	Mix_SetPanning(channel, pan_left, pan_right);
+		int error = Change_Frequency(index, channel, freq);
+		if (error != 0) {
+			
+			printf("PSound - Can't change frequency\n");
+			chunks[index]->abuf = bkp_buf;
+			chunks[index]->alen = bkp_len;
+			return -1;
+
+		}
+		
+	}
+
+	set_channel(channel, panoramic, volume);
 
 	int error = Mix_PlayChannel(channel, chunks[index], 0);
-	//TODO log error
-
 	chunks[index]->abuf = bkp_buf;
 	chunks[index]->alen = bkp_len;
 
-	return error < 0? error : channel;
+	if (error == -1) {
+
+		printf("PSound - Can't play chunk\n");
+		return -1;
+
+	}
+
+	return channel;
 
 }
 
@@ -157,13 +180,13 @@ void clear_channels() {
 
 	Mix_HaltChannel(-1);
 
-	for( int i = 0; i < MIX_CHANNELS; i++ )
+	/*for( int i = 0; i < CHANNELS; i++ )
 		if (freq_chunks[i]) {
 
 			SDL_free(freq_chunks[i]);
 			freq_chunks[i] = NULL;
 
-		}
+		}*/
 
 }
 
@@ -211,6 +234,16 @@ void stop_music(){
 
 }
 
+void channelDone(int channel) {
+
+    if(freq_chunks[channel] != NULL) {
+
+		SDL_free(freq_chunks[channel]);
+		freq_chunks[channel] = NULL;
+
+	}
+}
+
 int init() {
 
 	if(Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, 4096) < 0){
@@ -219,19 +252,15 @@ int init() {
 	}
 
 	Mix_Init(MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG);
+	Mix_AllocateChannels(CHANNELS);
+	Mix_ChannelFinished(channelDone);
+
 	return 0;
 
 }
+
 int update() {
 
-	for(int i = 0; i < MIX_CHANNELS; i++)
-		if(!Mix_Playing(i) && freq_chunks[i] != NULL) {
-
-				SDL_free(freq_chunks[i]); //Make sure that all allocated chunks will be deleted after playing
-				freq_chunks[i] = NULL;
-		
-		}
-	
 	if (mus_volume_now < mus_volume)
 		Mix_VolumeMusic(++mus_volume_now * 128 / 100);
 

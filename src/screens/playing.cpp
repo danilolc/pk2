@@ -638,6 +638,7 @@ int Screen_InGame(){
 
 	MapClass_Animoi(degree, palikka_animaatio/7, Game->button1, Game->button2, Game->button3, false);
 	Update_Camera();
+	Update_GameSFX();
 
 	if (!Game->paused) {
 
