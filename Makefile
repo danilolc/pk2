@@ -9,8 +9,8 @@
 OPT = -O3
 
 CXX = g++
-CXXFLAGS += $(shell pkg-config --cflags sdl2) $(OPT) -std=gnu++14 -w
-LDFLAGS += -lSDL2 -lSDL2_mixer -lSDL2_image
+CXXFLAGS += $(shell sdl2-config --cflags) $(OPT) -std=gnu++17 -w
+LDFLAGS += $(shell sdl2-config --libs) -lSDL2_mixer -lSDL2_image
 
 SRC_DIR = src/
 BIN_DIR = bin/

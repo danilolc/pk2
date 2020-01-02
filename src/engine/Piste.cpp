@@ -20,6 +20,21 @@ bool draw = true;
 
 void logic();
 
+void sdl_show() {
+
+	SDL_version compiled;
+	SDL_version linked;
+
+	SDL_VERSION(&compiled);
+	SDL_GetVersion(&linked);
+	printf("We compiled against SDL version %d.%d.%d ...\n",
+		compiled.major, compiled.minor, compiled.patch);
+	printf("But we are linking against SDL version %d.%d.%d.\n",
+       linked.major, linked.minor, linked.patch);
+	
+}
+
+
 void init(int width, int height, const char* name, const char* icon) {
 	
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
@@ -27,6 +42,8 @@ void init(int width, int height, const char* name, const char* icon) {
 		return;
 	}
 
+	sdl_show();
+	
 	PDraw::init(width, height, name, icon);
 	PisteInput_Start();
 	PSound::init();
