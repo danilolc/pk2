@@ -2,9 +2,6 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-// TODO - do things in separate thread
-// crate a play stack
-// change volume of a channel while moving (sfx.cpp)
 #include "engine/PSound.hpp"
 
 #include "engine/PUtils.hpp"

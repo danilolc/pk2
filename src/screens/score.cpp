@@ -136,10 +136,14 @@ int PK_Draw_ScoreCount(){
 
 			PDraw::font_write(fontti2, "You have found all apples", 100 + rand()%2, 147 + rand()%2);
 
-		} else {
+		} else { //
 			
-			for (int i = 0; i < Game->apples_count - apples_got; i++)
+			int i;
+			for (i = 0; i < apples_got; i++)
 				PDraw::image_cutclip(game_assets2, 100 + i * 32, 147, 61, 379, 87, 406);
+			for (; i < Game->apples_count; i++)
+				PDraw::image_cutcliptransparent(game_assets2, 61, 379, 26, 26, 100 + i * 32, 147, 20, 0);
+				
 		
 		}
 		

@@ -31,9 +31,9 @@ public class PK2Activity extends SDLActivity {
     private static Method expansionFileMethod;
     private static Object expansionFile;
 
-    // This method is called by SDL using JNI.
-    public static String[] Utils_ScanAPKdir(String dir) throws IOException {
-        
+    // This method is called by SDL using JNI./*
+    public static String[] Utils_ScanAPKdir(String dir) {
+        /*
         if (expansionFile == null) {
             String mainHint = nativeGetHint("SDL_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION");
             if (mainHint == null) {
@@ -100,7 +100,7 @@ public class PK2Activity extends SDLActivity {
 
             //Log.v("PK2", "Found: " + n.mFileName);
 
-        }
+        }*/
 
         return new String[] {"a", "b"}; //list;
 
