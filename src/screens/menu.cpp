@@ -850,25 +850,25 @@ int Draw_Menu_Sounds() {
 
 	my+=40;
 
-	PDraw::screen_fill(404,224+my,404+int(Settings.music_max_volume*1.56),244+my,0);
-	PDraw::screen_fill(400,220+my,400+int(Settings.music_max_volume*1.56),240+my,112);
+	PDraw::screen_fill(404,224+my,404+Settings.music_max_volume,244+my,0);
+	PDraw::screen_fill(400,220+my,400+Settings.music_max_volume,240+my,112);
 
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.sound_music_volume),180,200+my);
 	my += 20;
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.sound_less),180,200+my))
 		if (Settings.music_max_volume > 0)
-			Settings.music_max_volume -= 4;
+			Settings.music_max_volume -= 5;
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.sound_more),180+8*15,200+my))
-		if (Settings.music_max_volume < 64)
-			Settings.music_max_volume += 4;
+		if (Settings.music_max_volume < 100)
+			Settings.music_max_volume += 5;
 
 	if (Settings.music_max_volume < 0)
 		Settings.music_max_volume = 0;
 
-	if (Settings.music_max_volume > 64)
-		Settings.music_max_volume = 64;
+	if (Settings.music_max_volume > 100)
+		Settings.music_max_volume = 100;
 
 	PSound::set_musicvolume(Settings.music_max_volume);
 

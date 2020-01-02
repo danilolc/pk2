@@ -45,8 +45,8 @@ void settings_init() {
 	Settings.isFullScreen = true;
 	Settings.isWide = true;
 
-	Settings.music_max_volume = 64;
-	Settings.sfx_max_volume = 90;
+	Settings.music_max_volume = 35;
+	Settings.sfx_max_volume = 100;
 
 }
 

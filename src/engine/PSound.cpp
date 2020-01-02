@@ -93,7 +93,7 @@ int load_sfx(const char* filename) {
 //volume from 0 to 100
 int set_channel(int channel, int panoramic, int volume) {
 
-	volume = volume * 128 / 100;
+	volume = volume * MIX_MAX_VOLUME / 100;
 
 	int pan_left = (panoramic + 1000) * 255 / 2000;
 	int pan_right = 254 - pan_left;
@@ -196,7 +196,7 @@ int start_music(const char* filename) {
 	strcpy(temp, filename);
 
 	PUtils::RemoveSpace(temp);
-	if(!strcmp(playingMusic,temp)) return 0;
+	if(!strcmp(playingMusic, temp)) return 0;
 
 	music = Mix_LoadMUS(temp);
 	if (music == NULL){
@@ -208,6 +208,8 @@ int start_music(const char* filename) {
 		return -1;
 	}
 
+	Mix_VolumeMusic(mus_volume_now * MIX_MAX_VOLUME / 100);
+	
 	printf("PS     - Loaded %s\n",temp);
 	strcpy(playingMusic, temp);
 
@@ -225,7 +227,7 @@ void set_musicvolume_now(int volume) {
 
 	mus_volume = volume;
 	mus_volume_now = volume;
-	Mix_VolumeMusic(volume * 128 / 100);
+	Mix_VolumeMusic(volume * MIX_MAX_VOLUME / 100);
 	
 }
 void stop_music(){
@@ -246,7 +248,8 @@ void channelDone(int channel) {
 
 int init() {
 
-	if(Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, 4096) < 0){
+	//chunksize - game speed vs audio latency
+	if(Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, /*4096*/ 2048/*1024*//*512*/) < 0) {
 		printf("PS     - Unable to init Mixer: %s\n", Mix_GetError());
 		return -1;
 	}
@@ -262,10 +265,10 @@ int init() {
 int update() {
 
 	if (mus_volume_now < mus_volume)
-		Mix_VolumeMusic(++mus_volume_now * 128 / 100);
+		Mix_VolumeMusic(++mus_volume_now * MIX_MAX_VOLUME / 100);
 
 	else if (mus_volume_now > mus_volume)
-		Mix_VolumeMusic(--mus_volume_now * 128 / 100);
+		Mix_VolumeMusic(--mus_volume_now * MIX_MAX_VOLUME / 100);
 
 	return 0;
 

@@ -259,9 +259,9 @@ int PK_Draw_InGame_DevKeys() {
 		"r: back to start",
 		"v: set invisible",
 		"e: set energy to max",
+		"a: set rooster",
 		"end: end level",
 		"mouse: move camera",
-		"lshift: set rooster"
 	};
 
 	int nof_txt = sizeof(txts) / 32;
@@ -577,8 +577,8 @@ int Update_Camera(){
 	Game->camera_y = (int)Player_Sprite->y-screen_height / 2;
 	
 	if(dev_mode && PisteInput_Hiiri_Vasen()) {
-		Game->camera_x += 2*(mouse_x - screen_width / 2);
-		Game->camera_y += 2*(mouse_y - screen_height / 2);
+		Game->camera_x += mouse_x - screen_width / 2;
+		Game->camera_y += mouse_y - screen_height / 2;
 	}
 
 	if (Game->vibration > 0) {
@@ -805,7 +805,7 @@ int Screen_InGame(){
 				key_delay = 20;
 				Game->Finnish();
 			}
-			if (PisteInput_Keydown(PI_LSHIFT)/* && key_delay == 0*/) {
+			if (PisteInput_Keydown(PI_A)/* && key_delay == 0*/) {
 				//key_delay = 20;
 				for (int r = 1; r<6; r++)
 					//Particles_New(PARTICLE_SPARK, player->x + rand() % 10 - rand() % 10, player->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
