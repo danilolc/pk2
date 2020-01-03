@@ -78,12 +78,11 @@ int EpisodeScore_Compare(int level, DWORD episteet, DWORD time, bool final_score
 
 }
 
-int PK_Draw_ScoreCount(){
+int Draw_ScoreCount() {
+
 	char luku[20];
-	int my = 0;
-	int x, y;
-	int kuutio;
 	int	vari = 0, kerroin;
+	int x, y;
 
 	PDraw::screen_fill(0);
 	PDraw::image_clip(bg_screen, 0, 0);
@@ -97,7 +96,7 @@ int PK_Draw_ScoreCount(){
 		x = (int)(sin_table[(degree+i*10)%360]*2)+kerroin;
 		y = (int)(cos_table[(degree+i*10)%360]*2);//10 | 360 | 2
 		//PDraw::image_clip(game_assets,320+x,240+y,157,46,181,79);
-		kuutio = (int)(sin_table[(degree+i*3)%360]);
+		int kuutio = (int)(sin_table[(degree+i*3)%360]);
 		if (kuutio < 0) kuutio = -kuutio;
 
 		PDraw::screen_fill(320-x,240-y,320-x+kuutio,240-y+kuutio,VARI_TURKOOSI+8);
@@ -108,7 +107,7 @@ int PK_Draw_ScoreCount(){
 		x = (int)(sin_table[(degree+i*10)%360]*3);
 		y = (int)(cos_table[(degree+i*10)%360]*3);//10 | 360 | 3
 		//PDraw::image_clip(game_assets,320+x,240+y,157,46,181,79);
-		kuutio = (int)(sin_table[(degree+i*2)%360])+18;
+		int kuutio = (int)(sin_table[(degree+i*2)%360])+18;
 		if (kuutio < 0) kuutio = -kuutio;//0;//
 		if (kuutio > 100) kuutio = 100;
 
@@ -118,106 +117,104 @@ int PK_Draw_ScoreCount(){
 	}
 	/* --------- */
 
-	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_title), 100, 72);
-	
-	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_level_score), 100, 102);
+	int my = 50;
+
+	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_title), 100, my);
+	my += 30;
+
+	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_level_score), 100, my);
 
 	total_score = bonus_score + time_score + energy_score + gifts_score;
 	
 	ltoa(total_score,luku,10);
-	ShadowedText_Draw(luku, 400, 102);
+	ShadowedText_Draw(luku, 400, my);
+	my += 40;
 
-
-	// Draw apples
-	// TODO - put apples menu on the bottom
-	if (Game->apples_count > 0) {
-		
-		if (apples_got >= Game->apples_count) {
-
-			PDraw::font_write(fontti2, "You have found all apples", 100 + rand()%2, 147 + rand()%2);
-
-		} else { //
-			
-			int i;
-			for (i = 0; i < apples_got; i++)
-				PDraw::image_cutclip(game_assets2, 100 + i * 32, 147, 61, 379, 87, 406);
-			for (; i < Game->apples_count; i++)
-				PDraw::image_cutcliptransparent(game_assets2, 61, 379, 26, 26, 100 + i * 32, 147, 20, 0);
-				
-		
-		}
-		
-	}
-	
-
-	my = 0;
-	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_bonus_score), 100, 192 + my);
+	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_bonus_score), 100, my);
 	
 	ltoa(bonus_score,luku,10);
-	ShadowedText_Draw(luku, 400, 192 + my);
+	ShadowedText_Draw(luku, 400, my);
 	my += 30;
 
-	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_time_score), 100, 192 + my);
+	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_time_score), 100, my);
 	
 	ltoa(time_score,luku,10);
-	ShadowedText_Draw(luku, 400, 192 + my);
+	ShadowedText_Draw(luku, 400, my);
 	my += 30;
 
-	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_energy_score), 100, 192 + my);
+	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_energy_score), 100, my);
 
 	ltoa(energy_score,luku,10);
-	ShadowedText_Draw(luku, 400, 192 + my);
+	ShadowedText_Draw(luku, 400, my);
 	my += 30;
 
-	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_item_score), 100, 192 + my);
+	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_item_score), 100, my);
 	
 	ltoa(gifts_score,luku,10);
-	ShadowedText_Draw(luku, 400, 192 + my);
-	my += 30;
+	ShadowedText_Draw(luku, 400, my);
+	my += 40;
 
 	x = 110;
-	y = 192 + my;
-
 	for (int i = 0; i < MAX_GIFTS; i++) {
 		
 		if (Gifts_Get(i) != -1)	{
-			Gifts_Draw(i, x, y);
+			Gifts_Draw(i, x, my);
 			x += 38;
 		}
 
 	}
+	my += 25;
 
-	my += 10;
+	// Draw apples
+	// TODO - put apples menu on the bottom
+	if (Game->apples_count > 0) {
 
-	if (counting_phase >= 5) {
+		int i;
+		for (i = 0; i < apples_got; i++)
+			PDraw::image_cutclip(game_assets2, 100 + i * 32, my, 61, 379, 87, 406);
+		for (; i < Game->apples_count; i++)
+			PDraw::image_cutcliptransparent(game_assets2, 61, 379, 26, 26, 100 + i * 32, my, 20, 0);
+
+	}
+
+	my += 45;
+
+	if (counting_phase >= 6) {
 		
-		ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_total_score), 100, 192 + my);
+		ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_total_score), 100, my);
 		
 		ltoa(Episode->player_score,luku,10);
-		ShadowedText_Draw(luku, 400, 192 + my);
+		ShadowedText_Draw(luku, 400, my);
 		my += 25;
+
+		if (apples_got >= Game->apples_count) {
+
+			PDraw::font_write(fontti2, "You have found all apples!", 100 + rand()%2, my + rand()%2);
+			my += 25;
+
+		}
 
 		if (map_new_record) {
 
-			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_level_hiscore),100+rand()%2,192+my+rand()%2);
+			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_level_hiscore),100+rand()%2,my+rand()%2);
 			my += 25;
 
 		}
 		if (map_new_time_record) {
 
-			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_level_best_time),100+rand()%2,192+my+rand()%2);
+			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_level_best_time),100+rand()%2,my+rand()%2);
 			my += 25;
 
 		}
 		if (episode_new_record) {
 
-			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_episode_hiscore),100+rand()%2,192+my+rand()%2);
+			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_episode_hiscore),100+rand()%2,my+rand()%2);
 			my += 25;
 
 		}
 	}
 
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.score_screen_continue),100,430)) {
+	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.score_screen_continue),25,430)) {
 
 		siirry_pistelaskusta_karttaan = true;
 		PSound::set_musicvolume(0);
@@ -299,29 +296,14 @@ int Screen_ScoreCount_Init() {
 
 int Screen_ScoreCount() {
 
-	PK_Draw_ScoreCount();
+	Draw_ScoreCount();
 
 	degree = 1 + degree % 360;
 
 	// PISTELASKU
 
 	if (counting_delay == 0){
-		if (Game->apples_got > 0) {
-
-			counting_phase = 1;
-			counting_delay = 0;
-			if (degree%9 == 1) {
-
-				apples_got++;
-				Game->apples_got--;
-				Play_MenuSFX(apple_sound, 70);
-
-				if (Game->apples_got == 0)
-					counting_delay = 50;
-				
-			}
-		
-		} else if (bonus_score < Game->score) {
+		if (bonus_score < Game->score) {
 
 			counting_phase = 2;
 			counting_delay = 0;
@@ -365,6 +347,18 @@ int Screen_ScoreCount() {
 			Gifts_Remove(0); 
 			Play_MenuSFX(jump_sound, 100);
 
+		} else if (Game->apples_got > 0) {
+
+			counting_phase = 1;
+			counting_delay = 10;
+
+			apples_got++;
+			Game->apples_got--;
+			Play_MenuSFX(apple_sound, 70);
+
+			if (Game->apples_got == 0)
+				counting_delay = 0;
+		
 		} else {
 			
 			counting_phase = 6;
