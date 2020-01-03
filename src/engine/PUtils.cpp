@@ -10,8 +10,6 @@
 #include <string>
 #include <sys/stat.h>
 
-using namespace std;
-
 namespace PUtils {
 
 bool force_mobile = false;
@@ -52,7 +50,7 @@ int Setcwd() {
 	int count = readlink("/proc/self/exe", exepath, PE_PATH_SIZE);
 	if (count > 0) exepath[count] = '\0';
 
-	find = string(exepath).find_last_of("/\\");
+	find = std::string(exepath).find_last_of("/\\");
 	exepath[find] = '\0';
 	chdir(exepath);
 
@@ -220,9 +218,9 @@ char* Get_Extension(char* string) {
 
 }
 
-std::vector<string> Scandir(const char* type, const char* dir, int max) {
+std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 
-	std::vector<string> result;
+	std::vector<std::string> result;
 	struct dirent **namelist;
 
 	int numb = scandir(dir, &namelist, 0, alphasort);
@@ -286,13 +284,13 @@ bool NoCaseFint(char *filename) {
 	char dir[PE_PATH_SIZE];
 	char file[PE_PATH_SIZE];
 
-	int find = string(filename).find_last_of("/\\");
+	int find = std::string(filename).find_last_of("/\\");
 	strcpy(dir, filename);
 	dir[find+1] = '\0';
 
 	strcpy(file, &filename[find+1]);
 
-	std::vector<string> list = Scandir("", dir, -1);
+	std::vector<std::string> list = Scandir("", dir, -1);
 
 	for(int i = 0; i < list.size(); i++) {
 		const char* name = list[i].c_str();

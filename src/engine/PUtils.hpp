@@ -14,7 +14,7 @@ namespace PUtils {
 int Setcwd();
 void Lower(char* string);
 void RemoveSpace(char* string);
-bool Find(char *filename);
+bool Find(char *filename); // TODO - use PFile::Path
 
 int  CreateDir(const char *directory);
 void Show_Error(const char* txt);
@@ -23,7 +23,7 @@ void Show_Error(const char* txt);
 // ""  - all files and directories
 // "/" - directory
 // ".exe" - *.exe
-std::vector<string> Scandir(const char* type, const char* dir, int max);
+std::vector<std::string> Scandir(const char* type, const char* dir, int max); // TODO - use PFile::Path
 
 void Force_Mobile();
 bool Is_Mobile();

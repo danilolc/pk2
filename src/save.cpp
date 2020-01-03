@@ -4,6 +4,8 @@
 //#########################
 #include "save.hpp"
 
+#include "episode/mapstore.hpp"
+
 #include <SDL_rwops.h>
 
 #include <cstring>
@@ -122,7 +124,7 @@ int Load_SaveFile() {
 int Save_Records(int i) {
 
 	saves_list[i].empty = false;
-	strcpy(saves_list[i].episode, Episode->name);
+	strcpy(saves_list[i].episode, Episode->entry.name.c_str());
 	strcpy(saves_list[i].name, Episode->player_name);
 	saves_list[i].level = Episode->level;
 	saves_list[i].score = Episode->player_score;

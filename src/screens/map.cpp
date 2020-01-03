@@ -16,7 +16,7 @@
 #include "gfx/text.hpp"
 #include "language.hpp"
 #include "gui.hpp"
-#include "episode.hpp"
+#include "episode/episodeclass.hpp"
 #include "sfx.hpp"
 #include "save.hpp"
 #include "system.hpp"
@@ -66,7 +66,7 @@ int PK_Draw_Map(){
 	PDraw::screen_fill(0);
 	PDraw::image_clip(bg_screen, 0, 0);
 
-	ShadowedText_Draw(Episode->name,100,72);
+	ShadowedText_Draw(Episode->entry.name.c_str(),100,72);
 
 	vali = ShadowedText_Draw(tekstit->Get_Text(PK_txt.map_total_score), 100, 92);
 	ltoa(Episode->player_score,luku,10);

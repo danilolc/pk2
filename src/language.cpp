@@ -4,25 +4,25 @@
 //#########################
 #include "language.hpp"
 
-#include "settings.hpp"
-
 #include "engine/PUtils.hpp"
 
 #include <cstring>
 
+std::vector<std::string> langlist;
+
 PLang *tekstit;
 LANGUAGE PK_txt;
 
-bool Load_Language(){
+int Load_Language(const char* language) {
+	
 	char path[PE_PATH_SIZE];
-
 	strcpy(path,"language" PE_SEP);
-	strcat(path, Settings.kieli);
+	strcat(path, language);
 
 	if (!tekstit->Read_File(path))
-		return false;
+		return -1;
 
-	//Load_Fonts(tekstit);
+	// Load_Fonts(tekstit);
 
 	// Aloitusikkuna
 	PK_txt.setup_options			= tekstit->Hae_Indeksi("setup options");
@@ -175,5 +175,5 @@ bool Load_Language(){
 	PK_txt.info18					= tekstit->Hae_Indeksi("info18");
 	PK_txt.info19					= tekstit->Hae_Indeksi("info19");
 
-	return true;
+	return 0;
 }

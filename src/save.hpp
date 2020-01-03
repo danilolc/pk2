@@ -4,8 +4,9 @@
 //#########################
 #pragma once
 
+#include "episode/episodeclass.hpp"
+
 #include "engine/platform.hpp"
-#include "episode.hpp"
 
 const int MAX_SAVES = 10;
 

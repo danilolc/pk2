@@ -13,9 +13,9 @@ const int MAX_HEAD_LENGTH = 50;
 class PLang{
 	public:
 		PLang();
-		PLang(char *filename);
+		PLang(char *filename); // TODO - use PFile::Path
 		~PLang();
-		bool Read_File(char *filename);
+		bool Read_File(char *filename); // TODO - use PFile::Path
 		int Hae_Indeksi(const char *title);
 		const char* Get_Text(int index);
 		void Replace_Text(int index, const char *teksti);

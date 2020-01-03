@@ -11,8 +11,6 @@
 
 #include <SDL_rwops.h>
 
-using namespace std;
-
 
 /* -------- SpriteClass Prototyyppi ------------------------------------------------------------------ */
 

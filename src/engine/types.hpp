@@ -4,9 +4,7 @@
 //#########################
 #pragma once
 
-#include <stdint.h>
-
-using namespace std;
+#include <cstdint>
 
 typedef uint8_t  BYTE;
 

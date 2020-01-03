@@ -6,6 +6,9 @@
 
 #include "engine/PLang.hpp"
 
+#include <vector>
+#include <string>
+
 extern PLang *tekstit;
 
 struct LANGUAGE{
@@ -157,4 +160,6 @@ struct LANGUAGE{
 
 extern LANGUAGE PK_txt;
 
-bool Load_Language();
+extern std::vector<std::string> langlist;
+
+int Load_Language(const char* language);

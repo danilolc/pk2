@@ -8,7 +8,7 @@
 #include "engine/PUtils.hpp"
 
 #include "game/game.hpp"
-#include "episode.hpp"
+#include "episode/episodeclass.hpp"
 #include "physics.hpp"
 
 #include <cstring>

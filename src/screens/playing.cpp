@@ -14,7 +14,7 @@
 #include "gfx/text.hpp"
 #include "gfx/particles.hpp"
 #include "gui.hpp"
-#include "episode.hpp"
+#include "episode/episodeclass.hpp"
 #include "language.hpp"
 #include "sfx.hpp"
 #include "system.hpp"

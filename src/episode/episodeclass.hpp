@@ -4,6 +4,8 @@
 //#########################
 #pragma once
 
+#include "episode/mapstore.hpp"
+
 #include "engine/platform.hpp"
 
 const int EPISODI_MAX_LEVELS = 100; //50;
@@ -36,7 +38,7 @@ class EpisodeClass {
 
 	public:
 	
-		char name[PE_PATH_SIZE] = " ";
+		episode_entry entry;
 		
 		char player_name[20] = " ";
 		DWORD player_score = 0;
@@ -47,7 +49,7 @@ class EpisodeClass {
 		PK2EPISODESCORES scores;
 
 		EpisodeClass(int save);
-		EpisodeClass(const char* player_name, const char* episode);
+		EpisodeClass(const char* player_name, episode_entry entry);
 		~EpisodeClass();
 
 		void Load();

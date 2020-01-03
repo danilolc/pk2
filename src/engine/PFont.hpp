@@ -22,5 +22,5 @@ public:
 	PFont();
 	~PFont();
 
-	int load(const char* file_path, const char* file);
+	int load(const char* file_path, const char* file); // TODO - use PFile::Path
 };

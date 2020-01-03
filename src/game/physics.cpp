@@ -15,7 +15,7 @@
 #include "language.hpp"
 #include "sfx.hpp"
 #include "system.hpp"
-#include "episode.hpp"
+#include "episode/episodeclass.hpp"
 
 #include "engine/types.hpp"
 #include "engine/PInput.hpp"

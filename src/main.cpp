@@ -14,7 +14,8 @@
 #include "screens/screens.hpp"
 #include "gfx/text.hpp"
 #include "game/game.hpp"
-#include "episode.hpp"
+#include "episode/episodeclass.hpp"
+#include "episode/mapstore.hpp"
 #include "gui.hpp"
 #include "system.hpp"
 #include "language.hpp"
@@ -33,7 +34,8 @@ void start_test(const char* arg) {
 	if (arg == NULL) return;
 
 	char buffer[PE_PATH_SIZE];
-	char *episode_path, *map_path;
+	char *map_path;
+	episode_entry episode;
 
 	strcpy(buffer, arg);
 
@@ -43,13 +45,14 @@ void start_test(const char* arg) {
 			break;
 	buffer[i] = '\0';
 
-	episode_path = buffer;
-	Episode = new EpisodeClass("test", episode_path);
+	episode.name = buffer;
+	episode.is_zip = false;
+	Episode = new EpisodeClass("test", episode);
 
 	map_path = buffer + i + 1;
 	Game = new GameClass(map_path);
 
-	printf("PK2    - testing episode_path '%s' level '%s'\n", episode_path, map_path);
+	printf("PK2    - testing episode_path '%s' level '%s'\n", buffer, map_path);
 
 }
 
@@ -84,8 +87,7 @@ int main(int argc, char *argv[]) {
 
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "version") == 0) {
-			printf(GAME_VERSION);
-			printf("\n");
+			printf(GAME_VERSION "\n");
 			exit(0);
 		}
 		if (strcmp(argv[i], "dev") == 0) {
@@ -153,15 +155,20 @@ int main(int argc, char *argv[]) {
 
 	tekstit = new PLang();
 
-	if (!Load_Language()){
-		printf("PK2    - Could not find %s!\n",Settings.kieli);
+	if (Load_Language(Settings.kieli) != 0) {
+
+		printf("PK2    - Could not find %s!\n", Settings.kieli);
 		strcpy(Settings.kieli, "english.txt");
-		if(!Load_Language()){
+		
+		if(Load_Language(Settings.kieli) != 0) {
 			printf("PK2    - Could not find the default language file!\n");
-			return 0;
+			quit(0);
 		}
+
 	}
 	Load_Fonts(tekstit);
+
+	Search_Episodes();
 
 	if(PUtils::Is_Mobile())
 		GUI_Load();

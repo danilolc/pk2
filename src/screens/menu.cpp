@@ -11,7 +11,8 @@
 #include "gfx/text.hpp"
 #include "sfx.hpp"
 #include "language.hpp"
-#include "episode.hpp"
+#include "episode/episodeclass.hpp"
+#include "episode/mapstore.hpp"
 #include "save.hpp"
 #include "system.hpp"
 
@@ -35,8 +36,10 @@ enum MENU{
 };
 
 struct MENU_RECT {
+
 	int left, right;
 	int top, bottom;
+
 } bg_square;
 
 int menu_nyt = MENU_MAIN;
@@ -49,17 +52,11 @@ char menu_name[20] = "";
 int menu_valittu_id = 0;
 int menu_valinta_id = 1;
 
-char episodes[MAX_EPISODEJA][PE_PATH_SIZE];
 int  episode_page = 0;
-int episode_count = 0;
 
-char langlist[60][PE_PATH_SIZE];
-char langmenulist[10][PE_PATH_SIZE];
 int langlistindex = 0;
-int totallangs = 0;
 
 bool nimiedit = false;
-
 
 int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 	BYTE *buffer = NULL;
@@ -481,7 +478,7 @@ int Draw_Menu_Name() {
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.playermenu_continue),180,300)) {
 		nimiedit = false;
 		
-		if (episode_count == 1) {
+		/*if (episode_count == 1) { // Select episode even if just one
 		
 			if (Game) {
 				delete Game;
@@ -496,12 +493,12 @@ int Draw_Menu_Name() {
 			next_screen = SCREEN_MAP;
 		
 		}
-		else {
+		else {*/
 
 			menu_nyt = MENU_EPISODES;
 			menu_valittu_id = menu_valinta_id = 1;
 		
-		}
+		//}
 	}
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.playermenu_clear),340,300)) {
@@ -1023,7 +1020,7 @@ int Draw_Menu_Episodes() {
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.episodes_choose_episode),50,90);
 	my += 80;
 
-	if (episode_count > 10) {
+	if (episodes.size() > 10) {
 		
 		char luku[20];
 		int vali = 90;
@@ -1034,7 +1031,7 @@ int Draw_Menu_Episodes() {
 		itoa(episode_page + 1,luku,10);
 		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 		vali += PDraw::font_write(fontti1,"/",x+vali,y+20);
-		itoa((episode_count/10)+1,luku,10);
+		itoa((episodes.size()/10)+1,luku,10);
 		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 
 		int nappi = Draw_BackNext(x,y);
@@ -1042,28 +1039,26 @@ int Draw_Menu_Episodes() {
 		if (nappi == 1 && episode_page > 0)
 			episode_page--;
 
-		if (nappi == 2 && (episode_page*10)+10 < episode_count)
+		if (nappi == 2 && (episode_page*10)+10 < episodes.size())
 			episode_page++;
 	}
 
-	for (int i = episode_page*10; i < (episode_page+1)*10; i++){
-		if (strcmp(episodes[i],"") != 0){
-			if (Draw_Menu_Text(true,episodes[i],220,90+my)) {
-				
-				if (Game) {
-					delete Game;
-					Game = nullptr;
-				}
-				if (Episode) {
-					delete Episode;
-					Episode = nullptr;
-				}
-
-				Episode = new EpisodeClass(menu_name, episodes[i]);
-				next_screen = SCREEN_MAP;
+	for (int i = episode_page*10; i < episodes.size(); i++) {
+		if (Draw_Menu_Text(true, episodes[i].name.c_str(), 220, 90+my)) {
+			
+			if (Game) {
+				delete Game;
+				Game = nullptr;
 			}
-			my += 20;
+			if (Episode) {
+				delete Episode;
+				Episode = nullptr;
+			}
+
+			Episode = new EpisodeClass(menu_name, episodes[i]);
+			next_screen = SCREEN_MAP;
 		}
+		my += 20;
 	}
 
 	/* sivu / kaikki */
@@ -1078,52 +1073,40 @@ int Draw_Menu_Episodes() {
 }
 
 int Draw_Menu_Language() {
-	int my = 0;
-	int i;
 
 	Draw_BGSquare(110, 130, 640-110, 450, 224);
 
 	PDraw::font_write(fontti2,"select a language:",50,100);
 
+	int my = 0;
 
-	for (i=0;i<10;i++){
-		if(Draw_Menu_Text(true,langmenulist[i],150,150+my)){
-			//printf("Selected %s\n",langmenulist[i]);
-			strcpy(Settings.kieli,langmenulist[i]);
-			Load_Language();
+	for (int i = langlistindex; i < langlistindex + 10; i++){
+		if(Draw_Menu_Text(true,langlist[i].c_str(),150,150+my)) {
+			strcpy(Settings.kieli, langlist[i].c_str());
+			Load_Language(Settings.kieli);
 			Load_Fonts(tekstit);
 		}
+		
 		my += 20;
 	}
+
 	my+=180;
+	if(langlist.size() > 10) {
+		int direction = Draw_BackNext(400,my-20);
 
-
-	int direction;
-	if(totallangs>10){
-		direction = Draw_BackNext(400,my-20);
-		if(direction == 1){
-			if(langlistindex>0){
-
-				for(i=9;i>0;i--)
-					strcpy(langmenulist[i],langmenulist[i-1]);
-				strcpy(langmenulist[0],langlist[langlistindex-1]);
+		if(direction == 1)
+			if(langlistindex > 0)
 				langlistindex--;
-			}
-		}
-		if(direction == 2){
-			if(langlistindex<totallangs-10){
-
-				for(i=0;i<9;i++)
-					strcpy(langmenulist[i],langmenulist[i+1]);
-				strcpy(langmenulist[9],langlist[langlistindex+10]);
+		
+		if(direction == 2)
+			if(langlistindex < langlist.size() - 10)
 				langlistindex++;
-			}
-		}
+
 	}
-	my+=20;
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_return),130,my)){
+
+	my += 20;
+	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_return),130,my))
 		menu_nyt = MENU_MAIN;
-	}
 
 	return 0;
 }
@@ -1156,77 +1139,12 @@ int Draw_Menu() {
 
 
 
-
-int Order_Episodes() {
-
-	char temp[PE_PATH_SIZE] = "";
-	bool done;
-
-	if (episode_count > 1) {
-
-		for (int i = episode_count-1 ; i>=0 ;i--) {
-
-			done = true;
-
-			//for (t=0;t<i;t++) {
-			for (int t = 0 ; t < i; t++) {
-				if (PUtils::Alphabetical_Compare(episodes[t], episodes[t+1]) == 1) {
-					strcpy(temp, episodes[t]);
-					strcpy(episodes[t], episodes[t+1]);
-					strcpy(episodes[t+1], temp);
-					done = false;
-				}
-			}
-
-			if (done)
-				return 0;
-		}
-	}
-
-	return 0;
-
-}
-
-void Search_Episode() {
-
-	std::vector<string> list = PUtils::Scandir("/", "episodes", MAX_EPISODEJA);
-	episode_count = list.size();
-
-	//TODO - store the vector
-	for (int i = 0; i < episode_count; i++) {
-
-		strcpy(episodes[i], list[i].c_str());
-
-	}
-
-}
-
-
-void Search_Languages() {
-
-	std::vector<string> list = PUtils::Scandir(".txt", "language", 60);
-	totallangs = list.size();
-
-	//TODO - store the vector
-	for (int i = 0; i < totallangs; i++) {
-		
-		strcpy(langlist[i], list[i].c_str());
-
-	}
-
-	for(int i = 0; i < 10; i++)
-		strcpy(langmenulist[i], langlist[i]);
-
-}
-
-
 int Screen_Menu_Init() {
 	
 	GUI_Change(UI_CURSOR);
 	PDraw::set_xoffset(Settings.isWide? 80 : 0);
 	
-	Search_Episode();
-	Search_Languages();
+	langlistindex = 0;
 
 	if (!Episode) {
 

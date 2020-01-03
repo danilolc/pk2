@@ -2,8 +2,9 @@
 //Pekka Kana 2
 //by Janne Kivilahti from Piste Gamez (2003)
 //#########################
-#include "episode.hpp"
+#include "episode/episodeclass.hpp"
 
+#include "episode/mapstore.hpp"
 #include "game/mapclass.hpp"
 #include "language.hpp"
 #include "system.hpp"
@@ -120,7 +121,7 @@ void EpisodeClass::Load() {
 	
 	char path[PE_PATH_SIZE] = "";
 	this->Get_Dir(path);
-	std::vector<string> list = PUtils::Scandir(".map", path, EPISODI_MAX_LEVELS);
+	std::vector<std::string> list = PUtils::Scandir(".map", path, EPISODI_MAX_LEVELS);
 	this->level_count = list.size();
 
 	MapClass *temp = new MapClass();
@@ -169,7 +170,21 @@ void EpisodeClass::Load() {
 
 EpisodeClass::EpisodeClass(int save) {
 
-	strcpy(this->name,saves_list[save].episode);
+	//Search the id
+	int sz = episodes.size();
+	bool set = false;
+	for (int i = 0; i < sz; i++) {
+
+		if (episodes[i].name.compare(saves_list[save].episode) == 0) {
+			if (set)
+				printf("Episode conflict on %s, choosing the first one", saves_list[save].episode);
+			else {
+				this->entry = episodes[i];
+			}
+		}
+
+	}
+	
 	strcpy(this->player_name, saves_list[save].name);
 	this->level = saves_list[save].level;
 	this->player_score = saves_list[save].score;
@@ -185,9 +200,9 @@ EpisodeClass::EpisodeClass(int save) {
 
 }
 
-EpisodeClass::EpisodeClass(const char* player_name, const char* episode) {
+EpisodeClass::EpisodeClass(const char* player_name, episode_entry entry) {
 
-	strcpy(this->name, episode);
+	this->entry = entry;
 	strcpy(this->player_name, player_name);
 
 	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
@@ -209,7 +224,7 @@ void EpisodeClass::Get_Dir(char *tiedosto) {
 
 	strcpy(uusi_tiedosto, game_path);
 	strcat(uusi_tiedosto, PE_SEP "episodes" PE_SEP);
-	strcat(uusi_tiedosto, EpisodeClass::name);
+	strcat(uusi_tiedosto, entry.name.c_str());
 	strcat(uusi_tiedosto, PE_SEP);
 	strcat(uusi_tiedosto, tiedosto);
 	strcpy(tiedosto, uusi_tiedosto);

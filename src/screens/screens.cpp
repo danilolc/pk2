@@ -13,7 +13,7 @@
 #include "system.hpp"
 
 #include "game/mapclass.hpp"
-#include "episode.hpp"
+#include "episode/episodeclass.hpp"
 #include "language.hpp"
 
 #include "engine/Piste.hpp"
@@ -87,6 +87,10 @@ int Screen_First_Start() {
 
 	Fadetext_Init();
 
+	Load_Language(Settings.kieli);
+	Load_Fonts(tekstit);
+	langlist = PUtils::Scandir(".txt", "language", 60);
+	
 	MapClass_Set_Screen_Size(screen_width, screen_height);
 	
 	if (Settings.isFiltered)

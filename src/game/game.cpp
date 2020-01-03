@@ -8,7 +8,7 @@
 #include "system.hpp"
 #include "gfx/text.hpp"
 #include "gfx/particles.hpp"
-#include "episode.hpp"
+#include "episode/episodeclass.hpp"
 #include "settings.hpp"
 
 #include "engine/PSound.hpp"

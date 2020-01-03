@@ -9,7 +9,7 @@
 #include "game/game.hpp"
 #include "game/gifts.hpp"
 #include "gui.hpp"
-#include "episode.hpp"
+#include "episode/episodeclass.hpp"
 #include "sfx.hpp"
 #include "game/sprites.hpp"
 #include "system.hpp"
