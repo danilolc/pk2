@@ -1015,7 +1015,7 @@ int Draw_Menu_Controls() {
 int Draw_Menu_Episodes() {
 	int my = 0;
 
-	Draw_BGSquare(110, 130, 640-110, 450, 224);
+	Draw_BGSquare(80, 130, 640-80, 450, 224);
 
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.episodes_choose_episode),50,90);
 	my += 80;
@@ -1044,7 +1044,7 @@ int Draw_Menu_Episodes() {
 	}
 
 	for (int i = episode_page*10; i < episodes.size(); i++) {
-		if (Draw_Menu_Text(true, episodes[i].name.c_str(), 220, 90+my)) {
+		if (Draw_Menu_Text(true, episodes[i].name.c_str(), 110, 90+my)) {
 			
 			if (Game) {
 				delete Game;
@@ -1058,6 +1058,10 @@ int Draw_Menu_Episodes() {
 			Episode = new EpisodeClass(menu_name, episodes[i]);
 			next_screen = SCREEN_MAP;
 		}
+
+		//TODO draw episode origin
+		PDraw::font_write(fontti1, "episode.zip", 450, 95+my);
+		
 		my += 20;
 	}
 
@@ -1067,7 +1071,7 @@ int Draw_Menu_Episodes() {
 		my += 20;
 	}
 
-	PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.episodes_get_more),140,440);
+	//PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.episodes_get_more),140,440);
 
 	return 0;
 }

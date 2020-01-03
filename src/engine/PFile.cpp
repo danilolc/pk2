@@ -9,13 +9,14 @@ Path::Path(std::string path) {
 
 }
 
-Path::Path(std::string zip, std::string path) {
+/*Path::Path(zip_t* zip, std::string path) {
 
     this->path = path;
-    this->zipfile = zip;
+
+    this->zip = zip;
     this->is_zip = true;
 
-}
+}*/
 
 Path::~Path() {
 

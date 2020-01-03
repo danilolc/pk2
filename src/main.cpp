@@ -34,9 +34,6 @@ void start_test(const char* arg) {
 	if (arg == NULL) return;
 
 	char buffer[PE_PATH_SIZE];
-	char *map_path;
-	episode_entry episode;
-
 	strcpy(buffer, arg);
 
 	int i;
@@ -45,11 +42,12 @@ void start_test(const char* arg) {
 			break;
 	buffer[i] = '\0';
 
+	episode_entry episode;
 	episode.name = buffer;
 	episode.is_zip = false;
 	Episode = new EpisodeClass("test", episode);
 
-	map_path = buffer + i + 1;
+	char* map_path = buffer + i + 1;
 	Game = new GameClass(map_path);
 
 	printf("PK2    - testing episode_path '%s' level '%s'\n", buffer, map_path);

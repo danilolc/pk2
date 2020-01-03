@@ -2,6 +2,8 @@
 
 #include <string>
 
+//#include <zip.h>
+
 namespace PFile {
 
 class Path {
@@ -9,11 +11,13 @@ class Path {
     public: 
 
     std::string path; // Path inside zip if is_zip
+    
     bool is_zip;
-    std::string zipfile;
+    //zip_t* zip;
 
     Path(std::string path);
-    Path(std::string zip, std::string path);
+    //Path(zip_t* zip, std::string path);
+
     ~Path();
 
 };

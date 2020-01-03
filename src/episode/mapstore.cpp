@@ -29,25 +29,19 @@ void Search_Episodes() {
         
 	}
 
-	//#ifdef PK_SUPORT_MAPSTORE
+	
 	
 	list = PUtils::Scandir(".zip", "data" PE_SEP "mapstore", 60);
 
 	for (std::string zip : list) {
 		
-		PFile::Path path( 
-			std::string("data" PE_SEP "mapstore" PE_SEP) + zip,
-			PE_SEP);
+		// TODO - get episodes from zip
 		
-		printf("%s\n", path.zipfile.c_str());
-	
 	}
 
 	
 
-	//#endif
-
-    std::sort(episodes.begin(), episodes.end(), Alphabetical);
+	std::sort(episodes.begin(), episodes.end(), Alphabetical);
 
 }
 
