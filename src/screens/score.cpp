@@ -227,7 +227,7 @@ int Draw_ScoreCount() {
 
 	}
 
-	PK_Draw_Cursor(mouse_x, mouse_y);
+	PK_Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
 	return 0;
 }
@@ -362,7 +362,7 @@ int Screen_ScoreCount() {
 			Play_MenuSFX(apple_sound, 70);
 
 			if (Game->apples_got == 0)
-				counting_delay = 0;
+				counting_delay = 20;
 		
 		} else {
 			
@@ -375,7 +375,7 @@ int Screen_ScoreCount() {
 		counting_delay--;
 
 	if (key_delay == 0){
-		if (PisteInput_Keydown(PI_RETURN)) {
+		if (PInput::Keydown(PInput::RETURN)) {
 
 			if(counting_phase == 6) {
 

@@ -6,87 +6,60 @@
 
 #include "engine/platform.hpp"
 
-#define		PI_VIRHE -1000
+namespace PInput {
 
-#define		PI_MAX_PELIOHJAIMIA 2
+enum KEY {
 
-#define		PI_PELIOHJAIN_1	  0
-#define		PI_PELIOHJAIN_2	  1
+	UNKNOWN,
 
-#define		PI_OHJAIN_XY	  100
-#define		PI_OHJAIN_NAPPI_1 0
-#define		PI_OHJAIN_NAPPI_2 1
-#define		PI_OHJAIN_NAPPI_3 2
-#define		PI_OHJAIN_NAPPI_4 3
-#define		PI_OHJAIN_NAPPI_5 4
-#define		PI_OHJAIN_NAPPI_6 5
+	F1,	F2,	F3,
+	F4,	F5,	F6,
+	F7,	F8,	F9,
+	F10,	F11,	F12,
 
-#define		PI_OHJAIN1_VASEMMALLE	110
-#define		PI_OHJAIN1_OIKEALLE		111
-#define		PI_OHJAIN1_YLOS			112
-#define		PI_OHJAIN1_ALAS			113
-#define		PI_OHJAIN1_NAPPI1		114
-#define		PI_OHJAIN1_NAPPI2		115
-#define		PI_OHJAIN1_NAPPI3		116
-#define		PI_OHJAIN1_NAPPI4		117
-#define		PI_OHJAIN1_NAPPI5		118
-#define		PI_OHJAIN1_NAPPI6		119
+	ESCAPE,	RETURN,
+	BACK,	SPACE,
+	DELETE,	END,
+	TAB,
 
-enum PI_KEY{
-	PI_F1,	PI_F2,	PI_F3,
-	PI_F4,	PI_F5,	PI_F6,
-	PI_F7,	PI_F8,	PI_F9,
-	PI_F10,	PI_F11,	PI_F12,
+	LALT,		RALT,
+	LCONTROL,	RCONTROL,
+	LSHIFT,		RSHIFT,
 
-	PI_ESCAPE,	PI_RETURN,
-	PI_BACK,	PI_SPACE,
-	PI_DELETE,	PI_END,
-	PI_TAB,
+	LEFT,	RIGHT,
+	UP,		DOWN,
 
-	PI_LALT,		PI_RALT,
-	PI_LCONTROL,	PI_RCONTROL,
-	PI_LSHIFT,		PI_RSHIFT,
+	A,	B,	C,	D,
+	E,	F,	G,	H,
+	I,	J,	K,	L,
+	M,	N,	O,	P,
+	Q,	R,	S,	T,
+	U,	V,	W,	X,
+	Y,	Z
 
-	PI_LEFT,	PI_RIGHT,
-	PI_UP,		PI_DOWN,
-
-	PI_A,	PI_B,	PI_C,	PI_D,
-	PI_E,	PI_F,	PI_G,	PI_H,
-	PI_I,	PI_J,	PI_K,	PI_L,
-	PI_M,	PI_N,	PI_O,	PI_P,
-	PI_Q,	PI_R,	PI_S,	PI_T,
-	PI_U,	PI_V,	PI_W,	PI_X,
-	PI_Y,	PI_Z
 };
 
-struct MOUSE { //RECT
-	int x, y;
-};
+extern int mouse_x, mouse_y;
 
+const char* KeyName(BYTE key);
+BYTE GetKey();
+bool Keydown(int key);
 
-const char* PisteInput_KeyName(BYTE key);
-int PisteInput_GetTouchPos(float& x, float& y);
-BYTE	PisteInput_GetKey();
-bool	PisteInput_Keydown(int key);
-MOUSE   PisteInput_UpdateMouse(bool keyMove, bool relative);
-int     PisteInput_ActivateWindow(bool active);
+void StartKeyboard();
+void EndKeyboard();
+bool Is_Editing();
+void InjectText(const char* text);
+int ReadKeyboard(char* buffer);
 
-int		PisteInput_Vibrate();
+int Vibrate(int length);
+void SetMousePosition(int x, int y);
+int GetTouchPos(float& x, float& y);
+void GetMouse(int& x, int& y);
+void UpdateMouse(bool keyMove, bool relative);
+bool MouseLeft();
+bool MouseRight();
 
-int		PisteInput_Start();
-int		PisteInput_Exit();
-bool	PisteInput_Hae_Hiiri(); //DEP
-bool	PisteInput_Hae_Nappaimet(); //DEP
-bool	PisteInput_Hae_Ohjaimet();
-bool	PisteInput_Hiiri_Oikea();
-bool	PisteInput_Hiiri_Vasen();
-bool	PisteInput_Lue_Eventti();
+int init();
+int terminate();
 
-char*	PisteInput_Lue_Kontrollin_Nimi(unsigned char kontrolli);
-char	PisteInput_Lue_Nappaimisto(void);
-bool	PisteInput_Ohjain_Nappi(int ohjain, int index);
-char*	PisteInput_Ohjain_Nimi(int ohjain);
-int		PisteInput_Ohjain_X(int ohjain);
-int		PisteInput_Ohjain_Y(int ohjain);
-bool	PisteInput_Onko_Hiiri();
-bool	PisteInput_Onko_Ohjain(int ohjain);
+}

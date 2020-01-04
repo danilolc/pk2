@@ -66,6 +66,7 @@ void  set_fullscreen(bool set);
 void  adjust_screen();
 void  fit_screen(bool fit);
 void  change_resolution(int w, int h);
+void  get_resolution(int& w, int& h);
 
 void  get_windowposition(int* x, int* y);
 

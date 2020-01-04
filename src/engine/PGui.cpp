@@ -10,8 +10,7 @@
 #include "engine/platform.hpp"
 
 
-extern int mouse_x; //TODO remove
-extern int mouse_y;
+//TODO remove
 #include "engine/PInput.hpp"
 
 
@@ -54,10 +53,10 @@ int updatedev() {
 	for(int i = 0; i < MAX_GUI; i++){
 		gui = gui_list + i;
 		gui->pressed = false;
-		if(gui->set && gui->active && PisteInput_Hiiri_Oikea()) {
+		if(gui->set && gui->active && PInput::MouseRight()) {
 
-			int x = mouse_x;
-			int y = mouse_y;
+			int x = PInput::mouse_x;
+			int y = PInput::mouse_y;
 			if(x > gui->pos_x && x < gui->width+gui->pos_x && y > gui->pos_y && y < gui->height+gui->pos_y)
 				gui->pressed = true;
 		}

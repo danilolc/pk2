@@ -154,7 +154,7 @@ int Screen_Ending(){
 	}
 
 	if (key_delay == 0) {
-		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE)) {
+		if (PInput::Keydown(PInput::RETURN) || PInput::Keydown(PInput::SPACE)) {
 			siirry_lopusta_menuun = true;
 			PSound::set_musicvolume(0);
 			PDraw::fade_out(PDraw::FADE_SLOW);

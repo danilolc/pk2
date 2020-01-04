@@ -28,9 +28,11 @@ int PK_Draw_Map_Button(int x, int y, int type){
 	const int BORDER = 17;
 	int ret = 0;
 	
-	if (mouse_x > x && mouse_x < x+ BORDER && mouse_y > y && mouse_y < y + BORDER){
-		if (key_delay == 0 && (PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE)
-													    || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))){
+	if (PInput::mouse_x > x && PInput::mouse_x < x + BORDER
+		&& PInput::mouse_y > y && PInput::mouse_y < y + BORDER) {
+
+		if (key_delay == 0 && (PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)
+													    /*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)*/)){
 			key_delay = 30;
 			return 2;
 		}
@@ -91,14 +93,7 @@ int PK_Draw_Map(){
 		PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.episodes_no_maps),180,290);
 	}
 	
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_return),100,430)){
-		if(!going_to_game) {
-
-			next_screen = SCREEN_MENU;
-			degree_temp = degree;
-
-		}
-	}
+	Draw_Menu_Text(!going_to_game,tekstit->Get_Text(PK_txt.mainmenu_return),100,430);
 
 	int nuppi_x = 0, nuppi_y = 0;
 	int paluu;
@@ -213,7 +208,7 @@ int PK_Draw_Map(){
 		}
 	}
 
-	PK_Draw_Cursor(mouse_x, mouse_y);
+	PK_Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
 	return 0;
 }
@@ -318,7 +313,7 @@ int Screen_Map(){
 	}
 
 	if (!going_to_game && key_delay == 0){
-		if (PisteInput_Keydown(PI_ESCAPE)) {
+		if (PInput::Keydown(PInput::ESCAPE)) {
 			next_screen = SCREEN_MENU;
 			degree_temp = degree;
 			key_delay = 20;

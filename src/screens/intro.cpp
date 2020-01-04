@@ -120,7 +120,7 @@ int Screen_Intro(){
 
 	if (!closing_intro) {
 
-		if (PisteInput_Keydown(PI_RETURN) || PisteInput_Keydown(PI_SPACE) || introlaskuri >= 3500){
+		if (PInput::Keydown(PInput::RETURN) || PInput::Keydown(PInput::SPACE) || introlaskuri >= 3500){
 			closing_intro = true;
 			PDraw::fade_out(PDraw::FADE_SLOW);
 		}

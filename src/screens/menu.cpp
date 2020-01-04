@@ -56,7 +56,7 @@ int  episode_page = 0;
 
 int langlistindex = 0;
 
-bool nimiedit = false;
+bool editing_name = false;
 
 int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 	BYTE *buffer = NULL;
@@ -211,14 +211,15 @@ bool Draw_Menu_Text(bool active, const char *teksti, int x, int y) {
 
 	int length = strlen(teksti) * 15;
 
-	bool mouse_on = mouse_x > x && mouse_x < x + length && mouse_y > y && mouse_y < y + TEXT_H;
+	bool mouse_on = PInput::mouse_x > x && PInput::mouse_x < x + length 
+		&& PInput::mouse_y > y && PInput::mouse_y < y + TEXT_H;
 
 	if ( mouse_on || (menu_valittu_id == menu_valinta_id) ) {
 
 		menu_valittu_id = menu_valinta_id;
 
-		if (( (PisteInput_Hiiri_Vasen() && mouse_on) || PisteInput_Keydown(PI_SPACE)
-			|| PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1))
+		if (( (PInput::MouseLeft() && mouse_on) || PInput::Keydown(PInput::SPACE)
+			/*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1)*/)
 			&& key_delay == 0) {
 
 			Play_MenuSFX(menu_sound, 100);
@@ -252,8 +253,8 @@ int Draw_BoolBox(int x, int y, bool muuttuja, bool active){
 		return false;
 	}
 
-	if (mouse_x > x && mouse_x < x+30 && mouse_y > y && mouse_y < y+31){
-		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
+	if (PInput::mouse_x > x && PInput::mouse_x < x+30 && PInput::mouse_y > y && PInput::mouse_y < y+31){
+		if ((PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)/* || PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)*/)
 			&& key_delay == 0){
 
 			Play_MenuSFX(menu_sound, 100);
@@ -281,8 +282,8 @@ int  Draw_BackNext(int x, int y){
 	else
 		PDraw::image_cutclip(game_assets,x+val,y,535,124,535+31,124+31);
 
-	if ((mouse_x > x && mouse_x < x+30 && mouse_y > y && mouse_y < y+31) || (menu_valittu_id == menu_valinta_id)){
-		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
+	if ((PInput::mouse_x > x && PInput::mouse_x < x+30 && PInput::mouse_y > y && PInput::mouse_y < y+31) || (menu_valittu_id == menu_valinta_id)){
+		if ((PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)/* || PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)*/)
 			&& key_delay == 0){
 			Play_MenuSFX(menu_sound, 100);
 			key_delay = 20;
@@ -292,8 +293,8 @@ int  Draw_BackNext(int x, int y){
 
 	x += val;
 
-	if ((mouse_x > x && mouse_x < x+30 && mouse_y > y && mouse_y < y+31) || (menu_valittu_id == menu_valinta_id+1)){
-		if ((PisteInput_Hiiri_Vasen() || PisteInput_Keydown(PI_SPACE) || PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1))
+	if ((PInput::mouse_x > x && PInput::mouse_x < x+30 && PInput::mouse_y > y && PInput::mouse_y < y+31) || (menu_valittu_id == menu_valinta_id+1)){
+		if ((PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)/* || PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)*/)
 			&& key_delay == 0){
 			Play_MenuSFX(menu_sound, 100);
 			key_delay = 20;
@@ -327,7 +328,9 @@ int Draw_Menu_Main() {
 		menu_name_index = strlen(menu_name);
 		menu_name_last_mark = ' ';
 		
-		nimiedit = true;
+		editing_name = true;
+		PInput::StartKeyboard();
+
 		menu_nyt = MENU_NAME;
 		key_delay = 30;
 	}
@@ -376,30 +379,30 @@ int Draw_Menu_Main() {
 }
 
 int Draw_Menu_Name() {
-	int mx; //Text cursor
-	char merkki;
-	bool hiiri_alueella = false;
+
+	bool mouse_on_text = false;
 	int nameSize = (int)strlen(menu_name);
 
 	Draw_BGSquare(90, 150, 640-90, 480-100, 224);
 
-	if (mouse_x > 180 && mouse_x < 180+15*20 && mouse_y > 255 && mouse_y < 255+18)
-		hiiri_alueella = true; //Mouse is in text
+	if (PInput::mouse_x > 180 && PInput::mouse_x < 180+15*20 && PInput::mouse_y > 255 && PInput::mouse_y < 255+18)
+		mouse_on_text = true; //Mouse is in text
 
-	if (hiiri_alueella && PisteInput_Hiiri_Vasen() && key_delay == 0){
-		nimiedit = true;
-		menu_name_index = (mouse_x - 180)/15; //Set text cursor with the mouse
+	if (mouse_on_text && PInput::MouseLeft() && key_delay == 0){
+		editing_name = true;
+		PInput::StartKeyboard();
+		menu_name_index = (PInput::mouse_x - 180)/15; //Set text cursor with the mouse
 		key_delay = 10;
 	}
 
-	if (nimiedit && key_delay == 0){
+	if (editing_name && key_delay == 0){
 
-		if (PisteInput_Keydown(PI_LEFT)) {
+		if (PInput::Keydown(PInput::LEFT)) {
 			menu_name_index--;
 			key_delay = 8;
 		}
 
-		if (PisteInput_Keydown(PI_RIGHT)) {
+		if (PInput::Keydown(PInput::RIGHT)) {
 			menu_name_index++;
 			key_delay = 8;
 		}
@@ -420,8 +423,8 @@ int Draw_Menu_Name() {
 	PDraw::screen_fill(180-2,255-2,180+19*15+4,255+18+4,0);
 	PDraw::screen_fill(180,255,180+19*15,255+18,50);
 
-	if (nimiedit) { //Draw text cursor
-		mx = menu_name_index*15 + 180 + rand() % 2;
+	if (editing_name) { //Draw text cursor
+		int mx = menu_name_index*15 + 180 + rand() % 2;
 		PDraw::screen_fill(mx-2, 254, mx+6+3, 254+20+3, 0);
 		PDraw::screen_fill(mx-1, 254, mx+6, 254+20, 96+16);
 		PDraw::screen_fill(mx+4, 254, mx+6, 254+20, 96+8);
@@ -430,53 +433,61 @@ int Draw_Menu_Name() {
 	WavetextSlow_Draw(menu_name,fontti2,180,255);
 	PDraw::font_writealpha(fontti3,menu_name,180,255,15);
 
-	merkki = PisteInput_Lue_Nappaimisto();
+	char buffer[32];
+	int in_len = PInput::ReadKeyboard(buffer);
 
-	if (PisteInput_Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1) && key_delay == 0 && nimiedit) {
-		nimiedit = false;
-	}
+	if (editing_name) {
 
-	if (merkki != '\0' && (merkki != menu_name_last_mark || key_delay == 0) && nimiedit && nameSize < 19) {
-		menu_name_last_mark = merkki; // Don't write the same letter many times
-		key_delay = 15;
+		for (int i = 0; i < in_len; i++) {
 
-		for(int c = nameSize; c > menu_name_index; c--)
-			menu_name[c] = menu_name[c-1];
-
-		if(menu_name[menu_name_index] == '\0' && menu_name_index < sizeof(menu_name) - 1)
-			menu_name[menu_name_index + 1] = '\0';
-		menu_name[menu_name_index] = merkki;
-		menu_name_index++;
-	}
-
-	if (key_delay == 0){
-		if (PisteInput_Keydown(PI_DELETE)) {
-			for (int c=menu_name_index;c<19;c++)
-				menu_name[c] = menu_name[c+1];
+			for(int j = sizeof(menu_name) - 1; j > menu_name_index; j--)
+				menu_name[j] = menu_name[j-1];
+			
+			menu_name[menu_name_index] = buffer[i];
+			menu_name_index++;
 			menu_name[19] = '\0';
-			key_delay = 10;
+
 		}
 
-		if (PisteInput_Keydown(PI_BACK) && menu_name_index != 0) {
-			for (int c=menu_name_index-1;c<19;c++)
-				menu_name[c] = menu_name[c+1];
-			menu_name[19] = '\0';
-			if(menu_name[menu_name_index] == '\0') menu_name[menu_name_index-1] = '\0';
-			menu_name_index--;
-			key_delay = 10;
+		/*if (PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1) && key_delay == 0 && editing_name) {
+			editing_name = false;
+			PInput::EndKeyboard();
+		}*/
+
+		if (key_delay == 0) {
+
+			if (PInput::Keydown(PInput::DELETE)) {
+				for (int c=menu_name_index;c<19;c++)
+					menu_name[c] = menu_name[c+1];
+				menu_name[19] = '\0';
+				key_delay = 10;
+			}
+
+			if (PInput::Keydown(PInput::BACK) && menu_name_index != 0) {
+				for (int c=menu_name_index-1;c<19;c++)
+					menu_name[c] = menu_name[c+1];
+				menu_name[19] = '\0';
+				if(menu_name[menu_name_index] == '\0') menu_name[menu_name_index-1] = '\0';
+				menu_name_index--;
+				key_delay = 10;
+			}
+
+			if (PInput::Keydown(PInput::RETURN) && menu_name[0] != '\0') {
+				key_delay = 10;
+				editing_name = false;
+				PInput::EndKeyboard();
+
+				menu_valittu_id = 1;
+			}
+
 		}
 
-		if (PisteInput_Keydown(PI_RETURN) && menu_name[0] != '\0') {
-			key_delay = 10;
-			merkki = '\0';
-			nimiedit = false;
-			menu_valittu_id = 1;
-		}
 	}
 
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.playermenu_continue),180,300)) {
-		nimiedit = false;
+		editing_name = false;
+		PInput::EndKeyboard();
 		
 		/*if (episode_count == 1) { // Select episode even if just one
 		
@@ -509,7 +520,8 @@ int Draw_Menu_Name() {
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_exit),180,400)) {
 		menu_nyt = MENU_MAIN;
 		menu_name_index = 0;
-		nimiedit = false;
+		editing_name = false;
+		PInput::EndKeyboard();
 	}
 
 	return 0;
@@ -901,18 +913,18 @@ int Draw_Menu_Controls() {
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_useitem),100,90+my);my+=20;
 
 	my = 40;
-	PDraw::font_write(fontti2,PisteInput_KeyName(Settings.control_left),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PisteInput_KeyName(Settings.control_right),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PisteInput_KeyName(Settings.control_jump),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PisteInput_KeyName(Settings.control_down),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PisteInput_KeyName(Settings.control_walk_slow),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PisteInput_KeyName(Settings.control_attack1),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PisteInput_KeyName(Settings.control_attack2),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PisteInput_KeyName(Settings.control_open_gift),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_left),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_right),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_jump),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_down),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_walk_slow),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_attack1),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_attack2),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_open_gift),310,90+my);my+=20;
 
 	/*
-	if (mouse_x > 310 && mouse_x < 580 && mouse_y > 130 && mouse_y < my-20){
-		menu_lue_kontrollit = (mouse_y - 120) / 20;
+	if (PInput::mouse_x > 310 && PInput::mouse_x < 580 && PInput::mouse_y > 130 && PInput::mouse_y < my-20){
+		menu_lue_kontrollit = (PInput::mouse_y - 120) / 20;
 
 		if (menu_lue_kontrollit < 0 || menu_lue_kontrollit > 8)
 			menu_lue_kontrollit = 0;
@@ -931,14 +943,14 @@ int Draw_Menu_Controls() {
 	my += 30;
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.controls_kbdef),100,90+my)){
-		Settings.control_left      = PI_LEFT;
-		Settings.control_right     = PI_RIGHT;
-		Settings.control_jump      = PI_UP;
-		Settings.control_down      = PI_DOWN;
-		Settings.control_walk_slow = PI_LALT;
-		Settings.control_attack1   = PI_LCONTROL;
-		Settings.control_attack2   = PI_LSHIFT;
-		Settings.control_open_gift = PI_SPACE;
+		Settings.control_left      = PInput::LEFT;
+		Settings.control_right     = PInput::RIGHT;
+		Settings.control_jump      = PInput::UP;
+		Settings.control_down      = PInput::DOWN;
+		Settings.control_walk_slow = PInput::LALT;
+		Settings.control_attack1   = PInput::LCONTROL;
+		Settings.control_attack2   = PInput::LSHIFT;
+		Settings.control_open_gift = PInput::SPACE;
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
 	}
@@ -946,14 +958,14 @@ int Draw_Menu_Controls() {
 	my += 20;
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.controls_gp4def),100,90+my)){
-		Settings.control_left      = PI_OHJAIN1_VASEMMALLE;
+		/*Settings.control_left      = PI_OHJAIN1_VASEMMALLE;
 		Settings.control_right     = PI_OHJAIN1_OIKEALLE;
 		Settings.control_jump      = PI_OHJAIN1_YLOS;
 		Settings.control_down      = PI_OHJAIN1_ALAS;
 		Settings.control_walk_slow = PI_OHJAIN1_NAPPI2;
 		Settings.control_attack1   = PI_OHJAIN1_NAPPI1;
 		Settings.control_attack2   = PI_OHJAIN1_NAPPI3;
-		Settings.control_open_gift = PI_OHJAIN1_NAPPI4;
+		Settings.control_open_gift = PI_OHJAIN1_NAPPI4;*/
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
 	}
@@ -961,14 +973,14 @@ int Draw_Menu_Controls() {
 	my += 20;
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.controls_gp6def),100,90+my)){
-		Settings.control_left      = PI_OHJAIN1_VASEMMALLE;
+		/*Settings.control_left      = PI_OHJAIN1_VASEMMALLE;
 		Settings.control_right     = PI_OHJAIN1_OIKEALLE;
 		Settings.control_jump      = PI_OHJAIN1_YLOS;//PI_OHJAIN1_NAPPI1;
 		Settings.control_down      = PI_OHJAIN1_ALAS;
 		Settings.control_walk_slow = PI_OHJAIN1_NAPPI2;
 		Settings.control_attack1   = PI_OHJAIN1_NAPPI1;
 		Settings.control_attack2   = PI_OHJAIN1_NAPPI4;
-		Settings.control_open_gift = PI_OHJAIN1_NAPPI6;
+		Settings.control_open_gift = PI_OHJAIN1_NAPPI6;*/
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
 	}
@@ -982,7 +994,7 @@ int Draw_Menu_Controls() {
 	BYTE k = 0;
 
 	if (key_delay == 0 && menu_lue_kontrollit > 0){
-		k = PisteInput_GetKey();
+		k = PInput::GetKey();
 
 		if (k != 0){
 			switch(menu_lue_kontrollit){
@@ -1082,7 +1094,7 @@ int Draw_Menu_Language() {
 
 	PDraw::font_write(fontti2,"select a language:",50,100);
 
-	int my = 0;
+	int my = 150;
 
 	int end = langlist.size();
 	if (end > langlistindex + 10)
@@ -1090,7 +1102,7 @@ int Draw_Menu_Language() {
 
 	for ( int i = langlistindex; i < end; i++ ) {
 
-		if(Draw_Menu_Text(true,langlist[i].c_str(),150,150+my)) {
+		if(Draw_Menu_Text(true,langlist[i].c_str(),150,my)) {
 
 			strcpy(Settings.kieli, langlist[i].c_str());
 			Load_Language(Settings.kieli);
@@ -1101,7 +1113,7 @@ int Draw_Menu_Language() {
 		my += 20;
 	}
 
-	my = 280;
+	my = 380;
 	if(langlist.size() > 10) {
 		int direction = Draw_BackNext(400,my-20);
 
@@ -1142,7 +1154,7 @@ int Draw_Menu() {
 		default            : Draw_Menu_Main();     break;
 	}
 
-	PK_Draw_Cursor(mouse_x, mouse_y);
+	PK_Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
 	return 0;
 
@@ -1192,9 +1204,9 @@ int Screen_Menu_Init() {
 
 int Screen_Menu() {
 	
-	if (!nimiedit && key_delay == 0 && menu_lue_kontrollit == 0) {
-		if (PisteInput_Keydown(PI_UP) || PisteInput_Keydown(PI_LEFT) ||
-			PisteInput_Ohjain_X(PI_PELIOHJAIN_1) < 0 || PisteInput_Ohjain_Y(PI_PELIOHJAIN_1) < 0){
+	if (!editing_name && key_delay == 0 && menu_lue_kontrollit == 0) {
+		if (PInput::Keydown(PInput::UP) || PInput::Keydown(PInput::LEFT) /*||
+			PInput::Ohjain_X(PI_PELIOHJAIN_1) < 0 || PInput::Ohjain_Y(PI_PELIOHJAIN_1) < 0*/){
 			menu_valittu_id--;
 
 			if (menu_valittu_id < 1)
@@ -1203,36 +1215,37 @@ int Screen_Menu() {
 			key_delay = 15;
 		}
 
-		if (PisteInput_Keydown(PI_DOWN) || PisteInput_Keydown(PI_RIGHT) ||
-			PisteInput_Ohjain_X(PI_PELIOHJAIN_1) > 0 || PisteInput_Ohjain_Y(PI_PELIOHJAIN_1) > 0){
+		if (PInput::Keydown(PInput::DOWN) || PInput::Keydown(PInput::RIGHT) /*||
+			PInput::Ohjain_X(PI_PELIOHJAIN_1) > 0 || PInput::Ohjain_Y(PI_PELIOHJAIN_1) > 0*/){
 			menu_valittu_id++;
 
 			if (menu_valittu_id > menu_valinta_id-1)
 				menu_valittu_id = 1;
 
 			key_delay = 15;
-			//mouse_y += 3;
+			//PInput::mouse_y += 3;
 		}
 
 		static bool wasPressed = false;
 
-		if (!wasPressed && PisteInput_Keydown(PI_ESCAPE) && menu_nyt == MENU_MAIN) {
+		if (!wasPressed && PInput::Keydown(PInput::ESCAPE) && menu_nyt == MENU_MAIN) {
 			if(menu_valittu_id == menu_valinta_id-1)
 				Fade_Quit();
 			else
 				menu_valittu_id = menu_valinta_id-1;
 		}
 
-		wasPressed = PisteInput_Keydown(PI_ESCAPE);
+		wasPressed = PInput::Keydown(PInput::ESCAPE);
 
 	}
 
-	if (nimiedit || menu_lue_kontrollit > 0) {
+	if (editing_name || menu_lue_kontrollit > 0) {
 		menu_valittu_id = 0;
 	}
 
 	if (menu_nyt != MENU_NAME){
-		nimiedit = false;
+		editing_name = false;
+		PInput::EndKeyboard();
 	}
 	int menu_ennen = menu_nyt;
 
@@ -1247,4 +1260,5 @@ int Screen_Menu() {
 		degree = 1 + degree % 360;
 
 	return 0;
+	
 }

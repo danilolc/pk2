@@ -102,6 +102,8 @@ int set_channel(int channel, int panoramic, int volume) {
 
 	Mix_SetPanning(channel, pan_left, pan_right);
 	Mix_Volume(channel, volume);
+
+	return 0;
 	
 }
 

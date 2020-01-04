@@ -378,22 +378,22 @@ int Sprite_Movement(int i){
 	bool lisavauhti = true;
 	bool hidastus = false;
 
-	PisteInput_Lue_Eventti();
+	/*PInput::Lue_Eventti();*/
 	if (sprite.pelaaja != 0 && sprite.energia > 0){
 		/* SLOW WALK */
-		if (PisteInput_Keydown(Settings.control_walk_slow))
+		if (PInput::Keydown(Settings.control_walk_slow))
 			lisavauhti = false;
 
 		/* ATTACK 1 */
-		if (PisteInput_Keydown(Settings.control_attack1) && sprite.lataus == 0 && sprite.ammus1 != -1)
+		if (PInput::Keydown(Settings.control_attack1) && sprite.lataus == 0 && sprite.ammus1 != -1)
 			sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
 		/* ATTACK 2 */
-		else if (PisteInput_Keydown(Settings.control_attack2) && sprite.lataus == 0 && sprite.ammus2 != -1)
+		else if (PInput::Keydown(Settings.control_attack2) && sprite.lataus == 0 && sprite.ammus2 != -1)
 				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
 
 		/* CROUCH */
 		sprite.kyykky = false;
-		if (PisteInput_Keydown(Settings.control_down) && !sprite.alas) {
+		if (PInput::Keydown(Settings.control_down) && !sprite.alas) {
 			sprite.kyykky = true;
 			sprite_yla += sprite_korkeus/1.5;
 		}
@@ -401,7 +401,7 @@ int Sprite_Movement(int i){
 		double a_lisays = 0;
 
 		/* NAVIGATING TO RIGHT */
-		if (PisteInput_Keydown(Settings.control_right)) {
+		if (PInput::Keydown(Settings.control_right)) {
 			a_lisays = 0.04;//0.08;
 
 			if (lisavauhti) {
@@ -418,7 +418,7 @@ int Sprite_Movement(int i){
 		}
 
 		/* NAVIGATING TO LEFT */
-		if (PisteInput_Keydown(Settings.control_left)) {
+		if (PInput::Keydown(Settings.control_left)) {
 			a_lisays = -0.04;
 
 			if (lisavauhti) {
@@ -442,7 +442,7 @@ int Sprite_Movement(int i){
 
 		/* JUMPING */
 		if (sprite.tyyppi->paino > 0) {
-			if (PisteInput_Keydown(Settings.control_jump)) {
+			if (PInput::Keydown(Settings.control_jump)) {
 				if (!sprite.kyykky) {
 					if (sprite.hyppy_ajastin == 0)
 						Play_GameSFX(jump_sound, 100, (int)sprite_x, (int)sprite_y,
@@ -457,17 +457,17 @@ int Sprite_Movement(int i){
 			}
 
 			/* tippuminen hiljaa alasp�in */
-			if (PisteInput_Keydown(Settings.control_jump) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
+			if (PInput::Keydown(Settings.control_jump) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
 				sprite.tyyppi->liitokyky)
 				hidastus = true;
 		}
 		/* MOVING UP AND DOWN */
 		else { // if the player sprite-weight is 0 - like birds
 
-			if (PisteInput_Keydown(Settings.control_jump))
+			if (PInput::Keydown(Settings.control_jump))
 				sprite_b -= 0.15;
 
-			if (PisteInput_Keydown(Settings.control_down))
+			if (PInput::Keydown(Settings.control_down))
 				sprite_b += 0.15;
 
 			sprite.hyppy_ajastin = 0;
@@ -1356,7 +1356,7 @@ int Sprite_Movement(int i){
 	BYTE color;
 	DWORD plk;
 
-	if (PisteInput_Keydown(PI_B) && dev_mode) { // Draw bounding box
+	if (PInput::Keydown(PInput::B) && dev_mode) { // Draw bounding box
 		
 		if (i == 0/*pelaaja_index*/) {
 

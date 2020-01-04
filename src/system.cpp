@@ -19,8 +19,6 @@ int game_assets = -1;
 int game_assets2 = -1;
 int bg_screen = -1;
 
-int mouse_x = 10;
-int mouse_y = 10;
 int key_delay = 0;
 
 double cos_table[360];

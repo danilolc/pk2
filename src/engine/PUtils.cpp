@@ -225,6 +225,9 @@ std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 
 	int numb = scandir(dir, &namelist, 0, alphasort);
 	
+	if (numb == -1)
+		return result;
+
 	if (max != -1)
 		if (numb > max) 
 			numb = max;
@@ -257,11 +260,12 @@ std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 			
 		}
 
-		delete namelist[i];
+		free(namelist[i]);
 
 	}
+	free(namelist);
 
-	delete namelist;
+	printf("Scanned %s for %s and found %i matches\n", dir, type, result.size());
 	return result;
 
 }

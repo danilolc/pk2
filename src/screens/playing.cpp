@@ -241,7 +241,7 @@ int PK_Draw_InGame_DevKeys() {
 
 	const char help[] = "h: help";
 
-	if (!PisteInput_Keydown(PI_H)) {
+	if (!PInput::Keydown(PInput::H)) {
 		PDraw::font_write(fontti1, help, screen_width - strlen(help) * char_w, screen_height - 10);
 		return 0;
 	}
@@ -576,9 +576,9 @@ int Update_Camera(){
 	Game->camera_x = (int)Player_Sprite->x-screen_width / 2;
 	Game->camera_y = (int)Player_Sprite->y-screen_height / 2;
 	
-	if(dev_mode && PisteInput_Hiiri_Vasen()) {
-		Game->camera_x += mouse_x - screen_width / 2;
-		Game->camera_y += mouse_y - screen_height / 2;
+	if(dev_mode && PInput::MouseLeft()) {
+		Game->camera_x += PInput::mouse_x - screen_width / 2;
+		Game->camera_y += PInput::mouse_y - screen_height / 2;
 	}
 
 	if (Game->vibration > 0) {
@@ -701,8 +701,8 @@ int Screen_InGame(){
 		if (Game->exit_timer == 0)
 			Game->exit_timer = 700;//800;//2000;
 
-		if (PisteInput_Keydown(Settings.control_attack1) || PisteInput_Keydown(Settings.control_attack2) ||
-			PisteInput_Keydown(Settings.control_jump) || PisteInput_Keydown(PI_RETURN))
+		if (PInput::Keydown(Settings.control_attack1) || PInput::Keydown(Settings.control_attack2) ||
+			PInput::Keydown(Settings.control_jump) || PInput::Keydown(PInput::RETURN))
 			if (Game->exit_timer > 2 && Game->exit_timer < 500/*600*//*1900*/ && key_delay == 0)
 				Game->exit_timer = 2;
 
@@ -715,26 +715,26 @@ int Screen_InGame(){
 
 	if (key_delay == 0){
 		if (!Game->game_over && !Game->level_clear) {
-			if (PisteInput_Keydown(Settings.control_open_gift)) {
+			if (PInput::Keydown(Settings.control_open_gift)) {
 				Gifts_Use();
 				key_delay = 10;
 			}
 			
-			if (PisteInput_Keydown(PI_P)) {
+			if (PInput::Keydown(PInput::P)) {
 				Game->paused = !Game->paused;
 				key_delay = 20;
 			}
 			
-			if (PisteInput_Keydown(PI_DELETE)) {
+			if (PInput::Keydown(PInput::DELETE)) {
 				Player_Sprite->energia = 0;
 			}
 
-			if (PisteInput_Keydown(PI_TAB)){
+			if (PInput::Keydown(PInput::TAB)){
 				Gifts_ChangeOrder();
 				key_delay = 10;
 			}
 
-			if (PisteInput_Keydown(PI_ESCAPE)) {
+			if (PInput::Keydown(PInput::ESCAPE)) {
 				if(test_level)
 					Fade_Quit();
 				else {
@@ -746,7 +746,7 @@ int Screen_InGame(){
 		}
 
 		if (!dev_mode)
-			if (PisteInput_Keydown(PI_I)) {
+			if (PInput::Keydown(PInput::I)) {
 				show_fps = !show_fps;
 				key_delay = 20;
 			}
@@ -754,58 +754,58 @@ int Screen_InGame(){
 
 	if (dev_mode){ //Debug
 		if (key_delay == 0) {
-			if (PisteInput_Keydown(PI_F)) {
+			if (PInput::Keydown(PInput::F)) {
 				show_fps = !show_fps;
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_Z)) {
+			if (PInput::Keydown(PInput::Z)) {
 				if (Game->button1 < KYTKIN_ALOITUSARVO - 64) Game->button1 = KYTKIN_ALOITUSARVO;
 				if (Game->button2 < KYTKIN_ALOITUSARVO - 64) Game->button2 = KYTKIN_ALOITUSARVO;
 				if (Game->button3 < KYTKIN_ALOITUSARVO - 64) Game->button3 = KYTKIN_ALOITUSARVO;
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_X)) {
+			if (PInput::Keydown(PInput::X)) {
 				if (Game->button1 > 64) Game->button1 = 64;
 				if (Game->button2 > 64) Game->button2 = 64;
 				if (Game->button3 > 64) Game->button3 = 64;
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_T)) {
+			if (PInput::Keydown(PInput::T)) {
 				doublespeed = !doublespeed;
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_G)) {
+			if (PInput::Keydown(PInput::G)) {
 				Settings.draw_transparent = !Settings.draw_transparent;
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_L)) {
+			if (PInput::Keydown(PInput::L)) {
 				Game->keys = 0;
 				Game->map->Open_Locks();
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_K)) {
+			if (PInput::Keydown(PInput::K)) {
 				Game->map->Change_SkullBlocks();
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_W)) {
+			if (PInput::Keydown(PInput::W)) {
 				Settings.isFullScreen = !Settings.isFullScreen;
 				PDraw::set_fullscreen(Settings.isFullScreen);
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_I)) {
+			if (PInput::Keydown(PInput::I)) {
 				draw_dubug_info = !draw_dubug_info;
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_R)) {
+			if (PInput::Keydown(PInput::R)) {
 				Game->map->Select_Start();
 				Player_Sprite->energia = 10;
 				key_delay = 20;
 			}
-			if (PisteInput_Keydown(PI_END)) {
+			if (PInput::Keydown(PInput::END)) {
 				key_delay = 20;
 				Game->Finnish();
 			}
-			if (PisteInput_Keydown(PI_A)/* && key_delay == 0*/) {
+			if (PInput::Keydown(PInput::A)/* && key_delay == 0*/) {
 				//key_delay = 20;
 				for (int r = 1; r<6; r++)
 					//Particles_New(PARTICLE_SPARK, player->x + rand() % 10 - rand() % 10, player->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
@@ -813,11 +813,11 @@ int Screen_InGame(){
 				*Player_Sprite = SpriteClass(&Prototypes_List[PROTOTYYPPI_KANA], 1, false, Player_Sprite->x, Player_Sprite->y);
 			}
 		}
-		if (PisteInput_Keydown(PI_U))
+		if (PInput::Keydown(PInput::U))
 			Player_Sprite->b = -10;
-		if (PisteInput_Keydown(PI_E))
+		if (PInput::Keydown(PInput::E))
 			Player_Sprite->energia = Player_Sprite->tyyppi->energia;
-		if (PisteInput_Keydown(PI_V))
+		if (PInput::Keydown(PInput::V))
 			Game->invisibility = 3000;
 	}
 

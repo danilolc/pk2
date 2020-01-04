@@ -23,9 +23,10 @@ void Search_Episodes() {
 	//TODO - store the vector
 	for (int i = 0; i < size; i++) {
 
-        episodes.push_back(episode_entry());
-        episodes[i].name = list[i];
-        episodes[i].zipfile = false;
+		episode_entry e;
+		e.name = list[i];
+		e.zipfile = false;
+        episodes.push_back(e);
         
 	}
 
@@ -40,8 +41,10 @@ void Search_Episodes() {
 	}
 
 	
+	if (episodes.size() > 1)
+		std::sort(episodes.begin(), episodes.end(), Alphabetical);
 
-	std::sort(episodes.begin(), episodes.end(), Alphabetical);
+	printf("Found %i episodes\n", episodes.size());
 
 }
 

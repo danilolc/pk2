@@ -31,14 +31,14 @@ void Settings_Init() {
 	Settings.aanet = true;
 	Settings.musiikki = true;
 
-	Settings.control_left      = PI_LEFT;
-	Settings.control_right     = PI_RIGHT;
-	Settings.control_jump      = PI_UP;
-	Settings.control_down      = PI_DOWN;
-	Settings.control_walk_slow = PI_LALT;
-	Settings.control_attack1   = PI_LCONTROL;
-	Settings.control_attack2   = PI_LSHIFT;
-	Settings.control_open_gift = PI_SPACE;
+	Settings.control_left      = PInput::LEFT;
+	Settings.control_right     = PInput::RIGHT;
+	Settings.control_jump      = PInput::UP;
+	Settings.control_down      = PInput::DOWN;
+	Settings.control_walk_slow = PInput::LALT;
+	Settings.control_attack1   = PInput::LCONTROL;
+	Settings.control_attack2   = PInput::LSHIFT;
+	Settings.control_open_gift = PInput::SPACE;
 
 	Settings.isFiltered = true;
 	Settings.isFit = true;

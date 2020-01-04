@@ -45,7 +45,7 @@ void init(int width, int height, const char* name, const char* icon) {
 	sdl_show();
 	
 	PDraw::init(width, height, name, icon);
-	PisteInput_Start();
+	PInput::init();
 	PSound::init();
 
 	ready = true;
@@ -55,9 +55,11 @@ void init(int width, int height, const char* name, const char* icon) {
 void terminate() {
 	
 	PDraw::terminate();
-	PisteInput_Exit();
+	PInput::terminate();
 	PSound::terminate();
+
 	SDL_Quit();
+
 	ready = false;
 
 }
@@ -125,13 +127,18 @@ bool is_ready() {
 
 void logic() {
 
+	
 	SDL_Event event;
 
 	while( SDL_PollEvent(&event) ) {
+		
 		if(event.type == SDL_QUIT)
 			running = false;
 		if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
 			PDraw::adjust_screen();
+		if(event.type == SDL_TEXTINPUT && PInput::Is_Editing())
+			PInput::InjectText(event.text.text);
+		
 	}
 
 	PDraw::update(draw);

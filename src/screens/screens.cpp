@@ -34,50 +34,6 @@ void Fade_Quit() {
 	
 }
 
-int Updade_Mouse() {
-
-	int offset = PDraw::get_xoffset();
-
-	if(PUtils::Is_Mobile()) {
-    	float x, y;
-
-		if (PisteInput_GetTouchPos(x, y) == 0) {
-			mouse_x = screen_width * x - offset;
-			mouse_y = screen_height * y;
-
-			printf("Touch %i, %i\n", mouse_x, mouse_y);
-			return 1;
-		}
-	}
-
-	bool keys_move = (current_screen == SCREEN_MAP);
-	bool relative = Settings.isFullScreen;
-
-	if (relative) {
-
-		MOUSE delta = PisteInput_UpdateMouse(keys_move, true);
-
-		mouse_x += delta.x;
-		mouse_y += delta.y;
-
-	} else {
-		
-		MOUSE pos = PisteInput_UpdateMouse(false, false);
-
-		mouse_x = pos.x - offset;
-		mouse_y = pos.y;
-
-	}
-	
-	if (mouse_x < -offset) mouse_x = -offset;
-	if (mouse_x > screen_width - offset - 19) mouse_x = screen_width - offset - 19;
-	
-	if (mouse_y < 0) mouse_y = 0;
-	if (mouse_y > screen_height - 19) mouse_y = screen_height - 19;
-
-	return 0;
-}
-
 int Screen_First_Start() {
 
 	PDraw::screen_fill(0);
@@ -159,7 +115,9 @@ int Screen_Change() {
 //Main Loop
 int Screen_Loop() {
 
-	Updade_Mouse();
+	bool keys_move = (current_screen == SCREEN_MAP);
+	bool relative = Settings.isFullScreen;
+	PInput::UpdateMouse(keys_move, relative);
 	
 	if (next_screen != current_screen) Screen_Change();
 	

@@ -5,23 +5,28 @@
 #include "engine/PInput.hpp"
 
 #include "engine/PGui.hpp"
+#include "engine/PDraw.hpp"
+#include "engine/PUtils.hpp"
 #include "engine/platform.hpp"
 
 #include <SDL.h>
 
 #include <cstring>
 
-int screen_w, screen_h;
-
 #define MOUSE_SPEED 20
 
-struct PELIOHJAIN{
-	SDL_Joystick* dev;
-	bool					available;
-	char					nimi[80];
-};
+namespace PInput {
+
+int mouse_x, mouse_y;
+
+SDL_Haptic *Haptic = nullptr;
+
+static const BYTE* keymap = nullptr;
 
 const int keylist[] = {
+
+	SDL_SCANCODE_UNKNOWN,
+
 	SDL_SCANCODE_F1,	SDL_SCANCODE_F2,	SDL_SCANCODE_F3,
 	SDL_SCANCODE_F4,	SDL_SCANCODE_F5,	SDL_SCANCODE_F6,
 	SDL_SCANCODE_F7,	SDL_SCANCODE_F8,	SDL_SCANCODE_F9,
@@ -46,9 +51,11 @@ const int keylist[] = {
 	SDL_SCANCODE_Q,	SDL_SCANCODE_R,	SDL_SCANCODE_S,	SDL_SCANCODE_T,
 	SDL_SCANCODE_U,	SDL_SCANCODE_V,	SDL_SCANCODE_W,	SDL_SCANCODE_X,
 	SDL_SCANCODE_Y,	SDL_SCANCODE_Z
+
 };
 
-const char keynames[][15] = {
+const char keynames[][16] = {
+
 	"unknown key",
 
 	"f1","f2","f3",
@@ -75,309 +82,252 @@ const char keynames[][15] = {
 	"q","r","s","t",
 	"u","v","w","x",
 	"y","z"
+
 };
-/* VARIABLES ---------------------------------------------------------------------------------*/
 
-PELIOHJAIN				PI_joysticks[PI_MAX_PELIOHJAIMIA];
-int						PI_joystick_index = 0;
+const char* KeyName(BYTE key) {
 
-bool					PI_unload = true;
+	if (key >= sizeof(keynames) / 16) 
+		return keynames[UNKNOWN];
+	
+	return keynames[key];
 
-//Uint8 *m_keymap;
-const Uint8 *m_keymap = SDL_GetKeyboardState(NULL);
-MOUSE mouse_pos;
+}
 
-SDL_Haptic *PI_haptic;
+BYTE GetKey() {
+	
+	int count = sizeof(keylist)/sizeof(int);
 
-/* METHODS -----------------------------------------------------------------------------------*/
+	for(int key = 0; key < count; key++)
+		if(keymap[keylist[key]])
+			return key;
+	
+	return UNKNOWN;
+
+}
+
+bool Keydown(int key) {
+	
+	return keymap[keylist[key]];
+
+}
+
+bool text_editing = false;
+char keyboard_text[32];
+
+void StartKeyboard() {
+
+	text_editing = true;
+	keyboard_text[0] = '\0';
+	
+}
+
+void EndKeyboard() {
+
+	text_editing = false;
+	keyboard_text[0] = '\0';
+
+}
+
+bool Is_Editing() {
+
+	return text_editing;
+
+}
+
+void InjectText(const char* text) {
+
+	strcpy(keyboard_text, text);
+
+}
+
+static bool accept_char(char c) {
+
+	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+		|| c == '.' || c == '!' || c == '?' || c == ' '; //Just number, letter, space dot
+
+}
+
+int ReadKeyboard(char* buffer) {
+
+	strcpy(buffer, keyboard_text);
+	keyboard_text[0] = '\0';
+
+	for (int i = 0; i < 32; i++) { //Clean buffer
+		char c = buffer[i];
+
+		if (c == '\0')
+			return i;
+	
+		if(!accept_char(c))
+			for (int j = i; j < 31; j++) 
+				buffer[j] = buffer[j + 1];
+
+	}
+
+	buffer[0] = '\0';
+
+	return 0;
+}
 
 
+int Vibrate(int length) {
 
-
-
-
-int PisteInput_Vibrate(){
-	if(PI_haptic == NULL)
+	if(Haptic == NULL)
 		return -1;
-	if (SDL_HapticRumblePlay(PI_haptic,0.5,2000) != 0)
+	if (SDL_HapticRumblePlay(Haptic, 0.5, length) != 0)
 		return -1;
+	
 	return 0;
 }
 
 #ifdef _WIN32
+
 void SetMousePosition(int x, int y) {
 	int wx = 0, wy = 0;
 	//PisteDraw2_GetWindowPosition(&wx, &wy); TODO
 
 	SetCursorPos(x + wx, y+wy);
 }
+
 #else
+
 void SetMousePosition(int x, int y) {
 	//TODO
 }
+
 #endif
 
+int GetTouchPos(float& x, float& y) {
 
-const char* PisteInput_KeyName(BYTE key){
-	if(key >= sizeof(keynames) / 15) return keynames[0];
-	return keynames[key+1];
-}
-BYTE PisteInput_GetKey(){
-	SDL_PumpEvents();
-	int key;
-	int count = sizeof(keylist)/sizeof(int);
+	int devices = SDL_GetNumTouchDevices();
+	
+	SDL_TouchID id;
+	for (int i = 0; i == devices; i++) {
 
-	for(key=0; key < count; key++)
-		if(m_keymap[keylist[key]]) return key;
-	return 0;
-}
-int PisteInput_GetTouchPos(float& x, float& y) {
-	SDL_Finger* finger = NULL;
-	SDL_TouchID id = SDL_GetTouchDevice(0);
-	int fingers = SDL_GetNumTouchFingers(id);
-	if (fingers == 0)
-		return 1;
+		id = SDL_GetTouchDevice(i);
+		if (SDL_GetNumTouchFingers(id) != 0) {
+			break;
+		}
+			
+		
+	}
 
-	finger = SDL_GetTouchFinger(id, 0);
-
+	SDL_Finger* finger = SDL_GetTouchFinger(id, 0);
+	if (finger == NULL)
+			return -1;
+	
 	x = finger->x;
 	y = finger->y;
 
 	return 0;
+
 }
 
-bool PisteInput_Keydown(int key){
-	if(PGui::check_key(key))
-		return true;
+void UpdateMouse(bool keyMove, bool relative) {
 
-	SDL_PumpEvents();
-	return m_keymap[keylist[key]];
-}
+	int w, h;
+	PDraw::get_resolution(w, h);
 
-//TODO - change names - fullscreen uses relative mouse
-MOUSE PisteInput_UpdateMouse(bool keyMove, bool relative){
-	static int was_relative = -1;
-	if (was_relative == -1) { //Was just initialized
-		PisteInput_ActivateWindow(relative);
-		was_relative = (int)relative;
-	}
-	if (was_relative == 1 && !relative) { //Was relative but now it isn't
-		PisteInput_ActivateWindow(false);
-		was_relative = 0;
-	}
-	if (was_relative == 0 && relative) { //Wasn't relative but now it is
-		PisteInput_ActivateWindow(true);
-		was_relative = 1;
+	if (PUtils::Is_Mobile()) {
+
+		float x, y;
+
+		if( GetTouchPos(x,y) == 0 ) {
+
+			mouse_x = x * w - PDraw::get_xoffset();;
+			mouse_y = y * h;
+			return;
+
+		}
 	}
 
-
-	if (!relative) {
-		SDL_GetMouseState(&mouse_pos.x, &mouse_pos.y);
-		return mouse_pos;
-	}
-
-	MOUSE delta;
-
-	delta.x = 0;
-	delta.y = 0;
-
-	static int lastMouseUpdate = 0, dx = 0, dy = 0;
+	SDL_SetRelativeMouseMode(relative? SDL_TRUE : SDL_FALSE);
 	
-	if(SDL_GetTicks() - lastMouseUpdate > MOUSE_SPEED) {
-		lastMouseUpdate = SDL_GetTicks();
-		SDL_GetRelativeMouseState(&dx, &dy);
-		delta.x += dx;
-		delta.y += dy;
-	}
-	else {
-		delta.x += dx;
-		delta.y += dy;
-		dx = 0;
-		dy = 0;
+	if (!relative) {
+		SDL_GetMouseState(&mouse_x, &mouse_y);
+		mouse_x -= PDraw::get_xoffset();
+		return;
 	}
 
-	if(keyMove){
-		delta.x += PisteInput_Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
-		delta.y += PisteInput_Ohjain_Y(PI_PELIOHJAIN_1)/30;
+	int delta_x, delta_y;
+	SDL_GetRelativeMouseState(&delta_x, &delta_y);
 
-		if (PisteInput_Keydown(PI_LEFT)) delta.x += -3; //Move mouse with keys
-		if (PisteInput_Keydown(PI_RIGHT)) delta.x += 3;
-		if (PisteInput_Keydown(PI_UP)) delta.y += -3;
-		if (PisteInput_Keydown(PI_DOWN)) delta.y += 3;
+	mouse_x += delta_x * 0.8;
+	mouse_y += delta_y * 0.8;
+
+	if(keyMove) {
+
+		//mouse_x += PInput::Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
+		//mouse_y += PInput::Ohjain_Y(PI_PELIOHJAIN_1)/30;
+
+		if (Keydown(LEFT))  mouse_x += -3; //Move mouse with keys
+		if (Keydown(RIGHT)) mouse_x += 3;
+		if (Keydown(UP))    mouse_y += -3;
+		if (Keydown(DOWN))  mouse_y += 3;
+	
 	}
 
-	return delta;
-}
-int PisteInput_ActivateWindow(bool active) {
-	if (active) {
-		SDL_GetRelativeMouseState(NULL, NULL);
-		SDL_GetMouseState(&mouse_pos.x, &mouse_pos.y);
-		SDL_SetRelativeMouseMode(SDL_TRUE);
-	}
-	else {
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-		//SetMousePosition(mouse_pos.x, mouse_pos.y);
-	}
-	return 0;
+	int off = PDraw::get_xoffset();
+	
+	if (mouse_x < -off) mouse_x = -off;
+	if (mouse_x > w - off - 19) mouse_x = w - off - 19;
+	if (mouse_y < 0) mouse_y = 0;
+	if (mouse_y > 480 - 19) mouse_y = 480 - 19;
+
 }
 
-bool PisteInput_Alusta_Ohjaimet(){
-/*
-SDL_InitSubSystem(SDL_INIT_JOYSTICK);
 
-// Check for joystick
-if(SDL_NumJoysticks()>0){
-  // Open joystick
-  joy=SDL_JoystickOpen(0);
-
-  if(joy)
-  {
-    printf("Opened Joystick 0\n");
-    printf("Name: %s\n", SDL_JoystickName(0));
-    printf("Number of Axes: %d\n", SDL_JoystickNumAxes(joy));
-    printf("Number of Buttons: %d\n", SDL_JoystickNumButtons(joy));
-    printf("Number of Balls: %d\n", SDL_JoystickNumBalls(joy));
-  }
-  else
-    printf("Couldn't open Joystick 0\n");
-
-  if(SDL_JoystickOpened(0))
-    SDL_JoystickClose(joy);
-	*/
-	return true;
-}
-
-int PisteInput_Start(){
-	SDL_DisplayMode DM;
-	SDL_GetCurrentDisplayMode(0, &DM);
-
-	screen_w = (int)DM.w;
-	screen_h = (int)DM.h;
-	int x = screen_h;
-	if(screen_w < screen_h){
-		screen_h = screen_w;
-		screen_w = x;
-	}
-
-	PI_haptic = SDL_HapticOpen(0);
-	if (PI_haptic == NULL)
-		return -1;
-	if (SDL_HapticRumbleInit(PI_haptic) != 0)
-		return -1;
-	return 0;
-}
-
-bool PisteInput_Hiiri_Vasen(){
-	SDL_PumpEvents();
+bool MouseLeft(){
+	
 	return SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT);
+
 }
 
-bool PisteInput_Hiiri_Oikea(){
-	SDL_PumpEvents();
+bool MouseRight(){
+	
 	return SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT);
+
 }
 
-int PisteInput_Ohjain_X(int ohjain){
-	int x = 0;
+static int init_haptic() {
 
-	if (PI_joysticks[ohjain].available)
-		x = SDL_JoystickGetAxis(PI_joysticks[ohjain].dev, 0);
+	for (int i = 0; i < SDL_NumHaptics(); i++) {
 
-	return x;
-}
+		Haptic = SDL_HapticOpen(i);
+		SDL_HapticRumbleSupported(Haptic);
+		break;
 
-int PisteInput_Ohjain_Y(int ohjain){
-	int y = 0;
+		SDL_HapticClose(Haptic);
+		Haptic = nullptr;
 
-	if (PI_joysticks[ohjain].available)
-		y = SDL_JoystickGetAxis(PI_joysticks[ohjain].dev, 1);
-
-	return y;
-}
-
-bool PisteInput_Ohjain_Nappi(int ohjain, int index){
-	bool painettu = false;
-
-	if (PI_joysticks[ohjain].available)
-		painettu = SDL_JoystickGetButton(PI_joysticks[ohjain].dev, index);
-
-	return painettu;
-}
-
-char *PisteInput_Ohjain_Nimi(int ohjain){
-	return PI_joysticks[ohjain].nimi;
-}
-
-//Game controller
-bool PisteInput_Hae_Ohjaimet(){
-	bool ok = false;
-
-	for(int ohjain=0; ohjain < PI_MAX_PELIOHJAIMIA; ohjain++)
-	{
-/*
-		if (PI_joysticks[ohjain].available)
-		{
-			if (FAILED(PI_joysticks[ohjain].lpdijoy->GetDeviceState(sizeof(DIJOYSTATE),(LPVOID)&PI_joysticks[ohjain].joystick_state)))
-			{
-				PisteLog_Kirjoita("[Warning] Piste Input: Lost control of game pad! \n");
-				PI_joysticks[ohjain].available = false;
-			}
-			if (PI_joysticks[ohjain].available)
-				ok = true;
-		}
-*/
 	}
-	return ok;
-}
 
+	if (Haptic == nullptr)
+		return -1;
+	
+	if (SDL_HapticRumbleInit(Haptic) != 0)
+		return -1;
 
-bool PisteInput_Hae_Nappaimet(){
-	bool ok = true;
+} 
 
-	return ok;
-}
+int init() {
 
-bool PisteInput_Hae_Hiiri(){
-	return true;
-}
-
-char PisteInput_Lue_Nappaimisto(void){
-	SDL_Event event;
-	char c, str[5];
-	while(SDL_PollEvent(&event)) {
-		if(event.type== SDL_TEXTINPUT) {
-			strcpy(str, event.text.text);
-			c = str[0];
-			if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-				|| c == '.' || c == '!' || c == '?' || c == ' ') //Just number, letter, space dot
-				return c;
-		}
-	}
-	return('\0');
-}
-
-
-
-bool PisteInput_Lue_Eventti(){
-	SDL_PumpEvents();
-	//m_keymap = SDL_GetKeyState(NULL);
-/*
-	m_event.key.keysym.sym = SDLK_UNKNOWN;
-	while(SDL_PollEvent(&m_event)) {
-		if(m_event.type == SDL_KEYDOWN) {
-			printf("presed %i ralt:%i\n", m_event.key.keysym.sym, SDLK_RALT);
-			return true;
-		}
-	}
-*/
-	return false;
-}
-
-char* PisteInput_Lue_Kontrollin_Nimi(unsigned char k){
-//	SDL_GetKeyName( key->keysym.sym )
-	return nullptr;
-}
-
-int PisteInput_Exit(){
+	init_haptic();
+	
+	keymap = SDL_GetKeyboardState(NULL);
+	
 	return 0;
+}
+
+
+int terminate() {
+
+	if (Haptic != NULL)
+		SDL_HapticClose(Haptic);
+
+	return 0;
+
+}
+
 }

@@ -339,8 +339,8 @@ int drawimage_end(int index){
 BYTE blend_colors(BYTE color, BYTE colBack, int alpha){
     int result;
 
-    if(alpha>100) alpha = 100;
-    if(alpha<0) alpha = 0;
+    if(alpha > 100) alpha = 100;
+    if(alpha < 0) alpha = 0;
 
     result = color%32;
     result = (result*alpha)/100;
@@ -354,32 +354,33 @@ int font_create(int image, int x, int y, int char_w, int char_h, int count){
     int index;
 
     index = findfreefont();
-    if (index==-1) {
+    if (index == -1) {
         printf("PD    - PisteDraw has run out of free fonts!");
         return -1;
     }
 
-  fontList[index] = new PFont(image, x, y, char_w, char_h, count);
-  return index;
+    fontList[index] = new PFont(image, x, y, char_w, char_h, count);
+    return index;
+
 }
 int font_create(const char* path, const char* file){
-    printf("PD     - Creating font with path %s and file %s\n",path,file);
-    int index;
-
-    index = findfreefont();
+    
+    int index = findfreefont();
     if (index == -1){
         printf("PD     - PisteDraw has run out of free fonts!");
         return -1;
     }
 
     fontList[index] = new PFont();
-    if (fontList[index]->load(path,file) == -1){
+    if (fontList[index]->load(path, file) == -1){
         printf("PD     - PisteDraw can't load a font from file!\n");
         delete fontList[index];
         return -1;
     }
 
-  return index;
+    printf("PD     - Created font from %s%s - id %i\n", path, file, index);
+    
+    return index;
 }
 int font_write(int font_index, const char* text, int x, int y){
     if (font_index < 0) return 1;
@@ -455,6 +456,13 @@ void change_resolution(int w, int h) {
     
     adjust_screen();
     SDL_RenderClear(renderer);
+
+}
+
+void get_resolution(int& w, int& h) {
+
+    w = screen_width;
+    h = screen_height;
 
 }
 

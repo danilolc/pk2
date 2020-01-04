@@ -15,8 +15,6 @@ extern int game_assets;
 extern int game_assets2;
 extern int bg_screen;
 
-extern int mouse_x;
-extern int mouse_y;
 extern int key_delay;
 
 extern double cos_table[360];
