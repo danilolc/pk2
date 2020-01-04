@@ -130,11 +130,13 @@ int PFont::load(const char* file_path, const char* file){
 	this->get_image(buf_x,buf_y,temp_image);
 	PDraw::image_delete(temp_image);
 
-	for (i=0;i<256;i++)
+	for ( i = 0; i < 256; i++ )
 		charlist[i]=-1;
-	for (i=0;i<char_count;i++)
+	
+	for ( i = 0; i < char_count; i++ )
 		font_index[i] = i * char_w;
-	for (i=0;i<char_count;i++)
+	
+	for ( i = 0; i < char_count; i++ )
 		charlist[(BYTE)(chars[i]&~' ')] = font_index[i];
 
 	return 0;

@@ -26,7 +26,7 @@
 #define GAME_NAME    "Pekka Kana 2"
 #define GAME_VERSION "r3-pre"
 
-#define SDL_MAIN_HANDLED
+//#define SDL_MAIN_HANDLED
 #include <SDL.h>
 
 void start_test(const char* arg) {
@@ -90,6 +90,7 @@ int main(int argc, char *argv[]) {
 		}
 		if (strcmp(argv[i], "dev") == 0) {
 			dev_mode = true;
+			Piste::set_debug(true);
 		}
 		else if (strcmp(argv[i], "test") == 0) {
 			if (argc <= i + 1) {
@@ -137,39 +138,14 @@ int main(int argc, char *argv[]) {
 
 	Settings_Open();
 
-	screen_width = Settings.isWide ? 800 : 640;
-
-	if (PUtils::Is_Mobile())
-		screen_width = 800;
+	if (!PUtils::Is_Mobile())
+		screen_width = Settings.isWide ? 800 : 640;
 
 	Piste::init(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp");
-
 	if (!Piste::is_ready()) {
 		printf("PK2    - Failed to init PisteEngine.\n");
 		return 0;
 	}
-
-	if (dev_mode) Piste::set_debug(true);
-
-	tekstit = new PLang();
-
-	if (Load_Language(Settings.kieli) != 0) {
-
-		printf("PK2    - Could not find %s!\n", Settings.kieli);
-		strcpy(Settings.kieli, "english.txt");
-		
-		if(Load_Language(Settings.kieli) != 0) {
-			printf("PK2    - Could not find the default language file!\n");
-			quit(0);
-		}
-
-	}
-	Load_Fonts(tekstit);
-
-	Search_Episodes();
-
-	if(PUtils::Is_Mobile())
-		GUI_Load();
 
 	next_screen = SCREEN_INTRO;
 	if (dev_mode)
@@ -180,10 +156,10 @@ int main(int argc, char *argv[]) {
 	}
 
 	Screen_First_Start();
-	
+
 	Piste::loop(Screen_Loop); //The game loop
 
-	if(PK2_error){
+	if(PK2_error) {
 		printf("PK2    - Error!\n");
 		PUtils::Show_Error(PK2_error_msg);
 		quit(1);

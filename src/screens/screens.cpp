@@ -44,6 +44,8 @@ int Updade_Mouse() {
 		if (PisteInput_GetTouchPos(x, y) == 0) {
 			mouse_x = screen_width * x - offset;
 			mouse_y = screen_height * y;
+
+			printf("Touch %i, %i\n", mouse_x, mouse_y);
 			return 1;
 		}
 	}
@@ -87,10 +89,28 @@ int Screen_First_Start() {
 
 	Fadetext_Init();
 
+	tekstit = new PLang();
+	if (Load_Language(Settings.kieli) != 0) {
+
+		printf("PK2    - Could not find %s!\n", Settings.kieli);
+		strcpy(Settings.kieli, "english.txt");
+		
+		if(Load_Language(Settings.kieli) != 0) {
+			printf("PK2    - Could not find the default language file!\n");
+			PK2_Error("Error");
+			return -1;
+		}
+
+	}
 	Load_Language(Settings.kieli);
 	Load_Fonts(tekstit);
 	langlist = PUtils::Scandir(".txt", "language", 60);
 	
+	Search_Episodes();
+
+	if(PUtils::Is_Mobile())
+		GUI_Load();
+
 	MapClass_Set_Screen_Size(screen_width, screen_height);
 	
 	if (Settings.isFiltered)

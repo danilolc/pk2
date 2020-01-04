@@ -1084,17 +1084,24 @@ int Draw_Menu_Language() {
 
 	int my = 0;
 
-	for (int i = langlistindex; i < langlistindex + 10; i++){
+	int end = langlist.size();
+	if (end > langlistindex + 10)
+		end = langlistindex + 10;
+
+	for ( int i = langlistindex; i < end; i++ ) {
+
 		if(Draw_Menu_Text(true,langlist[i].c_str(),150,150+my)) {
+
 			strcpy(Settings.kieli, langlist[i].c_str());
 			Load_Language(Settings.kieli);
 			Load_Fonts(tekstit);
+
 		}
 		
 		my += 20;
 	}
 
-	my+=180;
+	my = 280;
 	if(langlist.size() > 10) {
 		int direction = Draw_BackNext(400,my-20);
 

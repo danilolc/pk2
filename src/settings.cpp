@@ -15,7 +15,7 @@
 
 PK2SETTINGS Settings;
 
-void settings_init() {
+void Settings_Init() {
 
 	strcpy(Settings.versio, SETTINGS_VERSION);
 	Settings.ladattu = false;
@@ -55,7 +55,7 @@ int Settings_Open() {
 	SDL_RWops *file = SDL_RWFromFile(SETTINGS_PATH, "rb");
 
 	if (file == nullptr){
-		settings_init();
+		Settings_Init();
 		Settings_Save();
 		return 1;
 	}
@@ -64,7 +64,7 @@ int Settings_Open() {
 	
 	if (strncmp(Settings.versio, SETTINGS_VERSION, 4) != 0) { 
 		// If settings isn't in current version
-		settings_init();
+		Settings_Init();
         Settings_Save();
 		return 2;
 	}
