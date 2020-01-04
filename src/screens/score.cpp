@@ -199,24 +199,24 @@ int Draw_ScoreCount() {
 
 		//}
 
-		//if (map_new_record) {
+		if (map_new_record) {
 
 			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_level_hiscore),100+rand()%2,my+rand()%2);
 			my += 25;
 
-		//}
-		//if (map_new_time_record) {
+		}
+		if (map_new_time_record) {
 
 			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_level_best_time),100+rand()%2,my+rand()%2);
 			my += 25;
 
-		//}
-		//if (episode_new_record) {
+		}
+		if (episode_new_record) {
 
 			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_episode_hiscore),100+rand()%2,my+rand()%2);
 			my += 25;
 
-		//}
+		}
 	}
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.score_screen_continue),25,430)) {
@@ -281,7 +281,7 @@ int Screen_ScoreCount_Init() {
 
 	}
 
-	/* Check if broken episode score */
+	/* Check if broken episode score */ //TODO
 	compare_result = EpisodeScore_Compare(0, Episode->player_score, 0, true);
 	if (compare_result > 0) {
 

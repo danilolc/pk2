@@ -69,9 +69,9 @@ int PK_Draw_Map(){
 	ShadowedText_Draw(Episode->entry.name.c_str(),100,72);
 
 	vali = ShadowedText_Draw(tekstit->Get_Text(PK_txt.map_total_score), 100, 92);
+	
 	ltoa(Episode->player_score,luku,10);
-
-	ShadowedText_Draw(tekstit->Get_Text(PK_txt.map_total_score), 100 + vali + 15, 92);
+	ShadowedText_Draw(luku, 100 + vali + 15, 92);
 
 	if (Episode->scores.episode_top_score > 0) {
 		vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_best_player),360,72);
