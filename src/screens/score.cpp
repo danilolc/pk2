@@ -117,7 +117,7 @@ int Draw_ScoreCount() {
 	}
 	/* --------- */
 
-	int my = 50;
+	int my = 60;
 
 	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_title), 100, my);
 	my += 30;
@@ -128,7 +128,7 @@ int Draw_ScoreCount() {
 	
 	ltoa(total_score,luku,10);
 	ShadowedText_Draw(luku, 400, my);
-	my += 40;
+	my += 70;
 
 	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_bonus_score), 100, my);
 	
@@ -163,21 +163,26 @@ int Draw_ScoreCount() {
 		}
 
 	}
-	my += 25;
+	my += 20;
 
 	// Draw apples
 	// TODO - put apples menu on the bottom
 	if (Game->apples_count > 0) {
 
 		int i;
-		for (i = 0; i < apples_got; i++)
-			PDraw::image_cutclip(game_assets2, 100 + i * 32, my, 61, 379, 87, 406);
+		for (i = 0; i < apples_got; i++) {
+			if (apples_got >= Game->apples_count)
+				PDraw::image_cutclip(game_assets2, 100 + i * 32 + rand()%2, my + rand()%2, 61, 379, 87, 406);
+			else
+				PDraw::image_cutclip(game_assets2, 100 + i * 32, my, 61, 379, 87, 406);
+			
+		}
 		for (; i < Game->apples_count; i++)
 			PDraw::image_cutcliptransparent(game_assets2, 61, 379, 26, 26, 100 + i * 32, my, 20, 0);
 
 	}
 
-	my += 45;
+	my += 40;
 
 	if (counting_phase >= 6) {
 		
@@ -187,31 +192,31 @@ int Draw_ScoreCount() {
 		ShadowedText_Draw(luku, 400, my);
 		my += 25;
 
-		if (apples_got >= Game->apples_count) {
+		//if (apples_got >= Game->apples_count && apples_got > 0) {
 
-			PDraw::font_write(fontti2, "You have found all apples!", 100 + rand()%2, my + rand()%2);
-			my += 25;
+		//	PDraw::font_write(fontti2, "You have found all apples!", 100 + rand()%2, my + rand()%2);
+		//	my += 25;
 
-		}
+		//}
 
-		if (map_new_record) {
+		//if (map_new_record) {
 
 			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_level_hiscore),100+rand()%2,my+rand()%2);
 			my += 25;
 
-		}
-		if (map_new_time_record) {
+		//}
+		//if (map_new_time_record) {
 
 			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_level_best_time),100+rand()%2,my+rand()%2);
 			my += 25;
 
-		}
-		if (episode_new_record) {
+		//}
+		//if (episode_new_record) {
 
 			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.score_screen_new_episode_hiscore),100+rand()%2,my+rand()%2);
 			my += 25;
 
-		}
+		//}
 	}
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.score_screen_continue),25,430)) {
