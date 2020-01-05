@@ -585,9 +585,9 @@ void Draw_Menu_Load() {
 void Draw_Menu_Save() {
 
 	int my = 0, vali = 0;
-	char number[8];
+	char number[32];
 	char jaksoc[8];
-	char ind[4];
+	char ind[8];
 
 	Draw_BGSquare(40, 70, 640-40, 410, 224);
 
@@ -597,11 +597,11 @@ void Draw_Menu_Save() {
 
 	for (int i = 0; i < MAX_SAVES; i++) {
 
-		itoa(i+1, ind, 10);
-		strcpy(number,ind);
-		strcat(number,". ");
+		itoa(i + 1, ind, 10);
+		strcpy(number, ind);
+		strcat(number, ". ");
 
-		strcat(number,saves_list[i].name);
+		strcat(number, saves_list[i].name);
 
 		if (Draw_Menu_Text(true,number,100,150+my))
 			Save_Records(i);
@@ -1150,7 +1150,7 @@ int Draw_Menu() {
 		default            : Draw_Menu_Main();     break;
 	}
 
-	PK_Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
+	Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
 	return 0;
 

@@ -37,7 +37,7 @@ extern const char* PK2_error_msg;
 void Calculate_SinCos();
 int PK2_Error(const char* msg);
 
-void PK_Draw_Cursor(int x, int y);
+void Draw_Cursor(int x, int y);
 
 
 

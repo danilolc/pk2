@@ -459,10 +459,20 @@ void change_resolution(int w, int h) {
 
 }
 
-void get_resolution(int& w, int& h) {
+int get_resolution(int* w, int* h) {
 
-    w = screen_width;
-    h = screen_height;
+    SDL_GetWindowSize(window, w, h);
+
+    return 0;
+
+}
+
+int get_buffer_size(int* w, int* h) {
+
+    *w = screen_width;
+    *h = screen_height;
+
+    return 0;
 
 }
 
@@ -478,15 +488,21 @@ void set_xoffset(int x) {
 }
 
 int init(int width, int height, const char* name, const char* icon) {
+
     if (ready) return -1;
 
     if (game_palette == NULL) {
+        
         game_palette = SDL_AllocPalette(256);
-        for(int i = 0; i < 256; i++)
-            game_palette->colors[i] = {(Uint8)i,(Uint8)i,(Uint8)i,(Uint8)i};
+
+        u8 i = 0;
+        do game_palette->colors[i] = { i, i, i, i };
+        while(i++ != 255);
+
     }
 
     window_name = name;
+
     #ifdef __ANDROID__
 
     SDL_DisplayMode DM;
@@ -503,10 +519,11 @@ int init(int width, int height, const char* name, const char* icon) {
 
     #else
 
-    window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN );
 
     window_icon = SDL_LoadBMP(icon);
     SDL_SetWindowIcon(window, window_icon);
+    SDL_ShowCursor(SDL_DISABLE);
 
     #endif
 

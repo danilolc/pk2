@@ -28,13 +28,13 @@ public class PK2Activity extends SDLActivity {
     }
 
     private static Method getEntriesMethod;
-    private static Method expansionFileMethod;
+    //private static Method expansionFileMethod;
     private static Object expansionFile;
 
     // This method is called by SDL using JNI./*
     public static String[] Utils_ScanAPKdir(String dir) {
-        /*
-        if (expansionFile == null) {
+
+        /*if (expansionFile == null) {
             String mainHint = nativeGetHint("SDL_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION");
             if (mainHint == null) {
                 return null; // no expansion use if no main version was set
@@ -61,25 +61,35 @@ public class PK2Activity extends SDLActivity {
                     .getMethod("getAPKExpansionZipFile", Context.class, int.class, int.class)
                     .invoke(null, SDL.getContext(), mainVersion, patchVersion);
 
-                expansionFileMethod = expansionFile.getClass()
+                    getEntriesMethod = expansionFile.getClass()
                     .getMethod("getInputStream", String.class);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 expansionFile = null;
-                expansionFileMethod = null;
-                throw new IOException("Could not access APK expansion support library1", ex);
+                getEntriesMethod = null;
+                throw new IOException("Could not access APK expansion support library", ex);
             }
         }
 
-        if (getEntriesMethod == null) {
-            try {
-                getEntriesMethod = expansionFile.getClass()
-                    .getMethod("getEntriesAt", String.class);
-            } catch (Exception ex) {
-                getEntriesMethod = null;
-                throw new IOException("Could not access APK expansion support library2", ex);
-            }
+        // Get an input stream for a known file inside the expansion file ZIPs
+        InputStream fileStream;
+        try {
+            fileStream = (InputStream)expansionFileMethod.invoke(expansionFile, fileName);
+        } catch (Exception ex) {
+            // calling "getInputStream" failed
+            ex.printStackTrace();
+            throw new IOException("Could not open stream from APK expansion file", ex);
         }
+
+        if (fileStream == null) {
+            // calling "getInputStream" was successful but null was returned
+            throw new IOException("Could not find path in APK expansion file");
+        }
+
+        return fileStream;
+
+
+        
 
 
         Object[] list = null;
@@ -108,8 +118,8 @@ public class PK2Activity extends SDLActivity {
 
     @Override
     protected String[] getArguments() {
-        return new String[0];
-        //return new String[] { "dev", "test", "rooster island 1/map001.map" };
+        //return new String[0];
+    return new String[] { "dev"/*, "test", "rooster island 1/map001.map"*/};
     }
 
     @Override

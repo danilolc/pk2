@@ -117,6 +117,7 @@ char keyboard_text[32];
 
 void StartKeyboard() {
 
+	SDL_StartTextInput();
 	text_editing = true;
 	keyboard_text[0] = '\0';
 	
@@ -124,6 +125,7 @@ void StartKeyboard() {
 
 void EndKeyboard() {
 
+	SDL_StopTextInput();
 	text_editing = false;
 	keyboard_text[0] = '\0';
 
@@ -209,7 +211,6 @@ int GetTouchPos(float& x, float& y) {
 		if (SDL_GetNumTouchFingers(id) != 0) {
 			break;
 		}
-			
 		
 	}
 
@@ -226,29 +227,32 @@ int GetTouchPos(float& x, float& y) {
 
 void UpdateMouse(bool keyMove, bool relative) {
 
-	int w, h;
-	PDraw::get_resolution(w, h);
+	int sw, sh;
+	PDraw::get_resolution(&sw, &sh);
 
-	if (PUtils::Is_Mobile()) {
+	int bw, bh;
+	PDraw::get_buffer_size(&bw, &bh);
 
-		float x, y;
+	int off = PDraw::get_xoffset();
 
-		if( GetTouchPos(x,y) == 0 ) {
-
-			mouse_x = x * w - PDraw::get_xoffset();;
-			mouse_y = y * h;
-			return;
-
-		}
-	}
-
-	SDL_SetRelativeMouseMode(relative? SDL_TRUE : SDL_FALSE);
-	
-	if (!relative) {
+	if (!relative || PUtils::Is_Mobile()) {
+		SDL_SetRelativeMouseMode(SDL_FALSE);
 		SDL_GetMouseState(&mouse_x, &mouse_y);
-		mouse_x -= PDraw::get_xoffset();
+
+		//Problem with fitScreen
+		mouse_x *= float(bw) / sw;
+		mouse_y *= float(bh) / sh;
+		mouse_x -= off;
+
+		if (mouse_x < -off) mouse_x = -off;
+		if (mouse_x > bw - off - 19) mouse_x = sw - off - 19;
+		if (mouse_y < 0) mouse_y = 0;
+		if (mouse_y > bh - 19) mouse_y = 480 - 19;
+
 		return;
 	}
+
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 
 	int delta_x, delta_y;
 	SDL_GetRelativeMouseState(&delta_x, &delta_y);
@@ -267,13 +271,11 @@ void UpdateMouse(bool keyMove, bool relative) {
 		if (Keydown(DOWN))  mouse_y += 3;
 	
 	}
-
-	int off = PDraw::get_xoffset();
 	
 	if (mouse_x < -off) mouse_x = -off;
-	if (mouse_x > w - off - 19) mouse_x = w - off - 19;
+	if (mouse_x > bw - off - 19) mouse_x = sw - off - 19;
 	if (mouse_y < 0) mouse_y = 0;
-	if (mouse_y > 480 - 19) mouse_y = 480 - 19;
+	if (mouse_y > bh - 19) mouse_y = 480 - 19;
 
 }
 

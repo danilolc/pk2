@@ -10,17 +10,39 @@
 
 namespace Piste {
 
-bool ready = false;
-bool running = false;
+static bool ready = false;
+static bool running = false;
 
-float avrg_fps = 0;
+static float avrg_fps = 0;
 
-bool debug = false;
-bool draw = true;
+static bool debug = false;
+static bool draw = true;
 
-void logic();
+static void logic() {
+	
+	SDL_Event event;
 
-void sdl_show() {
+	while( SDL_PollEvent(&event) ) {
+		
+		if(event.type == SDL_QUIT)
+			running = false;
+		if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
+			PDraw::adjust_screen();
+		if(event.type == SDL_TEXTINPUT && PInput::Is_Editing())
+			PInput::InjectText(event.text.text);
+		
+	}
+
+	PDraw::update(draw);
+	PSound::update();
+	
+	if (debug) {
+		fflush(stdout);
+	}
+
+}
+
+static void sdl_show() {
 
 	SDL_version compiled;
 	SDL_version linked;
@@ -82,6 +104,7 @@ void loop(int (*GameLogic)()) {
 		
 		logic();
 
+		// Count fps
 		if (draw) {
 			real_fps = 1000.f / (SDL_GetTicks() - last_time);
 			real_fps *= count;
@@ -122,31 +145,6 @@ void ignore_frame() {
 bool is_ready() {
 
 	return ready;
-
-}
-
-void logic() {
-
-	
-	SDL_Event event;
-
-	while( SDL_PollEvent(&event) ) {
-		
-		if(event.type == SDL_QUIT)
-			running = false;
-		if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
-			PDraw::adjust_screen();
-		if(event.type == SDL_TEXTINPUT && PInput::Is_Editing())
-			PInput::InjectText(event.text.text);
-		
-	}
-
-	PDraw::update(draw);
-	PSound::update();
-	
-	if (debug) {
-		fflush(stdout);
-	}
 
 }
 

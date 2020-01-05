@@ -16,17 +16,16 @@ namespace PSound {
 
 const int MAX_SOUNDS = 300;
 
-int def_freq = 22050;
-int sfx_volume = 100;
-int mus_volume = 100;
-int mus_volume_now = 100;
+static int def_freq = 22050;
 
-Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
-Uint8* freq_chunks[CHANNELS]; //The chunk allocated for each channel
-//TODO - change channel volume
+static int mus_volume = 100;
+static int mus_volume_now = 100;
 
-Mix_Music* music = NULL;
-char playingMusic[PE_PATH_SIZE] = "";
+static Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
+static Uint8* freq_chunks[CHANNELS];  //The chunk allocated for each channel
+
+static Mix_Music* music = NULL;
+static char playingMusic[PE_PATH_SIZE] = "";
 
 int find_channel() {
 	

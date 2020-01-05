@@ -51,9 +51,9 @@ void Calculate_SinCos(){
 	for (i=0; i<360; i++) sin_table[i] = sin(M_PI*2* (i%360)/180)*33;
 }
 
-void PK_Draw_Cursor(int x, int y){
+void Draw_Cursor(int x, int y){
 
-	if(!PUtils::Is_Mobile() && Settings.isFullScreen)
+	/*if(!PUtils::Is_Mobile() && Settings.isFullScreen)*/
 		PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
 	
 }

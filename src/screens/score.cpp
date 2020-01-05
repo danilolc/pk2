@@ -226,7 +226,7 @@ int Draw_ScoreCount() {
 
 	}
 
-	PK_Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
+	Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
 	return 0;
 }
