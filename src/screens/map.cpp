@@ -61,7 +61,8 @@ int PK_Draw_Map_Button(int x, int y, int type){
 	return ret;
 }
 
-int PK_Draw_Map(){
+int PK_Draw_Map() {
+
 	char luku[20];
 	int vali = 20;
 
@@ -93,9 +94,11 @@ int PK_Draw_Map(){
 		PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.episodes_no_maps),180,290);
 	}
 	
-	Draw_Menu_Text(!going_to_game,tekstit->Get_Text(PK_txt.mainmenu_return),100,430);
+	if (Draw_Menu_Text(!going_to_game,tekstit->Get_Text(PK_txt.mainmenu_return),100,430)) {
+		next_screen = SCREEN_MENU;
+		degree_temp = degree;
+	}
 
-	int nuppi_x = 0, nuppi_y = 0;
 	int paluu;
 	int min = 0, sek = 0;
 	int icon;
@@ -208,8 +211,6 @@ int PK_Draw_Map(){
 		}
 	}
 
-	PK_Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
-
 	return 0;
 }
 
@@ -297,7 +298,8 @@ int Screen_Map_Init() {
 	return 0;
 }
 
-int Screen_Map(){
+int Screen_Map() {
+
 	PK_Draw_Map();
 
 	degree = 1 + degree % 360;
@@ -312,13 +314,29 @@ int Screen_Map(){
 		PDraw::fade_out(0);
 	}
 
-	if (!going_to_game && key_delay == 0){
+	if (!going_to_game && key_delay == 0) {
+
 		if (PInput::Keydown(PInput::ESCAPE)) {
 			next_screen = SCREEN_MENU;
 			degree_temp = degree;
 			key_delay = 20;
 		}
+		
 	}
+
+	if (next_screen == SCREEN_MENU) {
+
+		int w, h;
+		PDraw::image_getsize(bg_screen, w, h);
+		if (w != screen_width) {
+			PDraw::image_delete(bg_screen);
+			bg_screen = PDraw::image_new(screen_width, screen_height);
+		}
+		PDraw::image_snapshot(bg_screen);
+
+	}
+	
+	PK_Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
 	return 0;
 }

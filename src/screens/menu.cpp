@@ -23,7 +23,8 @@
 
 #include <cstring>
 
-enum MENU{
+enum MENU {
+
 	MENU_MAIN,
 	MENU_EPISODES,
 	MENU_CONTROLS,
@@ -33,6 +34,7 @@ enum MENU{
 	MENU_LOAD,
 	MENU_TALLENNA,
 	MENU_LANGUAGE
+
 };
 
 struct MENU_RECT {
@@ -45,29 +47,29 @@ struct MENU_RECT {
 int menu_nyt = MENU_MAIN;
 int menu_lue_kontrollit = 0;
 
-int menu_name_index = 0;
+uint menu_name_index = 0;
 char menu_name_last_mark = '\0';
 char menu_name[20] = "";
 
-int menu_valittu_id = 0;
-int menu_valinta_id = 1;
+uint menu_valittu_id = 0;
+uint menu_valinta_id = 1;
 
-int  episode_page = 0;
+uint episode_page = 0;
 
-int langlistindex = 0;
+uint langlistindex = 0;
 
 bool editing_name = false;
 
-int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
-	BYTE *buffer = NULL;
-	DWORD leveys;
-	BYTE vari,/* vari2, vari3,*/ vari32;
-	DWORD x, mx, my;
+int PK_MenuShadow_Create(int kbuffer, u32 kleveys, int kkorkeus, int startx){
+	u8* buffer = NULL;
+	u32 leveys;
+	u8 vari,/* vari2, vari3,*/ vari32;
+	u32 x, mx, my;
 	int y;
 	double kerroin;
 
 
-	if (PDraw::drawimage_start(kbuffer,*&buffer,(DWORD &)leveys)==1)
+	if (PDraw::drawimage_start(kbuffer, *&buffer, (u32&)leveys) != 0)
 		return 1;
 
 	if (kleveys > leveys)
@@ -107,13 +109,13 @@ int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx){
 			kerroin = kerroin - 0.005;
 	}
 
-	if (PDraw::drawimage_end(kbuffer)==1)
+	if (PDraw::drawimage_end(kbuffer) != 0)
 		return 1;
 
 	return 0;
 }
 
-int Draw_BGSquare(int left, int top, int right, int bottom, BYTE pvari){
+int Draw_BGSquare(int left, int top, int right, int bottom, u8 pvari){
 	
 	if (Episode)
 		return 0;
@@ -217,6 +219,7 @@ bool Draw_Menu_Text(bool active, const char *teksti, int x, int y) {
 	if ( mouse_on || (menu_valittu_id == menu_valinta_id) ) {
 
 		menu_valittu_id = menu_valinta_id;
+		Wavetext_Draw(teksti, fontti3, x, y);//
 
 		if (( (PInput::MouseLeft() && mouse_on) || PInput::Keydown(PInput::SPACE)
 			/*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1)*/)
@@ -229,7 +232,7 @@ bool Draw_Menu_Text(bool active, const char *teksti, int x, int y) {
 
 		}
 
-		Wavetext_Draw(teksti, fontti3, x, y);
+		//Wavetext_Draw(teksti, fontti3, x, y);
 
 	}
 	else
@@ -241,7 +244,7 @@ bool Draw_Menu_Text(bool active, const char *teksti, int x, int y) {
 }
 
 int Draw_BoolBox(int x, int y, bool muuttuja, bool active){
-	PDraw::RECT img_src, img_dst = {(DWORD)x,(DWORD)y,0,0};
+	PDraw::RECT img_src, img_dst = {(u32)x,(u32)y,0,0};
 
 	if(muuttuja) img_src = {504,124,31,31};
 	else img_src = {473,124,31,31};
@@ -307,7 +310,7 @@ int  Draw_BackNext(int x, int y){
 	return 0;
 }
 
-int Draw_Menu_Main() {
+void Draw_Menu_Main() {
 	int my = PUtils::Is_Mobile()? 260 : 240;//250;
 
 	Draw_BGSquare(160, 200, 640-180, 410, 224);
@@ -375,10 +378,10 @@ int Draw_Menu_Main() {
 			Fade_Quit();
 		my += 20;
 	}
-	return 0;
+
 }
 
-int Draw_Menu_Name() {
+void Draw_Menu_Name() {
 
 	bool mouse_on_text = false;
 	int nameSize = (int)strlen(menu_name);
@@ -524,10 +527,9 @@ int Draw_Menu_Name() {
 		PInput::EndKeyboard();
 	}
 
-	return 0;
 }
 
-int Draw_Menu_Load() {
+void Draw_Menu_Load() {
 	int my = 0, vali = 0;
 	char number[100];
 	char jaksoc[8];
@@ -578,10 +580,9 @@ int Draw_Menu_Load() {
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_return),180,400))
 		menu_nyt = MENU_MAIN;
 
-	return 0;
 }
 
-int Draw_Menu_Save() {
+void Draw_Menu_Save() {
 
 	int my = 0, vali = 0;
 	char number[8];
@@ -594,9 +595,9 @@ int Draw_Menu_Save() {
 	PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.savegame_info),50,110);
 	my = -20;
 
-	for (int i=0;i<MAX_SAVES;i++) {
+	for (int i = 0; i < MAX_SAVES; i++) {
 
-		itoa(i+1,ind,10);
+		itoa(i+1, ind, 10);
 		strcpy(number,ind);
 		strcat(number,". ");
 
@@ -625,10 +626,9 @@ int Draw_Menu_Save() {
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_return),180,400))
 		menu_nyt = MENU_MAIN;
 
-	return 0;
 }
 
-int Draw_Menu_Graphics() {
+void Draw_Menu_Graphics() {
 	bool wasFullScreen, wasFiltered, wasFit, wasWide;
 	int my = 150;
 	static bool moreOptions = false;
@@ -826,10 +826,9 @@ int Draw_Menu_Graphics() {
 		moreOptions = false;
 	}
 
-	return 0;
 }
 
-int Draw_Menu_Sounds() {
+void Draw_Menu_Sounds() {
 	int my = 0;
 
 	Draw_BGSquare(40, 70, 640-40, 410, 224);
@@ -886,10 +885,9 @@ int Draw_Menu_Sounds() {
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_return),180,400))
 		menu_nyt = MENU_MAIN;
 
-	return 0;
 }
 
-int Draw_Menu_Controls() {
+void Draw_Menu_Controls() {
 	int my = 0;
 
 	Draw_BGSquare(40, 70, 640-40, 410, 224);
@@ -935,9 +933,10 @@ int Draw_Menu_Controls() {
 	}*/
 
 	if (menu_lue_kontrollit == 0){
-		if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.controls_edit),100,90+my))
+		if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.controls_edit),100,90+my)) {
 			menu_lue_kontrollit = 1;
 			menu_valittu_id = 0; //Set menu cursor to 0
+		}
 	}
 
 	my += 30;
@@ -991,7 +990,7 @@ int Draw_Menu_Controls() {
 		menu_valittu_id = 0;
 	}
 
-	BYTE k = 0;
+	u8 k = 0;
 
 	if (key_delay == 0 && menu_lue_kontrollit > 0){
 		k = PInput::GetKey();
@@ -1021,10 +1020,9 @@ int Draw_Menu_Controls() {
 
 	my += 20;
 
-	return 0;
 }
 
-int Draw_Menu_Episodes() {
+void Draw_Menu_Episodes() {
 	int my = 0;
 
 	Draw_BGSquare(80, 130, 640-80, 450, 224);
@@ -1043,7 +1041,7 @@ int Draw_Menu_Episodes() {
 		itoa(episode_page + 1,luku,10);
 		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 		vali += PDraw::font_write(fontti1,"/",x+vali,y+20);
-		itoa((episodes.size()/10)+1,luku,10);
+		itoa((int)(episodes.size()/10)+1,luku,10);
 		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 
 		int nappi = Draw_BackNext(x,y);
@@ -1085,10 +1083,9 @@ int Draw_Menu_Episodes() {
 
 	//PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.episodes_get_more),140,440);
 
-	return 0;
 }
 
-int Draw_Menu_Language() {
+void Draw_Menu_Language() {
 
 	Draw_BGSquare(110, 130, 640-110, 450, 224);
 
@@ -1096,7 +1093,7 @@ int Draw_Menu_Language() {
 
 	int my = 150;
 
-	int end = langlist.size();
+	uint end = langlist.size();
 	if (end > langlistindex + 10)
 		end = langlistindex + 10;
 
@@ -1131,7 +1128,6 @@ int Draw_Menu_Language() {
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_return),130,my))
 		menu_nyt = MENU_MAIN;
 
-	return 0;
 }
 
 int Draw_Menu() {
@@ -1177,13 +1173,13 @@ int Screen_Menu_Init() {
 	
 	} else {
 
-		int w, h;
-		PDraw::image_getsize(bg_screen, w, h);
-		if (w != screen_width) {
-			PDraw::image_delete(bg_screen);
-			bg_screen = PDraw::image_new(screen_width, screen_height);
-		}
-		PDraw::image_snapshot(bg_screen); //TODO - take snapshot without text and cursor
+		//int w, h;
+		//PDraw::image_getsize(bg_screen, w, h);
+		//if (w != screen_width) {
+		//	PDraw::image_delete(bg_screen);
+		//	bg_screen = PDraw::image_new(screen_width, screen_height);
+		//}
+		//PDraw::image_snapshot(bg_screen); //TODO - take snapshot without text and cursor
 		PK_MenuShadow_Create(bg_screen, 640, 480, Settings.isWide? 110 : 30);
 
 	}

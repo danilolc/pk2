@@ -6,10 +6,10 @@
 
 #include "engine/types.hpp"
 
-void Effect_Feathers(DWORD x, DWORD y);
-void Effect_Splash(DWORD x, DWORD y, BYTE color);
-void Effect_Explosion(DWORD x, DWORD y, BYTE color);
-void Effect_Smoke(DWORD x, DWORD y, BYTE color);
-void Effect_SmokeClouds(DWORD x, DWORD y);
-void Effect_Stars(DWORD x, DWORD y, BYTE color);
-void Effect_Destruction(BYTE tehoste, DWORD x, DWORD y);
+void Effect_Feathers(u32 x, u32 y);
+void Effect_Splash(u32 x, u32 y, u8 color);
+void Effect_Explosion(u32 x, u32 y, u8 color);
+void Effect_Smoke(u32 x, u32 y, u8 color);
+void Effect_SmokeClouds(u32 x, u32 y);
+void Effect_Stars(u32 x, u32 y, u8 color);
+void Effect_Destruction(u8 tehoste, u32 x, u32 y);

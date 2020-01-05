@@ -241,47 +241,47 @@ enum { //Bonus Item
 };
 
 struct PK2SPRITE_ANIMAATIO{
-    BYTE		sekvenssi[ANIMAATIO_MAX_SEKVENSSEJA];	// sequence
-    BYTE		frameja;								// frames
+    u8		sekvenssi[ANIMAATIO_MAX_SEKVENSSEJA];	// sequence
+    u8		frameja;								// frames
     bool		looppi;									// loop
 };
 
 //.spr file structures
 struct PrototypeClass10{
 
-    DWORD		tyyppi;											// spriten tyyppi
+    u32		tyyppi;											// spriten tyyppi
     // Kuvatiedoston tiedot
     char		kuvatiedosto[13];								// .BMP jossa ovat spriten grafiikat
     // Spriteen liittyv�t ��nitehosteet
     char		aanitiedostot[7][13];							// ��nitehostetiedostot
-    DWORD		aanet[7];										// ��nitehosteet (indeksit buffereihin)
+    u32		aanet[7];										// ��nitehosteet (indeksit buffereihin)
     // Spriten kuva- ja animaatio-ominaisuudet
-    BYTE		frameja;										// framejen m��r�
+    u8		frameja;										// framejen m��r�
     PK2SPRITE_ANIMAATIO animaatiot[20];							// animaatio sekvenssit
-    BYTE		animaatioita;									// animaatioiden m��r�
-    BYTE		frame_rate;										// yhden framen kesto
-    DWORD		kuva_x;											// miss� kohtaa kuvaa sprite on
-    DWORD		kuva_y;											// miss� kohtaa kuvaa sprite on
-    DWORD		kuva_frame_leveys;								// yhden framen leveys
-    DWORD		kuva_frame_korkeus;								// yhden framen korkeus
-    DWORD		kuva_frame_vali;								// kahden framen vali
+    u8		animaatioita;									// animaatioiden m��r�
+    u8		frame_rate;										// yhden framen kesto
+    u32		kuva_x;											// miss� kohtaa kuvaa sprite on
+    u32		kuva_y;											// miss� kohtaa kuvaa sprite on
+    u32		kuva_frame_leveys;								// yhden framen leveys
+    u32		kuva_frame_korkeus;								// yhden framen korkeus
+    u32		kuva_frame_vali;								// kahden framen vali
     // Spriten ominaisuudet
     char		nimi[30];										// spriten nimi (n�kyy editorissa)
-    DWORD		leveys;											// spriten leveys
-    DWORD		korkeus;										// spriten korkeus
+    u32		leveys;											// spriten leveys
+    u32		korkeus;										// spriten korkeus
     double		paino;											// sprite paino (vaikuttaa hyppyyn ja kytkimiin)
     bool		vihollinen;										// onko sprite vihollinen
-    DWORD		energia;										// monta iskua kest��
-    DWORD		vahinko;										// paljon vahinkoa tekee jos osuu
-    DWORD		pisteet;										// paljonko siit� saa pisteit�
-    DWORD		AI[5];											// mit� teko�lyj� k�ytet��n
-    DWORD		suojaus;										// miten suojattu iskuilta
-    BYTE		max_hyppy;										// hypyn maksimikesto
-    BYTE		max_nopeus;										// maksimi nopeus
-    DWORD		latausaika;										// ampumisen j�lkeinen odotus
-    BYTE		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
+    u32		energia;										// monta iskua kest��
+    u32		vahinko;										// paljon vahinkoa tekee jos osuu
+    u32		pisteet;										// paljonko siit� saa pisteit�
+    u32		AI[5];											// mit� teko�lyj� k�ytet��n
+    u32		suojaus;										// miten suojattu iskuilta
+    u8		max_hyppy;										// hypyn maksimikesto
+    u8		max_nopeus;										// maksimi nopeus
+    u32		latausaika;										// ampumisen j�lkeinen odotus
+    u8		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
-    DWORD		tuhoutuminen;									// miten sprite tuhoutuu
+    u32		tuhoutuminen;									// miten sprite tuhoutuu
     // Yhteys toisiin spriteihin
     char		muutos_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
     char		bonus_sprite[13];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
@@ -291,46 +291,46 @@ struct PrototypeClass10{
 };
 struct PrototypeClass11{
 
-    DWORD		tyyppi;											// spriten tyyppi
+    u32		tyyppi;											// spriten tyyppi
     // Kuvatiedoston tiedot
     char		kuvatiedosto[13];								// .BMP jossa ovat spriten grafiikat
     // Spriteen liittyv�t ��nitehosteet
     char		aanitiedostot[7][13];							// ��nitehostetiedostot
-    DWORD		aanet[7];										// ��nitehosteet (indeksit buffereihin)
+    u32		aanet[7];										// ��nitehosteet (indeksit buffereihin)
     // Spriten kuva- ja animaatio-ominaisuudet
-    BYTE		frameja;										// framejen m��r�
+    u8		frameja;										// framejen m��r�
     PK2SPRITE_ANIMAATIO animaatiot[20];							// animaatio sekvenssit
-    BYTE		animaatioita;									// animaatioiden m��r�
-    BYTE		frame_rate;										// yhden framen kesto
-    DWORD		kuva_x;											// miss� kohtaa kuvaa sprite on
-    DWORD		kuva_y;											// miss� kohtaa kuvaa sprite on
-    DWORD		kuva_frame_leveys;								// yhden framen leveys
-    DWORD		kuva_frame_korkeus;								// yhden framen korkeus
-    DWORD		kuva_frame_vali;								// kahden framen vali
+    u8		animaatioita;									// animaatioiden m��r�
+    u8		frame_rate;										// yhden framen kesto
+    u32		kuva_x;											// miss� kohtaa kuvaa sprite on
+    u32		kuva_y;											// miss� kohtaa kuvaa sprite on
+    u32		kuva_frame_leveys;								// yhden framen leveys
+    u32		kuva_frame_korkeus;								// yhden framen korkeus
+    u32		kuva_frame_vali;								// kahden framen vali
     // Spriten ominaisuudet
     char		nimi[30];										// spriten nimi (n�kyy editorissa)
-    DWORD		leveys;											// spriten leveys
-    DWORD		korkeus;										// spriten korkeus
+    u32		leveys;											// spriten leveys
+    u32		korkeus;										// spriten korkeus
     double		paino;											// sprite paino (vaikuttaa hyppyyn ja kytkimiin)
     bool		vihollinen;										// onko sprite vihollinen
-    DWORD		energia;										// monta iskua kest��
-    DWORD		vahinko;										// paljon vahinkoa tekee jos osuu
-    BYTE        vahinko_tyyppi;									// Mink� tyyppist� vahinkoa tekee (1.1)
-    BYTE		suojaus;										// Mink� tyyppiselt� vahingolta on suojattu
-    DWORD		pisteet;										// paljonko siit� saa pisteit�
-    DWORD		AI[5];											// mit� teko�lyj� k�ytet��n
-    BYTE		max_hyppy;										// hypyn maksimikesto
-    BYTE		max_nopeus;										// maksimi nopeus
-    DWORD		latausaika;										// ampumisen j�lkeinen odotus
-    BYTE		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
+    u32		energia;										// monta iskua kest��
+    u32		vahinko;										// paljon vahinkoa tekee jos osuu
+    u8        vahinko_tyyppi;									// Mink� tyyppist� vahinkoa tekee (1.1)
+    u8		suojaus;										// Mink� tyyppiselt� vahingolta on suojattu
+    u32		pisteet;										// paljonko siit� saa pisteit�
+    u32		AI[5];											// mit� teko�lyj� k�ytet��n
+    u8		max_hyppy;										// hypyn maksimikesto
+    u8		max_nopeus;										// maksimi nopeus
+    u32		latausaika;										// ampumisen j�lkeinen odotus
+    u8		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
-    DWORD		tuhoutuminen;									// miten sprite tuhoutuu
+    u32		tuhoutuminen;									// miten sprite tuhoutuu
     bool		avain;											// Voiko sprite avata lukkoja
     bool		tarisee;										// Tariseek� sprite satunnaisesti
-    BYTE        bonusten_lkm;									// Bonusten lukum��r�
-    DWORD       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
-    DWORD       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
-    DWORD		pallarx_kerroin;								// Vain TYYPPI_TAUSTA. Suhde taustakuvaan.
+    u8        bonusten_lkm;									// Bonusten lukum��r�
+    u32       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
+    u32       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
+    u32		pallarx_kerroin;								// Vain TYYPPI_TAUSTA. Suhde taustakuvaan.
     // Yhteys toisiin spriteihin
     char		muutos_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
     char		bonus_sprite[13];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
@@ -340,46 +340,46 @@ struct PrototypeClass11{
 };
 struct PrototypeClass12{
 
-    DWORD		tyyppi;											// spriten tyyppi
+    u32		tyyppi;											// spriten tyyppi
     // Kuvatiedoston tiedot
     char		kuvatiedosto[13];								// .BMP jossa ovat spriten grafiikat
     // Spriteen liittyv�t ��nitehosteet
     char		aanitiedostot[7][13];							// ��nitehostetiedostot
-    DWORD		aanet[7];										// ��nitehosteet (indeksit buffereihin)
+    u32		aanet[7];										// ��nitehosteet (indeksit buffereihin)
     // Spriten kuva- ja animaatio-ominaisuudet
-    BYTE		frameja;										// framejen m��r�
+    u8		frameja;										// framejen m��r�
     PK2SPRITE_ANIMAATIO animaatiot[20];							// animaatio sekvenssit
-    BYTE		animaatioita;									// animaatioiden m��r�
-    BYTE		frame_rate;										// yhden framen kesto
-    DWORD		kuva_x;											// miss� kohtaa kuvaa sprite on
-    DWORD		kuva_y;											// miss� kohtaa kuvaa sprite on
-    DWORD		kuva_frame_leveys;								// yhden framen leveys
-    DWORD		kuva_frame_korkeus;								// yhden framen korkeus
-    DWORD		kuva_frame_vali;								// kahden framen vali
+    u8		animaatioita;									// animaatioiden m��r�
+    u8		frame_rate;										// yhden framen kesto
+    u32		kuva_x;											// miss� kohtaa kuvaa sprite on
+    u32		kuva_y;											// miss� kohtaa kuvaa sprite on
+    u32		kuva_frame_leveys;								// yhden framen leveys
+    u32		kuva_frame_korkeus;								// yhden framen korkeus
+    u32		kuva_frame_vali;								// kahden framen vali
     // Spriten ominaisuudet
     char		nimi[30];										// spriten nimi (n�kyy editorissa)
-    DWORD		leveys;											// spriten leveys
-    DWORD		korkeus;										// spriten korkeus
+    u32		leveys;											// spriten leveys
+    u32		korkeus;										// spriten korkeus
     double		paino;											// sprite paino (vaikuttaa hyppyyn ja kytkimiin)
     bool		vihollinen;										// onko sprite vihollinen
-    DWORD		energia;										// monta iskua kest��
-    DWORD		vahinko;										// paljon vahinkoa tekee jos osuu
-    BYTE        vahinko_tyyppi;									// Mink� tyyppist� vahinkoa tekee (1.1)
-    BYTE		suojaus;										// Mink� tyyppiselt� vahingolta on suojattu
-    DWORD		pisteet;										// paljonko siit� saa pisteit�
-    DWORD		AI[5];											// mit� teko�lyj� k�ytet��n
-    BYTE		max_hyppy;										// hypyn maksimikesto
-    BYTE		max_nopeus;										// maksimi nopeus
-    DWORD		latausaika;										// ampumisen j�lkeinen odotus
-    BYTE		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
+    u32		energia;										// monta iskua kest��
+    u32		vahinko;										// paljon vahinkoa tekee jos osuu
+    u8        vahinko_tyyppi;									// Mink� tyyppist� vahinkoa tekee (1.1)
+    u8		suojaus;										// Mink� tyyppiselt� vahingolta on suojattu
+    u32		pisteet;										// paljonko siit� saa pisteit�
+    u32		AI[5];											// mit� teko�lyj� k�ytet��n
+    u8		max_hyppy;										// hypyn maksimikesto
+    u8		max_nopeus;										// maksimi nopeus
+    u32		latausaika;										// ampumisen j�lkeinen odotus
+    u8		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
-    DWORD		tuhoutuminen;									// miten sprite tuhoutuu
+    u32		tuhoutuminen;									// miten sprite tuhoutuu
     bool		avain;											// Voiko sprite avata lukkoja
     bool		tarisee;										// Tariseek� sprite satunnaisesti
-    BYTE        bonusten_lkm;									// Bonusten lukum��r�
-    DWORD       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
-    DWORD       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
-    DWORD		pallarx_kerroin;								// Vain TYYPPI_TAUSTA. Suhde taustakuvaan.
+    u8        bonusten_lkm;									// Bonusten lukum��r�
+    u32       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
+    u32       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
+    u32		pallarx_kerroin;								// Vain TYYPPI_TAUSTA. Suhde taustakuvaan.
     // Yhteys toisiin spriteihin
     char		muutos_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
     char		bonus_sprite[13];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
@@ -387,7 +387,7 @@ struct PrototypeClass12{
     char		ammus2_sprite[13];								// Spriten ammuksena 2 k�ytt�m� sprite
 
     bool		tiletarkistus;									// t�rm�ileek� tileihin
-    DWORD		aani_frq;										// ��nien perussoittotaajuus (esim. 22050)
+    u32		aani_frq;										// ��nien perussoittotaajuus (esim. 22050)
     bool		random_frq;										// satunnaisuutta taajuuteen?
 
     // Jos sprite on este
@@ -399,46 +399,46 @@ struct PrototypeClass12{
 };
 struct PrototypeClass13{
 
-    DWORD		tyyppi;											// sprite type
+    u32		tyyppi;											// sprite type
     char		kuvatiedosto[100];								// bmp path
     char		aanitiedostot[7][100];							// sound path (max 7)
-    DWORD		aanet[7];										// sound types
+    u32		aanet[7];										// sound types
 
 
-    BYTE		frameja;										// number of frames
+    u8		frameja;										// number of frames
     PK2SPRITE_ANIMAATIO animaatiot[20];							// animation sequences
-    BYTE		animaatioita;									// number of animations
-    BYTE		frame_rate;										// frame rate
-    DWORD		kuva_x;											// x position of first frame
-    DWORD		kuva_y;											// y position of first frame
-    DWORD		kuva_frame_leveys;								// frame width
-    DWORD		kuva_frame_korkeus;								// frame height
-    DWORD		kuva_frame_vali;								// space between frames
+    u8		animaatioita;									// number of animations
+    u8		frame_rate;										// frame rate
+    u32		kuva_x;											// x position of first frame
+    u32		kuva_y;											// y position of first frame
+    u32		kuva_frame_leveys;								// frame width
+    u32		kuva_frame_korkeus;								// frame height
+    u32		kuva_frame_vali;								// space between frames
 
 
     char		nimi[30];										// name
-    DWORD		leveys;											// width
-    DWORD		korkeus;										// height
+    u32		leveys;											// width
+    u32		korkeus;										// height
     double		paino;											// weight (for jump and switches)
     bool		vihollinen;										// if sprite is a enemy
-    DWORD		energia;										//?sprite energy
-    DWORD		vahinko;										//?damage if hitted
-    BYTE        vahinko_tyyppi;									//?damage type
-    BYTE		suojaus;										//?protection type
-    DWORD		pisteet;										// how much score
-    DWORD		AI[10];											// AI type (max 10)
-    BYTE		max_hyppy;										// max jump time
+    u32		energia;										//?sprite energy
+    u32		vahinko;										//?damage if hitted
+    u8        vahinko_tyyppi;									//?damage type
+    u8		suojaus;										//?protection type
+    u32		pisteet;										// how much score
+    u32		AI[10];											// AI type (max 10)
+    u8		max_hyppy;										// max jump time
     double		max_nopeus;										// max speed
-    DWORD		latausaika;										//?wait post shoot
-    BYTE		vari;											// color
+    u32		latausaika;										//?wait post shoot
+    u8		vari;											// color
     bool		este;											// is a wall
-    DWORD		tuhoutuminen;									// how sprite is destroyed
+    u32		tuhoutuminen;									// how sprite is destroyed
     bool		avain;											// can sprite open locks
     bool		tarisee;										//?sprite randomly
-    BYTE        bonusten_lkm;									// number of bonuses
-    DWORD       hyokkays1_aika;									// attack 1 duration (frames)
-    DWORD       hyokkays2_aika;									// attack 2 duration (frames)
-    DWORD		pallarx_kerroin;								// parallax type (just to TYYPPI_TAUSTA)
+    u8        bonusten_lkm;									// number of bonuses
+    u32       hyokkays1_aika;									// attack 1 duration (frames)
+    u32       hyokkays2_aika;									// attack 2 duration (frames)
+    u32		pallarx_kerroin;								// parallax type (just to TYYPPI_TAUSTA)
 
 
     char		muutos_sprite[100];								// another sprite that this sprite may change
@@ -448,7 +448,7 @@ struct PrototypeClass13{
 
 
     bool		tiletarkistus;									//?make sounds?
-    DWORD		aani_frq;										// sound frequency (def. 22050)
+    u32		aani_frq;										// sound frequency (def. 22050)
     bool		random_frq;										// use random frequency?
 
 
@@ -458,9 +458,9 @@ struct PrototypeClass13{
     bool		este_vasemmalle;                                // if is wall at left
 
 
-    BYTE		lapinakyvyys;									// transparency
+    u8		lapinakyvyys;									// transparency
     bool		hehkuu;											// is transparent?
-    DWORD		tulitauko;										//*ammuspriten ampujalle aiheuttama latausaika
+    u32		tulitauko;										//*ammuspriten ampujalle aiheuttama latausaika
     bool		liitokyky;										//*voiko tippua hiljaa alas?
     bool		boss;											// if it is a boss
     bool		bonus_aina;										// allways gives bonus
@@ -491,10 +491,10 @@ class PrototypeClass{
     // Spriten kuva- ja animaatio-ominaisuudet
     int			framet[SPRITE_MAX_FRAMEJA];						// spriten framet (bitm�pit)
     int			framet_peilikuva[SPRITE_MAX_FRAMEJA];			// spriten framet peilikuvina
-    BYTE		frameja;										// framejen m��r�
+    u8		frameja;										// framejen m��r�
     PK2SPRITE_ANIMAATIO animaatiot[SPRITE_MAX_ANIMAATIOITA];	// animaatio sekvenssit
-    BYTE		animaatioita;									// animaatioiden m��r�
-    BYTE		frame_rate;										// yhden framen kesto
+    u8		animaatioita;									// animaatioiden m��r�
+    u8		frame_rate;										// yhden framen kesto
     int			kuva_x;											// miss� kohtaa kuvaa sprite on
     int			kuva_y;											// miss� kohtaa kuvaa sprite on
     int			kuva_frame_leveys;								// yhden framen leveys
@@ -510,21 +510,21 @@ class PrototypeClass{
     bool		vihollinen;										// onko sprite vihollinen
     int			energia;										// monta iskua kest��
     int			vahinko;										// paljon vahinkoa tekee jos osuu
-    BYTE       vahinko_tyyppi;									// mink� tyyppist� vahinkoa tekee (1.1)
-    BYTE		suojaus;										// mink� tyyppiselt� vahingolta on suojattu (1.1)
+    u8       vahinko_tyyppi;									// mink� tyyppist� vahinkoa tekee (1.1)
+    u8		suojaus;										// mink� tyyppiselt� vahingolta on suojattu (1.1)
     int			pisteet;										// paljonko siit� saa pisteit�
 
     int			AI[SPRITE_MAX_AI];								// mit� teko�lyj� k�ytet��n
 
-    BYTE		max_hyppy;										// hypyn maksimikesto
+    u8		max_hyppy;										// hypyn maksimikesto
     double		max_nopeus;										// maksiminopeus
     int			latausaika;										// ampumisen j�lkeinen odotus
-    BYTE		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
+    u8		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
     int			tuhoutuminen;									// miten sprite tuhoutuu
     bool		avain;											// Voiko sprite avata lukkoja
     bool		tarisee;										// T�riseek� sprite satunnaisesti
-    BYTE       bonusten_lkm;									// Bonusten lukum��r�
+    u8       bonusten_lkm;									// Bonusten lukum��r�
     int         hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     int         hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
 
@@ -543,7 +543,7 @@ class PrototypeClass{
 
     // Lis�ykset 1.2 versiossa
     bool		tiletarkistus;									// t�rm�ileek� tileihin
-    DWORD		aani_frq;										// ��nien perussoittotaajuus (esim. 22050)
+    u32		aani_frq;										// ��nien perussoittotaajuus (esim. 22050)
     bool		random_frq;										// satunnaisuutta taajuuteen?
 
     // Jos sprite on este
@@ -553,7 +553,7 @@ class PrototypeClass{
     bool		este_vasemmalle;
 
     // Lis�ykset 1.3 versiossa
-    BYTE		lapinakyvyys;									// 0 = ei n�y - 100 = ei l�pin�kyv�
+    u8		lapinakyvyys;									// 0 = ei n�y - 100 = ei l�pin�kyv�
     bool		hehkuu;											// 0 = ei hehku (t�ytyy olla l�pin�kyv�)
     int			tulitauko;										// ammuspriten ampujalle aiheuttama latausaika
     bool		liitokyky;										// voiko tippua hiljaa alas?
@@ -568,7 +568,7 @@ class PrototypeClass{
     // Methods
     void Uusi();
     void Kopioi(const PrototypeClass &proto);
-    int  Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi);
+    int  Animaatio_Uusi(int anim_i, u8 *sekvenssi, bool looppi);
     int  Lataa(const char *dir, const char *filename);
     void Tallenna(char *tiedoston_nimi);
     int  Piirra(int x, int y, int frame);
@@ -615,7 +615,7 @@ class SpriteClass{
     bool		piilossa;			// onko sprite piilossa
     double      alkupaino;			// spriten alkuper�inen paino - sama kuin prototyypin
     int			saatu_vahinko;		// v�hennet��n energiasta jos erisuuri kuin 0
-    BYTE       saatu_vahinko_tyyppi; // saadun vahingon tyyppi (esim. lumi).
+    u8       saatu_vahinko_tyyppi; // saadun vahingon tyyppi (esim. lumi).
     bool		vihollinen;			// prototyypist� saatu tieto, onko vihollinen
     int			ammus1;				// spriten k�ytt�m�n ammus-prototyypin indeksi
     int			ammus2;				//
@@ -625,9 +625,9 @@ class SpriteClass{
 
     int			ajastin;			// ajastin jonka arvo py�rii v�lill� 1 - 32000
 
-    BYTE		animaatio_index;	// t�m�nhetkinen py�riv� animaatio
-    BYTE		sekvenssi_index;	// t�m�nhetkisen animaation frame
-    BYTE		frame_aika;			// kuinka kauan frame on n�kynyt
+    u8		animaatio_index;	// t�m�nhetkinen py�riv� animaatio
+    u8		sekvenssi_index;	// t�m�nhetkisen animaation frame
+    u8		frame_aika;			// kuinka kauan frame on n�kynyt
     int			muutos_ajastin;		// sprite muuttuu muutosspriteksi kun t�m� nollautuu
 
     SpriteClass();

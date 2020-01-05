@@ -6,7 +6,7 @@
 
 #include "engine/types.hpp"
 
-const BYTE BLOCK_MAX_MASKS = 150;
+const u8 BLOCK_MAX_MASKS = 150;
 
 enum BLOCKS {
 
@@ -23,9 +23,9 @@ enum BLOCKS {
 
 struct PK2BLOCK {
 
-	BYTE	koodi;
+	u8	koodi;
 	bool	tausta;
-	BYTE	vasemmalle, oikealle, ylos, alas;
+	u8	vasemmalle, oikealle, ylos, alas;
 	int 	vasen, oikea, yla, ala;
 	bool	water;
 	bool	border;

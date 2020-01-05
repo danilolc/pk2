@@ -21,7 +21,7 @@ int mouse_x, mouse_y;
 
 SDL_Haptic *Haptic = nullptr;
 
-static const BYTE* keymap = nullptr;
+static const u8* keymap = nullptr;
 
 const int keylist[] = {
 
@@ -85,7 +85,7 @@ const char keynames[][16] = {
 
 };
 
-const char* KeyName(BYTE key) {
+const char* KeyName(u8 key) {
 
 	if (key >= sizeof(keynames) / 16) 
 		return keynames[UNKNOWN];
@@ -94,7 +94,7 @@ const char* KeyName(BYTE key) {
 
 }
 
-BYTE GetKey() {
+u8 GetKey() {
 	
 	int count = sizeof(keylist)/sizeof(int);
 
@@ -308,6 +308,8 @@ static int init_haptic() {
 	
 	if (SDL_HapticRumbleInit(Haptic) != 0)
 		return -1;
+
+	return 0;
 
 } 
 

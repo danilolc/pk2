@@ -94,7 +94,7 @@ int Load_Fonts(PLang* lang) {
 	return 0;
 }
 
-int CreditsText_Draw(const char *text, int font, int x, int y, DWORD start, DWORD end, DWORD time){
+int CreditsText_Draw(const char *text, int font, int x, int y, u32 start, u32 end, u32 time){
 	int pros = 100;
 	if (time > start && time < end) {
 
@@ -170,7 +170,7 @@ void Fadetext_Init(){
 		fadetekstit[i].ajastin = 0;
 }
 
-void Fadetext_New(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin){
+void Fadetext_New(int fontti, char *teksti, u32 x, u32 y, u32 ajastin){
 	fadetekstit[fadeteksti_index].fontti = fontti;
 	strcpy(fadetekstit[fadeteksti_index].teksti,teksti);
 	fadetekstit[fadeteksti_index].x = x;

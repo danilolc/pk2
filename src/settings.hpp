@@ -12,8 +12,8 @@ struct PK2SETTINGS {
 	char kieli[128]; // language
 
 	// grafiikka
-	DWORD ruudun_korkeus; //Not used
-	DWORD ruudun_leveys; //Not used
+	u32 ruudun_korkeus; //Not used
+	u32 ruudun_leveys; //Not used
 	bool  draw_transparent;
 	bool  transparent_text;
 	bool  draw_weather;
@@ -21,14 +21,14 @@ struct PK2SETTINGS {
 	bool  bg_sprites;
 
 	// kontrollit
-	DWORD control_left;
-	DWORD control_right;
-	DWORD control_jump;
-	DWORD control_down;
-	DWORD control_walk_slow;
-	DWORD control_attack1;
-	DWORD control_attack2;
-	DWORD control_open_gift;
+	u32 control_left;
+	u32 control_right;
+	u32 control_jump;
+	u32 control_down;
+	u32 control_walk_slow;
+	u32 control_attack1;
+	u32 control_attack2;
+	u32 control_open_gift;
 
 	// audio
 	bool musiikki; //Not used
@@ -42,8 +42,8 @@ struct PK2SETTINGS {
 	bool isWide;
 
 	//Version 1.2
-	BYTE music_max_volume;
-	BYTE sfx_max_volume;
+	u8 music_max_volume;
+	u8 sfx_max_volume;
 
 };
 

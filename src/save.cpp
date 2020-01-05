@@ -66,7 +66,7 @@ int Load_SaveFile() {
 
 	char versio[2];
 	char count_c[8];
-	int count, i;
+	int count;
 
 	Empty_Records();
 

@@ -79,11 +79,10 @@ int PFont::get_image(int x, int y, int img_source){
 	image_index = PDraw::image_cut(img_source, x, y, char_w * char_count, char_h * char_count);
 	return 0;
 }
-int PFont::load(const char* file_path, const char* file){
+int PFont::load(const char* file_path, const char* file) {
+
 	char path[128];
 	int i = 0;
-	int temp_image;
-	int buf_x, buf_y, buf_width;
 	int font_index[256];
 	char chars[256];
 
@@ -97,26 +96,26 @@ int PFont::load(const char* file_path, const char* file){
 		return -1;
 	}
 
-	i = param_file->Hae_Indeksi("image width");
-	buf_width = atoi(param_file->Get_Text(i));
+	//i = param_file->Hae_Indeksi("image width");
+	//int buf_width = atoi(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("image x");
-	buf_x = atoi(param_file->Get_Text(i));
+	int buf_x = atoi(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("image y");
-	buf_y = atoi(param_file->Get_Text(i));
+	int buf_y = atoi(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("letters");
-	char_count = strlen(param_file->Get_Text(i));
+	this->char_count = strlen(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("letter width");
-	char_w = atoi(param_file->Get_Text(i));
+	this->char_w = atoi(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("letter height");
-	char_h = atoi(param_file->Get_Text(i));
+	this->char_h = atoi(param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("letters");
-	strcpy(chars,param_file->Get_Text(i));
+	strcpy(chars, param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("image");
 	strcpy(path,file_path);
@@ -124,20 +123,20 @@ int PFont::load(const char* file_path, const char* file){
 
 	delete param_file;
 
-	temp_image = PDraw::image_load(path,false);
+	int temp_image = PDraw::image_load(path,false);
 	if (temp_image == -1) return -1;
 
-	this->get_image(buf_x,buf_y,temp_image);
+	this->get_image(buf_x, buf_y, temp_image);
 	PDraw::image_delete(temp_image);
 
-	for ( i = 0; i < 256; i++ )
-		charlist[i]=-1;
+	for ( uint i = 0; i < 256; i++ )
+		charlist[i] = -1;
 	
-	for ( i = 0; i < char_count; i++ )
+	for ( uint i = 0; i < char_count; i++ )
 		font_index[i] = i * char_w;
 	
-	for ( i = 0; i < char_count; i++ )
-		charlist[(BYTE)(chars[i]&~' ')] = font_index[i];
+	for ( uint i = 0; i < char_count; i++ )
+		charlist[(u8)(chars[i]&~' ')] = font_index[i];
 
 	return 0;
 }
@@ -155,7 +154,7 @@ int PFont::write(int posx, int posy, const char *text){
 
 	do {
 		curr_char = text[i];
-		ix = charlist[(BYTE)(curr_char&~' ')];
+		ix = charlist[(u8)(curr_char&~' ')];
 		i2 = i * char_w + posx;
 		if (ix > -1) {
 			srcrect.x = ix;
@@ -169,53 +168,60 @@ int PFont::write(int posx, int posy, const char *text){
 }
 int PFont::write_trasparent(int posx, int posy, const char* text, int alpha){
 
-	BYTE *back_buffer, *txt_buffer;
-	DWORD back_w, txt_w;
+	u8 *back_buffer, *txt_buffer;
+	u32 back_w, txt_w;
 
-	int i = 0;
-	int x, y, ix, fx, fy, a1, a2;
-	BYTE color1, color2, color3;
+	uint i = 0;
+	u8 color1, color2, color3;
 	char curr_char;
 
 	if (alpha > 100) alpha = 100;
-	a1 = alpha;
-	a2 = 100 - alpha;
+	int a1 = alpha;
+	int a2 = 100 - alpha;
 
-	PDraw::drawscreen_start(*&back_buffer, (DWORD &)back_w);
-	PDraw::drawimage_start(image_index, *&txt_buffer, (DWORD &)txt_w);
+	PDraw::drawscreen_start(*&back_buffer, (u32 &)back_w);
+	PDraw::drawimage_start(image_index, *&txt_buffer, (u32 &)txt_w);
 
 	do {
 		curr_char = text[i];
-		ix = charlist[(BYTE)(curr_char&~' ')];
+		int ix = charlist[(u8)(curr_char&~' ')];
 		if (ix > -1){
-			for (x = 0; x < char_w; x++){
-				fx = posx + x + i * char_w;
+			for (uint x = 0; x < char_w; x++) {
+				
+				int fx = posx + x + i * char_w;
 				if(fx >= back_w) break; //Screen weight
 
-				for (y=0;y<char_h;y++){
+				for (uint y = 0; y < char_h; y++) {
+
 					color1 = txt_buffer[ix+x+y*txt_w];
-					if (color1!=255){
-						fy = posy + y;
+
+					if (color1 != 255) {
+						
+						int fy = posy + y;
 						fy *= back_w;
 						fy += fx;
 
-						color1 &= (BYTE)0b00011111;
+						// Mix colors
+						color1 &= (u8)0b00011111;
 						color2 = back_buffer[fy];
-						color3 = color2 & (BYTE)0b11100000;
+						color3 = color2 & (u8)0b11100000;
 						color2-= color3;
 						color1 = (color1 * a1 + color2 * a2)/100;
+
 						back_buffer[fy] = color1 + color3;
+
 					}
 				}
 			}
 		}
 		i++;
+	
 	} while(curr_char != '\0');
 
 	PDraw::drawscreen_end();
 	PDraw::drawimage_end(image_index);
 
-	return((i-1)*char_w);
+	return( (i-1) * char_w );
 }
 
 PFont::PFont(int img_source, int x, int y, int width, int height, int count){

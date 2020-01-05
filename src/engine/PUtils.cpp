@@ -265,7 +265,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 	}
 	free(namelist);
 
-	printf("Scanned %s for %s and found %i matches\n", dir, type, result.size());
+	printf("Scanned \"%s\" for \"%s\" and found %i matches\n", dir, type, (int)result.size());
 	return result;
 
 }
@@ -296,7 +296,9 @@ bool NoCaseFint(char *filename) {
 
 	std::vector<std::string> list = Scandir("", dir, -1);
 
-	for(int i = 0; i < list.size(); i++) {
+	int sz = list.size();
+	for(int i = 0; i < sz; i++) {
+		
 		const char* name = list[i].c_str();
 		
 		if(NoCaseCompare(name, file)) {
@@ -307,6 +309,7 @@ bool NoCaseFint(char *filename) {
 
 			return true;
 		}
+
 	}
 
 	printf("PUtils - %s not found\n", filename);

@@ -26,19 +26,19 @@ bool siirry_pistelaskusta_karttaan = false;
 int counting_phase = 0;
 int counting_delay = 0;
 
-int apples_got = 0;
+u32 apples_got = 0;
 
-DWORD total_score = 0;
-DWORD bonus_score = 0;
-DWORD time_score = 0;
-DWORD energy_score = 0;
-DWORD gifts_score = 0;
+u32 total_score = 0;
+u32 bonus_score = 0;
+u32 time_score = 0;
+u32 energy_score = 0;
+u32 gifts_score = 0;
 
 bool map_new_record = false;
 bool map_new_time_record = false;
 bool episode_new_record = false;
 
-int EpisodeScore_Compare(int level, DWORD episteet, DWORD time, bool final_score){
+int EpisodeScore_Compare(int level, u32 episteet, u32 time, bool final_score){
 	
 	int ret = 0;
 
@@ -81,7 +81,6 @@ int EpisodeScore_Compare(int level, DWORD episteet, DWORD time, bool final_score
 int Draw_ScoreCount() {
 
 	char luku[20];
-	int	vari = 0, kerroin;
 	int x, y;
 
 	PDraw::screen_fill(0);
@@ -91,7 +90,7 @@ int Draw_ScoreCount() {
 	for (int i = 0; i < 18; i++) {
 
 
-		kerroin = (int)(cos_table[(degree+i*3)%180]);
+		int kerroin = (int)(cos_table[(degree+i*3)%180]);
 
 		x = (int)(sin_table[(degree+i*10)%360]*2)+kerroin;
 		y = (int)(cos_table[(degree+i*10)%360]*2);//10 | 360 | 2
@@ -169,7 +168,7 @@ int Draw_ScoreCount() {
 	// TODO - put apples menu on the bottom
 	if (Game->apples_count > 0) {
 
-		int i;
+		uint i;
 		for (i = 0; i < apples_got; i++) {
 			if (apples_got >= Game->apples_count)
 				PDraw::image_cutclip(game_assets2, 100 + i * 32 + rand()%2, my + rand()%2, 61, 379, 87, 406);
@@ -251,7 +250,7 @@ int Screen_ScoreCount_Init() {
 	episode_new_record = false;
 
 	// Lasketaan pelaajan kokonaispisteet etuk�teen
-	DWORD temp_score = 0;
+	u32 temp_score = 0;
 	temp_score += Game->score;
 	temp_score += Game->timeout * 5;
 	temp_score += Player_Sprite->energia * 300;

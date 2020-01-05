@@ -9,7 +9,7 @@
 class PFont{
 private:
 	int charlist[256];
-	int char_w, char_h, char_count;
+	uint char_w, char_h, char_count;
 	int image_index = -1;
 	int init_charlist();
 	int get_image(int x,int y,int img_source);

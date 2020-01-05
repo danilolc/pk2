@@ -130,7 +130,7 @@ int PK_Draw_InGame_Sprites() {
 
 				if (sprite->isku > 0 && sprite->tyyppi->tyyppi != TYYPPI_BONUS && sprite->energia < 1){
 					int framex = ((degree%12)/3) * 58;
-					DWORD hit_x = sprite->x-8, hit_y = sprite->y-8;
+					u32 hit_x = sprite->x-8, hit_y = sprite->y-8;
 					PDraw::image_cutclip(game_assets,hit_x-Game->camera_x-28+8, hit_y-Game->camera_y-27+8,1+framex,83,1+57+framex,83+55);
 				}
 
@@ -264,11 +264,11 @@ int PK_Draw_InGame_DevKeys() {
 		"mouse: move camera",
 	};
 
-	int nof_txt = sizeof(txts) / 32;
+	uint nof_txt = sizeof(txts) / 32;
 
-	int max_size = 0;
+	uint max_size = 0;
 	
-	for (int i = 0; i < nof_txt; i++)
+	for (uint i = 0; i < nof_txt; i++)
 		if (strlen(txts[i]) > max_size) max_size = strlen(txts[i]);
 
 	int posx = screen_width - max_size * char_w;
@@ -277,7 +277,7 @@ int PK_Draw_InGame_DevKeys() {
 	PDraw::screen_fill(posx - 4, posy - 4, screen_width, screen_height, 0);
 	PDraw::screen_fill(posx - 2, posy - 2, screen_width, screen_height, 38);
 	
-	for (int i = 0; i < nof_txt; i++)
+	for (uint i = 0; i < nof_txt; i++)
 		PDraw::font_write(fontti1, txts[i], posx, posy + i*10);
 
 	return 0;
@@ -839,6 +839,18 @@ int Screen_InGame(){
 			next_screen = SCREEN_MAP;
 		
 		}
+
+	}
+
+	if (next_screen == SCREEN_MENU) {
+
+		int w, h;
+		PDraw::image_getsize(bg_screen, w, h);
+		if (w != screen_width) {
+			PDraw::image_delete(bg_screen);
+			bg_screen = PDraw::image_new(screen_width, screen_height);
+		}
+		PDraw::image_snapshot(bg_screen);
 
 	}
 

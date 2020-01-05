@@ -275,8 +275,8 @@ void PrototypeClass::Uusi(){
 		animaatiot[i].frameja = 0;
 	}
 }
-int PrototypeClass::Animaatio_Uusi(int anim_i, BYTE *sekvenssi, bool looppi){
-	BYTE frame_i = 0;
+int PrototypeClass::Animaatio_Uusi(int anim_i, u8 *sekvenssi, bool looppi){
+	u8 frame_i = 0;
 
 	if (anim_i < SPRITE_MAX_ANIMAATIOITA)
 	{
@@ -325,7 +325,7 @@ void PrototypeClass::SetProto10(PrototypeClass10 &proto){
 	max_nopeus			= proto.max_nopeus;
 	paino				= proto.paino;
 	pisteet				= proto.pisteet;
-	suojaus				= (BYTE) proto.suojaus;
+	suojaus				= (u8) proto.suojaus;
 	tuhoutuminen		= proto.tuhoutuminen;
 	tyyppi				= proto.tyyppi;
 	vahinko				= proto.vahinko;
@@ -683,9 +683,9 @@ int PrototypeClass::Lataa(const char *dir, const char *filename){
 		return 1;
 
 	//Set diferent colors
-	BYTE *buffer = NULL;
-	DWORD leveys;
-	BYTE vari;
+	u8 *buffer = NULL;
+	u32 leveys;
+	u8 vari;
 	int x,y,w,h;
 
 	if (this->vari != VARI_NORMAALI){ //Change sprite colors

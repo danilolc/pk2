@@ -44,7 +44,7 @@ void Search_Episodes() {
 	if (episodes.size() > 1)
 		std::sort(episodes.begin(), episodes.end(), Alphabetical);
 
-	printf("Found %i episodes\n", episodes.size());
+	printf("Found %i episodes\n", (int)episodes.size());
 
 }
 

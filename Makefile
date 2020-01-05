@@ -13,7 +13,7 @@ OPT = -g
 #LDFLAGS += $(shell pkg-config sdl2 --libs) $(shell pkg-config libzip --libs) -lSDL2_mixer -lSDL2_image
 
 CXX = g++
-CXXFLAGS += $(shell pkg-config sdl2 --cflags) $(OPT) -std=gnu++17 -w
+CXXFLAGS += $(shell pkg-config sdl2 --cflags) $(OPT) -std=gnu++17 -Wall -Wno-sign-compare
 LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
 
 SRC_DIR = src/

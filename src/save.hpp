@@ -17,17 +17,17 @@ struct PK2SAVE_V1 {
 	char  nimi[20];
 	bool  kaytossa;
 	bool  jakso_cleared[EPISODI_MAX_LEVELS];
-	DWORD pisteet;
+	u32 pisteet;
 
 };
 
 struct PK2SAVE {
 
 	bool  empty;
-	DWORD level;
+	u32 level;
 	char  episode[PE_PATH_SIZE];
 	char  name[20];
-	DWORD score;
+	u32 score;
 	bool  level_cleared[EPISODI_MAX_LEVELS];
 	bool  all_apples[EPISODI_MAX_LEVELS];
 	

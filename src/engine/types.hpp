@@ -6,12 +6,11 @@
 
 #include <cstdint>
 
-typedef uint8_t  BYTE;
+typedef uint8_t  u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
 
-typedef uint16_t WORD;
+typedef unsigned int uint;
 
-#ifdef _WIN32
-    typedef unsigned long DWORD;
-#else
-    typedef uint32_t DWORD;
-#endif
+typedef const char cchar;

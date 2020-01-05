@@ -105,10 +105,10 @@ int GameClass::Finnish() {
 
 int GameClass::Calculete_TileMasks(){
 	
-	BYTE *buffer = nullptr;
-	DWORD leveys;
+	u8 *buffer = nullptr;
+	u32 leveys;
 	int x, y;
-	BYTE color;
+	u8 color;
 
 	PDraw::drawimage_start(map->palikat_buffer, buffer, leveys);
 	for (int mask=0; mask<BLOCK_MAX_MASKS; mask++){
@@ -136,11 +136,11 @@ int GameClass::Calculete_TileMasks(){
 //PK2KARTTA::Clean_TileBuffer()
 int GameClass::Clean_TileBuffer() {
 
-	BYTE *buffer = NULL;
-	DWORD leveys;
+	u8 *buffer = NULL;
+	u32 leveys;
 	int x,y;
 
-	PDraw::drawimage_start(map->palikat_buffer,*&buffer,(DWORD &)leveys);
+	PDraw::drawimage_start(map->palikat_buffer,*&buffer,(u32 &)leveys);
 	for (y=0;y<480;y++)
 		for(x=0;x<320;x++)
 			if (buffer[x+y*leveys] == 254)

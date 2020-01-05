@@ -15,12 +15,12 @@ extern int fontti5;
 
 int Load_Fonts(PLang* lang);
 
-int CreditsText_Draw(const char *text, int font, int x, int y, DWORD start, DWORD end, DWORD time);
+int CreditsText_Draw(const char *text, int font, int x, int y, u32 start, u32 end, u32 time);
 int Wavetext_Draw(const char *teksti, int fontti, int x, int y);
 int WavetextSlow_Draw(const char *teksti, int fontti, int x, int y);
 int ShadowedText_Draw(const char* text, int x, int y);
 
 void Fadetext_Init();
-void Fadetext_New(int fontti, char *teksti, DWORD x, DWORD y, DWORD ajastin);
+void Fadetext_New(int fontti, char *teksti, u32 x, u32 y, u32 ajastin);
 int Fadetext_Draw();
 void Fadetext_Update();

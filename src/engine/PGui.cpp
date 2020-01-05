@@ -28,9 +28,9 @@ struct GUI {
 
 	int pos_x, pos_y;
 	int width, height;
-	BYTE alpha;
+	u8 alpha;
 	SDL_Texture* texture;
-	DWORD* key;
+	u32* key;
 	bool pressed;
 	
 };
@@ -105,7 +105,7 @@ void init(int w, int h, void* r) {
 	renderer = (SDL_Renderer*) r;
 }
 
-int create(int x, int y, int w, int h, BYTE alpha, const char* t_path, DWORD* key){
+int create(int x, int y, int w, int h, u8 alpha, const char* t_path, u32* key){
 	int gui_id = alloc();
 	if(gui_id == -1)
 		return gui_id;
@@ -167,7 +167,7 @@ int draw(int pd_alpha){
 	return 0;
 }
 
-bool check_key(int key) {
+bool check_key(u32 key) {
 
 	update();
 	for(int i = 0; i < MAX_GUI; i++)

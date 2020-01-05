@@ -7,13 +7,13 @@
 #include "gfx/particles.hpp"
 #include "game/sprites.hpp"
 
-void Effect_Feathers(DWORD x, DWORD y) {
+void Effect_Feathers(u32 x, u32 y) {
 	for (int i=0;i<9;i++)//6
 		Particles_New(PARTICLE_FEATHER,x+rand()%17-rand()%17,y+rand()%20-rand()%10,
 							(rand()%16-rand()%16)/10.0,(45+rand()%45)/100.0,300+rand()%40,0,0);
 }
 
-void Effect_Splash(DWORD x, DWORD y, BYTE color) {
+void Effect_Splash(u32 x, u32 y, u8 color) {
 	/*
 	for (int i=0;i<12;i++)
 		Particles_New(	PARTICLE_LIGHT,x+rand()%17-13,y+rand()%17-13,
@@ -30,7 +30,7 @@ void Effect_Splash(DWORD x, DWORD y, BYTE color) {
 							rand()%50+40,0.025,color);//0.015
 }
 
-void Effect_Explosion(DWORD x, DWORD y, BYTE color) {
+void Effect_Explosion(u32 x, u32 y, u8 color) {
 	int i;
 
 	for (i=0;i<3;i++)
@@ -54,7 +54,7 @@ void Effect_Explosion(DWORD x, DWORD y, BYTE color) {
 							rand()%40+60,0.025,color);
 }
 
-void Effect_Smoke(DWORD x, DWORD y, BYTE color) {
+void Effect_Smoke(u32 x, u32 y, u8 color) {
 	for (int i=0;i<3;i++)
 		Particles_New(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%3)+3) / -10.0/*-0.3*/,450,0.0,color);
@@ -63,13 +63,13 @@ void Effect_Smoke(DWORD x, DWORD y, BYTE color) {
 							0,-0.3,rand()%50+60,0,color);
 }
 
-void Effect_SmokeClouds(DWORD x, DWORD y) {
+void Effect_SmokeClouds(u32 x, u32 y) {
 	for (int i=0;i<5;i++)
 		Particles_New(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%3)+3) / -10.0/*-0.3*/,450,0.0,0);
 }
 
-void Effect_Stars(DWORD x, DWORD y, BYTE color) {
+void Effect_Stars(u32 x, u32 y, u8 color) {
 	for (int i=0;i<5;i++)
 		Particles_New(PARTICLE_STAR,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0/* 0.05*/,color);//300
 
@@ -77,7 +77,7 @@ void Effect_Stars(DWORD x, DWORD y, BYTE color) {
 		Particles_New(	PARTICLE_POINT,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0,color);
 }
 
-void Effect_Destruction(BYTE tehoste, DWORD x, DWORD y) {
+void Effect_Destruction(u8 tehoste, u32 x, u32 y) {
 	switch (tehoste){
 		case TUHOUTUMINEN_HOYHENET			: Effect_Feathers(x, y); break;
 		case TUHOUTUMINEN_TAHDET_HARMAA		: Effect_Stars(x,y,0); break;

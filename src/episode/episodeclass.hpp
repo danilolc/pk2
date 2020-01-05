@@ -25,12 +25,12 @@ struct PK2LEVEL {
 
 //TODO - Make Scores 1.1
 struct PK2EPISODESCORES {
-	DWORD best_score[EPISODI_MAX_LEVELS];         // the best score of each level in episode
+	u32 best_score[EPISODI_MAX_LEVELS];         // the best score of each level in episode
 	char  top_player[EPISODI_MAX_LEVELS][20];     // the name of the player with more score in each level on episode
-	DWORD best_time[EPISODI_MAX_LEVELS];          // the best time of each level
+	u32 best_time[EPISODI_MAX_LEVELS];          // the best time of each level
 	char  fastest_player[EPISODI_MAX_LEVELS][20]; // the name of the fastest player in each level
 
-	DWORD episode_top_score;
+	u32 episode_top_score;
 	char  episode_top_player[20];
 };
 
@@ -41,7 +41,7 @@ class EpisodeClass {
 		episode_entry entry;
 		
 		char player_name[20] = " ";
-		DWORD player_score = 0;
+		u32 player_score = 0;
 
 		int level = 1;
 		int level_count = 0;

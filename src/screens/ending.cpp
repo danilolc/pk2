@@ -17,7 +17,7 @@
 
 #include "engine/types.hpp"
 
-DWORD loppulaskuri = 0;
+u32 loppulaskuri = 0;
 bool siirry_lopusta_menuun = false;
 
 int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
@@ -88,10 +88,10 @@ int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 }
 int Draw_EndGame(){
 
-	DWORD onnittelut_alku	= 300;
-	DWORD onnittelut_loppu	= onnittelut_alku + 1000;
-	DWORD the_end_alku		= onnittelut_loppu + 80;
-	DWORD the_end_loppu		= the_end_alku + 3000;
+	u32 onnittelut_alku	= 300;
+	u32 onnittelut_loppu	= onnittelut_alku + 1000;
+	u32 the_end_alku		= onnittelut_loppu + 80;
+	u32 the_end_loppu		= the_end_alku + 3000;
 
 	PDraw::screen_fill(0);
 	PDraw::image_cutclip(bg_screen,320-233/2,240-233/2, 6, 229, 239, 462);

@@ -29,9 +29,9 @@ class GameClass {
 		bool level_clear = false;
 		bool repeating = false;
 
-		DWORD exit_timer = 0;
+		u32 exit_timer = 0;
 
-		DWORD timeout = 0;
+		u32 timeout = 0;
 		int increase_time = 0;
 		int seconds = 0;
 		bool has_time = false;
@@ -41,11 +41,11 @@ class GameClass {
 		int button2 = 0;
 		int button3 = 0;
 
-		DWORD score = 0;
-		DWORD score_increment = 0;
+		u32 score = 0;
+		u32 score_increment = 0;
 
-		DWORD apples_count = 0;
-		DWORD apples_got = 0;
+		u32 apples_count = 0;
+		u32 apples_got = 0;
 
 		int vibration = 0;
 
@@ -96,5 +96,5 @@ extern GameClass* Game;
 
 /**/
 bool Draw_Menu_Text(bool active, const char *teksti, int x, int y);
-int PK_MenuShadow_Create(int kbuffer, DWORD kleveys, int kkorkeus, int startx);
+int PK_MenuShadow_Create(int kbuffer, u32 kleveys, int kkorkeus, int startx);
 /**/

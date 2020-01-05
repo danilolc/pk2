@@ -41,8 +41,8 @@ enum KEY {
 
 extern int mouse_x, mouse_y;
 
-const char* KeyName(BYTE key);
-BYTE GetKey();
+const char* KeyName(u8 key);
+u8 GetKey();
 bool Keydown(int key);
 
 void StartKeyboard();

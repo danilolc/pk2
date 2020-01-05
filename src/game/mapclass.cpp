@@ -33,11 +33,11 @@ int ruudun_leveys_palikoina  = 21,
 struct PK2KARTTA{ // Vanha versio 0.1
 	char		versio[8];
 	char		nimi[40];
-	BYTE		taustakuva;
-	BYTE		musiikki;
-	BYTE		kartta [640*224];
-	BYTE		palikat[320*256];
-	BYTE		extrat [640*480];
+	u8		taustakuva;
+	u8		musiikki;
+	u8		kartta [640*224];
+	u8		palikat[320*256];
+	u8		extrat [640*480];
 };
 
 void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys){
@@ -158,7 +158,7 @@ MapClass::~MapClass(){
 	PDraw::image_delete(this->palikat_vesi_buffer);
 }
 
-MAP_RECT MapClass::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
+MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
 
 	int x,y;
 	int kartan_vasen = PK2KARTTA_KARTTA_LEVEYS,//PK2KARTTA_KARTTA_LEVEYS/2,
@@ -197,8 +197,8 @@ MAP_RECT MapClass::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
 		kartan_korkeus = kartan_ala - kartan_yla;
 	}
 
-	kohde = new BYTE[kartan_leveys*kartan_korkeus];
-	BYTE tile;
+	kohde = new u8[kartan_leveys*kartan_korkeus];
+	u8 tile;
 
 	for (y=0;y<kartan_korkeus;y++){
 		for (x=0;x<kartan_leveys;x++){
@@ -217,10 +217,10 @@ MAP_RECT MapClass::LaskeTallennusAlue(BYTE *lahde, BYTE *&kohde){
 	return rajat;
 }
 
-MAP_RECT MapClass::LaskeTallennusAlue(BYTE *alue){
+MAP_RECT MapClass::LaskeTallennusAlue(u8 *alue){
 
-	DWORD x,y;
-	DWORD kartan_vasen		= PK2KARTTA_KARTTA_LEVEYS,
+	u32 x,y;
+	u32 kartan_vasen		= PK2KARTTA_KARTTA_LEVEYS,
 		  kartan_oikea		= 0,
 		  kartan_yla		= PK2KARTTA_KARTTA_KORKEUS,
 		  kartan_ala		= 0;
@@ -267,7 +267,7 @@ MAP_RECT MapClass::LaskeTallennusAlue(BYTE *alue){
 	return rajat;
 }
 
-void MapClass::LueTallennusAlue(BYTE *lahde, MAP_RECT alue, int kohde){
+void MapClass::LueTallennusAlue(u8 *lahde, MAP_RECT alue, int kohde){
 
 	int x,y;
 	int kartan_vasen   = alue.left,
@@ -277,7 +277,7 @@ void MapClass::LueTallennusAlue(BYTE *lahde, MAP_RECT alue, int kohde){
 		kartan_korkeus = kartan_oikea - kartan_vasen,
 		kartan_leveys  = kartan_ala - kartan_yla;
 
-	BYTE tile;
+	u8 tile;
 	if (lahde != NULL && kohde != 0)	{
 		for (y=0;y<kartan_korkeus;y++) {
 			for (x=0;x<kartan_leveys;x++) {
@@ -295,7 +295,7 @@ void MapClass::LueTallennusAlue(BYTE *lahde, MAP_RECT alue, int kohde){
 
 int MapClass::Tallenna(char *filename){
 	char luku[8]; //Size can't be changed
-	DWORD i;
+	u32 i;
 
 	SDL_RWops* file = SDL_RWFromFile(filename, "w");
 
@@ -387,10 +387,10 @@ int MapClass::Tallenna(char *filename){
 
 	// laske alue
 
-	//BYTE *alue_taustat = NULL, *alue_seinat = NULL, *alue_spritet = NULL;
+	//u8 *alue_taustat = NULL, *alue_seinat = NULL, *alue_spritet = NULL;
 	MAP_RECT alue = {0,0,0,0};
-	DWORD /*koko, aloituskohta,*/ leveys, korkeus, x, y;
-	DWORD offset_x,offset_y;
+	u32 /*koko, aloituskohta,*/ leveys, korkeus, x, y;
+	u32 offset_x,offset_y;
 	char tile[1];
 
 	// taustat
@@ -663,8 +663,8 @@ int MapClass::LataaVersio11(char *filename){
 	SDL_RWread(file, this->nimi,        sizeof(char),   40);
 	SDL_RWread(file, this->tekija,      sizeof(char),   40);
 	SDL_RWread(file, &this->aika,       sizeof(int),     1);
-	SDL_RWread(file, &this->extra,      sizeof(BYTE),    1);
-	SDL_RWread(file, &this->tausta,     sizeof(BYTE),    1);
+	SDL_RWread(file, &this->extra,      sizeof(u8),    1);
+	SDL_RWread(file, &this->tausta,     sizeof(u8),    1);
 	SDL_RWread(file, this->taustat,     sizeof(taustat), 1);
 	if (SDL_RWread(file, this->seinat,  sizeof(seinat),  1) != PK2KARTTA_KARTTA_KOKO)
 		virhe = 2;
@@ -758,7 +758,7 @@ int MapClass::LataaVersio12(char *filename){
 int MapClass::LataaVersio13(char *filename){
 
 	char luku[8];
-	DWORD i;
+	u32 i;
 
 	SDL_RWops* file = SDL_RWFromFile(filename, "r");
 	if (file == nullptr) {
@@ -827,22 +827,22 @@ int MapClass::LataaVersio13(char *filename){
 	this->icon = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	DWORD lkm;
+	u32 lkm;
 	SDL_RWread(file, luku, sizeof(luku), 1);
 	lkm = (int)atoi(luku);
 
 	SDL_RWread(file, protot, sizeof(protot[0]), lkm);
 
-	DWORD leveys, korkeus;
-	DWORD offset_x, offset_y;
+	u32 leveys, korkeus;
+	u32 offset_x, offset_y;
 
 	// taustat
 	SDL_RWread(file, luku, sizeof(luku), 1); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
 	SDL_RWread(file, luku, sizeof(luku), 1); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
 	SDL_RWread(file, luku, sizeof(luku), 1); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
 	SDL_RWread(file, luku, sizeof(luku), 1); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
-	for (DWORD y = offset_y; y <= offset_y + korkeus; y++) {
-		DWORD x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
+	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
+		u32 x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
 		SDL_RWread(file, &taustat[x_start], 1, leveys + 1);
 	}
 
@@ -851,8 +851,8 @@ int MapClass::LataaVersio13(char *filename){
 	SDL_RWread(file, luku, sizeof(luku), 1); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
 	SDL_RWread(file, luku, sizeof(luku), 1); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
 	SDL_RWread(file, luku, sizeof(luku), 1); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
-	for (DWORD y = offset_y; y <= offset_y + korkeus; y++) {
-		DWORD x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
+	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
+		u32 x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
 		SDL_RWread(file, &seinat[x_start], 1, leveys + 1);
 	}
 
@@ -861,8 +861,8 @@ int MapClass::LataaVersio13(char *filename){
 	SDL_RWread(file, luku, sizeof(luku), 1);; offset_y = atol(luku); memset(luku, 0, sizeof(luku));
 	SDL_RWread(file, luku, sizeof(luku), 1);; leveys   = atol(luku); memset(luku, 0, sizeof(luku));
 	SDL_RWread(file, luku, sizeof(luku), 1);; korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
-	for (DWORD y = offset_y; y <= offset_y + korkeus; y++) {
-		DWORD x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
+	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
+		u32 x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
 		SDL_RWread(file, &spritet[x_start], 1, leveys + 1);
 	}
 
@@ -961,12 +961,12 @@ int MapClass::Lataa_Taustakuva(char *polku, char *filename){
 
 	strcpy(this->taustakuva,filename);
 
-	BYTE *buffer = NULL;
-	DWORD leveys;
+	u8 *buffer = NULL;
+	u32 leveys;
 	int x,y;
 	int color;
 
-	PDraw::drawimage_start(taustakuva_buffer,*&buffer,(DWORD &)leveys);
+	PDraw::drawimage_start(taustakuva_buffer,*&buffer,(u32 &)leveys);
 
 	for (x=0;x<640;x++)
 		for (y=0;y<480;y++)
@@ -985,7 +985,7 @@ int MapClass::Lataa_Taustakuva(char *polku, char *filename){
 }
 
 int MapClass::Lataa_PalikkaPaletti(char *polku, char *filename){
-	int i;
+	
 	int img;
 	char file[PE_PATH_SIZE];
 	strcpy(file,"");
@@ -1128,8 +1128,8 @@ void MapClass::Select_Start() {
 
 
 int MapClass::Count_Keys() {
-	BYTE sprite;
-	DWORD x;
+	u8 sprite;
+	u32 x;
 
 	int keys = 0;
 
@@ -1146,8 +1146,8 @@ int MapClass::Count_Keys() {
 }
 
 void MapClass::Change_SkullBlocks() {
-	BYTE front, back;
-	DWORD x,y;
+	u8 front, back;
+	u32 x,y;
 
 	for (x=0; x<PK2KARTTA_KARTTA_LEVEYS; x++)
 		for (y=0; y<PK2KARTTA_KARTTA_KORKEUS; y++){
@@ -1175,8 +1175,8 @@ void MapClass::Change_SkullBlocks() {
 }
 
 void MapClass::Open_Locks() {
-	BYTE palikka;
-	DWORD x,y;
+	u8 palikka;
+	u32 x,y;
 
 	for (x=0; x < PK2KARTTA_KARTTA_LEVEYS; x++)
 		for (y=0; y < PK2KARTTA_KARTTA_KORKEUS; y++){
@@ -1198,7 +1198,7 @@ void MapClass::Open_Locks() {
 }
 
 void MapClass::Calculate_Edges(){
-	BYTE tile1, tile2, tile3;
+	u8 tile1, tile2, tile3;
 	bool edge = false;
 
 	memset(this->reunat, false, sizeof(this->reunat));
@@ -1247,12 +1247,12 @@ void MapClass::Calculate_Edges(){
 /* Kartanpiirtorutiineja ----------------------------------------------------------------*/
 //Anim Fire
 void MapClass::Animoi_Tuli(void){
-	BYTE *buffer = NULL;
-	DWORD leveys;
+	u8 *buffer = NULL;
+	u32 leveys;
 	int x,y;
 	int color;
 
-	PDraw::drawimage_start(palikat_buffer,*&buffer,(DWORD &)leveys);
+	PDraw::drawimage_start(palikat_buffer,*&buffer,(u32 &)leveys);
 
 	for (x=128;x<160;x++)
 		for (y=448;y<479;y++)
@@ -1291,14 +1291,14 @@ void MapClass::Animoi_Tuli(void){
 }
 //Anim
 void MapClass::Animoi_Vesiputous(void){
-	BYTE *buffer = NULL;
-	DWORD leveys;
+	u8 *buffer = NULL;
+	u32 leveys;
 	int x,y,plus;
 	int color,color2;
 
-	BYTE temp[32*32];
+	u8 temp[32*32];
 
-	PDraw::drawimage_start(palikat_buffer,*&buffer,(DWORD &)leveys);
+	PDraw::drawimage_start(palikat_buffer,*&buffer,(u32 &)leveys);
 
 	for (x=32;x<64;x++)
 		for (y=416;y<448;y++)
@@ -1333,13 +1333,13 @@ void MapClass::Animoi_Vesiputous(void){
 }
 //Anim
 void MapClass::Animoi_Vedenpinta(void){
-	BYTE *buffer = NULL;
-	DWORD leveys;
+	u8 *buffer = NULL;
+	u32 leveys;
 	int x,y;
 
-	BYTE temp[32];
+	u8 temp[32];
 
-	PDraw::drawimage_start(palikat_buffer,*&buffer,(DWORD &)leveys);
+	PDraw::drawimage_start(palikat_buffer,*&buffer,(u32 &)leveys);
 
 	for (y=416;y<448;y++)
 		temp[y-416] = buffer[y*leveys];
@@ -1359,8 +1359,8 @@ void MapClass::Animoi_Vedenpinta(void){
 }
 //Anim water
 void MapClass::Animoi_Vesi(void){
-	BYTE *buffer_lahde = NULL, *buffer_kohde = NULL;
-	DWORD leveys_lahde, leveys_kohde;
+	u8 *buffer_lahde = NULL, *buffer_kohde = NULL;
+	u32 leveys_lahde, leveys_kohde;
 	int x, y, color1, color2,
 		d1 = vesiaste / 2, d2;
 	int sini, cosi;
@@ -1368,8 +1368,8 @@ void MapClass::Animoi_Vesi(void){
 	int i;
 
 
-	PDraw::drawimage_start(palikat_buffer,		*&buffer_kohde,(DWORD &)leveys_kohde);
-	PDraw::drawimage_start(palikat_vesi_buffer,*&buffer_lahde,(DWORD &)leveys_lahde);
+	PDraw::drawimage_start(palikat_buffer,		*&buffer_kohde,(u32 &)leveys_kohde);
+	PDraw::drawimage_start(palikat_vesi_buffer,*&buffer_lahde,(u32 &)leveys_lahde);
 
 	for (y=0;y<32;y++){
 		d2 = d1;
@@ -1424,13 +1424,13 @@ void MapClass::Animoi_Vesi(void){
 }
 
 void MapClass::Animoi_Virta_Ylos(void){
-	BYTE *buffer = NULL;
-	DWORD leveys;
+	u8 *buffer = NULL;
+	u32 leveys;
 	int x,y;
 
-	BYTE temp[32];
+	u8 temp[32];
 
-	PDraw::drawimage_start(palikat_buffer,*&buffer,(DWORD &)leveys);
+	PDraw::drawimage_start(palikat_buffer,*&buffer,(u32 &)leveys);
 
 	for (x=64;x<96;x++)
 		temp[x-64] = buffer[x+448*leveys];
@@ -1487,7 +1487,6 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		py = 0,
 		ay = 0,
 		ax = 0,
-		by = 0, bx = 0,
 		kartta_x = kamera_x/32,
 		kartta_y = kamera_y/32;
 

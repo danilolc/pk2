@@ -18,7 +18,7 @@
 
 #ifndef _WIN32
     #define itoa(X,Y,Z) sprintf(Y,"%i",X)
-    #define ltoa(X,Y,Z) sprintf(Y,"%ld",X)
+    #define ltoa(X,Y,Z) sprintf(Y,"%i",X)
 #endif
 
 #ifdef _WIN32

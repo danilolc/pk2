@@ -84,8 +84,8 @@ int  fade_in(int speed){
     fade_speed = speed;
     return 0;
 }
-void rotate_palette(BYTE start, BYTE end){
-    BYTE i;
+void rotate_palette(u8 start, u8 end){
+    u8 i;
     SDL_Color* game_colors = game_palette->colors;
     SDL_Color temp_color = game_colors[end];
 
@@ -207,8 +207,8 @@ int image_cliptransparent(int index, int x, int y, int alpha){
     return image_cutcliptransparent(index, srcrect, dstrect, alpha);
 }
 int image_cutclip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala){ //TODO - fix names
-    RECT src = {(DWORD)srcx, (DWORD)srcy, (DWORD)oikea-srcx, (DWORD)ala-srcy};
-    RECT dst = {(DWORD)dstx, (DWORD)dsty, (DWORD)oikea-srcx, (DWORD)ala-srcy};
+    RECT src = {(u32)srcx, (u32)srcy, (u32)oikea-srcx, (u32)ala-srcy};
+    RECT dst = {(u32)dstx, (u32)dsty, (u32)oikea-srcx, (u32)ala-srcy};
     image_cutclip(index, src, dst);
     return 0;
 }
@@ -226,12 +226,12 @@ int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, int color
 	    dst.x, dst.y, alpha, colorsum);
 }
 
-int image_cutcliptransparent(int index, DWORD src_x, DWORD src_y, DWORD src_w, DWORD src_h,
-						 DWORD dst_x, DWORD dst_y, int alpha, BYTE colorsum) {
-    BYTE *imagePix = nullptr;
-    BYTE *screenPix = nullptr;
-    BYTE color1, color2;
-    DWORD imagePitch, screenPitch;
+int image_cutcliptransparent(int index, u32 src_x, u32 src_y, u32 src_w, u32 src_h,
+						 u32 dst_x, u32 dst_y, int alpha, u8 colorsum) {
+    u8 *imagePix = nullptr;
+    u8 *screenPix = nullptr;
+    u8 color1, color2;
+    u32 imagePitch, screenPitch;
     int posx, posy;
 
     int x_start = dst_x + x_offset;
@@ -247,8 +247,8 @@ int image_cutcliptransparent(int index, DWORD src_x, DWORD src_y, DWORD src_w, D
     if (y_end > screen_height) y_end = screen_height;
     if (x_start > x_end || y_start > y_end) return -1;
     
-    drawimage_start(index, *&imagePix, (DWORD &)imagePitch);
-    drawscreen_start(*&screenPix, (DWORD &)screenPitch);
+    drawimage_start(index, *&imagePix, (u32 &)imagePitch);
+    drawscreen_start(*&screenPix, (u32 &)screenPitch);
     for (posx = x_start; posx < x_end; posx++)
         for (posy = y_start; posy < y_end; posy++) {
             color1 = imagePix[(posx-x_start+src_x)+imagePitch*(posy-y_start+src_y)];
@@ -267,7 +267,7 @@ void image_getsize(int index, int& w, int& h){
 }
 int image_fliphori(int index){
     int i, h, w, p;
-    BYTE* pix_array;
+    u8* pix_array;
 
     if(index < 0) return -1;
 
@@ -277,7 +277,7 @@ int image_fliphori(int index){
 
     SDL_LockSurface(imageList[index]);
 
-    pix_array  = (BYTE*)(imageList[index]->pixels);
+    pix_array  = (u8*)(imageList[index]->pixels);
 
     for(i=0; i<h*p; i+=p)
         std::reverse(&pix_array[i],&pix_array[i + w]);
@@ -299,17 +299,17 @@ int image_delete(int& index){
     return 0;
 }
 
-int image_fill(int index, BYTE color){
+int image_fill(int index, u8 color){
     return image_fill(index, 0, 0, imageList[index]->w, imageList[index]->h, color);
 }
-int image_fill(int index, int posx, int posy, int oikea, int ala, BYTE color){
+int image_fill(int index, int posx, int posy, int oikea, int ala, u8 color){
     SDL_Rect r = {posx, posy, oikea-posx, ala-posy};
     return SDL_FillRect(imageList[index], &r, color);
 }
-int screen_fill(BYTE color){
+int screen_fill(u8 color){
     return SDL_FillRect(frameBuffer8, NULL, color);
 }
-int screen_fill(int posx, int posy, int oikea, int ala, BYTE color){
+int screen_fill(int posx, int posy, int oikea, int ala, u8 color){
     SDL_Rect r = {posx + x_offset, posy, oikea-posx, ala-posy};
     return SDL_FillRect(frameBuffer8, &r, color);
 }
@@ -318,8 +318,8 @@ void set_mask(int x, int y, int w, int h){
     SDL_SetClipRect(frameBuffer8, &r);
 }
 
-int drawscreen_start(BYTE* &pixels, DWORD &pitch){
-    pixels = (BYTE*)frameBuffer8->pixels;
+int drawscreen_start(u8* &pixels, u32 &pitch){
+    pixels = (u8*)frameBuffer8->pixels;
     pitch = frameBuffer8->pitch;
     return SDL_LockSurface(frameBuffer8);
 }
@@ -327,8 +327,8 @@ int drawscreen_end(){
     SDL_UnlockSurface(frameBuffer8);
     return 0;
 }
-int drawimage_start(int index, BYTE* &pixels, DWORD &pitch){
-    pixels = (BYTE*)imageList[index]->pixels;
+int drawimage_start(int index, u8* &pixels, u32 &pitch){
+    pixels = (u8*)imageList[index]->pixels;
     pitch = imageList[index]->pitch;
     return SDL_LockSurface(imageList[index]);
 }
@@ -336,7 +336,7 @@ int drawimage_end(int index){
     SDL_UnlockSurface(imageList[index]);
     return 0;
 }
-BYTE blend_colors(BYTE color, BYTE colBack, int alpha){
+u8 blend_colors(u8 color, u8 colBack, int alpha){
     int result;
 
     if(alpha > 100) alpha = 100;
@@ -347,7 +347,7 @@ BYTE blend_colors(BYTE color, BYTE colBack, int alpha){
     result += colBack%32;
     if(result>31) result = 31;
 
-    return (BYTE)result;//+32*col
+    return (u8)result;//+32*col
 }
 
 int font_create(int image, int x, int y, int char_w, int char_h, int count){
@@ -386,7 +386,7 @@ int font_write(int font_index, const char* text, int x, int y){
     if (font_index < 0) return 1;
     return fontList[font_index]->write(x, y, text);
 }
-int font_writealpha(int font_index, const char* text, int x, int y, BYTE alpha){
+int font_writealpha(int font_index, const char* text, int x, int y, u8 alpha){
     return fontList[font_index]->write_trasparent(x + x_offset, y, text, alpha);
 }
 
@@ -572,7 +572,7 @@ void update(bool draw){
 
     if(draw){
         SDL_Texture* texture;
-        BYTE alpha2 = (BYTE)(alpha*255/100);
+        u8 alpha2 = (u8)(alpha*255/100);
 
         texture = SDL_CreateTextureFromSurface(renderer,frameBuffer8);
         SDL_SetTextureColorMod(texture,alpha2,alpha2,alpha2);

@@ -57,9 +57,9 @@ void GUI_Change(int ui_mode) {
 
 void GUI_Load() {
 
-	static DWORD escape = PInput::ESCAPE;
-	static DWORD tab    = PInput::TAB;
-	static DWORD enter  = PInput::RETURN;
+	static u32 escape = PInput::ESCAPE;
+	static u32 tab    = PInput::TAB;
+	static u32 enter  = PInput::RETURN;
 
 	int w = 255 * 0.8;
 	int h = 214 * 0.8;

@@ -15,23 +15,23 @@
 struct GameSFX {
 
     bool used;
-    DWORD x, y;
+    u32 x, y;
     int volume;
 
 };
 
 GameSFX sfx_list[PSound::CHANNELS];
 
-int switch_sound;
-int jump_sound;
-int splash_sound;
-int open_locks_sound;
-int menu_sound;
-int moo_sound;
-int doodle_sound;
-int pump_sound;
-int score_sound;
-int apple_sound;
+int switch_sound = -1;
+int jump_sound = -1;
+int splash_sound = -1;
+int open_locks_sound = -1;
+int menu_sound = -1;
+int moo_sound = -1;
+int doodle_sound = -1;
+int pump_sound = -1;
+int score_sound = -1;
+int apple_sound = -1;
 
 int Load_SFX() {
 

@@ -49,7 +49,7 @@ bool alas;
 
 bool vedessa;
 
-BYTE max_nopeus;
+u8 max_nopeus;
 void Check_Blocks2(SpriteClass &sprite, PK2BLOCK &palikka) {
 
 	//left and right
@@ -332,7 +332,7 @@ int Sprite_Movement(int i){
 	sprite_yla	 = sprite_y-sprite_korkeus/2;
 	sprite_ala	 = sprite_y+sprite_korkeus/2;
 
-	max_nopeus = (BYTE)sprite.tyyppi->max_nopeus;
+	max_nopeus = (u8)sprite.tyyppi->max_nopeus;
 
 	vedessa = sprite.vedessa;
 
@@ -485,7 +485,7 @@ int Sprite_Movement(int i){
 			case AI_MUUTOS_JOS_ENERGIAA_YLI_1:
 			if (sprite.tyyppi->muutos > -1)
 				if (sprite.AI_Muutos_Jos_Energiaa_Yli_1(Prototypes_List[sprite.tyyppi->muutos])==1)
-					Effect_Destruction(TUHOUTUMINEN_SAVU_HARMAA, (DWORD)sprite.x, (DWORD)sprite.y);
+					Effect_Destruction(TUHOUTUMINEN_SAVU_HARMAA, (u32)sprite.x, (u32)sprite.y);
 			break;
 			
 			case AI_MUUTOS_AJASTIN:
@@ -589,9 +589,9 @@ int Sprite_Movement(int i){
 	/*****************************************************************************************/
 
 	int palikat_x_lkm,
-	    palikat_y_lkm,
-	    palikat_lkm;
-	DWORD p;
+	    palikat_y_lkm;
+	    //palikat_lkm;
+	u32 p;
 
 	if (sprite.tyyppi->tiletarkistus){ //Find the tiles that the sprite occupies
 
@@ -609,7 +609,7 @@ int Sprite_Movement(int i){
 		/* Going through the blocks around the sprite.                                           */
 		/*****************************************************************************************/
 
-		palikat_lkm = palikat_y_lkm*palikat_x_lkm;
+		//palikat_lkm = palikat_y_lkm*palikat_x_lkm;
 		for (y=0;y<palikat_y_lkm;y++){
 			for (x=0;x<palikat_x_lkm;x++) {
 				p = x+y*palikat_x_lkm;
@@ -858,7 +858,7 @@ int Sprite_Movement(int i){
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 			if (sprite.tyyppi->tuhoutuminen%100 == TUHOUTUMINEN_HOYHENET)
-				Effect_Destruction(TUHOUTUMINEN_HOYHENET, (DWORD)sprite.x, (DWORD)sprite.y);
+				Effect_Destruction(TUHOUTUMINEN_HOYHENET, (u32)sprite.x, (u32)sprite.y);
 
 			if (sprite.tyyppi->tyyppi != TYYPPI_AMMUS){
 				Particles_New(PARTICLE_STAR,sprite_x,sprite_y,-1,-1,60,0.01,128);
@@ -907,7 +907,7 @@ int Sprite_Movement(int i){
 				else
 					sprite.piilota = true;
 
-				Effect_Destruction(tuhoutuminen, (DWORD)sprite.x, (DWORD)sprite.y);
+				Effect_Destruction(tuhoutuminen, (u32)sprite.x, (u32)sprite.y);
 				Play_GameSFX(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
 							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
@@ -1159,7 +1159,7 @@ int Sprite_Movement(int i){
 													break;
 				case AI_MUUTOS_JOS_ENERGIAA_YLI_1:	if (sprite.tyyppi->muutos > -1)
 														if (sprite.AI_Muutos_Jos_Energiaa_Yli_1(Prototypes_List[sprite.tyyppi->muutos])==1)
-															Effect_Destruction(TUHOUTUMINEN_SAVU_HARMAA, (DWORD)sprite.x, (DWORD)sprite.y);
+															Effect_Destruction(TUHOUTUMINEN_SAVU_HARMAA, (u32)sprite.x, (u32)sprite.y);
 													break;
 				case AI_MUUTOS_AJASTIN:				if (sprite.tyyppi->muutos > -1) {
 														sprite.AI_Muutos_Ajastin(Prototypes_List[sprite.tyyppi->muutos]);
@@ -1353,8 +1353,8 @@ int Sprite_Movement(int i){
 
 	// KEHITYSVAIHEEN APUTOIMINTOJA
 
-	BYTE color;
-	DWORD plk;
+	u8 color;
+	u32 plk;
 
 	if (PInput::Keydown(PInput::B) && dev_mode) { // Draw bounding box
 		
@@ -1849,30 +1849,31 @@ int BonusSprite_Movement(int i){
 				Play_GameSFX(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
 							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
-				Effect_Destruction(tuhoutuminen, (DWORD)sprite_x, (DWORD)sprite_y);
+				Effect_Destruction(tuhoutuminen, (u32)sprite_x, (u32)sprite_y);
 			}
 		}
 	}
 
-	for (i=0;i<SPRITE_MAX_AI;i++)
-	{
+	for (i=0;i<SPRITE_MAX_AI;i++) {
+
 		if (sprite.tyyppi->AI[i] == AI_EI)
 			break;
 
-		switch (sprite.tyyppi->AI[i])
-		{
-		case AI_BONUS:				sprite.AI_Bonus();break;
+		switch (sprite.tyyppi->AI[i]) {
+		
+		case AI_BONUS:				sprite.AI_Bonus(); break;
 
-		case AI_PERUS:				sprite.AI_Perus();break;
+		case AI_PERUS:				sprite.AI_Perus(); break;
 
 		case AI_MUUTOS_AJASTIN:		if (sprite.tyyppi->muutos > -1)
-									sprite.AI_Muutos_Ajastin(Prototypes_List[sprite.tyyppi->muutos]);
+										sprite.AI_Muutos_Ajastin(Prototypes_List[sprite.tyyppi->muutos]);
 									break;
 
 		case AI_TIPPUU_TARINASTA:	sprite.AI_Tippuu_Tarinasta(Game->vibration + Game->button_moving);
 									break;
 
 		default:					break;
+		
 		}
 	}
 
