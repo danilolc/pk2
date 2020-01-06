@@ -909,23 +909,25 @@ int SpriteClass::Piirra(int kamera_x, int kamera_y){
 		y = (int)this->y-(kamera_y),
 		frame = 0;
 
-	frame = Animoi();
+	frame = this->Animoi();
 
 	if (tyyppi->tarisee){
 		x+= rand()%2 - rand()%2;
 		y+= rand()%2 - rand()%2;
 	}
-
-	if (flip_x){
-		if (!flip_y)
+	
+	if (flip_x) {
+		//if(this->invisible) //TODO - implement
+		//	PDraw::image_cliptransparent(tyyppi->framet_peilikuva[frame], x-l-1, y-h, 40, this->tyyppi->vari);
+		//else
 			PDraw::image_clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);
-		else
-			PDraw::image_clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);//, false, true);//TODO-Fix
-	} else{
-		if (!flip_y)
+
+	} else {
+		//if(this->invisible)
+		//	PDraw::image_cliptransparent(tyyppi->framet[frame], x-l-1, y-h, 40, this->tyyppi->vari);
+		//else
 			PDraw::image_clip(tyyppi->framet[frame], x-l-1, y-h);
-		else
-			PDraw::image_clip(tyyppi->framet[frame], x-l-1, y-h);//, false, true);
+	
 	}
 
 	return 0;

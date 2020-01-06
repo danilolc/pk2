@@ -134,7 +134,7 @@ int PK_Draw_InGame_Sprites() {
 					PDraw::image_cutclip(game_assets,hit_x-Game->camera_x-28+8, hit_y-Game->camera_y-27+8,1+framex,83,1+57+framex,83+55);
 				}
 
-				if (Game->invisibility == 0 || (!doublespeed && Game->invisibility%2 == 0) || (doublespeed && Game->invisibility%4 <= 1) || sprite != Player_Sprite/*i != pelaaja_index*/)
+				//if (Game->invisibility == 0 || (!doublespeed && Game->invisibility%2 == 0) || (doublespeed && Game->invisibility%4 <= 1) || sprite != Player_Sprite/*i != pelaaja_index*/)
 					sprite->Piirra(Game->camera_x,Game->camera_y);
 
 				if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYYPPI_AMMUS){

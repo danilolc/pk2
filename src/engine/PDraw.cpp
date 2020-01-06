@@ -196,17 +196,14 @@ int image_clip(int index, int x, int y) {
 
     return 0;
 }
-int image_cliptransparent(int index, int x, int y, int alpha){
-    RECT srcrect, dstrect;
-    srcrect.x = 0;
-    srcrect.y = 0;
-    srcrect.w = imageList[index]->w;
-    srcrect.h = imageList[index]->h;
-    dstrect.x = x;
-    dstrect.y = y;
-    return image_cutcliptransparent(index, srcrect, dstrect, alpha);
+int image_cliptransparent(int index, int x, int y, int alpha, int colorsum){
+    
+    return image_cutcliptransparent(index, 0, 0, imageList[index]->w, imageList[index]->h, 
+        x, y, alpha, colorsum);
+
 }
-int image_cutclip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala){ //TODO - fix names
+//TODO - keep a default order (src_x, src_y, src_w, src_h, dst_x, dst_y)
+int image_cutclip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala){ 
     RECT src = {(u32)srcx, (u32)srcy, (u32)oikea-srcx, (u32)ala-srcy};
     RECT dst = {(u32)dstx, (u32)dsty, (u32)oikea-srcx, (u32)ala-srcy};
     image_cutclip(index, src, dst);
@@ -217,9 +214,6 @@ int image_cutclip(int index, RECT srcrect, RECT dstrect){
     SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
     return 0;
 }
-int image_cutcliptransparent(int index, RECT srcrect, RECT dstrect, int alpha){
-    return image_cutcliptransparent(index, srcrect, dstrect, alpha, 0); //TODO implement
-}
 
 int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, int colorsum){
 	return image_cutcliptransparent(index, src.x, src.y, src.w, src.h,
@@ -227,39 +221,52 @@ int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, int color
 }
 
 int image_cutcliptransparent(int index, u32 src_x, u32 src_y, u32 src_w, u32 src_h,
-						 u32 dst_x, u32 dst_y, int alpha, u8 colorsum) {
+						 int dst_x, int dst_y, int alpha, u8 colorsum) {
     u8 *imagePix = nullptr;
     u8 *screenPix = nullptr;
-    u8 color1, color2;
     u32 imagePitch, screenPitch;
-    int posx, posy;
-
-    int x_start = dst_x + x_offset;
-    int x_end = dst_x + src_w + x_offset;
-    int y_start = dst_y;
-    int y_end = dst_y + src_h;
 
     if (alpha > 100) alpha = 100;
     if (alpha < 0) alpha = 0;
-    if (x_start < 0) x_start = 0;
-    if (y_start < 0) y_start = 0;
-    if (x_end > screen_width) x_end = screen_width;
-    if (y_end > screen_height) y_end = screen_height;
-    if (x_start > x_end || y_start > y_end) return -1;
+
+    int x_start = src_x;
+    if (dst_x + x_start < 0)
+        x_start = -dst_x;
+
+    int x_end = src_x + src_w;
+    if (dst_x + x_end > screen_width)
+        x_end = screen_width - dst_x;
+
+    int y_start = src_y;
+    if (dst_x + x_start < 0)
+        x_start = -dst_x;
+
+    int y_end = src_y + src_h;
+    if (dst_y + y_end > screen_height)
+        y_end = screen_height - dst_y;
+
+    if (x_start >= x_end || y_start >= y_end) return -1;
     
     drawimage_start(index, *&imagePix, (u32 &)imagePitch);
     drawscreen_start(*&screenPix, (u32 &)screenPitch);
-    for (posx = x_start; posx < x_end; posx++)
-        for (posy = y_start; posy < y_end; posy++) {
-            color1 = imagePix[(posx-x_start+src_x)+imagePitch*(posy-y_start+src_y)];
+    for (int posx = x_start; posx < x_end; posx++)
+        for (int posy = y_start; posy < y_end; posy++) {
+
+            u8 color1 = imagePix[ posx + imagePitch*posy ];
             if (color1 != 255) {
-                color2 = screenPix[posx+screenPitch*posy];
-                screenPix[posx+screenPitch*posy] = blend_colors(color1, color2, alpha) + colorsum;
+                int screen_x = posx + dst_x;
+                int screen_y = posy + dst_y;
+
+                u8 color2 = screenPix[ screen_x + screenPitch*screen_y ];
+                screenPix[ screen_x + screenPitch*screen_y ] = blend_colors(color1, color2, alpha) + colorsum;
             }
+
         }
     drawscreen_end();
     drawimage_end(index);
+    
     return 0;
+
 }
 void image_getsize(int index, int& w, int& h){
     w = imageList[index]->w;
