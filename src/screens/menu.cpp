@@ -386,16 +386,32 @@ void Draw_Menu_Name() {
 	bool mouse_on_text = false;
 	int nameSize = (int)strlen(menu_name);
 
-	Draw_BGSquare(90, 150, 640-90, 480-100, 224);
+	int keyboard_size;
+	if(PUtils::Is_Mobile())
+		keyboard_size = 180;
+	else
+		keyboard_size = 0;
 
-	if (PInput::mouse_x > 180 && PInput::mouse_x < 180+15*20 && PInput::mouse_y > 255 && PInput::mouse_y < 255+18)
+	if (editing_name && PUtils::Is_Mobile())
+		Draw_BGSquare(90, 20, 640-90, 220, 224);
+	else
+		Draw_BGSquare(90, 160, 640-90, 480-80, 224);
+	
+	int tx_start = 180;
+	int tx_end = tx_start + 15*20;
+	int ty_start = 254 - keyboard_size;
+	int ty_end = ty_start + 18;
+
+	if (PInput::mouse_x >= tx_start && PInput::mouse_x <= tx_end && PInput::mouse_y >= ty_start && PInput::mouse_y <= ty_end)
 		mouse_on_text = true; //Mouse is in text
 
-	if (mouse_on_text && PInput::MouseLeft() && key_delay == 0){
-		editing_name = true;
+	if (mouse_on_text && PInput::MouseLeft() && key_delay == 0) {
+
 		PInput::StartKeyboard();
-		menu_name_index = (PInput::mouse_x - 180)/15; //Set text cursor with the mouse
+		editing_name = true;
+		menu_name_index = (PInput::mouse_x - 180) / 15; //Set text cursor with the mouse
 		key_delay = 10;
+	
 	}
 
 	if (editing_name && key_delay == 0){
@@ -420,21 +436,21 @@ void Draw_Menu_Name() {
 	if (menu_name_index < 0)
 		menu_name_index = 0;
 
+	
+	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.playermenu_type_name),tx_start,ty_start - 30);
 
-	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.playermenu_type_name),180,224);
-
-	PDraw::screen_fill(180-2,255-2,180+19*15+4,255+18+4,0);
-	PDraw::screen_fill(180,255,180+19*15,255+18,50);
+	PDraw::screen_fill(tx_start-2, ty_start-2, tx_end+4, ty_end+4, 0);
+	PDraw::screen_fill(tx_start, ty_start, tx_end, ty_end, mouse_on_text? 54:50);
 
 	if (editing_name) { //Draw text cursor
-		int mx = menu_name_index*15 + 180 + rand() % 2;
-		PDraw::screen_fill(mx-2, 254, mx+6+3, 254+20+3, 0);
-		PDraw::screen_fill(mx-1, 254, mx+6, 254+20, 96+16);
-		PDraw::screen_fill(mx+4, 254, mx+6, 254+20, 96+8);
+		int mx = menu_name_index*15 + tx_start + rand() % 2;
+		PDraw::screen_fill(mx-2, ty_start, mx+6+3, ty_end+3, 0);
+		PDraw::screen_fill(mx-1, ty_start, mx+6, ty_end, 96+16);
+		PDraw::screen_fill(mx+4, ty_start, mx+6, ty_end, 96+8);
 	}
 
-	WavetextSlow_Draw(menu_name,fontti2,180,255);
-	PDraw::font_writealpha(fontti3,menu_name,180,255,15);
+	WavetextSlow_Draw(menu_name,fontti2,tx_start,ty_start-1);
+	PDraw::font_writealpha(fontti3,menu_name,tx_start,ty_start-1,15);
 
 	char buffer[32];
 	int in_len = PInput::ReadKeyboard(buffer);
@@ -488,7 +504,7 @@ void Draw_Menu_Name() {
 	}
 
 
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.playermenu_continue),180,300)) {
+	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.playermenu_continue),tx_start,ty_start + 50)) {
 		editing_name = false;
 		PInput::EndKeyboard();
 		
@@ -515,12 +531,12 @@ void Draw_Menu_Name() {
 		//}
 	}
 
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.playermenu_clear),340,300)) {
+	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.playermenu_clear),tx_start + 180,ty_start + 50)) {
 		memset(menu_name,'\0',sizeof(menu_name));
 		menu_name_index = 0;
 	}
 
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_exit),180,400)) {
+	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.mainmenu_exit),tx_start,ty_start + 100)) {
 		menu_nyt = MENU_MAIN;
 		menu_name_index = 0;
 		editing_name = false;

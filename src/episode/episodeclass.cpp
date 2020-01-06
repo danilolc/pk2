@@ -205,8 +205,10 @@ EpisodeClass::EpisodeClass(const char* player_name, episode_entry entry) {
 	this->entry = entry;
 	strcpy(this->player_name, player_name);
 
-	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
+	for (int j = 0; j < EPISODI_MAX_LEVELS; j++) {
 		this->levels_list[j].cleared = 0;
+		this->levels_list[j].all_apples = false;
+	}
 	
 	this->Load();
 	

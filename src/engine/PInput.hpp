@@ -6,6 +6,8 @@
 
 #include "engine/platform.hpp"
 
+#include <vector>
+
 namespace PInput {
 
 enum KEY {
@@ -38,6 +40,17 @@ enum KEY {
 	Y,	Z
 
 };
+
+/*struct touch_t {
+
+	int id;
+	int pos_x, pos_y;
+	int pressure;
+	int time;
+
+};
+
+extern std::vector<touch_t> touchlist;*/
 
 extern int mouse_x, mouse_y;
 
