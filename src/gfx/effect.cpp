@@ -79,29 +79,29 @@ void Effect_Stars(u32 x, u32 y, u8 color) {
 
 void Effect_Destruction(u8 tehoste, u32 x, u32 y) {
 	switch (tehoste){
-		case TUHOUTUMINEN_HOYHENET			: Effect_Feathers(x, y); break;
-		case TUHOUTUMINEN_TAHDET_HARMAA		: Effect_Stars(x,y,0); break;
-		case TUHOUTUMINEN_TAHDET_SININEN	: Effect_Stars(x,y,32); break;
-		case TUHOUTUMINEN_TAHDET_PUNAINEN	: Effect_Stars(x,y,64); break;
-		case TUHOUTUMINEN_TAHDET_VIHREA		: Effect_Stars(x,y,96); break;
-		case TUHOUTUMINEN_TAHDET_ORANSSI	: Effect_Stars(x,y,128); break;
-		case TUHOUTUMINEN_TAHDET_VIOLETTI	: Effect_Stars(x,y,160); break;
-		case TUHOUTUMINEN_TAHDET_TURKOOSI	: Effect_Stars(x,y,192); break;
-		case TUHOUTUMINEN_RAJAHDYS_HARMAA	: Effect_Explosion(x,y,0); break;
-		case TUHOUTUMINEN_RAJAHDYS_SININEN	: Effect_Explosion(x,y,32); break;
-		case TUHOUTUMINEN_RAJAHDYS_PUNAINEN	: Effect_Explosion(x,y,64); break;
-		case TUHOUTUMINEN_RAJAHDYS_VIHREA	: Effect_Explosion(x,y,96); break;
-		case TUHOUTUMINEN_RAJAHDYS_ORANSSI	: Effect_Explosion(x,y,128); break;
-		case TUHOUTUMINEN_RAJAHDYS_VIOLETTI	: Effect_Explosion(x,y,160); break;
-		case TUHOUTUMINEN_RAJAHDYS_TURKOOSI	: Effect_Explosion(x,y,192); break;
-		case TUHOUTUMINEN_SAVU_HARMAA		: Effect_Smoke(x,y,0); break;
-		case TUHOUTUMINEN_SAVU_SININEN		: Effect_Smoke(x,y,32); break;
-		case TUHOUTUMINEN_SAVU_PUNAINEN		: Effect_Smoke(x,y,64); break;
-		case TUHOUTUMINEN_SAVU_VIHREA		: Effect_Smoke(x,y,96); break;
-		case TUHOUTUMINEN_SAVU_ORANSSI		: Effect_Smoke(x,y,128); break;
-		case TUHOUTUMINEN_SAVU_VIOLETTI		: Effect_Smoke(x,y,160); break;
-		case TUHOUTUMINEN_SAVU_TURKOOSI		: Effect_Smoke(x,y,192); break;
-		case TUHOUTUMINEN_SAVUPILVET		: Effect_SmokeClouds(x,y); break;
+		case FX_DESTRUCT_HOYHENET			: Effect_Feathers(x, y); break;
+		case FX_DESTRUCT_TAHDET_HARMAA		: Effect_Stars(x,y,0); break;
+		case FX_DESTRUCT_TAHDET_SININEN	: Effect_Stars(x,y,32); break;
+		case FX_DESTRUCT_TAHDET_PUNAINEN	: Effect_Stars(x,y,64); break;
+		case FX_DESTRUCT_TAHDET_VIHREA		: Effect_Stars(x,y,96); break;
+		case FX_DESTRUCT_TAHDET_ORANSSI	: Effect_Stars(x,y,128); break;
+		case FX_DESTRUCT_TAHDET_VIOLETTI	: Effect_Stars(x,y,160); break;
+		case FX_DESTRUCT_TAHDET_TURKOOSI	: Effect_Stars(x,y,192); break;
+		case FX_DESTRUCT_RAJAHDYS_HARMAA	: Effect_Explosion(x,y,0); break;
+		case FX_DESTRUCT_RAJAHDYS_SININEN	: Effect_Explosion(x,y,32); break;
+		case FX_DESTRUCT_RAJAHDYS_PUNAINEN	: Effect_Explosion(x,y,64); break;
+		case FX_DESTRUCT_RAJAHDYS_VIHREA	: Effect_Explosion(x,y,96); break;
+		case FX_DESTRUCT_RAJAHDYS_ORANSSI	: Effect_Explosion(x,y,128); break;
+		case FX_DESTRUCT_RAJAHDYS_VIOLETTI	: Effect_Explosion(x,y,160); break;
+		case FX_DESTRUCT_RAJAHDYS_TURKOOSI	: Effect_Explosion(x,y,192); break;
+		case FX_DESTRUCT_SAVU_HARMAA		: Effect_Smoke(x,y,0); break;
+		case FX_DESTRUCT_SAVU_SININEN		: Effect_Smoke(x,y,32); break;
+		case FX_DESTRUCT_SAVU_PUNAINEN		: Effect_Smoke(x,y,64); break;
+		case FX_DESTRUCT_SAVU_VIHREA		: Effect_Smoke(x,y,96); break;
+		case FX_DESTRUCT_SAVU_ORANSSI		: Effect_Smoke(x,y,128); break;
+		case FX_DESTRUCT_SAVU_VIOLETTI		: Effect_Smoke(x,y,160); break;
+		case FX_DESTRUCT_SAVU_TURKOOSI		: Effect_Smoke(x,y,192); break;
+		case FX_DESTRUCT_SAVUPILVET		: Effect_SmokeClouds(x,y); break;
 		default	: break;
 	}
 }

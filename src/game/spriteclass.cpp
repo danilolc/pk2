@@ -16,7 +16,7 @@
 
 PrototypeClass::PrototypeClass(){
 
-	strcpy(versio,PK2SPRITE_VIIMEISIN_VERSIO);
+	strcpy(versio,PK2SPRITE_CURRENT_VERSION);
 	strcpy(tiedosto,"");
 	strcpy(kuvatiedosto,"");
 	strcpy(nimi, "");
@@ -25,7 +25,7 @@ PrototypeClass::PrototypeClass(){
 	strcpy(this->ammus1_sprite,"");
 	strcpy(this->ammus2_sprite,"");
 
-	for (int aani=0;aani<MAX_AANIA;aani++){
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++){
 		strcpy(aanitiedostot[aani], "");
 		aanet[aani] = -1;
 	}
@@ -62,14 +62,14 @@ PrototypeClass::PrototypeClass(){
 	pallarx_kerroin = 0;
 	pisteet			= 0;
 	random_frq		= true;
-	suojaus			= VAHINKO_EI;
+	suojaus			= DAMAGE_NONE;
 	tarisee         = false;
 	tiletarkistus	= true;
-	tuhoutuminen	= TUHOUTUMINEN_ANIMAATIO;
-	tyyppi			= TYYPPI_EI_MIKAAN;
+	tuhoutuminen	= FX_DESTRUCT_ANIMAATIO;
+	tyyppi			= TYPE_NOTHING;
 	vahinko			= 0;
-	vahinko_tyyppi  = VAHINKO_ISKU;
-	vari			= VARI_NORMAALI;
+	vahinko_tyyppi  = DAMAGE_IMPACT;
+	vari			= COLOR_NORMAL;
 	vihollinen		= false;
 
 	lapinakyvyys	= false;
@@ -81,14 +81,14 @@ PrototypeClass::PrototypeClass(){
 	osaa_uida		= false;
 
 	for (int i=0;i<SPRITE_MAX_AI;i++){
-		AI[i] = AI_EI;
+		AI[i] = AI_NONE;
 	}
 
 	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
 		framet[i] = 0;
 
 	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++){
-		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
+		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = 0;
 
 		animaatiot[i].looppi  = false;
@@ -111,7 +111,7 @@ void PrototypeClass::Kopioi(const PrototypeClass &proto){
 	strcpy(this->ammus1_sprite,proto.ammus1_sprite);
 	strcpy(this->ammus2_sprite,proto.ammus2_sprite);
 
-	for (int aani=0;aani<MAX_AANIA;aani++){
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++){
 		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
 		aanet[aani] = proto.aanet[aani];
 	}
@@ -176,7 +176,7 @@ void PrototypeClass::Kopioi(const PrototypeClass &proto){
 
 	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
-		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
+		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
 
 		animaatiot[i].looppi  = proto.animaatiot[i].looppi;
@@ -184,7 +184,7 @@ void PrototypeClass::Kopioi(const PrototypeClass &proto){
 	}
 }
 void PrototypeClass::Uusi(){
-	strcpy(versio,PK2SPRITE_VIIMEISIN_VERSIO);
+	strcpy(versio,PK2SPRITE_CURRENT_VERSION);
 	strcpy(tiedosto,"");
 	strcpy(kuvatiedosto,"");
 	strcpy(nimi, "");
@@ -193,7 +193,7 @@ void PrototypeClass::Uusi(){
 	strcpy(ammus1_sprite,"");
 	strcpy(ammus2_sprite,"");
 
-	for (int aani=0;aani<MAX_AANIA;aani++){
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++){
 		strcpy(aanitiedostot[aani], "");
 		aanet[aani] = -1;
 	}
@@ -230,14 +230,14 @@ void PrototypeClass::Uusi(){
 	pallarx_kerroin = 0;
 	pisteet			= 0;
 	random_frq		= true;
-	suojaus			= VAHINKO_EI;
+	suojaus			= DAMAGE_NONE;
 	tarisee         = false;
 	tiletarkistus	= true;
-	tuhoutuminen	= TUHOUTUMINEN_ANIMAATIO;
-	tyyppi			= TYYPPI_EI_MIKAAN;
+	tuhoutuminen	= FX_DESTRUCT_ANIMAATIO;
+	tyyppi			= TYPE_NOTHING;
 	vahinko			= 0;
-	vahinko_tyyppi	= VAHINKO_ISKU;
-	vari			= VARI_NORMAALI;
+	vahinko_tyyppi	= DAMAGE_IMPACT;
+	vari			= COLOR_NORMAL;
 	vihollinen		= false;
 
 	lapinakyvyys	= false;
@@ -251,7 +251,7 @@ void PrototypeClass::Uusi(){
 	int i=0;
 
 	for (i=0;i<SPRITE_MAX_AI;i++){
-		AI[i] = AI_EI;
+		AI[i] = AI_NONE;
 	}
 
 	for (i=0;i<SPRITE_MAX_FRAMEJA;i++){
@@ -268,21 +268,21 @@ void PrototypeClass::Uusi(){
 	}
 
 	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++){
-		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
+		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = 0;
 
 		animaatiot[i].looppi  = false;
 		animaatiot[i].frameja = 0;
 	}
 }
-int PrototypeClass::Animaatio_Uusi(int anim_i, u8 *sekvenssi, bool looppi){
+int PrototypeClass::Animation_Uusi(int anim_i, u8 *sekvenssi, bool looppi){
 	u8 frame_i = 0;
 
 	if (anim_i < SPRITE_MAX_ANIMAATIOITA)
 	{
 		animaatiot[anim_i].frameja = 0;
 
-		while (frame_i < ANIMAATIO_MAX_SEKVENSSEJA && sekvenssi[frame_i] != 0)
+		while (frame_i < ANIMATION_SEQUENCE_SIZE && sekvenssi[frame_i] != 0)
 		{
 			animaatiot[anim_i].sekvenssi[frame_i] = sekvenssi[frame_i];
 			animaatiot[anim_i].frameja++;
@@ -302,7 +302,7 @@ void PrototypeClass::SetProto10(PrototypeClass10 &proto){
 	strcpy(ammus1_sprite,	proto.ammus1_sprite);
 	strcpy(ammus2_sprite,	proto.ammus2_sprite);
 
-	for (int aani=0;aani<MAX_AANIA;aani++)
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++)
 	{
 		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
 		aanet[aani] = proto.aanet[aani];
@@ -339,7 +339,7 @@ void PrototypeClass::SetProto10(PrototypeClass10 &proto){
 
 	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
-		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
+		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
 
 		animaatiot[i].looppi  = proto.animaatiot[i].looppi;
@@ -354,7 +354,7 @@ void PrototypeClass::SetProto11(PrototypeClass11 &proto){
 	strcpy(ammus1_sprite,	proto.ammus1_sprite);
 	strcpy(ammus2_sprite,	proto.ammus2_sprite);
 
-	for (int aani=0;aani<MAX_AANIA;aani++)
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++)
 	{
 		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
 		aanet[aani] = proto.aanet[aani];
@@ -397,7 +397,7 @@ void PrototypeClass::SetProto11(PrototypeClass11 &proto){
 
 	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
-		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
+		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
 
 		animaatiot[i].looppi  = proto.animaatiot[i].looppi;
@@ -412,7 +412,7 @@ void PrototypeClass::SetProto12(PrototypeClass12 &proto){
 	strcpy(ammus1_sprite,	proto.ammus1_sprite);
 	strcpy(ammus2_sprite,	proto.ammus2_sprite);
 
-	for (int aani=0;aani<MAX_AANIA;aani++)
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++)
 	{
 		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
 		aanet[aani] = proto.aanet[aani];
@@ -462,7 +462,7 @@ void PrototypeClass::SetProto12(PrototypeClass12 &proto){
 
 	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
-		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
+		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
 
 		animaatiot[i].looppi  = proto.animaatiot[i].looppi;
@@ -477,7 +477,7 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 	strcpy(ammus1_sprite,	proto.ammus1_sprite);
 	strcpy(ammus2_sprite,	proto.ammus2_sprite);
 
-	for (int aani=0;aani<MAX_AANIA;aani++)
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++)
 	{
 		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
 		aanet[aani] = proto.aanet[aani];
@@ -535,7 +535,7 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 
 	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
-		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
+		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
 
 		animaatiot[i].looppi  = proto.animaatiot[i].looppi;
@@ -553,7 +553,7 @@ PrototypeClass13 PrototypeClass::GetProto13(){
 	strcpy(proto.ammus1_sprite,ammus1_sprite);
 	strcpy(proto.ammus2_sprite,ammus2_sprite);
 
-	for (int aani=0;aani<MAX_AANIA;aani++)
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++)
 	{
 		strcpy(proto.aanitiedostot[aani], aanitiedostot[aani]);
 		proto.aanet[aani] = aanet[aani];
@@ -611,7 +611,7 @@ PrototypeClass13 PrototypeClass::GetProto13(){
 
 	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
 	{
-		for (int j=0;j<ANIMAATIO_MAX_SEKVENSSEJA;j++)
+		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			proto.animaatiot[i].sekvenssi[j] = animaatiot[i].sekvenssi[j];
 
 		proto.animaatiot[i].looppi  = animaatiot[i].looppi;
@@ -688,7 +688,7 @@ int PrototypeClass::Lataa(const char *dir, const char *filename){
 	u8 vari;
 	int x,y,w,h;
 
-	if (this->vari != VARI_NORMAALI){ //Change sprite colors
+	if (this->vari != COLOR_NORMAL){ //Change sprite colors
 		PDraw::image_getsize(bufferi,w,h);
 
 		PDraw::drawimage_start(bufferi,*&buffer,leveys);
@@ -732,7 +732,7 @@ void PrototypeClass::Tallenna(char *tiedoston_nimi) {
 	PrototypeClass13 proto = GetProto13();
 
 	SDL_RWops* file = SDL_RWFromFile(tiedoston_nimi, "w");
-	SDL_RWwrite(file, PK2SPRITE_VIIMEISIN_VERSIO, 4, 1);
+	SDL_RWwrite(file, PK2SPRITE_CURRENT_VERSION, 4, 1);
 	SDL_RWwrite(file, &proto, sizeof(proto), 1);
 
 	SDL_RWclose(file);
@@ -770,7 +770,7 @@ SpriteClass::SpriteClass(){
 	this->kytkinpaino   = 0;
 	this->flip_x		= false;
 	this->flip_y		= false;
-	this->animaatio_index = ANIMAATIO_PAIKALLA;
+	this->animaatio_index = ANIMATION_IDLE;
 	this->alas			= true;
 	this->ylos			= true;
 	this->oikealle		= true;
@@ -813,7 +813,7 @@ SpriteClass::SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, doub
 		this->kyykky		= false;
 		this->flip_x		= false;
 		this->flip_y		= false;
-		this->animaatio_index = ANIMAATIO_PAIKALLA;
+		this->animaatio_index = ANIMATION_IDLE;
 		this->alas			= true;
 		this->ylos			= true;
 		this->oikealle		= true;
@@ -860,14 +860,14 @@ int SpriteClass::Animoi(){
 	int frame = 0;
 
 	switch (tyyppi->AI[0]){
-	case AI_KANA:		Animaatio_Kana();break;
-	case AI_PIKKUKANA:	Animaatio_Kana();break;
-	case AI_BONUS:		Animaatio_Bonus();break;
-	case AI_MUNA:		Animaatio_Muna();break;
-	case AI_AMMUS:		Animaatio_Ammus();break;
-	case AI_HYPPIJA:	Animaatio_Kana();break;
-	case AI_PERUS:		Animaatio_Perus();break;
-	case AI_TELEPORTTI:	Animaatio_Perus();break;
+	case AI_KANA:		Animation_Kana();break;
+	case AI_LITTLE_CHICKEN:	Animation_Kana();break;
+	case AI_BONUS:		Animation_Bonus();break;
+	case AI_EGG:		Animation_Egg();break;
+	case AI_AMMUS:		Animation_Ammus();break;
+	case AI_HYPPIJA:	Animation_Kana();break;
+	case AI_BASIC:		Animation_Perus();break;
+	case AI_TELEPORT:	Animation_Perus();break;
 	default:			break;
 	}
 
@@ -1158,7 +1158,7 @@ int SpriteClass::AI_Random_Kaantyminen(){
 	return 0;
 }
 int SpriteClass::AI_Kaantyy_Jos_Osuttu(){
-	int dam = (VAHINKO_AIKA > 0 && energia > 0)? 1 : 0; //Damage
+	int dam = (DAMAGE_TIME > 0 && energia > 0)? 1 : 0; //Damage
 	if (isku == dam) {
 		if (a != 0)
 			a = -a;
@@ -1387,9 +1387,9 @@ int SpriteClass::AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(SpriteClass &pelaaja){
 
 	return 0;
 }
-int SpriteClass::AI_Muutos_Jos_Energiaa_Alle_2(PrototypeClass &muutos){
-	if (energia < 2 && muutos.indeksi != tyyppi->indeksi)
-	{
+int SpriteClass::AI_Change_When_Energy_Under_2(PrototypeClass &muutos){
+	
+	if (energia < 2 && muutos.indeksi != tyyppi->indeksi) {
 		tyyppi = &muutos;
 		alkupaino = tyyppi->paino;
 		//ammus1 = tyyppi->ammus1;
@@ -1399,9 +1399,9 @@ int SpriteClass::AI_Muutos_Jos_Energiaa_Alle_2(PrototypeClass &muutos){
 
 	return 0;
 }
-int SpriteClass::AI_Muutos_Jos_Energiaa_Yli_1(PrototypeClass &muutos){
-	if (energia > 1 && muutos.indeksi != tyyppi->indeksi)
-	{
+int SpriteClass::AI_Change_When_Energy_Over_1(PrototypeClass &muutos){
+
+	if (energia > 1 && muutos.indeksi != tyyppi->indeksi) {
 		tyyppi = &muutos;
 		alkupaino = tyyppi->paino;
 		//ammus1 = tyyppi->ammus1;
@@ -1427,7 +1427,7 @@ int SpriteClass::AI_Muutos_Ajastin(PrototypeClass &muutos){
 
 			animaatio_index = -1;
 
-			Animaatio(ANIMAATIO_PAIKALLA,true);
+			Animaatio(ANIMATION_IDLE,true);
 		}
 		return 1;
 	}
@@ -1447,7 +1447,7 @@ int SpriteClass::AI_Muutos_Jos_Osuttu(PrototypeClass &muutos){
 
 			animaatio_index = -1;
 
-			Animaatio(ANIMAATIO_PAIKALLA,true);
+			Animaatio(ANIMATION_IDLE,true);
 
 			return 1;
 		}
@@ -1461,7 +1461,7 @@ int SpriteClass::AI_Tuhoutuu_Jos_Emo_Tuhoutuu(SpriteClass *spritet){
 		if (spritet[emosprite].energia < 1 && energia > 0)
 		{
 			saatu_vahinko = energia;
-			this->saatu_vahinko_tyyppi = VAHINKO_KAIKKI;
+			this->saatu_vahinko_tyyppi = DAMAGE_ALL;
 
 			return 1;
 		}
@@ -1808,7 +1808,7 @@ int SpriteClass::AI_Bonus(){
 
 	return 0;
 }
-int SpriteClass::AI_Muna(){
+int SpriteClass::AI_Egg(){
 	if (x < 10)
 	{
 		x = 10;
@@ -1855,7 +1855,7 @@ int SpriteClass::AI_Ammus(){
 	if (this->lataus == 1)
 	{
 		this->saatu_vahinko = this->tyyppi->energia;
-		this->saatu_vahinko_tyyppi = VAHINKO_KAIKKI;
+		this->saatu_vahinko_tyyppi = DAMAGE_ALL;
 	}
 
 	if (energia < 1)
@@ -1870,7 +1870,7 @@ int SpriteClass::AI_Pommi(){
 	if (this->lataus == 1)
 	{
 		this->saatu_vahinko = this->energia;
-		this->saatu_vahinko_tyyppi = VAHINKO_KAIKKI;
+		this->saatu_vahinko_tyyppi = DAMAGE_ALL;
 	}
 
 	return 0;
@@ -1896,7 +1896,7 @@ int SpriteClass::AI_Teleportti(int oma_i, SpriteClass *spritet, int max, SpriteC
 			// etsitaan SAMANTYYPPISET teleportit
 			for (i=0;i<max;i++)
 				if (spritet[i].tyyppi != NULL)
-					if (spritet[i].tyyppi->tyyppi == TYYPPI_TELEPORTTI &&
+					if (spritet[i].tyyppi->tyyppi == TYPE_TELEPORT &&
 						tyyppi->indeksi == spritet[i].tyyppi->indeksi)
 					{
 						portit[portti_index] = i;
@@ -1913,7 +1913,7 @@ int SpriteClass::AI_Teleportti(int oma_i, SpriteClass *spritet, int max, SpriteC
 
 				for (i=0;i<max;i++)
 					if (spritet[i].tyyppi != NULL)
-						if (spritet[i].tyyppi->tyyppi == TYYPPI_TELEPORTTI)
+						if (spritet[i].tyyppi->tyyppi == TYPE_TELEPORT)
 						{
 							portit[portti_index] = i;
 							portti_index++;
@@ -1952,14 +1952,14 @@ int SpriteClass::AI_Teleportti(int oma_i, SpriteClass *spritet, int max, SpriteC
 	return siirto;
 }
 
-int SpriteClass::Animaatio_Perus(){
+int SpriteClass::Animation_Perus(){
 
 	int uusi_animaatio = -1;
 	bool alusta = false;
 
 	if (energia < 1 && !alas)
 	{
-		uusi_animaatio = ANIMAATIO_KUOLEMA;
+		uusi_animaatio = ANIMATION_DEATH;
 		alusta = true;
 	}
 	else
@@ -1967,49 +1967,49 @@ int SpriteClass::Animaatio_Perus(){
 
 		if (a > -0.2 && a < 0.2 && b == 0 && hyppy_ajastin <= 0)
 		{
-			uusi_animaatio = ANIMAATIO_PAIKALLA;
+			uusi_animaatio = ANIMATION_IDLE;
 			alusta = true;
 		}
 
 		if ((a < -0.2 || a > 0.2) && hyppy_ajastin <= 0)
 		{
-			uusi_animaatio = ANIMAATIO_KAVELY;
+			uusi_animaatio = ANIMATION_WALKING;
 			alusta = false;
 		}
 
 		if (b < 0)//-0.3
 		{
-			uusi_animaatio = ANIMAATIO_HYPPY_YLOS;
+			uusi_animaatio = ANIMATION_JUMP_UP;
 			alusta = false;
 		}
 
 		if ((hyppy_ajastin > tyyppi->max_hyppy || b > 1.5) && alas)
 		{
-			uusi_animaatio = ANIMAATIO_HYPPY_ALAS;
+			uusi_animaatio = ANIMATION_HYPPY_DOWN;
 			alusta = false;
 		}
 
 		if (kyykky)
 		{
-			uusi_animaatio = ANIMAATIO_KYYKKY;
+			uusi_animaatio = ANIMATION_SQUAT;
 			alusta = true;
 		}
 
 		if (hyokkays1 > 0)
 		{
-			uusi_animaatio = ANIMAATIO_HYOKKAYS1;
+			uusi_animaatio = ANIMATION_ATTACK1;
 			alusta = true;
 		}
 
 		if (hyokkays2 > 0)
 		{
-			uusi_animaatio = ANIMAATIO_HYOKKAYS2;
+			uusi_animaatio = ANIMATION_ATTACK2;
 			alusta = true;
 		}
 
 		if (isku > 0)
 		{
-			uusi_animaatio = ANIMAATIO_VAHINKO;
+			uusi_animaatio = ANIMATION_DAMAGE;
 			alusta = false;
 		}
 
@@ -2020,65 +2020,72 @@ int SpriteClass::Animaatio_Perus(){
 
 	return 0;
 }
-int SpriteClass::Animaatio_Kana(){
+int SpriteClass::Animation_Kana(){
 
 	int uusi_animaatio = -1;
 	bool alusta = false;
 
-	if (energia < 1 && !alas)
-	{
-		uusi_animaatio = ANIMAATIO_KUOLEMA;
+	if (energia < 1 && !alas) {
+	
+		uusi_animaatio = ANIMATION_DEATH;
 		alusta = true;
-	}
-	else
-	{
+	
+	} else {
 
-		if (a > -0.2 && a < 0.2 && b == 0 && hyppy_ajastin <= 0)
-		{
-			uusi_animaatio = ANIMAATIO_PAIKALLA;
+		if (a > -0.2 && a < 0.2 && b == 0 && hyppy_ajastin <= 0) {
+
+			uusi_animaatio = ANIMATION_IDLE;
 			alusta = true;
+		
 		}
 
-		if ((a < -0.2 || a > 0.2) && hyppy_ajastin <= 0)
-		{
-			uusi_animaatio = ANIMAATIO_KAVELY;
+		if ((a < -0.2 || a > 0.2) && hyppy_ajastin <= 0) {
+
+			uusi_animaatio = ANIMATION_WALKING;
 			alusta = false;
+		
 		}
 
-		if (b < 0)//-0.3
-		{
-			uusi_animaatio = ANIMAATIO_HYPPY_YLOS;
+		if (b < 0) {
+
+			uusi_animaatio = ANIMATION_JUMP_UP;
 			alusta = false;
+
 		}
 
-		if ((hyppy_ajastin > 90+10/*tyyppi->max_hyppy || b > 1.5*/) && alas)
-		{
-			uusi_animaatio = ANIMAATIO_HYPPY_ALAS;
+		if ((hyppy_ajastin > 90+10/*tyyppi->max_hyppy || b > 1.5*/) && alas) {
+		
+			uusi_animaatio = ANIMATION_HYPPY_DOWN;
 			alusta = false;
+		
 		}
 
-		if (hyokkays1 > 0)
-		{
-			uusi_animaatio = ANIMAATIO_HYOKKAYS1;
+		if (hyokkays1 > 0) {
+
+			uusi_animaatio = ANIMATION_ATTACK1;
 			alusta = true;
+
 		}
 
-		if (hyokkays2 > 0)
-		{
-			uusi_animaatio = ANIMAATIO_HYOKKAYS2;
+		if (hyokkays2 > 0) {
+
+			uusi_animaatio = ANIMATION_ATTACK2;
 			alusta = true;
+
 		}
 
-		if (kyykky)
-		{
-			uusi_animaatio = ANIMAATIO_KYYKKY;
+		if (kyykky) {
+
+			uusi_animaatio = ANIMATION_SQUAT;
 			alusta = true;
+
 		}
 
-		if (isku > 0)
-		{
-			uusi_animaatio = ANIMAATIO_VAHINKO;
+		if (isku > 0) {
+
+			uusi_animaatio = ANIMATION_DAMAGE;
 			alusta = false;
+
 		}
 
 	}
@@ -2088,27 +2095,29 @@ int SpriteClass::Animaatio_Kana(){
 
 	return 0;
 }
-int SpriteClass::Animaatio_Bonus(){
-	Animaatio(ANIMAATIO_PAIKALLA, true);
+int SpriteClass::Animation_Bonus() {
+
+	Animaatio(ANIMATION_IDLE, true);
 	return 0;
+
 }
-int SpriteClass::Animaatio_Ammus(){
-	Animaatio(ANIMAATIO_PAIKALLA, true);
+int SpriteClass::Animation_Ammus() {
+
+	Animaatio(ANIMATION_IDLE, true);
 	return 0;
+
 }
-int SpriteClass::Animaatio_Muna(){
-	int uusi_animaatio = 0;
-	bool alusta = false;
 
-	uusi_animaatio = ANIMAATIO_PAIKALLA;
-	alusta = true;
+int SpriteClass::Animation_Egg() {
 
-	if (energia < tyyppi->energia){
-		uusi_animaatio = ANIMAATIO_KUOLEMA;
-		alusta = true;
-	}
+	int uusi_animaatio = ANIMATION_IDLE;
+	bool alusta = true;
 
-	Animaatio(uusi_animaatio,alusta);
+	if (energia < tyyppi->energia)
+		uusi_animaatio = ANIMATION_DEATH;
+	
+	Animaatio(uusi_animaatio, alusta);
 
 	return 0;
+
 }

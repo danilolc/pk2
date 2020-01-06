@@ -127,7 +127,7 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_TULI && Game->button1 == 0 && sprite.isku == 0){
 			sprite.saatu_vahinko = 2;
-			sprite.saatu_vahinko_tyyppi = VAHINKO_TULI;
+			sprite.saatu_vahinko_tyyppi = DAMAGE_FIRE;
 		}
 
 		/**********************************************************************/
@@ -153,7 +153,7 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_TULI && Game->button1 == 0 && sprite.isku == 0){
 			sprite.saatu_vahinko = 2;
-			sprite.saatu_vahinko_tyyppi = VAHINKO_TULI;
+			sprite.saatu_vahinko_tyyppi = DAMAGE_FIRE;
 		}
 	}
 
@@ -186,7 +186,7 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 
 			sprite.piilota = true;
 
-			if (sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU) {
+			if (sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU) {
 				Game->keys--;
 				if (Game->keys < 1)
 					Game->map->Open_Locks();
@@ -295,7 +295,7 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 					if (sprite_yla < palikka.ala) {
 						if (palikka.koodi == BLOCK_HISSI_VERT && sprite.kyykky) {
 							sprite.saatu_vahinko = 2;
-							sprite.saatu_vahinko_tyyppi = VAHINKO_ISKU;
+							sprite.saatu_vahinko_tyyppi = DAMAGE_IMPACT;
 						}
 
 						if (palikka.koodi != BLOCK_HISSI_HORI) {
@@ -405,7 +405,7 @@ int Sprite_Movement(int i){
 			a_lisays = 0.04;//0.08;
 
 			if (lisavauhti) {
-				if (rand()%20 == 1 && sprite.animaatio_index == ANIMAATIO_KAVELY) // Draw dust
+				if (rand()%20 == 1 && sprite.animaatio_index == ANIMATION_WALKING) // Draw dust
 					Particles_New(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,0.25,-0.25,40,0,0);
 
 				a_lisays += 0.09;//0.05
@@ -422,7 +422,7 @@ int Sprite_Movement(int i){
 			a_lisays = -0.04;
 
 			if (lisavauhti) {
-				if (rand()%20 == 1 && sprite.animaatio_index == ANIMAATIO_KAVELY) { // Draw dust
+				if (rand()%20 == 1 && sprite.animaatio_index == ANIMATION_WALKING) { // Draw dust
 					Particles_New(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,-0.25,-0.25,40,0,0);
 				}
 
@@ -477,15 +477,15 @@ int Sprite_Movement(int i){
 		for (int ai=0;ai < SPRITE_MAX_AI;ai++)
 			switch (sprite.tyyppi->AI[ai]){
 			
-			case AI_MUUTOS_JOS_ENERGIAA_ALLE_2:
+			case AI_CHANGE_WHEN_ENERGY_UNDER_2:
 				if (sprite.tyyppi->muutos > -1)
-					sprite.AI_Muutos_Jos_Energiaa_Alle_2(Prototypes_List[sprite.tyyppi->muutos]);
+					sprite.AI_Change_When_Energy_Under_2(Prototypes_List[sprite.tyyppi->muutos]);
 			break;
 			
-			case AI_MUUTOS_JOS_ENERGIAA_YLI_1:
+			case AI_CHANGE_WHEN_ENERGY_OVER_1:
 			if (sprite.tyyppi->muutos > -1)
-				if (sprite.AI_Muutos_Jos_Energiaa_Yli_1(Prototypes_List[sprite.tyyppi->muutos])==1)
-					Effect_Destruction(TUHOUTUMINEN_SAVU_HARMAA, (u32)sprite.x, (u32)sprite.y);
+				if (sprite.AI_Change_When_Energy_Over_1(Prototypes_List[sprite.tyyppi->muutos])==1)
+					Effect_Destruction(FX_DESTRUCT_SAVU_HARMAA, (u32)sprite.x, (u32)sprite.y);
 			break;
 			
 			case AI_MUUTOS_AJASTIN:
@@ -506,7 +506,7 @@ int Sprite_Movement(int i){
 			}
 
 		/* It is not acceptable that a player is anything other than the game character */
-		if (sprite.tyyppi->tyyppi != TYYPPI_PELIHAHMO)
+		if (sprite.tyyppi->tyyppi != TYPE_GAME_CHARACTER)
 			sprite.energia = 0;
 	}
 
@@ -738,7 +738,7 @@ int Sprite_Movement(int i){
 				sprite_y/*yla*/ <= sprite2->y + sprite2->tyyppi->korkeus/2 &&
 				sprite_y/*ala*/ >= sprite2->y - sprite2->tyyppi->korkeus/2 + sprite2_yla)
 			{
-				// samanmerkkiset spritet vaihtavat suuntaa t�rm�tess��n
+				// sprites with same index change directions when touch
 				if (sprite.tyyppi->indeksi == sprite2->tyyppi->indeksi &&
 					sprite2->energia > 0/* && sprite.pelaaja == 0*/)
 				{
@@ -782,9 +782,9 @@ int Sprite_Movement(int i){
 
 
 				if (sprite.vihollinen != sprite2->vihollinen && sprite.emosprite != sprite_index) {
-					if (sprite2->tyyppi->tyyppi != TYYPPI_TAUSTA &&
-						sprite.tyyppi->tyyppi   != TYYPPI_TAUSTA &&
-						sprite2->tyyppi->tyyppi != TYYPPI_TELEPORTTI &&
+					if (sprite2->tyyppi->tyyppi != TYPE_BACKGROUND &&
+						sprite.tyyppi->tyyppi   != TYPE_BACKGROUND &&
+						sprite2->tyyppi->tyyppi != TYPE_TELEPORT &&
 						sprite2->isku == 0 &&
 						sprite.isku == 0 &&
 						sprite2->energia > 0 &&
@@ -796,16 +796,16 @@ int Sprite_Movement(int i){
 
 						if (sprite2->b > 2 && sprite2->paino >= 0.5 &&
 							sprite2->y < sprite_y && !sprite.tyyppi->este &&
-							sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
+							sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 						{
 							//sprite.saatu_vahinko = (int)sprite2->paino;//1;
 							sprite.saatu_vahinko = (int)(sprite2->paino+sprite2->b/4);
-							sprite.saatu_vahinko_tyyppi = VAHINKO_PUDOTUS;
+							sprite.saatu_vahinko_tyyppi = DAMAGE_DROP;
 							sprite2->hyppy_ajastin = 1;
 						}
 
 						// If there is another sprite damaging
-						if (sprite.tyyppi->vahinko > 0 && sprite2->tyyppi->tyyppi != TYYPPI_BONUS) {
+						if (sprite.tyyppi->vahinko > 0 && sprite2->tyyppi->tyyppi != TYPE_BONUS) {
 							
 							sprite2->saatu_vahinko        = sprite.tyyppi->vahinko;
 							sprite2->saatu_vahinko_tyyppi = sprite.tyyppi->vahinko_tyyppi;
@@ -814,12 +814,12 @@ int Sprite_Movement(int i){
 								sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika; //Then sprite attack
 
 							// The projectiles are shattered by shock
-							if (sprite2->tyyppi->tyyppi == TYYPPI_AMMUS) {
+							if (sprite2->tyyppi->tyyppi == TYPE_PROJECTILE) {
 								sprite.saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
 								sprite.saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
 							}
 
-							if (sprite.tyyppi->tyyppi == TYYPPI_AMMUS) {
+							if (sprite.tyyppi->tyyppi == TYPE_PROJECTILE) {
 								sprite.saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
 								sprite.saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
 							}
@@ -840,27 +840,27 @@ int Sprite_Movement(int i){
 	/*****************************************************************************************/
 
 	// Just fire can damage a invisible player
-	if (Game->invisibility > 0 && sprite.saatu_vahinko != 0 && sprite.saatu_vahinko_tyyppi != VAHINKO_TULI &&
+	if (Game->invisibility > 0 && sprite.saatu_vahinko != 0 && sprite.saatu_vahinko_tyyppi != DAMAGE_FIRE &&
 		&sprite == Player_Sprite /*i == pelaaja_index*/) {
 		sprite.saatu_vahinko = 0;
-		sprite.saatu_vahinko_tyyppi = VAHINKO_EI;
+		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
 	}
 
-	if (sprite.saatu_vahinko != 0 && sprite.energia > 0 && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
-		if (sprite.tyyppi->suojaus != sprite.saatu_vahinko_tyyppi || sprite.tyyppi->suojaus == VAHINKO_EI){
+	if (sprite.saatu_vahinko != 0 && sprite.energia > 0 && sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU){
+		if (sprite.tyyppi->suojaus != sprite.saatu_vahinko_tyyppi || sprite.tyyppi->suojaus == DAMAGE_NONE){
 			sprite.energia -= sprite.saatu_vahinko;
-			sprite.isku = VAHINKO_AIKA;
+			sprite.isku = DAMAGE_TIME;
 
-			if (sprite.saatu_vahinko_tyyppi == VAHINKO_SAHKO)
+			if (sprite.saatu_vahinko_tyyppi == DAMAGE_ELECTRIC)
 				sprite.isku *= 6;
 
-			Play_GameSFX(sprite.tyyppi->aanet[AANI_VAHINKO], 100, (int)sprite.x, (int)sprite.y,
+			Play_GameSFX(sprite.tyyppi->aanet[SOUND_DAMAGE], 100, (int)sprite.x, (int)sprite.y,
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
-			if (sprite.tyyppi->tuhoutuminen%100 == TUHOUTUMINEN_HOYHENET)
-				Effect_Destruction(TUHOUTUMINEN_HOYHENET, (u32)sprite.x, (u32)sprite.y);
+			if (sprite.tyyppi->tuhoutuminen%100 == FX_DESTRUCT_HOYHENET)
+				Effect_Destruction(FX_DESTRUCT_HOYHENET, (u32)sprite.x, (u32)sprite.y);
 
-			if (sprite.tyyppi->tyyppi != TYYPPI_AMMUS){
+			if (sprite.tyyppi->tyyppi != TYPE_PROJECTILE){
 				Particles_New(PARTICLE_STAR,sprite_x,sprite_y,-1,-1,60,0.01,128);
 				Particles_New(PARTICLE_STAR,sprite_x,sprite_y, 0,-1,60,0.01,128);
 				Particles_New(PARTICLE_STAR,sprite_x,sprite_y, 1,-1,60,0.01,128);
@@ -882,7 +882,7 @@ int Sprite_Movement(int i){
 		}
 
 		sprite.saatu_vahinko = 0;
-		sprite.saatu_vahinko_tyyppi = VAHINKO_EI;
+		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
 
 
 		/*****************************************************************************************/
@@ -892,7 +892,7 @@ int Sprite_Movement(int i){
 		if (sprite.energia < 1){
 			tuhoutuminen = sprite.tyyppi->tuhoutuminen;
 
-			if (tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
+			if (tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU){
 				if (sprite.tyyppi->bonus > -1 && sprite.tyyppi->bonusten_lkm > 0)
 					if (sprite.tyyppi->bonus_aina || rand()%4 == 1)
 						for (int bi=0; bi<sprite.tyyppi->bonusten_lkm; bi++)
@@ -902,20 +902,20 @@ int Sprite_Movement(int i){
 				if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_TYRMATTY) && !sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
 					Game->map->Change_SkullBlocks();
 
-				if (tuhoutuminen >= TUHOUTUMINEN_ANIMAATIO)
-					tuhoutuminen -= TUHOUTUMINEN_ANIMAATIO;
+				if (tuhoutuminen >= FX_DESTRUCT_ANIMAATIO)
+					tuhoutuminen -= FX_DESTRUCT_ANIMAATIO;
 				else
 					sprite.piilota = true;
 
 				Effect_Destruction(tuhoutuminen, (u32)sprite.x, (u32)sprite.y);
-				Play_GameSFX(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
+				Play_GameSFX(sprite.tyyppi->aanet[SOUND_DESTRUCTION],100, (int)sprite.x, (int)sprite.y,
 							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 				if (sprite.Onko_AI(AI_UUSI_JOS_TUHOUTUU)) {
 					Sprites_add(sprite.tyyppi->indeksi,0,sprite.alku_x-sprite.tyyppi->leveys, sprite.alku_y-sprite.tyyppi->korkeus,i, false);
 				} //TODO - does sprite.tyyppi->indeksi work
 
-				if (sprite.tyyppi->tyyppi == TYYPPI_PELIHAHMO && sprite.tyyppi->pisteet != 0){
+				if (sprite.tyyppi->tyyppi == TYPE_GAME_CHARACTER && sprite.tyyppi->pisteet != 0){
 					char luku[10];
 					itoa(sprite.tyyppi->pisteet,luku,10);
 					Fadetext_New(fontti2,luku,(int)Sprites_List[i].x-8,(int)Sprites_List[i].y-8,80);
@@ -927,7 +927,7 @@ int Sprite_Movement(int i){
 	}
 
 	if (sprite.isku == 0)
-		sprite.saatu_vahinko_tyyppi = VAHINKO_EI;
+		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
 
 
 	/*****************************************************************************************/
@@ -1048,11 +1048,11 @@ int Sprite_Movement(int i){
 	if (sprite.pelaaja == 0) {
 		for (int ai=0;ai < SPRITE_MAX_AI; ai++)
 			switch (sprite.tyyppi->AI[ai]) {
-				case AI_EI:							ai = SPRITE_MAX_AI; // lopetetaan
+				case AI_NONE:							ai = SPRITE_MAX_AI; // lopetetaan
 													break;
 				case AI_KANA:						sprite.AI_Kana();
 													break;
-				case AI_PIKKUKANA:					sprite.AI_Kana();
+				case AI_LITTLE_CHICKEN:					sprite.AI_Kana();
 													break;
 				case AI_SAMMAKKO1:					sprite.AI_Sammakko1();
 													break;
@@ -1060,13 +1060,13 @@ int Sprite_Movement(int i){
 													break;
 				case AI_BONUS:						sprite.AI_Bonus();
 													break;
-				case AI_MUNA:						sprite.AI_Muna();
+				case AI_EGG:						sprite.AI_Egg();
 													break;
 				case AI_AMMUS:						sprite.AI_Ammus();
 													break;
 				case AI_HYPPIJA:					sprite.AI_Hyppija();
 													break;
-				case AI_PERUS:						sprite.AI_Perus();
+				case AI_BASIC:						sprite.AI_Perus();
 													break;
 				case AI_NONSTOP:					sprite.AI_NonStop();
 													break;
@@ -1080,9 +1080,9 @@ int Sprite_Movement(int i){
 													break;
 				case AI_RANDOM_KAANTYMINEN:			sprite.AI_Random_Kaantyminen();
 													break;
-				case AI_RANDOM_HYPPY:				sprite.AI_Random_Hyppy();
+				case AI_RANDOM_JUMP:				sprite.AI_Random_Hyppy();
 													break;
-				case AI_SEURAA_PELAAJAA:			if (Game->invisibility == 0)
+				case AI_FOLLOW_PLAYER:			if (Game->invisibility == 0)
 														sprite.AI_Seuraa_Pelaajaa(*Player_Sprite);
 													break;
 				case AI_SEURAA_PELAAJAA_JOS_NAKEE:	if (Game->invisibility == 0)
@@ -1154,12 +1154,12 @@ int Sprite_Movement(int i){
 													break;
 				case AI_LIIKKUU_Y_SIN_VAPAA:		sprite.AI_Liikkuu_Y(sin_table[(sprite.ajastin/2)%360]);
 													break;
-				case AI_MUUTOS_JOS_ENERGIAA_ALLE_2:	if (sprite.tyyppi->muutos > -1)
-														sprite.AI_Muutos_Jos_Energiaa_Alle_2(Prototypes_List[sprite.tyyppi->muutos]);
+				case AI_CHANGE_WHEN_ENERGY_UNDER_2:	if (sprite.tyyppi->muutos > -1)
+														sprite.AI_Change_When_Energy_Under_2(Prototypes_List[sprite.tyyppi->muutos]);
 													break;
-				case AI_MUUTOS_JOS_ENERGIAA_YLI_1:	if (sprite.tyyppi->muutos > -1)
-														if (sprite.AI_Muutos_Jos_Energiaa_Yli_1(Prototypes_List[sprite.tyyppi->muutos])==1)
-															Effect_Destruction(TUHOUTUMINEN_SAVU_HARMAA, (u32)sprite.x, (u32)sprite.y);
+				case AI_CHANGE_WHEN_ENERGY_OVER_1:	if (sprite.tyyppi->muutos > -1)
+														if (sprite.AI_Change_When_Energy_Over_1(Prototypes_List[sprite.tyyppi->muutos])==1)
+															Effect_Destruction(FX_DESTRUCT_SAVU_HARMAA, (u32)sprite.x, (u32)sprite.y);
 													break;
 				case AI_MUUTOS_AJASTIN:				if (sprite.tyyppi->muutos > -1) {
 														sprite.AI_Muutos_Ajastin(Prototypes_List[sprite.tyyppi->muutos]);
@@ -1169,7 +1169,7 @@ int Sprite_Movement(int i){
 														sprite.AI_Muutos_Jos_Osuttu(Prototypes_List[sprite.tyyppi->muutos]);
 													}
 													break;
-				case AI_TELEPORTTI:					if (sprite.AI_Teleportti(i, Sprites_List, MAX_SPRITEJA, *Player_Sprite)==1)
+				case AI_TELEPORT:					if (sprite.AI_Teleportti(i, Sprites_List, MAX_SPRITEJA, *Player_Sprite)==1)
 													{
 
 														Game->camera_x = (int)Player_Sprite->x;
@@ -1177,8 +1177,8 @@ int Sprite_Movement(int i){
 														Game->dcamera_x = Game->camera_x-screen_width/2;
 														Game->dcamera_y = Game->camera_y-screen_height/2;
 														PDraw::fade_in(PDraw::FADE_NORMAL);
-														if (sprite.tyyppi->aanet[AANI_HYOKKAYS2] != -1)
-															Play_MenuSFX(sprite.tyyppi->aanet[AANI_HYOKKAYS2], 100);
+														if (sprite.tyyppi->aanet[SOUND_ATTACK2] != -1)
+															Play_MenuSFX(sprite.tyyppi->aanet[SOUND_ATTACK2], 100);
 															//Play_GameSFX(, 100, Game->camera_x, Game->camera_y, SOUND_SAMPLERATE, false);
 
 
@@ -1254,9 +1254,9 @@ int Sprite_Movement(int i){
 			}
 	}
 
-	//if (kaiku == 1 && sprite.tyyppi->tyyppi == TYYPPI_AMMUS && sprite.tyyppi->vahinko_tyyppi == VAHINKO_MELU &&
-	//	sprite.tyyppi->aanet[AANI_HYOKKAYS1] > -1)
-	//	Play_GameSFX(sprite.tyyppi->aanet[AANI_HYOKKAYS1],20, (int)sprite_x, (int)sprite_y,
+	//if (kaiku == 1 && sprite.tyyppi->tyyppi == TYPE_PROJECTILE && sprite.tyyppi->vahinko_tyyppi == DAMAGE_NOISE &&
+	//	sprite.tyyppi->aanet[SOUND_ATTACK1] > -1)
+	//	Play_GameSFX(sprite.tyyppi->aanet[SOUND_ATTACK1],20, (int)sprite_x, (int)sprite_y,
 	//				  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 
@@ -1311,14 +1311,14 @@ int Sprite_Movement(int i){
 					sprite.lataus = Prototypes_List[sprite.ammus1].tulitauko;
 
 			// soitetaan hy�kk�ys��ni
-			Play_GameSFX(sprite.tyyppi->aanet[AANI_HYOKKAYS1],100, (int)sprite_x, (int)sprite_y,
+			Play_GameSFX(sprite.tyyppi->aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 			if (sprite.ammus1 > -1) {
 				Sprites_add_ammo(sprite.ammus1,0,sprite_x, sprite_y, i);
 
-		//		if (Prototypes_List[sprite.ammus1].aanet[AANI_HYOKKAYS1] > -1)
-		//			Play_GameSFX(Prototypes_List[sprite.ammus1].aanet[AANI_HYOKKAYS1],100, (int)sprite_x, (int)sprite_y,
+		//		if (Prototypes_List[sprite.ammus1].aanet[SOUND_ATTACK1] > -1)
+		//			Play_GameSFX(Prototypes_List[sprite.ammus1].aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
 		//						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 			}
 		}
@@ -1331,14 +1331,14 @@ int Sprite_Movement(int i){
 				if (Prototypes_List[sprite.ammus2].tulitauko > 0)
 					sprite.lataus = Prototypes_List[sprite.ammus2].tulitauko;
 
-			Play_GameSFX(sprite.tyyppi->aanet[AANI_HYOKKAYS2],100,(int)sprite_x, (int)sprite_y,
+			Play_GameSFX(sprite.tyyppi->aanet[SOUND_ATTACK2],100,(int)sprite_x, (int)sprite_y,
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 			if (sprite.ammus2 > -1) {
 				Sprites_add_ammo(sprite.ammus2,0,sprite_x, sprite_y, i);
 
-		//		if (Prototypes_List[sprite.ammus2].aanet[AANI_HYOKKAYS1] > -1)
-		//			Play_GameSFX(Prototypes_List[sprite.ammus2].aanet[AANI_HYOKKAYS1],100, (int)sprite_x, (int)sprite_y,
+		//		if (Prototypes_List[sprite.ammus2].aanet[SOUND_ATTACK1] > -1)
+		//			Play_GameSFX(Prototypes_List[sprite.ammus2].aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
 		//						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 			}
@@ -1346,8 +1346,8 @@ int Sprite_Movement(int i){
 	}
 
 	// Random sounds
-	if (sprite.tyyppi->aanet[AANI_RANDOM] != -1 && rand()%200 == 1 && sprite.energia > 0)
-		Play_GameSFX(sprite.tyyppi->aanet[AANI_RANDOM],80,(int)sprite_x, (int)sprite_y,
+	if (sprite.tyyppi->aanet[SOUND_RANDOM] != -1 && rand()%200 == 1 && sprite.energia > 0)
+		Play_GameSFX(sprite.tyyppi->aanet[SOUND_RANDOM],80,(int)sprite_x, (int)sprite_y,
 					  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 
@@ -1545,8 +1545,8 @@ int BonusSprite_Movement(int i){
 					sprite_y > sprite2->y - sprite2->tyyppi->korkeus/2 &&
 					sprite.isku == 0)
 				{
-					if (sprite2->tyyppi->tyyppi != TYYPPI_BONUS &&
-						!(sprite2 == Player_Sprite && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU))
+					if (sprite2->tyyppi->tyyppi != TYPE_BONUS &&
+						!(sprite2 == Player_Sprite && sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU))
 						sprite_a += sprite2->a*(rand()%4);
 
 					// lis�t��n spriten painoon sit� koskettavan toisen spriten paino
@@ -1781,19 +1781,15 @@ int BonusSprite_Movement(int i){
 
 			//Game->map->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
 
-			if (sprite.tyyppi->vahinko != 0 && sprite.tyyppi->tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU){
+			if (sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 				Player_Sprite->energia -= sprite.tyyppi->vahinko;
-				//if (player->energia > player->tyyppi->energia){ //TODO - set correct energy
-				//	player->energia = player->tyyppi->energia;
-				//}
-			}
 
 			tuhoutuminen = sprite.tyyppi->tuhoutuminen;
 
-			if (tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
+			if (tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 			{
-				if (tuhoutuminen >= TUHOUTUMINEN_ANIMAATIO)
-					tuhoutuminen -= TUHOUTUMINEN_ANIMAATIO;
+				if (tuhoutuminen >= FX_DESTRUCT_ANIMAATIO)
+					tuhoutuminen -= FX_DESTRUCT_ANIMAATIO;
 				else
 				{
 					if (sprite.tyyppi->avain)
@@ -1846,7 +1842,7 @@ int BonusSprite_Movement(int i){
 					Game->Show_Info(tekstit->Get_Text(PK_txt.game_newdoodle));
 				}
 
-				Play_GameSFX(sprite.tyyppi->aanet[AANI_TUHOUTUMINEN],100, (int)sprite.x, (int)sprite.y,
+				Play_GameSFX(sprite.tyyppi->aanet[SOUND_DESTRUCTION],100, (int)sprite.x, (int)sprite.y,
 							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 				Effect_Destruction(tuhoutuminen, (u32)sprite_x, (u32)sprite_y);
@@ -1856,14 +1852,14 @@ int BonusSprite_Movement(int i){
 
 	for (i=0;i<SPRITE_MAX_AI;i++) {
 
-		if (sprite.tyyppi->AI[i] == AI_EI)
+		if (sprite.tyyppi->AI[i] == AI_NONE)
 			break;
 
 		switch (sprite.tyyppi->AI[i]) {
 		
 		case AI_BONUS:				sprite.AI_Bonus(); break;
 
-		case AI_PERUS:				sprite.AI_Perus(); break;
+		case AI_BASIC:				sprite.AI_Perus(); break;
 
 		case AI_MUUTOS_AJASTIN:		if (sprite.tyyppi->muutos > -1)
 										sprite.AI_Muutos_Ajastin(Prototypes_List[sprite.tyyppi->muutos]);

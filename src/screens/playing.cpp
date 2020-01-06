@@ -37,7 +37,7 @@ int PK_Draw_InGame_BGSprites() {
 		SpriteClass* sprite = &Sprites_List[bgSprites_List[in]];
 
 		if (sprite->tyyppi != nullptr && i != -1) {
-			if (!sprite->piilota && sprite->tyyppi->tyyppi == TYYPPI_TAUSTA) {
+			if (!sprite->piilota && sprite->tyyppi->tyyppi == TYPE_BACKGROUND) {
 				//Tarkistetaanko onko sprite tai osa siit� kuvassa
 
 				alku_x = sprite->alku_x;
@@ -121,14 +121,14 @@ int PK_Draw_InGame_Sprites() {
 	for (int i=0;i<MAX_SPRITEJA;i++){
 		// Onko sprite n�kyv�
 		SpriteClass* sprite = &Sprites_List[i];
-		if (!sprite->piilota && sprite->tyyppi->tyyppi != TYYPPI_TAUSTA){
+		if (!sprite->piilota && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
 			//Check whether or not sprite is on the screen
 			if (sprite->x - sprite->tyyppi->leveys/2  < Game->camera_x+screen_width &&
 				sprite->x + sprite->tyyppi->leveys/2  > Game->camera_x &&
 				sprite->y - sprite->tyyppi->korkeus/2 < Game->camera_y+screen_height &&
 				sprite->y + sprite->tyyppi->korkeus/2 > Game->camera_y){
 
-				if (sprite->isku > 0 && sprite->tyyppi->tyyppi != TYYPPI_BONUS && sprite->energia < 1){
+				if (sprite->isku > 0 && sprite->tyyppi->tyyppi != TYPE_BONUS && sprite->energia < 1){
 					int framex = ((degree%12)/3) * 58;
 					u32 hit_x = sprite->x-8, hit_y = sprite->y-8;
 					PDraw::image_cutclip(game_assets,hit_x-Game->camera_x-28+8, hit_y-Game->camera_y-27+8,1+framex,83,1+57+framex,83+55);
@@ -137,7 +137,7 @@ int PK_Draw_InGame_Sprites() {
 				//if (Game->invisibility == 0 || (!doublespeed && Game->invisibility%2 == 0) || (doublespeed && Game->invisibility%4 <= 1) || sprite != Player_Sprite/*i != pelaaja_index*/)
 					sprite->Piirra(Game->camera_x,Game->camera_y);
 
-				if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYYPPI_AMMUS){
+				if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYPE_PROJECTILE){
 					sx = (int)sprite->x;
 					for (stars=0; stars<3; stars++){
 						star_x = sprite->x-8 + (sin_table[((stars*120+degree)*2)%359])/3;
@@ -344,7 +344,7 @@ int PK_Draw_InGame_Gifts() {
 }
 int PK_Draw_InGame_Lower_Menu() {
 
-	char luku[15];
+	char luku[16];
 	int vali = 0;
 
 	int x, y;
@@ -410,7 +410,7 @@ int PK_Draw_InGame_Lower_Menu() {
 }
 
 int PK_Draw_InGame_UI(){
-	char luku[15];
+	char luku[16];
 	int vali = 20;
 	int my = 8;
 
@@ -482,7 +482,7 @@ int PK_Draw_InGame_UI(){
 }
 
 int PK_Draw_InGame(){
-	char luku[15];
+	char luku[16];
 	int vali = 20;
 
 	if (!skip_frame){
@@ -810,13 +810,13 @@ int Screen_InGame(){
 				for (int r = 1; r<6; r++)
 					//Particles_New(PARTICLE_SPARK, player->x + rand() % 10 - rand() % 10, player->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
 					Particles_New(PARTICLE_SPARK, Player_Sprite->x + rand() % 10 - rand() % 10, Player_Sprite->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
-				*Player_Sprite = SpriteClass(&Prototypes_List[PROTOTYYPPI_KANA], 1, false, Player_Sprite->x, Player_Sprite->y);
+				*Player_Sprite = SpriteClass(&Prototypes_List[0], 1, false, Player_Sprite->x, Player_Sprite->y);
 			}
 		}
 		if (PInput::Keydown(PInput::U))
 			Player_Sprite->b = -10;
 		if (PInput::Keydown(PInput::E))
-			Player_Sprite->energia = Player_Sprite->tyyppi->energia;
+			Player_Sprite->energia = 10;
 		if (PInput::Keydown(PInput::V))
 			Game->invisibility = 3000;
 	}

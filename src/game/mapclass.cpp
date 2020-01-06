@@ -1137,7 +1137,7 @@ int MapClass::Count_Keys() {
 		sprite = this->spritet[x];
 		if (sprite != 255)
 			if (Prototypes_List[sprite].avain && 
-				Prototypes_List[sprite].tuhoutuminen != TUHOUTUMINEN_EI_TUHOUDU)
+				Prototypes_List[sprite].tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 
 				keys++;
 	}

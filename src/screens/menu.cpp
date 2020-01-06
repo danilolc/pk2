@@ -92,7 +92,7 @@ int PK_MenuShadow_Create(int kbuffer, u32 kleveys, int kkorkeus, int startx){
 			mx = x+my;
 			vari   = buffer[mx];
 
-			vari32 = VARI_TURKOOSI;//(vari>>5)<<5;
+			vari32 = COLOR_TURQUOISE;//(vari>>5)<<5;
 			vari %= 32;
 
 			if (x == startx || x == kleveys-31 || y == 35 || y == kkorkeus-31)
@@ -547,9 +547,9 @@ void Draw_Menu_Name() {
 
 void Draw_Menu_Load() {
 	int my = 0, vali = 0;
-	char number[100];
+	char number[32];
 	char jaksoc[8];
-	char ind[4];
+	char ind[8];
 
 	Draw_BGSquare(40, 70, 640-40, 410, 70);
 

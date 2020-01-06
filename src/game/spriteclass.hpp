@@ -6,56 +6,64 @@
 
 #include "engine/types.hpp"
 
-#define PK2SPRITE_VIIMEISIN_VERSIO "1.3"
+#define PK2SPRITE_CURRENT_VERSION "1.3"
 
 #define MAX_SPRITEJA       800
 #define MAX_PROTOTYYPPEJA  100
 
-#define SPRITE_MAX_FRAMEJA        50
-#define SPRITE_MAX_ANIMAATIOITA   20
-#define SPRITE_MAX_AI             10
-#define ANIMAATIO_MAX_SEKVENSSEJA 10
-#define MAX_AANIA                  7
-#define	VAHINKO_AIKA              50 //Damage time?
+#define SPRITE_MAX_FRAMEJA      50
+#define SPRITE_MAX_ANIMAATIOITA 20
+#define SPRITE_MAX_AI           10
+#define ANIMATION_SEQUENCE_SIZE 10
+#define SPRITE_MAX_SOUNDS        7
+#define	DAMAGE_TIME             50
 
 //Spite file values
-enum { //Animation
-    ANIMAATIO_PAIKALLA,
-    ANIMAATIO_KAVELY,
-    ANIMAATIO_HYPPY_YLOS,
-    ANIMAATIO_HYPPY_ALAS,
-    ANIMAATIO_KYYKKY,
-    ANIMAATIO_VAHINKO,
-    ANIMAATIO_KUOLEMA,
-    ANIMAATIO_HYOKKAYS1,
-    ANIMAATIO_HYOKKAYS2
+
+enum {
+
+    ANIMATION_IDLE,
+    ANIMATION_WALKING,
+    ANIMATION_JUMP_UP,
+    ANIMATION_HYPPY_DOWN,
+    ANIMATION_SQUAT,
+    ANIMATION_DAMAGE,
+    ANIMATION_DEATH,
+    ANIMATION_ATTACK1,
+    ANIMATION_ATTACK2
+
 };
-enum { //Sound
-    AANI_VAHINKO,
-    AANI_TUHOUTUMINEN,
-    AANI_HYOKKAYS1,
-    AANI_HYOKKAYS2,
-    AANI_RANDOM,
-    AANI_ERIKOIS1,
-    AANI_ERIKOIS2
+
+enum {
+
+    SOUND_DAMAGE,
+    SOUND_DESTRUCTION,
+    SOUND_ATTACK1,
+    SOUND_ATTACK2,
+    SOUND_RANDOM,
+    SOUND_SPECIAL1,
+    SOUND_SPECIAL2
+
 };
-enum { //AI
-    AI_EI,
+
+enum {
+
+    AI_NONE,
     AI_KANA,
-    AI_MUNA,
-    AI_PIKKUKANA,
+    AI_EGG,
+    AI_LITTLE_CHICKEN,
     AI_BONUS,
-    AI_HYPPIJA,
-    AI_PERUS,
+    AI_HYPPIJA, //?
+    AI_BASIC,
     AI_KAANTYY_ESTEESTA_HORI,
     AI_VAROO_KUOPPAA,
     AI_RANDOM_SUUNNANVAIHTO_HORI,
-    AI_RANDOM_HYPPY,
-    AI_SEURAA_PELAAJAA,
-    AI_RANDOM_ALOITUSSUUNTA_HORI,
+    AI_RANDOM_JUMP,
+    AI_FOLLOW_PLAYER,
+    AI_RANDOM_START_DIRECTION,
     AI_SEURAA_PELAAJAA_JOS_NAKEE,
-    AI_MUUTOS_JOS_ENERGIAA_ALLE_2,
-    AI_MUUTOS_JOS_ENERGIAA_YLI_1,
+    AI_CHANGE_WHEN_ENERGY_UNDER_2,
+    AI_CHANGE_WHEN_ENERGY_OVER_1,
     AI_ALOITUSSUUNTA_PELAAJAA_KOHTI,
     AI_AMMUS,
     AI_NONSTOP,
@@ -70,7 +78,7 @@ enum { //AI
     AI_PIILOUTUU,
     AI_PALAA_ALKUUN_X,
     AI_PALAA_ALKUUN_Y,
-    AI_TELEPORTTI,
+    AI_TELEPORT,
 
     AI_HEITTOASE = 35,
     AI_TIPPUU_TARINASTA,
@@ -165,85 +173,106 @@ enum { //AI
     AI_INFO17,
     AI_INFO18,
     AI_INFO19
-};
-enum { //Damage
-    VAHINKO_EI,
-    VAHINKO_ISKU,
-    VAHINKO_PUDOTUS,
-    VAHINKO_MELU,
-    VAHINKO_TULI,
-    VAHINKO_VESI,
-    VAHINKO_LUMI,
-    VAHINKO_BONUS,
-    VAHINKO_SAHKO,
-    VAHINKO_ITSARI,
-    VAHINKO_PURISTUS,
-    VAHINKO_HAJU,
-    VAHINKO_KAIKKI,
-    VAHINKO_PISTO
-};
-enum { //Prototype
-    PROTOTYYPPI_KANA,
-    PROTOTYYPPI_MUNA,
-    PROTOTYYPPI_PIKKUKANA,
-    PROTOTYYPPI_OMENA,
-    PROTOTYYPPI_HYPPIJA
-};
-enum { //Type
-    TYYPPI_EI_MIKAAN,
-    TYYPPI_PELIHAHMO,
-    TYYPPI_BONUS,
-    TYYPPI_AMMUS,
-    TYYPPI_TELEPORTTI,
-    TYYPPI_TAUSTA
-};
-enum { //Color
-    VARI_HARMAA   = 0,
-    VARI_SININEN  = 32,
-    VARI_PUNAINEN = 64,
-    VARI_VIHREA   = 96,
-    VARI_ORANSSI  = 128,
-    VARI_VIOLETTI = 160,
-    VARI_TURKOOSI = 192,
-    VARI_NORMAALI = 255
-};
-enum { //Destruction Effect
-    TUHOUTUMINEN_EI_TUHOUDU,
-    TUHOUTUMINEN_HOYHENET,
-    TUHOUTUMINEN_TAHDET_HARMAA,
-    TUHOUTUMINEN_TAHDET_SININEN,
-    TUHOUTUMINEN_TAHDET_PUNAINEN,
-    TUHOUTUMINEN_TAHDET_VIHREA,
-    TUHOUTUMINEN_TAHDET_ORANSSI,
-    TUHOUTUMINEN_TAHDET_VIOLETTI,
-    TUHOUTUMINEN_TAHDET_TURKOOSI,
-    TUHOUTUMINEN_RAJAHDYS_HARMAA,
-    TUHOUTUMINEN_RAJAHDYS_SININEN,
-    TUHOUTUMINEN_RAJAHDYS_PUNAINEN,
-    TUHOUTUMINEN_RAJAHDYS_VIHREA,
-    TUHOUTUMINEN_RAJAHDYS_ORANSSI,
-    TUHOUTUMINEN_RAJAHDYS_VIOLETTI,
-    TUHOUTUMINEN_RAJAHDYS_TURKOOSI,
-    TUHOUTUMINEN_SAVU_HARMAA,
-    TUHOUTUMINEN_SAVU_SININEN,
-    TUHOUTUMINEN_SAVU_PUNAINEN,
-    TUHOUTUMINEN_SAVU_VIHREA,
-    TUHOUTUMINEN_SAVU_ORANSSI,
-    TUHOUTUMINEN_SAVU_VIOLETTI,
-    TUHOUTUMINEN_SAVU_TURKOOSI,
-    TUHOUTUMINEN_SAVUPILVET,
-    TUHOUTUMINEN_ANIMAATIO = 100
-};
-enum { //Bonus Item
-    BONUSESINE_EI_MITAAN,
-    BONUSESINE_AVAIN,
-    BONUSESINE_PISTE
+
 };
 
-struct PK2SPRITE_ANIMAATIO{
-    u8		sekvenssi[ANIMAATIO_MAX_SEKVENSSEJA];	// sequence
-    u8		frameja;								// frames
-    bool		looppi;									// loop
+enum { //Damage
+
+    DAMAGE_NONE,
+    DAMAGE_IMPACT,
+    DAMAGE_DROP,
+    DAMAGE_NOISE,
+    DAMAGE_FIRE,
+    DAMAGE_WATER,
+    DAMAGE_SNOW,
+    DAMAGE_BONUS,
+    DAMAGE_ELECTRIC,
+    DAMAGE_ITSARI,
+    DAMAGE_COMPRESSION,
+    DAMAGE_SMELL,
+    DAMAGE_ALL,
+    DAMAGE_STITCH
+
+};
+
+enum { // unnused
+
+    PROTOTYPE_KANA,
+    PROTOTYPE_MUNA,
+    PROTOTYPE_PIKKUKANA,
+    PROTOTYPE_OMENA,
+    PROTOTYPE_HYPPIJA
+
+};
+
+enum {
+
+    TYPE_NOTHING,
+    TYPE_GAME_CHARACTER,
+    TYPE_BONUS,
+    TYPE_PROJECTILE,
+    TYPE_TELEPORT,
+    TYPE_BACKGROUND
+
+};
+
+enum {
+
+    COLOR_GRAY      = 0,
+    COLOR_BLUE      = 32,
+    COLOR_RED       = 64,
+    COLOR_GREEN     = 96,
+    COLOR_ORANGE    = 128,
+    COLOR_VIOLET    = 160,
+    COLOR_TURQUOISE = 192,
+    COLOR_NORMAL    = 255
+
+};
+
+enum { //Destruction Effect
+
+    FX_DESTRUCT_EI_TUHOUDU,
+    FX_DESTRUCT_HOYHENET,
+    FX_DESTRUCT_TAHDET_HARMAA,
+    FX_DESTRUCT_TAHDET_SININEN,
+    FX_DESTRUCT_TAHDET_PUNAINEN,
+    FX_DESTRUCT_TAHDET_VIHREA,
+    FX_DESTRUCT_TAHDET_ORANSSI,
+    FX_DESTRUCT_TAHDET_VIOLETTI,
+    FX_DESTRUCT_TAHDET_TURKOOSI,
+    FX_DESTRUCT_RAJAHDYS_HARMAA,
+    FX_DESTRUCT_RAJAHDYS_SININEN,
+    FX_DESTRUCT_RAJAHDYS_PUNAINEN,
+    FX_DESTRUCT_RAJAHDYS_VIHREA,
+    FX_DESTRUCT_RAJAHDYS_ORANSSI,
+    FX_DESTRUCT_RAJAHDYS_VIOLETTI,
+    FX_DESTRUCT_RAJAHDYS_TURKOOSI,
+    FX_DESTRUCT_SAVU_HARMAA,
+    FX_DESTRUCT_SAVU_SININEN,
+    FX_DESTRUCT_SAVU_PUNAINEN,
+    FX_DESTRUCT_SAVU_VIHREA,
+    FX_DESTRUCT_SAVU_ORANSSI,
+    FX_DESTRUCT_SAVU_VIOLETTI,
+    FX_DESTRUCT_SAVU_TURKOOSI,
+    FX_DESTRUCT_SAVUPILVET,
+    FX_DESTRUCT_ANIMAATIO = 100
+
+};
+
+enum {
+
+    BONUSITEM_NOTHING,
+    BONUSITEM_KEY,
+    BONUSITEM_SCORE
+
+};
+
+struct PK2SPRITE_ANIMAATIO {
+
+    u8    sekvenssi[ANIMATION_SEQUENCE_SIZE]; // sequence
+    u8    frameja;                            // frames
+    bool  looppi;                             // loop
+
 };
 
 //.spr file structures
@@ -330,7 +359,7 @@ struct PrototypeClass11{
     u8        bonusten_lkm;									// Bonusten lukum��r�
     u32       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     u32       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
-    u32		pallarx_kerroin;								// Vain TYYPPI_TAUSTA. Suhde taustakuvaan.
+    u32		pallarx_kerroin;								// Vain TYPE_BACKGROUND. Suhde taustakuvaan.
     // Yhteys toisiin spriteihin
     char		muutos_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
     char		bonus_sprite[13];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
@@ -379,7 +408,7 @@ struct PrototypeClass12{
     u8        bonusten_lkm;									// Bonusten lukum��r�
     u32       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     u32       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
-    u32		pallarx_kerroin;								// Vain TYYPPI_TAUSTA. Suhde taustakuvaan.
+    u32		pallarx_kerroin;								// Vain TYPE_BACKGROUND. Suhde taustakuvaan.
     // Yhteys toisiin spriteihin
     char		muutos_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
     char		bonus_sprite[13];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
@@ -399,72 +428,73 @@ struct PrototypeClass12{
 };
 struct PrototypeClass13{
 
-    u32		tyyppi;											// sprite type
-    char		kuvatiedosto[100];								// bmp path
-    char		aanitiedostot[7][100];							// sound path (max 7)
-    u32		aanet[7];										// sound types
+    u32    tyyppi;											// sprite type
+    char   kuvatiedosto[100];								// bmp path
+    char   aanitiedostot[7][100];							// sound path (max 7)
+    u32    aanet[7];										// sound types
 
 
-    u8		frameja;										// number of frames
+    u8     frameja;										// number of frames
     PK2SPRITE_ANIMAATIO animaatiot[20];							// animation sequences
-    u8		animaatioita;									// number of animations
-    u8		frame_rate;										// frame rate
-    u32		kuva_x;											// x position of first frame
-    u32		kuva_y;											// y position of first frame
-    u32		kuva_frame_leveys;								// frame width
-    u32		kuva_frame_korkeus;								// frame height
-    u32		kuva_frame_vali;								// space between frames
+    u8     animaatioita;									// number of animations
+    u8     frame_rate;										// frame rate
+    u32    kuva_x;											// x position of first frame
+    u32    kuva_y;											// y position of first frame
+    u32    kuva_frame_leveys;								// frame width
+    u32    kuva_frame_korkeus;								// frame height
+    u32    kuva_frame_vali;								// space between frames
 
 
-    char		nimi[30];										// name
-    u32		leveys;											// width
-    u32		korkeus;										// height
-    double		paino;											// weight (for jump and switches)
-    bool		vihollinen;										// if sprite is a enemy
-    u32		energia;										//?sprite energy
-    u32		vahinko;										//?damage if hitted
-    u8        vahinko_tyyppi;									//?damage type
-    u8		suojaus;										//?protection type
-    u32		pisteet;										// how much score
-    u32		AI[10];											// AI type (max 10)
-    u8		max_hyppy;										// max jump time
-    double		max_nopeus;										// max speed
-    u32		latausaika;										//?wait post shoot
-    u8		vari;											// color
-    bool		este;											// is a wall
-    u32		tuhoutuminen;									// how sprite is destroyed
-    bool		avain;											// can sprite open locks
-    bool		tarisee;										//?sprite randomly
-    u8        bonusten_lkm;									// number of bonuses
-    u32       hyokkays1_aika;									// attack 1 duration (frames)
-    u32       hyokkays2_aika;									// attack 2 duration (frames)
-    u32		pallarx_kerroin;								// parallax type (just to TYYPPI_TAUSTA)
+    char   nimi[30];										// name
+    u32    leveys;											// width
+    u32    korkeus;										// height
+    double paino;											// weight (for jump and switches)
+    bool   vihollinen;										// if sprite is a enemy
+    u32    energia;										//?sprite energy
+    u32    vahinko;										//?damage if hitted
+    u8     vahinko_tyyppi;									//?damage type
+    u8     suojaus;										//?protection type
+    u32    pisteet;										// how much score
+    u32    AI[10];											// AI type (max 10)
+    u8     max_hyppy;										// max jump time
+    double max_nopeus;										// max speed
+    u32    latausaika;										//?wait post shoot
+    u8     vari;											// color
+    bool   este;											// is a wall
+    u32    tuhoutuminen;									// how sprite is destroyed
+    bool   avain;											// can sprite open locks
+    bool   tarisee;										//?sprite randomly
+    u8     bonusten_lkm;									// number of bonuses
+    u32    hyokkays1_aika;									// attack 1 duration (frames)
+    u32    hyokkays2_aika;									// attack 2 duration (frames)
+    u32    pallarx_kerroin;								// parallax type (just to TYPE_BACKGROUND)
 
 
-    char		muutos_sprite[100];								// another sprite that this sprite may change
-    char		bonus_sprite[100];								// bonus that this sprite gives
-    char		ammus1_sprite[100];								// ammo 1 sprite
-    char		ammus2_sprite[100];								// ammo 2 sprite
+    char   muutos_sprite[100];								// another sprite that this sprite may change
+    char   bonus_sprite[100];								// bonus that this sprite gives
+    char   ammus1_sprite[100];								// ammo 1 sprite
+    char   ammus2_sprite[100];								// ammo 2 sprite
 
 
-    bool		tiletarkistus;									//?make sounds?
-    u32		aani_frq;										// sound frequency (def. 22050)
-    bool		random_frq;										// use random frequency?
+    bool   tiletarkistus;									//?make sounds?
+    u32	   aani_frq;										// sound frequency (def. 22050)
+    bool   random_frq;										// use random frequency?
 
 
-    bool		este_ylos;                                      // if is wall at up
-    bool		este_alas;                                      // if is wall at down
-    bool		este_oikealle;                                  // if is wall at right
-    bool		este_vasemmalle;                                // if is wall at left
+    bool   este_ylos;                                      // if is wall at up
+    bool   este_alas;                                      // if is wall at down
+    bool   este_oikealle;                                  // if is wall at right
+    bool   este_vasemmalle;                                // if is wall at left
 
 
-    u8		lapinakyvyys;									// transparency
-    bool		hehkuu;											// is transparent?
-    u32		tulitauko;										//*ammuspriten ampujalle aiheuttama latausaika
-    bool		liitokyky;										//*voiko tippua hiljaa alas?
-    bool		boss;											// if it is a boss
-    bool		bonus_aina;										// allways gives bonus
-    bool		osaa_uida;										// be alive in water
+    u8     lapinakyvyys;									// transparency
+    bool   hehkuu;											// is transparent?
+    u32    tulitauko;										//*ammuspriten ampujalle aiheuttama latausaika
+    bool   liitokyky;										//*voiko tippua hiljaa alas?
+    bool   boss;											// if it is a boss
+    bool   bonus_aina;										// allways gives bonus
+    bool   osaa_uida;										// be alive in water
+
 };
 
 //Classes used in game
@@ -485,8 +515,8 @@ class PrototypeClass{
 
     // Spriteen liittyv�t ��nitehosteet
 
-    char		aanitiedostot[MAX_AANIA][100];					// ��nitehostetiedostot
-    int			aanet[MAX_AANIA];								// ��nitehosteet (indeksit buffereihin)
+    char		aanitiedostot[SPRITE_MAX_SOUNDS][100];					// ��nitehostetiedostot
+    int			aanet[SPRITE_MAX_SOUNDS];								// ��nitehosteet (indeksit buffereihin)
 
     // Spriten kuva- ja animaatio-ominaisuudet
     int			framet[SPRITE_MAX_FRAMEJA];						// spriten framet (bitm�pit)
@@ -528,7 +558,7 @@ class PrototypeClass{
     int         hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     int         hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
 
-    int			pallarx_kerroin;								// Vain TYYPPI_TAUSTA. Suhde taustakuvaan.
+    int			pallarx_kerroin;								// Vain TYPE_BACKGROUND. Suhde taustakuvaan.
 
     // Yhteys toisiin spriteihin
 
@@ -568,7 +598,7 @@ class PrototypeClass{
     // Methods
     void Uusi();
     void Kopioi(const PrototypeClass &proto);
-    int  Animaatio_Uusi(int anim_i, u8 *sekvenssi, bool looppi);
+    int  Animation_Uusi(int anim_i, u8 *sekvenssi, bool looppi);
     int  Lataa(const char *dir, const char *filename);
     void Tallenna(char *tiedoston_nimi);
     int  Piirra(int x, int y, int frame);
@@ -641,7 +671,7 @@ class SpriteClass{
     //AI_Functions
     int AI_Kana();
     int AI_Bonus();
-    int AI_Muna();
+    int AI_Egg();
     int AI_Ammus();
     int AI_Hyppija();
     int AI_Sammakko1();
@@ -660,8 +690,8 @@ class SpriteClass{
     int AI_Seuraa_Pelaajaa_Vert_Hori(SpriteClass &pelaaja);
     int AI_Jahtaa_Pelaajaa(SpriteClass &pelaaja);
     int AI_Pakenee_Pelaajaa_Jos_Nakee(SpriteClass &pelaaja);
-    int AI_Muutos_Jos_Energiaa_Alle_2(PrototypeClass &muutos);
-    int AI_Muutos_Jos_Energiaa_Yli_1(PrototypeClass &muutos);
+    int AI_Change_When_Energy_Under_2(PrototypeClass &muutos);
+    int AI_Change_When_Energy_Over_1(PrototypeClass &muutos);
     int AI_Muutos_Ajastin(PrototypeClass &muutos);
     int AI_Muutos_Jos_Osuttu(PrototypeClass &muutos);
     int AI_Hyokkays_1_Jos_Osuttu();
@@ -692,9 +722,9 @@ class SpriteClass{
     bool AI_Info(SpriteClass &pelaaja);
     int AI_Tuhoutuu_Jos_Emo_Tuhoutuu(SpriteClass *spritet);
 
-    int Animaatio_Perus();
-    int Animaatio_Kana();
-    int Animaatio_Bonus();
-    int Animaatio_Muna();
-    int Animaatio_Ammus();
+    int Animation_Perus();
+    int Animation_Kana();
+    int Animation_Bonus();
+    int Animation_Egg();
+    int Animation_Ammus();
 };

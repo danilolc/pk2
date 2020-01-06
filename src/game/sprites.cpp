@@ -17,6 +17,17 @@ SpriteClass* Player_Sprite;
 
 int next_free_prototype = 0;
 
+//TODO - use std::vector
+//std::vector<PrototypeClass> Prototypes;
+//std::vector<SpriteClass> Sprites;
+//std::vector<int> bgSprites;
+//
+//or
+//
+//std::vector<PrototypeClass*> Prototypes;
+//std::vector<SpriteClass*> Sprites;
+//std::vector<SpriteClass*> bgSprites;
+
 PrototypeClass Prototypes_List[MAX_PROTOTYYPPEJA];
 SpriteClass Sprites_List[MAX_SPRITEJA];
 
@@ -24,7 +35,7 @@ int bgSprites_List[MAX_SPRITEJA];
 
 void Prototypes_ClearAll() {
 	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++){
-		for (int j = 0; j < MAX_AANIA; j++)
+		for (int j = 0; j < SPRITE_MAX_SOUNDS; j++)
 			if (Prototypes_List[i].aanet[j] > -1)
 				PSound::free_sfx(Prototypes_List[i].aanet[j]);
 		Prototypes_List[i].Uusi();
@@ -45,7 +56,7 @@ int  Prototypes_get_sound(char *polku, char *tiedosto) {
 	return -1;
 }
 
-int  Prototypes_get(char *polku, char *tiedosto) {
+int Prototypes_get(char *polku, char *tiedosto) {
 	
 	char testipolku[PE_PATH_SIZE] = "";
 
@@ -63,9 +74,9 @@ int  Prototypes_get(char *polku, char *tiedosto) {
 	Prototypes_List[next_free_prototype].indeksi = next_free_prototype;
 
 	//Load sounds
-	for (int i=0;i<MAX_AANIA;i++){
+	for (int i = 0; i < SPRITE_MAX_SOUNDS; i++) {
 
-		if (strcmp(Prototypes_List[next_free_prototype].aanitiedostot[i],"")!=0){
+		if (strcmp(Prototypes_List[next_free_prototype].aanitiedostot[i],"") != 0){
 
 			strcpy(testipolku, soundpath);
 			//strcat(testipolku, PE_SEP);
@@ -96,10 +107,12 @@ void Prototypes_get_transformation(int i) {
 	int j = 0;
 	bool loaded = false;
 
-	if (strcmp(Prototypes_List[i].muutos_sprite,"")!=0){
-		while (j<MAX_PROTOTYYPPEJA && !loaded){
+	if (strcmp(Prototypes_List[i].muutos_sprite,"") != 0) {
+
+		// verify if the transformation is already loaded
+		while (j < MAX_PROTOTYYPPEJA && !loaded) {
 			if (j!=i) {
-				if (strcmp(Prototypes_List[i].muutos_sprite,Prototypes_List[j].tiedosto)==0){
+				if (strcmp(Prototypes_List[i].muutos_sprite,Prototypes_List[j].tiedosto)==0) {
 					Prototypes_List[i].muutos = j;
 					loaded = true;
 				}
@@ -112,7 +125,7 @@ void Prototypes_get_transformation(int i) {
 			strcpy(polku,"sprites" PE_SEP);
 			//Episode->Get_Dir(polku);
 
-			if (Prototypes_get(polku, Prototypes_List[i].muutos_sprite)==0)
+			if (Prototypes_get(polku, Prototypes_List[i].muutos_sprite) == 0)
 				Prototypes_List[i].muutos = next_free_prototype-1; // jokainen lataus kasvattaa next_free_prototype:a
 		}
 	}
@@ -283,7 +296,7 @@ void Sprites_start_directions() {
 		if (/*pelaaja_index >= 0 && pelaaja_index < MAX_SPRITEJA && */!Sprites_List[i].piilota){
 			Sprites_List[i].a = 0;
 
-			if (Sprites_List[i].tyyppi->Onko_AI(AI_RANDOM_ALOITUSSUUNTA_HORI)){
+			if (Sprites_List[i].tyyppi->Onko_AI(AI_RANDOM_START_DIRECTION)){
 				while (Sprites_List[i].a == 0) {
 					Sprites_List[i].a = ((rand()%2 - rand()%2) * Sprites_List[i].tyyppi->max_nopeus) / 3.5;//2;
 				}
@@ -347,7 +360,7 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 				
 			}
 
-			if (proto.tyyppi == TYYPPI_TAUSTA)
+			if (proto.tyyppi == TYPE_BACKGROUND)
 				Sprites_add_bg(i);
 
 			if (emo != MAX_SPRITEJA)
@@ -404,7 +417,7 @@ void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y,
 				Sprites_List[i].hyppy_ajastin = 1;
 			}
 			else
-			if (proto.Onko_AI(AI_MUNA)){
+			if (proto.Onko_AI(AI_EGG)){
 				Sprites_List[i].y = Sprites_List[emo].y+10;
 				Sprites_List[i].a = Sprites_List[emo].a / 1.5;
 			}
@@ -423,7 +436,7 @@ void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y,
 				Sprites_List[i].emosprite = i;
 			}
 
-			if (proto.tyyppi == TYYPPI_TAUSTA)
+			if (proto.tyyppi == TYPE_BACKGROUND)
 				Sprites_add_bg(i);
 
 			lisatty = true;
@@ -436,15 +449,14 @@ void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y,
 int Update_Sprites() {
 	
 	int active_sprites = 0;
-	int i;
 	SpriteClass* sprite;
 
-	for (i = 0; i < MAX_SPRITEJA; i++){ //Activate sprite if it is on screen
+	for (int i = 0; i < MAX_SPRITEJA; i++){ //Activate sprite if it is on screen
 		sprite = &Sprites_List[i];
-		if (sprite->x < Game->camera_x+640+320 &&//screen_width+screen_width/2 &&
-			sprite->x > Game->camera_x-320 &&//screen_width/2 &&
-			sprite->y < Game->camera_y+480+240 &&//screen_height+screen_height/2 &&
-			sprite->y > Game->camera_y-240)//screen_height/2)
+		if (sprite->x < Game->camera_x + 640 + 320 &&
+			sprite->x > Game->camera_x - 320 &&
+			sprite->y < Game->camera_y + 480 + 240 &&
+			sprite->y > Game->camera_y - 240)
 			sprite->aktiivinen = true;
 		else
 			sprite->aktiivinen = false;
@@ -453,12 +465,21 @@ int Update_Sprites() {
 			sprite->aktiivinen = false;
 	}
 
-	for (i = 0; i < MAX_SPRITEJA; i++){
+	// Update bonus first to get energy change
+	for (int i = 0; i < MAX_SPRITEJA; i++) {
 		sprite = &Sprites_List[i];
-		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYYPPI_TAUSTA){
-			if (sprite->tyyppi->tyyppi == TYYPPI_BONUS)
+		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
+			if (sprite->tyyppi->tyyppi == TYPE_BONUS)
 				BonusSprite_Movement(i);
-			else
+
+			active_sprites++;
+		}
+	}
+
+	for (int i = 0; i < MAX_SPRITEJA; i++) {
+		sprite = &Sprites_List[i];
+		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
+			if (sprite->tyyppi->tyyppi != TYPE_BONUS)
 				Sprite_Movement(i);
 
 			active_sprites++;

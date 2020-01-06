@@ -98,7 +98,7 @@ int Draw_ScoreCount() {
 		int kuutio = (int)(sin_table[(degree+i*3)%360]);
 		if (kuutio < 0) kuutio = -kuutio;
 
-		PDraw::screen_fill(320-x,240-y,320-x+kuutio,240-y+kuutio,VARI_TURKOOSI+8);
+		PDraw::screen_fill(320-x,240-y,320-x+kuutio,240-y+kuutio,COLOR_TURQUOISE+8);
 
 	}
 	for (int i = 0; i < 18; i++) {
@@ -110,7 +110,7 @@ int Draw_ScoreCount() {
 		if (kuutio < 0) kuutio = -kuutio;//0;//
 		if (kuutio > 100) kuutio = 100;
 
-		//PDraw::screen_fill(320+x,240+y,320+x+kuutio,240+y+kuutio,VARI_TURKOOSI+10);
+		//PDraw::screen_fill(320+x,240+y,320+x+kuutio,240+y+kuutio,COLOR_TURQUOISE+10);
 		PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, 320+x, 240+y, kuutio, 32);
 
 	}
