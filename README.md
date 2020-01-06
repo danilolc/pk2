@@ -25,11 +25,11 @@ If you want to compile it yourself, the win32 directory have the solution files 
 ### Debian
 To compile **Pekka Kana 2** into Debian GNU/Linux based distributions,
 you need the **SDL2**, **SDL2_image** and **SDL2_mixer** libraries installed on
-the system. To get them just run the following command on the terminal:
+the system. To get eveything you need, just run the following command on the terminal:
 
-    # apt install g++ libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev make
+    # apt install g++ make libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
 
-Run the "**make**" command inside the "**Pekka Kana 2**" directory.
+Then run the "**make**" command inside the "**Pekka Kana 2**" directory.
 
     $ make -j$(nproc)
 
@@ -60,16 +60,23 @@ open directly on the level.
 
 This example starts the level13.map on dev mode:
 ```
-./PK2 dev test "rooster island 2/level13.map"
+./pekka-kana-2 dev test "rooster island 2/level13.map"
 ```
 
 
 # TODOs and FIXMEs:
-* Fix intro screen
 * Update health before draw
-* Consider Sprite in Water when the water is on BG or outside the screen
-* Fix the mikmod music loop
-* Find a solution to change sfx frequency without delay
+* Consider Sprite in water when the water is outside the screen
 * Jump frames when FPS is slow
-* Start on language select on first start
-* Super mode - energy = 0 on touch Pekka
+* Select language based on system language
+* Super mode -> energy = 0 on touch Pekka
+* Increase map level button
+* Random SIGFAULT while playing
+* Can't load suomi.txt language
+* Make the mobile controls
+* Fix the mobile text input
+* Scan directory on android APK
+* Load directory from zip
+* Change the saves and settings directory
+* Get PisteLog back
+* Traduct finnish language

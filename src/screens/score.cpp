@@ -165,7 +165,6 @@ int Draw_ScoreCount() {
 	my += 20;
 
 	// Draw apples
-	// TODO - put apples menu on the bottom
 	if (Game->apples_count > 0) {
 
 		uint i;
@@ -218,7 +217,7 @@ int Draw_ScoreCount() {
 		}
 	}
 
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.score_screen_continue),25,430)) {
+	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.score_screen_continue),15,430)) {
 
 		siirry_pistelaskusta_karttaan = true;
 		PSound::set_musicvolume(0);
@@ -398,7 +397,7 @@ int Screen_ScoreCount() {
 				for (int i = 0; i < Gifts_Count(); i++)
 					gifts_score += Gifts_GetProtot(i)->pisteet + 500;
 				
-				Gifts_Clean(); //TODO esineita = 0;
+				Gifts_Clean();
 
 				key_delay = 20;
 

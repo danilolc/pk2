@@ -20,7 +20,6 @@ void Search_Episodes() {
 	std::vector<std::string> list = PUtils::Scandir("/", "episodes", 60);
 	int size = list.size();
 
-	//TODO - store the vector
 	for (int i = 0; i < size; i++) {
 
 		episode_entry e;
