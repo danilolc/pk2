@@ -71,6 +71,15 @@ int Settings_Open() {
 	
 	SDL_RWread(file, &Settings, sizeof(PK2SETTINGS), 1);
 	
+	if (PUtils::Is_Mobile()) { // TODO - don't change these settings on mobile
+
+		Settings.isFiltered = true;
+		Settings.isFit = true;
+		//Settings.isFullScreen = true;
+		Settings.isWide = true;
+
+	}
+
 	Settings.ladattu = true;
 
 	SDL_RWclose(file);

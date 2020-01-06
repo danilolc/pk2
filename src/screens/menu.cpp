@@ -387,12 +387,12 @@ void Draw_Menu_Name() {
 	int nameSize = (int)strlen(menu_name);
 
 	int keyboard_size;
-	if(PUtils::Is_Mobile())
+	if(/*editing_name &&*/ PUtils::Is_Mobile())
 		keyboard_size = 180;
 	else
 		keyboard_size = 0;
 
-	if (editing_name && PUtils::Is_Mobile())
+	if (/*editing_name &&*/ PUtils::Is_Mobile())
 		Draw_BGSquare(90, 20, 640-90, 220, 224);
 	else
 		Draw_BGSquare(90, 160, 640-90, 480-80, 224);
