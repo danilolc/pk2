@@ -25,7 +25,7 @@ bool going_to_game = false;
 
 int PK_Draw_Map_Button(int x, int y, int type){
 
-	const int BORDER = 17;
+	const int BORDER = 23; //Max 23
 	int ret = 0;
 	
 	if (PInput::mouse_x > x && PInput::mouse_x < x + BORDER
@@ -94,10 +94,8 @@ int PK_Draw_Map() {
 		PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.episodes_no_maps),180,290);
 	}
 	
-	if (Draw_Menu_Text(!going_to_game,tekstit->Get_Text(PK_txt.mainmenu_return),100,430)) {
+	if (Draw_Menu_Text(!going_to_game,tekstit->Get_Text(PK_txt.mainmenu_return),100,430))
 		next_screen = SCREEN_MENU;
-		degree_temp = degree;
-	}
 
 	int paluu;
 	int min = 0, sek = 0;
@@ -304,21 +302,10 @@ int Screen_Map() {
 
 	degree = 1 + degree % 360;
 
-	if (going_to_game && !PDraw::is_fading()) {
-		next_screen = SCREEN_GAME;
-		
-		//Draw "loading" text
-		PDraw::set_xoffset(0);
-		PDraw::screen_fill(0);
-		PDraw::font_write(fontti2, tekstit->Get_Text(PK_txt.game_loading), screen_width / 2 - 82, screen_height / 2 - 9);
-		PDraw::fade_out(0);
-	}
-
 	if (!going_to_game && key_delay == 0) {
 
 		if (PInput::Keydown(PInput::ESCAPE)) {
 			next_screen = SCREEN_MENU;
-			degree_temp = degree;
 			key_delay = 20;
 		}
 		
@@ -334,9 +321,25 @@ int Screen_Map() {
 		}
 		PDraw::image_snapshot(bg_screen);
 
-	}
+		degree_temp = degree;
+
+	} else {
 	
-	Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
+		Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
+
+	}
+
+	if (going_to_game && !PDraw::is_fading()) {
+
+		next_screen = SCREEN_GAME;
+		
+		//Draw "loading" text
+		PDraw::set_xoffset(0);
+		PDraw::screen_fill(0);
+		PDraw::font_write(fontti2, tekstit->Get_Text(PK_txt.game_loading), screen_width / 2 - 82, screen_height / 2 - 9);
+		PDraw::fade_out(0);
+
+	}
 
 	return 0;
 }
