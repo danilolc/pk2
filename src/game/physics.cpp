@@ -998,6 +998,9 @@ int Sprite_Movement(int i){
 	if (sprite_a < -max_nopeus)
 		sprite_a = -max_nopeus;
 
+	if (sprite.energia < 0)
+		sprite.energia = 0;
+
 	if (sprite.energia > sprite.tyyppi->energia)
 		sprite.energia = sprite.tyyppi->energia;
 
@@ -1010,10 +1013,10 @@ int Sprite_Movement(int i){
 		double kitka = 1.04;
 
 		if (Game->map->ilma == ILMA_SADE || Game->map->ilma == ILMA_SADEMETSA)
-			kitka = 1.03;
+			kitka = 1.03; // Slippery ground in the rain
 
 		if (Game->map->ilma == ILMA_LUMISADE)
-			kitka = 1.01;
+			kitka = 1.01; // And even more on snow
 
 		if (!alas)
 			sprite_a /= kitka;

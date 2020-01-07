@@ -78,5 +78,4 @@ This example starts the level13.map on dev mode:
 * Get PisteLog back
 * Traduct finnish language
 * Don't draw when it's not to draw
-* Set invisibility
 * Better documentation
