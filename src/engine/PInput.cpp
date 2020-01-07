@@ -243,37 +243,33 @@ void UpdateMouse(bool keyMove, bool relative) {
 		mouse_x *= float(bw) / sw;
 		mouse_y *= float(bh) / sh;
 		mouse_x -= off;
-
-		if (mouse_x < -off) mouse_x = -off;
-		if (mouse_x > bw - off - 19) mouse_x = sw - off - 19;
-		if (mouse_y < 0) mouse_y = 0;
-		if (mouse_y > bh - 19) mouse_y = 480 - 19;
-
-		return;
-	}
-
-	SDL_SetRelativeMouseMode(SDL_TRUE);
-
-	int delta_x, delta_y;
-	SDL_GetRelativeMouseState(&delta_x, &delta_y);
-
-	mouse_x += delta_x * 0.8;
-	mouse_y += delta_y * 0.8;
-
-	if(keyMove) {
-
-		//mouse_x += PInput::Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
-		//mouse_y += PInput::Ohjain_Y(PI_PELIOHJAIN_1)/30;
-
-		if (Keydown(LEFT))  mouse_x += -3; //Move mouse with keys
-		if (Keydown(RIGHT)) mouse_x += 3;
-		if (Keydown(UP))    mouse_y += -3;
-		if (Keydown(DOWN))  mouse_y += 3;
 	
+	} else {
+
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+
+		int delta_x, delta_y;
+		SDL_GetRelativeMouseState(&delta_x, &delta_y);
+
+		mouse_x += delta_x * 0.8;
+		mouse_y += delta_y * 0.8;
+
+		if(keyMove) {
+
+			//mouse_x += PInput::Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
+			//mouse_y += PInput::Ohjain_Y(PI_PELIOHJAIN_1)/30;
+
+			if (Keydown(LEFT))  mouse_x += -3; //Move mouse with keys
+			if (Keydown(RIGHT)) mouse_x += 3;
+			if (Keydown(UP))    mouse_y += -3;
+			if (Keydown(DOWN))  mouse_y += 3;
+		
+		}
 	}
 	
+	// set limits
 	if (mouse_x < -off) mouse_x = -off;
-	if (mouse_x > bw - off - 19) mouse_x = sw - off - 19;
+	if (mouse_x > bw - off - 19) mouse_x = bw - off - 19;
 	if (mouse_y < 0) mouse_y = 0;
 	if (mouse_y > bh - 19) mouse_y = 480 - 19;
 

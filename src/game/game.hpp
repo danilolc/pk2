@@ -49,8 +49,6 @@ class GameClass {
 
 		int vibration = 0;
 
-		int invisibility = 0;
-
 		int camera_x;
 		int camera_y;
 		double dcamera_x;

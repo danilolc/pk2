@@ -1087,7 +1087,7 @@ void Draw_Menu_Episodes() {
 		}
 
 		//TODO draw episode origin
-		PDraw::font_write(fontti1, "episode.zip", 450, 95+my);
+		PDraw::font_write(fontti1, "original game", 450, 95+my);
 		
 		my += 20;
 	}

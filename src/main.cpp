@@ -23,8 +23,9 @@
 
 #include <cstring>
 
+#define MAINTENER    "PGN"
 #define GAME_NAME    "Pekka Kana 2"
-#define GAME_VERSION "r3-pre"
+#define GAME_VERSION "1.3.1 (r3-pre)"
 
 //#define SDL_MAIN_HANDLED
 #include <SDL.h>
@@ -135,6 +136,9 @@ int main(int argc, char *argv[]) {
 
 	if(!path_set)
 		PUtils::Setcwd();
+
+	printf("%s\n", SDL_GetPrefPath(MAINTENER, GAME_NAME));
+	printf("%s\n", SDL_GetBasePath());
 
 	Settings_Open();
 

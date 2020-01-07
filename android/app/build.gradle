@@ -18,11 +18,9 @@ android {
         versionName "1.0"
         externalNativeBuild {
             ndkBuild {
-                //arguments "-j6"
                 arguments "APP_PLATFORM=android-16"
                 arguments "APP_STL=c++_shared"
                 abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-                //abiFilters 'x86', 'x86_64'
             }
         }
     }

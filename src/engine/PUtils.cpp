@@ -24,36 +24,11 @@ int Setcwd() {
 
 }
 
-#elif _WIN32
-
-int Setcwd() {
-
-	char exepath[PE_PATH_SIZE];
-	int find;
-
-	string(exepath, GetModuleFileName(NULL, exepath, PE_PATH_SIZE));
-
-	find = string(exepath).find_last_of("/\\");
-	exepath[find] = '\0';
-	chdir(exepath);
-	return chdir("../res");
-
-}
-
 #else
 
 int Setcwd() {
 
-	char exepath[PE_PATH_SIZE];
-	int find;
-
-	int count = readlink("/proc/self/exe", exepath, PE_PATH_SIZE);
-	if (count > 0) exepath[count] = '\0';
-
-	find = std::string(exepath).find_last_of("/\\");
-	exepath[find] = '\0';
-	chdir(exepath);
-
+	chdir(SDL_GetBasePath());
 	return chdir("../res");
 
 }
@@ -80,19 +55,14 @@ void RemoveSpace(char* string) {
 
 bool NoCaseCompare(const char* a, const char* b) {
 
-	int sa = strlen(a);
-	int sb = strlen(b);
-
-	if (sa != sb) return false;
-
-	for (int i = 0; i < sa; i++) {
+	for (int i = 0;; i++) {
 
 		if ((a[i] | ' ') != (b[i] | ' '))
 			return false;
+		if (a[i] == '\0')
+			return true;
 
 	}
-
-	return true;
 
 }
 
