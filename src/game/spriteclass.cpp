@@ -912,8 +912,8 @@ int SpriteClass::Piirra(int kamera_x, int kamera_y){
 	frame = this->Animoi();
 
 	if (tyyppi->tarisee){
-		x+= rand()%2 - rand()%2;
-		y+= rand()%2 - rand()%2;
+		x += rand()%2 - rand()%2;
+		y += rand()%2 - rand()%2;
 	}
 	
 	if (flip_x) {

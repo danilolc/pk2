@@ -644,7 +644,7 @@ int Screen_InGame(){
 
 		Particles_Update();
 		if (!Game->level_clear && (!Game->has_time || Game->timeout > 0))
-			Update_Sprites();
+			debug_active_sprites = Update_Sprites();
 		Fadetext_Update();
 
 	}

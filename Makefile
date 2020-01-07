@@ -6,7 +6,7 @@
 # "make clean" - Removes all objects, executables and dependencies
 
 OPT = -g
-#OPT = -O3
+#OPT = -O2
 
 #CXX = g++
 #CXXFLAGS += $(shell pkg-config sdl2 --cflags) $(shell pkg-config libzip --cflags) $(OPT) -std=gnu++17 -w

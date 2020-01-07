@@ -65,7 +65,6 @@ This example starts the level13.map on dev mode:
 
 
 # TODOs and FIXMEs:
-* Consider Sprite in water when the water is outside the screen
 * Jump frames when FPS is slow
 * Select language based on system language
 * Super mode -> energy = 0 on touch Pekka

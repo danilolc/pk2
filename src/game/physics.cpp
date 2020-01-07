@@ -121,6 +121,8 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		if (palikka.water)
 			sprite.vedessa = true;
+		else
+			sprite.vedessa = false;
 
 		/**********************************************************************/
 		/* Examine if it touches the fire                                     */
@@ -131,19 +133,20 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 		}
 
 		/**********************************************************************/
-		/* Examine if bloc is hideway                                         */
+		/* Examine if bloc is hideway (unnused)                               */
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_PIILO)
 			sprite.piilossa = true;
+		else
+			sprite.piilossa = false;
+		
 
 		/**********************************************************************/
 		/* Examine if block is the exit                                       */
 		/**********************************************************************/
-		if (palikka.koodi == BLOCK_LOPETUS && sprite.pelaaja != 0){
-			if (!Game->level_clear) {
+		if (palikka.koodi == BLOCK_LOPETUS && sprite.pelaaja != 0)
+			if (!Game->level_clear)
 				Game->Finnish();
-			}
-		}
 	}
 
 	//If sprite is thouching the block
@@ -319,6 +322,7 @@ int Sprite_Movement(int i){
 	if (!sprite.tyyppi)
 		return -1;
 
+	// Save values
 	sprite_x = sprite.x;
 	sprite_y = sprite.y;
 	sprite_a = sprite.a;
@@ -562,13 +566,6 @@ int Sprite_Movement(int i){
 		sprite_b /= 1.3;//1.5;//3
 
 	/*****************************************************************************************/
-	/* By default, the sprite is not in the water and not hidden                             */
-	/*****************************************************************************************/
-
-	sprite.vedessa  = false;
-	sprite.piilossa = false;
-
-	/*****************************************************************************************/
 	/* Speed limits                                                                          */
 	/*****************************************************************************************/
 
@@ -601,8 +598,8 @@ int Sprite_Movement(int i){
 		map_vasen = (int)(sprite_vasen)/32;	//Position in tile map
 		map_yla	 = (int)(sprite_yla)/32;
 
-		for (y=0;y<palikat_y_lkm;y++)
-			for (x=0;x<palikat_x_lkm;x++) //For each block, create a array of blocks around the sprite
+		for ( y = 0; y < palikat_y_lkm; y++)
+			for ( x = 0; x < palikat_x_lkm; x++) //For each block, create a array of blocks around the sprite
 				Game->palikat[x+(y*palikat_x_lkm)] = Block_Get(map_vasen+x-1,map_yla+y-1); //x = 0, y = 0
 
 		/*****************************************************************************************/
@@ -610,10 +607,10 @@ int Sprite_Movement(int i){
 		/*****************************************************************************************/
 
 		//palikat_lkm = palikat_y_lkm*palikat_x_lkm;
-		for (y=0;y<palikat_y_lkm;y++){
-			for (x=0;x<palikat_x_lkm;x++) {
-				p = x+y*palikat_x_lkm;
-				if (p<300)// && p>=0)//{
+		for (y = 0; y < palikat_y_lkm; y++){
+			for (x = 0; x < palikat_x_lkm; x++) {
+				p = x + y*palikat_x_lkm;
+				if ( p < 300 )// && p>=0)//{
 					//if(sprite.pelaaja == 1) printf("%i\n",palikat_lkm);
 					Check_Blocks(sprite, Game->palikat[p]);
 				//}
