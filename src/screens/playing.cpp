@@ -134,8 +134,7 @@ int PK_Draw_InGame_Sprites() {
 					PDraw::image_cutclip(game_assets,hit_x-Game->camera_x-28+8, hit_y-Game->camera_y-27+8,1+framex,83,1+57+framex,83+55);
 				}
 
-				//if (Game->invisibility == 0 || (!doublespeed && Game->invisibility%2 == 0) || (doublespeed && Game->invisibility%4 <= 1) || sprite != Player_Sprite/*i != pelaaja_index*/)
-					sprite->Piirra(Game->camera_x,Game->camera_y);
+				sprite->Piirra(Game->camera_x,Game->camera_y);
 
 				if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYPE_PROJECTILE){
 					sx = (int)sprite->x;
@@ -220,7 +219,7 @@ int PK_Draw_InGame_DebugInfo() {
 
 	PDraw::font_write(fontti1,tpolku,10,470);
 
-	itoa(Game->invisibility,lukua,10);
+	itoa(Player_Sprite->invisible,lukua,10);
 	PDraw::font_write(fontti1,lukua,610,470);
 
 	itoa(Game->button1, lukua, 10);
@@ -424,9 +423,9 @@ int PK_Draw_InGame_UI(){
 	/////////////////
 	// Draw Invisible
 	/////////////////
-	if(Game->invisibility > 0){
+	if(Player_Sprite->invisible > 0){
 		vali = PDraw::font_write(fontti1,"invisible:",40,my+27);
-		ltoa(Game->invisibility/60,luku,10);
+		ltoa(Player_Sprite->invisible/60,luku,10);
 		PDraw::font_write(fontti2,luku,40+vali+1,my+27+1);
 		PDraw::font_write(fontti2,luku,40+vali,my+27);
 	}
@@ -684,9 +683,6 @@ int Screen_InGame(){
 					Game->game_over = true;
 			}
 		}
-
-		if (Game->invisibility > 0)
-			Game->invisibility--;
 	}
 
 	if (Player_Sprite->energia < 1 && !Game->game_over){
@@ -818,7 +814,7 @@ int Screen_InGame(){
 		if (PInput::Keydown(PInput::E))
 			Player_Sprite->energia = 10;
 		if (PInput::Keydown(PInput::V))
-			Game->invisibility = 3000;
+			Player_Sprite->invisible = 3000;
 	}
 
 	if (Game->exit_timer == 1 && !PDraw::is_fading()) {

@@ -780,6 +780,7 @@ SpriteClass::SpriteClass(){
 	this->frame_aika	= 0;
 	this->sekvenssi_index = 0;
 	this->isku			= 0;
+	this->invisible     = 0;
 	this->lataus		= 0;
 	this->hyokkays1		= 0;
 	this->hyokkays2		= 0;
@@ -823,6 +824,7 @@ SpriteClass::SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, doub
 		this->frame_aika	= 0;
 		this->sekvenssi_index = 0;
 		this->isku			= 0;
+		this->invisible     = 0;
 		this->lataus		= 0;
 		this->hyokkays1		= 0;
 		this->hyokkays2		= 0;
@@ -917,15 +919,15 @@ int SpriteClass::Piirra(int kamera_x, int kamera_y){
 	}
 	
 	if (flip_x) {
-		//if(this->invisible) //TODO - implement
-		//	PDraw::image_cliptransparent(tyyppi->framet_peilikuva[frame], x-l-1, y-h, 40, this->tyyppi->vari);
-		//else
+		if(this->invisible) //TODO - implement
+			PDraw::image_cliptransparent(tyyppi->framet_peilikuva[frame], x-l-1, y-h, 40, this->tyyppi->vari);
+		else
 			PDraw::image_clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);
 
 	} else {
-		//if(this->invisible)
-		//	PDraw::image_cliptransparent(tyyppi->framet[frame], x-l-1, y-h, 40, this->tyyppi->vari);
-		//else
+		if(this->invisible)
+			PDraw::image_cliptransparent(tyyppi->framet[frame], x-l-1, y-h, 40, this->tyyppi->vari);
+		else
 			PDraw::image_clip(tyyppi->framet[frame], x-l-1, y-h);
 	
 	}

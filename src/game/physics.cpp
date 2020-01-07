@@ -553,7 +553,14 @@ int Sprite_Movement(int i){
 	/*****************************************************************************************/
 
 	if (sprite.isku > 0)
-		sprite.isku --;
+		sprite.isku--;
+
+	/*****************************************************************************************/
+	/* Invisibility                                                                          */
+	/*****************************************************************************************/
+
+	if (sprite.invisible > 0)
+		sprite.invisible--;
 
 	/*****************************************************************************************/
 	/* Gravity effect                                                                        */
@@ -807,7 +814,7 @@ int Sprite_Movement(int i){
 							sprite2->saatu_vahinko        = sprite.tyyppi->vahinko;
 							sprite2->saatu_vahinko_tyyppi = sprite.tyyppi->vahinko_tyyppi;
 							
-							if ( !(sprite2->pelaaja && Game->invisibility) ) //If sprite2 isn't a invisible player
+							if ( !(sprite2->pelaaja && sprite2->invisible) ) //If sprite2 isn't a invisible player
 								sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika; //Then sprite attack
 
 							// The projectiles are shattered by shock
@@ -837,8 +844,9 @@ int Sprite_Movement(int i){
 	/*****************************************************************************************/
 
 	// Just fire can damage a invisible player
-	if (Game->invisibility > 0 && sprite.saatu_vahinko != 0 && sprite.saatu_vahinko_tyyppi != DAMAGE_FIRE &&
-		&sprite == Player_Sprite /*i == pelaaja_index*/) {
+	if (Player_Sprite->invisible != 0 && sprite.saatu_vahinko != 0 && sprite.saatu_vahinko_tyyppi != DAMAGE_FIRE &&
+		&sprite == Player_Sprite) {
+		
 		sprite.saatu_vahinko = 0;
 		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
 	}
@@ -1079,20 +1087,20 @@ int Sprite_Movement(int i){
 													break;
 				case AI_RANDOM_JUMP:				sprite.AI_Random_Hyppy();
 													break;
-				case AI_FOLLOW_PLAYER:			if (Game->invisibility == 0)
+				case AI_FOLLOW_PLAYER:			if (Player_Sprite->invisible == 0)
 														sprite.AI_Seuraa_Pelaajaa(*Player_Sprite);
 													break;
-				case AI_SEURAA_PELAAJAA_JOS_NAKEE:	if (Game->invisibility == 0)
+				case AI_SEURAA_PELAAJAA_JOS_NAKEE:	if (Player_Sprite->invisible == 0)
 														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee(*Player_Sprite);
 													break;
-				case AI_SEURAA_PELAAJAA_VERT_HORI:	if (Game->invisibility == 0)
+				case AI_SEURAA_PELAAJAA_VERT_HORI:	if (Player_Sprite->invisible == 0)
 														sprite.AI_Seuraa_Pelaajaa_Vert_Hori(*Player_Sprite);
 													break;
 				case AI_SEURAA_PELAAJAA_JOS_NAKEE_VERT_HORI:
-													if (Game->invisibility == 0)
+													if (Player_Sprite->invisible == 0)
 														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(*Player_Sprite);
 													break;
-				case AI_PAKENEE_PELAAJAA_JOS_NAKEE:	if (Game->invisibility == 0)
+				case AI_PAKENEE_PELAAJAA_JOS_NAKEE:	if (Player_Sprite->invisible == 0)
 														sprite.AI_Pakenee_Pelaajaa_Jos_Nakee(*Player_Sprite);
 													break;
 				case AI_POMMI:						sprite.AI_Pommi();
@@ -1106,19 +1114,19 @@ int Sprite_Movement(int i){
 				case AI_HYOKKAYS_2_NONSTOP:			sprite.AI_Hyokkays_2_Nonstop();
 													break;
 				case AI_HYOKKAYS_1_JOS_PELAAJA_EDESSA:
-													if (Game->invisibility == 0)
+													if (Player_Sprite->invisible == 0)
 														sprite.AI_Hyokkays_1_Jos_Pelaaja_Edessa(*Player_Sprite);
 													break;
 				case AI_HYOKKAYS_2_JOS_PELAAJA_EDESSA:
-													if (Game->invisibility == 0)
+													if (Player_Sprite->invisible == 0)
 														sprite.AI_Hyokkays_2_Jos_Pelaaja_Edessa(*Player_Sprite);
 													break;
 				case AI_HYOKKAYS_1_JOS_PELAAJA_ALAPUOLELLA:
-													if (Game->invisibility == 0)
+													if (Player_Sprite->invisible == 0)
 														sprite.AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(*Player_Sprite);
 													break;
 				case AI_HYPPY_JOS_PELAAJA_YLAPUOLELLA:
-													if (Game->invisibility == 0)
+													if (Player_Sprite->invisible == 0)
 														sprite.AI_Hyppy_Jos_Pelaaja_Ylapuolella(*Player_Sprite);
 													break;
 				case AI_VAHINGOITTUU_VEDESTA:		sprite.AI_Vahingoittuu_Vedesta();
@@ -1774,7 +1782,7 @@ int BonusSprite_Movement(int i){
 			}
 
 			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
-				Game->invisibility = sprite.tyyppi->latausaika;
+				Player_Sprite->invisible = sprite.tyyppi->latausaika;
 
 			//Game->map->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
 

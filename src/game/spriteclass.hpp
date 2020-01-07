@@ -613,52 +613,53 @@ class PrototypeClass{
 class SpriteClass{
     public:
 
-    bool		aktiivinen;			// true / false
-    int			pelaaja;			// 0 = ei pelaaja, 1 = pelaaja
+    bool   aktiivinen;			// true / false
+    int    pelaaja;			// 0 = isn't player, 1 = is player
     PrototypeClass *tyyppi;	// osoitin spriten prototyyppiin
-    bool		piilota;			// true = ei toiminnassa, false = toiminnassa
-    double		alku_x;				// spriten alkuper�inen x sijainti
-    double		alku_y;				// spriten alkuper�inen y sijainti
-    double		x;					// x-kordinaatti pelikent�ll�
-    double		y;					// y-kordinaatti pelikent�ll�
-    double		a;					// horizontal speed
-    double		b;					// vertical speed
-    bool		flip_x;				// true = peilikuva sivusuunnassa
-    bool		flip_y;				// true = peilikuva pystysuunnassa
-    int			hyppy_ajastin;		// hypyn kesto: 0 = ei hypyss�, > 0 = hypyss�, < 0 = tullut alas
-    bool		ylos;				// voiko sprite juuri nyt liikkua yl�s
-    bool		alas;				// voiko sprite juuri nyt liikkua ....
-    bool		oikealle;			// voiko sprite juuri nyt liikkua ....
-    bool		vasemmalle;			// voiko sprite juuri nyt liikkua ....
-    bool		reuna_vasemmalla;	// onko spriten vasemmalla puolella kuoppa?
-    bool		reuna_oikealla;		// onko spriten vasemmalla puolella kuoppa?
-    int			energia;			// monta osumaa sprite viel� kest��
-    int			emosprite;			// jos spriten on luonut jokin toinen sprite
-    double		paino;				// spriten oma yksil�llinen paino
-    double		kytkinpaino;		// spriten paino + muiden spritejen panot, joihin kosketaan
-    bool		kyykky;				// onko sprite kyykyss�
-    int			isku;				// onko sprite saanut vahinkoa
-    int			lataus;				// jos on ammuttu, odotetaan
-    int			hyokkays1;			// ajastin joka laskee hy�kk�ys 1:n j�lkeen
-    int			hyokkays2;			// ajastin joka laskee hy�kk�ys 2:n j�lkeen
-    bool		vedessa;			// onko sprite vedess�
-    bool		piilossa;			// onko sprite piilossa
-    double      alkupaino;			// spriten alkuper�inen paino - sama kuin prototyypin
-    int			saatu_vahinko;		// v�hennet��n energiasta jos erisuuri kuin 0
-    u8       saatu_vahinko_tyyppi; // saadun vahingon tyyppi (esim. lumi).
-    bool		vihollinen;			// prototyypist� saatu tieto, onko vihollinen
-    int			ammus1;				// spriten k�ytt�m�n ammus-prototyypin indeksi
-    int			ammus2;				//
+    bool   piilota;			// true = ei toiminnassa, false = toiminnassa
+    double alku_x;				// spriten alkuper�inen x sijainti
+    double alku_y;				// spriten alkuper�inen y sijainti
+    double x;					// x-kordinaatti pelikent�ll�
+    double y;					// y-kordinaatti pelikent�ll�
+    double a;					// horizontal speed
+    double b;					// vertical speed
+    bool   flip_x;				// true = peilikuva sivusuunnassa
+    bool   flip_y;				// true = peilikuva pystysuunnassa
+    int    hyppy_ajastin;		// hypyn kesto: 0 = ei hypyss�, > 0 = hypyss�, < 0 = tullut alas
+    bool   ylos;				// voiko sprite juuri nyt liikkua yl�s
+    bool   alas;				// voiko sprite juuri nyt liikkua ....
+    bool   oikealle;			// voiko sprite juuri nyt liikkua ....
+    bool   vasemmalle;			// voiko sprite juuri nyt liikkua ....
+    bool   reuna_vasemmalla;	// onko spriten vasemmalla puolella kuoppa?
+    bool   reuna_oikealla;		// onko spriten vasemmalla puolella kuoppa?
+    int    energia;			// monta osumaa sprite viel� kest��
+    int    emosprite;			// jos spriten on luonut jokin toinen sprite
+    double paino;				// spriten oma yksil�llinen paino
+    double kytkinpaino;		// spriten paino + muiden spritejen panot, joihin kosketaan
+    bool   kyykky;				// onko sprite kyykyss�
+    int    isku;				// damage timer
+    int    invisible;          // invisibility timer
+    int    lataus;				// jos on ammuttu, odotetaan
+    int    hyokkays1;			// ajastin joka laskee hy�kk�ys 1:n j�lkeen
+    int    hyokkays2;			// ajastin joka laskee hy�kk�ys 2:n j�lkeen
+    bool   vedessa;			// onko sprite vedess�
+    bool   piilossa;			// onko sprite piilossa
+    double alkupaino;			// spriten alkuper�inen paino - sama kuin prototyypin
+    int    saatu_vahinko;		// v�hennet��n energiasta jos erisuuri kuin 0
+    u8     saatu_vahinko_tyyppi; // saadun vahingon tyyppi (esim. lumi).
+    bool   vihollinen;			// if it is a enemy
+    int    ammus1;				// projectile 1 index
+    int    ammus2;				// projectile 2 index
 
-    int			pelaaja_x,			// tieto siit�, miss� pelaaja on n�hty viimeksi
-    pelaaja_y;
+    int    pelaaja_x;			// where the player was last seen
+    int    pelaaja_y;
 
-    int			ajastin;			// ajastin jonka arvo py�rii v�lill� 1 - 32000
-
-    u8		animaatio_index;	// t�m�nhetkinen py�riv� animaatio
-    u8		sekvenssi_index;	// t�m�nhetkisen animaation frame
-    u8		frame_aika;			// kuinka kauan frame on n�kynyt
-    int			muutos_ajastin;		// sprite muuttuu muutosspriteksi kun t�m� nollautuu
+    int    ajastin;			// ajastin jonka arvo py�rii v�lill� 1 - 32000 (timer)
+ 
+    u8     animaatio_index;	// animation index
+    u8     sekvenssi_index;	// current sequence
+    u8     frame_aika;			// frame times
+    int    muutos_ajastin;		// sprite muuttuu muutosspriteksi kun t�m� nollautuu
 
     SpriteClass();
     SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, double x, double y);
