@@ -36,7 +36,7 @@ int   image_cliptransparent(int index, int x, int y, int alpha, int colorsum = 0
 int   image_cutclip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala);
 int   image_cutclip(int index, RECT srcrect, RECT dstrect);
 int   image_cutcliptransparent(int index, RECT srcrect, RECT dstrect, int alpha, int colorsum = 0);
-int   image_cutcliptransparent(int index, u32 src_x, u32 src_y, u32 src_w, u32 src_h,
+int   image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src_h,
     int dst_x, int dst_y, int alpha, u8 colorsum);
 void  image_getsize(int index, int& w, int& h);
 int   image_fliphori(int index);

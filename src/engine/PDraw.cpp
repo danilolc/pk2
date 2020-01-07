@@ -220,33 +220,36 @@ int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, int color
 	    dst.x, dst.y, alpha, colorsum);
 }
 
-int image_cutcliptransparent(int index, u32 src_x, u32 src_y, u32 src_w, u32 src_h,
+int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src_h,
 						 int dst_x, int dst_y, int alpha, u8 colorsum) {
+    
     u8 *imagePix = nullptr;
     u8 *screenPix = nullptr;
     u32 imagePitch, screenPitch;
 
+    dst_x += x_offset;
+
     if (alpha > 100) alpha = 100;
-    if (alpha < 0) alpha = 0;
+    if (alpha <= 0) alpha = 0;
 
     int x_start = src_x;
-    if (dst_x + x_start < 0)
-        x_start = -dst_x;
+    if (dst_x < 0)
+        x_start -= dst_x;
 
     int x_end = src_x + src_w;
-    if (dst_x + x_end > screen_width)
-        x_end = screen_width - dst_x;
+    if (int(dst_x + src_w) > screen_width)
+        x_end -= src_w - screen_width + dst_x;
 
     int y_start = src_y;
-    if (dst_x + x_start < 0)
-        x_start = -dst_x;
+    if (dst_y < 0)
+        y_start -= dst_y;
 
     int y_end = src_y + src_h;
-    if (dst_y + y_end > screen_height)
-        y_end = screen_height - dst_y;
+    if (dst_y + src_h > screen_height)
+        y_end -= src_h - screen_height + dst_y;
 
-    if (x_start >= x_end || y_start >= y_end) return -1;
-    
+    if (x_start >= x_end || y_start >= y_end) return -1;    
+
     drawimage_start(index, *&imagePix, (u32 &)imagePitch);
     drawscreen_start(*&screenPix, (u32 &)screenPitch);
     for (int posx = x_start; posx < x_end; posx++)
@@ -254,9 +257,9 @@ int image_cutcliptransparent(int index, u32 src_x, u32 src_y, u32 src_w, u32 src
 
             u8 color1 = imagePix[ posx + imagePitch*posy ];
             if (color1 != 255) {
-                int screen_x = posx + dst_x;
-                int screen_y = posy + dst_y;
-
+                int screen_x = posx + dst_x - src_x;
+                int screen_y = posy + dst_y - src_y;
+                
                 u8 color2 = screenPix[ screen_x + screenPitch*screen_y ];
                 screenPix[ screen_x + screenPitch*screen_y ] = blend_colors(color1, color2, alpha) + colorsum;
             }

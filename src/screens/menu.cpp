@@ -243,7 +243,8 @@ bool Draw_Menu_Text(bool active, const char *teksti, int x, int y) {
 	return false;
 }
 
-int Draw_BoolBox(int x, int y, bool muuttuja, bool active){
+int Draw_BoolBox(int x, int y, bool muuttuja, bool active) {
+	
 	PDraw::RECT img_src, img_dst = {(u32)x,(u32)y,0,0};
 
 	if(muuttuja) img_src = {504,124,31,31};
