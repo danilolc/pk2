@@ -4,6 +4,7 @@
 //#########################
 #include "settings.hpp"
 
+#include "language.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PUtils.hpp"
 #include "system.hpp"
@@ -23,7 +24,7 @@ void Settings_Init() {
 	strcpy(Settings.versio, SETTINGS_VERSION);
 	Settings.ladattu = false;
 
-	strcpy(Settings.kieli, "english.txt");
+	strcpy(Settings.kieli, Language_Name());
 
 	Settings.draw_transparent = true;
 	Settings.transparent_text = false;

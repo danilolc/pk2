@@ -66,7 +66,6 @@ This example starts the level13.map on dev mode:
 
 # TODOs and FIXMEs:
 * Jump frames when FPS is slow
-* Select language based on system language
 * Super mode -> energy = 0 on touch Pekka
 * Random SIGFAULT while playing
 * Can't load suomi.txt language

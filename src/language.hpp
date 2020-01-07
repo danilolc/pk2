@@ -162,4 +162,5 @@ extern LANGUAGE PK_txt;
 
 extern std::vector<std::string> langlist;
 
+const char* Language_Name();
 int Load_Language(const char* language);

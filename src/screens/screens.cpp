@@ -58,7 +58,6 @@ int Screen_First_Start() {
 		}
 
 	}
-	Load_Language(Settings.kieli);
 	Load_Fonts(tekstit);
 	langlist = PUtils::Scandir(".txt", "language", 60);
 	

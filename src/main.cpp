@@ -22,6 +22,7 @@
 #include "settings.hpp"
 
 #include <cstring>
+#include <locale>
 
 #define GAME_NAME    "Pekka Kana 2"
 #define GAME_VERSION "1.3.1 (r3-pre)"

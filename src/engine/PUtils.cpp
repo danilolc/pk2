@@ -264,12 +264,12 @@ int CreateDir(const char *path, const char* dir) {
 }
 
 //Scans directory to find file based on case
-bool NoCaseFint(char *filename) {
+bool NoCaseFind(char *filename) {
 
 	char dir[PE_PATH_SIZE];
 	char file[PE_PATH_SIZE];
 
-	int find = std::string(filename).find_last_of("/\\");
+	int find = std::string(filename).find_last_of("/");
 	strcpy(dir, filename);
 	dir[find+1] = '\0';
 
@@ -313,7 +313,7 @@ bool Find(char *filename) {
 
 	printf("PUtils - %s not found, trying different cAsE\n", filename);
 
-	return NoCaseFint(filename);
+	return NoCaseFind(filename);
 	
 }
 

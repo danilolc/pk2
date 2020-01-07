@@ -4,14 +4,116 @@
 //#########################
 #include "language.hpp"
 
-#include "engine/PUtils.hpp"
-
 #include <cstring>
+#include <string>
+#include <locale>
 
 std::vector<std::string> langlist;
 
 PLang *tekstit;
 LANGUAGE PK_txt;
+
+const char* Language_Name() {
+
+	const char* locale = std::locale("").name().c_str();
+	
+	char loc[4];
+
+	loc[0] = locale[0] | ' '; // lower
+	loc[1] = locale[1] | ' '; 
+	loc[2] = '\0';
+
+	printf("Searching language from code: %s\n", loc);
+
+	if(strcmp(loc, "bg") == 0)
+		return "bulgarian.txt";
+	
+	if(strcmp(loc, "ca") == 0)
+		return "catala.txt";
+	
+	//"cesky.txt"
+	if(strcmp(loc, "cs") == 0)
+		return "czech.txt";
+
+	if(strcmp(loc, "da") == 0)
+		return "danish.txt";
+	
+	//"deutsch.txt"
+	//"deutsch2.txt"
+	//"deutsch3.txt"
+	if(strcmp(loc, "nl") == 0)
+		return "deutsch5.txt";
+	
+	if(strcmp(loc, "en") == 0)
+		return "english.txt";
+	
+	//"espanol castellano.txt"
+	//"castellano.txt"
+	//"spanish.txt"
+	if(strcmp(loc, "es") == 0)
+		return "espanol.txt";
+	
+	//"francais.txt"
+	if(strcmp(loc, "fr") == 0)
+		return "francais2.txt";
+	
+	if(strcmp(loc, "gl") == 0)
+		return "galego.txt";
+	
+	//"srpski.txt"
+	if(strcmp(loc, "hr") == 0)
+		return "hrvatski.txt";
+	
+	if(strcmp(loc, "hu") == 0)
+		return "hungarian.txt";
+	
+	if(strcmp(loc, "id") == 0)
+		return "indonesian.txt";
+	
+	//"italiano1.txt"
+	//"italiano2.txt"
+	//"italiano3.txt"
+	//"italiano4.txt"
+	//"italiano5.txt"
+	if(strcmp(loc, "it") == 0)
+		return "italiano6.txt";
+	
+	if(strcmp(loc, "mk") == 0)
+		return "macedonian.txt";
+	
+	if(strcmp(loc, "nl") == 0)
+		return "nederlands.txt";
+	
+	if(strcmp(loc, "pl") == 0)
+		return "polski.txt";
+	
+	//"portugues brasil.txt"
+	if(strcmp(loc, "pt") == 0)
+		return "portugues brasil2.txt";
+	
+	//"russian.txt"
+	if(strcmp(loc, "ru") == 0)
+		return "russkii russian.txt";
+	
+	//"slovak.txt"
+	if(strcmp(loc, "sk") == 0)
+		return "slovenscina.txt";
+	
+	//"savo.txt"
+	//"slangi.txt"
+	//"tervola.txt"	
+	if(strcmp(loc, "fi") == 0)
+		return "suomi.txt";
+	
+	if(strcmp(loc, "sv") == 0)
+		return "swedish.txt";
+
+	if(strcmp(loc, "tr") == 0)
+		return "turkish.txt";
+	
+	return "english.txt";
+
+}
 
 int Load_Language(const char* language) {
 	
