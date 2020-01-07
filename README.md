@@ -74,7 +74,6 @@ This example starts the level13.map on dev mode:
 * Fix the mobile text input
 * Scan directory on android APK
 * Load directory from zip
-* Change the saves and settings directory
 * Get PisteLog back
 * Traduct finnish language
 * Don't draw when it's not to draw

@@ -15,6 +15,7 @@
 #include <SDL_rwops.h>
 
 #include <cstring>
+#include <string>
 
 EpisodeClass* Episode = nullptr;
 
@@ -32,16 +33,16 @@ void EpisodeClass::Clear_Scores() {
 	
 }
 
-int EpisodeClass::Open_Scores(const char *filename) {
+int EpisodeClass::Open_Scores() {
 
 	char versio[4];
 
-	char path[PE_PATH_SIZE];
-
-	strcpy(path, filename);
-	this->Get_Dir(path);
+	std::string path(data_path);
+	path += "scores" PE_SEP;
+	path += this->entry.name;
+	path += ".dat";
 	
-	SDL_RWops *file = SDL_RWFromFile(path, "r");
+	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "rb");
 	if (file == nullptr){
 		this->Clear_Scores();
 		return 1;
@@ -61,14 +62,14 @@ int EpisodeClass::Open_Scores(const char *filename) {
 
 }
 
-int EpisodeClass::Save_Scores(const char *filename) {
+int EpisodeClass::Save_Scores() {
 	
-	char path[PE_PATH_SIZE];
-	strcpy(path, filename);
+	std::string path(data_path);
+	path += "scores" PE_SEP;
+	path += this->entry.name;
+	path += ".dat";
 
-	this->Get_Dir(path);
-
-	SDL_RWops *file = SDL_RWFromFile(path, "w");
+	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
 	if (file == nullptr) {
 		printf("Error saving scores\n");
 		return 1;
@@ -163,7 +164,7 @@ void EpisodeClass::Load() {
 		}
 	}
 	
-	this->Open_Scores("scores.dat");
+	this->Open_Scores();
 	this->Load_Info();
 
 }

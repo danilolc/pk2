@@ -6,11 +6,14 @@
 
 #include "engine/PInput.hpp"
 #include "engine/PUtils.hpp"
+#include "system.hpp"
 
 #include <SDL_rwops.h>
-#include <cstring>
 
-#define SETTINGS_PATH "data" PE_SEP "settings.ini"
+#include <cstring>
+#include <string>
+
+#define SETTINGS_FILE "settings.ini"
 #define SETTINGS_VERSION "1.2"
 
 PK2SETTINGS Settings;
@@ -52,7 +55,10 @@ void Settings_Init() {
 
 int Settings_Open() {
 
-	SDL_RWops *file = SDL_RWFromFile(SETTINGS_PATH, "rb");
+	std::string path(data_path);
+	path += SETTINGS_FILE;
+
+	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "rb");
 
 	if (file == nullptr){
 		Settings_Init();
@@ -90,9 +96,10 @@ int Settings_Open() {
 
 int Settings_Save() {
 
-    PUtils::CreateDir("data");
-	
-	SDL_RWops *file = SDL_RWFromFile(SETTINGS_PATH, "wb");
+	std::string path(data_path);
+	path += SETTINGS_FILE;
+
+	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
 
 	if (file == nullptr) {
 		printf("Error saving settings\n");

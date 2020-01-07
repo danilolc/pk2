@@ -16,7 +16,7 @@ void Lower(char* string);
 void RemoveSpace(char* string);
 bool Find(char *filename); // TODO - use PFile::Path
 
-int  CreateDir(const char *directory);
+int  CreateDir(const char *path, const char* dir);
 void Show_Error(const char* txt);
 
 //type:

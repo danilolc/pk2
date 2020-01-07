@@ -58,8 +58,8 @@ class EpisodeClass {
 
 		void Get_Dir(char *tiedosto);
 
-		int  Open_Scores(const char *filename);
-		int  Save_Scores(const char *filename);
+		int  Open_Scores();
+		int  Save_Scores();
 
 	private:
 		

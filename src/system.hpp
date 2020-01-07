@@ -10,6 +10,7 @@ extern int screen_width;
 extern int screen_height;
 
 extern char game_path[PE_PATH_SIZE];
+extern char* data_path;
 
 extern int game_assets;
 extern int game_assets2;

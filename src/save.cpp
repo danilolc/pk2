@@ -5,12 +5,14 @@
 #include "save.hpp"
 
 #include "episode/mapstore.hpp"
+#include "system.hpp"
 
 #include <SDL_rwops.h>
 
 #include <cstring>
+#include <string>
 
-#define SAVES_PATH "data" PE_SEP "saves.dat"
+#define SAVES_FILE "saves.dat"
 #define VERSION "2"
 
 PK2SAVE saves_list[MAX_SAVES];
@@ -44,7 +46,10 @@ int Save_All_Records() {
 
 	itoa(MAX_SAVES, count_c, 10);
 
-	SDL_RWops *file = SDL_RWFromFile(SAVES_PATH, "wb");
+	std::string path(data_path);
+	path += SAVES_FILE;
+	
+	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
 	if (file == nullptr) {
 
 		printf("Error saving records\n");
@@ -70,7 +75,10 @@ int Load_SaveFile() {
 
 	Empty_Records();
 
-	SDL_RWops *file = SDL_RWFromFile(SAVES_PATH, "rb");
+	std::string path(data_path);
+	path += SAVES_FILE;
+
+	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "rb");
 	if (file == nullptr){
 		printf("No save file\n");
 		return 1;

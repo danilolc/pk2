@@ -269,13 +269,11 @@ int Screen_ScoreCount_Init() {
 	energy_score = 0;
 	gifts_score = 0;
 
-	char pisteet_tiedosto[PE_PATH_SIZE] = "scores.dat";
-
 	/* Check if broken level score and time record */
 	int compare_result = EpisodeScore_Compare(Game->level_id, temp_score, Game->map->aika - Game->timeout, false);
 	if (compare_result > 0) {
 
-		Episode->Save_Scores(pisteet_tiedosto);
+		Episode->Save_Scores();
 
 	}
 
@@ -283,7 +281,7 @@ int Screen_ScoreCount_Init() {
 	compare_result = EpisodeScore_Compare(0, Episode->player_score, 0, true);
 	if (compare_result > 0) {
 
-		Episode->Save_Scores(pisteet_tiedosto);
+		Episode->Save_Scores();
 
 	}
 

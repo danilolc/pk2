@@ -23,7 +23,6 @@
 
 #include <cstring>
 
-#define MAINTENER    "PGN"
 #define GAME_NAME    "Pekka Kana 2"
 #define GAME_VERSION "1.3.1 (r3-pre)"
 
@@ -61,20 +60,22 @@ void quit(int ret) {
 
 	PSound::stop_music();
 
-	if (Game) {
+	if (Game)
 		delete Game;
-		Game = nullptr;
-	}
-	if (Episode) {
-		delete Episode;
-		Episode = nullptr;
-	}
 	
-	delete tekstit;
+	if (Episode)
+		delete Episode;
+	
+	if(tekstit)
+		delete tekstit;
+	
+	if(data_path)
+		SDL_free(data_path);
 
 	Piste::terminate();
 
 	if (!ret) printf("Exited correctely\n");
+
 	exit(ret);
 
 }
@@ -137,8 +138,17 @@ int main(int argc, char *argv[]) {
 	if(!path_set)
 		PUtils::Setcwd();
 
-	printf("%s\n", SDL_GetPrefPath(MAINTENER, GAME_NAME));
-	printf("%s\n", SDL_GetBasePath());
+	data_path = SDL_GetPrefPath(NULL, GAME_NAME);
+	if (data_path == NULL) {
+
+		printf("PK2    - Failed to init data path.\n");
+		quit(1);
+
+	}
+
+	printf("Data path - %s\n", data_path);
+	PUtils::CreateDir(data_path, "scores/");
+	PUtils::CreateDir(data_path, "mapstore/");
 
 	Settings_Open();
 
@@ -147,8 +157,10 @@ int main(int argc, char *argv[]) {
 
 	Piste::init(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp");
 	if (!Piste::is_ready()) {
+
 		printf("PK2    - Failed to init PisteEngine.\n");
-		return 0;
+		quit(1);
+
 	}
 
 	next_screen = SCREEN_INTRO;

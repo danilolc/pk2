@@ -28,7 +28,15 @@ int Setcwd() {
 
 int Setcwd() {
 
-	chdir(SDL_GetBasePath());
+	char* path = SDL_GetBasePath();
+	
+	if (path != NULL) {
+		
+		chdir(path);
+		SDL_free(path);
+	
+	}
+
 	return chdir("../res");
 
 }
@@ -160,8 +168,8 @@ std::vector<string> Scandir(const char* type, const char* dir, int max) {
 
 }
 
-int CreateDir(const char *directory){
-	CreateDirectory(directory, NULL);
+int CreateDir(const char *path, const char* dir){
+	//CreateDirectory(directory, NULL); - TODO
 	return 0;
 }
 
@@ -240,13 +248,16 @@ std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 
 }
 
-int CreateDir(const char *directory) {
+int CreateDir(const char *path, const char* dir) {
 
-	char shell[PE_PATH_SIZE];
+	std::string shell("mkdir -p \"");
 	
-	strcpy(shell, "mkdir -p ");
-	strcat(shell, directory);
-	system(shell);
+	shell += path;
+	shell += dir;
+	shell += "\"";
+	system(shell.c_str());
+
+	printf("shell - %s\n", shell.c_str());
 	
 	return 0;
 
