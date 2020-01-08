@@ -469,20 +469,20 @@ int Update_Sprites() {
 	for (int i = 0; i < MAX_SPRITEJA; i++) {
 		sprite = &Sprites_List[i];
 		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
-			if (sprite->tyyppi->tyyppi == TYPE_BONUS)
+			if (sprite->tyyppi->tyyppi == TYPE_BONUS) {
 				BonusSprite_Movement(i);
-
-			active_sprites++;
+				active_sprites++;
+			}
 		}
 	}
 
 	for (int i = 0; i < MAX_SPRITEJA; i++) {
 		sprite = &Sprites_List[i];
 		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
-			if (sprite->tyyppi->tyyppi != TYPE_BONUS)
+			if (sprite->tyyppi->tyyppi != TYPE_BONUS) {
 				Sprite_Movement(i);
-
-			active_sprites++;
+				active_sprites++;
+			}
 		}
 	}
 

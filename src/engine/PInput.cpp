@@ -114,6 +114,7 @@ bool Keydown(int key) {
 
 bool text_editing = false;
 char keyboard_text[32];
+int keyboard_key = 0;
 
 void StartKeyboard() {
 
@@ -143,33 +144,54 @@ void InjectText(const char* text) {
 
 }
 
-static bool accept_char(char c) {
-
-	return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-		|| c == '.' || c == '!' || c == '?' || c == ' '; //Just number, letter, space dot
+void InjectKey(int key) {
+	
+	keyboard_key = key;
 
 }
 
-int ReadKeyboard(char* buffer) {
+static bool accept_char(char c) {
 
-	strcpy(buffer, keyboard_text);
-	keyboard_text[0] = '\0';
+	const char* chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.!? ";
 
-	for (int i = 0; i < 32; i++) { //Clean buffer
-		char c = buffer[i];
+	return strchr(chars, c);
+	//return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+	//	|| c == '.' || c == '!' || c == '?' || c == ' '; //Just number, letter, space dot
 
-		if (c == '\0')
-			return i;
+}
+
+// TODO - return just the key
+int ReadKeyboard(char* c) {
+
+	if (accept_char(keyboard_text[0])) {
+		
+		*c = keyboard_text[0];
 	
-		if(!accept_char(c))
-			for (int j = i; j < 31; j++) 
-				buffer[j] = buffer[j + 1];
+	} else {
+
+		*c = '\0';
 
 	}
+	
+	keyboard_text[0] = '\0';
 
-	buffer[0] = '\0';
+	int key = 0;
 
-	return 0;
+	if (keyboard_key == SDL_SCANCODE_DELETE)
+		key = DEL;
+	if (keyboard_key == SDL_SCANCODE_BACKSPACE)
+		key = BACK;
+	if (keyboard_key == SDL_SCANCODE_RETURN)
+		key = RETURN;
+	if (keyboard_key == SDL_SCANCODE_LEFT)
+		key = LEFT;
+	if (keyboard_key == SDL_SCANCODE_RIGHT)
+		key = RIGHT;
+
+	keyboard_key = 0;
+
+	return key;
+
 }
 
 

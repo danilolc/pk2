@@ -62,7 +62,8 @@ void StartKeyboard();
 void EndKeyboard();
 bool Is_Editing();
 void InjectText(const char* text);
-int ReadKeyboard(char* buffer);
+void InjectKey(int key);
+int ReadKeyboard(char* c);
 
 int Vibrate(int length);
 void SetMousePosition(int x, int y);

@@ -415,19 +415,6 @@ void Draw_Menu_Name() {
 	
 	}
 
-	if (editing_name && key_delay == 0){
-
-		if (PInput::Keydown(PInput::LEFT)) {
-			menu_name_index--;
-			key_delay = 8;
-		}
-
-		if (PInput::Keydown(PInput::RIGHT)) {
-			menu_name_index++;
-			key_delay = 8;
-		}
-	}
-
 	if (menu_name_index >= 20)
 		menu_name_index = 19;
 
@@ -453,17 +440,17 @@ void Draw_Menu_Name() {
 	WavetextSlow_Draw(menu_name,fontti2,tx_start,ty_start-1);
 	PDraw::font_writealpha(fontti3,menu_name,tx_start,ty_start-1,15);
 
-	char buffer[32];
-	int in_len = PInput::ReadKeyboard(buffer);
-
 	if (editing_name) {
 
-		for (int i = 0; i < in_len; i++) {
+		char in;
+		int key = PInput::ReadKeyboard(&in);
+
+		if (in != '\0') {
 
 			for(int j = sizeof(menu_name) - 1; j > menu_name_index; j--)
 				menu_name[j] = menu_name[j-1];
 			
-			menu_name[menu_name_index] = buffer[i];
+			menu_name[menu_name_index] = in;
 			menu_name_index++;
 			menu_name[19] = '\0';
 
@@ -474,32 +461,35 @@ void Draw_Menu_Name() {
 			PInput::EndKeyboard();
 		}*/
 
-		if (key_delay == 0) {
+		if (key == PInput::DEL) {
+			for (int c=menu_name_index;c<19;c++)
+				menu_name[c] = menu_name[c+1];
+			menu_name[19] = '\0';
+		}
 
-			if (PInput::Keydown(PInput::DEL)) {
-				for (int c=menu_name_index;c<19;c++)
-					menu_name[c] = menu_name[c+1];
-				menu_name[19] = '\0';
-				key_delay = 10;
-			}
+		if (key == PInput::BACK && menu_name_index != 0) {
+			for (int c=menu_name_index-1;c<19;c++)
+				menu_name[c] = menu_name[c+1];
+			menu_name[19] = '\0';
+			if(menu_name[menu_name_index] == '\0') menu_name[menu_name_index-1] = '\0';
+			menu_name_index--;
+		}
 
-			if (PInput::Keydown(PInput::BACK) && menu_name_index != 0) {
-				for (int c=menu_name_index-1;c<19;c++)
-					menu_name[c] = menu_name[c+1];
-				menu_name[19] = '\0';
-				if(menu_name[menu_name_index] == '\0') menu_name[menu_name_index-1] = '\0';
-				menu_name_index--;
-				key_delay = 10;
-			}
+		if (key == PInput::RETURN && menu_name[0] != '\0') {
+			editing_name = false;
+			PInput::EndKeyboard();
 
-			if (PInput::Keydown(PInput::RETURN) && menu_name[0] != '\0') {
-				key_delay = 10;
-				editing_name = false;
-				PInput::EndKeyboard();
+			menu_valittu_id = 1;
+		}
 
-				menu_valittu_id = 1;
-			}
+		if (key == PInput::LEFT) {
+			menu_name_index--;
+			key_delay = 8;
+		}
 
+		if (key == PInput::RIGHT) {
+			menu_name_index++;
+			key_delay = 8;
 		}
 
 	}

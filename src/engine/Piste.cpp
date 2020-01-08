@@ -30,6 +30,8 @@ static void logic() {
 			PDraw::adjust_screen();
 		if(event.type == SDL_TEXTINPUT && PInput::Is_Editing())
 			PInput::InjectText(event.text.text);
+		if(event.type == SDL_KEYDOWN && PInput::Is_Editing())
+			PInput::InjectKey(event.key.keysym.scancode);
 		
 	}
 

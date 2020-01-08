@@ -148,6 +148,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	printf("Data path - %s\n", data_path);
+	PUtils::CreateDir(data_path, NULL);
 	PUtils::CreateDir(data_path, "scores/");
 	PUtils::CreateDir(data_path, "mapstore/");
 

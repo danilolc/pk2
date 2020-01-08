@@ -171,7 +171,9 @@ std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 int CreateDir(const char *path, const char* dir){
 	
 	std::string complete_path(path);
-	complete_path += dir;
+	if (dir)
+		complete_path += dir;
+	
 	return CreateDirectory(complete_path.c_str(), NULL);
 	
 }
@@ -263,7 +265,9 @@ int CreateDir(const char *path, const char* dir) {
 	printf("shell - %s\n", shell.c_str());*/
 
 	std::string complete_path(path);
-	complete_path += dir;
+	if (dir)
+		complete_path += dir;
+	
 	return mkdir(complete_path.c_str(), 0700);
 	
 }

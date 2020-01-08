@@ -4,7 +4,6 @@ include $(call all-subdir-makefiles)
 
 include $(CLEAR_VARS)
 SRC_DIR := $(PK2_PATH)/../../../src
-
 LOCAL_MODULE := PK2
 LOCAL_C_INCLUDES := $(SRC_DIR)
 LOCAL_SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*/*.cpp)
