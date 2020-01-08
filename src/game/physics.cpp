@@ -1754,7 +1754,7 @@ int BonusSprite_Movement(int i){
 				
 				if (!sprite.Onko_AI(AI_BONUS_AIKA)) {
 
-					char luku[6];
+					char luku[10];
 					itoa(sprite.tyyppi->pisteet,luku,10);
 					if (sprite.tyyppi->pisteet >= 50)
 						Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,100);

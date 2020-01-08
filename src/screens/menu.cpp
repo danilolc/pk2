@@ -1049,7 +1049,7 @@ void Draw_Menu_Episodes() {
 
 	if (episodes.size() > 10) {
 		
-		char luku[20];
+		char luku[36];
 		int vali = 90;
 		int x = 50;//500,
 		int y = 50;//300;
