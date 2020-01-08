@@ -3,8 +3,8 @@
 /doc/
 
 /res/episodes/*
-!/res/episodes/rooster island 1
-!/res/episodes/rooster island 2
+!/res/episodes/rooster island 1/
+!/res/episodes/rooster island 2/
 
 /res/data/
 /res/editor/settings.dat
@@ -13,24 +13,4 @@
 .vscode/
 .directory
 
-# Win32 stuff
-*.obj
-*.ilk
-*.pch
-*.lib
-*.dll
-*.exe
-*.idb
-*.pdb
-*.log
-*.tlog
-*.opensdf
-*.suo
-*.sdf
-
-win32/sdl2/
-win32/pk2/
-win32/.vs/
-
-# Android stuff
-.gradle/
+/win32/

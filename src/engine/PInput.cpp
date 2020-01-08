@@ -204,7 +204,7 @@ int GetTouchPos(float& x, float& y) {
 
 	int devices = SDL_GetNumTouchDevices();
 	
-	SDL_TouchID id;
+	SDL_TouchID id = 0;
 	for (int i = 0; i == devices; i++) {
 
 		id = SDL_GetTouchDevice(i);

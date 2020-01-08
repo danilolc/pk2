@@ -214,7 +214,7 @@ void Prototypes_get_ammo2(int i) {
 int  Prototypes_GetAll() {
 
 	char polku[PE_PATH_SIZE];
-	int viimeinen_proto;
+	int viimeinen_proto = -1;
 
 	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
 		if (strcmp(Game->map->protot[i], "") != 0) {
@@ -240,7 +240,7 @@ int  Prototypes_GetAll() {
 		}
 	}
 
-	next_free_prototype = viimeinen_proto+1; //??
+	next_free_prototype = viimeinen_proto + 1; //??
 
 	for (int i=0; i < MAX_PROTOTYYPPEJA; i++) {
 

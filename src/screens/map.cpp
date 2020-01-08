@@ -114,7 +114,7 @@ int PK_Draw_Map() {
 	for (int i = 0; i < Episode->level_count; i++) {
 		if (strcmp(Episode->levels_list[i].nimi,"")!=0 && Episode->levels_list[i].order > 0) {
 			
-			int type;
+			int type = -1;
 			if (Episode->levels_list[i].order == Episode->level)
 				type = 1;
 			if (Episode->levels_list[i].order > Episode->level)

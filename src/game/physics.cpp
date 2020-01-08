@@ -592,8 +592,8 @@ int Sprite_Movement(int i){
 	/* Blocks colision -                                                                     */
 	/*****************************************************************************************/
 
-	int palikat_x_lkm,
-	    palikat_y_lkm;
+	int palikat_x_lkm = -1,
+	    palikat_y_lkm = -1;
 	    //palikat_lkm;
 	u32 p;
 
@@ -842,10 +842,13 @@ int Sprite_Movement(int i){
 	/*****************************************************************************************/
 	/* If the sprite has suffered damage                                                     */
 	/*****************************************************************************************/
-
-	// Just fire can damage a invisible player
-	if (Player_Sprite->invisible != 0 && sprite.saatu_vahinko != 0 && sprite.saatu_vahinko_tyyppi != DAMAGE_FIRE &&
-		&sprite == Player_Sprite) {
+	
+	// If it is invisible, just these damages can injury it
+	if (sprite.saatu_vahinko != 0 && sprite.invisible != 0 && 
+		sprite.saatu_vahinko_tyyppi != DAMAGE_FIRE &&
+		sprite.saatu_vahinko_tyyppi != DAMAGE_COMPRESSION &&
+		sprite.saatu_vahinko_tyyppi != DAMAGE_DROP &&
+		sprite.saatu_vahinko_tyyppi != DAMAGE_ALL) {
 		
 		sprite.saatu_vahinko = 0;
 		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;

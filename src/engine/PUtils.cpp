@@ -170,12 +170,10 @@ std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 
 int CreateDir(const char *path, const char* dir){
 	
-	char complete_path[PE_PATH_SIZE];
-
-	strcpy(complete_path, path);
-	strcat(complete_path, dir);
-
-	return CreateDirectory(complete_path, NULL);
+	std::string complete_path(path);
+	complete_path += dir;
+	return CreateDirectory(complete_path.c_str(), NULL);
+	
 }
 
 #else
@@ -255,17 +253,19 @@ std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 
 int CreateDir(const char *path, const char* dir) {
 
-	std::string shell("mkdir -p \"");
+	/*std::string shell("mkdir -p \"");
 	
 	shell += path;
 	shell += dir;
 	shell += "\"";
 	system(shell.c_str());
 
-	printf("shell - %s\n", shell.c_str());
-	
-	return 0;
+	printf("shell - %s\n", shell.c_str());*/
 
+	std::string complete_path(path);
+	complete_path += dir;
+	return mkdir(complete_path.c_str(), 0700);
+	
 }
 
 //Scans directory to find file based on case

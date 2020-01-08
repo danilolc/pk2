@@ -9,8 +9,8 @@ OPT = -g
 #OPT = -O2
 
 #CXX = g++
-#CXXFLAGS += $(shell pkg-config sdl2 --cflags) $(shell pkg-config libzip --cflags) $(OPT) -std=gnu++17 -w
-#LDFLAGS += $(shell pkg-config sdl2 --libs) $(shell pkg-config libzip --libs) -lSDL2_mixer -lSDL2_image
+#CXXFLAGS += $(shell pkg-config libzip --cflags) $(shell pkg-config sdl2 --cflags) $(OPT) -std=gnu++17 -w
+#LDFLAGS += $(shell pkg-config libzip --libs) $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
 
 CXX = g++
 CXXFLAGS += $(shell pkg-config sdl2 --cflags) $(OPT) -std=gnu++17 -Wall -Wno-sign-compare
@@ -22,6 +22,7 @@ BUILD_DIR = build/
 
 PK2_SRC  = $(wildcard $(SRC_DIR)*.cpp) $(wildcard $(SRC_DIR)*/*.cpp)
 PK2_OBJ := $(basename $(PK2_SRC))
+PK2_OBJ := $(subst $(SRC_DIR), ,$(PK2_OBJ))
 PK2_OBJ := $(addsuffix .o, $(PK2_OBJ))
 PK2_OBJ := $(addprefix $(BUILD_DIR), $(PK2_OBJ))
 
@@ -43,7 +44,7 @@ $(PK2_BIN): $(PK2_OBJ)
 ###########################
 -include $(DEPENDENCIES)
 
-$(BUILD_DIR)%.o: %.cpp
+$(BUILD_DIR)%.o: $(SRC_DIR)%.cpp
 	@echo -Compiling $<
 	@mkdir -p $(dir $@) >/dev/null
 	@$(CXX) $(CXXFLAGS) -I$(SRC_DIR) -o $@ -c $<
