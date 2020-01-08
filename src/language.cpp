@@ -15,6 +15,7 @@ LANGUAGE PK_txt;
 
 const char* Language_Name() {
 
+	// it returns just a "c" on some systems
 	const char* locale = std::locale("").name().c_str();
 	
 	char loc[4];

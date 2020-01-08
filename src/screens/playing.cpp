@@ -721,7 +721,7 @@ int Screen_InGame(){
 				key_delay = 20;
 			}
 			
-			if (PInput::Keydown(PInput::DELETE)) {
+			if (PInput::Keydown(PInput::DEL)) {
 				Player_Sprite->energia = 0;
 			}
 

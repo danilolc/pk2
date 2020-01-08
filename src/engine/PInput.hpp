@@ -21,7 +21,7 @@ enum KEY {
 
 	ESCAPE,	RETURN,
 	BACK,	SPACE,
-	DELETE,	END,
+	DEL,	END,
 	TAB,
 
 	LALT,		RALT,

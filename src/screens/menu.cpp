@@ -476,7 +476,7 @@ void Draw_Menu_Name() {
 
 		if (key_delay == 0) {
 
-			if (PInput::Keydown(PInput::DELETE)) {
+			if (PInput::Keydown(PInput::DEL)) {
 				for (int c=menu_name_index;c<19;c++)
 					menu_name[c] = menu_name[c+1];
 				menu_name[19] = '\0';

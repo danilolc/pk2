@@ -126,9 +126,9 @@ bool Find(char* filename) {
 
 }
 
-std::vector<string> Scandir(const char* type, const char* dir, int max) {
+std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 	
-	std::vector<string> result;
+	std::vector<std::string> result;
     struct _finddata_t map_file;
 
 	char buffer[PE_PATH_SIZE];
@@ -169,8 +169,13 @@ std::vector<string> Scandir(const char* type, const char* dir, int max) {
 }
 
 int CreateDir(const char *path, const char* dir){
-	//CreateDirectory(directory, NULL); - TODO
-	return 0;
+	
+	char complete_path[PE_PATH_SIZE];
+
+	strcpy(complete_path, path);
+	strcat(complete_path, dir);
+
+	return CreateDirectory(complete_path, NULL);
 }
 
 #else

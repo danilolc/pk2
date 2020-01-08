@@ -16,7 +16,7 @@
 
 #include <SDL_rwops.h>
 
-#include <inttypes.h>
+#include <cinttypes>
 #include <cstring>
 
 int aste,
