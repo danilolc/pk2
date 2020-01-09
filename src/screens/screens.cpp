@@ -59,7 +59,7 @@ int Screen_First_Start() {
 
 	}
 	Load_Fonts(tekstit);
-	langlist = PUtils::Scandir(".txt", "language", 60);
+	langlist = PUtils::Scandir(".txt", "language");
 	
 	Search_Episodes();
 

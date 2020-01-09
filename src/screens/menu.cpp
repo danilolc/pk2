@@ -556,17 +556,19 @@ void Draw_Menu_Load() {
 		strcat(number,saves_list[i].name);
 
 		if (Draw_Menu_Text(true,number,100,150+my)) {
-			if (Game) {
-				delete Game;
-				Game = nullptr;
-			}
-			if (Episode) {
-				delete Episode;
-				Episode = nullptr;
-			}
+			if (!saves_list[i].empty) {
+				if (Game) {
+					delete Game;
+					Game = nullptr;
+				}
+				if (Episode) {
+					delete Episode;
+					Episode = nullptr;
+				}
 
-			Episode = new EpisodeClass(i);
-			next_screen = SCREEN_MAP;
+				Episode = new EpisodeClass(i);
+				next_screen = SCREEN_MAP;
+			}
 		}
 
 		if (strcmp(saves_list[i].episode," ") != 0) {

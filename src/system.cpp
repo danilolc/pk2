@@ -13,7 +13,6 @@
 int screen_width  = 800;
 int screen_height = 480;
 
-char game_path[PE_PATH_SIZE] = ".";
 char* data_path = NULL;
 
 int game_assets = -1;

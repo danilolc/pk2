@@ -122,7 +122,7 @@ void EpisodeClass::Load() {
 	
 	char path[PE_PATH_SIZE] = "";
 	this->Get_Dir(path);
-	std::vector<std::string> list = PUtils::Scandir(".map", path, EPISODI_MAX_LEVELS);
+	std::vector<std::string> list = PUtils::Scandir(".map", path);
 	this->level_count = list.size();
 
 	MapClass *temp = new MapClass();
@@ -221,15 +221,14 @@ EpisodeClass::~EpisodeClass() {
 
 }
 
-void EpisodeClass::Get_Dir(char *tiedosto) {
+void EpisodeClass::Get_Dir(char *path) {
 
-	char uusi_tiedosto[255];
+	char new_path[255];
 
-	strcpy(uusi_tiedosto, game_path);
-	strcat(uusi_tiedosto, PE_SEP "episodes" PE_SEP);
-	strcat(uusi_tiedosto, entry.name.c_str());
-	strcat(uusi_tiedosto, PE_SEP);
-	strcat(uusi_tiedosto, tiedosto);
-	strcpy(tiedosto, uusi_tiedosto);
+	strcpy(new_path, "episodes" PE_SEP);
+	strcat(new_path, entry.name.c_str());
+	strcat(new_path, PE_SEP);
+	strcat(new_path, path);
+	strcpy(path, new_path);
 
 }

@@ -10,6 +10,11 @@
 #include <string>
 #include <sys/stat.h>
 
+#ifdef __ANDROID__
+#include <android/asset_manager.h>
+#include <android/asset_manager_jni.h>
+#endif
+
 namespace PUtils {
 
 bool force_mobile = false;
@@ -18,8 +23,6 @@ bool force_mobile = false;
 
 int Setcwd() {
 
-	char path[PE_PATH_SIZE];
-	strcpy(path,"./");
 	return 0; //chdir(path);
 
 }
@@ -99,6 +102,35 @@ int Alphabetical_Compare(const char *a, const char *b) {
 	return 0;
 }
 
+std::vector<std::string> result_indexes;
+std::vector<std::vector<std::string>> results;
+
+std::vector<std::string>* get_result(const char* type, const char* dir) {
+
+	std::string index = type;
+	index += "$";
+	index += dir;
+
+	int size = result_indexes.size();
+
+	for (int i = 0; i < size; i++) {
+		if (result_indexes[i] == index)
+			return &results[i];
+	}
+	return nullptr;
+
+}
+
+void save_result(const char* type, const char* dir, std::vector<std::string>* result) {
+
+	std::string index = type;
+	index += "$";
+	index += dir;
+
+	result_indexes.push_back(index);
+	results.push_back(*result);
+
+}
 
 
 #ifdef _WIN32
@@ -126,7 +158,7 @@ bool Find(char* filename) {
 
 }
 
-std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
+std::vector<std::string> Scandir(const char* type, const char* dir) {
 	
 	std::vector<std::string> result;
     struct _finddata_t map_file;
@@ -152,7 +184,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 	
 	}
 
-	while (result.size() < max || max == -1 ) {
+	while (1) {
 
 		if( _findnext( hFile, &map_file ) != 0 ) //TODO - test if works
 			break;
@@ -180,6 +212,27 @@ int CreateDir(const char *path, const char* dir){
 
 #else
 
+const char* Get_Extension(const char* string) {
+
+	int len = strlen(string);
+	const char* end = string + len;
+	
+	for( int i = 0; i < len; i++ ) {
+
+		if (*(end - i) == '.' 
+			|| *(end - i) == '/'
+			|| *(end - i) == '\\') {
+
+			return end - i;
+
+		}
+
+	}
+
+	return string;
+
+}
+
 char* Get_Extension(char* string) {
 
 	int len = strlen(string);
@@ -201,7 +254,89 @@ char* Get_Extension(char* string) {
 
 }
 
-std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
+#ifdef __ANDROID__
+
+std::vector<std::string> Scandir(const char* type, const char* dir) {
+
+	std::vector<std::string>* res = get_result(type, dir);
+	if (res != nullptr) {
+		
+		printf("Got backup from \"%s\", \"%s\"\n", type, dir);
+		return *res;
+
+	}
+
+	JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
+	jobject activity = (jobject)SDL_AndroidGetActivity();
+	jclass clazz(env->GetObjectClass(activity));
+	jmethodID method_id = env->GetMethodID(clazz, "listDir", "(Ljava/lang/String;)[Ljava/lang/String;");
+
+	jstring param = env->NewStringUTF(dir);
+	jobjectArray array = (jobjectArray)env->CallObjectMethod(activity, method_id, param);
+
+	jsize size = env->GetArrayLength(array);
+
+	std::vector<std::string> result;
+
+	printf("Scanned %s, %i files\n", dir, size);
+
+	for (int i = 0; i < size; i++) {
+
+		jstring filename = (jstring)env->GetObjectArrayElement(array, i);
+		jboolean isCopy;
+		const char* file = env->GetStringUTFChars(filename, &isCopy);
+
+		if( file[0] != '.' ) {
+
+			if(type[0] == '/' && strstr(file, ".") == NULL) { //provisory way - consider file without '.' a directory
+
+				result.push_back(file);
+				continue;
+
+			} else if(type[0] == '\0') {
+			
+				result.push_back(file);
+				continue;
+			
+			} else {
+
+				const char* ext = Get_Extension(file);
+				if(strcmp(ext, type) == 0) {
+
+					result.push_back(file);
+					continue;
+
+				}
+			}
+		}
+
+		if (isCopy == JNI_TRUE) {
+    		env->ReleaseStringUTFChars(filename, file);
+		}
+	}
+
+
+	env->DeleteLocalRef(activity);
+	env->DeleteLocalRef(clazz);
+
+	printf("Scanned \"%s\" for \"%s\" and found %i matches\n", dir, type, (int)result.size());
+
+	save_result(type, dir, &result);
+	return result;
+
+}
+
+#else
+
+std::vector<std::string> Scandir(const char* type, const char* dir) {
+
+	std::vector<std::string>* res = get_result(type, dir);
+	if (res != nullptr) {
+		
+		printf("Got backup from \"%s\", \"%s\"\n", type, dir);
+		return *res;
+
+	}
 
 	std::vector<std::string> result;
 	struct dirent **namelist;
@@ -210,10 +345,6 @@ std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 	
 	if (numb == -1)
 		return result;
-
-	if (max != -1)
-		if (numb > max) 
-			numb = max;
 
 	for( int i = 0; i < numb; i++ ) {
 
@@ -249,9 +380,13 @@ std::vector<std::string> Scandir(const char* type, const char* dir, int max) {
 	free(namelist);
 
 	printf("Scanned \"%s\" for \"%s\" and found %i matches\n", dir, type, (int)result.size());
+
+	save_result(type, dir, &result);
 	return result;
 
 }
+
+#endif
 
 int CreateDir(const char *path, const char* dir) {
 
@@ -284,7 +419,7 @@ bool NoCaseFind(char *filename) {
 
 	strcpy(file, &filename[find+1]);
 
-	std::vector<std::string> list = Scandir("", dir, -1);
+	std::vector<std::string> list = Scandir("", dir);
 
 	int sz = list.size();
 	for(int i = 0; i < sz; i++) {
@@ -321,8 +456,8 @@ bool Find(char *filename) {
 	}
 
 	printf("PUtils - %s not found, trying different cAsE\n", filename);
-
 	return NoCaseFind(filename);
+	//return false;
 	
 }
 

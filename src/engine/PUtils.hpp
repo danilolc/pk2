@@ -23,7 +23,7 @@ void Show_Error(const char* txt);
 // ""  - all files and directories
 // "/" - directory
 // ".exe" - *.exe
-std::vector<std::string> Scandir(const char* type, const char* dir, int max); // TODO - use PFile::Path
+std::vector<std::string> Scandir(const char* type, const char* dir); // TODO - use PFile::Path
 
 void Force_Mobile();
 bool Is_Mobile();

@@ -17,7 +17,7 @@ static bool Alphabetical(episode_entry a, episode_entry b) {
 
 void Search_Episodes() {
 
-	std::vector<std::string> list = PUtils::Scandir("/", "episodes", 60);
+	std::vector<std::string> list = PUtils::Scandir("/", "episodes");
 	int size = list.size();
 
 	for (int i = 0; i < size; i++) {
@@ -31,7 +31,7 @@ void Search_Episodes() {
 
 	
 	
-	list = PUtils::Scandir(".zip", "data" PE_SEP "mapstore", 60);
+	list = PUtils::Scandir(".zip", "data" PE_SEP "mapstore");
 
 	for (std::string zip : list) {
 		

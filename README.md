@@ -70,9 +70,11 @@ This example starts the level13.map on dev mode:
 * Random SIGFAULT while playing
 * Can't load suomi.txt language
 * Make the mobile controls
-* Scan directory on android APK
+* Scan directory on android APK ?
 * Load directory from zip
 * Get PisteLog back
 * Traduct finnish language
 * Don't draw when it's not to draw
 * Better documentation
+* Android atexit
+* Frequency change
