@@ -8,6 +8,7 @@
 
 #include <cstring>
 #include <string>
+#include <locale>
 #include <sys/stat.h>
 
 #ifdef __ANDROID__
@@ -19,17 +20,13 @@ namespace PUtils {
 
 bool force_mobile = false;
 
-#ifdef __ANDROID__
-
 int Setcwd() {
 
-	return 0; //chdir(path);
+	#ifdef __ANDROID__
 
-}
-
-#else
-
-int Setcwd() {
+	return 0;
+	
+	#else
 
 	char* path = SDL_GetBasePath();
 	
@@ -42,9 +39,11 @@ int Setcwd() {
 
 	return chdir("../res");
 
+	#endif
+
 }
 
-#endif
+
 
 void Lower(char* string) {
 
@@ -135,6 +134,14 @@ void save_result(const char* type, const char* dir, std::vector<std::string>* re
 
 #ifdef _WIN32
 
+void GetLanguage(char* lang) {
+
+	lang[0] = '\0';
+	//WCHAR wcBuffer[16];
+	//LANGID lid = GetUserDefaultUILanguage();
+
+}
+
 bool Find(char* filename) {
 
 	printf("PUtils - Find %s\n", filename);
@@ -160,6 +167,14 @@ bool Find(char* filename) {
 
 std::vector<std::string> Scandir(const char* type, const char* dir) {
 	
+	std::vector<std::string>* res = get_result(type, dir);
+	if (res != nullptr) {
+		
+		printf("Got backup from \"%s\", \"%s\"\n", type, dir);
+		return *res;
+
+	}
+
 	std::vector<std::string> result;
     struct _finddata_t map_file;
 
@@ -174,6 +189,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 	long hFile = _findfirst(buffer, &map_file);
 	if (hFile == -1L) {
 
+		save_result(type, dir, &result);
 		return result;
 
 	}
@@ -196,6 +212,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 
 	_findclose( hFile );
 
+	save_result(type, dir, &result);
 	return result;
 
 }
@@ -256,6 +273,30 @@ char* Get_Extension(char* string) {
 
 #ifdef __ANDROID__
 
+void GetLanguage(char* lang) {
+
+	JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
+	jobject activity = (jobject)SDL_AndroidGetActivity();
+	jclass clazz(env->GetObjectClass(activity));
+	jmethodID method_id = env->GetMethodID(clazz, "getLocale", "()Ljava/lang/String;");
+
+	jstring language = (jstring)env->CallObjectMethod(activity, method_id);
+
+	jboolean isCopy;
+	const char* clang = env->GetStringUTFChars(language, &isCopy);
+
+	lang[0] = clang[0] | ' '; // lower
+	lang[1] = clang[1] | ' '; 
+	lang[2] = '\0';
+
+	if (isCopy == JNI_TRUE) {
+    	env->ReleaseStringUTFChars(language, clang);
+	}
+	env->DeleteLocalRef(activity);
+	env->DeleteLocalRef(clazz);
+
+}
+
 std::vector<std::string> Scandir(const char* type, const char* dir) {
 
 	std::vector<std::string>* res = get_result(type, dir);
@@ -275,7 +316,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 	jobjectArray array = (jobjectArray)env->CallObjectMethod(activity, method_id, param);
 
 	jsize size = env->GetArrayLength(array);
-
+	
 	std::vector<std::string> result;
 
 	printf("Scanned %s, %i files\n", dir, size);
@@ -327,6 +368,16 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 }
 
 #else
+
+void GetLanguage(char* lang) {
+
+	const char* locale = std::locale("").name().c_str();
+
+	lang[0] = locale[0] | ' '; // lower
+	lang[1] = locale[1] | ' '; 
+	lang[2] = '\0';
+
+}
 
 std::vector<std::string> Scandir(const char* type, const char* dir) {
 

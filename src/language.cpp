@@ -4,9 +4,10 @@
 //#########################
 #include "language.hpp"
 
+#include "engine/PUtils.hpp"
+
 #include <cstring>
 #include <string>
-#include <locale>
 
 std::vector<std::string> langlist;
 
@@ -15,14 +16,8 @@ LANGUAGE PK_txt;
 
 const char* Language_Name() {
 
-	// it returns just a "c" on some systems
-	const char* locale = std::locale("").name().c_str();
-	
 	char loc[4];
-
-	loc[0] = locale[0] | ' '; // lower
-	loc[1] = locale[1] | ' '; 
-	loc[2] = '\0';
+	PUtils::GetLanguage(loc);
 
 	printf("Searching language from code: %s\n", loc);
 

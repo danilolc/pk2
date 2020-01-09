@@ -15,6 +15,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.lang.Object;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 public class PK2Activity extends SDLActivity {
     private static final String LOG_TAG = "PK2";
@@ -39,6 +40,12 @@ public class PK2Activity extends SDLActivity {
         }
 
         return ret;
+
+    }
+
+    private String getLocale() {
+
+        return Locale.getDefault().getLanguage();
 
     }
 
