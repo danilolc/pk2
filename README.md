@@ -68,14 +68,11 @@ This example starts the level13.map on dev mode:
 * Jump frames when FPS is slow
 * Super mode -> energy = 0 on touch Pekka
 * Random SIGFAULT while playing
-* Can't load suomi.txt language
 * Load directory from zip
 * Get PisteLog back
 * Traduct finnish language
 * Don't draw when it's not to draw
 * Better documentation
 * Frequency change
-* Android atexit
-* Android mouse
-* Scan directory on android APK ?
+* SDL Android isn't sending SDL_QUIT event
 * Make the mobile controls

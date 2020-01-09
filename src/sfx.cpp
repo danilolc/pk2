@@ -15,7 +15,7 @@
 struct GameSFX {
 
     bool used;
-    u32 x, y;
+    u32 x, y; // TODO - Update sprite position
     int volume;
 
 };

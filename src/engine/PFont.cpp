@@ -4,6 +4,7 @@
 //#########################
 #include "engine/PFont.hpp"
 
+#include "engine/PUtils.hpp"
 #include "engine/PDraw.hpp"
 #include "engine/PLang.hpp"
 #include "engine/platform.hpp"
@@ -12,68 +13,17 @@
 #include <cstring>
 
 int PFont::init_charlist(){
-	int font_index[256], i;
 
-	for (i=0;i<256;i++) charlist[i] = -1;
-	for (i=0;i<char_count;i++) font_index[i] = i * char_w; //The x position of the char
+	const char* chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\xc5\xc4\xd60123456789.!?:-.+=()/#\\_%";
 
-	//TODO - create a {'A', 'B' ..} array
-	charlist['A'] = font_index[0];
-	charlist['B'] = font_index[1];
-	charlist['C'] = font_index[2];
-	charlist['D'] = font_index[3];
-	charlist['E'] = font_index[4];
-	charlist['F'] = font_index[5];
-	charlist['G'] = font_index[6];
-	charlist['H'] = font_index[7];
-	charlist['I'] = font_index[8];
-	charlist['J'] = font_index[9];
-	charlist['K'] = font_index[10];
-	charlist['L'] = font_index[11];
-	charlist['M'] = font_index[12];
-	charlist['N'] = font_index[13];
-	charlist['O'] = font_index[14];
-	charlist['P'] = font_index[15];
-	charlist['Q'] = font_index[16];
-	charlist['R'] = font_index[17];
-	charlist['S'] = font_index[18];
-	charlist['T'] = font_index[19];
-	charlist['U'] = font_index[20];
-	charlist['V'] = font_index[21];
-	charlist['W'] = font_index[22];
-	charlist['X'] = font_index[23];
-	charlist['Y'] = font_index[24];
-	charlist['Z'] = font_index[25];
-	charlist[197] = font_index[26];
-	charlist[196] = font_index[27];
-	charlist[214] = font_index[28];
-	charlist['0'] = font_index[29];
-	charlist['1'] = font_index[30];
-	charlist['2'] = font_index[31];
-	charlist['3'] = font_index[32];
-	charlist['4'] = font_index[33];
-	charlist['5'] = font_index[34];
-	charlist['6'] = font_index[35];
-	charlist['7'] = font_index[36];
-	charlist['8'] = font_index[37];
-	charlist['9'] = font_index[38];
-	charlist['.'] = font_index[39];
-	charlist['!'] = font_index[40];
-	charlist['?'] = font_index[41];
-	charlist[':'] = font_index[42];
-	charlist['-'] = font_index[43];
-	charlist[','] = font_index[44];
-	charlist['+'] = font_index[45];
-	charlist['='] = font_index[46];
-	charlist['('] = font_index[47];
-	charlist[')'] = font_index[48];
-	charlist['/'] = font_index[49];
-	charlist['#'] = font_index[50];
-	charlist['\\']= font_index[51];
-	charlist['_'] = font_index[52];
-	charlist['%'] = font_index[53];
-
+	for ( int i = 0; i < 256; i++ )
+		charlist[i] = -1;
+	
+	for ( int i = 0; i < sizeof(chars); i++)
+		charlist[(u8)chars[i]] = i * char_w;
+	
 	return 0;
+
 }
 int PFont::get_image(int x, int y, int img_source){
 	image_index = PDraw::image_cut(img_source, x, y, char_w * char_count, char_h * char_count);
@@ -86,14 +36,21 @@ int PFont::load(const char* file_path, const char* file) {
 	int font_index[256];
 	char chars[256];
 
-	PLang* param_file = new PLang();
-
 	strcpy(path,file_path);
 	strcat(path,file);
+	if (!PUtils::Find(path)) {
+	
+		return -1;
+	
+	}
+
+	PLang* param_file = new PLang();
 
 	if (!param_file->Read_File(path)){
+	
 		delete param_file;
 		return -1;
+	
 	}
 
 	//i = param_file->Hae_Indeksi("image width");
@@ -122,6 +79,12 @@ int PFont::load(const char* file_path, const char* file) {
 	strcat(path,param_file->Get_Text(i));
 
 	delete param_file;
+
+	if (!PUtils::Find(path)) {
+	
+		return -1;
+	
+	}
 
 	int temp_image = PDraw::image_load(path,false);
 	if (temp_image == -1) return -1;

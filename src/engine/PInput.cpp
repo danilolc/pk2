@@ -18,6 +18,7 @@
 namespace PInput {
 
 int mouse_x, mouse_y;
+int mouse_key;
 
 SDL_Haptic *Haptic = nullptr;
 
@@ -259,7 +260,7 @@ void UpdateMouse(bool keyMove, bool relative) {
 
 	if (!relative || PUtils::Is_Mobile()) {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
-		SDL_GetMouseState(&mouse_x, &mouse_y);
+		mouse_key = SDL_GetMouseState(&mouse_x, &mouse_y);
 
 		//Problem with fitScreen
 		mouse_x *= float(bw) / sw;
@@ -271,7 +272,7 @@ void UpdateMouse(bool keyMove, bool relative) {
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 
 		int delta_x, delta_y;
-		SDL_GetRelativeMouseState(&delta_x, &delta_y);
+		mouse_key = SDL_GetRelativeMouseState(&delta_x, &delta_y);
 
 		mouse_x += delta_x * 0.8;
 		mouse_y += delta_y * 0.8;
@@ -300,13 +301,13 @@ void UpdateMouse(bool keyMove, bool relative) {
 
 bool MouseLeft(){
 	
-	return SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT);
+	return mouse_key & SDL_BUTTON(SDL_BUTTON_LEFT);
 
 }
 
 bool MouseRight(){
 	
-	return SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_RIGHT);
+	return mouse_key & SDL_BUTTON(SDL_BUTTON_RIGHT);
 
 }
 

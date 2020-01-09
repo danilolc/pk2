@@ -61,7 +61,7 @@ static void sdl_show() {
 
 void init(int width, int height, const char* name, const char* icon) {
 	
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		printf("Unable to init SDL: %s\n", SDL_GetError());
 		return;
 	}

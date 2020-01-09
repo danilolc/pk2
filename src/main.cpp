@@ -55,7 +55,7 @@ void start_test(const char* arg) {
 
 }
 
-void quit(int ret) {
+void quit() {
 
 	Settings_Save();
 
@@ -75,9 +75,7 @@ void quit(int ret) {
 
 	Piste::terminate();
 
-	if (!ret) printf("Exited correctely\n");
-
-	exit(ret);
+	printf("PK2    - PK2 terminated.\n");
 
 }
 
@@ -143,7 +141,8 @@ int main(int argc, char *argv[]) {
 	if (data_path == NULL) {
 
 		printf("PK2    - Failed to init data path.\n");
-		quit(1);
+		quit();
+		return 1;
 
 	}
 
@@ -161,7 +160,8 @@ int main(int argc, char *argv[]) {
 	if (!Piste::is_ready()) {
 
 		printf("PK2    - Failed to init PisteEngine.\n");
-		quit(1);
+		quit();
+		return 1;
 
 	}
 
@@ -180,10 +180,8 @@ int main(int argc, char *argv[]) {
 	if(PK2_error) {
 		printf("PK2    - Error!\n");
 		PUtils::Show_Error(PK2_error_msg);
-		quit(1);
 	}
-	
-	quit(0);
 
+	quit();
 	return 0;
 }

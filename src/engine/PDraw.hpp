@@ -53,7 +53,7 @@ int   drawscreen_start(u8 *&pixels, u32 &pitch);
 int   drawscreen_end();
 int   drawimage_start(int index, u8 *&pixels, u32 &pitch);
 int   drawimage_end(int index);
-u8  blend_colors(u8 color, u8 colBack,int alpha);
+u8    blend_colors(u8 color, u8 colBack,int alpha);
 
 int   font_create(int image, int x, int y, int width, int height, int count);
 int   font_create(const char* path, const char* file); // TODO - use PFile::Path

@@ -20,6 +20,7 @@ int  CreateDir(const char *path, const char* dir);
 void Show_Error(const char* txt);
 
 void GetLanguage(char* lang);
+
 //type:
 // ""  - all files and directories
 // "/" - directory

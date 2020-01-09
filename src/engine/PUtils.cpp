@@ -464,11 +464,20 @@ bool NoCaseFind(char *filename) {
 	char dir[PE_PATH_SIZE];
 	char file[PE_PATH_SIZE];
 
-	int find = std::string(filename).find_last_of("/");
-	strcpy(dir, filename);
-	dir[find+1] = '\0';
+	int last = 0;
+	for (int i = 0; filename[i] != '\0'; i++) {
 
-	strcpy(file, &filename[find+1]);
+		if (filename[i] == '\\')
+			filename[i] = '/';
+		if (filename[i] == '/')
+			last = i;
+
+	}
+
+	strcpy(dir, filename);
+	dir[last+1] = '\0';
+
+	strcpy(file, &filename[last+1]);
 
 	std::vector<std::string> list = Scandir("", dir);
 

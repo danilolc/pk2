@@ -74,7 +74,7 @@ int Change_Frequency(int index, int channel, int freq) {
 
 int load_sfx(const char* filename) {
 
-	for( int i=0; i < MAX_SOUNDS; i++ )
+	for( int i = 0; i < MAX_SOUNDS; i++ )
 		if (chunks[i] == NULL) {
 
 			chunks[i] = Mix_LoadWAV(filename);
@@ -138,6 +138,8 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 	}
 
 	set_channel(channel, panoramic, volume);
+
+	printf("Playing channel %i with frequency %i\n", channel, freq);
 
 	int error = Mix_PlayChannel(channel, chunks[index], 0);
 	chunks[index]->abuf = bkp_buf;
