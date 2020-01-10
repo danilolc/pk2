@@ -30,7 +30,6 @@ bool test_level = false;
 bool dev_mode = false;
 
 bool doublespeed = false;
-bool skip_frame = false;
 
 float fps = 0;
 bool show_fps = false;

@@ -26,7 +26,6 @@ extern bool test_level;
 extern bool dev_mode;
 
 extern bool doublespeed; //TODO
-extern bool skip_frame;
 
 extern float fps;
 extern bool show_fps;

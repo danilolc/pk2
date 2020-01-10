@@ -225,6 +225,7 @@ int GameClass::Move_Blocks() {
 }
 
 int GameClass::Calculate_Tiles() {
+	
 	PK2BLOCK palikka;
 
 	for (int i=0;i<150;i++){

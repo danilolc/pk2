@@ -242,7 +242,7 @@ int Screen_ScoreCount_Init() {
 
 	PDraw::image_delete(bg_screen);
 	bg_screen = PDraw::image_load("gfx/menu.bmp", true);
-	PK_MenuShadow_Create(bg_screen, 640, 480, 30);
+	PDraw::create_shadow(bg_screen, 640, 480, 30);
 
 	map_new_record = false;
 	map_new_time_record = false;

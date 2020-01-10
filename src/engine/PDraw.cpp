@@ -460,6 +460,59 @@ u8 blend_colors(u8 color, u8 colBack, int alpha) {
 
 }
 
+int create_shadow(int index, u32 width, u32 height, int startx){
+	
+    u8* buffer = NULL;
+    u32 leveys;
+
+	if (drawimage_start(index, *&buffer, (u32&)leveys) != 0)
+		return 1;
+
+	if (width > leveys)
+		width = leveys;
+
+	height -= 2;
+	width  -= 2;
+
+	width += startx - 30;
+
+	double factor = 3;
+
+	for (u32 y = 35; y < height - 30; y++) {
+
+		u32 my = y * leveys;
+
+		for(u32 x = startx; x < width - 30; x++) {
+
+			u32 mx = x + my;
+
+			u8 color = buffer[mx];
+			
+            u8 color2 = 192; //Turquoise
+            color %= 32;
+
+			if (x == startx || x == width-31 || y == 35 || y == height-31)
+				color = int((double)color / (factor / 1.5));
+			else
+				color = int((double)color / factor);
+
+			color += color2;
+
+			buffer[mx] = color;
+
+		}
+
+		if (factor > 1.005)
+			factor = factor - 0.005;
+	}
+
+	if (drawimage_end(index) != 0)
+		return 1;
+
+	return 0;
+    
+}
+
 int font_create(int image, int x, int y, int char_w, int char_h, int count) {
 
     int index = findfreefont();

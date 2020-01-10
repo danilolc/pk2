@@ -70,8 +70,7 @@ This example starts the level13.map on dev mode:
 * Random SIGFAULT while playing
 * Load directory from zip
 * Traduct finnish language
-* Don't draw when it's not to draw
 * Better documentation
-* Frequency change
+* Audio on Windows/Android
 * SDL Android isn't sending SDL_QUIT event
 * Make the mobile controls

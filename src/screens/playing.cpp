@@ -28,7 +28,7 @@ int debug_drawn_sprites = 0;
 
 int palikka_animaatio = 0;
 
-int PK_Draw_InGame_BGSprites() {
+int Draw_InGame_BGSprites() {
 
 	double xl, yl, alku_x, alku_y, yk;
 	int i = 0;
@@ -112,7 +112,7 @@ int PK_Draw_InGame_BGSprites() {
 	}
 	return 0;
 }
-int PK_Draw_InGame_Sprites() {
+int Draw_InGame_Sprites() {
 	debug_sprites = 0;
 	debug_drawn_sprites = 0;
 	int stars, sx;
@@ -160,7 +160,7 @@ int PK_Draw_InGame_Sprites() {
 	return 0;
 }
 
-int PK_Draw_InGame_DebugInfo() {
+int Draw_InGame_DebugInfo() {
 	int vali, fy = 70;
 	char lukua[20];
 
@@ -232,7 +232,7 @@ int PK_Draw_InGame_DebugInfo() {
 	PDraw::set_xoffset(0);
 	return 0;
 }
-int PK_Draw_InGame_DevKeys() {
+int Draw_InGame_DevKeys() {
 
 	const char txt0[] = "dev mode";
 	int char_w = PDraw::font_write(fontti1, txt0, 0, screen_height - 10) / strlen(txt0);
@@ -281,7 +281,7 @@ int PK_Draw_InGame_DevKeys() {
 
 	return 0;
 }
-int PK_Draw_InGame_BG() {
+int Draw_InGame_BG() {
 
 	int pallarx = ( Game->camera_x % (640*3) ) / 3;
 	int pallary = ( Game->camera_y % (480*3) ) / 3;
@@ -326,7 +326,7 @@ int PK_Draw_InGame_BG() {
 	return 0;
 }
 
-int PK_Draw_InGame_Gifts() {
+int Draw_InGame_Gifts() {
 
 	int x,y;
 
@@ -341,7 +341,7 @@ int PK_Draw_InGame_Gifts() {
 
 	return 0;
 }
-int PK_Draw_InGame_Lower_Menu() {
+int Draw_InGame_Lower_Menu() {
 
 	char luku[16];
 	int vali = 0;
@@ -403,12 +403,12 @@ int PK_Draw_InGame_Lower_Menu() {
 	if (Game->item_pannel_x > 5)
 		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_items),15,screen_height-65);
 
-	PK_Draw_InGame_Gifts();
+	Draw_InGame_Gifts();
 
 	return 0;
 }
 
-int PK_Draw_InGame_UI(){
+int Draw_InGame_UI(){
 	char luku[16];
 	int vali = 20;
 	int my = 8;
@@ -480,75 +480,76 @@ int PK_Draw_InGame_UI(){
 	return 0;
 }
 
-int PK_Draw_InGame(){
+int Draw_InGame() {
+
 	char luku[16];
 	int vali = 20;
 
-	if (!skip_frame){
+	Draw_InGame_BG();
 
-		PK_Draw_InGame_BG();
+	if (Settings.bg_sprites)
+		Draw_InGame_BGSprites();
 
-		if (Settings.bg_sprites)
-			PK_Draw_InGame_BGSprites();
+	Particles_DrawBG(Game->camera_x, Game->camera_y);
 
-		Particles_DrawBG(Game->camera_x, Game->camera_y);
+	Game->map->Piirra_Taustat(Game->camera_x,Game->camera_y,false);
 
-		Game->map->Piirra_Taustat(Game->camera_x,Game->camera_y,false);
+	Draw_InGame_Sprites();
 
-		PK_Draw_InGame_Sprites();
+	Particles_DrawFront(Game->camera_x, Game->camera_y);
 
-		Particles_DrawFront(Game->camera_x, Game->camera_y);
+	Game->map->Piirra_Seinat(Game->camera_x,Game->camera_y, false);
 
-		Game->map->Piirra_Seinat(Game->camera_x,Game->camera_y, false);
+	if (Settings.draw_itembar)
+		Draw_InGame_Lower_Menu();
 
-		if (Settings.draw_itembar)
-			PK_Draw_InGame_Lower_Menu();
+	Fadetext_Draw();
 
-		Fadetext_Draw();
+	Draw_InGame_UI();
 
-		PK_Draw_InGame_UI();
+	if (draw_dubug_info)
+		Draw_InGame_DebugInfo();
+	else {
+		if (dev_mode)
+			Draw_InGame_DevKeys();
+		if (test_level)
+			PDraw::font_write(fontti1, "testing level", 0, 480 - 20);
+		if (show_fps) {
+			if (fps >= 100)
+				vali = PDraw::font_write(fontti1, "fps:", 570, 48);
+			else
+				vali = PDraw::font_write(fontti1, "fps: ", 570, 48);
+			fps = Piste::get_fps();
+			itoa((int)fps, luku, 10);
+			PDraw::font_write(fontti1, luku, 570 + vali, 48);
+		}
+	}
 
-		if (draw_dubug_info)
-			PK_Draw_InGame_DebugInfo();
-		else {
-			if (dev_mode)
-				PK_Draw_InGame_DevKeys();
-			if (test_level)
-				PDraw::font_write(fontti1, "testing level", 0, 480 - 20);
-			if (show_fps) {
-				if (fps >= 100)
-					vali = PDraw::font_write(fontti1, "fps:", 570, 48);
-				else
-					vali = PDraw::font_write(fontti1, "fps: ", 570, 48);
-				fps = Piste::get_fps();
-				itoa((int)fps, luku, 10);
-				PDraw::font_write(fontti1, luku, 570 + vali, 48);
-			}
+	if (Game->paused) {
+
+		PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.game_paused),screen_width/2-82,screen_height/2-9);
+
+	}
+
+	if (Game->level_clear) {
+
+		Wavetext_Draw(tekstit->Get_Text(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
+
+	} else if (Game->game_over) {
+	
+		if (Player_Sprite->energia < 1) {
+			
+			Wavetext_Draw(tekstit->Get_Text(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
+
+		} else if (Game->timeout < 1 && Game->has_time) {
+
+			Wavetext_Draw(tekstit->Get_Text(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
+		
 		}
 
-		if (Game->paused)
-			PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.game_paused),screen_width/2-82,screen_height/2-9);
-
-		if (Game->level_clear)
-			Wavetext_Draw(tekstit->Get_Text(PK_txt.game_clear),fontti2,screen_width/2-120,screen_height/2-9);
-		else
-			if (Game->game_over){
-				if (Player_Sprite->energia < 1)
-					Wavetext_Draw(tekstit->Get_Text(PK_txt.game_ko),fontti2,screen_width/2-90,screen_height/2-9-10);
-				else
-					if (Game->timeout < 1 && Game->has_time)
-						Wavetext_Draw(tekstit->Get_Text(PK_txt.game_timeout),fontti2,screen_width/2-67,screen_height/2-9-10);
-
-				Wavetext_Draw(tekstit->Get_Text(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
-			}
-	}
+		Wavetext_Draw(tekstit->Get_Text(PK_txt.game_tryagain),fontti2,screen_width/2-75,screen_height/2-9+10);
 	
-	if (skip_frame) Piste::ignore_frame();
-
-	if (doublespeed) skip_frame = !skip_frame;
-	else skip_frame = false;
-
-	palikka_animaatio = 1 + palikka_animaatio % 34;
+	}
 
 	return 0;
 }
@@ -561,10 +562,14 @@ int Screen_InGame_Init(){
 	PDraw::set_xoffset(0);
 
 	if (!Game->isStarted()) {
+
 		Game->Start();
 		degree = 0;
+	
 	} else {
+	
 		degree = degree_temp;
+	
 	}
 	
 	return 0;
@@ -636,6 +641,8 @@ int Update_Camera(){
 int Screen_InGame(){
 
 	MapClass_Animoi(degree, palikka_animaatio/7, Game->button1, Game->button2, Game->button3, false);
+	palikka_animaatio = 1 + palikka_animaatio % 34;
+
 	Update_Camera();
 	Update_GameSFX();
 
@@ -648,7 +655,21 @@ int Screen_InGame(){
 
 	}
 
-	PK_Draw_InGame();
+	static bool skip_frame = false;
+
+	if (!skip_frame) {
+
+		Draw_InGame();
+
+	}
+	else {
+
+		Piste::ignore_frame();
+
+	}
+	
+	if (doublespeed) skip_frame = !skip_frame;
+	else skip_frame = false;
 
 	Game->Move_Blocks();
 

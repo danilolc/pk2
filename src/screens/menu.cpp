@@ -60,61 +60,6 @@ uint langlistindex = 0;
 
 bool editing_name = false;
 
-int PK_MenuShadow_Create(int kbuffer, u32 kleveys, int kkorkeus, int startx){
-	u8* buffer = NULL;
-	u32 leveys;
-	u8 vari,/* vari2, vari3,*/ vari32;
-	u32 x, mx, my;
-	int y;
-	double kerroin;
-
-
-	if (PDraw::drawimage_start(kbuffer, *&buffer, (u32&)leveys) != 0)
-		return 1;
-
-	if (kleveys > leveys)
-		kleveys = leveys;
-
-	kkorkeus -= 2;
-	kleveys  -= 2;
-
-	kleveys += startx - 30;
-
-	kerroin = 3;//2.25;//2
-
-	//for (y=0;y<kkorkeus;y++)
-	for (y=35;y<kkorkeus-30;y++)
-	{
-		my = (y)*leveys;
-		//for(x=0;x<kleveys;x++)
-		for(x=startx;x<kleveys-30;x++)
-		{
-			mx = x+my;
-			vari   = buffer[mx];
-
-			vari32 = COLOR_TURQUOISE;//(vari>>5)<<5;
-			vari %= 32;
-
-			if (x == startx || x == kleveys-31 || y == 35 || y == kkorkeus-31)
-				vari = int((double)vari / (kerroin / 1.5));//1.25
-			else
-				vari = int((double)vari / kerroin);//1.25
-
-			vari += vari32;
-
-			buffer[mx] = vari;
-		}
-
-		if (kerroin > 1.005)
-			kerroin = kerroin - 0.005;
-	}
-
-	if (PDraw::drawimage_end(kbuffer) != 0)
-		return 1;
-
-	return 0;
-}
-
 int Draw_BGSquare(int left, int top, int right, int bottom, u8 pvari){
 	
 	if (Episode)
@@ -1189,7 +1134,7 @@ int Screen_Menu_Init() {
 		//	bg_screen = PDraw::image_new(screen_width, screen_height);
 		//}
 		//PDraw::image_snapshot(bg_screen); //TODO - take snapshot without text and cursor
-		PK_MenuShadow_Create(bg_screen, 640, 480, Settings.isWide? 110 : 30);
+		PDraw::create_shadow(bg_screen, 640, 480, Settings.isWide? 110 : 30);
 
 	}
 
