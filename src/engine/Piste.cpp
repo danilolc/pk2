@@ -119,7 +119,7 @@ void loop(int (*GameLogic)()) {
 			count = 0;
 		}
 
-		draw = true; // TODO - Set false if the game gets slow
+		draw = true;
 	}
 
 }

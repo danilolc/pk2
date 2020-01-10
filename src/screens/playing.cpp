@@ -26,8 +26,6 @@ bool draw_dubug_info = false;
 int debug_sprites = 0;
 int debug_drawn_sprites = 0;
 
-int palikka_animaatio = 0;
-
 int Draw_InGame_BGSprites() {
 
 	double xl, yl, alku_x, alku_y, yk;
@@ -640,6 +638,8 @@ int Update_Camera(){
 
 int Screen_InGame(){
 
+	static int palikka_animaatio = 0;
+
 	MapClass_Animoi(degree, palikka_animaatio/7, Game->button1, Game->button2, Game->button3, false);
 	palikka_animaatio = 1 + palikka_animaatio % 34;
 
@@ -668,12 +668,14 @@ int Screen_InGame(){
 
 	}
 	
+	//TODO - force 60/120 "fps"
 	if (doublespeed) skip_frame = !skip_frame;
 	else skip_frame = false;
 
 	Game->Move_Blocks();
 
-	if (!Game->paused){
+	if (!Game->paused) {
+
 		degree = 1 + degree % 360;//359;
 
 		if (Game->button1 > 0)
@@ -706,12 +708,15 @@ int Screen_InGame(){
 		}
 	}
 
-	if (Player_Sprite->energia < 1 && !Game->game_over){
+	if (Player_Sprite->energia < 1 && !Game->game_over) {
+
 		Game->game_over = true;
 		key_delay = 50; //TODO - reduce
+	
 	}
 
-	if (Game->level_clear || Game->game_over){
+	if (Game->level_clear || Game->game_over) {
+
 		if (Game->exit_timer > 1)
 			Game->exit_timer--;
 
@@ -730,7 +735,7 @@ int Screen_InGame(){
 		}
 	}
 
-	if (key_delay == 0){
+	if (key_delay == 0) {
 		if (!Game->game_over && !Game->level_clear) {
 			if (PInput::Keydown(Settings.control_open_gift)) {
 				Gifts_Use();
@@ -824,10 +829,9 @@ int Screen_InGame(){
 			}
 			if (PInput::Keydown(PInput::A)/* && key_delay == 0*/) {
 				//key_delay = 20;
-				for (int r = 1; r<6; r++)
-					//Particles_New(PARTICLE_SPARK, player->x + rand() % 10 - rand() % 10, player->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
-					Particles_New(PARTICLE_SPARK, Player_Sprite->x + rand() % 10 - rand() % 10, Player_Sprite->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
 				*Player_Sprite = SpriteClass(&Prototypes_List[0], 1, false, Player_Sprite->x, Player_Sprite->y);
+				for (int r = 1; r < 6; r++)
+					Particles_New(PARTICLE_SPARK, Player_Sprite->x + rand() % 10 - rand() % 10, Player_Sprite->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
 			}
 		}
 		if (PInput::Keydown(PInput::U))
