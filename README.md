@@ -69,7 +69,6 @@ This example starts the level13.map on dev mode:
 * Super mode -> energy = 0 on touch Pekka
 * Random SIGFAULT while playing
 * Load directory from zip
-* Get PisteLog back
 * Traduct finnish language
 * Don't draw when it's not to draw
 * Better documentation

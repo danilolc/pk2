@@ -5,6 +5,7 @@
 #include "game/spriteclass.hpp"
 
 #include "engine/PDraw.hpp"
+#include "engine/PLog.hpp"
 #include "engine/platform.hpp"
 
 #include <cstring>
@@ -630,9 +631,11 @@ int PrototypeClass::Lataa(const char *dir, const char *filename){
 
 	char versio[4];
 	SDL_RWops* file = SDL_RWFromFile(path, "r");
-	if (file == nullptr){
-		printf("PK2SPR - failed to open %s.\n", path);
+	if (file == nullptr) {
+
+		PLog::Write(PLog::ERROR, "PK2", "failed to open %s", path);
 		return 1;
+	
 	}
 
 	SDL_RWread(file, versio, 1, 4);

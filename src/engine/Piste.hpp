@@ -12,6 +12,7 @@
 #include "engine/PSound.hpp"
 #include "engine/PUtils.hpp"
 #include "engine/PLang.hpp"
+#include "engine/PLog.hpp"
 
 namespace Piste {
 

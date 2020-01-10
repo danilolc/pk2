@@ -51,7 +51,7 @@ void start_test(const char* arg) {
 	char* map_path = buffer + i + 1;
 	Game = new GameClass(map_path);
 
-	printf("PK2    - testing episode_path '%s' level '%s'\n", buffer, map_path);
+	PLog::Write(PLog::DEBUG, "testing episode_path '%s' level '%s'", buffer, map_path);
 
 }
 
@@ -74,8 +74,7 @@ void quit() {
 		SDL_free(data_path);
 
 	Piste::terminate();
-
-	printf("PK2    - PK2 terminated.\n");
+	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 terminated.");
 
 }
 
@@ -112,7 +111,6 @@ int main(int argc, char *argv[]) {
 			}
 			else {
 				i++;
-				printf("PK2    - Path set to %s\n", argv[i]);
 				chdir(argv[i]);
 				path_set = true;
 				continue;
@@ -127,12 +125,13 @@ int main(int argc, char *argv[]) {
 		}
 		else {
 			printf("Invalid arg\n");
-			exit(0);
+			exit(1);
 		}
 
 	}
 
-	printf("PK2 Started!\n");
+	PLog::Init(PLog::ALL, NULL);
+	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 started!");
 
 	if(!path_set)
 		PUtils::Setcwd();
@@ -140,13 +139,13 @@ int main(int argc, char *argv[]) {
 	data_path = SDL_GetPrefPath(NULL, GAME_NAME);
 	if (data_path == NULL) {
 
-		printf("PK2    - Failed to init data path.\n");
+		PLog::Write(PLog::FATAL, "PK2", "Failed to init data path");
 		quit();
 		return 1;
 
 	}
 
-	printf("Data path - %s\n", data_path);
+	PLog::Write(PLog::DEBUG, "PK2", "Data path - %s", data_path);
 	PUtils::CreateDir(data_path, NULL);
 	PUtils::CreateDir(data_path, "scores/");
 	PUtils::CreateDir(data_path, "mapstore/");
@@ -159,7 +158,7 @@ int main(int argc, char *argv[]) {
 	Piste::init(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp");
 	if (!Piste::is_ready()) {
 
-		printf("PK2    - Failed to init PisteEngine.\n");
+		PLog::Write(PLog::FATAL, "PK2", "Failed to init PisteEngine");
 		quit();
 		return 1;
 
@@ -178,8 +177,10 @@ int main(int argc, char *argv[]) {
 	Piste::loop(Screen_Loop); //The game loop
 
 	if(PK2_error) {
-		printf("PK2    - Error!\n");
+
+		PLog::Write(PLog::ERROR, "PK2", PK2_error_msg);
 		PUtils::Show_Error(PK2_error_msg);
+		
 	}
 
 	quit();

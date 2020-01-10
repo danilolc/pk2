@@ -8,7 +8,7 @@
 #include <SDL_image.h>
 
 #include "engine/platform.hpp"
-
+#include "engine/PLog.hpp"
 
 //TODO remove
 #include "engine/PInput.hpp"
@@ -83,14 +83,18 @@ int update(){
 			for(int j = 0; j < fingers; j++){
 
 				finger = SDL_GetTouchFinger(id, j);
-				if(finger == nullptr){
-					printf("Can't find finger %i - %s", j, SDL_GetError());
+				if(finger == nullptr) {
+
+					PLog::Write(PLog::ERROR, "PGui", SDL_GetError());
 					SDL_ClearError();
-				} else{
+				
+				} else {
+
 					int x = finger->x * screen_w;
 					int y = finger->y * screen_h;
 					if(x > gui->pos_x && x < gui->width+gui->pos_x && y > gui->pos_y && y < gui->height+gui->pos_y)
 						gui->pressed = true;
+					
 				}
 			}
 		}
@@ -130,7 +134,8 @@ int create(int x, int y, int w, int h, u8 alpha, const char* t_path, u32* key){
 	if(strcmp(t_path, "") != 0){
 		SDL_Surface* surface = IMG_Load(t_path);
 		if(surface == NULL){
-			printf("Can't load image. SDL Image: %s\n",IMG_GetError());
+			PLog::Write(PLog::ERROR, "PGui", IMG_GetError());
+			SDL_ClearError();
 			gui.set = false;
 			return -1;
 		}

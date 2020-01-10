@@ -48,11 +48,11 @@ int Screen_First_Start() {
 	tekstit = new PLang();
 	if (Load_Language(Settings.kieli) != 0) {
 
-		printf("PK2    - Could not find %s!\n", Settings.kieli);
+		PLog::Write(PLog::ERROR, "PK2", "Could not find %s!", Settings.kieli);
 		strcpy(Settings.kieli, "english.txt");
 		
 		if(Load_Language(Settings.kieli) != 0) {
-			printf("PK2    - Could not find the default language file!\n");
+			PLog::Write(PLog::FATAL, "PK2", "Could not find the default language file!");
 			PK2_Error("Error");
 			return -1;
 		}

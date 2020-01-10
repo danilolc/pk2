@@ -5,9 +5,11 @@
 #include "settings.hpp"
 
 #include "language.hpp"
+#include "system.hpp"
+
+#include "engine/PLog.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PUtils.hpp"
-#include "system.hpp"
 
 #include <SDL_rwops.h>
 
@@ -103,8 +105,10 @@ int Settings_Save() {
 	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
 
 	if (file == nullptr) {
-		printf("Error saving settings\n");
+
+		PLog::Write(PLog::ERROR, "PK2", "Can't save settings");
 		return 1;
+	
 	}
 	
 	SDL_RWwrite(file, SETTINGS_VERSION, 1, 4);

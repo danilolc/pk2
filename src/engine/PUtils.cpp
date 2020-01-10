@@ -4,6 +4,8 @@
 //#########################
 #include "engine/PUtils.hpp"
 
+#include "engine/PLog.hpp"
+
 #include <SDL.h>
 
 #include <cstring>
@@ -144,7 +146,7 @@ void GetLanguage(char* lang) {
 
 bool Find(char* filename) {
 
-	printf("PUtils - Find %s\n", filename);
+	PLog::Write(PLog::DEBUG, "PUtils", "Find %s", filename);
 
 	int sz = strlen(filename);
 
@@ -155,12 +157,12 @@ bool Find(char* filename) {
 
 	if (INVALID_FILE_ATTRIBUTES == GetFileAttributes(filename) && GetLastError() == ERROR_FILE_NOT_FOUND) {
 
-		printf("PUtils - %s not found\n", filename);
+		PLog::Write(PLog::INFO, "PUtils", "%s not found", filename);
 		return false;
 
 	}
 
-	printf("PUtils - Found on %s \n", filename);
+	PLog::Write(PLog::DEBUG, "PUtils", "Found on %s", filename);
 	return true;
 
 }
@@ -170,7 +172,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 	std::vector<std::string>* res = get_result(type, dir);
 	if (res != nullptr) {
 		
-		printf("Got backup from \"%s\", \"%s\"\n", type, dir);
+		PLog::Write(PLog::DEBUG, "PUtils", "Got backup from \"%s\", \"%s\"", type, dir);
 		return *res;
 
 	}
@@ -302,7 +304,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 	std::vector<std::string>* res = get_result(type, dir);
 	if (res != nullptr) {
 		
-		printf("Got backup from \"%s\", \"%s\"\n", type, dir);
+		PLog::Write(PLog::DEBUG, "PUtils", "Got backup from \"%s\", \"%s\"", type, dir);
 		return *res;
 
 	}
@@ -319,7 +321,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 	
 	std::vector<std::string> result;
 
-	printf("Scanned %s, %i files\n", dir, size);
+	PLog::Write(PLog::DEBUG, "PUtils", "Scanned %s, %i files", dir, size);
 
 	for (int i = 0; i < size; i++) {
 
@@ -360,7 +362,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 	env->DeleteLocalRef(activity);
 	env->DeleteLocalRef(clazz);
 
-	printf("Scanned \"%s\" for \"%s\" and found %i matches\n", dir, type, (int)result.size());
+	PLog::Write(PLog::DEBUG, "PUtils", "Scanned \"%s\" for \"%s\" and found %i matches", dir, type, (int)result.size());
 
 	save_result(type, dir, &result);
 	return result;
@@ -384,7 +386,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 	std::vector<std::string>* res = get_result(type, dir);
 	if (res != nullptr) {
 		
-		printf("Got backup from \"%s\", \"%s\"\n", type, dir);
+		PLog::Write(PLog::DEBUG, "PUtils", "Got backup from \"%s\", \"%s\"", type, dir);
 		return *res;
 
 	}
@@ -430,7 +432,7 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 	}
 	free(namelist);
 
-	printf("Scanned \"%s\" for \"%s\" and found %i matches\n", dir, type, (int)result.size());
+	PLog::Write(PLog::DEBUG, "PUtils", "Scanned \"%s\" for \"%s\" and found %i matches", dir, type, (int)result.size());
 
 	save_result(type, dir, &result);
 	return result;
@@ -441,16 +443,8 @@ std::vector<std::string> Scandir(const char* type, const char* dir) {
 
 int CreateDir(const char *path, const char* dir) {
 
-	/*std::string shell("mkdir -p \"");
-	
-	shell += path;
-	shell += dir;
-	shell += "\"";
-	system(shell.c_str());
-
-	printf("shell - %s\n", shell.c_str());*/
-
 	std::string complete_path(path);
+
 	if (dir)
 		complete_path += dir;
 	
@@ -490,14 +484,14 @@ bool NoCaseFind(char *filename) {
 
 			strcpy(filename, dir);
 			strcat(filename, name);
-			printf("PUtils - Found on %s \n", filename);
+			PLog::Write(PLog::DEBUG, "PUtils", "Found on %s", filename);
 
 			return true;
 		}
 
 	}
 
-	printf("PUtils - %s not found\n", filename);
+	PLog::Write(PLog::INFO, "PUtils", "%s not found", filename);
 
 	return false;
 
@@ -505,19 +499,19 @@ bool NoCaseFind(char *filename) {
 
 bool Find(char *filename) {
 
-	printf("PUtils - Find %s\n", filename);
+	PLog::Write(PLog::DEBUG, "PUtils", "Find %s", filename);
 
 	struct stat buffer;
 	if(stat(filename, &buffer) == 0) {
 
-		printf("PUtils - Found on %s \n", filename);
+		PLog::Write(PLog::DEBUG, "PUtils", "Found on %s", filename);
 		return true;
 
 	}
 
-	printf("PUtils - %s not found, trying different cAsE\n", filename);
+	PLog::Write(PLog::INFO, "PUtils", "%s not found, trying different cAsE", filename);
+	
 	return NoCaseFind(filename);
-	//return false;
 	
 }
 

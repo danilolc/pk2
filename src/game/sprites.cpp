@@ -6,6 +6,7 @@
 
 #include "engine/PSound.hpp"
 #include "engine/PUtils.hpp"
+#include "engine/PLog.hpp"
 
 #include "game/game.hpp"
 #include "episode/episodeclass.hpp"
@@ -226,8 +227,9 @@ int  Prototypes_GetAll() {
 			if (Prototypes_get(polku,Game->map->protot[i]) != 0) {
 
 				strcpy(polku, "sprites" PE_SEP);
-				if (Prototypes_get(polku,Game->map->protot[i]) != 0){
-					printf("PK2    - Can't load sprite %s. It will not appear.\n", Game->map->protot[i]);
+				if (Prototypes_get(polku,Game->map->protot[i]) != 0) {
+
+					PLog::Write(PLog::WARN, "PK2", "Can't load sprite %s. It will not appear", Game->map->protot[i]);
 					next_free_prototype++;
 				}
 

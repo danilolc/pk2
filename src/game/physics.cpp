@@ -617,10 +617,8 @@ int Sprite_Movement(int i){
 		for (y = 0; y < palikat_y_lkm; y++){
 			for (x = 0; x < palikat_x_lkm; x++) {
 				p = x + y*palikat_x_lkm;
-				if ( p < 300 )// && p>=0)//{
-					//if(sprite.pelaaja == 1) printf("%i\n",palikat_lkm);
+				if ( p < 300 )
 					Check_Blocks(sprite, Game->palikat[p]);
-				//}
 			}
 		}
 	}
@@ -1283,8 +1281,6 @@ int Sprite_Movement(int i){
 
 	if (sprite.x > PK2KARTTA_KARTTA_LEVEYS*32)
 		sprite.x = PK2KARTTA_KARTTA_LEVEYS*32;
-
-	//if(sprite.x != sprite_x) printf("%f, %f\n", sprite.x, sprite_x);
 
 	// If the sprite falls under the lower edge of the map
 	if (sprite.y > PK2KARTTA_KARTTA_KORKEUS*32 + sprite_korkeus) {

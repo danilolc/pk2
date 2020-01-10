@@ -10,6 +10,7 @@
 #include "system.hpp"
 #include "save.hpp"
 
+#include "engine/PLog.hpp"
 #include "engine/PUtils.hpp"
 
 #include <SDL_rwops.h>
@@ -71,8 +72,10 @@ int EpisodeClass::Save_Scores() {
 
 	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
 	if (file == nullptr) {
-		printf("Error saving scores\n");
+
+		PLog::Write(PLog::ERROR, "PK2", "Can't saving scores");
 		return 1;
+
 	}
 
 	SDL_RWwrite(file, "1.0", 1, 4);
@@ -178,7 +181,7 @@ EpisodeClass::EpisodeClass(int save) {
 
 		if (episodes[i].name.compare(saves_list[save].episode) == 0) {
 			if (set)
-				printf("Episode conflict on %s, choosing the first one", saves_list[save].episode);
+				PLog::Write(PLog::WARN, "PK2", "Episode conflict on %s, choosing the first one", saves_list[save].episode);
 			else {
 				this->entry = episodes[i];
 			}

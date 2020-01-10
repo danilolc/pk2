@@ -8,6 +8,7 @@
 #include "settings.hpp"
 #include "game/game.hpp"
 
+#include "engine/PLog.hpp"
 #include "engine/PSound.hpp"
 
 #include <cmath>
@@ -159,7 +160,7 @@ void Play_GameSFX(int sound, int volume, int x, int y, int freq, bool random_fre
         int channel = PSound::play_sfx(sound, vol, pan, freq);
         if (channel == -1) {
 
-		    printf("PK2     - Error playing sound\n");
+            PLog::Write(PLog::ERROR, "PK2", "Can't play sound");
             return;
 
         }
@@ -188,7 +189,7 @@ void Play_MenuSFX(int sound, int volume){
         
         if (channel == -1) {
         
-            printf("PK2     - Error playing menu sound\n");
+            PLog::Write(PLog::ERROR, "PK2", "Can't play menu sound");
             return;
         
         }

@@ -51,9 +51,11 @@ static void sdl_show() {
 
 	SDL_VERSION(&compiled);
 	SDL_GetVersion(&linked);
-	printf("We compiled against SDL version %d.%d.%d ...\n",
+	
+	PLog::Write(PLog::DEBUG, "Piste", "We compiled against SDL version %d.%d.%d ...",
 		compiled.major, compiled.minor, compiled.patch);
-	printf("But we are linking against SDL version %d.%d.%d.\n",
+	
+	PLog::Write(PLog::DEBUG, "Piste", "But we are linking against SDL version %d.%d.%d.",
        linked.major, linked.minor, linked.patch);
 	
 }
@@ -62,8 +64,10 @@ static void sdl_show() {
 void init(int width, int height, const char* name, const char* icon) {
 	
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-		printf("Unable to init SDL: %s\n", SDL_GetError());
+
+		PLog::Write(PLog::FATAL, "Piste", "Unable to init SDL: %s", SDL_GetError());
 		return;
+		
 	}
 
 	sdl_show();

@@ -13,6 +13,7 @@
 #include "engine/PDraw.hpp"
 #include "engine/PUtils.hpp"
 #include "engine/PInput.hpp"
+#include "engine/PLog.hpp"
 
 #include <SDL_rwops.h>
 
@@ -508,7 +509,7 @@ int MapClass::Lataa(char *polku, char *nimi){
 
 	int ok = 2;
 
-	printf("PK2MAP - Loading %s, version %s\n", path, versio);
+	PLog::Write(PLog::DEBUG, "PK2", "Loading %s, version %s", path, versio);
 
 	if (strcmp(versio,"1.3")==0) {
 		this->LataaVersio13(path);

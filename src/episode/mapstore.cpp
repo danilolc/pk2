@@ -3,6 +3,7 @@
 
 #include "engine/PUtils.hpp"
 #include "engine/PFile.hpp"
+#include "engine/PLog.hpp"
 
 #include <cstring>
 #include <algorithm>
@@ -43,7 +44,7 @@ void Search_Episodes() {
 	if (episodes.size() > 1)
 		std::sort(episodes.begin(), episodes.end(), Alphabetical);
 
-	printf("Found %i episodes\n", (int)episodes.size());
+	PLog::Write(PLog::DEBUG, "PK2", "Found %i episodes", (int)episodes.size());
 
 }
 

@@ -5,6 +5,7 @@
 #include "language.hpp"
 
 #include "engine/PUtils.hpp"
+#include "engine/PLog.hpp"
 
 #include <cstring>
 #include <string>
@@ -19,7 +20,7 @@ const char* Language_Name() {
 	char loc[4];
 	PUtils::GetLanguage(loc);
 
-	printf("Searching language from code: %s\n", loc);
+	PLog::Write(PLog::DEBUG, "PK2", "Searching language from code: %s", loc);
 
 	if(strcmp(loc, "bg") == 0)
 		return "bulgarian.txt";

@@ -7,6 +7,8 @@
 #include "episode/mapstore.hpp"
 #include "system.hpp"
 
+#include "engine/PLog.hpp"
+
 #include <SDL_rwops.h>
 
 #include <cstring>
@@ -52,7 +54,7 @@ int Save_All_Records() {
 	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
 	if (file == nullptr) {
 
-		printf("Error saving records\n");
+		PLog::Write(PLog::ERROR, "PK2", "Can't save records");
 		return 1;
 
 	}
@@ -80,8 +82,10 @@ int Load_SaveFile() {
 
 	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "rb");
 	if (file == nullptr){
-		printf("No save file\n");
+
+		PLog::Write(PLog::INFO, "PK2", "No save file\n");
 		return 1;
+	
 	}
 
 	SDL_RWread(file, versio, sizeof(versio), 1);

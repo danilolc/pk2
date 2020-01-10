@@ -6,6 +6,7 @@
 
 #include "engine/PFont.hpp"
 #include "engine/PGui.hpp"
+#include "engine/PLog.hpp"
 
 #include <algorithm>
 #include <vector>
@@ -109,40 +110,53 @@ int image_new(int w, int h){
 
     return index;
 }
-int image_load(const char* filename, bool getPalette){
-    int index, i;
-    SDL_Palette* pal;
+int image_load(const char* filename, bool getPalette) {
 
-    index = findfreeimage();
-    if (index==-1){
-        printf("Error - Got index -1");
+    int index = findfreeimage();
+
+    if (index == -1) {
+
+        PLog::Write(PLog::ERROR, "PDraw", "image_load got index -1");
         return -1;
+    
     }
 
     imageList[index] = SDL_LoadBMP(filename);
-    if(imageList[index]==NULL){
-        printf("PD     - Error loading %s\n",filename);
+
+    if (imageList[index] == NULL) {
+
+        PLog::Write(PLog::ERROR, "PDraw", "Couldn't load %s",filename);
         return -1;
+    
     }
-    if(imageList[index]->format->BitsPerPixel != 8){
-        printf("PD     - Failed to open %s, just 8bpp indexed images!\n",filename);
+
+    if( imageList[index]->format->BitsPerPixel != 8) {
+
+        PLog::Write(PLog::ERROR, "PDraw", "Failed to open %s, just 8bpp indexed images!",filename);
         image_delete(index);
         return -1;
+    
     }
+
     SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
 
-    if(getPalette){
-        pal = imageList[index]->format->palette;
-        for(i=0;i<256;i++)
+    if(getPalette) {
+
+        SDL_Palette* pal = imageList[index]->format->palette;
+        
+        for( int i = 0; i < 256; i++)
             game_palette->colors[i] = pal->colors[i];
+    
     }
 
     imageList[index]->userdata = (void*)imageList[index]->format->palette; //Put allocated pallete in userdata
     imageList[index]->format->palette = game_palette;
 
     return index;
+
 }
-int image_load(int& index, const char* filename, bool getPalette){
+
+int image_load(int& index, const char* filename, bool getPalette) {
     
     image_delete(index);
     index = image_load(filename, getPalette);
@@ -151,26 +165,37 @@ int image_load(int& index, const char* filename, bool getPalette){
 
 }
 
-int image_copy(int src_i, int dst_i){
-    if(src_i < 0 || dst_i < 0) return -1;
+int image_copy(int src_i, int dst_i) {
+
+    if(src_i < 0 || dst_i < 0)
+        return -1;
+    
     SDL_FillRect(imageList[dst_i], NULL, 255);
     SDL_BlitSurface(imageList[src_i], NULL, imageList[dst_i], NULL);
+    
     return 0;
+
 }
-int image_cut(int ImgIndex, int x, int y, int w, int h){ //Create a new image from a existing image
+
+int image_cut(int ImgIndex, int x, int y, int w, int h) {
+
     RECT area;
     area.x = x; area.y = y;
     area.w = (w <= 0) ? imageList[ImgIndex]->w : w; //If 0 get the entire image
     area.h = (h <= 0) ? imageList[ImgIndex]->h : h;
-    return image_cut(ImgIndex, area);
-}
-int image_cut(int ImgIndex, RECT area){
-    int index;
 
-    index = findfreeimage();
-    if (index==-1){
-        printf("PD     - PisteDraw has run out of free images!");
+    return image_cut(ImgIndex, area);
+
+}
+int image_cut(int ImgIndex, RECT area) {
+
+    int index = findfreeimage();
+
+    if (index == -1) {
+
+        PLog::Write(PLog::ERROR, "PDraw", "image_cut got index -1");
         return -1;
+    
     }
 
     imageList[index] = SDL_CreateRGBSurface(0, area.w, area.h, 8, 0, 0, 0, 0);
@@ -184,7 +209,9 @@ int image_cut(int ImgIndex, RECT area){
     SDL_BlitScaled(imageList[ImgIndex], (SDL_Rect*)&area, imageList[index], NULL);
 
     return index;
+
 }
+
 int image_clip(int index, int x, int y) {
 
     SDL_Rect dstrect;
@@ -195,29 +222,57 @@ int image_clip(int index, int x, int y) {
     SDL_BlitSurface(imageList[index], NULL, frameBuffer8, &dstrect);
 
     return 0;
-}
-int image_cliptransparent(int index, int x, int y, int alpha, int colorsum){
-    
-    return image_cutcliptransparent(index, 0, 0, imageList[index]->w, imageList[index]->h, 
-        x, y, alpha, colorsum);
 
 }
+
+int image_cliptransparent(int index, int x, int y, int alpha, int colorsum) {
+    
+    return image_cutcliptransparent(
+        index,
+        0,
+        0,
+        imageList[index]->w,
+        imageList[index]->h, 
+        x,
+        y,
+        alpha,
+        colorsum);
+
+}
+
 //TODO - keep a default order (src_x, src_y, src_w, src_h, dst_x, dst_y)
-int image_cutclip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala){ 
+int image_cutclip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala) {
+
     RECT src = {(u32)srcx, (u32)srcy, (u32)oikea-srcx, (u32)ala-srcy};
     RECT dst = {(u32)dstx, (u32)dsty, (u32)oikea-srcx, (u32)ala-srcy};
     image_cutclip(index, src, dst);
+
     return 0;
-}
-int image_cutclip(int index, RECT srcrect, RECT dstrect){
-    dstrect.x += x_offset;
-    SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
-    return 0;
+
 }
 
-int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, int colorsum){
-	return image_cutcliptransparent(index, src.x, src.y, src.w, src.h,
-	    dst.x, dst.y, alpha, colorsum);
+int image_cutclip(int index, RECT srcrect, RECT dstrect) {
+
+    dstrect.x += x_offset;
+    SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
+
+    return 0;
+
+}
+
+int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, int colorsum) {
+
+	return image_cutcliptransparent(
+        index, 
+        src.x, 
+        src.y, 
+        src.w, 
+        src.h,
+	    dst.x, 
+        dst.y, 
+        alpha, 
+        colorsum);
+    
 }
 
 int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src_h,
@@ -271,142 +326,204 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     return 0;
 
 }
-void image_getsize(int index, int& w, int& h){
+
+void image_getsize(int index, int& w, int& h) {
+
     w = imageList[index]->w;
     h = imageList[index]->h;
+
 }
-int image_fliphori(int index){
-    int i, h, w, p;
-    u8* pix_array;
+
+int image_fliphori(int index) {
 
     if(index < 0) return -1;
 
-    h = imageList[index]->h;
-    w = imageList[index]->w;
-    p = imageList[index]->pitch;
+    int h = imageList[index]->h;
+    int w = imageList[index]->w;
+    int p = imageList[index]->pitch;
 
     SDL_LockSurface(imageList[index]);
 
-    pix_array  = (u8*)(imageList[index]->pixels);
+    u8* pix_array  = (u8*)(imageList[index]->pixels);
 
-    for(i=0; i<h*p; i+=p)
-        std::reverse(&pix_array[i],&pix_array[i + w]);
+    for( int i = 0; i < h*p; i += p)
+        std::reverse(&pix_array[i], &pix_array[i + w]);
 
     SDL_UnlockSurface(imageList[index]);
+
     return 0;
+
 }
-int image_snapshot(int index){
-    SDL_FillRect(imageList[index], NULL, 0);
+int image_snapshot(int index) {
+
+    SDL_FillRect(imageList[index], NULL, 0); //needed?
+
     return SDL_BlitSurface(frameBuffer8, NULL, imageList[index], NULL);
+
 }
-int image_delete(int& index){
-    if(index < 0) return -1;
-    if (imageList[index] == NULL) return -1;
+
+int image_delete(int& index) {
+
+    if(index < 0)
+        return -1;
+    
+    if (imageList[index] == NULL)
+        return -1;
+    
     imageList[index]->format->palette = (SDL_Palette*)imageList[index]->userdata; //Return to the original pallete
+    
     SDL_FreeSurface(imageList[index]);
+
     imageList[index] = NULL;
     index = -1;
+    
     return 0;
+
 }
 
-int image_fill(int index, u8 color){
+int image_fill(int index, u8 color) {
+
     return image_fill(index, 0, 0, imageList[index]->w, imageList[index]->h, color);
+
 }
-int image_fill(int index, int posx, int posy, int oikea, int ala, u8 color){
+
+int image_fill(int index, int posx, int posy, int oikea, int ala, u8 color) {
+
     SDL_Rect r = {posx, posy, oikea-posx, ala-posy};
     return SDL_FillRect(imageList[index], &r, color);
+
 }
-int screen_fill(u8 color){
+
+int screen_fill(u8 color) {
+
     return SDL_FillRect(frameBuffer8, NULL, color);
+
 }
-int screen_fill(int posx, int posy, int oikea, int ala, u8 color){
+
+int screen_fill(int posx, int posy, int oikea, int ala, u8 color) {
+
     SDL_Rect r = {posx + x_offset, posy, oikea-posx, ala-posy};
     return SDL_FillRect(frameBuffer8, &r, color);
+
 }
-void set_mask(int x, int y, int w, int h){
+
+void set_mask(int x, int y, int w, int h) {
+
     SDL_Rect r = {x, y, w, h};
     SDL_SetClipRect(frameBuffer8, &r);
+
 }
 
-int drawscreen_start(u8* &pixels, u32 &pitch){
+int drawscreen_start(u8* &pixels, u32 &pitch) {
+
     pixels = (u8*)frameBuffer8->pixels;
     pitch = frameBuffer8->pitch;
+
     return SDL_LockSurface(frameBuffer8);
+
 }
-int drawscreen_end(){
+
+int drawscreen_end() {
+
     SDL_UnlockSurface(frameBuffer8);
     return 0;
+
 }
-int drawimage_start(int index, u8* &pixels, u32 &pitch){
+
+int drawimage_start(int index, u8* &pixels, u32 &pitch) {
+
     pixels = (u8*)imageList[index]->pixels;
     pitch = imageList[index]->pitch;
+
     return SDL_LockSurface(imageList[index]);
+
 }
-int drawimage_end(int index){
+
+int drawimage_end(int index) {
+
     SDL_UnlockSurface(imageList[index]);
     return 0;
-}
-u8 blend_colors(u8 color, u8 colBack, int alpha){
-    int result;
 
+}
+
+u8 blend_colors(u8 color, u8 colBack, int alpha) {
+    
     if(alpha > 100) alpha = 100;
     if(alpha < 0) alpha = 0;
 
-    result = color%32;
-    result = (result*alpha)/100;
-    result += colBack%32;
-    if(result>31) result = 31;
+    int result = color % 32;
+    result = (result*alpha) / 100;
+    result += colBack % 32;
+    if(result > 31) result = 31;
 
     return (u8)result;//+32*col
+
 }
 
-int font_create(int image, int x, int y, int char_w, int char_h, int count){
-    int index;
+int font_create(int image, int x, int y, int char_w, int char_h, int count) {
 
-    index = findfreefont();
+    int index = findfreefont();
     if (index == -1) {
-        printf("PD    - PisteDraw has run out of free fonts!");
+
+        PLog::Write(PLog::ERROR, "PDraw", "font_create got index -1");
         return -1;
+    
     }
 
     fontList[index] = new PFont(image, x, y, char_w, char_h, count);
     return index;
 
 }
-int font_create(const char* path, const char* file){
+
+int font_create(const char* path, const char* file) {
     
     int index = findfreefont();
-    if (index == -1){
-        printf("PD     - PisteDraw has run out of free fonts!");
+    if (index == -1) {
+
+        PLog::Write(PLog::ERROR, "PDraw", "font_create got index -1");
         return -1;
+    
     }
 
     fontList[index] = new PFont();
-    if (fontList[index]->load(path, file) == -1){
-        printf("PD     - PisteDraw can't load a font from file!\n");
+    if (fontList[index]->load(path, file) == -1) {
+
+        PLog::Write(PLog::ERROR, "PDraw", "Can't load a font from file!");
         delete fontList[index];
         return -1;
+    
     }
 
-    printf("PD     - Created font from %s%s - id %i\n", path, file, index);
+    PLog::Write(PLog::DEBUG, "PDraw", "Created font from %s%s - id %i", path, file, index);
     
     return index;
-}
-int font_write(int font_index, const char* text, int x, int y){
-    if (font_index < 0) return 1;
-    return fontList[font_index]->write(x, y, text);
-}
-int font_writealpha(int font_index, const char* text, int x, int y, u8 alpha){
-    return fontList[font_index]->write_trasparent(x + x_offset, y, text, alpha);
+
 }
 
-int set_filter(const char* filter){
-    if(SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,filter) == SDL_TRUE)
+int font_write(int font_index, const char* text, int x, int y) {
+
+    if (font_index < 0)
+        return 1;
+    
+    return fontList[font_index]->write(x, y, text);
+
+}
+
+int font_writealpha(int font_index, const char* text, int x, int y, u8 alpha) {
+
+    return fontList[font_index]->write_trasparent(x + x_offset, y, text, alpha);
+
+}
+
+int set_filter(const char* filter) {
+
+    if(SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, filter) == SDL_TRUE)
         return 0;
 
     return 1;
 }
-void set_fullscreen(bool set){
+
+void set_fullscreen(bool set) {
     #ifndef __ANDROID__
     if(set)
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -420,39 +537,50 @@ void set_fullscreen(bool set){
     adjust_screen();
     #endif
 }
-void adjust_screen(){
+
+void adjust_screen() {
+
     int w, h;
     SDL_GetWindowSize(window, &w, &h);
 
     float screen_prop = (float)w / h;
     float buff_prop   = (float)screen_width / screen_height;
+
     if (buff_prop > screen_prop) {
+
         screen_dest.w = w;
         screen_dest.h = (int)(h / buff_prop);
         screen_dest.x = 0;
         screen_dest.y = (int)((h - screen_dest.h) / 2);
-    }
-    else {
+    
+    }else {
+
         screen_dest.w = (int)(buff_prop * h);
         screen_dest.h = h;
         screen_dest.x = (int)((w - screen_dest.w) / 2);
         screen_dest.y = 0;
+
     }
 }
-void fit_screen(bool fit){
+
+void fit_screen(bool fit) {
+
     screen_fit = fit;
+
 }
+
 void change_resolution(int w, int h) {
+
     if (w == screen_width && h == screen_height)
         return;
 
     frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
     SDL_FreeSurface(frameBuffer8);
-
     
     frameBuffer8 = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
     frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
     frameBuffer8->format->palette = game_palette;
+
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
     SDL_FillRect(frameBuffer8, NULL, 255);
 
@@ -462,7 +590,7 @@ void change_resolution(int w, int h) {
     screen_width = w;
     screen_height = h;
     SDL_SetWindowSize(window, w, h);
-    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED , SDL_WINDOWPOS_CENTERED);
+    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     
     adjust_screen();
     SDL_RenderClear(renderer);
@@ -487,14 +615,21 @@ int get_buffer_size(int* w, int* h) {
 }
 
 void get_windowposition(int* x, int* y) {
+
     SDL_GetWindowPosition(window, x, y);
+
 }
 
 int get_xoffset() {
+
     return x_offset;
+
 }
+
 void set_xoffset(int x) {
+
     x_offset = x;
+
 }
 
 int init(int width, int height, const char* name, const char* icon) {
@@ -557,8 +692,11 @@ int init(int width, int height, const char* name, const char* icon) {
 
     ready = true;
     return 0;
+
 }
+
 void clear_fonts() {
+
     int size = fontList.size();
 
     for (int i = 0; i < size; i++) {
@@ -567,16 +705,15 @@ void clear_fonts() {
         fontList[i] = NULL;
     }
 }
+
 int terminate(){
     if (!ready) return -1;
 
-    int i, j;
-
     int size = imageList.size();
 
-    for (i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
         if (imageList[i] != NULL) {
-            j = i;
+            int j = i;
             image_delete(j);
         }
 
@@ -593,11 +730,14 @@ int terminate(){
 
     ready = false;
     return 0;
+
 }
-void update(bool draw){
+
+void update(bool draw) {
     if(!ready) return;
 
-    if(draw){
+    if(draw) {
+        
         SDL_Texture* texture;
         u8 alpha2 = (u8)(alpha*255/100);
 
@@ -616,18 +756,22 @@ void update(bool draw){
         SDL_RenderPresent(renderer);
 
         SDL_DestroyTexture(texture);
+    
     }
 
-    if (is_fading()){
+    if (is_fading()) {
+
         alpha += fade_speed;
         if(alpha < 0) alpha = 0;
         if(alpha > 255) alpha = 255;
+    
     }
 
     SDL_Rect r = {0, 0, x_offset, screen_height}; // Fill the unused borders
     SDL_FillRect(frameBuffer8, &r, 0);
     r.x = screen_width - x_offset;
     SDL_FillRect(frameBuffer8, &r, 0);
+
 }
 
 

@@ -41,19 +41,6 @@
 	#include <limits.h>
 #endif
 
-#ifdef __ANDROID__
-    #include <android/log.h>
-    #undef printf
-    #define printf(...) __android_log_print(ANDROID_LOG_DEBUG, "PK2", __VA_ARGS__)
-
-    #ifdef main
-        #undef main
-    #endif
-    extern "C" int SDL_main(int argc, char *argv[]);
-    #define main SDL_main
-
-#endif
-
 #ifdef _WIN32
     #define PE_SEP "\\"
 #else

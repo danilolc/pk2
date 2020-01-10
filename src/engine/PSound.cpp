@@ -4,6 +4,7 @@
 //#########################
 #include "engine/PSound.hpp"
 
+#include "engine/PLog.hpp"
 #include "engine/PUtils.hpp"
 
 #include <SDL_mixer.h>
@@ -114,7 +115,7 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 	int channel = find_channel();
 	if (channel == -1) {
 	
-		printf("PSound - Can't alloc channel\n");
+		PLog::Write(PLog::ERROR, "PSound", "play_sfx got index -1");
 		return -1;
 	
 	}
@@ -128,7 +129,7 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 		int error = Change_Frequency(index, channel, freq);
 		if (error != 0) {
 			
-			printf("PSound - Can't change frequency\n");
+			PLog::Write(PLog::ERROR, "PSound", "Can't change frequency");
 			chunks[index]->abuf = bkp_buf;
 			chunks[index]->alen = bkp_len;
 			return -1;
@@ -139,7 +140,7 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 
 	set_channel(channel, panoramic, volume);
 
-	printf("Playing channel %i with frequency %i\n", channel, freq);
+	//PLog::Write(PLog::DEBUG, "PSound", "Playing channel %i with frequency %i", channel, freq);
 
 	int error = Mix_PlayChannel(channel, chunks[index], 0);
 	chunks[index]->abuf = bkp_buf;
@@ -147,7 +148,7 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 
 	if (error == -1) {
 
-		printf("PSound - Can't play chunk\n");
+		PLog::Write(PLog::ERROR, "PSound", "Can't play chunk");
 		return -1;
 
 	}
@@ -199,18 +200,24 @@ int start_music(const char* filename) {
 	if(!strcmp(playingMusic, temp)) return 0;
 
 	music = Mix_LoadMUS(temp);
-	if (music == NULL){
-		printf("PS     - Music load error: %s\n",Mix_GetError());
+	if (music == NULL) {
+
+		PLog::Write(PLog::WARN, "PSound", Mix_GetError());
+		Mix_ClearError();
 		return -1;
+	
 	}
-	if (Mix_PlayMusic( music, -1) == -1){
-		printf("PS     - Music play error: %s\n",Mix_GetError());
+	if (Mix_PlayMusic(music, -1) == -1) {
+
+		PLog::Write(PLog::ERROR, "PSound", Mix_GetError());
+		Mix_ClearError();
 		return -1;
+	
 	}
 
 	Mix_VolumeMusic(mus_volume_now * MIX_MAX_VOLUME / 100);
 	
-	printf("PS     - Loaded %s\n",temp);
+	PLog::Write(PLog::DEBUG, "PSound", "Loaded %s", temp);
 	strcpy(playingMusic, temp);
 
 	return 0;
@@ -250,8 +257,10 @@ int init() {
 
 	//chunksize - game speed vs audio latency
 	if(Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, /*4096*/ 2048/*1024*//*512*/) < 0) {
-		printf("PS     - Unable to init Mixer: %s\n", Mix_GetError());
+
+		PLog::Write(PLog::FATAL, "PSound", "Unable to init Mixer: %s", Mix_GetError());
 		return -1;
+
 	}
 
 	Mix_Init(MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG);

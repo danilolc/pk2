@@ -11,6 +11,7 @@
 #include "episode/episodeclass.hpp"
 #include "settings.hpp"
 
+#include "engine/PLog.hpp"
 #include "engine/PSound.hpp"
 #include "engine/PDraw.hpp"
 
@@ -309,9 +310,11 @@ int GameClass::Open_Map() {
 	char path[PE_PATH_SIZE] = "";
 	Episode->Get_Dir(path);
 
-	if (map->Lataa(path, map_path) == 1){
-		printf("PK2    - Error loading map '%s' at '%s'\n", map_path, path);
+	if (map->Lataa(path, map_path) == 1) {
+
+		PLog::Write(PLog::ERROR, "PK2", "Can't load map '%s' at '%s'", map_path, path);
 		return 1;
+	
 	}
 
 	timeout = map->aika;
@@ -347,14 +350,14 @@ int GameClass::Open_Map() {
 		strcat(music_path, map->musiikki);
 		if (PSound::start_music(music_path) != 0) {
 
-			printf("Can't load '%s'. ", music_path);
+			PLog::Write(PLog::INFO, "PK2", "Can't load '%s'", music_path);
 			strcpy(music_path, "music" PE_SEP);
 			strcat(music_path, map->musiikki);
-			printf("Trying '%s'.\n", music_path);
+			PLog::Write(PLog::INFO, "PK2", "Trying '%s'", music_path);
 
 			if (PSound::start_music(music_path) != 0) {
 
-				printf("Can't load '%s'. Trying 'music" PE_SEP "song01.xm'.\n", music_path);
+				PLog::Write(PLog::WARN, "PK2", "Can't load '%s'. Trying 'music" PE_SEP "song01.xm'", music_path);
 
 				if (PSound::start_music("music" PE_SEP "song01.xm") != 0) {
 					PK2_Error("Can't find song01.xm");
