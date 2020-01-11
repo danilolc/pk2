@@ -12,9 +12,9 @@
 #include <cmath>
 #include <cstring>
 
-int PFont::init_charlist(){
+int PFont::init_charlist() {
 
-	const char* chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\xc5\xc4\xd60123456789.!?:-.+=()/#\\_%";
+	const char* chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "\xc5\xc4\xd6" "0123456789.!?:-.+=()/#\\_%";
 
 	for ( int i = 0; i < 256; i++ )
 		charlist[i] = -1;
@@ -25,10 +25,14 @@ int PFont::init_charlist(){
 	return 0;
 
 }
-int PFont::get_image(int x, int y, int img_source){
+
+int PFont::get_image(int x, int y, int img_source) {
+
 	image_index = PDraw::image_cut(img_source, x, y, char_w * char_count, char_h * char_count);
 	return 0;
+
 }
+
 int PFont::load(const char* file_path, const char* file) {
 
 	char path[128];
@@ -102,9 +106,11 @@ int PFont::load(const char* file_path, const char* file) {
 		charlist[(u8)(chars[i]&~' ')] = font_index[i];
 
 	return 0;
+
 }
 
-int PFont::write(int posx, int posy, const char *text){
+int PFont::write(int posx, int posy, const char *text) {
+	
 	int i = 0, i2;
 	int ix;
 	char curr_char;
@@ -129,7 +135,8 @@ int PFont::write(int posx, int posy, const char *text){
 
 	return((i-1)*char_w);
 }
-int PFont::write_trasparent(int posx, int posy, const char* text, int alpha){
+
+int PFont::write_trasparent(int posx, int posy, const char* text, int alpha) {
 
 	u8 *back_buffer, *txt_buffer;
 	u32 back_w, txt_w;
@@ -187,20 +194,28 @@ int PFont::write_trasparent(int posx, int posy, const char* text, int alpha){
 	return( (i-1) * char_w );
 }
 
-PFont::PFont(int img_source, int x, int y, int width, int height, int count){
+PFont::PFont(int img_source, int x, int y, int width, int height, int count) {
+
 	char_w = width;
 	char_h = height;
 	char_count = count;
 
 	this->get_image(x, y, img_source);
 	this->init_charlist();
+
 }
-PFont::PFont(){
+
+PFont::PFont() {
+
 	char_w = 0;
 	char_h = 0;
 	char_count = 0;
+
 }
-PFont::~PFont(){
+
+PFont::~PFont() {
+
 	if(image_index != -1)
 		PDraw::image_delete(image_index);
+
 }

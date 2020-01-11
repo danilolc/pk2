@@ -176,15 +176,18 @@ int PK_Draw_Map() {
 				PDraw::image_cutclip(game_assets,info_x-3,info_y+26,473,0,607,121);
 				PDraw::font_write(fontti1,Episode->levels_list[i].nimi,info_x,info_y+30);
 
-				if (Episode->scores.best_score[i] > 0) {
-					PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_player),info_x,info_y+50,75);
+				if (Episode->scores.best_score[i] > 0) { 
+					
+                    PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_player),info_x,info_y+50,75);
 					PDraw::font_write(fontti1,Episode->scores.top_player[i],info_x,info_y+62);
 					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_hiscore),info_x,info_y+74,75);
 					ltoa(Episode->scores.best_score[i],luku,10);
 					PDraw::font_write(fontti1,luku,info_x+vali,info_y+75);
-				}
+				
+                }
 
-				if (Episode->scores.best_time[i] > 0) {
+				if (Episode->scores.best_time[i] != 0) { //TODO - Find a better way to know if score has time
+
 					PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_fastest_player),info_x,info_y+98,75);
 					PDraw::font_write(fontti1,Episode->scores.fastest_player[i],info_x,info_y+110);
 
@@ -202,8 +205,11 @@ int PK_Draw_Map() {
 					itoa(min,luku,10);
 					vali += PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);
 					vali += PDraw::font_write(fontti1,":",info_x+vali,info_y+122);
+                    if (sek < 10)
+                        vali += PDraw::font_write(fontti1,"0",info_x+vali,info_y+122);
 					itoa(sek,luku,10);
 					PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);
+
 				}
 			}
 		}

@@ -104,7 +104,6 @@ int Screen_Intro_Init() {
 	PSound::set_musicvolume(Settings.music_max_volume);
 
 	intro_counter = 0;
-	//siirry_pistelaskusta_karttaan = false;
 
 	PDraw::fade_in(PDraw::FADE_FAST);
 

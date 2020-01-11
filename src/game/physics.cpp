@@ -1763,22 +1763,24 @@ int BonusSprite_Movement(int i){
 
 			if (sprite.Onko_AI(AI_BONUS_AIKA)) {
 				
-				
 				float increase_time = sprite.tyyppi->latausaika;
 
 				Game->increase_time += increase_time;
 
 				increase_time *= float(TIME_FPS) / 60;
+                int min = int(increase_time / 60);
+                int sek = int(increase_time) % 60;
+				
+				char min_c[8], sek_c[8];
+                itoa(min, min_c, 8);
+				itoa(sek, sek_c, 8);
 
-				char min[6], sek[6];
-				itoa(int(increase_time / 60), min, 6);
-				itoa(int(increase_time) % 60, sek, 6);
-
-				//TODO - 0:01, not 0:1
-				char luku[10];
-				strcpy(luku, min);
+				char luku[8];
+				strcpy(luku, min_c);
 				strcat(luku, ":");
-				strcat(luku, sek);
+                if (sek < 10)
+                    strcat(luku, "0");
+				strcat(luku, sek_c);
 				Fadetext_New(fontti1,luku,(int)sprite.x-15,(int)sprite.y-8,100);
 				
 			}

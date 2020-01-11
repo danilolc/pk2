@@ -21,7 +21,7 @@
 
 #include <cstring>
 
-bool siirry_pistelaskusta_karttaan = false;
+bool going_to_map = false;
 
 int counting_phase = 0;
 int counting_delay = 0;
@@ -219,7 +219,7 @@ int Draw_ScoreCount() {
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.score_screen_continue),15,430)) {
 
-		siirry_pistelaskusta_karttaan = true;
+		going_to_map = true;
 		PSound::set_musicvolume(0);
 		PDraw::fade_out(PDraw::FADE_SLOW);
 
@@ -287,7 +287,7 @@ int Screen_ScoreCount_Init() {
 
 	PSound::set_musicvolume(Settings.music_max_volume);
 
-	siirry_pistelaskusta_karttaan = false;
+	going_to_map = false;
 
 	PDraw::fade_in(PDraw::FADE_FAST);
 
@@ -375,7 +375,7 @@ int Screen_ScoreCount() {
 
 			if(counting_phase == 6) {
 
-				siirry_pistelaskusta_karttaan = true;
+				going_to_map = true;
 				PDraw::fade_out(PDraw::FADE_SLOW);
 				PSound::set_musicvolume(0);
 				key_delay = 20;
@@ -404,7 +404,7 @@ int Screen_ScoreCount() {
 		}
 	}
 
-	if (siirry_pistelaskusta_karttaan && !PDraw::is_fading()){
+	if (going_to_map && !PDraw::is_fading()){
 
 		if (Game->level_id == EPISODI_MAX_LEVELS - 1) {
 

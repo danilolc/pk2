@@ -92,7 +92,6 @@ class GameClass {
 
 extern GameClass* Game;
 
-/**/
+// TODO - remove
 bool Draw_Menu_Text(bool active, const char *teksti, int x, int y);
-int MenuShadow_Create(int kbuffer, u32 kleveys, int kkorkeus, int startx);
-/**/
+//
