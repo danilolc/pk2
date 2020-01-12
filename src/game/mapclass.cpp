@@ -538,11 +538,8 @@ int MapClass::Lataa(char *polku, char *nimi){
 	return(ok);
 }
 
-int MapClass::Lataa_Pelkat_Tiedot(char *polku, char *nimi){
-	char path[PE_PATH_SIZE];
-	strcpy(path, polku);
-	strcat(path, nimi);
-
+int MapClass::Load_Plain_Data(PFile::Path path){
+	
 	char versio[8];
 
 	SDL_RWops* file = SDL_RWFromFile(path, "r");

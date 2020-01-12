@@ -93,12 +93,11 @@ void EpisodeClass::Load_Info() {
 
 	PLang* temp;
 
-	char infofile[PE_PATH_SIZE] = "infosign.txt";
+	PFile::Path infofile = PFile::Path(this->Get_Dir(), "infosign.txt");
 	char otsikko[] = "info00";
 	int indeksi1, indeksi2, i;
 
 	temp = new PLang();
-	this->Get_Dir(infofile);
 
 	if (PUtils::Find(infofile)){
 		if (temp->Read_File(infofile)){
@@ -122,19 +121,21 @@ void EpisodeClass::Load_Info() {
 
 void EpisodeClass::Load() {
 	
-	int i = 0;
-	
-	char path[PE_PATH_SIZE] = "";
-	this->Get_Dir(path);
-	std::vector<std::string> list = PFile::Path(path).scandir(".map"); //TODO --
+	if (entry.is_zip)
+		this->source_zip = PFile::OpenZip(data_path + "mapstore" + PE_SEP + entry.zipfile);
+
+	PFile::Path path = this->Get_Dir();
+	std::vector<std::string> list = path.scandir(".map");
 	this->level_count = list.size();
 
 	MapClass *temp = new MapClass();
 
-	for (i = 0; i < this->level_count; i++) {
+	for (int i = 0; i < this->level_count; i++) {
 
-		strcpy(this->levels_list[i].tiedosto, list[i].c_str());
-		if (temp->Lataa_Pelkat_Tiedot(path, this->levels_list[i].tiedosto) == 0) {
+		char* mapname = this->levels_list[i].tiedosto;
+		strcpy(mapname, list[i].c_str());
+
+		if (temp->Load_Plain_Data(PFile::Path(path, mapname)) == 0) {
 
 			strcpy(this->levels_list[i].nimi, temp->nimi);
 			this->levels_list[i].x = temp->x;//   142 + i*35;
@@ -154,7 +155,7 @@ void EpisodeClass::Load() {
 	while (!stop){
 		stop = true;
 
-		for (i = 0; i < this->level_count - 1; i++) {
+		for (int i = 0; i < this->level_count - 1; i++) {
 
 			if (this->levels_list[i].order > this->levels_list[i+1].order) {
 
@@ -225,14 +226,11 @@ EpisodeClass::~EpisodeClass() {
 
 }
 
-void EpisodeClass::Get_Dir(char *path) {
+PFile::Path EpisodeClass::Get_Dir() {
 
-	char new_path[255];
-
-	strcpy(new_path, "episodes" PE_SEP);
-	strcat(new_path, entry.name.c_str());
-	strcat(new_path, PE_SEP);
-	strcat(new_path, path);
-	strcpy(path, new_path);
+	if (this->entry.is_zip) {
+		return PFile::Path(this->source_zip, this->entry.name);
+	
+	return PFile::Path(std::string("episodes") + PE_SEP + entry.name);
 
 }

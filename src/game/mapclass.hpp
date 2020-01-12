@@ -110,8 +110,8 @@ class MapClass
 
 	MapClass &operator = (const MapClass &kartta);	//Sijoitusoperaattori
 
-	int Lataa(char *polku, char *nimi);		// Lataa kartta
-	int Lataa_Pelkat_Tiedot(char *polku, char *nimi);	// Lataa kartta ilman grafiikoita
+	int Lataa(PFile::Path path);		// Lataa kartta
+	int Load_Plain_Data(PFile::Path path);	// Lataa kartta ilman grafiikoita
 
 	int Tallenna(char *filename);	// Save map
 	void Tyhjenna();				// clean map

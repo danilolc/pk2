@@ -7,6 +7,7 @@
 #include "episode/mapstore.hpp"
 
 #include "engine/platform.hpp"
+#include "engine/PFile.hpp"
 
 const int EPISODI_MAX_LEVELS = 100; //50;
 const int MAX_EPISODEJA	= 300;
@@ -39,6 +40,7 @@ class EpisodeClass {
 	public:
 	
 		episode_entry entry;
+		PFile::Zip* source_zip;
 		
 		char player_name[20] = " ";
 		u32 player_score = 0;
@@ -56,7 +58,7 @@ class EpisodeClass {
 
 		void Load_Info();
 
-		void Get_Dir(char *tiedosto);
+		PFile::Path Get_Dir();
 
 		int  Open_Scores();
 		int  Save_Scores();

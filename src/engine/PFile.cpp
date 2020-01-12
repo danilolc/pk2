@@ -67,7 +67,21 @@ Path::Path(Zip* zip_file, std::string path) {
 
 }
 
+Path::Path(Path path, std::string file) {
+
+    *this = path;
+
+	this->Add(file);
+
+}
+
 Path::~Path() {
+
+}
+
+void Path::Add(std::string path) {
+
+	this->path += path;
 
 }
 
@@ -134,8 +148,6 @@ std::vector<std::string> scan_zip(Zip* zip_file, const char* path, const char* t
 
 			std::string filename(st.name + path_size);
 			filename = filename.substr(0, filename.find("/"));
-
-			printf("%s, %i\n", filename.c_str(), filename.size());
 
 			if(filename.size() == 0)
 				continue;

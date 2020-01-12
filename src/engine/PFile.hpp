@@ -16,6 +16,7 @@ class Path {
 
     Path(std::string path);
     Path(Zip* zip_file, std::string path);
+    Path(Path path, std::string file);
 
     //type:
     // ""  - all files and directories
@@ -24,6 +25,8 @@ class Path {
     std::vector<std::string> scandir(const char* type);
 
     ~Path();
+
+    void Add(std::string path);
 
     private:
 
