@@ -16,16 +16,10 @@ void Lower(char* string);
 void RemoveSpace(char* string);
 bool Find(char *filename); // TODO - use PFile::Path
 
-int  CreateDir(const char *path, const char* dir);
+int  CreateDir(std::string path);
 void Show_Error(const char* txt);
 
 void GetLanguage(char* lang);
-
-//type:
-// ""  - all files and directories
-// "/" - directory
-// ".exe" - *.exe
-std::vector<std::string> Scandir(const char* type, const char* dir); // TODO - use PFile::Path
 
 void Force_Mobile();
 bool Is_Mobile();

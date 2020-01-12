@@ -69,12 +69,9 @@ void quit() {
 	
 	if(tekstit)
 		delete tekstit;
-	
-	if(data_path)
-		SDL_free(data_path);
 
 	Piste::terminate();
-	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 terminated.");
+	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 terminated");
 
 }
 
@@ -136,8 +133,8 @@ int main(int argc, char *argv[]) {
 	if(!path_set)
 		PUtils::Setcwd();
 
-	data_path = SDL_GetPrefPath(NULL, GAME_NAME);
-	if (data_path == NULL) {
+	char* data_path_p = SDL_GetPrefPath(NULL, GAME_NAME);
+	if (data_path_p == NULL) {
 
 		PLog::Write(PLog::FATAL, "PK2", "Failed to init data path");
 		quit();
@@ -145,10 +142,13 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	PLog::Write(PLog::DEBUG, "PK2", "Data path - %s", data_path);
-	PUtils::CreateDir(data_path, NULL);
-	PUtils::CreateDir(data_path, "scores/");
-	PUtils::CreateDir(data_path, "mapstore/");
+	data_path = data_path_p;
+	SDL_free(data_path_p);
+
+	PLog::Write(PLog::DEBUG, "PK2", "Data path - %s", data_path.c_str());
+	PUtils::CreateDir(data_path);
+	PUtils::CreateDir(data_path + "scores/");
+	PUtils::CreateDir(data_path + "mapstore/");
 
 	Settings_Open();
 

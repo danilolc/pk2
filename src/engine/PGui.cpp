@@ -10,15 +10,10 @@
 #include "engine/platform.hpp"
 #include "engine/PLog.hpp"
 
-//TODO remove
-#include "engine/PInput.hpp"
-
-
 namespace PGui {
 
 const int MAX_GUI = 15;
 
-int screen_w, screen_h;
 SDL_Renderer* renderer;
 
 struct GUI {
@@ -37,38 +32,19 @@ struct GUI {
 
 GUI gui_list[MAX_GUI];
 
-int alloc() {
+int find_free() {
 
 	int gui_id = -1;
+	
 	for(int i = 0; i < MAX_GUI; i++)
 		if (!gui_list[i].set)
-			gui_id = i;
-	return gui_id;
-
-}
-
-int updatedev() {
-	GUI* gui;
+			return i;
 	
-	for(int i = 0; i < MAX_GUI; i++){
-		gui = gui_list + i;
-		gui->pressed = false;
-		if(gui->set && gui->active && PInput::MouseRight()) {
-
-			int x = PInput::mouse_x;
-			int y = PInput::mouse_y;
-			if(x > gui->pos_x && x < gui->width+gui->pos_x && y > gui->pos_y && y < gui->height+gui->pos_y)
-				gui->pressed = true;
-		}
-	}
-
-	return 0;
+	return -1;
 
 }
 
 int update(){
-
-	return updatedev();
 
 	GUI* gui;
 	SDL_Finger* finger = nullptr;
@@ -90,8 +66,8 @@ int update(){
 				
 				} else {
 
-					int x = finger->x * screen_w;
-					int y = finger->y * screen_h;
+					int x = finger->x;
+					int y = finger->y;
 					if(x > gui->pos_x && x < gui->width+gui->pos_x && y > gui->pos_y && y < gui->height+gui->pos_y)
 						gui->pressed = true;
 					
@@ -99,77 +75,97 @@ int update(){
 			}
 		}
 	}
+
 	return 0;
+
 }
 
 void init(int w, int h, void* r) {
-	screen_w = w;
-	screen_h = h;
-
+	
 	renderer = (SDL_Renderer*) r;
+
 }
 
-int create(int x, int y, int w, int h, u8 alpha, const char* t_path, u32* key){
-	int gui_id = alloc();
+int create(int x, int y, int w, int h, u8 alpha, const char* t_path, u32* key) {
+
+	int gui_id = find_free();
 	if(gui_id == -1)
 		return gui_id;
 
 	GUI& gui = gui_list[gui_id];
 
-	float prop_x = (float)screen_w / 1920;
-	float prop_y = (float)screen_h / 1080;
+	gui.pos_x = x;
+	gui.pos_y = y;
 
-	gui.pos_x = x * prop_x;
-	gui.pos_y = y * prop_y;
-
-	gui.width = w * prop_x;
-	gui.height = h * prop_x;
+	gui.width = w;
+	gui.height = h;
 	gui.alpha = alpha;
 	gui.key = key;
 
-	if(gui.texture != NULL){
+	if(gui.texture != NULL) {
+
 		SDL_DestroyTexture(gui.texture);
+		gui.texture = NULL;
+	
 	}
-	gui.texture = NULL;
-	if(strcmp(t_path, "") != 0){
+	
+	if(strcmp(t_path, "") != 0) {
+
 		SDL_Surface* surface = IMG_Load(t_path);
-		if(surface == NULL){
+		if(surface == NULL) {
+
 			PLog::Write(PLog::ERROR, "PGui", IMG_GetError());
 			SDL_ClearError();
 			gui.set = false;
 			return -1;
+		
 		}
+		
 		gui.texture = SDL_CreateTextureFromSurface(renderer, surface);
+	
 	}
+
 	gui.set = true;
 	return gui_id;
+
 }
 
 int activate(int id, bool active){
+	
 	if(id >= MAX_GUI || id < 0)
 		return -1;
+	
 	if(!gui_list[id].set)
 		return -1;
+
 	gui_list[id].active = active;
 	return 0;
+
 }
 
-int draw(int pd_alpha){
-	GUI* gui;
-	SDL_Rect rect;
-	for(int i = 0; i < MAX_GUI; i++){
-		gui = gui_list + i;
+int draw(int pd_alpha) {
 
-		if(gui->set && gui->active && gui->texture != NULL){
-			rect.x = gui->pos_x;
-			rect.y = gui->pos_y;
-			rect.w = gui->width;
-			rect.h = gui->height;
-			SDL_SetTextureAlphaMod(gui->texture,(gui->alpha * pd_alpha) / 256);
+	int w, h;
+	SDL_GetRendererOutputSize(renderer, &w, &h);
+	
+	float prop_x = (float)w / 1920;
+	float prop_y = (float)h / 1080;
+
+	for(int i = 0; i < MAX_GUI; i++){
+		GUI* gui = &gui_list[i];
+
+		if(gui->set && gui->active && gui->texture != NULL) {
+			SDL_Rect rect;
+			rect.x = gui->pos_x * prop_x;
+			rect.y = gui->pos_y * prop_y;
+			rect.w = gui->width * prop_x;
+			rect.h = gui->height * prop_y;
+			SDL_SetTextureAlphaMod(gui->texture, (gui->alpha * pd_alpha) / 256);
 			SDL_RenderCopy(renderer, gui->texture, NULL, &rect);
 		}
 	}
 	return 0;
+
 }
 
 bool check_key(u32 key) {

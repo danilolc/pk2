@@ -7,6 +7,8 @@
 #include "gfx/particles.hpp"
 #include "game/sprites.hpp"
 
+#include <cstdlib>
+
 void Effect_Feathers(u32 x, u32 y) {
 	for (int i=0;i<9;i++)//6
 		Particles_New(PARTICLE_FEATHER,x+rand()%17-rand()%17,y+rand()%20-rand()%10,

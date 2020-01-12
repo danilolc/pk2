@@ -8,12 +8,14 @@
 #include "engine/PDraw.hpp"
 #include "settings.hpp"
 
+#define _USE_MATH_DEFINES
 #include <cmath>
+#include <string>
 
 int screen_width  = 800;
 int screen_height = 480;
 
-char* data_path = NULL;
+std::string data_path;
 
 int game_assets = -1;
 int game_assets2 = -1;
@@ -45,14 +47,18 @@ int PK2_Error(const char* msg) {
 }
 
 void Calculate_SinCos(){
-	int i;
-	for (i=0; i<360; i++) cos_table[i] = cos(M_PI*2* (i%360)/180)*33;
-	for (i=0; i<360; i++) sin_table[i] = sin(M_PI*2* (i%360)/180)*33;
+
+	for ( int i = 0; i < 360; i++ ) {
+	
+		cos_table[i] = cos(M_PI*2*i/180) * 33;
+		sin_table[i] = sin(M_PI*2*i/180) * 33;
+	
+	}
+
 }
 
 void Draw_Cursor(int x, int y){
 
-	/*if(!PUtils::Is_Mobile() && Settings.isFullScreen)*/
-		PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
+	PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
 	
 }

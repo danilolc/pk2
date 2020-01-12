@@ -1,6 +1,8 @@
 
 #include "episode/mapstore.hpp"
 
+#include "system.hpp"
+
 #include "engine/PUtils.hpp"
 #include "engine/PFile.hpp"
 #include "engine/PLog.hpp"
@@ -18,29 +20,40 @@ static bool Alphabetical(episode_entry a, episode_entry b) {
 
 void Search_Episodes() {
 
-	std::vector<std::string> list = PUtils::Scandir("/", "episodes");
-	int size = list.size();
-
-	for (int i = 0; i < size; i++) {
+	std::vector<std::string> list;
+	
+	list = PFile::Path("episodes/").scandir("/");
+	for (std::string ep : list) {
 
 		episode_entry e;
-		e.name = list[i];
-		e.zipfile = false;
+		e.name = ep;
+		e.is_zip = false;
         episodes.push_back(e);
         
 	}
 
+	std::string mapstore_path(data_path + "mapstore/");
 	
-	
-	list = PUtils::Scandir(".zip", "data" PE_SEP "mapstore");
-
+	list = PFile::Path(mapstore_path).scandir(".zip");
 	for (std::string zip : list) {
 		
-		// TODO - get episodes from zip
+		PFile::Zip* zp = PFile::OpenZip(mapstore_path + zip);
+		std::vector<std::string> zip_list = PFile::Path(zp, "episodes/").scandir("/");
+
+		for (std::string ep : zip_list) {
+
+			episode_entry e;
+			e.name = ep;
+			e.is_zip = true;
+			e.zipfile = zip;
+			episodes.push_back(e);
+			
+		}
+
+		PFile::CloseZip(zp);
 		
 	}
 
-	
 	if (episodes.size() > 1)
 		std::sort(episodes.begin(), episodes.end(), Alphabetical);
 

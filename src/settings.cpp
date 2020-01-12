@@ -58,8 +58,7 @@ void Settings_Init() {
 
 int Settings_Open() {
 
-	std::string path(data_path);
-	path += SETTINGS_FILE;
+	std::string path(data_path + SETTINGS_FILE);
 
 	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "rb");
 
@@ -99,8 +98,7 @@ int Settings_Open() {
 
 int Settings_Save() {
 
-	std::string path(data_path);
-	path += SETTINGS_FILE;
+	std::string path(data_path + SETTINGS_FILE);
 
 	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
 

@@ -5,11 +5,12 @@
 #pragma once
 
 #include "engine/platform.hpp"
+#include <string>
 
 extern int screen_width;
 extern int screen_height;
 
-extern char* data_path;
+extern std::string data_path;
 
 extern int game_assets;
 extern int game_assets2;

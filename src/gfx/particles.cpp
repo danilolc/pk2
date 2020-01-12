@@ -8,6 +8,7 @@
 #include "settings.hpp"
 #include "system.hpp"
 
+#include <cstdlib>
 #include <vector>
 
 std::vector<Particle> Particles;

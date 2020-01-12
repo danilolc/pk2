@@ -48,8 +48,7 @@ int Save_All_Records() {
 
 	itoa(MAX_SAVES, count_c, 10);
 
-	std::string path(data_path);
-	path += SAVES_FILE;
+	std::string path(data_path + SAVES_FILE);
 	
 	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
 	if (file == nullptr) {
@@ -77,8 +76,7 @@ int Load_SaveFile() {
 
 	Empty_Records();
 
-	std::string path(data_path);
-	path += SAVES_FILE;
+	std::string path(data_path + SAVES_FILE);
 
 	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "rb");
 	if (file == nullptr){

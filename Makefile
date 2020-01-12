@@ -8,13 +8,9 @@
 OPT = -g
 #OPT = -O2
 
-#CXX = g++
-#CXXFLAGS += $(shell pkg-config libzip --cflags) $(shell pkg-config sdl2 --cflags) $(OPT) -std=gnu++17 -w
-#LDFLAGS += $(shell pkg-config libzip --libs) $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
-
 CXX = g++
-CXXFLAGS += $(shell pkg-config sdl2 --cflags) $(OPT) -std=gnu++17 -Wall -Wno-sign-compare
-LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
+CXXFLAGS += $(shell pkg-config libzip --cflags) $(shell pkg-config sdl2 --cflags) $(OPT) -std=gnu++17 -w
+LDFLAGS += $(shell pkg-config libzip --libs) $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
 
 SRC_DIR = src/
 BIN_DIR = bin/

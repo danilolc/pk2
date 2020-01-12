@@ -12,6 +12,7 @@
 
 #include "engine/PLog.hpp"
 #include "engine/PUtils.hpp"
+#include "engine/PFile.hpp"
 
 #include <SDL_rwops.h>
 
@@ -125,7 +126,7 @@ void EpisodeClass::Load() {
 	
 	char path[PE_PATH_SIZE] = "";
 	this->Get_Dir(path);
-	std::vector<std::string> list = PUtils::Scandir(".map", path);
+	std::vector<std::string> list = PFile::Path(path).scandir(".map"); //TODO --
 	this->level_count = list.size();
 
 	MapClass *temp = new MapClass();

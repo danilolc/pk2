@@ -984,7 +984,8 @@ void Draw_Menu_Episodes() {
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.episodes_choose_episode),50,90);
 	my += 80;
 
-	if (episodes.size() > 10) {
+	int size = episodes.size();
+	if (size > 10) {
 		
 		char luku[36];
 		int vali = 90;
@@ -995,7 +996,7 @@ void Draw_Menu_Episodes() {
 		itoa(episode_page + 1,luku,10);
 		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 		vali += PDraw::font_write(fontti1,"/",x+vali,y+20);
-		itoa((int)(episodes.size()/10)+1,luku,10);
+		itoa((int)(size/10)+1,luku,10);
 		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 
 		int nappi = Draw_BackNext(x,y);
@@ -1003,11 +1004,14 @@ void Draw_Menu_Episodes() {
 		if (nappi == 1 && episode_page > 0)
 			episode_page--;
 
-		if (nappi == 2 && (episode_page*10)+10 < episodes.size())
+		if (nappi == 2 && (episode_page*10)+10 < size)
 			episode_page++;
 	}
 
-	for (int i = episode_page*10; i < episodes.size(); i++) {
+	for (int i = episode_page*10; i < episode_page*10 + 10; i++) {
+		if (i >= size)
+			break;
+		
 		if (Draw_Menu_Text(true, episodes[i].name.c_str(), 110, 90+my)) {
 			
 			if (Game) {
@@ -1024,7 +1028,10 @@ void Draw_Menu_Episodes() {
 		}
 
 		//TODO draw episode origin
-		PDraw::font_write(fontti1, "original game", 450, 95+my);
+		if (episodes[i].is_zip)
+			PDraw::font_write(fontti1, episodes[i].zipfile.c_str(), 450, 95+my);
+		else
+			PDraw::font_write(fontti1, "original game", 450, 95+my);
 		
 		my += 20;
 	}

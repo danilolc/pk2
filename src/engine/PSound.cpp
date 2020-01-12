@@ -181,14 +181,6 @@ void clear_channels() {
 
 	Mix_HaltChannel(-1);
 
-	/*for( int i = 0; i < CHANNELS; i++ )
-		if (freq_chunks[i]) {
-
-			SDL_free(freq_chunks[i]);
-			freq_chunks[i] = NULL;
-
-		}*/
-
 }
 
 int start_music(const char* filename) {
@@ -245,12 +237,11 @@ void stop_music(){
 
 void channelDone(int channel) {
 
-    if(freq_chunks[channel] != NULL) {
+	Uint8* pointer = freq_chunks[channel];
+	freq_chunks[channel] = NULL;
 
-		SDL_free(freq_chunks[channel]);
-		freq_chunks[channel] = NULL;
+    SDL_free(pointer);
 
-	}
 }
 
 int init() {

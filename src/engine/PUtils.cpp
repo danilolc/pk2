@@ -5,6 +5,7 @@
 #include "engine/PUtils.hpp"
 
 #include "engine/PLog.hpp"
+#include "engine/PFile.hpp"
 
 #include <SDL.h>
 
@@ -32,7 +33,7 @@ int Setcwd() {
 
 	char* path = SDL_GetBasePath();
 	
-	if (path != NULL) {
+	if (path) {
 		
 		chdir(path);
 		SDL_free(path);
@@ -167,111 +168,13 @@ bool Find(char* filename) {
 
 }
 
-std::vector<std::string> Scandir(const char* type, const char* dir) {
+int CreateDir(std::string path){
 	
-	std::vector<std::string>* res = get_result(type, dir);
-	if (res != nullptr) {
-		
-		PLog::Write(PLog::DEBUG, "PUtils", "Got backup from \"%s\", \"%s\"", type, dir);
-		return *res;
-
-	}
-
-	std::vector<std::string> result;
-    struct _finddata_t map_file;
-
-	char buffer[PE_PATH_SIZE];
-	if (type[0] == '/' || type[0] == '\\')
-		_snprintf(buffer, sizeof(buffer), "%s\\*", dir);
-	else if (type[0] == '\0')
-		_snprintf(buffer, sizeof(buffer), "%s\\*", dir);
-	else
-		_snprintf(buffer, sizeof(buffer), "%s\\*%s", dir, type);
-
-	long hFile = _findfirst(buffer, &map_file);
-	if (hFile == -1L) {
-
-		save_result(type, dir, &result);
-		return result;
-
-	}
-	else {
-
-		if (map_file.name[0] != '.') //No hidden files
-			result.push_back(map_file.name);
-	
-	}
-
-	while (1) {
-
-		if( _findnext( hFile, &map_file ) != 0 ) //TODO - test if works
-			break;
-
-		if (map_file.name[0] != '.')
-			result.push_back(map_file.name);
-
-	}
-
-	_findclose( hFile );
-
-	save_result(type, dir, &result);
-	return result;
-
-}
-
-int CreateDir(const char *path, const char* dir){
-	
-	std::string complete_path(path);
-	if (dir)
-		complete_path += dir;
-	
-	return CreateDirectory(complete_path.c_str(), NULL);
+	return CreateDirectory(path.c_str(), NULL);
 	
 }
 
 #else
-
-const char* Get_Extension(const char* string) {
-
-	int len = strlen(string);
-	const char* end = string + len;
-	
-	for( int i = 0; i < len; i++ ) {
-
-		if (*(end - i) == '.' 
-			|| *(end - i) == '/'
-			|| *(end - i) == '\\') {
-
-			return end - i;
-
-		}
-
-	}
-
-	return string;
-
-}
-
-char* Get_Extension(char* string) {
-
-	int len = strlen(string);
-	char* end = string + len;
-	
-	for( int i = 0; i < len; i++ ) {
-
-		if (*(end - i) == '.' 
-			|| *(end - i) == '/'
-			|| *(end - i) == '\\') {
-
-			return end - i;
-
-		}
-
-	}
-
-	return string;
-
-}
 
 #ifdef __ANDROID__
 
@@ -299,76 +202,6 @@ void GetLanguage(char* lang) {
 
 }
 
-std::vector<std::string> Scandir(const char* type, const char* dir) {
-
-	std::vector<std::string>* res = get_result(type, dir);
-	if (res != nullptr) {
-		
-		PLog::Write(PLog::DEBUG, "PUtils", "Got backup from \"%s\", \"%s\"", type, dir);
-		return *res;
-
-	}
-
-	JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
-	jobject activity = (jobject)SDL_AndroidGetActivity();
-	jclass clazz(env->GetObjectClass(activity));
-	jmethodID method_id = env->GetMethodID(clazz, "listDir", "(Ljava/lang/String;)[Ljava/lang/String;");
-
-	jstring param = env->NewStringUTF(dir);
-	jobjectArray array = (jobjectArray)env->CallObjectMethod(activity, method_id, param);
-
-	jsize size = env->GetArrayLength(array);
-	
-	std::vector<std::string> result;
-
-	PLog::Write(PLog::DEBUG, "PUtils", "Scanned %s, %i files", dir, size);
-
-	for (int i = 0; i < size; i++) {
-
-		jstring filename = (jstring)env->GetObjectArrayElement(array, i);
-		jboolean isCopy;
-		const char* file = env->GetStringUTFChars(filename, &isCopy);
-
-		if( file[0] != '.' ) {
-
-			if(type[0] == '/' && strstr(file, ".") == NULL) { //provisory way - consider file without '.' a directory
-
-				result.push_back(file);
-				continue;
-
-			} else if(type[0] == '\0') {
-			
-				result.push_back(file);
-				continue;
-			
-			} else {
-
-				const char* ext = Get_Extension(file);
-				if(strcmp(ext, type) == 0) {
-
-					result.push_back(file);
-					continue;
-
-				}
-			}
-		}
-
-		if (isCopy == JNI_TRUE) {
-    		env->ReleaseStringUTFChars(filename, file);
-		}
-	}
-
-
-	env->DeleteLocalRef(activity);
-	env->DeleteLocalRef(clazz);
-
-	PLog::Write(PLog::DEBUG, "PUtils", "Scanned \"%s\" for \"%s\" and found %i matches", dir, type, (int)result.size());
-
-	save_result(type, dir, &result);
-	return result;
-
-}
-
 #else
 
 void GetLanguage(char* lang) {
@@ -381,74 +214,11 @@ void GetLanguage(char* lang) {
 
 }
 
-std::vector<std::string> Scandir(const char* type, const char* dir) {
-
-	std::vector<std::string>* res = get_result(type, dir);
-	if (res != nullptr) {
-		
-		PLog::Write(PLog::DEBUG, "PUtils", "Got backup from \"%s\", \"%s\"", type, dir);
-		return *res;
-
-	}
-
-	std::vector<std::string> result;
-	struct dirent **namelist;
-
-	int numb = scandir(dir, &namelist, 0, alphasort);
-	
-	if (numb == -1)
-		return result;
-
-	for( int i = 0; i < numb; i++ ) {
-
-		if( namelist[i]->d_name[0] != '.' ) {
-
-			if(type[0] == '/' && namelist[i]->d_type == DT_DIR) {
-
-				result.push_back(namelist[i]->d_name);
-				continue;
-
-			} else if(type[0] == '\0') {
-			
-				result.push_back(namelist[i]->d_name);
-				continue;
-			
-			} else {
-
-				char* ext = Get_Extension(namelist[i]->d_name);
-				if(strcmp(ext, type) == 0) {
-
-					result.push_back(namelist[i]->d_name);
-					continue;
-
-				}
-
-			}
-			
-		}
-
-		free(namelist[i]);
-
-	}
-	free(namelist);
-
-	PLog::Write(PLog::DEBUG, "PUtils", "Scanned \"%s\" for \"%s\" and found %i matches", dir, type, (int)result.size());
-
-	save_result(type, dir, &result);
-	return result;
-
-}
-
 #endif
 
-int CreateDir(const char *path, const char* dir) {
+int CreateDir(std::string path) {
 
-	std::string complete_path(path);
-
-	if (dir)
-		complete_path += dir;
-	
-	return mkdir(complete_path.c_str(), 0700);
+	return mkdir(path.c_str(), 0700);
 	
 }
 
@@ -470,10 +240,10 @@ bool NoCaseFind(char *filename) {
 
 	strcpy(dir, filename);
 	dir[last+1] = '\0';
-
+	
 	strcpy(file, &filename[last+1]);
 
-	std::vector<std::string> list = Scandir("", dir);
+	std::vector<std::string> list = PFile::Path(dir).scandir("");
 
 	int sz = list.size();
 	for(int i = 0; i < sz; i++) {
