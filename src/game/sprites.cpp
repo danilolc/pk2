@@ -35,66 +35,51 @@ SpriteClass Sprites_List[MAX_SPRITEJA];
 int bgSprites_List[MAX_SPRITEJA];
 
 void Prototypes_ClearAll() {
-	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++){
+	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
+
 		for (int j = 0; j < SPRITE_MAX_SOUNDS; j++)
 			if (Prototypes_List[i].aanet[j] > -1)
 				PSound::free_sfx(Prototypes_List[i].aanet[j]);
 		Prototypes_List[i].Uusi();
 		strcpy(Game->map->protot[i],"");
+
 	}
 
 	next_free_prototype = 0;
 }
 
-int  Prototypes_get_sound(char *polku, char *tiedosto) {
-	char aanitiedosto[255];
-	if (strcmp(tiedosto,"")!=0){
-		strcpy(aanitiedosto,polku);
-		strcat(aanitiedosto,tiedosto);
-		return PSound::load_sfx(aanitiedosto);
-	}
-
-	return -1;
-}
-
-int Prototypes_get(char *polku, char *tiedosto) {
+int Prototypes_get(PFile::Path path) {
 	
-	char testipolku[PE_PATH_SIZE] = "";
-
-	char soundpath[PE_PATH_SIZE];
-	strcpy(soundpath,polku);
-
 	//Check if have space
 	if(next_free_prototype >= MAX_PROTOTYYPPEJA)
 		return 2;
 
+	PrototypeClass& protot = Prototypes_List[next_free_prototype];
+
 	//Check if it can be loaded
-	if (Prototypes_List[next_free_prototype].Lataa(polku, tiedosto) == 1)
+	if (protot.Load(path) == 1)
 		return 1;
 
-	Prototypes_List[next_free_prototype].indeksi = next_free_prototype;
+	protot.indeksi = next_free_prototype;
 
 	//Load sounds
 	for (int i = 0; i < SPRITE_MAX_SOUNDS; i++) {
 
-		if (strcmp(Prototypes_List[next_free_prototype].aanitiedostot[i],"") != 0){
+		if (strcmp(protot.aanitiedostot[i],"") != 0) {
 
-			strcpy(testipolku, soundpath);
-			//strcat(testipolku, PE_SEP);
-			strcat(testipolku, Prototypes_List[next_free_prototype].aanitiedostot[i]);
+			path.SetFile(protot.aanitiedostot[i]);
 
-			if (PUtils::Find(testipolku))
-				Prototypes_List[next_free_prototype].aanet[i] = Prototypes_get_sound(soundpath,Prototypes_List[next_free_prototype].aanitiedostot[i]);
-			else {
-				getcwd(soundpath, PE_PATH_SIZE);
-				strcat(soundpath, PE_SEP "sprites" PE_SEP);
+			if (path.Find()) {
 
-				strcpy(testipolku,soundpath);
-				//strcat(testipolku,"/");
-				strcat(testipolku, Prototypes_List[next_free_prototype].aanitiedostot[i]);
+				protot.aanet[i] = PSound::load_sfx(path);
 
-				if (PUtils::Find(testipolku))
-					Prototypes_List[next_free_prototype].aanet[i] = Prototypes_get_sound(soundpath,Prototypes_List[next_free_prototype].aanitiedostot[i]);
+			} else {
+
+				path = PFile::Path("sprites" PE_SEP);
+				path.SetFile(protot.aanitiedostot[i]);
+
+				if (path.Find())
+					protot.aanet[i] = PSound::load_sfx(path);
 			}
 		}
 	}
@@ -105,6 +90,7 @@ int Prototypes_get(char *polku, char *tiedosto) {
 }
 
 void Prototypes_get_transformation(int i) {
+
 	int j = 0;
 	bool loaded = false;
 
@@ -122,17 +108,19 @@ void Prototypes_get_transformation(int i) {
 		}
 
 		if (!loaded) {
-			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites" PE_SEP);
-			//Episode->Get_Dir(polku);
 
-			if (Prototypes_get(polku, Prototypes_List[i].muutos_sprite) == 0)
-				Prototypes_List[i].muutos = next_free_prototype-1; // jokainen lataus kasvattaa next_free_prototype:a
+			PFile::Path path("sprites" PE_SEP);
+			path.SetFile(Prototypes_List[i].muutos_sprite);
+
+			if (Prototypes_get(path) == 0)
+				Prototypes_List[i].muutos = next_free_prototype - 1;
+			
 		}
 	}
 }
 
 void Prototypes_get_bonus(int i) {
+
 	int j = 0;
 	bool loaded = false;
 
@@ -149,17 +137,19 @@ void Prototypes_get_bonus(int i) {
 		}
 
 		if (!loaded){
-			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites" PE_SEP);
-			//Episode->Get_Dir(polku);
 
-			if (Prototypes_get(polku, Prototypes_List[i].bonus_sprite)==0)
-				Prototypes_List[i].bonus = next_free_prototype-1;
+			PFile::Path path("sprites" PE_SEP);
+			path.SetFile(Prototypes_List[i].bonus_sprite);
+
+			if (Prototypes_get(path) == 0)
+				Prototypes_List[i].bonus = next_free_prototype - 1;
+			
 		}
 	}
 }
 
 void Prototypes_get_ammo1(int i) {
+
 	int j = 0;
 	bool loaded = false;
 
@@ -176,17 +166,19 @@ void Prototypes_get_ammo1(int i) {
 		}
 
 		if (!loaded){
-			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites" PE_SEP);
 
+			PFile::Path path("sprites" PE_SEP);
+			path.SetFile(Prototypes_List[i].ammus1_sprite);
 
-			if (Prototypes_get(polku, Prototypes_List[i].ammus1_sprite)==0)
-				Prototypes_List[i].ammus1 = next_free_prototype-1;
+			if (Prototypes_get(path) == 0)
+				Prototypes_List[i].ammus1 = next_free_prototype - 1;
+
 		}
 	}
 }
 
 void Prototypes_get_ammo2(int i) {
+
 	int j = 0;
 	bool loaded = false;
 
@@ -202,35 +194,40 @@ void Prototypes_get_ammo2(int i) {
 			j++;
 		}
 
-		if (!loaded){
-			char polku[PE_PATH_SIZE];
-			strcpy(polku,"sprites" PE_SEP);
+		if (!loaded) {
 
-			if (Prototypes_get(polku, Prototypes_List[i].ammus2_sprite)==0)
-				Prototypes_List[i].ammus2 = next_free_prototype-1;
+			PFile::Path path("sprites" PE_SEP);
+			path.SetFile(Prototypes_List[i].ammus2_sprite);
+
+			if (Prototypes_get(path) == 0)
+				Prototypes_List[i].ammus2 = next_free_prototype - 1;
+
 		}
 	}
 }
 
-int  Prototypes_GetAll() {
+int Prototypes_GetAll() {
 
-	char polku[PE_PATH_SIZE];
-	int viimeinen_proto = -1;
+	int last_prototype = -1;
 
 	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
 		if (strcmp(Game->map->protot[i], "") != 0) {
 
-			viimeinen_proto = i;
-			strcpy(polku, "");
-			Episode->Get_Dir(polku);
+			last_prototype = i;
 
-			if (Prototypes_get(polku,Game->map->protot[i]) != 0) {
+			PFile::Path path = Episode->Get_Dir();
+			path.SetFile(Game->map->protot[i]);
 
-				strcpy(polku, "sprites" PE_SEP);
-				if (Prototypes_get(polku,Game->map->protot[i]) != 0) {
+			if (Prototypes_get(path) != 0) {
+
+				path = PFile::Path("sprites" PE_SEP);
+				path.SetFile(Game->map->protot[i]);
+
+				if (Prototypes_get(path) != 0) {
 
 					PLog::Write(PLog::WARN, "PK2", "Can't load sprite %s. It will not appear", Game->map->protot[i]);
 					next_free_prototype++;
+					
 				}
 
 			}
@@ -242,9 +239,9 @@ int  Prototypes_GetAll() {
 		}
 	}
 
-	next_free_prototype = viimeinen_proto + 1; //??
+	next_free_prototype = last_prototype + 1;
 
-	for (int i=0; i < MAX_PROTOTYYPPEJA; i++) {
+	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
 
 		Prototypes_get_transformation(i);
 		Prototypes_get_bonus(i);

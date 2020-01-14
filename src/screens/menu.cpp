@@ -1128,8 +1128,8 @@ int Screen_Menu_Init() {
 
 	if (!Episode) {
 
-		PDraw::image_load(bg_screen, "gfx" PE_SEP "menu.bmp", true);
-		PSound::start_music("music" PE_SEP "song09.xm");
+		PDraw::image_load(bg_screen, PFile::Path("gfx" PE_SEP "menu.bmp"), true);
+		PSound::start_music(PFile::Path("music" PE_SEP "song09.xm"));
 		PSound::set_musicvolume(Settings.music_max_volume);
 	
 	} else {

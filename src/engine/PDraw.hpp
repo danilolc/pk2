@@ -4,6 +4,7 @@
 //#########################
 #pragma once
 
+#include "engine/PFile.hpp"
 #include "engine/PFont.hpp"
 #include "engine/platform.hpp"
 
@@ -26,8 +27,8 @@ int   fade_in(int speed);
 void  rotate_palette(u8 start, u8 end);
 
 int   image_new(int w, int h);
-int   image_load(const char* filename, bool getPalette); // TODO - use PFile::Path
-int   image_load(int& index, const char* filename, bool getPalette); // TODO - use PFile::Path
+int   image_load(PFile::Path path, bool getPalette);
+int   image_load(int& index, PFile::Path path, bool getPalette);
 int   image_copy(int src_i, int dst_i);
 int   image_cut(int ImgIndex, int x, int y, int w, int h);
 int   image_cut(int ImgIndex, RECT area);
@@ -57,7 +58,7 @@ u8    blend_colors(u8 color, u8 colBack,int alpha);
 int   create_shadow(int index, u32 width, u32 height, int startx);
 
 int   font_create(int image, int x, int y, int width, int height, int count);
-int   font_create(const char* path, const char* file); // TODO - use PFile::Path
+int   font_create(PFile::Path path);
 int   font_write(int font_index, const char* text, int x, int y);
 int   font_writealpha(int font_index, const char* text, int x, int y, u8 alpha);
 

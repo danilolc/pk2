@@ -6,17 +6,20 @@
 #include <cstdio>
 #include <zip.h>
 
+#include <SDL_rwops.h>
+
 namespace PFile {
 
 struct Zip;
 
-class Path {
+class Path : public std::string {
 
     public: 
 
     Path(std::string path);
     Path(Zip* zip_file, std::string path);
     Path(Path path, std::string file);
+    ~Path();
 
     //type:
     // ""  - all files and directories
@@ -24,13 +27,16 @@ class Path {
     // ".exe" - *.exe
     std::vector<std::string> scandir(const char* type);
 
-    ~Path();
+    bool NoCaseFind();
+    bool Find();
 
-    void Add(std::string path);
+    int SetFile(std::string file);
+    int SetPath(std::string path);
+    std::string GetFileName();
+
+    SDL_RWops* GetRW(const char* mode);
 
     private:
-
-    std::string path; // Path inside zip if is_zip
     
     bool is_zip;
     Zip* zip_file;

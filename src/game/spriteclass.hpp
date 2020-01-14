@@ -4,6 +4,7 @@
 //#########################
 #pragma once
 
+#include "engine/PFile.hpp"
 #include "engine/types.hpp"
 
 #define PK2SPRITE_CURRENT_VERSION "1.3"
@@ -599,7 +600,7 @@ class PrototypeClass{
     void Uusi();
     void Kopioi(const PrototypeClass &proto);
     int  Animation_Uusi(int anim_i, u8 *sekvenssi, bool looppi);
-    int  Lataa(const char *dir, const char *filename);
+    int  Load(PFile::Path path);
     void Tallenna(char *tiedoston_nimi);
     int  Piirra(int x, int y, int frame);
     bool Onko_AI(int AI);

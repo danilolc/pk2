@@ -33,20 +33,13 @@ int PFont::get_image(int x, int y, int img_source) {
 
 }
 
-int PFont::load(const char* file_path, const char* file) {
+int PFont::load(PFile::Path path) {
 
-	char path[128];
 	int i = 0;
-	int font_index[256];
 	char chars[256];
 
-	strcpy(path,file_path);
-	strcat(path,file);
-	if (!PUtils::Find(path)) {
-	
+	if (!path.Find()) 
 		return -1;
-	
-	}
 
 	PLang* param_file = new PLang();
 
@@ -79,31 +72,25 @@ int PFont::load(const char* file_path, const char* file) {
 	strcpy(chars, param_file->Get_Text(i));
 
 	i = param_file->Hae_Indeksi("image");
-	strcpy(path,file_path);
-	strcat(path,param_file->Get_Text(i));
+	path.SetFile(param_file->Get_Text(i));
 
 	delete param_file;
 
-	if (!PUtils::Find(path)) {
-	
+	if (!path.Find())
 		return -1;
-	
-	}
 
-	int temp_image = PDraw::image_load(path,false);
+	int temp_image = PDraw::image_load(path, false);
 	if (temp_image == -1) return -1;
 
 	this->get_image(buf_x, buf_y, temp_image);
 	PDraw::image_delete(temp_image);
 
+	// TODO 
 	for ( uint i = 0; i < 256; i++ )
 		charlist[i] = -1;
 	
 	for ( uint i = 0; i < char_count; i++ )
-		font_index[i] = i * char_w;
-	
-	for ( uint i = 0; i < char_count; i++ )
-		charlist[(u8)(chars[i]&~' ')] = font_index[i];
+		charlist[(u8)(chars[i]&~' ')] = i * char_w;
 
 	return 0;
 

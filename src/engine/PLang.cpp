@@ -23,7 +23,8 @@ PLang::PLang(){
 
 }
 
-PLang::PLang(char *tiedosto){
+PLang::PLang(PFile::Path path) {
+
 	read = LUE_SKIP;
 
 	for (int i=0;i<MAX_TEXTS;i++){
@@ -31,14 +32,15 @@ PLang::PLang(char *tiedosto){
 		strcpy(otsikot[i],"");
 	}
 
-	Read_File(tiedosto);
+	Read_File(path);
+
 }
 
 PLang::~PLang(){}
 
-bool PLang::Read_File(char *filename){
+bool PLang::Read_File(PFile::Path path){
 
-	SDL_RWops *io = SDL_RWFromFile(filename, "r");
+	SDL_RWops *io = path.GetRW("r");
 
 	if (io == nullptr)
 		return false;

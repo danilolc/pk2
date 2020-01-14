@@ -65,7 +65,7 @@ void GUI_Load() {
 	int h = 220 * 0.8;
 	int alpha = 140;
 
-	gui_touch = PGui::create(0,0,1920,1080,alpha,"", &enter);
+	/*gui_touch = PGui::create(0,0,1920,1080,alpha,"", &enter);
 
 	gui_menu = PGui::create(50,130,w,h,alpha,"mobile/menu.png", &escape);
 	
@@ -86,7 +86,7 @@ void GUI_Load() {
 	y -= dy;
 	gui_egg =    PGui::create(1410, y,w,h,alpha,"mobile/egg.png", &Settings.control_attack1);
 
-	gui_tab =    PGui::create(   0, 930,530,150,alpha,"", &tab);
+	gui_tab =    PGui::create(   0, 930,530,150,alpha,"", &tab);*/
 
 }
 

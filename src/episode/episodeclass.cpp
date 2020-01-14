@@ -99,7 +99,7 @@ void EpisodeClass::Load_Info() {
 
 	temp = new PLang();
 
-	if (PUtils::Find(infofile)){
+	if (infofile.Find()){
 		if (temp->Read_File(infofile)){
 
 			for (i = 0 ; i<19 ; i++){
@@ -122,7 +122,7 @@ void EpisodeClass::Load_Info() {
 void EpisodeClass::Load() {
 	
 	if (entry.is_zip)
-		this->source_zip = PFile::OpenZip(data_path + "mapstore" + PE_SEP + entry.zipfile);
+		this->source_zip = PFile::OpenZip(data_path + "mapstore" PE_SEP + entry.zipfile);
 
 	PFile::Path path = this->Get_Dir();
 	std::vector<std::string> list = path.scandir(".map");
@@ -186,6 +186,7 @@ EpisodeClass::EpisodeClass(int save) {
 				PLog::Write(PLog::WARN, "PK2", "Episode conflict on %s, choosing the first one", saves_list[save].episode);
 			else {
 				this->entry = episodes[i];
+				set = true;
 			}
 		}
 
@@ -222,15 +223,18 @@ EpisodeClass::EpisodeClass(const char* player_name, episode_entry entry) {
 
 EpisodeClass::~EpisodeClass() {
 
-
+	PFile::CloseZip(this->source_zip);
 
 }
 
 PFile::Path EpisodeClass::Get_Dir() {
 
-	if (this->entry.is_zip) {
-		return PFile::Path(this->source_zip, this->entry.name);
+	std::string path("episodes" PE_SEP);
+	path += entry.name + PE_SEP;
+
+	if (this->entry.is_zip)
+		return PFile::Path(this->source_zip, path);
 	
-	return PFile::Path(std::string("episodes") + PE_SEP + entry.name);
+	return PFile::Path(path);
 
 }

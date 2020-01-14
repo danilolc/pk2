@@ -219,51 +219,46 @@ int PK_Draw_Map() {
 }
 
 int Play_Music() {
-	char mapmusa[PE_PATH_SIZE];
-	
-	strcpy(mapmusa, "map.mp3");
-	Episode->Get_Dir(mapmusa);
-	if (PUtils::Find(mapmusa))
+
+	PFile::Path mapmus = Episode->Get_Dir();
+
+	mapmus.SetFile("map.mp3");
+	if (mapmus.Find())
 		goto found;
 	
-	strcpy(mapmusa, "map.ogg");
-	Episode->Get_Dir(mapmusa);
-	if (PUtils::Find(mapmusa))
+	mapmus.SetFile("map.ogg");
+	if (mapmus.Find())
 		goto found;
 	
-	strcpy(mapmusa, "map.xm");
-	Episode->Get_Dir(mapmusa);
-	if (PUtils::Find(mapmusa))
+	mapmus.SetFile("map.xm");
+	if (mapmus.Find())
 		goto found;
 	
-	strcpy(mapmusa, "map.mod");
-	Episode->Get_Dir(mapmusa);
-	if (PUtils::Find(mapmusa))
+	mapmus.SetFile("map.mod");
+	if (mapmus.Find())
 		goto found;
 	
-	strcpy(mapmusa, "map.it");
-	Episode->Get_Dir(mapmusa);
-	if (PUtils::Find(mapmusa))
+	mapmus.SetFile("map.it");
+	if (mapmus.Find())
 		goto found;
 	
-	strcpy(mapmusa, "map.s3m");
-	Episode->Get_Dir(mapmusa);
-	if (PUtils::Find(mapmusa))
+	mapmus.SetFile("map.s3m");
+	if (mapmus.Find())
 		goto found;
 	
-	strcpy(mapmusa, "music" PE_SEP "map.mp3");
-	if (PUtils::Find(mapmusa))
+	mapmus = PFile::Path("music" PE_SEP "map.mp3");
+	if (mapmus.Find())
 		goto found;
 	
-	strcpy(mapmusa, "music" PE_SEP "map.ogg");
-	if (PUtils::Find(mapmusa))
+	mapmus.SetFile("map.ogg");
+	if (mapmus.Find())
 		goto found;
 	
-	strcpy(mapmusa, "music" PE_SEP "map.xm");
+	mapmus.SetFile("map.xm");
 	
 	found:
 
-	PSound::start_music(mapmusa);
+	PSound::start_music(mapmus);
 	PSound::set_musicvolume_now(Settings.music_max_volume);
 
 	return 0;
@@ -285,13 +280,12 @@ int Screen_Map_Init() {
 	PDraw::screen_fill(0);
 
 	degree = degree_temp;
-	
-	char mapkuva[PE_PATH_SIZE] = "map.bmp";
-	Episode->Get_Dir(mapkuva);
 
-	PDraw::image_load(bg_screen, mapkuva, true);
-	if (bg_screen == -1)
-		PDraw::image_load(bg_screen, "gfx" PE_SEP "map.bmp", true);
+	PDraw::image_load(bg_screen, Episode->Get_Dir() + "map.bmp", true);
+	if (bg_screen == -1) {
+		PDraw::image_load(bg_screen, PFile::Path("gfx" PE_SEP "map.bmp"), true);
+
+	}
 
 	Play_Music();
 

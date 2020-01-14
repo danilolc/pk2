@@ -114,10 +114,7 @@ const char* Language_Name() {
 
 int Load_Language(const char* language) {
 	
-	char path[PE_PATH_SIZE];
-	strcpy(path,"language" PE_SEP);
-	strcat(path, language);
-
+	PFile::Path path(std::string("language" PE_SEP) + language);
 	if (!tekstit->Read_File(path))
 		return -1;
 

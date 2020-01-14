@@ -86,7 +86,7 @@ void init(int w, int h, void* r) {
 
 }
 
-int create(int x, int y, int w, int h, u8 alpha, const char* t_path, u32* key) {
+int create(int x, int y, int w, int h, u8 alpha, PFile::Path path, u32* key) {
 
 	int gui_id = find_free();
 	if(gui_id == -1)
@@ -109,9 +109,11 @@ int create(int x, int y, int w, int h, u8 alpha, const char* t_path, u32* key) {
 	
 	}
 	
-	if(strcmp(t_path, "") != 0) {
+	if(path != "") {
 
-		SDL_Surface* surface = IMG_Load(t_path);
+		SDL_RWops* rw = path.GetRW("rb");
+		SDL_Surface* surface = IMG_Load_RW(rw, 1);
+		
 		if(surface == NULL) {
 
 			PLog::Write(PLog::ERROR, "PGui", IMG_GetError());

@@ -4,12 +4,13 @@
 //#########################
 #pragma once
 
+#include "engine/PFile.hpp"
 #include "engine/types.hpp"
 
 namespace PGui {
 
 void init(int w, int h, void* r);
-int  create(int x, int y, int w, int h, u8 alpha, const char* t_path, u32* key); // TODO - use PFile::Path
+int  create(int x, int y, int w, int h, u8 alpha, PFile::Path path, u32* key);
 int  activate(int id, bool active);
 int  draw(int pd_alpha);
 bool check_key(int key);

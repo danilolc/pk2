@@ -5,6 +5,7 @@
 #pragma once
 
 #include "engine/platform.hpp"
+#include "engine/PFile.hpp"
 
 typedef struct {
 	int left, top, right, bottom;
@@ -110,8 +111,8 @@ class MapClass
 
 	MapClass &operator = (const MapClass &kartta);	//Sijoitusoperaattori
 
-	int Lataa(PFile::Path path);		// Lataa kartta
-	int Load_Plain_Data(PFile::Path path);	// Lataa kartta ilman grafiikoita
+	int Load(PFile::Path path);		// Load kartta
+	int Load_Plain_Data(PFile::Path path);	// Load kartta ilman grafiikoita
 
 	int Tallenna(char *filename);	// Save map
 	void Tyhjenna();				// clean map
@@ -132,15 +133,15 @@ class MapClass
 
 	private:
 
-	int LataaVersio01(char *filename);	// Lataa kartta versio 0.1
-	int LataaVersio10(char *filename);	// Lataa kartta versio 1.0
-	int LataaVersio11(char *filename);	// Lataa kartta versio 1.1
-	int LataaVersio12(char *filename);  // Lataa kartta versio 1.2
-	int LataaVersio13(char *filename);  // Lataa kartta versio 1.3
+	int LoadVersion01(PFile::Path path);
+	int LoadVersion10(PFile::Path path);
+	int LoadVersion11(PFile::Path path);
+	int LoadVersion12(PFile::Path path);
+	int LoadVersion13(PFile::Path path);
 	
-	int Lataa_Taustakuva(char *polku, char *filename);
-	int Lataa_PalikkaPaletti(char *polku, char *filename);
-	int Lataa_TaustaMusiikki(char *filename);
+	int Load_BG(PFile::Path path);
+	int Load_BlockPalette(PFile::Path path);
+	int Load_BGSfx(PFile::Path path);
 
 	void Animoi_Tuli(void);
 	void Animoi_Vesiputous(void);

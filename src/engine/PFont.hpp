@@ -4,6 +4,7 @@
 //#########################
 #pragma once
 
+#include "engine/PFile.hpp"
 #include "engine/platform.hpp"
 
 class PFont{
@@ -22,5 +23,5 @@ public:
 	PFont();
 	~PFont();
 
-	int load(const char* file_path, const char* file); // TODO - use PFile::Path
+	int load(PFile::Path path);
 };

@@ -4,6 +4,7 @@
 //#########################
 #pragma once
 
+#include "engine/PFile.hpp"
 #include "engine/platform.hpp"
 
 const int MAX_TEXTS = 200;
@@ -13,9 +14,9 @@ const int MAX_HEAD_LENGTH = 50;
 class PLang{
 	public:
 		PLang();
-		PLang(char *filename); // TODO - use PFile::Path
+		PLang(PFile::Path path);
 		~PLang();
-		bool Read_File(char *filename); // TODO - use PFile::Path
+		bool Read_File(PFile::Path path);
 		int Hae_Indeksi(const char *title);
 		const char* Get_Text(int index);
 		void Replace_Text(int index, const char *teksti);

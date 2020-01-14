@@ -35,46 +35,58 @@ int score_sound = -1;
 int apple_sound = -1;
 
 int Load_SFX() {
+    
+    PFile::Path path("sfx/");
 
-    switch_sound = PSound::load_sfx("sfx/switch3.wav");
+    path.SetFile("switch3.wav");
+    switch_sound = PSound::load_sfx(path);
     if (switch_sound == -1)
         PK2_Error("Can't find switch3.wav");
 
-    jump_sound = PSound::load_sfx("sfx/jump4.wav");
+    path.SetFile("jump4.wav");
+    jump_sound = PSound::load_sfx(path);
     if (jump_sound == -1)
         PK2_Error("Can't find jump4.wav");
 
-    splash_sound = PSound::load_sfx("sfx/splash.wav");
+    path.SetFile("splash.wav");
+    splash_sound = PSound::load_sfx(path);
     if (splash_sound == -1)
         PK2_Error("Can't find splash.wav");
 
-    open_locks_sound = PSound::load_sfx("sfx/openlock.wav");
+    path.SetFile("openlock.wav");
+    open_locks_sound = PSound::load_sfx(path);
     if (open_locks_sound == -1) {
         PK2_Error("Can't find openlock.wav");
     }
 
-    menu_sound = PSound::load_sfx("sfx/menu2.wav");
+    path.SetFile("menu2.wav");
+    menu_sound = PSound::load_sfx(path);
     if (menu_sound == -1)
         PK2_Error("Can't find menu2.wav");
 
-    moo_sound = PSound::load_sfx("sfx/moo.wav");
+    path.SetFile("moo.wav");
+    moo_sound = PSound::load_sfx(path);
     if (moo_sound == -1)
         PK2_Error("Can't find moo.wav");
 
-    doodle_sound = PSound::load_sfx("sfx/doodle.wav");
+    path.SetFile("doodle.wav");
+    doodle_sound = PSound::load_sfx(path);
     if (doodle_sound == -1)
         PK2_Error("Can't find doodle.wav");
 
-    pump_sound = PSound::load_sfx("sfx/pump.wav");
+    path.SetFile("pump.wav");
+    pump_sound = PSound::load_sfx(path);
     if (pump_sound == -1)
         PK2_Error("Can't find pump.wav");
 
-    score_sound = PSound::load_sfx("sfx/counter.wav");
+    path.SetFile("counter.wav");
+    score_sound = PSound::load_sfx(path);
     if (score_sound == -1) {
         PK2_Error("Can't find counter.wav");
     }
 
-    apple_sound = PSound::load_sfx("sfx/app_bite.wav");
+    path.SetFile("app_bite.wav");
+    apple_sound = PSound::load_sfx(path);
     if (apple_sound == -1) {
         PK2_Error("Can't find app_bite.wav");
     }

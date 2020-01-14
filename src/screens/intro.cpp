@@ -84,7 +84,7 @@ int Draw_Intro(){
 }
 
 int Screen_Intro_Init() {
-	//PisteLog_Kirjoita("- Initializing intro screen\n");
+	
 	GUI_Change(UI_TOUCH_TO_START);
 	if (Settings.isWide)
 		PDraw::set_xoffset(80);
@@ -92,13 +92,10 @@ int Screen_Intro_Init() {
 		PDraw::set_xoffset(0);
 	PDraw::screen_fill(0);
 
-	//PisteLog_Kirjoita("  - Loading picture: gfx/intro.bmp\n");
 	PDraw::image_delete(bg_screen);
-	bg_screen = PDraw::image_load("gfx/intro.bmp", true);
+	bg_screen = PDraw::image_load(PFile::Path("gfx/intro.bmp"), true);
 
-	//PisteLog_Kirjoita("  - Loading music: music/INTRO.XM\n");
-
-	if (PSound::start_music("music" PE_SEP "intro.xm") != 0)
+	if (PSound::start_music(PFile::Path("music" PE_SEP "intro.xm")) != 0)
 		PK2_Error("Can't load intro.xm");
 
 	PSound::set_musicvolume(Settings.music_max_volume);

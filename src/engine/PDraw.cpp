@@ -110,7 +110,7 @@ int image_new(int w, int h){
 
     return index;
 }
-int image_load(const char* filename, bool getPalette) {
+int image_load(PFile::Path path, bool getPalette) {
 
     int index = findfreeimage();
 
@@ -121,18 +121,19 @@ int image_load(const char* filename, bool getPalette) {
     
     }
 
-    imageList[index] = SDL_LoadBMP(filename);
+    SDL_RWops* rw = path.GetRW("rb");
+    imageList[index] = SDL_LoadBMP_RW(rw, 1);
 
     if (imageList[index] == NULL) {
 
-        PLog::Write(PLog::ERROR, "PDraw", "Couldn't load %s",filename);
+        PLog::Write(PLog::ERROR, "PDraw", "Couldn't load %s", path.c_str());
         return -1;
     
     }
 
     if( imageList[index]->format->BitsPerPixel != 8) {
 
-        PLog::Write(PLog::ERROR, "PDraw", "Failed to open %s, just 8bpp indexed images!",filename);
+        PLog::Write(PLog::ERROR, "PDraw", "Failed to open %s, just 8bpp indexed images!", path.c_str());
         image_delete(index);
         return -1;
     
@@ -156,10 +157,10 @@ int image_load(const char* filename, bool getPalette) {
 
 }
 
-int image_load(int& index, const char* filename, bool getPalette) {
+int image_load(int& index, PFile::Path path, bool getPalette) {
     
     image_delete(index);
-    index = image_load(filename, getPalette);
+    index = image_load(path, getPalette);
 
     return index;
 
@@ -528,7 +529,7 @@ int font_create(int image, int x, int y, int char_w, int char_h, int count) {
 
 }
 
-int font_create(const char* path, const char* file) {
+int font_create(PFile::Path path) {
     
     int index = findfreefont();
     if (index == -1) {
@@ -539,7 +540,8 @@ int font_create(const char* path, const char* file) {
     }
 
     fontList[index] = new PFont();
-    if (fontList[index]->load(path, file) == -1) {
+
+    if (fontList[index]->load(path) == -1) {
 
         PLog::Write(PLog::ERROR, "PDraw", "Can't load a font from file!");
         delete fontList[index];
@@ -547,7 +549,7 @@ int font_create(const char* path, const char* file) {
     
     }
 
-    PLog::Write(PLog::DEBUG, "PDraw", "Created font from %s%s - id %i", path, file, index);
+    PLog::Write(PLog::DEBUG, "PDraw", "Created font from %s - id %i", path.c_str(), index);
     
     return index;
 

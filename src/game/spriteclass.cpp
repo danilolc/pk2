@@ -622,18 +622,16 @@ PrototypeClass13 PrototypeClass::GetProto13(){
 	return proto;
 }
 
-int PrototypeClass::Lataa(const char *dir, const char *filename){
+int PrototypeClass::Load(PFile::Path path){
 	this->Uusi();
 
-	char path[PE_PATH_SIZE];
-	strcpy(path, dir);
-	strcat(path, filename);
+	const char* filename = path.GetFileName().c_str();
 
 	char versio[4];
-	SDL_RWops* file = SDL_RWFromFile(path, "r");
+	SDL_RWops* file = path.GetRW("r");
 	if (file == nullptr) {
 
-		PLog::Write(PLog::ERROR, "PK2", "failed to open %s", path);
+		PLog::Write(PLog::ERROR, "PK2", "failed to open %s", path.c_str());
 		return 1;
 	
 	}
@@ -675,45 +673,41 @@ int PrototypeClass::Lataa(const char *dir, const char *filename){
 
 	SDL_RWclose(file);
 
-
 	// Get sprite bmp
-	char kuva[PE_PATH_SIZE];
-	strcpy(kuva, dir);
-	strcat(kuva, kuvatiedosto);
-
-	int bufferi = PDraw::image_load(kuva, false);
+	path.SetFile(this->kuvatiedosto);
+	int bufferi = PDraw::image_load(path, false);
 	if (bufferi == -1)
 		return 1;
 
-	//Set diferent colors
-	u8 *buffer = NULL;
-	u32 leveys;
-	u8 vari;
-	int x,y,w,h;
+	//Change sprite colors
+	if (this->vari != COLOR_NORMAL){ 
 
-	if (this->vari != COLOR_NORMAL){ //Change sprite colors
+		int w, h;
+		u8 color;
 		PDraw::image_getsize(bufferi,w,h);
 
+		u8 *buffer = NULL;
+		u32 leveys;
 		PDraw::drawimage_start(bufferi,*&buffer,leveys);
 
-		for (x=0;x<w;x++)
-			for (y=0;y<h;y++)
-				if ((vari = buffer[x+y*leveys]) != 255){
-					vari %= 32;
-					vari += this->vari;
-					buffer[x+y*leveys] = vari;
+		for (int x = 0; x < w; x++)
+			for (int y = 0; y < h; y++)
+				if ((color = buffer[x+y*leveys]) != 255) {
+					color %= 32;
+					color += this->vari;
+					buffer[x+y*leveys] = color;
 				}
 
 		PDraw::drawimage_end(bufferi);
 	}
 
-	int frame_i = 0,
-		frame_x = kuva_x,
-		frame_y = kuva_y;
+	int frame_x = kuva_x;
+	int frame_y = kuva_y;
 
 	//Get each frame
-	for (frame_i=0; frame_i<frameja; frame_i++){
-		if (frame_x + kuva_frame_leveys > 640){
+	for (int frame_i = 0; frame_i < frameja; frame_i++) {
+
+		if (frame_x + kuva_frame_leveys > 640) {
 			frame_y += this->kuva_frame_korkeus + 3;
 			frame_x = kuva_x;
 		}
@@ -723,6 +717,7 @@ int PrototypeClass::Lataa(const char *dir, const char *filename){
 		PDraw::image_fliphori(framet_peilikuva[frame_i]);
 
 		frame_x += this->kuva_frame_leveys + 3;
+	
 	}
 
 	PDraw::image_delete(bufferi);

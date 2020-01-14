@@ -26,7 +26,7 @@ static Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
 static Uint8* freq_chunks[CHANNELS];  //The chunk allocated for each channel
 
 static Mix_Music* music = NULL;
-static char playingMusic[PE_PATH_SIZE] = "";
+static std::string playingMusic = "";
 
 int find_channel() {
 	
@@ -73,12 +73,14 @@ int Change_Frequency(int index, int channel, int freq) {
 
 }
 
-int load_sfx(const char* filename) {
+int load_sfx(PFile::Path path) {
 
 	for( int i = 0; i < MAX_SOUNDS; i++ )
 		if (chunks[i] == NULL) {
 
-			chunks[i] = Mix_LoadWAV(filename);
+			SDL_RWops* rw = path.GetRW("rb");
+			chunks[i] = Mix_LoadWAV_RW(rw, 1);
+			
 			return i;
 
 		}
@@ -183,15 +185,13 @@ void clear_channels() {
 
 }
 
-int start_music(const char* filename) {
+int start_music(PFile::Path path) {
 
-	char temp[PE_PATH_SIZE];
-	strcpy(temp, filename);
+	if (playingMusic == path)
+		return 1;
 
-	PUtils::RemoveSpace(temp);
-	if(!strcmp(playingMusic, temp)) return 0;
-
-	music = Mix_LoadMUS(temp);
+	SDL_RWops* rw = path.GetRW("rb");
+	music = Mix_LoadMUS_RW(rw, 1);
 	if (music == NULL) {
 
 		PLog::Write(PLog::WARN, "PSound", Mix_GetError());
@@ -209,8 +209,8 @@ int start_music(const char* filename) {
 
 	Mix_VolumeMusic(mus_volume_now * MIX_MAX_VOLUME / 100);
 	
-	PLog::Write(PLog::DEBUG, "PSound", "Loaded %s", temp);
-	strcpy(playingMusic, temp);
+	PLog::Write(PLog::DEBUG, "PSound", "Loaded %s", path.c_str());
+	playingMusic = path;
 
 	return 0;
 	

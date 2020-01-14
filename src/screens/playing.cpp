@@ -212,10 +212,7 @@ int Draw_InGame_DebugInfo() {
 	itoa(Player_Sprite->hyppy_ajastin, lukua, 10);
 	PDraw::font_write(fontti1, lukua, 270, 460);
 
-	char tpolku[PE_PATH_SIZE] = "";
-	Episode->Get_Dir(tpolku);
-
-	PDraw::font_write(fontti1,tpolku,10,470);
+	PDraw::font_write(fontti1, Episode->Get_Dir().c_str(), 10, 470);
 
 	itoa(Player_Sprite->invisible,lukua,10);
 	PDraw::font_write(fontti1,lukua,610,470);

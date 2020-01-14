@@ -491,15 +491,11 @@ int MapClass::Tallenna(char *filename){
 	return 0;
 }
 
-int MapClass::Lataa(char *polku, char *nimi){
+int MapClass::Load(PFile::Path path){
 	
-	char path[PE_PATH_SIZE];
-	strcpy(path, polku);
-	strcat(path, nimi);
-
 	char versio[8];
 
-	SDL_RWops* file = SDL_RWFromFile(path, "r");
+	SDL_RWops* file = path.GetRW("rb");
 	if (file == nullptr){
 		return 1;
 	}
@@ -509,40 +505,43 @@ int MapClass::Lataa(char *polku, char *nimi){
 
 	int ok = 2;
 
-	PLog::Write(PLog::DEBUG, "PK2", "Loading %s, version %s", path, versio);
+	PLog::Write(PLog::DEBUG, "PK2", "Loading %s, version %s", path.c_str(), versio);
 
 	if (strcmp(versio,"1.3")==0) {
-		this->LataaVersio13(path);
+		this->LoadVersion13(path);
 		ok = 0;
 	}
 	if (strcmp(versio,"1.2")==0) {
-		this->LataaVersio12(path);
+		this->LoadVersion12(path);
 		ok = 0;
 	}
 	if (strcmp(versio,"1.1")==0) {
-		this->LataaVersio11(path);
+		this->LoadVersion11(path);
 		ok = 0;
 	}
 	if (strcmp(versio,"1.0")==0) {
-		this->LataaVersio10(path);
+		this->LoadVersion10(path);
 		ok = 0;
 	}
 	if (strcmp(versio,"0.1")==0) {
-		this->LataaVersio01(path);
+		this->LoadVersion01(path);
 		ok = 0;
 	}
+	
+	path.SetFile(this->palikka_bmp);
+	Load_BlockPalette(path);
 
-	Lataa_PalikkaPaletti(polku, this->palikka_bmp);
-	Lataa_Taustakuva(polku, this->taustakuva);
+	path.SetFile(this->taustakuva);
+	Load_BG(path);
 
-	return(ok);
+	return ok;
 }
 
 int MapClass::Load_Plain_Data(PFile::Path path){
 	
 	char versio[8];
 
-	SDL_RWops* file = SDL_RWFromFile(path, "r");
+	SDL_RWops* file = path.GetRW("rb");
 	if (file == nullptr){
 		return 1;
 	}
@@ -551,28 +550,28 @@ int MapClass::Load_Plain_Data(PFile::Path path){
 	SDL_RWclose(file);
 
 	if (strcmp(versio,"1.3")==0)
-		this->LataaVersio13(path);
+		this->LoadVersion13(path);
 
 	if (strcmp(versio,"1.2")==0)
-		this->LataaVersio12(path);
+		this->LoadVersion12(path);
 
 	if (strcmp(versio,"1.1")==0)
-		this->LataaVersio11(path);
+		this->LoadVersion11(path);
 
 	if (strcmp(versio,"1.0")==0)
-		this->LataaVersio10(path);
+		this->LoadVersion10(path);
 
 	if (strcmp(versio,"0.1")==0)
-		this->LataaVersio01(path);
+		this->LoadVersion01(path);
 
 	return(0);
 }
 
-int MapClass::LataaVersio01(char *filename){
+int MapClass::LoadVersion01(PFile::Path path){
 
 	PK2KARTTA kartta;
 
-	SDL_RWops* file = SDL_RWFromFile(filename, "r");
+	SDL_RWops* file = path.GetRW("r");
 	if (file == nullptr) {
 		return 1;
 	}
@@ -601,11 +600,11 @@ int MapClass::LataaVersio01(char *filename){
 
 	return(0);
 }
-int MapClass::LataaVersio10(char *filename){
+int MapClass::LoadVersion10(PFile::Path path){
 	
 	MapClass *kartta = new MapClass();
 
-	SDL_RWops* file = SDL_RWFromFile(filename, "r");
+	SDL_RWops* file = path.GetRW("r");
 	if (file == nullptr) {
 		return 1;
 	}
@@ -635,17 +634,17 @@ int MapClass::LataaVersio10(char *filename){
 		this->spritet[i] = kartta->spritet[i];
 
 
-	//Lataa_PalikkaPaletti(kartta->palikka_bmp);
-	//Lataa_Taustakuva(kartta->taustakuva);
+	//Load_BlockPalette(kartta->palikka_bmp);
+	//Load_BG(kartta->taustakuva);
 
 	//delete kartta;
 
 	return(0);
 }
-int MapClass::LataaVersio11(char *filename){
+int MapClass::LoadVersion11(PFile::Path path){
 	int virhe = 0;
 
-	SDL_RWops* file = SDL_RWFromFile(filename, "r");
+	SDL_RWops* file = path.GetRW("r");
 	if (file == nullptr) {
 		return 1;
 	}
@@ -684,16 +683,16 @@ int MapClass::LataaVersio11(char *filename){
 		if (spritet[i] != 255)
 			spritet[i] -= 50;
 
-	//Lataa_PalikkaPaletti(this->palikka_bmp);
-	//Lataa_Taustakuva(this->taustakuva);
+	//Load_BlockPalette(this->palikka_bmp);
+	//Load_BG(this->taustakuva);
 
 	return (virhe);
 }
-int MapClass::LataaVersio12(char *filename){
+int MapClass::LoadVersion12(PFile::Path path){
 
 	char luku[8];
 	
-	SDL_RWops* file = SDL_RWFromFile(filename, "r");
+	SDL_RWops* file = path.GetRW("r");
 	if (file == nullptr) {
 		return 1;
 	}
@@ -748,17 +747,17 @@ int MapClass::LataaVersio12(char *filename){
 
 	SDL_RWclose(file);
 
-	//Lataa_PalikkaPaletti(this->palikka_bmp);
-	//Lataa_Taustakuva(this->taustakuva);
+	//Load_BlockPalette(this->palikka_bmp);
+	//Load_BG(this->taustakuva);
 
 	return 0;
 }
-int MapClass::LataaVersio13(char *filename){
+int MapClass::LoadVersion13(PFile::Path path){
 
 	char luku[8];
 	u32 i;
 
-	SDL_RWops* file = SDL_RWFromFile(filename, "r");
+	SDL_RWops* file = path.GetRW("r");
 	if (file == nullptr) {
 		return 1;
 	}
@@ -866,9 +865,6 @@ int MapClass::LataaVersio13(char *filename){
 
 	SDL_RWclose(file);
 
-	//Lataa_PalikkaPaletti(this->palikka_bmp);
-	//Lataa_Taustakuva(this->taustakuva);
-
 	return 0;
 }
 
@@ -938,43 +934,37 @@ MapClass &MapClass::operator = (const MapClass &kartta){
 	return *this;
 }
 
-int MapClass::Lataa_Taustakuva(char *polku, char *filename){
-	int i;
-	char file[PE_PATH_SIZE];
+int MapClass::Load_BG(PFile::Path path){
 	
-	strcpy(file,polku);
-	strcat(file,filename);
+	std::string filename = path.GetFileName();
 
-	if (!PUtils::Find(file)){
-		//strcpy(file,MapClass::pk2_hakemisto);
-		strcpy(file,"gfx/scenery/");
-		strcat(file,filename);
-		if (!PUtils::Find(file)) return 1;
+	if (!path.Find()){
+		
+		path = PFile::Path("gfx" PE_SEP "scenery" PE_SEP);
+		path.SetFile(filename); //SetPath?
+		if (!path.Find())
+			return 1;
+	
 	}
 
-	i = PDraw::image_load(file,true);
+	int i = PDraw::image_load(path, true);
 	if(i == -1) return 2;
 	PDraw::image_copy(i,this->taustakuva_buffer);
 	PDraw::image_delete(i);
 
-	strcpy(this->taustakuva,filename);
+	//strcpy(this->taustakuva, filename.c_str());
 
 	u8 *buffer = NULL;
 	u32 leveys;
-	int x,y;
-	int color;
 
 	PDraw::drawimage_start(taustakuva_buffer,*&buffer,(u32 &)leveys);
 
-	for (x=0;x<640;x++)
-		for (y=0;y<480;y++)
-		{
-			color = buffer[x+y*leveys];
+	for ( int x = 0; x < 640; x++)
+		for ( int y = 0; y < 480; y++) {
 
-			if (color == 255)
-				color--;
-
-			buffer[x+y*leveys] = color;
+			if (buffer[x+y*leveys] == 255)
+				buffer[x+y*leveys] = 254;
+			
 		}
 
 	PDraw::drawimage_end(taustakuva_buffer);
@@ -982,23 +972,20 @@ int MapClass::Lataa_Taustakuva(char *polku, char *filename){
 	return 0;
 }
 
-int MapClass::Lataa_PalikkaPaletti(char *polku, char *filename){
+int MapClass::Load_BlockPalette(PFile::Path path){
 	
-	int img;
-	char file[PE_PATH_SIZE];
-	strcpy(file,"");
-	strcpy(file,polku);
-	strcat(file,filename);
+	std::string filename = path.GetFileName();
 
-	if (!PUtils::Find(file)){
-		//strcpy(file,MapClass::pk2_hakemisto);
-		strcpy(file,"gfx/tiles/");
-		strcat(file,filename);
-		if (!PUtils::Find(file))
+	if (!path.Find()){
+
+		path = PFile::Path("gfx" PE_SEP "tiles" PE_SEP);
+		path.SetFile(filename);
+		if (!path.Find())
 			return 1;
+		
 	}
 
-	img = PDraw::image_load(file,false);
+	int img = PDraw::image_load(path, false);
 	if(img == -1) return 2;
 	PDraw::image_copy(img,this->palikat_buffer);
 	PDraw::image_delete(img);
@@ -1006,11 +993,12 @@ int MapClass::Lataa_PalikkaPaletti(char *polku, char *filename){
 	PDraw::image_delete(this->palikat_vesi_buffer); //Delete last water buffer
 	this->palikat_vesi_buffer = PDraw::image_cut(this->palikat_buffer,0,416,320,32);
 
-	strcpy(this->palikka_bmp,filename);
+	//strcpy(this->palikka_bmp, filename.c_str());
 	return 0;
+
 }
 
-int MapClass::Lataa_TaustaMusiikki(char *filename){
+int MapClass::Load_BGSfx(PFile::Path path){
 
 	return 0;
 }

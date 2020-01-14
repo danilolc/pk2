@@ -145,29 +145,6 @@ void GetLanguage(char* lang) {
 
 }
 
-bool Find(char* filename) {
-
-	PLog::Write(PLog::DEBUG, "PUtils", "Find %s", filename);
-
-	int sz = strlen(filename);
-
-	for (int i = 0; i < sz; i++)
-		if (filename[i] == '/')
-			filename[i] = '\\';
-
-
-	if (INVALID_FILE_ATTRIBUTES == GetFileAttributes(filename) && GetLastError() == ERROR_FILE_NOT_FOUND) {
-
-		PLog::Write(PLog::INFO, "PUtils", "%s not found", filename);
-		return false;
-
-	}
-
-	PLog::Write(PLog::DEBUG, "PUtils", "Found on %s", filename);
-	return true;
-
-}
-
 int CreateDir(std::string path){
 	
 	return CreateDirectory(path.c_str(), NULL);
@@ -222,68 +199,6 @@ int CreateDir(std::string path) {
 	
 }
 
-//Scans directory to find file based on case
-bool NoCaseFind(char *filename) {
-
-	char dir[PE_PATH_SIZE];
-	char file[PE_PATH_SIZE];
-
-	int last = 0;
-	for (int i = 0; filename[i] != '\0'; i++) {
-
-		if (filename[i] == '\\')
-			filename[i] = '/';
-		if (filename[i] == '/')
-			last = i;
-
-	}
-
-	strcpy(dir, filename);
-	dir[last+1] = '\0';
-	
-	strcpy(file, &filename[last+1]);
-
-	std::vector<std::string> list = PFile::Path(dir).scandir("");
-
-	int sz = list.size();
-	for(int i = 0; i < sz; i++) {
-		
-		const char* name = list[i].c_str();
-		
-		if(NoCaseCompare(name, file)) {
-
-			strcpy(filename, dir);
-			strcat(filename, name);
-			PLog::Write(PLog::DEBUG, "PUtils", "Found on %s", filename);
-
-			return true;
-		}
-
-	}
-
-	PLog::Write(PLog::INFO, "PUtils", "%s not found", filename);
-
-	return false;
-
-}
-
-bool Find(char *filename) {
-
-	PLog::Write(PLog::DEBUG, "PUtils", "Find %s", filename);
-
-	struct stat buffer;
-	if(stat(filename, &buffer) == 0) {
-
-		PLog::Write(PLog::DEBUG, "PUtils", "Found on %s", filename);
-		return true;
-
-	}
-
-	PLog::Write(PLog::INFO, "PUtils", "%s not found, trying different cAsE", filename);
-	
-	return NoCaseFind(filename);
-	
-}
 
 
 #endif

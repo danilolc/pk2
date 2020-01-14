@@ -14,7 +14,6 @@ namespace PUtils {
 int Setcwd();
 void Lower(char* string);
 void RemoveSpace(char* string);
-bool Find(char *filename); // TODO - use PFile::Path
 
 int  CreateDir(std::string path);
 void Show_Error(const char* txt);
@@ -24,5 +23,6 @@ void GetLanguage(char* lang);
 void Force_Mobile();
 bool Is_Mobile();
 int Alphabetical_Compare(const char *a, const char *b);
+bool NoCaseCompare(const char* a, const char* b);
 
 }

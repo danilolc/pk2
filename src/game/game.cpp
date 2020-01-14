@@ -81,7 +81,7 @@ int GameClass::Start() {
 
 int GameClass::Finnish() {
 
-	if (PSound::start_music("music" PE_SEP "hiscore.xm") != 0) {
+	if (PSound::start_music(PFile::Path("music" PE_SEP "hiscore.xm")) != 0) {
 
 		PK2_Error("Can't find song01.xm");
 	
@@ -308,12 +308,12 @@ int GameClass::Calculate_Tiles() {
 
 int GameClass::Open_Map() {
 	
-	char path[PE_PATH_SIZE] = "";
-	Episode->Get_Dir(path);
+	PFile::Path path = Episode->Get_Dir();
+	path.SetFile(map_path);
+	
+	if (map->Load(path) == 1) {
 
-	if (map->Lataa(path, map_path) == 1) {
-
-		PLog::Write(PLog::ERROR, "PK2", "Can't load map '%s' at '%s'", map_path, path);
+		PLog::Write(PLog::ERROR, "PK2", "Can't load map at '%s'", map_path, path.c_str());
 		return 1;
 	
 	}
@@ -346,23 +346,26 @@ int GameClass::Open_Map() {
 	Particles_LoadBG(map);
 
 	if ( strcmp(map->musiikki, "") != 0 ) {
-		char music_path[PE_PATH_SIZE] = "";
-		Episode->Get_Dir(music_path);
-		strcat(music_path, map->musiikki);
+		PFile::Path music_path = Episode->Get_Dir();
+		music_path.SetFile(map->musiikki);
 		if (PSound::start_music(music_path) != 0) {
 
-			PLog::Write(PLog::INFO, "PK2", "Can't load '%s'", music_path);
-			strcpy(music_path, "music" PE_SEP);
-			strcat(music_path, map->musiikki);
-			PLog::Write(PLog::INFO, "PK2", "Trying '%s'", music_path);
+			PLog::Write(PLog::INFO, "PK2", "Can't load '%s'", music_path.c_str());
+
+			music_path = PFile::Path("music" PE_SEP);
+			music_path.SetFile(map->musiikki);
+
+			PLog::Write(PLog::INFO, "PK2", "Trying '%s'", music_path.c_str());
 
 			if (PSound::start_music(music_path) != 0) {
 
-				PLog::Write(PLog::WARN, "PK2", "Can't load '%s'. Trying 'music" PE_SEP "song01.xm'", music_path);
+				PLog::Write(PLog::WARN, "PK2", "Can't load '%s'. Trying 'music" PE_SEP "song01.xm'", music_path.c_str());
 
-				if (PSound::start_music("music" PE_SEP "song01.xm") != 0) {
+				music_path.SetFile("song01.xm");
+				if (PSound::start_music(music_path) != 0) {
 					PK2_Error("Can't find song01.xm");
 				}
+				
 			}
 		}
 	}
