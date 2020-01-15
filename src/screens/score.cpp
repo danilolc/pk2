@@ -248,6 +248,8 @@ int Screen_ScoreCount_Init() {
 	map_new_time_record = false;
 	episode_new_record = false;
 
+	Game->score += Game->score_increment;
+
 	// Lasketaan pelaajan kokonaispisteet etuk�teen
 	u32 temp_score = 0;
 	temp_score += Game->score;

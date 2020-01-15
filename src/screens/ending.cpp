@@ -124,7 +124,7 @@ int Screen_Ending_Init() {
 
 	PDraw::image_load(bg_screen, PFile::Path("gfx" PE_SEP "ending.bmp"), true);
 
-	if (PSound::start_music(PFile::Path("music" PE_SEP "intro.xm")) != 0)
+	if (PSound::start_music(PFile::Path("music" PE_SEP "intro.xm")) == -1)
 		PK2_Error("Can't load intro.xm");
 
 	PSound::set_musicvolume(Settings.music_max_volume);

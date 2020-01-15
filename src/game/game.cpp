@@ -81,11 +81,8 @@ int GameClass::Start() {
 
 int GameClass::Finnish() {
 
-	if (PSound::start_music(PFile::Path("music" PE_SEP "hiscore.xm")) != 0) {
-
-		PK2_Error("Can't find song01.xm");
-	
-	}
+	if (PSound::start_music(PFile::Path("music" PE_SEP "hiscore.xm")) == -1)
+		PK2_Error("Can't find hiscore.xm");
 	
 	this->level_clear = true;
 	

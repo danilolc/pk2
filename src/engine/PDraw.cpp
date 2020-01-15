@@ -302,7 +302,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
 
     int y_end = src_y + src_h;
     if (dst_y + src_h > screen_height)
-        y_end -= src_h - screen_height + dst_y;
+        y_end -= src_h - screenPitch + dst_y;
 
     if (x_start >= x_end || y_start >= y_end) return -1;    
 
@@ -316,8 +316,20 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
                 int screen_x = posx + dst_x - src_x;
                 int screen_y = posy + dst_y - src_y;
                 
-                u8 color2 = screenPix[ screen_x + screenPitch*screen_y ];
-                screenPix[ screen_x + screenPitch*screen_y ] = blend_colors(color1, color2, alpha) + colorsum;
+                int fy = screen_x + screenPitch * screen_y;
+
+                // TODO - remove this
+                if (fy >= screenPitch * screen_height || fy < 0) {
+
+                    PLog::Write(PLog::FATAL, "PDraw", "Drawin out of bounds");
+                    drawscreen_end();
+                    drawimage_end(index);
+                    return 1;
+
+                }
+
+                u8 color2 = screenPix[fy];
+                screenPix[fy] = blend_colors(color1, color2, alpha) + colorsum;
             }
 
         }

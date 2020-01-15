@@ -95,7 +95,7 @@ int Screen_Intro_Init() {
 	PDraw::image_delete(bg_screen);
 	bg_screen = PDraw::image_load(PFile::Path("gfx/intro.bmp"), true);
 
-	if (PSound::start_music(PFile::Path("music" PE_SEP "intro.xm")) != 0)
+	if (PSound::start_music(PFile::Path("music" PE_SEP "intro.xm")) == -1)
 		PK2_Error("Can't load intro.xm");
 
 	PSound::set_musicvolume(Settings.music_max_volume);

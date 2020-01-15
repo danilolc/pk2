@@ -132,6 +132,9 @@ int PFont::write_trasparent(int posx, int posy, const char* text, int alpha) {
 	u8 color1, color2, color3;
 	char curr_char;
 
+	int w, h;
+	PDraw::get_buffer_size(&w, &h);
+
 	if (alpha > 100) alpha = 100;
 	int a1 = alpha;
 	int a2 = 100 - alpha;
@@ -143,29 +146,29 @@ int PFont::write_trasparent(int posx, int posy, const char* text, int alpha) {
 		curr_char = text[i];
 		int ix = charlist[(u8)(curr_char&~' ')];
 		if (ix > -1){
-			for (uint x = 0; x < char_w; x++) {
+			for (int x = 0; x < char_w; x++) {
 				
 				int fx = posx + x + i * char_w;
-				if(fx >= back_w) break; //Screen weight
+				if(fx < 0 || fx >= w) break;
 
-				for (uint y = 0; y < char_h; y++) {
+				for (int y = 0; y < char_h; y++) {
+					
+					int fy = posy + y;
+					if (fy < 0 || fy >= h) break;
 
-					color1 = txt_buffer[ix+x+y*txt_w];
+
+					color1 = txt_buffer[ix + x + y * txt_w];
 
 					if (color1 != 255) {
-						
-						int fy = posy + y;
-						fy *= back_w;
-						fy += fx;
-
+					
 						// Mix colors
 						color1 &= (u8)0b00011111;
-						color2 = back_buffer[fy];
+						color2 = back_buffer[fx + fy * back_w];
 						color3 = color2 & (u8)0b11100000;
 						color2-= color3;
 						color1 = (color1 * a1 + color2 * a2)/100;
 
-						back_buffer[fy] = color1 + color3;
+						back_buffer[fx + fy * back_w] = color1 + color3;
 
 					}
 				}

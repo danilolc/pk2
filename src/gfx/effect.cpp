@@ -9,13 +9,13 @@
 
 #include <cstdlib>
 
-void Effect_Feathers(u32 x, u32 y) {
+void Effect_Feathers(double x, double y) {
 	for (int i=0;i<9;i++)//6
 		Particles_New(PARTICLE_FEATHER,x+rand()%17-rand()%17,y+rand()%20-rand()%10,
 							(rand()%16-rand()%16)/10.0,(45+rand()%45)/100.0,300+rand()%40,0,0);
 }
 
-void Effect_Splash(u32 x, u32 y, u8 color) {
+void Effect_Splash(double x, double y, u8 color) {
 	/*
 	for (int i=0;i<12;i++)
 		Particles_New(	PARTICLE_LIGHT,x+rand()%17-13,y+rand()%17-13,
@@ -32,7 +32,7 @@ void Effect_Splash(u32 x, u32 y, u8 color) {
 							rand()%50+40,0.025,color);//0.015
 }
 
-void Effect_Explosion(u32 x, u32 y, u8 color) {
+void Effect_Explosion(double x, double y, u8 color) {
 	int i;
 
 	for (i=0;i<3;i++)
@@ -56,7 +56,7 @@ void Effect_Explosion(u32 x, u32 y, u8 color) {
 							rand()%40+60,0.025,color);
 }
 
-void Effect_Smoke(u32 x, u32 y, u8 color) {
+void Effect_Smoke(double x, double y, u8 color) {
 	for (int i=0;i<3;i++)
 		Particles_New(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%3)+3) / -10.0/*-0.3*/,450,0.0,color);
@@ -65,45 +65,45 @@ void Effect_Smoke(u32 x, u32 y, u8 color) {
 							0,-0.3,rand()%50+60,0,color);
 }
 
-void Effect_SmokeClouds(u32 x, u32 y) {
+void Effect_SmokeClouds(double x, double y) {
 	for (int i=0;i<5;i++)
 		Particles_New(	PARTICLE_SMOKE,x+rand()%17-32,y+rand()%17,
 							0,double((rand()%3)+3) / -10.0/*-0.3*/,450,0.0,0);
 }
 
-void Effect_Stars(u32 x, u32 y, u8 color) {
-	for (int i=0;i<5;i++)
+void Effect_Stars(double x, double y, u8 color) {
+	for (int i = 0; i < 5; i++)
 		Particles_New(PARTICLE_STAR,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0/* 0.05*/,color);//300
 
 	for (int i=0;i<3;i++)//12
 		Particles_New(	PARTICLE_POINT,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0,color);
 }
 
-void Effect_Destruction(u8 tehoste, u32 x, u32 y) {
+void Effect_Destruction(u8 tehoste, double x, double y) {
 	switch (tehoste){
-		case FX_DESTRUCT_HOYHENET			: Effect_Feathers(x, y); break;
-		case FX_DESTRUCT_TAHDET_HARMAA		: Effect_Stars(x,y,0); break;
-		case FX_DESTRUCT_TAHDET_SININEN	: Effect_Stars(x,y,32); break;
-		case FX_DESTRUCT_TAHDET_PUNAINEN	: Effect_Stars(x,y,64); break;
-		case FX_DESTRUCT_TAHDET_VIHREA		: Effect_Stars(x,y,96); break;
-		case FX_DESTRUCT_TAHDET_ORANSSI	: Effect_Stars(x,y,128); break;
-		case FX_DESTRUCT_TAHDET_VIOLETTI	: Effect_Stars(x,y,160); break;
-		case FX_DESTRUCT_TAHDET_TURKOOSI	: Effect_Stars(x,y,192); break;
-		case FX_DESTRUCT_RAJAHDYS_HARMAA	: Effect_Explosion(x,y,0); break;
-		case FX_DESTRUCT_RAJAHDYS_SININEN	: Effect_Explosion(x,y,32); break;
-		case FX_DESTRUCT_RAJAHDYS_PUNAINEN	: Effect_Explosion(x,y,64); break;
-		case FX_DESTRUCT_RAJAHDYS_VIHREA	: Effect_Explosion(x,y,96); break;
-		case FX_DESTRUCT_RAJAHDYS_ORANSSI	: Effect_Explosion(x,y,128); break;
-		case FX_DESTRUCT_RAJAHDYS_VIOLETTI	: Effect_Explosion(x,y,160); break;
-		case FX_DESTRUCT_RAJAHDYS_TURKOOSI	: Effect_Explosion(x,y,192); break;
-		case FX_DESTRUCT_SAVU_HARMAA		: Effect_Smoke(x,y,0); break;
-		case FX_DESTRUCT_SAVU_SININEN		: Effect_Smoke(x,y,32); break;
-		case FX_DESTRUCT_SAVU_PUNAINEN		: Effect_Smoke(x,y,64); break;
-		case FX_DESTRUCT_SAVU_VIHREA		: Effect_Smoke(x,y,96); break;
-		case FX_DESTRUCT_SAVU_ORANSSI		: Effect_Smoke(x,y,128); break;
-		case FX_DESTRUCT_SAVU_VIOLETTI		: Effect_Smoke(x,y,160); break;
-		case FX_DESTRUCT_SAVU_TURKOOSI		: Effect_Smoke(x,y,192); break;
-		case FX_DESTRUCT_SAVUPILVET		: Effect_SmokeClouds(x,y); break;
+		case FX_DESTRUCT_HOYHENET          : Effect_Feathers(x, y); break;
+		case FX_DESTRUCT_TAHDET_HARMAA     : Effect_Stars(x,y,0); break;
+		case FX_DESTRUCT_TAHDET_SININEN	   : Effect_Stars(x,y,32); break;
+		case FX_DESTRUCT_TAHDET_PUNAINEN   : Effect_Stars(x,y,64); break;
+		case FX_DESTRUCT_TAHDET_VIHREA     : Effect_Stars(x,y,96); break;
+		case FX_DESTRUCT_TAHDET_ORANSSI    : Effect_Stars(x,y,128); break;
+		case FX_DESTRUCT_TAHDET_VIOLETTI   : Effect_Stars(x,y,160); break;
+		case FX_DESTRUCT_TAHDET_TURKOOSI   : Effect_Stars(x,y,192); break;
+		case FX_DESTRUCT_RAJAHDYS_HARMAA   : Effect_Explosion(x,y,0); break;
+		case FX_DESTRUCT_RAJAHDYS_SININEN  : Effect_Explosion(x,y,32); break;
+		case FX_DESTRUCT_RAJAHDYS_PUNAINEN : Effect_Explosion(x,y,64); break;
+		case FX_DESTRUCT_RAJAHDYS_VIHREA   : Effect_Explosion(x,y,96); break;
+		case FX_DESTRUCT_RAJAHDYS_ORANSSI  : Effect_Explosion(x,y,128); break;
+		case FX_DESTRUCT_RAJAHDYS_VIOLETTI : Effect_Explosion(x,y,160); break;
+		case FX_DESTRUCT_RAJAHDYS_TURKOOSI : Effect_Explosion(x,y,192); break;
+		case FX_DESTRUCT_SAVU_HARMAA       : Effect_Smoke(x,y,0); break;
+		case FX_DESTRUCT_SAVU_SININEN      : Effect_Smoke(x,y,32); break;
+		case FX_DESTRUCT_SAVU_PUNAINEN     : Effect_Smoke(x,y,64); break;
+		case FX_DESTRUCT_SAVU_VIHREA       : Effect_Smoke(x,y,96); break;
+		case FX_DESTRUCT_SAVU_ORANSSI      : Effect_Smoke(x,y,128); break;
+		case FX_DESTRUCT_SAVU_VIOLETTI     : Effect_Smoke(x,y,160); break;
+		case FX_DESTRUCT_SAVU_TURKOOSI     : Effect_Smoke(x,y,192); break;
+		case FX_DESTRUCT_SAVUPILVET        : Effect_SmokeClouds(x,y); break;
 		default	: break;
 	}
 }
