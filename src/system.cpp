@@ -83,7 +83,7 @@ bool FindAsset(PFile::Path* path, const char* default_dir) {
 			path->SetFile(filename);
 			if (!path->Find()) {
 
-				PLog::Write(PLog::ERROR, "PK2", "Can't find %s", path->c_str());
+				PLog::Write(PLog::ERR, "PK2", "Can't find %s", path->c_str());
 				return false;
 
 			}

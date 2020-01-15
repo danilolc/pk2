@@ -486,8 +486,8 @@ int MapClass::Tallenna(char *filename){
 	}
 
 	PFile::CloseRW(file);
-
-	return 0;*/
+*/
+	return 0;
 }
 
 int MapClass::Load(PFile::Path path){

@@ -45,7 +45,7 @@ Zip* OpenZip(std::string path) {
     SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
 	if (rw == NULL) {
 
-        PLog::Write(PLog::ERROR, "PFile", "Can't open %s", path.c_str());
+        PLog::Write(PLog::ERR, "PFile", "Can't open %s", path.c_str());
 		return nullptr;
 
     }
@@ -479,7 +479,7 @@ RW* Path::GetRW(const char* mode) {
 		zip_stat_init(&st);
 		if (zip_stat(this->zip_file->zip, this->c_str(), 0, &st) == -1) {
 
-			PLog::Write(PLog::ERROR, "PFile", "Can't get RW from zip \"%s\", file \"%s\"", this->zip_file->name.c_str(), this->c_str());
+			PLog::Write(PLog::ERR, "PFile", "Can't get RW from zip \"%s\", file \"%s\"", this->zip_file->name.c_str(), this->c_str());
 			return nullptr;
 
 		}
@@ -488,7 +488,7 @@ RW* Path::GetRW(const char* mode) {
 
 		if (!zfile) {
 
-			PLog::Write(PLog::ERROR, "PFile", "RW from zip \"%s\", file \"%s\" is NULL", this->zip_file->name.c_str(), this->c_str());
+			PLog::Write(PLog::ERR, "PFile", "RW from zip \"%s\", file \"%s\" is NULL", this->zip_file->name.c_str(), this->c_str());
 			return nullptr;
 
 		}
@@ -508,7 +508,7 @@ RW* Path::GetRW(const char* mode) {
 	
 	if (!ret) {
 
-		PLog::Write(PLog::ERROR, "PFile", "Can't get RW from file \"%s\"", this->c_str());
+		PLog::Write(PLog::ERR, "PFile", "Can't get RW from file \"%s\"", this->c_str());
 		return nullptr;
 
 	}
@@ -524,7 +524,7 @@ int WriteRW(RW* rw, const void* buffer, int len) {
 
 	if (rwops->hidden.unknown.data1 != nullptr) {
 	
-		PLog::Write(PLog::ERROR, "PFile", "Can't write const RW");
+		PLog::Write(PLog::ERR, "PFile", "Can't write const RW");
 		return 0;
 	
 	}
@@ -544,7 +544,7 @@ int CloseRW(RW* rw) {
 
 	if (!rw) {
 
-		PLog::Write(PLog::ERROR, "PFile", "Tried to close a NULL rw");
+		PLog::Write(PLog::ERR, "PFile", "Tried to close a NULL rw");
 		return -1;
 
 	}
@@ -558,7 +558,7 @@ int CloseRW(RW* rw) {
 
 	if (ret != 0) {
 
-		PLog::Write(PLog::ERROR, "PFile", "Error freeing rw");
+		PLog::Write(PLog::ERR, "PFile", "Error freeing rw");
 
 	}
 

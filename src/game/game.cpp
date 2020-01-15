@@ -310,7 +310,7 @@ int GameClass::Open_Map() {
 	
 	if (map->Load(path) == 1) {
 
-		PLog::Write(PLog::ERROR, "PK2", "Can't load map at '%s'", map_path, path.c_str());
+		PLog::Write(PLog::ERR, "PK2", "Can't load map at '%s'", map_path, path.c_str());
 		return 1;
 	
 	}
@@ -348,7 +348,7 @@ int GameClass::Open_Map() {
 
 		if (!FindAsset(&music_path, "music" PE_SEP)) {
 
-			PLog::Write(PLog::ERROR, "PK2", "Can't find music \"%s\", trying \"song01.xm\"", music_path.GetFileName().c_str());
+			PLog::Write(PLog::ERR, "PK2", "Can't find music \"%s\", trying \"song01.xm\"", music_path.GetFileName().c_str());
 			music_path = PFile::Path("music" PE_SEP "song01.xm");
 
 		}

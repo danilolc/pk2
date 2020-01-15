@@ -80,7 +80,7 @@ int Prototypes_get(const char* name) {
 
 			} else {
 
-				PLog::Write(PLog::ERROR, "PK2", "Can't find sound %s", protot.aanitiedostot[i]);
+				PLog::Write(PLog::ERR, "PK2", "Can't find sound %s", protot.aanitiedostot[i]);
 
 			}
 		}

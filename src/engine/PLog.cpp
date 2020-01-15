@@ -54,8 +54,8 @@ void Write(u8 level, const char* origin, const char* format, ...) {
             android_level = ANDROID_LOG_INFO; break;
         case WARN:
             android_level = ANDROID_LOG_WARN; break;
-        case ERROR:
-            android_level = ANDROID_LOG_ERROR; break;
+        case ERR:
+            android_level = ANDROID_LOG_ERR; break;
         case FATAL:
             android_level = ANDROID_LOG_FATAL; break;
         default:
@@ -77,8 +77,8 @@ void Write(u8 level, const char* origin, const char* format, ...) {
             level_name = ANSI_COLOR_GREEN "[INFO]" ANSI_COLOR_RESET; break;
         case WARN:
             level_name = ANSI_COLOR_YELLOW "[WARN]" ANSI_COLOR_RESET; break;
-        case ERROR:
-            level_name = ANSI_COLOR_RED "[ERROR]" ANSI_COLOR_RESET; break;
+        case ERR:
+            level_name = ANSI_COLOR_RED "[ERR]" ANSI_COLOR_RESET; break;
         case FATAL:
             level_name = ANSI_COLOR_FATAL "[FATAL]" ANSI_COLOR_RESET; break;
         default:

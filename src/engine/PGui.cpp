@@ -61,7 +61,7 @@ int update(){
 				finger = SDL_GetTouchFinger(id, j);
 				if(finger == nullptr) {
 
-					PLog::Write(PLog::ERROR, "PGui", SDL_GetError());
+					PLog::Write(PLog::ERR, "PGui", SDL_GetError());
 					SDL_ClearError();
 				
 				} else {
@@ -117,7 +117,7 @@ int create(int x, int y, int w, int h, u8 alpha, PFile::Path path, u32* key) {
 		
 		if(surface == NULL) {
 
-			PLog::Write(PLog::ERROR, "PGui", IMG_GetError());
+			PLog::Write(PLog::ERR, "PGui", IMG_GetError());
 			SDL_ClearError();
 			gui.set = false;
 			return -1;

@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
 
 	if(PK2_error) {
 
-		PLog::Write(PLog::ERROR, "PK2", PK2_error_msg);
+		PLog::Write(PLog::ERR, "PK2", PK2_error_msg);
 		PUtils::Show_Error(PK2_error_msg);
 		
 	}

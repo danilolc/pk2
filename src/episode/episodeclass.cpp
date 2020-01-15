@@ -68,7 +68,7 @@ int EpisodeClass::Save_Scores() {
 	PFile::RW* file = path.GetRW("wb");
 	if (file == nullptr) {
 
-		PLog::Write(PLog::ERROR, "PK2", "Can't saving scores");
+		PLog::Write(PLog::ERR, "PK2", "Can't saving scores");
 		return 1;
 
 	}

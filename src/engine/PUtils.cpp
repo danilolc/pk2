@@ -205,7 +205,8 @@ int CreateDir(std::string path) {
 
 void Show_Error(const char* txt) {
 	
-	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", txt, NULL);
+	// TODO
+	//SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERR, "Error", txt, NULL);
 
 }
 

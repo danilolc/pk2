@@ -4,6 +4,7 @@
 //#########################
 #include "screens/screens.hpp"
 
+#include "engine/PLog.hpp"
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
@@ -281,9 +282,16 @@ int Screen_Map_Init() {
 
 	degree = degree_temp;
 
-	PDraw::image_load(bg_screen, Episode->Get_Dir() + "map.bmp", true);
-	if (bg_screen == -1) {
-		PDraw::image_load(bg_screen, PFile::Path("gfx" PE_SEP "map.bmp"), true);
+	PFile::Path path = Episode->Get_Dir();
+	path.SetFile("map.bmp");
+
+	if (FindAsset(&path, "gfx" PE_SEP)) {
+
+		PDraw::image_load(bg_screen, path, true);
+
+	} else {
+
+		PLog::Write(PLog::ERR, "PK2", "Can't load map bg");
 
 	}
 
@@ -294,6 +302,7 @@ int Screen_Map_Init() {
 	PDraw::fade_in(PDraw::FADE_SLOW);
 
 	return 0;
+	
 }
 
 int Screen_Map() {

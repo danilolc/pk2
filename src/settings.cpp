@@ -102,7 +102,7 @@ int Settings_Save() {
 
 	if (file == nullptr) {
 
-		PLog::Write(PLog::ERROR, "PK2", "Can't save settings");
+		PLog::Write(PLog::ERR, "PK2", "Can't save settings");
 		return 1;
 	
 	}

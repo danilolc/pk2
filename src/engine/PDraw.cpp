@@ -116,7 +116,7 @@ int image_load(PFile::Path path, bool getPalette) {
 
     if (index == -1) {
 
-        PLog::Write(PLog::ERROR, "PDraw", "image_load got index -1");
+        PLog::Write(PLog::ERR, "PDraw", "image_load got index -1");
         return -1;
     
     }
@@ -127,14 +127,14 @@ int image_load(PFile::Path path, bool getPalette) {
 
     if (imageList[index] == NULL) {
 
-        PLog::Write(PLog::ERROR, "PDraw", "Couldn't load %s", path.c_str());
+        PLog::Write(PLog::ERR, "PDraw", "Couldn't load %s", path.c_str());
         return -1;
     
     }
 
     if( imageList[index]->format->BitsPerPixel != 8) {
 
-        PLog::Write(PLog::ERROR, "PDraw", "Failed to open %s, just 8bpp indexed images!", path.c_str());
+        PLog::Write(PLog::ERR, "PDraw", "Failed to open %s, just 8bpp indexed images!", path.c_str());
         image_delete(index);
         return -1;
     
@@ -195,7 +195,7 @@ int image_cut(int ImgIndex, RECT area) {
 
     if (index == -1) {
 
-        PLog::Write(PLog::ERROR, "PDraw", "image_cut got index -1");
+        PLog::Write(PLog::ERR, "PDraw", "image_cut got index -1");
         return -1;
     
     }
@@ -532,7 +532,7 @@ int font_create(int image, int x, int y, int char_w, int char_h, int count) {
     int index = findfreefont();
     if (index == -1) {
 
-        PLog::Write(PLog::ERROR, "PDraw", "font_create got index -1");
+        PLog::Write(PLog::ERR, "PDraw", "font_create got index -1");
         return -1;
     
     }
@@ -547,7 +547,7 @@ int font_create(PFile::Path path) {
     int index = findfreefont();
     if (index == -1) {
 
-        PLog::Write(PLog::ERROR, "PDraw", "font_create got index -1");
+        PLog::Write(PLog::ERR, "PDraw", "font_create got index -1");
         return -1;
     
     }
@@ -556,7 +556,7 @@ int font_create(PFile::Path path) {
 
     if (fontList[index]->load(path) == -1) {
 
-        PLog::Write(PLog::ERROR, "PDraw", "Can't load a font from file!");
+        PLog::Write(PLog::ERR, "PDraw", "Can't load a font from file!");
         delete fontList[index];
         return -1;
     

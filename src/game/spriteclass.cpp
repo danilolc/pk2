@@ -630,7 +630,7 @@ int PrototypeClass::Load(PFile::Path path){
 	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr) {
 
-		PLog::Write(PLog::ERROR, "PK2", "failed to open %s", path.c_str());
+		PLog::Write(PLog::ERR, "PK2", "failed to open %s", path.c_str());
 		return 1;
 	
 	}
@@ -677,7 +677,7 @@ int PrototypeClass::Load(PFile::Path path){
 	path.SetFile(this->kuvatiedosto);
 	if (!FindAsset(&path, "sprites" PE_SEP)) {
 
-		PLog::Write(PLog::ERROR, "PK2", "Can't load sprite image %s", this->kuvatiedosto);
+		PLog::Write(PLog::ERR, "PK2", "Can't load sprite image %s", this->kuvatiedosto);
 		return -1;
 
 	}
@@ -926,12 +926,14 @@ int SpriteClass::Piirra(int kamera_x, int kamera_y){
 	}
 	
 	if (flip_x) {
-		if(this->invisible) //TODO - implement
+		
+		if(this->invisible)
 			PDraw::image_cliptransparent(tyyppi->framet_peilikuva[frame], x-l-1, y-h, 40, this->tyyppi->vari);
 		else
 			PDraw::image_clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);
 
 	} else {
+
 		if(this->invisible)
 			PDraw::image_cliptransparent(tyyppi->framet[frame], x-l-1, y-h, 40, this->tyyppi->vari);
 		else

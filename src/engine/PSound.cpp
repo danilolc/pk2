@@ -118,7 +118,7 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 	int channel = find_channel();
 	if (channel == -1) {
 	
-		//PLog::Write(PLog::ERROR, "PSound", "play_sfx got index -1");
+		//PLog::Write(PLog::ERR, "PSound", "play_sfx got index -1");
 		return -1;
 	
 	}
@@ -132,7 +132,7 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 		int error = Change_Frequency(index, channel, freq);
 		if (error != 0) {
 			
-			PLog::Write(PLog::ERROR, "PSound", "Can't change frequency");
+			PLog::Write(PLog::ERR, "PSound", "Can't change frequency");
 			chunks[index]->abuf = bkp_buf;
 			chunks[index]->alen = bkp_len;
 			return -1;
@@ -151,7 +151,7 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 
 	if (error == -1) {
 
-		PLog::Write(PLog::ERROR, "PSound", "Can't play chunk");
+		PLog::Write(PLog::ERR, "PSound", "Can't play chunk");
 		return -1;
 
 	}
@@ -204,7 +204,7 @@ int start_music(PFile::Path path) {
 	}
 	if (Mix_PlayMusic(music, -1) == -1) {
 
-		PLog::Write(PLog::ERROR, "PSound", Mix_GetError());
+		PLog::Write(PLog::ERR, "PSound", Mix_GetError());
 		Mix_ClearError();
 		return -1;
 	
