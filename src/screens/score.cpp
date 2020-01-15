@@ -18,6 +18,7 @@
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
+#include "engine/PUtils.hpp"
 
 #include <cstring>
 
@@ -233,7 +234,9 @@ int Draw_ScoreCount() {
 
 int Screen_ScoreCount_Init() {
 
-	GUI_Change(UI_CURSOR);
+	if(PUtils::Is_Mobile())
+		GUI_Change(UI_CURSOR);
+	
 	if (Settings.isWide)
 		PDraw::set_xoffset(80);
 	else

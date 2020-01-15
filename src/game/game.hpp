@@ -19,7 +19,7 @@ class GameClass {
 
 		int level_id = -1;
 		MapClass* map = nullptr;
-		char map_path[PE_PATH_SIZE];
+		std::string map_file;
 
 		PK2BLOCK     palikat[300];
 		PK2BLOCK     lasketut_palikat[150];//150
@@ -66,7 +66,7 @@ class GameClass {
 		int item_pannel_x = -215;
 
 		GameClass(int idx);
-		GameClass(const char* map);
+		GameClass(std::string map_file);
 		~GameClass();
 
 		int Start();

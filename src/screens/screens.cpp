@@ -39,8 +39,6 @@ int Screen_First_Start() {
 	PDraw::screen_fill(0);
 	srand((unsigned)time(NULL));
 	
-	//GUI_Change(UI_TOUCH_TO_START);
-	
 	Calculate_SinCos();
 
 	Fadetext_Init();

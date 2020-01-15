@@ -4,7 +4,6 @@
 //#########################
 #include "engine/PInput.hpp"
 
-#include "engine/PGui.hpp"
 #include "engine/PDraw.hpp"
 #include "engine/PUtils.hpp"
 #include "engine/platform.hpp"
@@ -222,6 +221,42 @@ void SetMousePosition(int x, int y) {
 }
 
 #endif
+
+/*int update(){
+
+	GUI* gui;
+	SDL_Finger* finger = nullptr;
+	SDL_TouchID id = SDL_GetTouchDevice(0);
+
+	int fingers = SDL_GetNumTouchFingers(id);
+
+	for(int i = 0; i < MAX_GUI; i++){
+		gui = gui_list + i;
+		gui->pressed = false;
+		if(gui->set && gui->active && fingers > 0){
+			for(int j = 0; j < fingers; j++){
+
+				finger = SDL_GetTouchFinger(id, j);
+				if(finger == nullptr) {
+
+					PLog::Write(PLog::ERR, "PGui", SDL_GetError());
+					SDL_ClearError();
+				
+				} else {
+
+					int x = finger->x;
+					int y = finger->y;
+					if(x > gui->pos_x && x < gui->width+gui->pos_x && y > gui->pos_y && y < gui->height+gui->pos_y)
+						gui->pressed = true;
+					
+				}
+			}
+		}
+	}
+
+	return 0;
+
+}*/
 
 int GetTouchPos(float& x, float& y) {
 

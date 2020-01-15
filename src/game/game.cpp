@@ -26,9 +26,9 @@ GameClass::GameClass(int idx) {
 
 }
 
-GameClass::GameClass(const char* map) {
+GameClass::GameClass(std::string map_file) {
 
-	strcpy(this->map_path, map);
+	this->map_file = map_file;
 	this->from_index = false;
 
 }
@@ -51,7 +51,7 @@ int GameClass::Start() {
 
 		int index = this->level_id;
 
-		strcpy(this->map_path, Episode->levels_list[index].tiedosto);
+		this->map_file = Episode->levels_list[index].tiedosto;
 		if (Episode->levels_list[index].cleared)
 			this->repeating = true;
 		else
@@ -306,11 +306,11 @@ int GameClass::Calculate_Tiles() {
 int GameClass::Open_Map() {
 	
 	PFile::Path path = Episode->Get_Dir();
-	path.SetFile(map_path);
+	path.SetFile(map_file);
 	
 	if (map->Load(path) == 1) {
 
-		PLog::Write(PLog::ERR, "PK2", "Can't load map at '%s'", map_path, path.c_str());
+		PLog::Write(PLog::ERR, "PK2", "Can't load map \"%s\" at \"%s\"", map_file.c_str(), path.c_str());
 		return 1;
 	
 	}

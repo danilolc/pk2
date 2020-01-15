@@ -5,7 +5,6 @@
 #include "engine/PDraw.hpp"
 
 #include "engine/PFont.hpp"
-#include "engine/PGui.hpp"
 #include "engine/PLog.hpp"
 
 #include <algorithm>
@@ -32,6 +31,8 @@ SDL_Palette* game_palette = NULL;
 std::vector<SDL_Surface*> imageList;
 std::vector<PFont*> fontList;
 
+std::vector<Gui*> gui_textures;
+
 int screen_width;
 int screen_height;
 
@@ -44,6 +45,82 @@ int fade_speed = 0;
 int alpha = 100;
 
 int x_offset = 0;
+
+Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
+
+    SDL_Texture* tex = NULL;
+
+    if (path.GetFileName().size() > 0) {
+
+        PFile::RW* rw = path.GetRW("rb");
+        tex = IMG_LoadTexture_RW(renderer, (SDL_RWops*)rw, 0);
+        PFile::CloseRW(rw);
+
+        if (tex == NULL) {
+
+            PLog::Write(PLog::ERR, "PDraw", "Can't load gui texture %s", path.c_str());
+            return nullptr;
+
+        }
+
+    }
+
+    Gui* gui = new Gui;
+
+    gui->texture = tex;
+    gui->x = x;
+    gui->y = y;
+    gui->w = w;
+    gui->h = h;
+    gui->alpha = alpha;
+    gui->active = false;
+
+    gui_textures.push_back(gui);
+    return gui;
+
+}
+
+int remove_gui(Gui* gui) {
+
+    //gui_textures.erase(gui);
+    auto rem = std::remove(gui_textures.begin(), gui_textures.end(), gui);
+    gui_textures.erase(rem, gui_textures.end());
+
+    SDL_DestroyTexture((SDL_Texture*)gui->texture);
+
+    delete gui;
+
+    return 0;
+
+}
+
+int draw_gui() {
+
+	int w, h;
+	SDL_GetRendererOutputSize(renderer, &w, &h);
+	
+	float prop_x = (float)w / 1920;
+	float prop_y = (float)h / 1080;
+
+	for(Gui* gui : gui_textures){
+
+		if(gui->active && gui->texture != NULL) {
+
+			SDL_Rect rect;
+			rect.x = gui->x * prop_x;
+			rect.y = gui->y * prop_y;
+			rect.w = gui->w * prop_x;
+			rect.h = gui->h * prop_y;
+			SDL_SetTextureAlphaMod((SDL_Texture*)gui->texture, (gui->alpha * alpha) / 256);
+			SDL_RenderCopy(renderer, (SDL_Texture*)gui->texture, NULL, &rect);
+            
+		}
+
+	}
+    
+    return 0;
+
+}
 
 int findfreeimage() {
     int size = imageList.size();
@@ -749,8 +826,6 @@ int init(int width, int height, const char* name, const char* icon) {
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
     SDL_FillRect(frameBuffer8, NULL, 255);
 
-    PGui::init(width, height, renderer);
-
     SDL_Rect r = {0, 0, width, height};
     SDL_SetClipRect(frameBuffer8, &r);
 
@@ -819,7 +894,7 @@ void update(bool draw) {
         else
             SDL_RenderCopy(renderer, texture, NULL, &screen_dest);
 
-        PGui::draw(alpha2);
+        draw_gui();
 
         SDL_RenderPresent(renderer);
 

@@ -21,6 +21,18 @@ struct RECT{
     u32 x, y, w, h;
 };
 
+struct Gui {
+
+    bool active;
+    void* texture;
+    int alpha;
+    int x, y, w, h;
+
+};
+
+Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha);
+int remove_gui(Gui* gui);
+
 bool  is_fading();
 int   fade_out(int speed);
 int   fade_in(int speed);

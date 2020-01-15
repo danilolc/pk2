@@ -14,6 +14,7 @@
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
+#include "engine/PUtils.hpp"
 
 uint intro_counter = 0;
 bool closing_intro = false;
@@ -85,7 +86,9 @@ int Draw_Intro(){
 
 int Screen_Intro_Init() {
 	
-	GUI_Change(UI_TOUCH_TO_START);
+	if(PUtils::Is_Mobile())
+		GUI_Change(UI_TOUCH_TO_START);
+	
 	if (Settings.isWide)
 		PDraw::set_xoffset(80);
 	else

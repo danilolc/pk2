@@ -273,7 +273,9 @@ int Screen_Map_Init() {
 		return 1;
 	}
 
-	GUI_Change(UI_CURSOR);
+	if(PUtils::Is_Mobile())
+		GUI_Change(UI_CURSOR);
+	
 	if (Settings.isWide)
 		PDraw::set_xoffset(80);
 	else

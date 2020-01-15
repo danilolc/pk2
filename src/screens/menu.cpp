@@ -1121,7 +1121,9 @@ int Draw_Menu() {
 
 int Screen_Menu_Init() {
 	
-	GUI_Change(UI_CURSOR);
+	if(PUtils::Is_Mobile())
+		GUI_Change(UI_CURSOR);
+	
 	PDraw::set_xoffset(Settings.isWide? 80 : 0);
 	
 	langlistindex = 0;

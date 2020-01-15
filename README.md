@@ -67,9 +67,12 @@ This example starts the level13.map on dev mode:
 # TODOs and FIXMEs:
 * Jump frames when FPS is slow
 * Super mode -> energy = 0 on touch Pekka
-* Random SIGFAULT while playing
+* Random SIGFAULT while playing?
 * Traduct finnish language
 * Better documentation
 * Audio on Windows/Android
 * SDL Android isn't sending SDL_QUIT event
 * Make the mobile controls
+
+# ROADMAP
+* Load pk2stuff and android controls from zip

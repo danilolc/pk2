@@ -4,12 +4,12 @@
 //#########################
 #pragma once
 
-#include "engine/types.hpp"
+#include "engine/platform.hpp"
 
 struct PK2SETTINGS {
 	char versio[4];
 	bool ladattu; // if it was started here
-	char kieli[128]; // language
+	char kieli[PE_PATH_SIZE]; // language
 
 	// grafiikka
 	u32 ruudun_korkeus; //Not used

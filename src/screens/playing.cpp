@@ -207,7 +207,7 @@ int Draw_InGame_DebugInfo() {
 	sprintf(dluku, "%.7f", Player_Sprite->a); //Player h-speed
 	PDraw::font_write(fontti1, dluku, 10, 440);
 
-	PDraw::font_write(fontti1, Game->map_path, 10, 460);
+	PDraw::font_write(fontti1, Game->map_file.c_str(), 10, 460);
 
 	itoa(Player_Sprite->hyppy_ajastin, lukua, 10);
 	PDraw::font_write(fontti1, lukua, 270, 460);
@@ -553,7 +553,9 @@ int Draw_InGame() {
 
 int Screen_InGame_Init(){
 
-	GUI_Change(UI_GAME_BUTTONS);
+	if(PUtils::Is_Mobile())
+		GUI_Change(UI_GAME_BUTTONS);
+	
 	PDraw::set_xoffset(0);
 
 	if (!Game->isStarted()) {

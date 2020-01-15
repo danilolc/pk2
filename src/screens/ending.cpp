@@ -14,6 +14,7 @@
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
+#include "engine/PUtils.hpp"
 
 #include "engine/types.hpp"
 
@@ -118,7 +119,8 @@ int Draw_EndGame(){
 
 int Screen_Ending_Init() {
 	
-	GUI_Change(UI_TOUCH_TO_START);
+	if(PUtils::Is_Mobile())
+		GUI_Change(UI_TOUCH_TO_START);
 	
 	PDraw::set_xoffset(Settings.isWide? 80 : 0);
 

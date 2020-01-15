@@ -34,24 +34,18 @@ void start_test(const char* arg) {
 	
 	if (arg == NULL) return;
 
-	char buffer[PE_PATH_SIZE];
-	strcpy(buffer, arg);
+	std::string buffer(arg);
 
-	int i;
-	for (i = 0; i < PE_PATH_SIZE; i++)
-		if(buffer[i]=='/' || buffer[i] == '\\')
-			break;
-	buffer[i] = '\0';
+	int sep = buffer.find_last_of(PE_SEP);
 
 	episode_entry episode;
-	episode.name = buffer;
+	episode.name = buffer.substr(0, sep);
 	episode.is_zip = false;
 	Episode = new EpisodeClass("test", episode);
 
-	char* map_path = buffer + i + 1;
-	Game = new GameClass(map_path);
+	Game = new GameClass(buffer.substr(sep + 1));
 
-	PLog::Write(PLog::DEBUG, "testing episode_path '%s' level '%s'", buffer, map_path);
+	PLog::Write(PLog::DEBUG, "PK2", "Testing episode '%s' level '%s'", episode.name.c_str(), Game->map_file.c_str());
 
 }
 
