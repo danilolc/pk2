@@ -4,6 +4,7 @@
 //#########################
 #pragma once
 
+#include "engine/PFile.hpp"
 #include "engine/platform.hpp"
 #include <string>
 
@@ -39,6 +40,6 @@ int PK2_Error(const char* msg);
 
 void Draw_Cursor(int x, int y);
 
-
+bool FindAsset(PFile::Path* path, const char* default_dir);
 
 

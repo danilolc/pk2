@@ -348,26 +348,17 @@ int GameClass::Open_Map() {
 	if ( strcmp(map->musiikki, "") != 0 ) {
 		PFile::Path music_path = Episode->Get_Dir();
 		music_path.SetFile(map->musiikki);
-		if (PSound::start_music(music_path) != 0) {
 
-			PLog::Write(PLog::INFO, "PK2", "Can't load '%s'", music_path.c_str());
+		if (!FindAsset(&music_path, "music" PE_SEP)) {
 
-			music_path = PFile::Path("music" PE_SEP);
-			music_path.SetFile(map->musiikki);
+			PLog::Write(PLog::ERROR, "PK2", "Can't find music \"%s\", trying \"song01.xm\"", music_path.GetFileName().c_str());
+			music_path = PFile::Path("music" PE_SEP "song01.xm");
 
-			PLog::Write(PLog::INFO, "PK2", "Trying '%s'", music_path.c_str());
-
-			if (PSound::start_music(music_path) != 0) {
-
-				PLog::Write(PLog::WARN, "PK2", "Can't load '%s'. Trying 'music" PE_SEP "song01.xm'", music_path.c_str());
-
-				music_path.SetFile("song01.xm");
-				if (PSound::start_music(music_path) != 0) {
-					PK2_Error("Can't find song01.xm");
-				}
-				
-			}
 		}
+		
+		if (PSound::start_music(music_path) != 0)
+			PLog::Write(PLog::FATAL, "PK2", "Can't load any music file");
+
 	}
 	return 0;
 }

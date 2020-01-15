@@ -4,6 +4,7 @@
 //#########################
 #include "system.hpp"
 
+#include "engine/PLog.hpp"
 #include "engine/PUtils.hpp"
 #include "engine/PDraw.hpp"
 #include "settings.hpp"
@@ -61,4 +62,36 @@ void Draw_Cursor(int x, int y){
 
 	PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
 	
+}
+
+bool FindAsset(PFile::Path* path, const char* default_dir) {
+
+	if (!path->Find()) {
+
+		PLog::Write(PLog::WARN, "PK2", "Can't find %s", path->c_str());
+		path->SetPath(default_dir);
+		PLog::Write(PLog::INFO, "PK2", "Trying %s", path->c_str());
+		
+		if (!path->Find()) {
+			
+			PLog::Write(PLog::WARN, "PK2", "Can't find %s", path->c_str());
+			PLog::Write(PLog::INFO, "PK2", "Trying outsize zip");
+
+			std::string filename = path->GetFileName();
+
+			*path = PFile::Path(default_dir);
+			path->SetFile(filename);
+			if (!path->Find()) {
+
+				PLog::Write(PLog::ERROR, "PK2", "Can't find %s", path->c_str());
+				return false;
+
+			}
+		
+		}
+		
+	}
+
+	return true;
+
 }

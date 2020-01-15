@@ -295,6 +295,9 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 
 bool Path::Find() {
 
+	if (this->is_zip)
+		return this->NoCaseFind();
+
 	const char cstr = this->to_str();
 	PLog::Write(PLog::DEBUG, "PFile", "Find %s", cstr);
 
@@ -404,6 +407,9 @@ bool Path::NoCaseFind() {
 
 bool Path::Find() {
 
+	if (this->is_zip)
+		return this->NoCaseFind();
+	
 	const char* cstr = this->c_str();
 
 	PLog::Write(PLog::DEBUG, "PFile", "Find %s", cstr);
@@ -438,9 +444,9 @@ int Path::SetFile(std::string file) {
 
 int Path::SetPath(std::string path) {
 
-	std::string file = this->substr(0, this->find_last_not_of(" ") + 1);
+	this->assign(path + this->GetFileName());
 
-	this->assign(path + file);
+	return 0;
 
 }
 

@@ -936,19 +936,13 @@ MapClass &MapClass::operator = (const MapClass &kartta){
 
 int MapClass::Load_BG(PFile::Path path){
 	
-	std::string filename = path.GetFileName();
-
-	if (!path.Find()){
-		
-		path = PFile::Path("gfx" PE_SEP "scenery" PE_SEP);
-		path.SetFile(filename); //SetPath?
-		if (!path.Find())
-			return 1;
-	
-	}
+	if (!FindAsset(&path, "gfx" PE_SEP "scenery" PE_SEP))
+		return 1;
 
 	int i = PDraw::image_load(path, true);
-	if(i == -1) return 2;
+	if (i == -1)
+		return 2;
+	
 	PDraw::image_copy(i,this->taustakuva_buffer);
 	PDraw::image_delete(i);
 
@@ -974,16 +968,8 @@ int MapClass::Load_BG(PFile::Path path){
 
 int MapClass::Load_BlockPalette(PFile::Path path){
 	
-	std::string filename = path.GetFileName();
-
-	if (!path.Find()){
-
-		path = PFile::Path("gfx" PE_SEP "tiles" PE_SEP);
-		path.SetFile(filename);
-		if (!path.Find())
-			return 1;
-		
-	}
+	if (!FindAsset(&path, "gfx" PE_SEP "tiles" PE_SEP))
+		return 1;
 
 	int img = PDraw::image_load(path, false);
 	if(img == -1) return 2;
