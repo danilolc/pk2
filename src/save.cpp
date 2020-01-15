@@ -79,7 +79,7 @@ int Load_SaveFile() {
 	PFile::RW* file = path.GetRW("rb");
 	if (file == nullptr){
 
-		PLog::Write(PLog::INFO, "PK2", "No save file\n");
+		PLog::Write(PLog::INFO, "PK2", "No save file");
 		return 1;
 	
 	}

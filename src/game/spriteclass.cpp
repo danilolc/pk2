@@ -4,6 +4,8 @@
 //#########################
 #include "game/spriteclass.hpp"
 
+#include "system.hpp"
+
 #include "engine/PDraw.hpp"
 #include "engine/PLog.hpp"
 #include "engine/platform.hpp"
@@ -673,6 +675,13 @@ int PrototypeClass::Load(PFile::Path path){
 
 	// Get sprite bmp
 	path.SetFile(this->kuvatiedosto);
+	if (!FindAsset(&path, "sprites" PE_SEP)) {
+
+		PLog::Write(PLog::ERROR, "PK2", "Can't load sprite image %s", this->kuvatiedosto);
+		return -1;
+
+	}
+
 	int bufferi = PDraw::image_load(path, false);
 	if (bufferi == -1)
 		return 1;

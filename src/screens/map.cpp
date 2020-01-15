@@ -268,7 +268,7 @@ int Play_Music() {
 int Screen_Map_Init() {
 
 	if (!Episode) {
-		PK2_Error("PK2    - ERROR - Episode not started\n");
+		PK2_Error("Episode not started");
 		return 1;
 	}
 

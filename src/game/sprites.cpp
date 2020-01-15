@@ -11,6 +11,7 @@
 #include "game/game.hpp"
 #include "episode/episodeclass.hpp"
 #include "physics.hpp"
+#include "system.hpp"
 
 #include <cstring>
 
@@ -48,7 +49,7 @@ void Prototypes_ClearAll() {
 	next_free_prototype = 0;
 }
 
-int Prototypes_get(PFile::Path path) {
+int Prototypes_get(const char* name) {
 	
 	//Check if have space
 	if(next_free_prototype >= MAX_PROTOTYYPPEJA)
@@ -56,8 +57,12 @@ int Prototypes_get(PFile::Path path) {
 
 	PrototypeClass& protot = Prototypes_List[next_free_prototype];
 
+	PFile::Path sprite_path = Episode->Get_Dir();
+	sprite_path.SetFile(name);
+	FindAsset(&sprite_path, "sprites" PE_SEP);
+
 	//Check if it can be loaded
-	if (protot.Load(path) == 1)
+	if (protot.Load(sprite_path) == 1)
 		return 1;
 
 	protot.indeksi = next_free_prototype;
@@ -67,19 +72,16 @@ int Prototypes_get(PFile::Path path) {
 
 		if (strcmp(protot.aanitiedostot[i],"") != 0) {
 
-			path.SetFile(protot.aanitiedostot[i]);
+			sprite_path.SetFile(protot.aanitiedostot[i]);
 
-			if (path.Find()) {
+			if (FindAsset(&sprite_path, "sprites" PE_SEP)) {
 
-				protot.aanet[i] = PSound::load_sfx(path);
+				protot.aanet[i] = PSound::load_sfx(sprite_path);
 
 			} else {
 
-				path = PFile::Path("sprites" PE_SEP);
-				path.SetFile(protot.aanitiedostot[i]);
+				PLog::Write(PLog::ERROR, "PK2", "Can't find sound %s", protot.aanitiedostot[i]);
 
-				if (path.Find())
-					protot.aanet[i] = PSound::load_sfx(path);
 			}
 		}
 	}
@@ -109,10 +111,7 @@ void Prototypes_get_transformation(int i) {
 
 		if (!loaded) {
 
-			PFile::Path path("sprites" PE_SEP);
-			path.SetFile(Prototypes_List[i].muutos_sprite);
-
-			if (Prototypes_get(path) == 0)
+			if (Prototypes_get(Prototypes_List[i].muutos_sprite) == 0)
 				Prototypes_List[i].muutos = next_free_prototype - 1;
 			
 		}
@@ -138,10 +137,7 @@ void Prototypes_get_bonus(int i) {
 
 		if (!loaded){
 
-			PFile::Path path("sprites" PE_SEP);
-			path.SetFile(Prototypes_List[i].bonus_sprite);
-
-			if (Prototypes_get(path) == 0)
+			if (Prototypes_get(Prototypes_List[i].bonus_sprite) == 0)
 				Prototypes_List[i].bonus = next_free_prototype - 1;
 			
 		}
@@ -167,10 +163,7 @@ void Prototypes_get_ammo1(int i) {
 
 		if (!loaded){
 
-			PFile::Path path("sprites" PE_SEP);
-			path.SetFile(Prototypes_List[i].ammus1_sprite);
-
-			if (Prototypes_get(path) == 0)
+			if (Prototypes_get(Prototypes_List[i].ammus1_sprite) == 0)
 				Prototypes_List[i].ammus1 = next_free_prototype - 1;
 
 		}
@@ -196,10 +189,7 @@ void Prototypes_get_ammo2(int i) {
 
 		if (!loaded) {
 
-			PFile::Path path("sprites" PE_SEP);
-			path.SetFile(Prototypes_List[i].ammus2_sprite);
-
-			if (Prototypes_get(path) == 0)
+			if (Prototypes_get(Prototypes_List[i].ammus2_sprite) == 0)
 				Prototypes_List[i].ammus2 = next_free_prototype - 1;
 
 		}
@@ -218,21 +208,14 @@ int Prototypes_GetAll() {
 			PFile::Path path = Episode->Get_Dir();
 			path.SetFile(Game->map->protot[i]);
 
-			if (Prototypes_get(path) != 0) {
+			if (Prototypes_get(Game->map->protot[i]) != 0) {
 
-				path = PFile::Path("sprites" PE_SEP);
-				path.SetFile(Game->map->protot[i]);
-
-				if (Prototypes_get(path) != 0) {
-
-					PLog::Write(PLog::WARN, "PK2", "Can't load sprite %s. It will not appear", Game->map->protot[i]);
-					next_free_prototype++;
-					
-				}
+				PLog::Write(PLog::WARN, "PK2", "Can't load sprite %s. It will not appear", Game->map->protot[i]);
+				next_free_prototype++;
 
 			}
-		}
-		else {
+
+		} else {
 
 			next_free_prototype++;
 

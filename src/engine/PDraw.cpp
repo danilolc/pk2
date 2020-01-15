@@ -322,7 +322,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
                 // TODO - remove this
                 if (fy >= screenPitch * screen_height || fy < 0) {
 
-                    PLog::Write(PLog::FATAL, "PDraw", "Drawin out of bounds");
+                    //PLog::Write(PLog::FATAL, "PDraw", "Drawin out of bounds");
                     drawscreen_end();
                     drawimage_end(index);
                     return 1;
