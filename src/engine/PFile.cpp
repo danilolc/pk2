@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 
 #include <SDL.h>
+#include <zip.h>
 
 #ifdef __ANDROID__
 #include <android/asset_manager.h>
@@ -17,10 +18,11 @@
 namespace PFile {
 
 struct Zip {
+
+	std::string name;
 	zip_t *zip;
 	zip_source* src;
-	SDL_RWops* rw;
-	std::string name;
+
 };
 
 void CloseZip(Zip* zp) {
@@ -28,32 +30,42 @@ void CloseZip(Zip* zp) {
 	if (zp) {
 	
 		//zip_close(zp->zip);
-		//SDL_RWclose(zp->rw);
+		zip_discard(zp->zip);
+		
 		zip_source_close(zp->src);
 	
 		delete zp;
+		
 	}
 
 }
 
 Zip* OpenZip(std::string path) {
 
-	Zip* ret = new Zip;
-	
-    zip_error err;
-    ret->rw = SDL_RWFromFile(path.c_str(), "r");
-    if (ret->rw == NULL) {
+    SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
+	if (rw == NULL) {
 
         PLog::Write(PLog::ERROR, "PFile", "Can't open %s", path.c_str());
-		delete ret;
 		return nullptr;
 
     }
 
-    FILE* rw_file = ret->rw->hidden.stdio.fp;
-    ret->src = zip_source_filep_create(rw_file, 0, -1, &err);
-    ret->zip = zip_open_from_source(ret->src, ZIP_RDONLY, &err);
-	ret->name = path.substr(path.find_last_of(PE_SEP) + 1);
+	int size = SDL_RWsize(rw);
+
+	void* buffer = malloc(size);
+	SDL_RWread(rw, buffer, size, 1);
+	SDL_RWclose(rw);
+
+	zip_error err;
+	zip_source_t* src = zip_source_buffer_create(buffer, size, 1, &err);
+    
+    zip_t* zip = zip_open_from_source(src, ZIP_RDONLY, &err);
+	std::string name = path.substr(path.find_last_of(PE_SEP) + 1);
+
+	Zip* ret = new Zip;
+	ret->name = name;
+	ret->src = src;
+	ret->zip = zip;
 
     return ret;
 
@@ -150,7 +162,7 @@ std::vector<std::string> scan_zip(Zip* zip_file, const char* path, const char* t
 		if( strstr(st.name, path) == st.name ) {
 
 			std::string filename(st.name + path_size);
-			filename = filename.substr(0, filename.find("/"));
+			filename = filename.substr(0, filename.find("/")); //PE_SEP?
 
 			if(filename.size() == 0)
 				continue;
@@ -457,28 +469,100 @@ std::string Path::GetFileName() {
 
 }
 
-//TODO - zip
-SDL_RWops* Path::GetRW(const char* mode) {
+RW* Path::GetRW(const char* mode) {
+
+	SDL_RWops* ret;
 
 	if (this->is_zip) {
-		
+
 		struct zip_stat st;
 		zip_stat_init(&st);
 		if (zip_stat(this->zip_file->zip, this->c_str(), 0, &st) == -1) {
 
 			PLog::Write(PLog::ERROR, "PFile", "Can't get RW from zip \"%s\", file \"%s\"", this->zip_file->name.c_str(), this->c_str());
+			return nullptr;
 
 		}
-		
-		void* buffer = SDL_malloc(st.size);
-		zip_file_t* file = zip_fopen(this->zip_file->zip, this->c_str(), 0);
-		zip_fread(file, buffer, st.size);
-		return SDL_RWFromMem(buffer, st.size);
 
+		zip_file_t* zfile = zip_fopen(this->zip_file->zip, this->c_str(), 0);
+
+		if (!zfile) {
+
+			PLog::Write(PLog::ERROR, "PFile", "RW from zip \"%s\", file \"%s\" is NULL", this->zip_file->name.c_str(), this->c_str());
+			return nullptr;
+
+		}
+
+		void* buffer = SDL_malloc(st.size);
+		zip_fread(zfile, buffer, st.size);
+		zip_fclose(zfile);
+
+		ret = SDL_RWFromConstMem(buffer, st.size);
+		ret->hidden.unknown.data1 = buffer;
+
+		return (RW*)ret;
 
 	}
 
-	return SDL_RWFromFile(this->c_str(), mode);
+	ret = SDL_RWFromFile(this->c_str(), mode);
+	
+	if (!ret) {
+
+		PLog::Write(PLog::ERROR, "PFile", "Can't get RW from file \"%s\"", this->c_str());
+		return nullptr;
+
+	}
+
+	ret->hidden.unknown.data1 = nullptr;
+	return (RW*)ret;
+
+}
+
+int WriteRW(RW* rw, const void* buffer, int len) {
+
+	SDL_RWops* rwops = (SDL_RWops*) rw;
+
+	if (rwops->hidden.unknown.data1 != nullptr) {
+	
+		PLog::Write(PLog::ERROR, "PFile", "Can't write const RW");
+		return 0;
+	
+	}
+
+	return SDL_RWwrite(rwops, buffer, len, 1);
+
+}
+
+int ReadRW(RW* rw, void* buffer, int len) {
+
+	SDL_RWops* rwops = (SDL_RWops*) rw;
+	return SDL_RWread(rwops, buffer, len, 1);
+
+}
+
+int CloseRW(RW* rw) {
+
+	if (!rw) {
+
+		PLog::Write(PLog::ERROR, "PFile", "Tried to close a NULL rw");
+		return -1;
+
+	}
+
+	SDL_RWops* rwops = (SDL_RWops*) rw;
+
+	if (rwops->hidden.unknown.data1 != nullptr)
+		SDL_free(rwops->hidden.unknown.data1);
+	
+	int ret = SDL_RWclose(rwops);
+
+	if (ret != 0) {
+
+		PLog::Write(PLog::ERROR, "PFile", "Error freeing rw");
+
+	}
+
+	return ret;
 
 }
 

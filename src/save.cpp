@@ -9,8 +9,6 @@
 
 #include "engine/PLog.hpp"
 
-#include <SDL_rwops.h>
-
 #include <cstring>
 #include <string>
 
@@ -48,9 +46,9 @@ int Save_All_Records() {
 
 	itoa(MAX_SAVES, count_c, 10);
 
-	std::string path(data_path + SAVES_FILE);
+	PFile::Path path(data_path + SAVES_FILE);
 	
-	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
+	PFile::RW* file = path.GetRW("wb");
 	if (file == nullptr) {
 
 		PLog::Write(PLog::ERROR, "PK2", "Can't save records");
@@ -58,11 +56,11 @@ int Save_All_Records() {
 
 	}
 	
-	SDL_RWwrite(file, versio, 1, sizeof(versio)); // Write version "2"
-	SDL_RWwrite(file, count_c, 1, sizeof(count_c)); // Write count "10"
-	SDL_RWwrite(file, saves_list, 1, sizeof(saves_list)); // Write saves
+	PFile::WriteRW(file, versio, sizeof(versio)); // Write version "2"
+	PFile::WriteRW(file, count_c, sizeof(count_c)); // Write count "10"
+	PFile::WriteRW(file, saves_list, sizeof(saves_list)); // Write saves
 	
-	SDL_RWclose(file);
+	PFile::CloseRW(file);
 	
 	return 0;
 
@@ -76,9 +74,9 @@ int Load_SaveFile() {
 
 	Empty_Records();
 
-	std::string path(data_path + SAVES_FILE);
+	PFile::Path path(data_path + SAVES_FILE);
 
-	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "rb");
+	PFile::RW* file = path.GetRW("rb");
 	if (file == nullptr){
 
 		PLog::Write(PLog::INFO, "PK2", "No save file\n");
@@ -86,27 +84,27 @@ int Load_SaveFile() {
 	
 	}
 
-	SDL_RWread(file, versio, sizeof(versio), 1);
+	PFile::ReadRW(file, versio, sizeof(versio));
 
 	if (strncmp(versio,"2", 2) == 0) {
 
-		SDL_RWread(file, count_c, sizeof(count_c), 1);
+		PFile::ReadRW(file, count_c, sizeof(count_c));
 		count = atoi(count_c);
 		if (count > MAX_SAVES)
 			count = MAX_SAVES;
 
-		SDL_RWread(file, saves_list, sizeof(PK2SAVE) * count , 1);
+		PFile::ReadRW(file, saves_list, sizeof(PK2SAVE) * count);
 	
 	} else if (strncmp(versio,"1", 2) == 0) {
 
-		SDL_RWread(file, count_c, sizeof(count_c), 1);
+		PFile::ReadRW(file, count_c, sizeof(count_c));
 		count = atoi(count_c);
 		if (count > MAX_SAVES)
 			count = MAX_SAVES;
 
 		PK2SAVE_V1 temp[MAX_SAVES];
 
-		SDL_RWread(file, temp, sizeof(PK2SAVE_V1) * count , 1);
+		PFile::ReadRW(file, temp, sizeof(PK2SAVE_V1) * count);
 
 		for (int i = 0; i < count; i++) {
 			
@@ -125,7 +123,7 @@ int Load_SaveFile() {
 	
 	}
 
-	SDL_RWclose(file);
+	PFile::CloseRW(file);
 
 	return 0;
 

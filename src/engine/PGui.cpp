@@ -111,8 +111,9 @@ int create(int x, int y, int w, int h, u8 alpha, PFile::Path path, u32* key) {
 	
 	if(path != "") {
 
-		SDL_RWops* rw = path.GetRW("rb");
-		SDL_Surface* surface = IMG_Load_RW(rw, 1);
+		PFile::RW* rw = path.GetRW("rb");
+		SDL_Surface* surface = IMG_Load_RW((SDL_RWops*) rw, 0);
+		PFile::CloseRW(rw);
 		
 		if(surface == NULL) {
 

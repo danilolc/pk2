@@ -40,7 +40,7 @@ PLang::~PLang(){}
 
 bool PLang::Read_File(PFile::Path path){
 
-	SDL_RWops *io = path.GetRW("r");
+	PFile::RW* io = path.GetRW("r");
 
 	if (io == nullptr)
 		return false;
@@ -57,7 +57,7 @@ bool PLang::Read_File(PFile::Path path){
 
 	bool jatka = true;
 
-	while(jatka && SDL_RWread(io, &merkki, 1, 1)) {
+	while(jatka && PFile::ReadRW(io, &merkki, 1)) {
 		switch (merkki){
 			case MARKER_1:
 				if (read == LUE_SKIP){
@@ -119,7 +119,7 @@ bool PLang::Read_File(PFile::Path path){
 			jatka = false;
 	}
 
-    SDL_RWclose(io);
+    PFile::CloseRW(io);
 	return true;
 }
 

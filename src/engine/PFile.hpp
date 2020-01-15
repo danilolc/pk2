@@ -3,14 +3,14 @@
 #include <vector>
 #include <string>
 
-#include <cstdio>
-#include <zip.h>
-
-#include <SDL_rwops.h>
-
 namespace PFile {
 
 struct Zip;
+typedef void* RW;
+
+int ReadRW(RW* rw, void* buffer, int len);
+int WriteRW(RW* rw, const void* buffer, int len);
+int CloseRW(RW* rw);
 
 class Path : public std::string {
 
@@ -34,7 +34,7 @@ class Path : public std::string {
     int SetPath(std::string path);
     std::string GetFileName();
 
-    SDL_RWops* GetRW(const char* mode);
+    RW* GetRW(const char* mode);
 
     private:
     

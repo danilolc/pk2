@@ -11,8 +11,6 @@
 #include "engine/PInput.hpp"
 #include "engine/PUtils.hpp"
 
-#include <SDL_rwops.h>
-
 #include <cstring>
 #include <string>
 
@@ -58,9 +56,9 @@ void Settings_Init() {
 
 int Settings_Open() {
 
-	std::string path(data_path + SETTINGS_FILE);
+	PFile::Path path(data_path + SETTINGS_FILE);
 
-	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "rb");
+	PFile::RW* file = path.GetRW("rb");
 
 	if (file == nullptr){
 		Settings_Init();
@@ -68,7 +66,7 @@ int Settings_Open() {
 		return 1;
 	}
 
-	SDL_RWread(file, Settings.versio, 4, 1);
+	PFile::ReadRW(file, Settings.versio, 4);
 	
 	if (strncmp(Settings.versio, SETTINGS_VERSION, 4) != 0) { 
 		// If settings isn't in current version
@@ -77,7 +75,7 @@ int Settings_Open() {
 		return 2;
 	}
 	
-	SDL_RWread(file, &Settings, sizeof(PK2SETTINGS), 1);
+	PFile::ReadRW(file, &Settings, sizeof(PK2SETTINGS));
 	
 	if (PUtils::Is_Mobile()) { // TODO - don't change these settings on mobile
 
@@ -90,7 +88,7 @@ int Settings_Open() {
 
 	Settings.ladattu = true;
 
-	SDL_RWclose(file);
+	PFile::CloseRW(file);
 	
 	return 0;
 
@@ -98,9 +96,9 @@ int Settings_Open() {
 
 int Settings_Save() {
 
-	std::string path(data_path + SETTINGS_FILE);
+	PFile::Path path(data_path + SETTINGS_FILE);
 
-	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
+	PFile::RW *file = path.GetRW("wb");
 
 	if (file == nullptr) {
 
@@ -109,10 +107,10 @@ int Settings_Save() {
 	
 	}
 	
-	SDL_RWwrite(file, SETTINGS_VERSION, 1, 4);
-	SDL_RWwrite(file, (char*)&Settings, 1, sizeof(PK2SETTINGS));
+	PFile::WriteRW(file, SETTINGS_VERSION, 4);
+	PFile::WriteRW(file, (char*)&Settings, sizeof(PK2SETTINGS));
 	
-	SDL_RWclose(file);
+	PFile::CloseRW(file);
 
 	return 0;
 

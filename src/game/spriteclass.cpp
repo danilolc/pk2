@@ -10,8 +10,6 @@
 
 #include <cstring>
 
-#include <SDL_rwops.h>
-
 
 /* -------- SpriteClass Prototyyppi ------------------------------------------------------------------ */
 
@@ -625,10 +623,9 @@ PrototypeClass13 PrototypeClass::GetProto13(){
 int PrototypeClass::Load(PFile::Path path){
 	this->Uusi();
 
-	const char* filename = path.GetFileName().c_str();
+	std::string filename = path.GetFileName();
 
-	char versio[4];
-	SDL_RWops* file = path.GetRW("r");
+	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr) {
 
 		PLog::Write(PLog::ERROR, "PK2", "failed to open %s", path.c_str());
@@ -636,42 +633,43 @@ int PrototypeClass::Load(PFile::Path path){
 	
 	}
 
-	SDL_RWread(file, versio, 1, 4);
+	char versio[4];
+	PFile::ReadRW(file, versio, 4);
 
 	if (strcmp(versio,"1.0") == 0){
 		this->Uusi();
 		PrototypeClass10 proto;
-		SDL_RWread(file, &proto, sizeof(proto), 1);
+		PFile::ReadRW(file, &proto, sizeof(proto));
 		this->SetProto10(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, filename);
+		strcpy(this->tiedosto, filename.c_str());
 	}
 	if (strcmp(versio,"1.1") == 0){
 		this->Uusi();
 		PrototypeClass11 proto;
-		SDL_RWread(file, &proto, sizeof(proto), 1);
+		PFile::ReadRW(file, &proto, sizeof(proto));
 		this->SetProto11(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, filename);
+		strcpy(this->tiedosto, filename.c_str());
 	}
 	if (strcmp(versio,"1.2") == 0){
 		this->Uusi();
 		PrototypeClass12 proto;
-		SDL_RWread(file, &proto, sizeof(proto), 1);
+		PFile::ReadRW(file, &proto, sizeof(proto));
 		this->SetProto12(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, filename);
+		strcpy(this->tiedosto, filename.c_str());
 	}
 	if (strcmp(versio,"1.3") == 0){
 		this->Uusi();
 		PrototypeClass13 proto;
-		SDL_RWread(file, &proto, sizeof(proto), 1);
+		PFile::ReadRW(file, &proto, sizeof(proto));
 		this->SetProto13(proto);
 		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, filename);
+		strcpy(this->tiedosto, filename.c_str());
 	}
 
-	SDL_RWclose(file);
+	PFile::CloseRW(file);
 
 	// Get sprite bmp
 	path.SetFile(this->kuvatiedosto);
@@ -723,8 +721,10 @@ int PrototypeClass::Load(PFile::Path path){
 	PDraw::image_delete(bufferi);
 	return 0;
 }
-void PrototypeClass::Tallenna(char *tiedoston_nimi) {
 
+//Save
+void PrototypeClass::Tallenna(char *tiedoston_nimi) {
+/*
    	strcpy(this->tiedosto,tiedoston_nimi);
 
 	PrototypeClass13 proto = GetProto13();
@@ -733,8 +733,8 @@ void PrototypeClass::Tallenna(char *tiedoston_nimi) {
 	SDL_RWwrite(file, PK2SPRITE_CURRENT_VERSION, 4, 1);
 	SDL_RWwrite(file, &proto, sizeof(proto), 1);
 
-	SDL_RWclose(file);
-
+	PFile::CloseRW(file);
+*/
 }
 
 int PrototypeClass::Piirra(int x, int y, int frame){

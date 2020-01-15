@@ -78,8 +78,9 @@ int load_sfx(PFile::Path path) {
 	for( int i = 0; i < MAX_SOUNDS; i++ )
 		if (chunks[i] == NULL) {
 
-			SDL_RWops* rw = path.GetRW("rb");
-			chunks[i] = Mix_LoadWAV_RW(rw, 1);
+			PFile::RW* rw = path.GetRW("rb");
+			chunks[i] = Mix_LoadWAV_RW((SDL_RWops*)rw, 0);
+			PFile::CloseRW(rw);
 			
 			return i;
 
@@ -190,8 +191,10 @@ int start_music(PFile::Path path) {
 	if (playingMusic == path)
 		return 1;
 
-	SDL_RWops* rw = path.GetRW("rb");
-	music = Mix_LoadMUS_RW(rw, 1);
+	PFile::RW* rw = path.GetRW("rb");
+	music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);
+	PFile::CloseRW(rw);
+
 	if (music == NULL) {
 
 		PLog::Write(PLog::WARN, "PSound", Mix_GetError());

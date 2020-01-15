@@ -121,8 +121,9 @@ int image_load(PFile::Path path, bool getPalette) {
     
     }
 
-    SDL_RWops* rw = path.GetRW("rb");
-    imageList[index] = SDL_LoadBMP_RW(rw, 1);
+    PFile::RW* rw = path.GetRW("rb");
+    imageList[index] = SDL_LoadBMP_RW((SDL_RWops*) rw, 0);
+    PFile::CloseRW(rw);
 
     if (imageList[index] == NULL) {
 

@@ -14,8 +14,6 @@
 #include "engine/PUtils.hpp"
 #include "engine/PFile.hpp"
 
-#include <SDL_rwops.h>
-
 #include <cstring>
 #include <string>
 
@@ -39,26 +37,25 @@ int EpisodeClass::Open_Scores() {
 
 	char versio[4];
 
-	std::string path(data_path);
-	path += "scores" PE_SEP;
-	path += this->entry.name;
-	path += ".dat";
+	PFile::Path path(data_path + "scores" PE_SEP + this->entry.name + ".dat");
 	
-	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "rb");
+	PFile::RW* file = path.GetRW("rb");
 	if (file == nullptr){
 		this->Clear_Scores();
 		return 1;
 	}
 
-	SDL_RWread(file, versio, 4, 1);
+	PFile::ReadRW(file, versio, 4);
 	if (strncmp(versio, "1.0", 4) != 0) {
+
 		this->Clear_Scores();
-		SDL_RWclose(file);
+		PFile::CloseRW(file);
 		return 2;
+
 	}
 	
-	SDL_RWread(file, &this->scores, sizeof(this->scores), 1);
-	SDL_RWclose(file);
+	PFile::ReadRW(file, &this->scores, sizeof(this->scores));
+	PFile::CloseRW(file);
 
 	return 0;
 
@@ -66,12 +63,9 @@ int EpisodeClass::Open_Scores() {
 
 int EpisodeClass::Save_Scores() {
 	
-	std::string path(data_path);
-	path += "scores" PE_SEP;
-	path += this->entry.name;
-	path += ".dat";
+	PFile::Path path(data_path + "scores" PE_SEP + this->entry.name + ".dat");
 
-	SDL_RWops *file = SDL_RWFromFile(path.c_str(), "wb");
+	PFile::RW* file = path.GetRW("wb");
 	if (file == nullptr) {
 
 		PLog::Write(PLog::ERROR, "PK2", "Can't saving scores");
@@ -79,10 +73,10 @@ int EpisodeClass::Save_Scores() {
 
 	}
 
-	SDL_RWwrite(file, "1.0", 1, 4);
-	SDL_RWwrite(file, &this->scores, 1, sizeof(this->scores));
+	PFile::WriteRW(file, "1.0", 4);
+	PFile::WriteRW(file, &this->scores, sizeof(this->scores));
 	
-	SDL_RWclose(file);
+	PFile::CloseRW(file);
 
 	return 0;
 

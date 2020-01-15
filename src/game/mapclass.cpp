@@ -15,8 +15,6 @@
 #include "engine/PInput.hpp"
 #include "engine/PLog.hpp"
 
-#include <SDL_rwops.h>
-
 #include <cinttypes>
 #include <cstring>
 
@@ -294,11 +292,12 @@ void MapClass::LueTallennusAlue(u8 *lahde, MAP_RECT alue, int kohde){
 	}
 }
 
+//Save
 int MapClass::Tallenna(char *filename){
-	char luku[8]; //Size can't be changed
+	/*char luku[8]; //Size can't be changed
 	u32 i;
 
-	SDL_RWops* file = SDL_RWFromFile(filename, "w");
+	PFile::RW* file = SDL_RWFromFile(filename, "w");
 
 	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
 
@@ -390,7 +389,7 @@ int MapClass::Tallenna(char *filename){
 
 	//u8 *alue_taustat = NULL, *alue_seinat = NULL, *alue_spritet = NULL;
 	MAP_RECT alue = {0,0,0,0};
-	u32 /*koko, aloituskohta,*/ leveys, korkeus, x, y;
+	u32 leveys, korkeus, x, y;
 	u32 offset_x,offset_y;
 	char tile[1];
 
@@ -486,22 +485,22 @@ int MapClass::Tallenna(char *filename){
 		}
 	}
 
-	SDL_RWclose(file);
+	PFile::CloseRW(file);
 
-	return 0;
+	return 0;*/
 }
 
 int MapClass::Load(PFile::Path path){
 	
 	char versio[8];
 
-	SDL_RWops* file = path.GetRW("rb");
+	PFile::RW* file = path.GetRW("rb");
 	if (file == nullptr){
 		return 1;
 	}
 
-	SDL_RWread(file, versio, sizeof(versio), 1);
-	SDL_RWclose(file);
+	PFile::ReadRW(file, versio, sizeof(versio));
+	PFile::CloseRW(file);
 
 	int ok = 2;
 
@@ -541,13 +540,13 @@ int MapClass::Load_Plain_Data(PFile::Path path){
 	
 	char versio[8];
 
-	SDL_RWops* file = path.GetRW("rb");
+	PFile::RW* file = path.GetRW("rb");
 	if (file == nullptr){
 		return 1;
 	}
 
-	SDL_RWread(file, versio, sizeof(versio), 1);
-	SDL_RWclose(file);
+	PFile::ReadRW(file, versio, sizeof(versio));
+	PFile::CloseRW(file);
 
 	if (strcmp(versio,"1.3")==0)
 		this->LoadVersion13(path);
@@ -571,13 +570,13 @@ int MapClass::LoadVersion01(PFile::Path path){
 
 	PK2KARTTA kartta;
 
-	SDL_RWops* file = path.GetRW("r");
+	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr) {
 		return 1;
 	}
 
-	SDL_RWread(file, &kartta, sizeof(PK2KARTTA), 1);
-	SDL_RWclose(file);
+	PFile::ReadRW(file, &kartta, sizeof(PK2KARTTA));
+	PFile::CloseRW(file);
 
 	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
 	strcpy(this->palikka_bmp,"blox.bmp");
@@ -604,13 +603,13 @@ int MapClass::LoadVersion10(PFile::Path path){
 	
 	MapClass *kartta = new MapClass();
 
-	SDL_RWops* file = path.GetRW("r");
+	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr) {
 		return 1;
 	}
 
-	SDL_RWread(file, &kartta, sizeof(PK2KARTTA), 1);
-	SDL_RWclose(file);
+	PFile::ReadRW(file, &kartta, sizeof(PK2KARTTA));
+	PFile::CloseRW(file);
 
 	strcpy(this->versio,		kartta->versio);
 	strcpy(this->palikka_bmp,	kartta->palikka_bmp);
@@ -644,7 +643,7 @@ int MapClass::LoadVersion10(PFile::Path path){
 int MapClass::LoadVersion11(PFile::Path path){
 	int virhe = 0;
 
-	SDL_RWops* file = path.GetRW("r");
+	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr) {
 		return 1;
 	}
@@ -653,21 +652,21 @@ int MapClass::LoadVersion11(PFile::Path path){
 	memset(this->seinat , 255, sizeof(this->seinat));
 	memset(this->spritet, 255, sizeof(this->spritet));
 
-	SDL_RWread(file, this->versio,      sizeof(char),    5);
-	SDL_RWread(file, this->palikka_bmp, sizeof(char),   13);
-	SDL_RWread(file, this->taustakuva,  sizeof(char),   13);
-	SDL_RWread(file, this->musiikki,    sizeof(char),   13);
-	SDL_RWread(file, this->nimi,        sizeof(char),   40);
-	SDL_RWread(file, this->tekija,      sizeof(char),   40);
-	SDL_RWread(file, &this->aika,       sizeof(int),     1);
-	SDL_RWread(file, &this->extra,      sizeof(u8),    1);
-	SDL_RWread(file, &this->tausta,     sizeof(u8),    1);
-	SDL_RWread(file, this->taustat,     sizeof(taustat), 1);
-	if (SDL_RWread(file, this->seinat,  sizeof(seinat),  1) != PK2KARTTA_KARTTA_KOKO)
+	PFile::ReadRW(file, this->versio,      sizeof(char) * 5);
+	PFile::ReadRW(file, this->palikka_bmp, sizeof(char) * 13);
+	PFile::ReadRW(file, this->taustakuva,  sizeof(char) * 13);
+	PFile::ReadRW(file, this->musiikki,    sizeof(char) * 13);
+	PFile::ReadRW(file, this->nimi,        sizeof(char) * 40);
+	PFile::ReadRW(file, this->tekija,      sizeof(char) * 40);
+	PFile::ReadRW(file, &this->aika,       sizeof(int));
+	PFile::ReadRW(file, &this->extra,      sizeof(u8));
+	PFile::ReadRW(file, &this->tausta,     sizeof(u8));
+	PFile::ReadRW(file, this->taustat,     sizeof(taustat));
+	if (PFile::ReadRW(file, this->seinat,  sizeof(seinat)) != PK2KARTTA_KARTTA_KOKO)
 		virhe = 2;
-	SDL_RWread(file, this->spritet,     sizeof(spritet), 1);
+	PFile::ReadRW(file, this->spritet,     sizeof(spritet));
 
-	SDL_RWclose(file);
+	PFile::CloseRW(file);
 
 	int i;
 
@@ -692,7 +691,7 @@ int MapClass::LoadVersion12(PFile::Path path){
 
 	char luku[8];
 	
-	SDL_RWops* file = path.GetRW("r");
+	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr) {
 		return 1;
 	}
@@ -705,47 +704,47 @@ int MapClass::LoadVersion12(PFile::Path path){
 		strcpy(this->protot[i],"");
 
 	//tiedosto->read ((char *)this, sizeof (*this));
-	SDL_RWread(file, versio,      sizeof(versio), 1);
-	SDL_RWread(file, palikka_bmp, sizeof(palikka_bmp), 1);
-	SDL_RWread(file, taustakuva,  sizeof(taustakuva), 1);
-	SDL_RWread(file, musiikki,    sizeof(musiikki), 1);
-	SDL_RWread(file, nimi,        sizeof(nimi), 1);
-	SDL_RWread(file, tekija,      sizeof(tekija), 1);
+	PFile::ReadRW(file, versio,      sizeof(versio));
+	PFile::ReadRW(file, palikka_bmp, sizeof(palikka_bmp));
+	PFile::ReadRW(file, taustakuva,  sizeof(taustakuva));
+	PFile::ReadRW(file, musiikki,    sizeof(musiikki));
+	PFile::ReadRW(file, nimi,        sizeof(nimi));
+	PFile::ReadRW(file, tekija,      sizeof(tekija));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->jakso = atoi(luku);
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->ilma = atoi(luku);
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->kytkin1_aika = atoi(luku);
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->kytkin2_aika = atoi(luku);
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->kytkin3_aika = atoi(luku);
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->aika = atoi(luku);
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->extra = atoi(luku);
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->tausta = atoi(luku);
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->pelaaja_sprite = atoi(luku);
 
-	SDL_RWread(file, taustat, sizeof(taustat), 1);
-	SDL_RWread(file, seinat,  sizeof(seinat), 1);
-	SDL_RWread(file, spritet, sizeof(spritet), 1);
+	PFile::ReadRW(file, taustat, sizeof(taustat));
+	PFile::ReadRW(file, seinat,  sizeof(seinat));
+	PFile::ReadRW(file, spritet, sizeof(spritet));
 
-	SDL_RWread(file, protot, sizeof(protot[0]), PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA);
+	PFile::ReadRW(file, protot, sizeof(protot[0]) * PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA);
 
-	SDL_RWclose(file);
+	PFile::CloseRW(file);
 
 	//Load_BlockPalette(this->palikka_bmp);
 	//Load_BG(this->taustakuva);
@@ -757,7 +756,7 @@ int MapClass::LoadVersion13(PFile::Path path){
 	char luku[8];
 	u32 i;
 
-	SDL_RWops* file = path.GetRW("r");
+	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr) {
 		return 1;
 	}
@@ -769,101 +768,101 @@ int MapClass::LoadVersion13(PFile::Path path){
 	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 		strcpy(this->protot[i],"");
 
-	SDL_RWread(file, versio,      sizeof(versio), 1);
-	SDL_RWread(file, palikka_bmp, sizeof(palikka_bmp), 1);
-	SDL_RWread(file, taustakuva,  sizeof(taustakuva), 1);
-	SDL_RWread(file, musiikki,    sizeof(musiikki), 1);
-	SDL_RWread(file, nimi,        sizeof(nimi), 1);
-	SDL_RWread(file, tekija,      sizeof(tekija), 1);
+	PFile::ReadRW(file, versio,      sizeof(versio));
+	PFile::ReadRW(file, palikka_bmp, sizeof(palikka_bmp));
+	PFile::ReadRW(file, taustakuva,  sizeof(taustakuva));
+	PFile::ReadRW(file, musiikki,    sizeof(musiikki));
+	PFile::ReadRW(file, nimi,        sizeof(nimi));
+	PFile::ReadRW(file, tekija,      sizeof(tekija));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->jakso = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->ilma = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->kytkin1_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->kytkin2_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->kytkin3_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->extra = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->tausta = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->pelaaja_sprite = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->x = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->y = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	this->icon = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
 	u32 lkm;
-	SDL_RWread(file, luku, sizeof(luku), 1);
+	PFile::ReadRW(file, luku, sizeof(luku));
 	lkm = (int)atoi(luku);
 
-	SDL_RWread(file, protot, sizeof(protot[0]), lkm);
+	PFile::ReadRW(file, protot, sizeof(protot[0]) * lkm);
 
 	u32 leveys, korkeus;
 	u32 offset_x, offset_y;
 
 	// taustat
-	SDL_RWread(file, luku, sizeof(luku), 1); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
-	SDL_RWread(file, luku, sizeof(luku), 1); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
-	SDL_RWread(file, luku, sizeof(luku), 1); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
-	SDL_RWread(file, luku, sizeof(luku), 1); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
 	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
 		u32 x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
-		SDL_RWread(file, &taustat[x_start], 1, leveys + 1);
+		PFile::ReadRW(file, &taustat[x_start], leveys + 1);
 	}
 
 	// seinat
-	SDL_RWread(file, luku, sizeof(luku), 1); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
-	SDL_RWread(file, luku, sizeof(luku), 1); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
-	SDL_RWread(file, luku, sizeof(luku), 1); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
-	SDL_RWread(file, luku, sizeof(luku), 1); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
 	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
 		u32 x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
-		SDL_RWread(file, &seinat[x_start], 1, leveys + 1);
+		PFile::ReadRW(file, &seinat[x_start], leveys + 1);
 	}
 
 	//spritet
-	SDL_RWread(file, luku, sizeof(luku), 1);; offset_x = atol(luku); memset(luku, 0, sizeof(luku));
-	SDL_RWread(file, luku, sizeof(luku), 1);; offset_y = atol(luku); memset(luku, 0, sizeof(luku));
-	SDL_RWread(file, luku, sizeof(luku), 1);; leveys   = atol(luku); memset(luku, 0, sizeof(luku));
-	SDL_RWread(file, luku, sizeof(luku), 1);; korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
+	PFile::ReadRW(file, luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
 	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
 		u32 x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
-		SDL_RWread(file, &spritet[x_start], 1, leveys + 1);
+		PFile::ReadRW(file, &spritet[x_start], leveys + 1);
 	}
 
-	SDL_RWclose(file);
+	PFile::CloseRW(file);
 
 	return 0;
 }
