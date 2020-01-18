@@ -36,6 +36,7 @@ static void logic() {
 	}
 
 	PDraw::update(draw);
+	PInput::update();
 	PSound::update();
 	
 	if (debug) {

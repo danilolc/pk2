@@ -41,16 +41,14 @@ enum KEY {
 
 };
 
-/*struct touch_t {
+struct touch_t {
 
 	int id;
 	int pos_x, pos_y;
-	int pressure;
-	int time;
 
 };
 
-extern std::vector<touch_t> touchlist;*/
+extern std::vector<touch_t> touchlist;
 
 extern int mouse_x, mouse_y;
 
@@ -67,13 +65,17 @@ int ReadKeyboard(char* c);
 
 int Vibrate(int length);
 void SetMousePosition(int x, int y);
+
+std::vector<int[3]> GetTouch();
 int GetTouchPos(float& x, float& y);
+
 void GetMouse(int& x, int& y);
 void UpdateMouse(bool keyMove, bool relative);
 bool MouseLeft();
 bool MouseRight();
 
 int init();
+int update();
 int terminate();
 
 }

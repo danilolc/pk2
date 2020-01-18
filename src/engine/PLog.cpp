@@ -55,7 +55,7 @@ void Write(u8 level, const char* origin, const char* format, ...) {
         case WARN:
             android_level = ANDROID_LOG_WARN; break;
         case ERR:
-            android_level = ANDROID_LOG_ERR; break;
+            android_level = ANDROID_LOG_ERROR; break;
         case FATAL:
             android_level = ANDROID_LOG_FATAL; break;
         default:

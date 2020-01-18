@@ -9,16 +9,16 @@
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
 
-PDraw::Gui* gui_touch  = nullptr;
 PDraw::Gui* gui_padbg  = nullptr;
 PDraw::Gui* gui_padbt  = nullptr;
+
 PDraw::Gui* gui_up     = nullptr;
 PDraw::Gui* gui_down   = nullptr;
 PDraw::Gui* gui_egg    = nullptr;
 PDraw::Gui* gui_doodle = nullptr;
-PDraw::Gui* gui_menu   = nullptr;
 PDraw::Gui* gui_gift   = nullptr;
-PDraw::Gui* gui_tab    = nullptr;
+
+PDraw::Gui* gui_menu   = nullptr;
 
 void Game_GUI(bool set){
 
@@ -32,7 +32,6 @@ void Game_GUI(bool set){
 	gui_doodle->active = set;
 	gui_egg->active = set;
 	gui_gift->active = set;
-	gui_tab->active = set;
 
 }
 
@@ -40,15 +39,15 @@ void GUI_Change(int ui_mode) {
 
 	switch(ui_mode){
 		case UI_TOUCH_TO_START:
-			gui_touch->active = true;
+			//gui_touch->active = true;
 			Game_GUI(false);
 		break;
 		case UI_CURSOR:
-			gui_touch->active = false;
+			//gui_touch->active = false;
 			Game_GUI(false);
 		break;
 		case UI_GAME_BUTTONS:
-			gui_touch->active = true;
+			//gui_touch->active = true;
 			Game_GUI(true);
 		break;
 	}
@@ -57,17 +56,14 @@ void GUI_Change(int ui_mode) {
 
 void GUI_Load() {
 
-	static u32 escape = PInput::ESCAPE;
-	static u32 tab    = PInput::TAB;
-	static u32 enter  = PInput::RETURN;
-
 	int w = 230 * 0.8;
 	int h = 220 * 0.8;
 	int alpha = 140;
 
 	PFile::Path path("mobile" PE_SEP);
 
-	gui_touch =  PDraw::create_gui(path, 0,0,1920,1080,alpha);
+	//gui_touch =  PDraw::create_gui(path, 0,  0,1920,1080, alpha);
+	//gui_tab =    PDraw::create_gui(path, 0,930, 530, 150, alpha);
 
 	path.SetFile("menu.png");
 	gui_menu =   PDraw::create_gui(path, 50,130,w,h,alpha);
@@ -100,10 +96,25 @@ void GUI_Load() {
 	path.SetFile("egg.png");
 	gui_egg =    PDraw::create_gui(path, 1410, y,w,h,alpha);
 
-	path.SetFile("");
-	gui_tab =    PDraw::create_gui(path,    0, 930,530,150, alpha);
+}
+
+bool Read_Gui(PDraw::Gui* gui) {
+
+	for (PInput::touch_t touch : PInput::touchlist) {
+
+		if(touch.pos_x > gui->x && touch.pos_x < gui->x + gui->w &&
+		   touch.pos_y > gui->y && touch.pos_y < gui->y + gui->h) {
+
+			return true;
+
+		}
+
+	}
+
+	return false;
 
 }
+
 
 void GUI_Update() {
 
