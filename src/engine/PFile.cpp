@@ -8,7 +8,10 @@
 #include <sys/stat.h>
 
 #include <SDL.h>
+
+#ifndef NO_ZIP
 #include <zip.h>
+#endif
 
 #ifdef __ANDROID__
 #include <android/asset_manager.h>
@@ -19,14 +22,17 @@ namespace PFile {
 
 struct Zip {
 
+	#ifndef NO_ZIP
 	std::string name;
 	zip_t *zip;
 	zip_source* src;
+	#endif
 
 };
 
 void CloseZip(Zip* zp) {
 
+	#ifndef NO_ZIP
 	if (zp) {
 	
 		//zip_close(zp->zip);
@@ -37,12 +43,14 @@ void CloseZip(Zip* zp) {
 		delete zp;
 		
 	}
+	#endif
 
 }
 
 Zip* OpenZip(std::string path) {
 
-    SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
+	#ifndef NO_ZIP
+	SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
 	if (rw == NULL) {
 
         PLog::Write(PLog::ERR, "PFile", "Can't open %s", path.c_str());
@@ -60,14 +68,23 @@ Zip* OpenZip(std::string path) {
 	zip_source_t* src = zip_source_buffer_create(buffer, size, 1, &err);
     
     zip_t* zip = zip_open_from_source(src, ZIP_RDONLY, &err);
+	
+
 	std::string name = path.substr(path.find_last_of(PE_SEP) + 1);
 
 	Zip* ret = new Zip;
 	ret->name = name;
+	
 	ret->src = src;
 	ret->zip = zip;
 
     return ret;
+
+	#else
+
+	return nullptr;
+
+	#endif
 
 }
 
@@ -145,6 +162,8 @@ bool is_type(const char* file, const char* type) {
 
 }
 
+#ifndef NO_ZIP
+
 std::vector<std::string> scan_zip(Zip* zip_file, const char* path, const char* type) {
 
     std::vector<std::string> result;
@@ -189,6 +208,8 @@ std::vector<std::string> scan_zip(Zip* zip_file, const char* path, const char* t
     return result;
 
 }
+
+#endif
 
 #ifdef __ANDROID__
 
@@ -473,6 +494,7 @@ RW* Path::GetRW(const char* mode) {
 
 	SDL_RWops* ret;
 
+	#ifndef NO_ZIP
 	if (this->is_zip) {
 
 		struct zip_stat st;
@@ -503,6 +525,7 @@ RW* Path::GetRW(const char* mode) {
 		return (RW*)ret;
 
 	}
+	#endif
 
 	ret = SDL_RWFromFile(this->c_str(), mode);
 	
@@ -569,10 +592,22 @@ int CloseRW(RW* rw) {
 std::vector<std::string> Path::scandir(const char* type) {
     
 	const char* cstr = this->c_str();
+	
+	if (this->is_zip) {
 
-    if (this->is_zip)
-        return scan_zip(this->zip_file, cstr, type);
-    
+    	#ifndef NO_ZIP
+        
+		return scan_zip(this->zip_file, cstr, type);
+		
+		#else
+		
+		std::vector<std::string> ret;
+		return ret;
+		
+		#endif
+
+	}
+	
     #ifdef __ANDROID__
 
     if (cstr[0] != '/')

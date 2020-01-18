@@ -38,6 +38,13 @@ void Search_Episodes() {
 	for (std::string zip : list) {
 		
 		PFile::Zip* zp = PFile::OpenZip(mapstore_path + zip);
+		if (zp == nullptr) {
+
+			PLog::Write(PLog::ERR, "PK2", "Can't open zip file %s", zip.c_str());
+			continue;
+
+		}
+
 		std::vector<std::string> zip_list = PFile::Path(zp, "episodes/").scandir("/");
 
 		for (std::string ep : zip_list) {

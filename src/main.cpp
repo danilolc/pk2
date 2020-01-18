@@ -22,10 +22,15 @@
 #include "settings.hpp"
 
 #include <cstring>
-#include <locale>
 
 #define GAME_NAME    "Pekka Kana 2"
-#define GAME_VERSION "1.3.1 (r3-pre)"
+#define GAME_VERSION "1.3.1"
+
+#ifdef NO_ZIP
+#define GAME_VERSION_STR GAME_VERSION " no-zip"
+#else
+#define GAME_VERSION_STR GAME_VERSION " (r3-pre)"
+#endif
 
 //#define SDL_MAIN_HANDLED
 #include <SDL.h>
@@ -76,7 +81,7 @@ int main(int argc, char *argv[]) {
 
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "version") == 0) {
-			printf(GAME_VERSION "\n");
+			printf(GAME_VERSION_STR "\n");
 			exit(0);
 		}
 		if (strcmp(argv[i], "dev") == 0) {
