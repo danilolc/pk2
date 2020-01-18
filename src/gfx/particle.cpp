@@ -99,7 +99,7 @@ void Particle::draw_dot() {
 
 void Particle::draw_star() {
 
-	if (color > 99 || !Settings.draw_transparent)
+	if (alpha > 99 || !Settings.draw_transparent)
 		PDraw::image_cutclip(game_assets, x-cam_x, y-cam_y, 1, 1, 11, 11);
 	else
 		PDraw::image_cutcliptransparent(game_assets, 2, 2, 10, 10, x-cam_x, y-cam_y, alpha, color);
@@ -125,11 +125,15 @@ void Particle::draw_light() {
 
 void Particle::draw_spark() {
 
-	if (Settings.draw_transparent)
+	if (Settings.draw_transparent) {
+	
 		PDraw::image_cutcliptransparent(game_assets, 99, 14, 7, 7, x-cam_x, y-cam_y, alpha, color);
-	else{
+	
+	} else {
+
 		int vx = (color/32) * 8;
 		PDraw::image_cutclip(game_assets,x-cam_x, y-cam_y,99+vx,14+14,106+vx,21+14);
+	
 	}
 
 }
