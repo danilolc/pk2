@@ -2,7 +2,8 @@
 
 #include <ctime>
 #include <cstdio>
-#include <SDL_rwops.h>
+#include <cstring>
+#include <cstdarg>
 
 #ifdef __ANDROID__
 #include <android/log.h>
@@ -18,15 +19,40 @@
 
 namespace PLog {
 
-static SDL_RWops* log_file = NULL;
+static PFile::RW* log_file = NULL;
 static u8 log_level = 0;
 
-void Init(u8 level, const char* file) {
+void Init(u8 level, PFile::Path file) {
 
-    if (file != NULL)
-        log_file = SDL_RWFromFile(file, "w+");
-    
     log_level = level;
+
+    if (log_file != NULL)
+        PFile::CloseRW(log_file);
+    
+    log_file = NULL;
+
+    if (file.size() > 0)
+        log_file = file.GetRW("wb+");
+
+}
+
+static void write_on_file(const char* level_name, const char* origin, const char* format, va_list* args) {
+
+    const int BUFFER_SIZE = 1024;
+
+    char buffer[BUFFER_SIZE];
+    int size;
+
+    size = snprintf(buffer, BUFFER_SIZE, "%s", level_name + 5, origin);
+    PFile::WriteRW(log_file, buffer, size - sizeof(ANSI_COLOR_RESET));
+
+    size = snprintf(buffer, BUFFER_SIZE, "\t%s\t- ", origin);
+    PFile::WriteRW(log_file, buffer, size);
+
+    size = vsnprintf(buffer, BUFFER_SIZE, format, *args);
+    PFile::WriteRW(log_file, buffer, size);
+    
+    PFile::WriteRW(log_file, "\n", 1);
 
 }
 
@@ -41,6 +67,25 @@ void Write(u8 level, const char* origin, const char* format, ...) {
     
     va_list args;
     va_start(args, format);
+
+    const char* level_name;
+
+    switch (level) {
+
+        case DEBUG:
+            level_name = ANSI_COLOR_BLUE "[DEBUG]" ANSI_COLOR_RESET; break;
+        case INFO:
+            level_name = ANSI_COLOR_GREEN "[INFO]" ANSI_COLOR_RESET; break;
+        case WARN:
+            level_name = ANSI_COLOR_YELLOW "[WARN]" ANSI_COLOR_RESET; break;
+        case ERR:
+            level_name = ANSI_COLOR_RED "[ERR]" ANSI_COLOR_RESET; break;
+        case FATAL:
+            level_name = ANSI_COLOR_FATAL "[FATAL]" ANSI_COLOR_RESET; break;
+        default:
+            level_name = "[UNKNOWN]"; break;
+
+    }
 
     #ifdef __ANDROID__
 
@@ -66,25 +111,6 @@ void Write(u8 level, const char* origin, const char* format, ...) {
     __android_log_vprint(android_level, origin, format, args);
 
     #else
-    
-    const char* level_name;
-
-    switch (level) {
-
-        case DEBUG:
-            level_name = ANSI_COLOR_BLUE "[DEBUG]" ANSI_COLOR_RESET; break;
-        case INFO:
-            level_name = ANSI_COLOR_GREEN "[INFO]" ANSI_COLOR_RESET; break;
-        case WARN:
-            level_name = ANSI_COLOR_YELLOW "[WARN]" ANSI_COLOR_RESET; break;
-        case ERR:
-            level_name = ANSI_COLOR_RED "[ERR]" ANSI_COLOR_RESET; break;
-        case FATAL:
-            level_name = ANSI_COLOR_FATAL "[FATAL]" ANSI_COLOR_RESET; break;
-        default:
-            level_name = "[UNKNOWN]"; break;
-
-    }
 
     printf("%s\t%s\t- ", level_name, origin);
     vprintf(format, args);
@@ -92,16 +118,24 @@ void Write(u8 level, const char* origin, const char* format, ...) {
 
     #endif
 
+    if (log_file != NULL) {
+        
+        va_end(args);
+        va_start(args, format);
+        write_on_file(level_name, origin, format, &args);
+
+    }
+    
     va_end(args);
 
 }
 
 void Exit() {
 
-    Write(DEBUG, "PLog", "PisteLog exited.");
+    Write(DEBUG, "PLog", "PisteLog exited");
     
     if (log_file != NULL)
-        SDL_RWclose(log_file);
+        PFile::CloseRW(log_file);
 
     log_file = NULL;
     log_level = 0;

@@ -353,7 +353,7 @@ int GameClass::Open_Map() {
 
 		}
 		
-		if (PSound::start_music(music_path) != 0)
+		if (PSound::start_music(music_path) == -1)
 			PLog::Write(PLog::FATAL, "PK2", "Can't load any music file");
 
 	}

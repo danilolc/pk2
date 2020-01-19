@@ -67,7 +67,7 @@ This example starts the level13.map on dev mode:
 # TODOs and FIXMEs:
 * Jump frames when FPS is slow
 * Super mode -> energy = 0 on touch Pekka
-* Random SIGFAULT while playing?
+* Fix transparent drawing outside screen
 * Traduct finnish language
 * Better documentation
 * Audio on Windows/Android

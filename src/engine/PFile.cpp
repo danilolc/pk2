@@ -7,6 +7,10 @@
 #include <cstring>
 #include <sys/stat.h>
 
+#include <string>
+#include <vector>
+#include <algorithm>
+
 #include <SDL.h>
 
 #ifndef NO_ZIP
@@ -213,7 +217,26 @@ std::vector<std::string> scan_zip(Zip* zip_file, const char* path, const char* t
 
 #ifdef __ANDROID__
 
+std::vector<std::vector<std::string>> apk_results;
+std::vector<std::string> apk_entries;
+
 std::vector<std::string> scan_apk(const char* dir, const char* type) {
+
+	std::string entry(dir);
+	entry += "$";
+	entry += type;
+
+	int sz = apk_entries.size();
+	for (int i = 0; i < sz; i++) {
+
+		if (apk_entries[i] == entry) {
+
+			PLog::Write(PLog::DEBUG, "PFile", "Got apk cache on \"%s\" for \"%s\"", dir, type);
+			return apk_results[i];
+
+		}
+
+	}
 
 	JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
 	jobject activity = (jobject)SDL_AndroidGetActivity();
@@ -267,15 +290,37 @@ std::vector<std::string> scan_apk(const char* dir, const char* type) {
 	env->DeleteLocalRef(clazz);
 
     PLog::Write(PLog::DEBUG, "PFile", "Scanned APK on \"%s\" for \"%s\". Found %i matches", dir, type, (int)result.size());
+
+	apk_entries.push_back(entry);
+	apk_results.push_back(result);
 	return result;
 
 }
 
 #endif
 
+std::vector<std::vector<std::string>> scan_results;
+std::vector<std::string> scan_entries;
+
 #ifdef _WIN32
 
 std::vector<std::string> scan_file(const char* dir, const char* type) {
+	
+	std::string entry(dir);
+	entry += "$";
+	entry += type;
+
+	int sz = scan_entries.size();
+	for (int i = 0; i < sz; i++) {
+
+		if (scan_entries[i] == entry) {
+
+			PLog::Write(PLog::DEBUG, "PFile", "Got cache on \"%s\" for \"%s\"", dir, type);
+			return scan_results[i];
+
+		}
+
+	}
 
 	std::vector<std::string> result;
     struct _finddata_t map_file;
@@ -300,6 +345,8 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 	long hFile = _findfirst(buffer.c_str(), &map_file);
 	if (hFile == -1L) {
 
+		scan_entries.push_back(entry);
+		scan_results.push_back(result);
 		return result;
 
 	} else {
@@ -322,6 +369,9 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 	_findclose( hFile );
 
     PLog::Write(PLog::DEBUG, "PFile", "Scanned on \"%s\" for \"%s\". Found %i matches", dir, type, (int)result.size());
+
+	scan_entries.push_back(entry);
+	scan_results.push_back(result);
 	return result;
 
 }
@@ -357,6 +407,23 @@ bool Path::Find() {
 
 std::vector<std::string> scan_file(const char* dir, const char* type) {
 
+	
+	std::string entry(dir);
+	entry += "$";
+	entry += type;
+
+	int sz = scan_entries.size();
+	for (int i = 0; i < sz; i++) {
+
+		if (scan_entries[i] == entry) {
+
+			PLog::Write(PLog::DEBUG, "PFile", "Got cache on \"%s\" for \"%s\"", dir, type);
+			return scan_results[i];
+
+		}
+
+	}
+
 	std::vector<std::string> result;
 	struct dirent **namelist;
 
@@ -365,6 +432,9 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 	if (numb == -1) {
 
 		PLog::Write(PLog::WARN, "PFile", "Can't scan \"%s\"", dir);
+		
+		scan_entries.push_back(entry);
+		scan_results.push_back(result);
 		return result;
 	
 	}
@@ -403,6 +473,9 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 	free(namelist);
 
 	PLog::Write(PLog::DEBUG, "PFile", "Scanned on \"%s\" for \"%s\". Found %i matches", dir, type, (int)result.size());
+	
+	scan_entries.push_back(entry);
+	scan_results.push_back(result);
 	return result;
     
 }
@@ -440,9 +513,18 @@ bool Path::NoCaseFind() {
 
 bool Path::Find() {
 
+	// Scan dir on ZIP
 	if (this->is_zip)
 		return this->NoCaseFind();
 	
+	#ifdef __ANDROID__
+
+	// Scan dir on APK
+	if (c_str()[0] != '/')
+		return this->NoCaseFind();
+
+	#endif
+
 	const char* cstr = this->c_str();
 
 	PLog::Write(PLog::DEBUG, "PFile", "Find %s", cstr);
@@ -494,9 +576,9 @@ RW* Path::GetRW(const char* mode) {
 
 	SDL_RWops* ret;
 
-	#ifndef NO_ZIP
 	if (this->is_zip) {
 
+		#ifndef NO_ZIP
 		struct zip_stat st;
 		zip_stat_init(&st);
 		if (zip_stat(this->zip_file->zip, this->c_str(), 0, &st) == -1) {
@@ -524,8 +606,14 @@ RW* Path::GetRW(const char* mode) {
 
 		return (RW*)ret;
 
+		#else
+
+		return nullptr;
+		
+		#endif
+		
 	}
-	#endif
+	
 
 	ret = SDL_RWFromFile(this->c_str(), mode);
 	
@@ -547,6 +635,7 @@ int WriteRW(RW* rw, const void* buffer, int len) {
 
 	if (rwops->hidden.unknown.data1 != nullptr) {
 	
+		// This log may call this function again, doing a infinite loop
 		PLog::Write(PLog::ERR, "PFile", "Can't write const RW");
 		return 0;
 	

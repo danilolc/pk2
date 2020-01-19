@@ -115,9 +115,12 @@ const char* Language_Name() {
 int Load_Language(const char* language) {
 	
 	PFile::Path path(std::string("language" PE_SEP) + language);
-	if (!tekstit->Read_File(path))
-		return -1;
+	
+	PLog::Write(PLog::DEBUG, "PK2", "Loading language from %s", path.c_str());
 
+	if (!tekstit->Read_File(path))
+		return -1;	
+	
 	// Load_Fonts(tekstit);
 
 	// Aloitusikkuna

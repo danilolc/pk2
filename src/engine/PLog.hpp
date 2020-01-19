@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/types.hpp"
+#include "engine/PFile.hpp"
 
 namespace PLog {
 
@@ -16,7 +17,7 @@ enum {
     
 };
 
-void Init(u8 level, const char* file);
+void Init(u8 level, PFile::Path file);
 void Write(u8 level, const char* origin, const char* format, ...);
 void Exit();
 

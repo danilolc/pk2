@@ -50,13 +50,35 @@ int Screen_First_Start() {
 		strcpy(Settings.kieli, "english.txt");
 		
 		if(Load_Language(Settings.kieli) != 0) {
+
 			PLog::Write(PLog::FATAL, "PK2", "Could not find the default language file!");
 			PK2_Error("Error");
 			return -1;
+
 		}
 
 	}
-	Load_Fonts(tekstit);
+	
+	if (Load_Fonts(tekstit) != 0) {
+
+		strcpy(Settings.kieli, "english.txt");
+		if(Load_Language(Settings.kieli) != 0) {
+
+			PLog::Write(PLog::FATAL, "PK2", "Could not find the default language file!");
+			PK2_Error("Error");
+			return -1;
+
+		}
+
+		if (Load_Fonts(tekstit) != 0) {
+
+			PLog::Write(PLog::FATAL, "PK2", "Could load fonts!");
+			PK2_Error("Error");
+			return -1;
+
+		}
+	
+	}
 
 	langlist = PFile::Path("language").scandir(".txt");
 	

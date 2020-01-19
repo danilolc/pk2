@@ -71,6 +71,7 @@ void quit() {
 
 	Piste::terminate();
 	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 terminated");
+	PLog::Exit();
 
 }
 
@@ -126,7 +127,7 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	PLog::Init(PLog::ALL, NULL);
+	PLog::Init(PLog::ALL, PFile::Path(""));
 	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 started!");
 
 	if(!path_set)
@@ -143,6 +144,8 @@ int main(int argc, char *argv[]) {
 
 	data_path = data_path_p;
 	SDL_free(data_path_p);
+
+	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"));
 
 	PLog::Write(PLog::DEBUG, "PK2", "Data path - %s", data_path.c_str());
 	PUtils::CreateDir(data_path);
