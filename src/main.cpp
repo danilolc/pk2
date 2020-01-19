@@ -59,6 +59,7 @@ void quit() {
 	Settings_Save();
 
 	PSound::stop_music();
+	GUI_Exit();
 
 	if (Game)
 		delete Game;

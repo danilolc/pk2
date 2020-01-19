@@ -138,6 +138,8 @@ int Screen_Loop() {
 	bool keys_move = (current_screen == SCREEN_MAP);
 	bool relative = Settings.isFullScreen;
 	PInput::UpdateMouse(keys_move, relative);
+	if (PUtils::Is_Mobile())
+		GUI_Update();
 	
 	if (next_screen != current_screen) Screen_Change();
 	

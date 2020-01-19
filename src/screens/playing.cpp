@@ -577,7 +577,7 @@ int Update_Camera(){
 	Game->camera_x = (int)Player_Sprite->x-screen_width / 2;
 	Game->camera_y = (int)Player_Sprite->y-screen_height / 2;
 	
-	if(dev_mode && PInput::MouseLeft()) {
+	if(dev_mode && PInput::MouseLeft() && !PUtils::Is_Mobile()) {
 		Game->camera_x += PInput::mouse_x - screen_width / 2;
 		Game->camera_y += PInput::mouse_y - screen_height / 2;
 	}
@@ -736,7 +736,7 @@ int Screen_InGame(){
 
 	if (key_delay == 0) {
 		if (!Game->game_over && !Game->level_clear) {
-			if (PInput::Keydown(Settings.control_open_gift)) {
+			if (PInput::Keydown(Settings.control_open_gift) || Gui_gift) {
 				Gifts_Use();
 				key_delay = 10;
 			}
@@ -750,12 +750,12 @@ int Screen_InGame(){
 				Player_Sprite->energia = 0;
 			}
 
-			if (PInput::Keydown(PInput::TAB)){
+			if (PInput::Keydown(PInput::TAB) || Gui_tab){
 				Gifts_ChangeOrder();
 				key_delay = 10;
 			}
 
-			if (PInput::Keydown(PInput::ESCAPE)) {
+			if (PInput::Keydown(PInput::ESCAPE) || Gui_menu) {
 				if(test_level)
 					Fade_Quit();
 				else {

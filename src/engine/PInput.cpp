@@ -230,28 +230,50 @@ void UpdateTouch(){
 	touchlist.clear();
 
 	SDL_Finger* finger = nullptr;
-	SDL_TouchID id = SDL_GetTouchDevice(0);
+	
+	int devices = SDL_GetNumTouchDevices();
 
-	int fingers = SDL_GetNumTouchFingers(id);
-
-	for(int j = 0; j < fingers; j++){
-
-		finger = SDL_GetTouchFinger(id, j);
-		if(finger == nullptr) {
-
-			PLog::Write(PLog::ERR, "PInput", SDL_GetError());
-			SDL_ClearError();
+	for (int i = 0; i < devices; i++) {
 		
-		} else {
+		SDL_TouchID id = SDL_GetTouchDevice(i);
 
-			touch_t touch;
-			touch.id = finger->id;
-			touch.pos_x = finger->x;
-			touch.pos_y = finger->y;
-			touchlist.push_back(touch);
+		int fingers = SDL_GetNumTouchFingers(id);
+
+		for(int j = 0; j < fingers; j++){
+
+			finger = SDL_GetTouchFinger(id, j);
+			if(finger == nullptr) {
+
+				PLog::Write(PLog::ERR, "PInput", SDL_GetError());
+				SDL_ClearError();
 			
+			} else {
+
+				touch_t touch;
+				touch.id = finger->id;
+				touch.pos_x = finger->x;
+				touch.pos_y = finger->y;
+				touchlist.push_back(touch);
+				
+			}
 		}
+
 	}
+
+	#ifndef __ANDROID__
+	if (mouse_key & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+
+		int w, h;
+		PDraw::get_buffer_size(&w, &h);
+		
+		touch_t touch;
+		touch.id = -1;
+		touch.pos_x = float(mouse_x) / w;
+		touch.pos_y = float(mouse_y) / h;
+		touchlist.push_back(touch);
+
+	}
+	#endif
 
 }
 

@@ -44,7 +44,7 @@ enum KEY {
 struct touch_t {
 
 	int id;
-	int pos_x, pos_y;
+	float pos_x, pos_y;
 
 };
 
@@ -66,7 +66,7 @@ int ReadKeyboard(char* c);
 int Vibrate(int length);
 void SetMousePosition(int x, int y);
 
-std::vector<int[3]> GetTouch();
+std::vector<touch_t> GetTouch();
 int GetTouchPos(float& x, float& y);
 
 void GetMouse(int& x, int& y);

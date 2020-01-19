@@ -72,7 +72,7 @@ This example starts the level13.map on dev mode:
 * Better documentation
 * Audio on Windows/Android
 * SDL Android isn't sending SDL_QUIT event
-* Make the mobile controls
+* Player transform into another sprite when it's dead
 
 # ROADMAP
 * Load pk2stuff and android controls from zip

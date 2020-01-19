@@ -59,7 +59,6 @@ Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
         if (tex == NULL) {
 
             PLog::Write(PLog::ERR, "PDraw", "Can't load gui texture %s", path.c_str());
-            return nullptr;
 
         }
 
@@ -82,13 +81,17 @@ Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
 
 int remove_gui(Gui* gui) {
 
-    //gui_textures.erase(gui);
+    if (!gui)
+        return -1;
+
     auto rem = std::remove(gui_textures.begin(), gui_textures.end(), gui);
     gui_textures.erase(rem, gui_textures.end());
 
-    SDL_DestroyTexture((SDL_Texture*)gui->texture);
+    if (gui->texture != NULL)
+        SDL_DestroyTexture((SDL_Texture*)gui->texture);
 
     delete gui;
+    
 
     return 0;
 

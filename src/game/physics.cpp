@@ -16,6 +16,7 @@
 #include "sfx.hpp"
 #include "system.hpp"
 #include "episode/episodeclass.hpp"
+#include "gui.hpp"
 
 #include "engine/types.hpp"
 #include "engine/PInput.hpp"
@@ -379,65 +380,55 @@ int Sprite_Movement(int i){
 	/* Player-sprite and its controls                                                        */
 	/*****************************************************************************************/
 
-	bool lisavauhti = true;
-	bool hidastus = false;
+	bool add_speed = true;
+	bool gliding = false;
 
-	/*PInput::Lue_Eventti();*/
 	if (sprite.pelaaja != 0 && sprite.energia > 0){
 		/* SLOW WALK */
 		if (PInput::Keydown(Settings.control_walk_slow))
-			lisavauhti = false;
+			add_speed = false;
 
 		/* ATTACK 1 */
-		if (PInput::Keydown(Settings.control_attack1) && sprite.lataus == 0 && sprite.ammus1 != -1)
+		if ((PInput::Keydown(Settings.control_attack1) || Gui_egg) && sprite.lataus == 0 && sprite.ammus1 != -1)
 			sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
 		/* ATTACK 2 */
-		else if (PInput::Keydown(Settings.control_attack2) && sprite.lataus == 0 && sprite.ammus2 != -1)
+		else if ((PInput::Keydown(Settings.control_attack2) || Gui_doodle) && sprite.lataus == 0 && sprite.ammus2 != -1)
 				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
 
 		/* CROUCH */
 		sprite.kyykky = false;
-		if (PInput::Keydown(Settings.control_down) && !sprite.alas) {
+		if ((PInput::Keydown(Settings.control_down) || Gui_down) && !sprite.alas) {
 			sprite.kyykky = true;
 			sprite_yla += sprite_korkeus/1.5;
 		}
 
-		double a_lisays = 0;
+		/* NAVIGATING*/
+		int navigation = Gui_pad;
 
-		/* NAVIGATING TO RIGHT */
-		if (PInput::Keydown(Settings.control_right)) {
-			a_lisays = 0.04;//0.08;
+		if (PInput::Keydown(Settings.control_right))
+			navigation = 100;
+		
+		if (PInput::Keydown(Settings.control_left))
+			navigation = -100;
 
-			if (lisavauhti) {
-				if (rand()%20 == 1 && sprite.animaatio_index == ANIMATION_WALKING) // Draw dust
-					Particles_New(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,0.25,-0.25,40,0,0);
+		double a_lisays = 0.04;//0.08;
 
-				a_lisays += 0.09;//0.05
-			}
+		if (add_speed) {
+			if (rand()%20 == 1 && sprite.animaatio_index == ANIMATION_WALKING) // Draw dust
+				Particles_New(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,0.25,-0.25,40,0,0);
 
-			if (sprite.alas)
-				a_lisays /= 1.5;//2.0
+			a_lisays += 0.09;//0.05
+		}
 
+		if (sprite.alas)
+			a_lisays /= 1.5;//2.0
+
+		a_lisays *= double(navigation) / 100;
+
+		if (navigation > 0)
 			sprite.flip_x = false;
-		}
-
-		/* NAVIGATING TO LEFT */
-		if (PInput::Keydown(Settings.control_left)) {
-			a_lisays = -0.04;
-
-			if (lisavauhti) {
-				if (rand()%20 == 1 && sprite.animaatio_index == ANIMATION_WALKING) { // Draw dust
-					Particles_New(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,-0.25,-0.25,40,0,0);
-				}
-
-				a_lisays -= 0.09;
-			}
-
-			if (sprite.alas)	// spriten koskettaessa maata kitka vaikuttaa
-				a_lisays /= 1.5;//2.0
-
+		else if (navigation < 0)
 			sprite.flip_x = true;
-		}
 
 		if (sprite.kyykky)	// Slow when couch
 			a_lisays /= 10;
@@ -446,7 +437,7 @@ int Sprite_Movement(int i){
 
 		/* JUMPING */
 		if (sprite.tyyppi->paino > 0) {
-			if (PInput::Keydown(Settings.control_jump)) {
+			if (PInput::Keydown(Settings.control_jump) || Gui_up) {
 				if (!sprite.kyykky) {
 					if (sprite.hyppy_ajastin == 0)
 						Play_GameSFX(jump_sound, 100, (int)sprite_x, (int)sprite_y,
@@ -461,17 +452,17 @@ int Sprite_Movement(int i){
 			}
 
 			/* tippuminen hiljaa alasp�in */
-			if (PInput::Keydown(Settings.control_jump) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
+			if ((PInput::Keydown(Settings.control_jump) || Gui_up) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
 				sprite.tyyppi->liitokyky)
-				hidastus = true;
+				gliding = true;
 		}
 		/* MOVING UP AND DOWN */
 		else { // if the player sprite-weight is 0 - like birds
 
-			if (PInput::Keydown(Settings.control_jump))
+			if (PInput::Keydown(Settings.control_jump) || Gui_up)
 				sprite_b -= 0.15;
 
-			if (PInput::Keydown(Settings.control_down))
+			if (PInput::Keydown(Settings.control_down) || Gui_down)
 				sprite_b += 0.15;
 
 			sprite.hyppy_ajastin = 0;
@@ -569,7 +560,7 @@ int Sprite_Movement(int i){
 	if (sprite.paino != 0 && (sprite.hyppy_ajastin <= 0 || sprite.hyppy_ajastin >= 45))
 		sprite_b += sprite.paino/1.25;// + sprite_b/1.5;
 
-	if (hidastus && sprite_b > 0) // If gliding
+	if (gliding && sprite_b > 0) // If gliding
 		sprite_b /= 1.3;//1.5;//3
 
 	/*****************************************************************************************/
