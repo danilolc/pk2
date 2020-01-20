@@ -96,7 +96,6 @@ int Screen_First_Start() {
 
 	PDraw::fit_screen(Settings.isFit);
 	PDraw::set_fullscreen(Settings.isFullScreen);
-	PDraw::change_resolution(Settings.isWide ? 800 : 640, 480);
 	
 	PDraw::image_load(game_assets, PFile::Path("gfx" PE_SEP "pk2stuff.bmp"), false);
 	PDraw::image_load(game_assets2, PFile::Path("gfx" PE_SEP "pk2stuff2.png"), false);

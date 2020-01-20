@@ -63,9 +63,7 @@ This example starts the level13.map on dev mode:
 ./pekka-kana-2 dev test "rooster island 2/level13.map"
 ```
 
-
-# TODOs and FIXMEs:
-* Jump frames when FPS is slow
+# To r3:
 * Traduct finnish language
 * Better documentation
 * Audio on Windows/Android
@@ -74,3 +72,4 @@ This example starts the level13.map on dev mode:
 # ROADMAP
 * Load pk2stuff and android controls from zip
 * Super mode -> energy = 0 on touch Pekka
+* Jump frames when FPS is slow

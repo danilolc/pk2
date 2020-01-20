@@ -1421,25 +1421,24 @@ void MapClass::Animoi_Virta_Ylos(void){
 }
 
 int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
-	int palikka;
-	int px = 0,
-		py = 0,
-		kartta_x = kamera_x/32,
-		kartta_y = kamera_y/32;
+	
+	int kartta_x = kamera_x/32;
+	int kartta_y = kamera_y/32;
 
-	for (int x=-1;x<ruudun_leveys_palikoina;x++){
-		for (int y=0;y<ruudun_korkeus_palikoina;y++){
-			if (x + kartta_x < 0 || x + kartta_x > PK2KARTTA_KARTTA_LEVEYS) continue;
+	for (int x = 0; x < ruudun_leveys_palikoina; x++){
+		if (x + kartta_x < 0 || x + kartta_x > PK2KARTTA_KARTTA_LEVEYS) continue;
+
+		for (int y = 0; y < ruudun_korkeus_palikoina; y++){
 			if (y + kartta_y < 0 || y + kartta_y > PK2KARTTA_KARTTA_KORKEUS) continue;
 
-			int i = x + kartta_x + (y + kartta_y)*PK2KARTTA_KARTTA_LEVEYS;
-			if(i<0 || i >= sizeof(taustat)) continue; //Dont access a not allowed address
+			int i = x + kartta_x + (y + kartta_y) * PK2KARTTA_KARTTA_LEVEYS;
+			if( i < 0 || i >= sizeof(taustat) ) continue; //Dont access a not allowed address
 
-			palikka = taustat[i];
+			int palikka = taustat[i];
 
 			if (palikka != 255){
-				px = ((palikka%10)*32);
-				py = ((palikka/10)*32);
+				int px = ((palikka%10)*32);
+				int py = ((palikka/10)*32);
 
 				if (palikka == BLOCK_ANIM1 || palikka == BLOCK_ANIM2 || palikka == BLOCK_ANIM3 || palikka == BLOCK_ANIM4)
 					px += animaatio * 32;
@@ -1496,13 +1495,14 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 	}
 
 
-	for (int x=-1; x < ruudun_leveys_palikoina + 1; x++){
-		for (int y=-1; y < ruudun_korkeus_palikoina + 1; y++){
-			if (x + kartta_x < 0 || x + kartta_x > PK2KARTTA_KARTTA_LEVEYS) continue;
+	for (int x = -1; x < ruudun_leveys_palikoina + 1; x++) {
+		if (x + kartta_x < 0 || x + kartta_x > PK2KARTTA_KARTTA_LEVEYS) continue;
+
+		for (int y = -1; y < ruudun_korkeus_palikoina + 1; y++) {
 			if (y + kartta_y < 0 || y + kartta_y > PK2KARTTA_KARTTA_KORKEUS) continue;
 
-			int i = x + kartta_x + (y + kartta_y)*PK2KARTTA_KARTTA_LEVEYS;
-			if(i<0 || i >= sizeof(seinat)) continue; //Dont access a not allowed address
+			int i = x + kartta_x + (y + kartta_y) * PK2KARTTA_KARTTA_LEVEYS;
+			if( i < 0 || i >= sizeof(seinat) ) continue; //Dont access a not allowed address
 
 			palikka = seinat[i];
 

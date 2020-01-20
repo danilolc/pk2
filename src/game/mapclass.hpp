@@ -119,8 +119,8 @@ class MapClass
 	MAP_RECT LaskeTallennusAlue(u8 *lahde, u8 *&kohde);
 	MAP_RECT LaskeTallennusAlue(u8 *alue);
 	void LueTallennusAlue(u8 *lahde, MAP_RECT alue, int kohde);
-	int Piirra_Taustat(int, int, bool);
-	int Piirra_Seinat (int, int, bool);
+	int Piirra_Taustat(int kamera_x, int kamera_y, bool editor);
+	int Piirra_Seinat (int kamera_x, int kamera_y, bool editor);
 	void Kopioi(MapClass &kartta);
 
 	//PK2 functions

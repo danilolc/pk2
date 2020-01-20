@@ -672,14 +672,14 @@ void Draw_Menu_Graphics() {
 
 		if (wasWide != Settings.isWide) {
 			screen_width = Settings.isWide ? 800 : 640;
+			
 			MapClass_Set_Screen_Size(screen_width, screen_height);
 			PDraw::change_resolution(screen_width, screen_height);
 			
 			if(Episode)
 				PDraw::image_fill(bg_screen, 0);
 			
-			if (Settings.isWide) PDraw::set_xoffset(80);
-			else PDraw::set_xoffset(0);
+			PDraw::set_xoffset(Settings.isWide? 80 : 0);
 		}
 
 		if (Draw_Menu_Text(true,"back",100,360)){

@@ -432,21 +432,27 @@ void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y,
 
 int Update_Sprites() {
 	
+	const int ACTIVE_BORDER_X = 320;
+	const int ACTIVE_BORDER_y = 240;
+
 	int active_sprites = 0;
 	SpriteClass* sprite;
 
 	for (int i = 0; i < MAX_SPRITEJA; i++){ //Activate sprite if it is on screen
+		
 		sprite = &Sprites_List[i];
-		if (sprite->x < Game->camera_x + 640 + 320 &&
-			sprite->x > Game->camera_x - 320 &&
-			sprite->y < Game->camera_y + 480 + 240 &&
-			sprite->y > Game->camera_y - 240)
+		
+		if (sprite->x < Game->camera_x + 640 + ACTIVE_BORDER_X &&
+			sprite->x > Game->camera_x - ACTIVE_BORDER_X &&
+			sprite->y < Game->camera_y + 480 + ACTIVE_BORDER_y &&
+			sprite->y > Game->camera_y - ACTIVE_BORDER_y)
 			sprite->aktiivinen = true;
 		else
 			sprite->aktiivinen = false;
 
 		if (sprite->piilota == true)
 			sprite->aktiivinen = false;
+	
 	}
 
 	// Update bonus first to get energy change
