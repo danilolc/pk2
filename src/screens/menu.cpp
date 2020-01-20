@@ -179,10 +179,11 @@ bool Draw_Menu_Text(bool active, const char *teksti, int x, int y) {
 
 		//Wavetext_Draw(teksti, fontti3, x, y);
 
-	}
-	else
+	} else {
+	
 		WavetextSlow_Draw(teksti, fontti2, x, y);
-
+	
+	}
 	menu_valinta_id++;
 
 	return false;
@@ -1062,9 +1063,18 @@ void Draw_Menu_Language() {
 
 		if(Draw_Menu_Text(true,langlist[i].c_str(),150,my)) {
 
-			strcpy(Settings.kieli, langlist[i].c_str());
-			Load_Language(Settings.kieli);
-			Load_Fonts(tekstit);
+			Load_Language(langlist[i].c_str());
+			
+			if (Load_Fonts(tekstit) == -1) {
+
+				Load_Language(Settings.kieli);
+				Load_Fonts(tekstit);
+
+			} else {
+
+				strcpy(Settings.kieli, langlist[i].c_str());
+
+			}
 
 		}
 		

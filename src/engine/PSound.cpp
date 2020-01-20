@@ -193,6 +193,7 @@ int start_music(PFile::Path path) {
 
 	PFile::RW* rw = path.GetRW("rb");
 	music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);
+	//music = Mix_LoadMUS(path.c_str());
 	PFile::CloseRW(rw);
 
 	if (music == NULL) {

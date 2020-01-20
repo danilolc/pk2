@@ -723,7 +723,8 @@ int Screen_InGame(){
 			Game->exit_timer = 700;//800;//2000;
 
 		if (PInput::Keydown(Settings.control_attack1) || PInput::Keydown(Settings.control_attack2) ||
-			PInput::Keydown(Settings.control_jump) || PInput::Keydown(PInput::RETURN))
+			PInput::Keydown(Settings.control_jump) || PInput::Keydown(PInput::RETURN) ||
+			Gui_up || Gui_down || Gui_menu)
 			if (Game->exit_timer > 2 && Game->exit_timer < 500/*600*//*1900*/ && key_delay == 0)
 				Game->exit_timer = 2;
 

@@ -23,14 +23,25 @@
 
 #include <cstring>
 
-#define GAME_NAME    "Pekka Kana 2"
-#define GAME_VERSION "1.3.1"
+#define GAME_NAME         "Pekka Kana 2"
+#define GAME_VERSION      "1.3.1"
+#define GAME_VERSION_NAME "(r3-pre)"
 
 #ifdef NO_ZIP
-#define GAME_VERSION_STR GAME_VERSION " no-zip"
+#define GAME_ZIP "(no-zip)"
 #else
-#define GAME_VERSION_STR GAME_VERSION " (r3-pre)"
+#define GAME_ZIP "(zip)"
 #endif
+
+#ifdef __ANDROID__
+#define GAME_PLATFORM "(Android)"
+#elif _WIN32
+#define GAME_PLATFORM "(Windows)"
+#else
+#define GAME_PLATFORM "(Linux)"
+#endif
+
+#define GAME_VERSION_STR GAME_VERSION " " GAME_VERSION_NAME " " GAME_PLATFORM " " GAME_ZIP
 
 //#define SDL_MAIN_HANDLED
 #include <SDL.h>

@@ -206,11 +206,14 @@ int WavetextSlow_Draw(const char *teksti, int fontti, int x, int y){
 			xs = (int)(cos_table[((i+degree)*4)%360])/11;
 			kirjain[0] = teksti[i];
 
-			if (Settings.transparent_text)
+			if (Settings.transparent_text) {
 				vali += PDraw::font_writealpha(fontti,kirjain,x+vali-xs,y+ys,75);
-			else{
+			
+			} else {
+
 				PDraw::font_write(fontti4,kirjain,x+vali-xs+1,y+ys+1);
 				vali += PDraw::font_write(fontti,kirjain,x+vali-xs,y+ys);
+			
 			}
 
 

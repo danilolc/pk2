@@ -638,6 +638,7 @@ int font_create(PFile::Path path) {
 
         PLog::Write(PLog::ERR, "PDraw", "Can't load a font from file!");
         delete fontList[index];
+        fontList[index] = nullptr;
         return -1;
     
     }
