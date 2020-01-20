@@ -575,23 +575,25 @@ RW* Path::GetRW(const char* mode) {
 
 	SDL_RWops* ret;
 
+	const char* cstr = this->c_str();
+
 	if (this->is_zip) {
 
 		#ifndef NO_ZIP
 		struct zip_stat st;
 		zip_stat_init(&st);
-		if (zip_stat(this->zip_file->zip, this->c_str(), 0, &st) == -1) {
+		if (zip_stat(this->zip_file->zip, cstr, 0, &st) == -1) {
 
-			PLog::Write(PLog::ERR, "PFile", "Can't get RW from zip \"%s\", file \"%s\"", this->zip_file->name.c_str(), this->c_str());
+			PLog::Write(PLog::ERR, "PFile", "Can't get RW from zip \"%s\", file \"%s\"", this->zip_file->name.c_str(), cstr);
 			return nullptr;
 
 		}
 
-		zip_file_t* zfile = zip_fopen(this->zip_file->zip, this->c_str(), 0);
+		zip_file_t* zfile = zip_fopen(this->zip_file->zip, cstr, 0);
 
 		if (!zfile) {
 
-			PLog::Write(PLog::ERR, "PFile", "RW from zip \"%s\", file \"%s\" is NULL", this->zip_file->name.c_str(), this->c_str());
+			PLog::Write(PLog::ERR, "PFile", "RW from zip \"%s\", file \"%s\" is NULL", this->zip_file->name.c_str(), cstr);
 			return nullptr;
 
 		}
@@ -613,12 +615,36 @@ RW* Path::GetRW(const char* mode) {
 		
 	}
 	
+	#ifdef __ANDROID__
+	if (cstr[0] != '/') { //From APK
 
-	ret = SDL_RWFromFile(this->c_str(), mode);
+		SDL_RWops* temp = SDL_RWFromFile(cstr, mode);
+		if (!temp) {
+
+			PLog::Write(PLog::ERR, "PFile", "Can't get RW from file \"%s\"", cstr);
+			return nullptr;
+
+		}
+
+		int size = SDL_RWsize(temp);
+		void* buffer = SDL_malloc(size);
+
+		SDL_RWread(temp, buffer, size, 1);
+		SDL_RWclose(temp);
+
+		ret = SDL_RWFromConstMem(buffer, size);
+		ret->hidden.unknown.data1 = buffer;
+
+		return (RW*)ret;
+	
+	}
+	#endif
+
+	ret = SDL_RWFromFile(cstr, mode);
 	
 	if (!ret) {
 
-		PLog::Write(PLog::ERR, "PFile", "Can't get RW from file \"%s\"", this->c_str());
+		PLog::Write(PLog::ERR, "PFile", "Can't get RW from file \"%s\"", cstr);
 		return nullptr;
 
 	}

@@ -1,27 +1,14 @@
 package org.pgnapps.pk2;
 
 import org.libsdl.app.SDLActivity;
-import org.libsdl.app.SDL;
 
-import android.content.*;
 import android.content.res.AssetManager;
-import android.content.pm.ActivityInfo;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.view.WindowManager;
-import android.util.Log;
 
 import java.io.IOException;
-import java.lang.Object;
-import java.lang.reflect.Method;
 import java.util.Locale;
 
 public class PK2Activity extends SDLActivity {
     private static final String LOG_TAG = "PK2";
-
-    String[] listValues;
-    String[] listResults;
 
     private String[] listDir(String dir) {
 

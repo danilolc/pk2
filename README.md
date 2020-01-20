@@ -66,7 +66,6 @@ This example starts the level13.map on dev mode:
 
 # TODOs and FIXMEs:
 * Jump frames when FPS is slow
-* Super mode -> energy = 0 on touch Pekka
 * Traduct finnish language
 * Better documentation
 * Audio on Windows/Android
@@ -74,3 +73,4 @@ This example starts the level13.map on dev mode:
 
 # ROADMAP
 * Load pk2stuff and android controls from zip
+* Super mode -> energy = 0 on touch Pekka
