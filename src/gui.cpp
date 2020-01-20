@@ -5,6 +5,8 @@
 #include "gui.hpp"
 
 #include "settings.hpp"
+#include "game/gifts.hpp"
+#include "game/sprites.hpp"
 
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
@@ -44,6 +46,8 @@ const static int PadBt_a = 10;
 const static int PadBt_r = 880;
 const static int PadBt_b = PadBt_y + sqrt(PadBt_r*PadBt_r - PadBt_x*PadBt_x);
 
+static int UI_mode = UI_NONE;
+
 void Game_GUI(bool set){
 
 	gui_padbg->active = set;
@@ -61,6 +65,8 @@ void Game_GUI(bool set){
 }
 
 void GUI_Change(int ui_mode) {
+
+	UI_mode = ui_mode;
 
 	switch(ui_mode){
 		case UI_TOUCH_TO_START:
@@ -220,17 +226,28 @@ static int get_pad() {
 
 void GUI_Update() {
 
-	Gui_pad = get_pad();
+	if (UI_mode == UI_GAME_BUTTONS) {
 
-	Gui_up = read_gui(gui_up);
-	Gui_down = read_gui(gui_down);
-	Gui_egg = read_gui(gui_egg);
-	Gui_doodle = read_gui(gui_doodle);
-	Gui_gift = read_gui(gui_gift);
+		gui_doodle->active = Player_Sprite->ammus2 != -1;
+		gui_egg->active = Player_Sprite->ammus1 != -1;
+		gui_gift->active = Gifts_Count() > 0;
+	
+		Gui_pad = get_pad();
 
-	Gui_menu = read_gui(gui_menu);
-	Gui_touch = read_gui(gui_touch);
-	Gui_tab = read_gui(gui_tab);;
+		Gui_up = read_gui(gui_up);
+		Gui_down = read_gui(gui_down);
+		Gui_egg = read_gui(gui_egg);
+		Gui_doodle = read_gui(gui_doodle);
+		Gui_gift = read_gui(gui_gift);
+
+		Gui_menu = read_gui(gui_menu);
+		Gui_tab = read_gui(gui_tab);
+
+	} else if (UI_mode == UI_TOUCH_TO_START) {
+
+		Gui_touch = read_gui(gui_touch);
+	
+	}
 
 }
 

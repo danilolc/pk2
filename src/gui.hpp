@@ -18,6 +18,7 @@ extern bool Gui_touch;
 extern bool Gui_tab;
 
 enum UI_MODE {
+	UI_NONE,
 	UI_TOUCH_TO_START,
 	UI_CURSOR,
 	UI_GAME_BUTTONS
