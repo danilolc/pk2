@@ -52,9 +52,9 @@ Now just clone the code and run `make` on pk2 directory, the PK2 binary will be 
 
 # User made episodes:
 http://mapstore.the.cz/
-To add a new episode, just download the zip file and extract it to its respective path inside "res/".
+To add a new episode, just download the zip and put it inside "mapstore/" on local data.
 
-It can be started with the "dev" argument to enable the
+The game can be started with the "dev" argument to enable the
 cheats and "test" following by the episode and level to
 open directly on the level.
 
@@ -67,12 +67,10 @@ This example starts the level13.map on dev mode:
 # TODOs and FIXMEs:
 * Jump frames when FPS is slow
 * Super mode -> energy = 0 on touch Pekka
-* Fix transparent drawing outside screen
 * Traduct finnish language
 * Better documentation
 * Audio on Windows/Android
 * SDL Android isn't sending SDL_QUIT event
-* Player transform into another sprite when it's dead
 
 # ROADMAP
 * Load pk2stuff and android controls from zip

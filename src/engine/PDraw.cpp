@@ -917,10 +917,11 @@ void update(bool draw) {
     
     }
 
-    SDL_Rect r = {0, 0, x_offset, screen_height}; // Fill the unused borders
-    SDL_FillRect(frameBuffer8, &r, 0);
-    r.x = screen_width - x_offset;
-    SDL_FillRect(frameBuffer8, &r, 0);
+    //SDL_Rect r = {0, 0, x_offset, screen_height}; // Fill the unused borders
+    //SDL_FillRect(frameBuffer8, &r, 0);
+    //r.x = screen_width - x_offset;
+    //SDL_FillRect(frameBuffer8, &r, 0);
+    SDL_FillRect(frameBuffer8, NULL, 0);
 
 }
 

@@ -36,7 +36,7 @@ int apple_sound = -1;
 
 int Load_SFX() {
     
-    PFile::Path path("sfx/");
+    PFile::Path path("sfx" PE_SEP);
 
     path.SetFile("switch3.wav");
     switch_sound = PSound::load_sfx(path);

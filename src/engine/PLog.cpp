@@ -17,6 +17,12 @@
 #define ANSI_COLOR_FATAL   "\x1b[41m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
+#ifdef _WIN32
+#define END_LINE "\r\n"
+#else
+#define END_LINE "\n"
+#endif
+
 namespace PLog {
 
 static PFile::RW* log_file = NULL;
@@ -44,7 +50,7 @@ static void write_on_file(const char* level_name, const char* origin, const char
     int size;
 
     size = snprintf(buffer, BUFFER_SIZE, "%s", level_name + 5);
-    PFile::WriteRW(log_file, buffer, size - sizeof(ANSI_COLOR_RESET));
+    PFile::WriteRW(log_file, buffer, size - 4);
 
     size = snprintf(buffer, BUFFER_SIZE, "\t%s\t- ", origin);
     PFile::WriteRW(log_file, buffer, size);
@@ -52,7 +58,7 @@ static void write_on_file(const char* level_name, const char* origin, const char
     size = vsnprintf(buffer, BUFFER_SIZE, format, *args);
     PFile::WriteRW(log_file, buffer, size);
     
-    PFile::WriteRW(log_file, "\n", 1);
+    PFile::WriteRW(log_file, END_LINE, sizeof(END_LINE) - 1);
 
 }
 

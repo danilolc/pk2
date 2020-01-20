@@ -140,7 +140,6 @@ int main(int argc, char *argv[]) {
 	}
 
 	PLog::Init(PLog::ALL, PFile::Path(""));
-	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 started!");
 
 	if(!path_set)
 		PUtils::Setcwd();
@@ -159,17 +158,20 @@ int main(int argc, char *argv[]) {
 
 	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"));
 
+	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 started!");
+	PLog::Write(PLog::DEBUG, "PK2", "Game version: %s", GAME_VERSION_STR);
+
 	PLog::Write(PLog::DEBUG, "PK2", "Data path - %s", data_path.c_str());
 	PUtils::CreateDir(data_path);
-	PUtils::CreateDir(data_path + "scores/");
-	PUtils::CreateDir(data_path + "mapstore/");
+	PUtils::CreateDir(data_path + "scores" PE_SEP);
+	PUtils::CreateDir(data_path + "mapstore" PE_SEP);
 
 	Settings_Open();
 
 	if (!PUtils::Is_Mobile())
 		screen_width = Settings.isWide ? 800 : 640;
 
-	Piste::init(screen_width, screen_height, GAME_NAME, "gfx/icon.bmp");
+	Piste::init(screen_width, screen_height, GAME_NAME, "gfx" PE_SEP "icon.bmp");
 	if (!Piste::is_ready()) {
 
 		PLog::Write(PLog::FATAL, "PK2", "Failed to init PisteEngine");

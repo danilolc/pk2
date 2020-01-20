@@ -27,7 +27,7 @@ DEPENDENCIES := $(PK2_OBJ)
 DEPENDENCIES := $(basename $(DEPENDENCIES))
 DEPENDENCIES := $(addsuffix .d, $(DEPENDENCIES))
 
-PK2_BIN = $(BIN_DIR)pekka-kana-2.exe
+PK2_BIN = $(BIN_DIR)PK2.exe
 
 pk2: $(PK2_BIN) copyfiles
 

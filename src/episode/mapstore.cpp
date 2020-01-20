@@ -22,7 +22,7 @@ void Search_Episodes() {
 
 	std::vector<std::string> list;
 	
-	list = PFile::Path("episodes/").scandir("/");
+	list = PFile::Path("episodes" PE_SEP).scandir("/");
 	for (std::string ep : list) {
 
 		episode_entry e;
@@ -32,7 +32,7 @@ void Search_Episodes() {
         
 	}
 
-	std::string mapstore_path(data_path + "mapstore/");
+	std::string mapstore_path(data_path + "mapstore" PE_SEP);
 	
 	list = PFile::Path(mapstore_path).scandir(".zip");
 	for (std::string zip : list) {
@@ -45,7 +45,7 @@ void Search_Episodes() {
 
 		}
 
-		std::vector<std::string> zip_list = PFile::Path(zp, "episodes/").scandir("/");
+		std::vector<std::string> zip_list = PFile::Path(zp, "episodes" PE_SEP).scandir("/");
 
 		for (std::string ep : zip_list) {
 

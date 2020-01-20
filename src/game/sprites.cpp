@@ -318,7 +318,8 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 	int i = 0;
 
 	while (!added && i < MAX_SPRITEJA){
-		if (Sprites_List[i].piilota){
+		if (Sprites_List[i].piilota && &Sprites_List[i] != Player_Sprite){
+			
 			Sprites_List[i] = SpriteClass(&proto,is_Player_Sprite,false,x,y);
 
 			if (is_Player_Sprite) Player_Sprite = &Sprites_List[i];
@@ -364,7 +365,8 @@ void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y,
 	int i = 0;
 
 	while (!lisatty && i < MAX_SPRITEJA){
-		if (Sprites_List[i].piilota){
+		if (Sprites_List[i].piilota && &Sprites_List[i] != Player_Sprite){ //Don't replace player sprite
+
 			Sprites_List[i] = SpriteClass(&proto,is_Player_Sprite,false,x/*-proto.leveys/2*/,y);
 
 			//Sprites_List[i].x += Sprites_List[i].tyyppi->leveys;
