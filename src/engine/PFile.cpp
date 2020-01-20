@@ -54,6 +54,7 @@ void CloseZip(Zip* zp) {
 Zip* OpenZip(std::string path) {
 
 	#ifndef NO_ZIP
+	
 	SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
 	if (rw == NULL) {
 

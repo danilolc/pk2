@@ -67,7 +67,6 @@ int PK_Draw_Map() {
 	char luku[20];
 	int vali = 20;
 
-	PDraw::screen_fill(0);
 	PDraw::image_clip(bg_screen, 0, 0);
 
 	ShadowedText_Draw(Episode->entry.name.c_str(),100,72);
@@ -280,7 +279,6 @@ int Screen_Map_Init() {
 		PDraw::set_xoffset(80);
 	else
 		PDraw::set_xoffset(0);
-	PDraw::screen_fill(0);
 
 	degree = degree_temp;
 

@@ -94,7 +94,6 @@ int Draw_EndGame(){
 	u32 the_end_alku		= onnittelut_loppu + 80;
 	u32 the_end_loppu		= the_end_alku + 3000;
 
-	PDraw::screen_fill(0);
 	PDraw::image_cutclip(bg_screen,320-233/2,240-233/2, 6, 229, 239, 462);
 
 	Draw_EndGame_Image(345, 244, 3, 30, 2);

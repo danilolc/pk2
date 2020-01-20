@@ -36,7 +36,6 @@ void Fade_Quit() {
 
 int Screen_First_Start() {
 
-	PDraw::screen_fill(0);
 	srand((unsigned)time(NULL));
 	
 	Calculate_SinCos();
@@ -136,6 +135,7 @@ int Screen_Loop() {
 
 	bool keys_move = (current_screen == SCREEN_MAP);
 	bool relative = Settings.isFullScreen;
+
 	PInput::UpdateMouse(keys_move, relative);
 	if (PUtils::Is_Mobile())
 		GUI_Update();
@@ -159,7 +159,7 @@ int Screen_Loop() {
 	if (key_delay > 0)
 		key_delay--;
 
-	if ((closing_game && !PDraw::is_fading()))
+	if (closing_game && !PDraw::is_fading())
 		Piste::stop();
 
 	return 0;

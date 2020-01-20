@@ -1103,7 +1103,6 @@ void Draw_Menu_Language() {
 
 int Draw_Menu() {
 
-	PDraw::screen_fill(0);
 	PDraw::image_clip(bg_screen, (Episode && Settings.isWide)? -80 : 0, 0);
 
 	menu_valinta_id = 1;
@@ -1164,7 +1163,6 @@ int Screen_Menu_Init() {
 	bg_square.right = 320 + 5;
 	bg_square.bottom = 240 + 5;
 
-	PDraw::screen_fill(0);
 	menu_valittu_id = 1;
 
 	return 0;

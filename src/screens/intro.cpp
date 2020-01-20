@@ -32,7 +32,6 @@ int Draw_Intro(){
 	u32 sdl_alku        = kaantaja_loppu + 100;
 	u32 sdl_loppu       = sdl_alku + 400;
 
-	PDraw::screen_fill(0);
 	PDraw::image_cutclip(bg_screen, 280, 80, 280, 80, 640, 480);
 
 	if (intro_counter / 10 % 50 == 0)
@@ -93,7 +92,6 @@ int Screen_Intro_Init() {
 		PDraw::set_xoffset(80);
 	else
 		PDraw::set_xoffset(0);
-	PDraw::screen_fill(0);
 
 	PDraw::image_delete(bg_screen);
 	bg_screen = PDraw::image_load(PFile::Path("gfx/intro.bmp"), true);

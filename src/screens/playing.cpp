@@ -281,22 +281,21 @@ int Draw_InGame_BG() {
 	int pallarx = ( Game->camera_x % (640*3) ) / 3;
 	int pallary = ( Game->camera_y % (480*3) ) / 3;
 
-	PDraw::screen_fill(34);//0
-
 	if (Game->map->tausta == TAUSTA_STAATTINEN){
+	
 		PDraw::image_clip(Game->map->taustakuva_buffer,0,0);
 		PDraw::image_clip(Game->map->taustakuva_buffer,640,0);
-	}
-
-	if (Game->map->tausta == TAUSTA_PALLARX_HORI){
+	
+	} else if (Game->map->tausta == TAUSTA_PALLARX_HORI){
+	
 		PDraw::image_clip(Game->map->taustakuva_buffer,0   - pallarx,0);
 		PDraw::image_clip(Game->map->taustakuva_buffer,640 - pallarx,0);
 
 		if (screen_width > 640)
 			PDraw::image_clip(Game->map->taustakuva_buffer,640*2 - pallarx,0);
-	}
-
-	if (Game->map->tausta == TAUSTA_PALLARX_VERT){
+	
+	} else if (Game->map->tausta == TAUSTA_PALLARX_VERT){
+	
 		PDraw::image_clip(Game->map->taustakuva_buffer,0,0   - pallary);
 		PDraw::image_clip(Game->map->taustakuva_buffer,0,480 - pallary);
 
@@ -304,9 +303,9 @@ int Draw_InGame_BG() {
 			PDraw::image_clip(Game->map->taustakuva_buffer,640,0   - pallary);
 			PDraw::image_clip(Game->map->taustakuva_buffer,640,480 - pallary);
 		}
-	}
-
-	if (Game->map->tausta == TAUSTA_PALLARX_VERT_JA_HORI){
+	
+	} else if (Game->map->tausta == TAUSTA_PALLARX_VERT_JA_HORI){
+	
 		PDraw::image_clip(Game->map->taustakuva_buffer,0   - pallarx, 0-pallary);
 		PDraw::image_clip(Game->map->taustakuva_buffer,640 - pallarx, 0-pallary);
 		PDraw::image_clip(Game->map->taustakuva_buffer,0   - pallarx, 480-pallary);
@@ -316,9 +315,11 @@ int Draw_InGame_BG() {
 			PDraw::image_clip(Game->map->taustakuva_buffer,640*2 - pallarx,0-pallary);
 			PDraw::image_clip(Game->map->taustakuva_buffer,640*2 - pallarx,480-pallary);
 		}
+	
 	}
 
 	return 0;
+
 }
 
 int Draw_InGame_Gifts() {
@@ -660,8 +661,7 @@ int Screen_InGame(){
 
 		Draw_InGame();
 
-	}
-	else {
+	} else {
 
 		Piste::ignore_frame();
 

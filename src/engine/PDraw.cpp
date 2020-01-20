@@ -301,6 +301,8 @@ int image_clip(int index, int x, int y) {
 
     dstrect.x = x + x_offset;
     dstrect.y = y;
+    dstrect.w = imageList[index]->w;
+    dstrect.h = imageList[index]->h;
 
     SDL_BlitSurface(imageList[index], NULL, frameBuffer8, &dstrect);
 

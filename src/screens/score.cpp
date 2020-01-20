@@ -84,7 +84,6 @@ int Draw_ScoreCount() {
 	char luku[20];
 	int x, y;
 
-	PDraw::screen_fill(0);
 	PDraw::image_clip(bg_screen, 0, 0);
 
 	/* BG Effect */
@@ -241,7 +240,6 @@ int Screen_ScoreCount_Init() {
 		PDraw::set_xoffset(80);
 	else
 		PDraw::set_xoffset(0);
-	PDraw::screen_fill(0);
 
 	PDraw::image_delete(bg_screen);
 	bg_screen = PDraw::image_load(PFile::Path("gfx/menu.bmp"), true);
