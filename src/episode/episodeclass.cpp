@@ -217,7 +217,8 @@ EpisodeClass::EpisodeClass(const char* player_name, episode_entry entry) {
 
 EpisodeClass::~EpisodeClass() {
 
-	PFile::CloseZip(this->source_zip);
+	if (this->entry.is_zip)
+		PFile::CloseZip(this->source_zip);
 
 }
 

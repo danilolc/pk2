@@ -9,7 +9,7 @@
 
 namespace PSound {
 
-const int CHANNELS = 16;
+const int CHANNELS = 32;//16;
 
 int init();
 int update();
