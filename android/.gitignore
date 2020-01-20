@@ -10,5 +10,6 @@
 .externalNativeBuild
 .cxx
 
-/app/jni/SDL2*
+/app/jni/*
+!/app/jni/Android.mk
 /captures

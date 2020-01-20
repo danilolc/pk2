@@ -9,7 +9,7 @@ BIN_SRC = /usr/local/$(PLAT)-w64-mingw32/bin/
 
 SDL_CONF = $(BIN_SRC)/sdl2-config
 
-CXXFLAGS += $(shell $(SDL_CONF) --cflags) $(OPT) -std=gnu++17 -Wall -Wno-sign-compare
+CXXFLAGS += $(shell $(SDL_CONF) --cflags) $(OPT) -std=gnu++17 -Wall -Wno-sign-compare -DNO_ZIP
 LDFLAGS += -static-libgcc -static-libstdc++ $(shell $(SDL_CONF) --libs) -lSDL2_mixer -lSDL2_image
 
 SRC_DIR = ../../src/
@@ -56,27 +56,24 @@ copyfiles:
 	@echo -Copying libraries
 	@mkdir -p $(BIN_DIR) >/dev/null
 	
-	@cp $(BIN_SRC)libFLAC-8.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.FLAC.txt $(BIN_DIR)
+	#@cp $(BIN_SRC)libFLAC-8.dll $(BIN_DIR)
+	#@cp $(BIN_SRC)LICENSE.FLAC.txt $(BIN_DIR)
 
 	@cp $(BIN_SRC)libogg-0.dll $(BIN_DIR)
 	@cp $(BIN_SRC)LICENSE.ogg-vorbis.txt $(BIN_DIR)
 	
-	@cp $(BIN_SRC)libtiff-5.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.tiff.txt $(BIN_DIR)
+	#@cp $(BIN_SRC)libjpeg-9.dll $(BIN_DIR)
+	#@cp $(BIN_SRC)LICENSE.jpeg.txt $(BIN_DIR)
 	
-	@cp $(BIN_SRC)libjpeg-9.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.jpeg.txt $(BIN_DIR)
-	
-	@cp $(BIN_SRC)libopus-0.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.opus.txt $(BIN_DIR)
+	#@cp $(BIN_SRC)libopus-0.dll $(BIN_DIR)
+	#@cp $(BIN_SRC)LICENSE.opus.txt $(BIN_DIR)
 
-	@cp $(BIN_SRC)libopusfile-0.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.opusfile.txt $(BIN_DIR)
+	#@cp $(BIN_SRC)libopusfile-0.dll $(BIN_DIR)
+	#@cp $(BIN_SRC)LICENSE.opusfile.txt $(BIN_DIR)
 
-	@cp $(BIN_SRC)libvorbis-0.dll $(BIN_DIR)
+	#@cp $(BIN_SRC)libvorbis-0.dll $(BIN_DIR)
 
-	@cp $(BIN_SRC)libvorbisfile-3.dll $(BIN_DIR)
+	#@cp $(BIN_SRC)libvorbisfile-3.dll $(BIN_DIR)
 
 	@cp $(BIN_SRC)libmodplug-1.dll $(BIN_DIR)
 	@cp $(BIN_SRC)LICENSE.modplug.txt $(BIN_DIR)
@@ -87,11 +84,11 @@ copyfiles:
 	@cp $(BIN_SRC)libpng16-16.dll $(BIN_DIR)
 	@cp $(BIN_SRC)LICENSE.png.txt $(BIN_DIR)
 
-	@cp $(BIN_SRC)libtiff-5.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.tiff.txt $(BIN_DIR)
+	#@cp $(BIN_SRC)libtiff-5.dll $(BIN_DIR)
+	#@cp $(BIN_SRC)LICENSE.tiff.txt $(BIN_DIR)
 
-	@cp $(BIN_SRC)libwebp-7.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.webp.txt $(BIN_DIR)
+	#@cp $(BIN_SRC)libwebp-7.dll $(BIN_DIR)
+	#@cp $(BIN_SRC)LICENSE.webp.txt $(BIN_DIR)
 
 	@cp $(BIN_SRC)zlib1.dll $(BIN_DIR)
 	@cp $(BIN_SRC)LICENSE.zlib.txt $(BIN_DIR)

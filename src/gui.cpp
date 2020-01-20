@@ -162,10 +162,12 @@ static int get_pad() {
 			float touch_x = touch.pos_x * 1920;
 			float touch_y = touch.pos_y * 1080;
 
-			if (read_gui(gui_padbg)) {
+			if(touch_x > gui_padbg->x && touch_x < gui_padbg->x + gui_padbg->w &&
+				touch_y > gui_padbg->y && touch_y < gui_padbg->y + gui_padbg->h) {
 
 				grab = true;
 				id = touch.id;
+				break;
 
 			}
 

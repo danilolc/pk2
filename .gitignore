@@ -14,3 +14,8 @@
 .directory
 
 /win32/
+
+/mingw/i686/build/
+/mingw/i686/PK2/
+/mingw/x86_64/build/
+/mingw/x86_64/PK2/

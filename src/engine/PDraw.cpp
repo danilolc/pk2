@@ -202,7 +202,8 @@ int image_load(PFile::Path path, bool getPalette) {
     }
 
     PFile::RW* rw = path.GetRW("rb");
-    imageList[index] = SDL_LoadBMP_RW((SDL_RWops*) rw, 0);
+    //imageList[index] = SDL_LoadBMP_RW((SDL_RWops*) rw, 0);
+    imageList[index] = IMG_Load_RW((SDL_RWops*) rw, 0);
     PFile::CloseRW(rw);
 
     if (imageList[index] == NULL) {
@@ -383,12 +384,13 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
 
     int y_end = src_y + src_h;
     if (dst_y + src_h > screen_height)
-        y_end -= src_h - screenPitch + dst_y;
+        y_end -= src_h - screen_height + dst_y;
 
     if (x_start >= x_end || y_start >= y_end) return -1;    
-
+    
     drawimage_start(index, *&imagePix, (u32 &)imagePitch);
     drawscreen_start(*&screenPix, (u32 &)screenPitch);
+    
     for (int posx = x_start; posx < x_end; posx++)
         for (int posy = y_start; posy < y_end; posy++) {
 
@@ -402,7 +404,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
                 // TODO - remove this
                 if (fy >= screenPitch * screen_height || fy < 0) {
 
-                    //PLog::Write(PLog::FATAL, "PDraw", "Drawin out of bounds");
+                    PLog::Write(PLog::FATAL, "PDraw", "Drawin out of bounds");
                     drawscreen_end();
                     drawimage_end(index);
                     return 1;
@@ -414,6 +416,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
             }
 
         }
+    
     drawscreen_end();
     drawimage_end(index);
     

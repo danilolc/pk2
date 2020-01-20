@@ -43,7 +43,7 @@ static void write_on_file(const char* level_name, const char* origin, const char
     char buffer[BUFFER_SIZE];
     int size;
 
-    size = snprintf(buffer, BUFFER_SIZE, "%s", level_name + 5, origin);
+    size = snprintf(buffer, BUFFER_SIZE, "%s", level_name + 5);
     PFile::WriteRW(log_file, buffer, size - sizeof(ANSI_COLOR_RESET));
 
     size = snprintf(buffer, BUFFER_SIZE, "\t%s\t- ", origin);

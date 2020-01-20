@@ -215,6 +215,36 @@ std::vector<std::string> scan_zip(Zip* zip_file, const char* path, const char* t
 
 #endif
 
+//Scans directory to find file based on case
+bool Path::NoCaseFind() {
+
+	std::string filename = this->GetFileName();
+	this->SetFile("");
+
+	std::vector<std::string> list = this->scandir("");
+
+	int sz = list.size();
+	for(int i = 0; i < sz; i++) {
+		
+		std::string name = list[i];
+		
+		if(PUtils::NoCaseCompare(name.c_str(), filename.c_str())) {
+
+			this->SetFile(name);
+			PLog::Write(PLog::DEBUG, "PFile", "Found on %s", this->c_str());
+
+			return true;
+		}
+
+	}
+
+	this->SetFile(filename);
+	PLog::Write(PLog::INFO, "PFile", "%s not found", this->c_str());
+
+	return false;
+
+}
+
 #ifdef __ANDROID__
 
 std::vector<std::vector<std::string>> apk_results;
@@ -381,7 +411,7 @@ bool Path::Find() {
 	if (this->is_zip)
 		return this->NoCaseFind();
 
-	const char cstr = this->to_str();
+	const char* cstr = this->c_str();
 	PLog::Write(PLog::DEBUG, "PFile", "Find %s", cstr);
 
 	/*
@@ -478,37 +508,6 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 	scan_results.push_back(result);
 	return result;
     
-}
-
-
-//Scans directory to find file based on case
-bool Path::NoCaseFind() {
-
-	std::string filename = this->GetFileName();
-	this->SetFile("");
-
-	std::vector<std::string> list = this->scandir("");
-
-	int sz = list.size();
-	for(int i = 0; i < sz; i++) {
-		
-		std::string name = list[i];
-		
-		if(PUtils::NoCaseCompare(name.c_str(), filename.c_str())) {
-
-			this->SetFile(name);
-			PLog::Write(PLog::DEBUG, "PFile", "Found on %s", this->c_str());
-
-			return true;
-		}
-
-	}
-
-	this->SetFile(filename);
-	PLog::Write(PLog::INFO, "PFile", "%s not found", this->c_str());
-
-	return false;
-
 }
 
 bool Path::Find() {
