@@ -48,6 +48,9 @@ const static int PadBt_b = PadBt_y + sqrt(PadBt_r*PadBt_r - PadBt_x*PadBt_x);
 
 static int UI_mode = UI_NONE;
 
+static int pad_id = 0;
+static bool pad_grab = false;
+
 void Game_GUI(bool set){
 
 	gui_padbg->active = set;
@@ -142,12 +145,10 @@ static bool read_gui(PDraw::Gui* gui) {
 		float touch_x = touch.pos_x * 1920;
 		float touch_y = touch.pos_y * 1080;
 
-		if(touch_x > gui->x && touch_x < gui->x + gui->w &&
-		   touch_y > gui->y && touch_y < gui->y + gui->h) {
-
+		if(touch_x > gui->x && touch_x < gui->x + gui->w)
+		if(touch_y > gui->y && touch_y < gui->y + gui->h)
+		if(!pad_grab || pad_id != touch.id)
 			return true;
-
-		}
 
 	}
 
@@ -157,12 +158,9 @@ static bool read_gui(PDraw::Gui* gui) {
 
 static int get_pad() {
 
-	static int id = 0;
-	static bool grab = false;
-
 	float ret = 0;
 
-	if (!grab) {
+	if (!pad_grab) {
 		for (PInput::touch_t touch : PInput::touchlist) {
 			
 			float touch_x = touch.pos_x * 1920;
@@ -171,8 +169,8 @@ static int get_pad() {
 			if(touch_x > gui_padbg->x && touch_x < gui_padbg->x + gui_padbg->w &&
 				touch_y > gui_padbg->y && touch_y < gui_padbg->y + gui_padbg->h) {
 
-				grab = true;
-				id = touch.id;
+				pad_grab = true;
+				pad_id = touch.id;
 				break;
 
 			}
@@ -181,19 +179,19 @@ static int get_pad() {
 	
 	}
 	
-	if (grab) {
+	if (pad_grab) {
 
 		PInput::touch_t* last_touch = nullptr;
 		for (PInput::touch_t& touch : PInput::touchlist) {
 
-			if(touch.id == id)
+			if(touch.id == pad_id)
 				last_touch = &touch;
 			
 		}
 
 		if (!last_touch) {
 
-			grab = false;
+			pad_grab = false;
 			gui_padbt->x = PadBt_x;
 			gui_padbt->y = PadBt_y;
 
