@@ -274,18 +274,21 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 							Game->button1 = KYTKIN_ALOITUSARVO;
 							Game->button_moving = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+							PInput::Vibrate(1000);
 						}
 
 						if (palikka.koodi == BLOCK_KYTKIN2 && Game->button2 == 0) {
 							Game->button2 = KYTKIN_ALOITUSARVO;
 							Game->button_moving = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+							PInput::Vibrate(1000);
 						}
 
 						if (palikka.koodi == BLOCK_KYTKIN3 && Game->button3 == 0) {
 							Game->button3 = KYTKIN_ALOITUSARVO;
 							Game->button_moving = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
+							PInput::Vibrate(1000);
 						}
 					}
 
@@ -1278,7 +1281,8 @@ int Sprite_Movement(int i){
 
 		sprite.y = PK2KARTTA_KARTTA_KORKEUS*32 + sprite_korkeus;
 		sprite.energia = 0;
-		sprite.piilota = true;
+		if (&sprite != Player_Sprite)
+			sprite.piilota = true;
 
 		if (sprite.kytkinpaino >= 1)
 			Game->vibration = 50;

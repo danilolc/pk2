@@ -373,38 +373,39 @@ int Screen_ScoreCount() {
 	if (counting_delay > 0)
 		counting_delay--;
 
-	if (key_delay == 0){
-		if (PInput::Keydown(PInput::RETURN)) {
+	if ((key_delay == 0 && PInput::Keydown(PInput::RETURN)) || going_to_map){
 
-			if(counting_phase == 6) {
+		if(counting_phase == 6 && !going_to_map) {
 
-				going_to_map = true;
-				PDraw::fade_out(PDraw::FADE_SLOW);
-				PSound::set_musicvolume(0);
-				key_delay = 20;
+			going_to_map = true;
+			PDraw::fade_out(PDraw::FADE_SLOW);
+			PSound::set_musicvolume(0);
+			key_delay = 20;
 
-			} else {
+		} else {
 
-				counting_phase = 6;
+			counting_phase = 6;
 
-				apples_got += Game->apples_got;
-				Game->apples_got = 0;
+			apples_got += Game->apples_got;
+			Game->apples_got = 0;
 
-				bonus_score = Game->score;
-				time_score += Game->timeout * 5;
-				Game->timeout = 0;
-				energy_score += Player_Sprite->energia * 300;
-				Player_Sprite->energia = 0;
-				for (int i = 0; i < Gifts_Count(); i++)
-					gifts_score += Gifts_GetProtot(i)->pisteet + 500;
-				
-				Gifts_Clean();
+			bonus_score = Game->score;
 
-				key_delay = 20;
+			time_score += Game->timeout * 5;
+			Game->timeout = 0;
 
-			}
+			energy_score += Player_Sprite->energia * 300;
+			Player_Sprite->energia = 0;
+
+			for (int i = 0; i < Gifts_Count(); i++)
+				gifts_score += Gifts_GetProtot(i)->pisteet + 500;
+			
+			Gifts_Clean();
+
+			key_delay = 20;
 
 		}
+
 	}
 
 	if (going_to_map && !PDraw::is_fading()){

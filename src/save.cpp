@@ -44,7 +44,7 @@ int Save_All_Records() {
 	char versio[2] = VERSION;
 	char count_c[8];
 
-	itoa(MAX_SAVES, count_c, 10);
+	itoa(MAX_SAVES, count_c, sizeof(count_c));
 
 	PFile::Path path(data_path + SAVES_FILE);
 	
@@ -55,7 +55,7 @@ int Save_All_Records() {
 		return 1;
 
 	}
-	
+
 	PFile::WriteRW(file, versio, sizeof(versio)); // Write version "2"
 	PFile::WriteRW(file, count_c, sizeof(count_c)); // Write count "10"
 	PFile::WriteRW(file, saves_list, sizeof(saves_list)); // Write saves

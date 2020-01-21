@@ -370,19 +370,24 @@ static int init_haptic() {
 	for (int i = 0; i < SDL_NumHaptics(); i++) {
 
 		Haptic = SDL_HapticOpen(i);
-		SDL_HapticRumbleSupported(Haptic);
-		break;
+		if (!Haptic)
+			continue;
+		
+		if (SDL_HapticRumbleSupported(Haptic))
+			if (SDL_HapticRumbleInit(Haptic) != 0)
+				break;
 
 		SDL_HapticClose(Haptic);
 		Haptic = nullptr;
 
 	}
 
-	if (Haptic == nullptr)
+	if (Haptic == nullptr) {
+		
+		PLog::Write(PLog::INFO, "PInput", "No haptic found");
 		return -1;
-	
-	if (SDL_HapticRumbleInit(Haptic) != 0)
-		return -1;
+
+	}
 
 	return 0;
 

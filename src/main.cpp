@@ -153,7 +153,7 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	data_path = data_path_p;
+	data_path = data_path_p; //SDL_AndroidGetExternalStoragePath();
 	SDL_free(data_path_p);
 
 	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"));

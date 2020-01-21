@@ -19,6 +19,8 @@
 
 EpisodeClass* Episode = nullptr;
 
+#define VERSION "1.0"
+
 void EpisodeClass::Clear_Scores() {
 
 	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
@@ -46,7 +48,7 @@ int EpisodeClass::Open_Scores() {
 	}
 
 	PFile::ReadRW(file, versio, 4);
-	if (strncmp(versio, "1.0", 4) != 0) {
+	if (strncmp(versio, VERSION, 4) != 0) {
 
 		this->Clear_Scores();
 		PFile::CloseRW(file);
@@ -63,17 +65,19 @@ int EpisodeClass::Open_Scores() {
 
 int EpisodeClass::Save_Scores() {
 	
+	char versio[4] = VERSION;
+
 	PFile::Path path(data_path + "scores" PE_SEP + this->entry.name + ".dat");
 
 	PFile::RW* file = path.GetRW("wb");
 	if (file == nullptr) {
 
-		PLog::Write(PLog::ERR, "PK2", "Can't saving scores");
+		PLog::Write(PLog::ERR, "PK2", "Can't save scores");
 		return 1;
 
 	}
 
-	PFile::WriteRW(file, "1.0", 4);
+	PFile::WriteRW(file, versio, 4);
 	PFile::WriteRW(file, &this->scores, sizeof(this->scores));
 	
 	PFile::CloseRW(file);
