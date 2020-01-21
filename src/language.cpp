@@ -84,9 +84,9 @@ const char* Language_Name() {
 	if(strcmp(loc, "pl") == 0)
 		return "polski.txt";
 	
-	//"portugues brasil.txt"
+	//"portugues brasil2.txt"
 	if(strcmp(loc, "pt") == 0)
-		return "portugues brasil2.txt";
+		return "portugues brasil.txt";
 	
 	//"russian.txt"
 	if(strcmp(loc, "ru") == 0)

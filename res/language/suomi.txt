@@ -181,7 +181,7 @@ Font Information
 *font big font normal:		ScandicBig1.txt
 *font big font hilite:		ScandicBig2.txt
 *font big font shadow:		ScandicBig3.txt
-*font path:			language\\fonts\\
+*font path:			language/fonts/
 
 
 
