@@ -17,6 +17,9 @@ RES_DIR = ../../res/
 BIN_DIR = PK2/
 BUILD_DIR = build/
 
+RC_FILE = ../app.rc
+RES_FILE = $(BUILD_DIR)app.res
+
 PK2_SRC  = $(wildcard $(SRC_DIR)*.cpp) $(wildcard $(SRC_DIR)*/*.cpp)
 PK2_OBJ := $(basename $(PK2_SRC))
 PK2_OBJ := $(subst $(SRC_DIR), ,$(PK2_OBJ))
@@ -35,7 +38,8 @@ pk2: $(PK2_BIN) copyfiles
 $(PK2_BIN): $(PK2_OBJ)
 	@echo -Linking Pekka Kana 2
 	@mkdir -p $(dir $@) >/dev/null
-	@$(CXX) $^ $(LDFLAGS) -o $@
+	@$(PLAT)-w64-mingw32-windres $(RC_FILE) -O coff -o $(RES_FILE)
+	@$(CXX) $^ $(RES_FILE) $(LDFLAGS) -o $@
 ###########################
 
 ###########################

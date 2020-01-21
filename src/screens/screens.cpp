@@ -24,7 +24,7 @@
 int current_screen = SCREEN_FIRST_START;
 int next_screen = SCREEN_NOT_SET;
 
-bool closing_game = false;
+static bool closing_game = false;
 
 void Fade_Quit() {
 
@@ -115,7 +115,7 @@ int Screen_Change() {
 
 	PDraw::fade_in(PDraw::FADE_NORMAL);
 
-	switch (next_screen){
+	switch (next_screen) {
 		case SCREEN_INTRO   : Screen_Intro_Init();      break;
 		case SCREEN_MENU    : Screen_Menu_Init();       break;
 		case SCREEN_MAP     : Screen_Map_Init();        break;
@@ -133,18 +133,18 @@ int Screen_Change() {
 //Main Loop
 int Screen_Loop() {
 
+	if (next_screen != current_screen) Screen_Change();
+
+	if (PK2_error) return 1;
+	
 	bool keys_move = (current_screen == SCREEN_MAP);
 	bool relative = Settings.isFullScreen;
-
 	PInput::UpdateMouse(keys_move, relative);
+	
 	if (PUtils::Is_Mobile())
 		GUI_Update();
-	
-	if (next_screen != current_screen) Screen_Change();
-	
-	if (PK2_error) return 1;
 
-	switch (current_screen){
+	switch (current_screen) {
 		case SCREEN_INTRO   : Screen_Intro();      break;
 		case SCREEN_MENU    : Screen_Menu();       break;
 		case SCREEN_MAP     : Screen_Map();        break;
@@ -163,4 +163,5 @@ int Screen_Loop() {
 		Piste::stop();
 
 	return 0;
+
 }

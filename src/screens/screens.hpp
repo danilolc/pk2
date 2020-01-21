@@ -4,7 +4,7 @@
 //#########################
 #pragma once
 
-enum SCREEN{
+enum SCREEN {
 	SCREEN_NOT_SET,
 	SCREEN_FIRST_START,
 	SCREEN_INTRO,
