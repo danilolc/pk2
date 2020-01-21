@@ -11,7 +11,10 @@
 
 #include <cstring>
 
-#define AUDIO_FREQ 44100
+#define AUDIO_FREQ 22050
+#define AUDIO_FORMAT AUDIO_S8//AUDIO_S16SYS //MIX_DEFAULT_FORMAT
+#define AUDIO_BUFFER_SIZE /*4096*/ /*2048*//*1024*/512
+#define AUDIO_CHANNELS 2
 
 namespace PSound {
 
@@ -42,7 +45,7 @@ int find_channel() {
 int Change_Frequency(int index, int channel, int freq) {
 
 	SDL_AudioCVT cvt;
-	SDL_BuildAudioCVT(&cvt, MIX_DEFAULT_FORMAT, 2, freq, MIX_DEFAULT_FORMAT, 2, def_freq);
+	SDL_BuildAudioCVT(&cvt, AUDIO_FORMAT, AUDIO_CHANNELS, freq, AUDIO_FORMAT, AUDIO_CHANNELS, def_freq);
 
 	if (cvt.needed) {
 
@@ -251,7 +254,7 @@ void channelDone(int channel) {
 int init() {
 
 	//chunksize - game speed vs audio latency
-	if(Mix_OpenAudio(AUDIO_FREQ, MIX_DEFAULT_FORMAT, 2, /*4096*/ 2048/*1024*//*512*/) < 0) {
+	if(Mix_OpenAudio(AUDIO_FREQ, AUDIO_FORMAT, AUDIO_CHANNELS, AUDIO_BUFFER_SIZE) < 0) {
 
 		PLog::Write(PLog::FATAL, "PSound", "Unable to init Mixer: %s", Mix_GetError());
 		return -1;

@@ -591,7 +591,6 @@ RW* Path::GetRW(const char* mode) {
 		}
 
 		zip_file_t* zfile = zip_fopen(this->zip_file->zip, cstr, 0);
-
 		if (!zfile) {
 
 			PLog::Write(PLog::ERR, "PFile", "RW from zip \"%s\", file \"%s\" is NULL", this->zip_file->name.c_str(), cstr);
@@ -634,15 +633,19 @@ RW* Path::GetRW(const char* mode) {
 		SDL_RWclose(temp);
 
 		ret = SDL_RWFromConstMem(buffer, size);
-		ret->hidden.unknown.data1 = buffer;
+		if (!ret) {
 
+			return nullptr;
+		
+		}
+
+		ret->hidden.unknown.data1 = buffer;
 		return (RW*)ret;
 	
 	}
 	#endif
 
 	ret = SDL_RWFromFile(cstr, mode);
-	
 	if (!ret) {
 
 		PLog::Write(PLog::ERR, "PFile", "Can't get RW from file \"%s\"", cstr);
