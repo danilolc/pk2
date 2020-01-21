@@ -79,7 +79,7 @@ int Screen_First_Start() {
 	
 	}
 
-	langlist = PFile::Path("language").scandir(".txt");
+	langlist = PFile::Path("language" PE_SEP).scandir(".txt");
 	
 	Search_Episodes();
 
