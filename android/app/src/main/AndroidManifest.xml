@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Replace com.test.game with the identifier of your game below, e.g.
-     com.gamemaker.game
--->
+<?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.pgnapps.pk2"
     android:installLocation="auto">
@@ -11,7 +10,7 @@
     <!-- Touchscreen support -->
     <uses-feature
         android:name="android.hardware.touchscreen"
-        android:required="false" />
+        android:required="true" />
 
     <!-- Game controller support -->
     <uses-feature
@@ -23,8 +22,9 @@
         android:name="android.hardware.type.pc"
         android:required="false" />
 
-    <!-- Allow writing to external storage
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
+    <!-- Allow writing to external storage 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    
     <!-- Allow access to the vibrator -->
     <uses-permission android:name="android.permission.VIBRATE" />
 

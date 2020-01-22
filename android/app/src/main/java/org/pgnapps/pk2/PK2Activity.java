@@ -2,13 +2,47 @@ package org.pgnapps.pk2;
 
 import org.libsdl.app.SDLActivity;
 
+import android.Manifest;
 import android.content.res.AssetManager;
+//import android.os.Environment;
+//import android.os.Build;
+//import android.content.pm.PackageManager;
+
+//import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
 import java.util.Locale;
 
 public class PK2Activity extends SDLActivity {
     private static final String LOG_TAG = "PK2";
+
+    //boolean Permitted = false;
+
+    /*@Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            Permitted = true;
+        else finish();
+    }
+
+    public boolean isExternalStorageWritable() {
+        if (Build.VERSION.SDK_INT > 22) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        1);
+                while(!Permitted);
+            } else {
+                Permitted = true;
+            }
+        }
+
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }*/
 
     private String[] listDir(String dir) {
 
@@ -38,8 +72,8 @@ public class PK2Activity extends SDLActivity {
 
     @Override
     protected String[] getArguments() {
-        //return new String[0];
-        return new String[] { "dev", "fps" };
+        return new String[0];
+        //return new String[] { "dev", "fps" };
     }
 
     @Override
@@ -71,4 +105,5 @@ public class PK2Activity extends SDLActivity {
         super.onResume();
         setWindowStyle(true);
     }
+
 }

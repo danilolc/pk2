@@ -212,15 +212,26 @@ int Vibrate(int length) {
 
 void SetMousePosition(int x, int y) {
 	int wx = 0, wy = 0;
-	//PisteDraw2_GetWindowPosition(&wx, &wy); TODO
 
+	GetWindowPosition(&wx, &wy);
 	SetCursorPos(x + wx, y+wy);
+}
+
+//TODO
+void GetWindowPosition(int* x, int* y) {
+
+
 }
 
 #else
 
 void SetMousePosition(int x, int y) {
 	//TODO
+}
+
+void GetWindowPosition(int* x, int* y) {
+
+
 }
 
 #endif

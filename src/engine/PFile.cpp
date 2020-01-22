@@ -383,13 +383,13 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 	} else {
 
 		if (map_file.name[0] != '.') //No hidden files
-			result.push_back(map_file.name); //TODO - dirs?
+			result.push_back(map_file.name);
 	
 	}
 
 	while (1) {
 
-		if( _findnext( hFile, &map_file ) != 0 ) //TODO - test if works
+		if( _findnext( hFile, &map_file ) != 0 )
 			break;
 
 		if (map_file.name[0] != '.')

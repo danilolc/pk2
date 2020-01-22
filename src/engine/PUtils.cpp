@@ -40,7 +40,7 @@ int Setcwd() {
 	
 	}
 
-	return chdir("../res");
+	return chdir(".." PE_SEP "res");
 
 	#endif
 
@@ -104,42 +104,14 @@ int Alphabetical_Compare(const char *a, const char *b) {
 	return 0;
 }
 
-std::vector<std::string> result_indexes;
-std::vector<std::vector<std::string>> results;
-
-std::vector<std::string>* get_result(const char* type, const char* dir) {
-
-	std::string index = type;
-	index += "$";
-	index += dir;
-
-	int size = result_indexes.size();
-
-	for (int i = 0; i < size; i++) {
-		if (result_indexes[i] == index)
-			return &results[i];
-	}
-	return nullptr;
-
-}
-
-void save_result(const char* type, const char* dir, std::vector<std::string>* result) {
-
-	std::string index = type;
-	index += "$";
-	index += dir;
-
-	result_indexes.push_back(index);
-	results.push_back(*result);
-
-}
-
-
 #ifdef _WIN32
 
+//TODO
 void GetLanguage(char* lang) {
 
-	lang[0] = '\0';
+	lang[0] = 'e';
+	lang[1] = 'n';
+	lang[2] = '\0';
 	//WCHAR wcBuffer[16];
 	//LANGID lid = GetUserDefaultUILanguage();
 
