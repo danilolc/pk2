@@ -68,9 +68,9 @@ This example starts the level13.map on dev mode:
 * Better documentation
 * Audio on Windows/Android
 * SDL Android isn't sending SDL_QUIT event
-* Make latin texts
 
 # ROADMAP
 * Load pk2stuff and android controls from zip
 * Super mode -> energy = 0 on touch Pekka
 * Jump frames when FPS is slow
+* Make latin texts
