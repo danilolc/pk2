@@ -64,12 +64,14 @@ This example starts the level13.map on dev mode:
 ```
 
 # To r3:
-* Traduct finnish language
-* Better documentation
-* Audio on Windows/Android
+* Android isn't saving
+* Audio on Android
 * SDL Android isn't sending SDL_QUIT event
+* Zip on Windows
 
 # ROADMAP
+* Traduct finnish language
+* Better documentation
 * Load pk2stuff and android controls from zip
 * Super mode -> energy = 0 on touch Pekka
 * Jump frames when FPS is slow

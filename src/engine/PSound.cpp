@@ -13,8 +13,8 @@
 
 #define PS_FREQ        MIX_DEFAULT_FREQUENCY
 #define PS_FORMAT      MIX_DEFAULT_FORMAT
-#define PS_BUFFER_SIZE /*4096*/ /*2048*/ 1024 /*512*/
-#define PS_CHANNELS    2
+#define PS_CHANNELS    MIX_DEFAULT_CHANNELS
+#define PS_BUFFER_SIZE /*4096*/ /*2048*/ 1024 /*512*/ //game speed vs audio latency
 
 namespace PSound {
 
@@ -31,7 +31,7 @@ static Uint8* freq_chunks[CHANNELS];  //The chunk allocated for each channel
 static Mix_Music* music = NULL;
 static std::string playingMusic = "";
 
-int find_channel() {
+static int find_channel() {
 	
 	for( int channel = 0; channel < CHANNELS; channel++ )
 		if( !Mix_Playing(channel) )
@@ -42,12 +42,11 @@ int find_channel() {
 }
 
 //Change the chunk frequency of sound index
-int Change_Frequency(int index, int channel, int freq) {
+static int change_frequency(int index, int channel, int freq) {
 
-	int frequency;
 	u16 format;
 	int channels;
-	Mix_QuerySpec(&frequency, &format, &channels);
+	Mix_QuerySpec(NULL, &format, &channels);
 
 	SDL_AudioCVT cvt;
 	SDL_BuildAudioCVT(&cvt, format, channels, freq, format, channels, def_freq);
@@ -118,7 +117,7 @@ int set_channel(int channel, int panoramic, int volume) {
 	
 }
 
-int play_sfx(int index, int volume, int panoramic, int freq){
+int play_sfx(int index, int volume, int panoramic, int freq) {
 	
 	if(index == -1) return 1;
 	if(chunks[index] == NULL) return 2;
@@ -137,7 +136,7 @@ int play_sfx(int index, int volume, int panoramic, int freq){
 
 	if (freq != def_freq) {
 
-		int error = Change_Frequency(index, channel, freq);
+		int error = change_frequency(index, channel, freq);
 		if (error != 0) {
 			
 			PLog::Write(PLog::ERR, "PSound", "Can't change frequency");
@@ -201,7 +200,6 @@ int start_music(PFile::Path path) {
 
 	PFile::RW* rw = path.GetRW("rb");
 	music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);
-	//music = Mix_LoadMUS(path.c_str());
 	PFile::CloseRW(rw);
 
 	if (music == NULL) {
@@ -241,6 +239,7 @@ void set_musicvolume_now(int volume) {
 	Mix_VolumeMusic(volume * MIX_MAX_VOLUME / 100);
 	
 }
+
 void stop_music(){
 
 	Mix_FadeOutMusic(0);
@@ -258,9 +257,8 @@ void channelDone(int channel) {
 
 int init() {
 
-	//chunksize - game speed vs audio latency
-	if(Mix_OpenAudioDevice(PS_FREQ, PS_FORMAT, PS_CHANNELS, PS_BUFFER_SIZE, NULL, SDL_AUDIO_ALLOW_ANY_CHANGE) < 0) {
-
+	if (Mix_OpenAudio(PS_FREQ, PS_FORMAT, PS_CHANNELS, PS_BUFFER_SIZE) < 0) {
+	
 		PLog::Write(PLog::FATAL, "PSound", "Unable to init Mixer: %s", Mix_GetError());
 		return -1;
 
@@ -270,14 +268,13 @@ int init() {
 	Mix_AllocateChannels(CHANNELS);
 	Mix_ChannelFinished(channelDone);
 
-	PLog::Write(PLog::DEBUG, "PSound", "Desired %ihz 0x%x %i", PS_FREQ, PS_FORMAT, PS_CHANNELS);
+	PLog::Write(PLog::DEBUG, "PSound", "Desired %ihz 0x%x", PS_FREQ, PS_FORMAT);
 
 	int frequency;
 	u16 format;
-	int channels;
-	Mix_QuerySpec(&frequency, &format, &channels);
+	Mix_QuerySpec(&frequency, &format, NULL);
 
-	PLog::Write(PLog::DEBUG, "PSound", "Got %ihz 0x%x %i", frequency, format, channels);
+	PLog::Write(PLog::DEBUG, "PSound", "Got %ihz 0x%x", frequency, format);
 
 	return 0;
 
