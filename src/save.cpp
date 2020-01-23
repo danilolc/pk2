@@ -32,6 +32,8 @@ int Empty_Records() {
 
 	for (int i = 0; i < MAX_SAVES; i++) {
 
+		memset(saves_list, 0, sizeof(saves_list));
+
 		saves_list[i].empty = true;
 		strcpy(saves_list[i].episode, " ");
 		strcpy(saves_list[i].name,"empty");
@@ -142,6 +144,8 @@ int Load_SaveFile() {
 }
 
 int Save_Records(int i) {
+
+	memset(&saves_list[i], 0, sizeof(PK2SAVE));
 
 	saves_list[i].empty = false;
 	strcpy(saves_list[i].episode, Episode->entry.name.c_str());

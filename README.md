@@ -64,7 +64,6 @@ This example starts the level13.map on dev mode:
 ```
 
 # To r3:
-* Save file don't close
 * SDL Android isn't sending SDL_QUIT event
 * Zip on Windows
 

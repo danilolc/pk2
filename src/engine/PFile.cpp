@@ -572,12 +572,27 @@ std::string Path::GetFileName() {
 
 }
 
+static int SDLCALL pfile_mem_close(SDL_RWops* context) {
+
+	if (context) {
+
+		//PLog::Write(PLog::DEBUG, "PFile", "Freeing rw %p", context->hidden.mem.base);
+		SDL_free(context->hidden.mem.base);
+		SDL_FreeRW(context);
+
+	}
+
+	return 0;
+
+}
+
 RW* Path::GetRW(const char* mode) {
 
 	SDL_RWops* ret;
 
 	const char* cstr = this->c_str();
 
+	//TODO - define a RWops type 0 for zip
 	if (this->is_zip) {
 
 		#ifndef NO_ZIP
@@ -603,8 +618,13 @@ RW* Path::GetRW(const char* mode) {
 		zip_fclose(zfile);
 
 		ret = SDL_RWFromConstMem(buffer, st.size);
-		ret->hidden.unknown.data1 = buffer;
+		if (!ret) {
 
+			return nullptr;
+		
+		}
+
+		ret->close = pfile_mem_close;
 		return (RW*)ret;
 
 		#else
@@ -639,7 +659,7 @@ RW* Path::GetRW(const char* mode) {
 		
 		}
 
-		ret->hidden.unknown.data1 = buffer;
+		ret->close = pfile_mem_close;
 		return (RW*)ret;
 	
 	}
@@ -653,7 +673,6 @@ RW* Path::GetRW(const char* mode) {
 
 	}
 
-	ret->hidden.unknown.data1 = nullptr;
 	return (RW*)ret;
 
 }
@@ -662,7 +681,7 @@ int WriteRW(RW* rw, const void* buffer, int len) {
 
 	SDL_RWops* rwops = (SDL_RWops*) rw;
 
-	if (rwops->hidden.unknown.data1 != nullptr) {
+	if (rwops->type == 5) { //From const mem
 	
 		// This log may call this function again, doing a infinite loop
 		PLog::Write(PLog::ERR, "PFile", "Can't write const RW");
@@ -683,17 +702,14 @@ int ReadRW(RW* rw, void* buffer, int len) {
 
 int CloseRW(RW* rw) {
 
-	if (!rw) {
+	if (rw == nullptr) {
 
-		PLog::Write(PLog::ERR, "PFile", "Tried to close a NULL rw");
+		PLog::Write(PLog::ERR, "PFile", "Tried to close a null rw");
 		return -1;
 
 	}
 
 	SDL_RWops* rwops = (SDL_RWops*) rw;
-
-	if (rwops->hidden.unknown.data1 != nullptr)
-		SDL_free(rwops->hidden.unknown.data1);
 	
 	int ret = SDL_RWclose(rwops);
 
