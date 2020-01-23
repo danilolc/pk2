@@ -17,22 +17,24 @@
 
 PK2SAVE saves_list[MAX_SAVES];
 
+#define SAVE_V1_LEVELS 50
+
 struct PK2SAVE_V1 {
 
 	int   jakso;
 	char  episodi[PE_PATH_SIZE];
 	char  nimi[20];
 	bool  kaytossa;
-	bool  jakso_cleared[50];
+	bool  jakso_cleared[SAVE_V1_LEVELS];
 	u32   pisteet;
 
 };
 
 int Empty_Records() {
 
-	for (int i = 0; i < MAX_SAVES; i++) {
+	memset(saves_list, 0, sizeof(saves_list));
 
-		memset(saves_list, 0, sizeof(saves_list));
+	for (int i = 0; i < MAX_SAVES; i++) {
 
 		saves_list[i].empty = true;
 		strcpy(saves_list[i].episode, " ");
@@ -128,7 +130,7 @@ int Load_SaveFile() {
 			strcpy(saves_list[i].name, temp[i].nimi);
 			saves_list[i].score = temp[i].pisteet;
 
-			for (int j = 0; j < EPISODI_MAX_LEVELS;j++) {
+			for (int j = 0; j < SAVE_V1_LEVELS; j++) {
 				saves_list[i].level_cleared[j] = temp[i].jakso_cleared[j];
 				saves_list[i].all_apples[j] = false;
 			}

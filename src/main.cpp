@@ -24,8 +24,8 @@
 #include <cstring>
 
 #define GAME_NAME         "Pekka Kana 2"
-#define GAME_VERSION      "1.3.1"
-#define GAME_VERSION_NAME "(r3-pre)"
+#define GAME_VERSION      "1.3.2"
+#define GAME_VERSION_NAME "(r3)"
 
 #ifdef NO_ZIP
 #define GAME_ZIP "(no-zip)"
