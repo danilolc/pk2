@@ -10,17 +10,6 @@
 
 const int MAX_SAVES = 10;
 
-struct PK2SAVE_V1 {
-
-	int   jakso;
-	char  episodi[PE_PATH_SIZE];
-	char  nimi[20];
-	bool  kaytossa;
-	bool  jakso_cleared[EPISODI_MAX_LEVELS];
-	u32   pisteet;
-
-};
-
 struct PK2SAVE {
 
 	bool  empty;

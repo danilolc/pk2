@@ -23,15 +23,17 @@ EpisodeClass* Episode = nullptr;
 
 void EpisodeClass::Clear_Scores() {
 
-	for (int i=0;i<EPISODI_MAX_LEVELS;i++){
+	for ( int i = 0; i < EPISODI_MAX_LEVELS; i++ ) {
+
 		this->scores.best_score[i] = 0;
 		this->scores.best_time[i] = 0;
-		strcpy(this->scores.top_player[i]," ");
-		strcpy(this->scores.fastest_player[i]," ");
+		strcpy(this->scores.top_player[i], " ");
+		strcpy(this->scores.fastest_player[i], " ");
+	
 	}
 
 	this->scores.episode_top_score = 0;
-	strcpy(this->scores.episode_top_player," ");
+	strcpy(this->scores.episode_top_player, " ");
 	
 }
 

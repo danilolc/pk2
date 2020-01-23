@@ -108,7 +108,7 @@ int Settings_Save() {
 	}
 	
 	PFile::WriteRW(file, SETTINGS_VERSION, 4);
-	PFile::WriteRW(file, (char*)&Settings, sizeof(PK2SETTINGS));
+	PFile::WriteRW(file, &Settings, sizeof(PK2SETTINGS));
 	
 	PFile::CloseRW(file);
 

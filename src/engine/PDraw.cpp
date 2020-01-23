@@ -71,8 +71,15 @@ Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
     gui->y = y;
     gui->w = w;
     gui->h = h;
-    gui->alpha = alpha;
+    
+    if (alpha > 255)
+        gui->alpha = 255;
+    else
+        gui->alpha = alpha;
+    
     gui->active = false;
+
+    SDL_SetTextureAlphaMod(tex, gui->alpha);
 
     gui_textures.push_back(gui);
     return gui;
@@ -109,13 +116,16 @@ int draw_gui() {
 
 		if(gui->active && gui->texture != NULL) {
 
-			SDL_Rect rect;
-			rect.x = gui->x * prop_x;
-			rect.y = gui->y * prop_y;
-			rect.w = gui->w * prop_x;
-			rect.h = gui->h * prop_y;
-			SDL_SetTextureAlphaMod((SDL_Texture*)gui->texture, (gui->alpha * alpha) / 256);
-			SDL_RenderCopy(renderer, (SDL_Texture*)gui->texture, NULL, &rect);
+            SDL_Rect rect;
+            rect.x = gui->x * prop_x;
+            rect.y = gui->y * prop_y;
+            rect.w = gui->w * prop_x;
+            rect.h = gui->h * prop_y;
+
+            u8 mod = (alpha * 255) / 100;
+            //SDL_SetTextureAlphaMod((SDL_Texture*)gui->texture, mod);
+            SDL_SetTextureColorMod((SDL_Texture*)gui->texture, mod, mod, mod);
+            SDL_RenderCopy(renderer, (SDL_Texture*)gui->texture, NULL, &rect);
             
 		}
 

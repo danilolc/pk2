@@ -17,16 +17,18 @@ const int FADE_SLOW = 1;
 const char FILTER_NEAREST[] = "0";
 const char FILTER_BILINEAR[] = "1";
 
-struct RECT{
+struct RECT {
+
     u32 x, y, w, h;
+
 };
 
 struct Gui {
 
     bool active;
     void* texture;
-    int alpha;
     int x, y, w, h;
+    u8 alpha;
 
 };
 

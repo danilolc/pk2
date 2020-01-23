@@ -20,11 +20,11 @@
 #include "system.hpp"
 #include "settings.hpp"
 
-int debug_active_sprites = 0;
+static int debug_active_sprites = 0;
 
-bool draw_dubug_info = false;
-int debug_sprites = 0;
-int debug_drawn_sprites = 0;
+static bool draw_dubug_info = false;
+static int debug_sprites = 0;
+static int debug_drawn_sprites = 0;
 
 int Draw_InGame_BGSprites() {
 
@@ -724,7 +724,7 @@ int Screen_InGame(){
 
 		if (PInput::Keydown(Settings.control_attack1) || PInput::Keydown(Settings.control_attack2) ||
 			PInput::Keydown(Settings.control_jump) || PInput::Keydown(PInput::RETURN) ||
-			Gui_up || Gui_down || Gui_menu)
+			Gui_egg || Gui_doodle || Gui_gift || Gui_up || Gui_down || Gui_menu)
 			if (Game->exit_timer > 2 && Game->exit_timer < 500/*600*//*1900*/ && key_delay == 0)
 				Game->exit_timer = 2;
 

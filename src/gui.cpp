@@ -40,7 +40,9 @@ static PDraw::Gui* gui_touch  = nullptr;
 static PDraw::Gui* gui_tab    = nullptr;
 
 const static int PadBt_x = 275;
-const static int PadBt_y = 670;
+const static int PadBt_y = 675;
+
+const static int Alpha = 120;
 
 const static int PadBt_a = 10;
 const static int PadBt_r = 880;
@@ -92,43 +94,42 @@ void GUI_Load() {
 
 	int w = 230 * 0.8;
 	int h = 220 * 0.8;
-	int alpha = 180;
 
 	PFile::Path path("mobile" PE_SEP);
 
-	gui_touch =  PDraw::create_gui(path, 0,  0,1920,1080, alpha);
-	gui_tab =    PDraw::create_gui(path, 0,930, 530, 150, alpha);
+	gui_touch =  PDraw::create_gui(path, 0,  0,1920,1080, Alpha);
+	gui_tab =    PDraw::create_gui(path, 0,930, 530, 150, Alpha);
 
 	path.SetFile("menu.png");
-	gui_menu =   PDraw::create_gui(path, 50,130,w,h,alpha);
+	gui_menu =   PDraw::create_gui(path, 50,130,w,h,Alpha);
 	
 	path.SetFile("padbg.png");
-	gui_padbg =  PDraw::create_gui(path, 50,620,641*0.9,362*0.9,alpha);
+	gui_padbg =  PDraw::create_gui(path, 50,620,641*0.9,362*0.9,Alpha);
 
 	path.SetFile("padbt.png");
-	gui_padbt =  PDraw::create_gui(path, PadBt_x, PadBt_y,169*0.9,173*0.9,180);
+	gui_padbt =  PDraw::create_gui(path, PadBt_x, PadBt_y,169*0.9,173*0.9,Alpha);
 
 	int y = 650;
 	const int dy = 200;
 
 	path.SetFile("up.png");
-	gui_up =     PDraw::create_gui(path, 1630, y,w,h,alpha);
+	gui_up =     PDraw::create_gui(path, 1630, y,w,h,Alpha);
 
 	y -= dy;
 	path.SetFile("doodle.png");
-	gui_doodle = PDraw::create_gui(path, 1630, y,w,h,alpha);
+	gui_doodle = PDraw::create_gui(path, 1630, y,w,h,Alpha);
 
 	y -= dy;
 	path.SetFile("gift.png");
-	gui_gift =   PDraw::create_gui(path, 1630, y,w,h,alpha);
+	gui_gift =   PDraw::create_gui(path, 1630, y,w,h,Alpha);
 
 	y = 720;
 	path.SetFile("down.png");
-	gui_down =   PDraw::create_gui(path, 1410, y,w,h,alpha);
+	gui_down =   PDraw::create_gui(path, 1410, y,w,h,Alpha);
 
 	y -= dy;
 	path.SetFile("egg.png");
-	gui_egg =    PDraw::create_gui(path, 1410, y,w,h,alpha);
+	gui_egg =    PDraw::create_gui(path, 1410, y,w,h,Alpha);
 
 }
 
