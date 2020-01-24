@@ -1,0 +1,25 @@
+#include "../src/version.hpp"
+
+1 VERSIONINFO
+FILEVERSION     PK2_VER_MAJOR,PK2_VER_MINOR,PK2_VER_REVISION,0
+PRODUCTVERSION  PK2_VER_MAJOR,PK2_VER_MINOR,PK2_VER_REVISION,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", "Piste Gamez"
+      VALUE "FileDescription", "A jump 'n run game"
+      VALUE "FileVersion", PK2_VERSION
+      VALUE "InternalName", "pekka-kana-2"
+      VALUE "LegalCopyright", "Janne Kivilahti"
+      VALUE "OriginalFilename", "PK2.exe"
+      VALUE "ProductName", PK2_NAME
+      VALUE "ProductVersion", PK2_VERSION
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x409, 1252
+  END
+END

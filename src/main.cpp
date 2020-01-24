@@ -10,6 +10,7 @@
 //	Starts the level13.map on dev mode
 //#########################
 #include "engine/Piste.hpp"
+#include "version.hpp"
 
 #include "screens/screens.hpp"
 #include "gfx/text.hpp"
@@ -22,26 +23,6 @@
 #include "settings.hpp"
 
 #include <cstring>
-
-#define GAME_NAME         "Pekka Kana 2"
-#define GAME_VERSION      "1.3.2"
-#define GAME_VERSION_NAME "(r3)"
-
-#ifdef NO_ZIP
-#define GAME_ZIP "(no-zip)"
-#else
-#define GAME_ZIP "(zip)"
-#endif
-
-#ifdef __ANDROID__
-#define GAME_PLATFORM "(Android)"
-#elif _WIN32
-#define GAME_PLATFORM "(Windows)"
-#else
-#define GAME_PLATFORM "(Linux)"
-#endif
-
-#define GAME_VERSION_STR GAME_VERSION " " GAME_VERSION_NAME " " GAME_PLATFORM " " GAME_ZIP
 
 //#define SDL_MAIN_HANDLED
 #include <SDL.h>
@@ -94,7 +75,7 @@ int main(int argc, char *argv[]) {
 
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "version") == 0) {
-			printf(GAME_VERSION_STR "\n");
+			printf(PK2_VERSION_STR "\n");
 			exit(0);
 		}
 		if (strcmp(argv[i], "dev") == 0) {
@@ -144,7 +125,7 @@ int main(int argc, char *argv[]) {
 	if(!path_set)
 		PUtils::Setcwd();
 
-	char* data_path_p = SDL_GetPrefPath(NULL, GAME_NAME);
+	char* data_path_p = SDL_GetPrefPath(NULL, PK2_NAME);
 	if (data_path_p == NULL) {
 
 		PLog::Write(PLog::FATAL, "PK2", "Failed to init data path");
@@ -159,7 +140,7 @@ int main(int argc, char *argv[]) {
 	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"));
 
 	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 started!");
-	PLog::Write(PLog::DEBUG, "PK2", "Game version: %s", GAME_VERSION_STR);
+	PLog::Write(PLog::DEBUG, "PK2", "Game version: %s", PK2_VERSION_STR);
 
 	PLog::Write(PLog::DEBUG, "PK2", "Data path - %s", data_path.c_str());
 	PUtils::CreateDir(data_path);
@@ -171,7 +152,7 @@ int main(int argc, char *argv[]) {
 	if (!PUtils::Is_Mobile())
 		screen_width = Settings.isWide ? 800 : 640;
 
-	Piste::init(screen_width, screen_height, GAME_NAME, "gfx" PE_SEP "icon.bmp");
+	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp");
 	if (!Piste::is_ready()) {
 
 		PLog::Write(PLog::FATAL, "PK2", "Failed to init PisteEngine");

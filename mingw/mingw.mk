@@ -6,19 +6,17 @@ OPT = -O2
 
 CXX = $(PLAT)-w64-mingw32-g++
 BIN_SRC = /usr/local/$(PLAT)-w64-mingw32/bin/
+INC_SRC = /usr/local/$(PLAT)-w64-mingw32/include/
 
 SDL_CONF = $(BIN_SRC)/sdl2-config
 
-CXXFLAGS += $(shell $(SDL_CONF) --cflags) $(OPT) -std=gnu++17 -Wall -Wno-sign-compare -DNO_ZIP
-LDFLAGS += -static-libgcc -static-libstdc++ $(shell $(SDL_CONF) --libs) -lSDL2_mixer -lSDL2_image
+CXXFLAGS += $(shell $(SDL_CONF) --cflags) $(OPT) -I$(INC_SRC) -std=gnu++17 -Wall -Wno-sign-compare #-DNO_ZIP
+LDFLAGS += -static-libgcc -static-libstdc++ $(shell $(SDL_CONF) --libs) -lSDL2_mixer -lSDL2_image -lzip
 
 SRC_DIR = ../../src/
 RES_DIR = ../../res/
 BIN_DIR = PK2/
 BUILD_DIR = build/
-
-RC_FILE = ../app.rc
-RES_FILE = $(BUILD_DIR)app.res
 
 PK2_SRC  = $(wildcard $(SRC_DIR)*.cpp) $(wildcard $(SRC_DIR)*/*.cpp)
 PK2_OBJ := $(basename $(PK2_SRC))
@@ -38,8 +36,9 @@ pk2: $(PK2_BIN) copyfiles
 $(PK2_BIN): $(PK2_OBJ)
 	@echo -Linking Pekka Kana 2
 	@mkdir -p $(dir $@) >/dev/null
-	@$(PLAT)-w64-mingw32-windres $(RC_FILE) -O coff -o $(RES_FILE)
-	@$(CXX) $^ $(RES_FILE) $(LDFLAGS) -o $@
+	@$(PLAT)-w64-mingw32-windres ../version.rc  -O coff -o $(BUILD_DIR)version.res
+	@$(PLAT)-w64-mingw32-windres ../icon.rc  -O coff -o $(BUILD_DIR)icon.res
+	@$(CXX) $^ $(BUILD_DIR)version.res $(BUILD_DIR)icon.res $(LDFLAGS) -o $@
 ###########################
 
 ###########################
@@ -100,6 +99,8 @@ copyfiles:
 	@cp $(BIN_SRC)SDL2.dll $(BIN_DIR)
 	@cp $(BIN_SRC)SDL2_image.dll $(BIN_DIR)
 	@cp $(BIN_SRC)SDL2_mixer.dll $(BIN_DIR)
+
+	@cp $(BIN_SRC)libzip.dll $(BIN_DIR)
 
 	@echo -Copying resources
 	@cp -r $(RES_DIR)/* $(BIN_DIR)

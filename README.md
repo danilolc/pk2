@@ -65,7 +65,6 @@ This example starts the level13.map on dev mode:
 
 # To r3:
 * SDL Android isn't sending SDL_QUIT event
-* Zip on Windows
 
 # ROADMAP
 * Traduct finnish language
