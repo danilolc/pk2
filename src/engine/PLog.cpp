@@ -62,6 +62,12 @@ static void write_on_file(const char* level_name, const char* origin, const char
 
 }
 
+void Write(const char* txt) {
+
+    Write(PLog::DEBUG, "PLog", txt);
+
+}
+
 void Write(u8 level, const char* origin, const char* format, ...) {
 
     if (!(log_level & level))

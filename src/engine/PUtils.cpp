@@ -70,9 +70,16 @@ bool NoCaseCompare(const char* a, const char* b) {
 
 	for (int i = 0;; i++) {
 
-		if ((a[i] | ' ') != (b[i] | ' '))
+		char ac = a[i];
+		char bc = b[i];
+
+		// This is used to compare paths
+		if (ac == '\\') ac = '/';
+		if (bc == '\\') bc = '/';
+
+		if ((ac | ' ') != (bc | ' '))
 			return false;
-		if (a[i] == '\0')
+		if (ac == '\0')
 			return true;
 
 	}
@@ -109,11 +116,15 @@ int Alphabetical_Compare(const char *a, const char *b) {
 //TODO
 void GetLanguage(char* lang) {
 
-	lang[0] = 'e';
-	lang[1] = 'n';
+	LCID lc_id = GetSystemDefaultLCID();
+	wchar_t LanguageCode[16];
+	GetLocaleInfoW(lc_id, LOCALE_SISO639LANGNAME, LanguageCode, 16);
+
+	PLog::Write(PLog::DEBUG, "PUtils", "Language %s", LanguageCode);
+
+	lang[0] = LanguageCode[0];
+	lang[1] = LanguageCode[1];
 	lang[2] = '\0';
-	//WCHAR wcBuffer[16];
-	//LANGID lid = GetUserDefaultUILanguage();
 
 }
 

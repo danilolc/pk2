@@ -169,6 +169,51 @@ bool is_type(const char* file, const char* type) {
 
 #ifndef NO_ZIP
 
+static int zip_get_index(zip_t* z, const char* filename, int* size) {
+
+	struct zip_stat st;
+    zip_stat_init(&st);
+
+	int sz = zip_get_num_entries(z, 0);
+    for (int i = 0; i < sz; i++) {
+
+		zip_stat_index(z, i, 0, &st);
+
+		if ( PUtils::NoCaseCompare(st.name, filename) ) {
+			
+			*size = st.size;
+			return i;
+
+		}
+
+	}
+
+	return -1;
+
+}
+
+static bool pathcomp(const char* path, const char* entry) {
+
+	while(*path != '\0') {
+
+		char a = *path;
+		char b = *entry;
+
+		if (a == '\\') a = '/';
+		if (b == '\\') b = '/';
+
+		if ( (a | ' ') != (b | ' ') )
+			return false;
+		
+		path++;
+		entry++;
+
+	}
+
+	return true;
+
+}
+
 std::vector<std::string> scan_zip(Zip* zip_file, const char* path, const char* type) {
 
     std::vector<std::string> result;
@@ -183,7 +228,7 @@ std::vector<std::string> scan_zip(Zip* zip_file, const char* path, const char* t
         
         zip_stat_index(zip_file->zip, i, 0, &st);
 
-		if( strstr(st.name, path) == st.name ) {
+		if( pathcomp(path, st.name) ) {
 
 			std::string filename(st.name + path_size);
 			filename = filename.substr(0, filename.find("/")); //PE_SEP?
@@ -193,14 +238,15 @@ std::vector<std::string> scan_zip(Zip* zip_file, const char* path, const char* t
 			
             if(is_type(filename.c_str(), type)) {
 
-				bool has_found = false;
+				//needed?
+				bool repeated = false;
 				for (std::string st : result)
 					if (st == filename) {
-						has_found = true;
+						repeated = true;
 						break;
 					}
 				
-				if (!has_found)
+				if (!repeated)
                 	result.push_back(filename);
 
             }
@@ -596,16 +642,17 @@ RW* Path::GetRW(const char* mode) {
 	if (this->is_zip) {
 
 		#ifndef NO_ZIP
-		struct zip_stat st;
-		zip_stat_init(&st);
-		if (zip_stat(this->zip_file->zip, cstr, 0, &st) == -1) {
+		
+		int size;
+		int index = zip_get_index(this->zip_file->zip, cstr, &size);
+		if (index < 0) {
 
 			PLog::Write(PLog::ERR, "PFile", "Can't get RW from zip \"%s\", file \"%s\"", this->zip_file->name.c_str(), cstr);
 			return nullptr;
 
 		}
 
-		zip_file_t* zfile = zip_fopen(this->zip_file->zip, cstr, 0);
+		zip_file_t* zfile = zip_fopen_index(this->zip_file->zip, index, 0);
 		if (!zfile) {
 
 			PLog::Write(PLog::ERR, "PFile", "RW from zip \"%s\", file \"%s\" is NULL", this->zip_file->name.c_str(), cstr);
@@ -613,11 +660,11 @@ RW* Path::GetRW(const char* mode) {
 
 		}
 
-		void* buffer = SDL_malloc(st.size);
-		zip_fread(zfile, buffer, st.size);
+		void* buffer = SDL_malloc(size);
+		zip_fread(zfile, buffer, size);
 		zip_fclose(zfile);
 
-		ret = SDL_RWFromConstMem(buffer, st.size);
+		ret = SDL_RWFromConstMem(buffer, size);
 		if (!ret) {
 
 			return nullptr;
