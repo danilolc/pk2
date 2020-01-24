@@ -1,4 +1,7 @@
-
+//#########################
+//Pekka Kana 2
+//Copyright (c) 2003 Janne Kivilahti
+//#########################
 #include "episode/mapstore.hpp"
 
 #include "system.hpp"

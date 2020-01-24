@@ -1,3 +1,7 @@
+//#########################
+//Pekka Kana 2
+//Copyright (c) 2003 Janne Kivilahti
+//#########################
 package org.pgnapps.pk2;
 
 import org.libsdl.app.SDLActivity;

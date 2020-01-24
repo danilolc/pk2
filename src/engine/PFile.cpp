@@ -1,3 +1,7 @@
+//#########################
+//Pekka Kana 2
+//Copyright (c) 2003 Janne Kivilahti
+//#########################
 #include "engine/PFile.hpp"
 
 #include "engine/PLog.hpp"

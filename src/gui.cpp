@@ -1,6 +1,6 @@
 //#########################
 //Pekka Kana 2
-//by Janne Kivilahti from Piste Gamez (2003)
+//Copyright (c) 2003 Janne Kivilahti
 //#########################
 #include "gui.hpp"
 
@@ -42,7 +42,7 @@ static PDraw::Gui* gui_tab    = nullptr;
 const static int PadBt_x = 275;
 const static int PadBt_y = 675;
 
-const static int Alpha = 100;
+const static int Alpha = 110;
 
 const static int PadBt_a = 10;
 const static int PadBt_r = 880;

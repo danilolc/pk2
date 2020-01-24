@@ -1,14 +1,21 @@
-# Pekka Kana 2
-by Janne Kivilahti from Piste Gamez (2003)
+![pekka](res/gfx/pekka.png?raw=true)
 
 Ported to SDL by Samuli Tuomola (2010)
 https://github.com/stt/pk2
 
-Translated and ported to SDL2 by Danilo Lemos (2016-2019)
+Translated and ported to SDL2 by Danilo Lemos (2016-2020)
 
 "Pekka Kana 2 (Pekka the Rooster 2) is a jump 'n run game made in the spirit of old classic platformers such as Super Mario, Sonic the Hedgehog, Jazz Jackrabbit, Super Frog and so on."
 http://kiwi.mbnet.fi/pistegamez/pk2/
 
+This repository contains the source code and resource files for the game Pekka Kana 2 created by Janne Kivilahti in 2003.
+The source code was released by the original author on a forum
+[thread](http://pistegamez.proboards.com/thread/543/level-editor-source-codes-available).
+
+Since then a lot of things changed, including an initial SDL port by Samuli Tuomola in 2010 and then the SDL2 port, bug fixes,
+and code redesign by Danilo Lemos (2016-2020).
+
+This game was tested on Windows, GNU/Linux and Android.
 
 # Binary distibution
 
@@ -20,14 +27,16 @@ https://files.fm/f/d6mvf3qr
 # Compiling
 
 ### Windows
-If you want to compile it yourself, the win32 directory have the solution files for VisualStudio. It will also need the SDL2, SDL2_mixer and SDL2_image library.
+To compile on Windows, you will need the mingw c++ compiler with SDL2 and Zip (optional) libs.
+There is a Makefile on `/mingw/i686/` that defines the needed stuff and include `/mingw/mingw.mk`.
+Edit the `/mingw/i686/Makefile` as you need and run Make on this directory.
 
 ### Debian
 To compile **Pekka Kana 2** into Debian GNU/Linux based distributions,
-you need the **SDL2**, **SDL2_image** and **SDL2_mixer** libraries installed on
-the system. To get eveything you need, just run the following command on the terminal:
+you need the **SDL2**, **SDL2_image**, **SDL2_mixer** and **Zip** libraries installed on
+the system. To get everything you need, just run the following command on the terminal:
 
-    # apt install g++ make libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+    # apt install g++ make libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libzip-dev
 
 Then run the "**make**" command inside the "**Pekka Kana 2**" directory.
 
@@ -42,13 +51,16 @@ To make the removal, within the compiled directory, execute this command:
     $ make clean
 
 
-### macOS
+### macOS - not tested
 Use [Homebrew](https://brew.sh/) to install SDL2 packages:
 ```
 brew install sdl2 sdl2_gfx sdl2_image sdl2_mixer
 ```
-Now just clone the code and run `make` on pk2 directory, the PK2 binary will be in bin/ directory.
+Now just clone the code and run `make` on pk2 directory, the PK2 binary will be in `bin/` directory.
 
+### Android
+Set a link to SDL2, SDL2_image and SDL2_mixer on `android/app/jni`. Then `./gradlew build`
+on `android/` with the SDK and the NDK installed may work.
 
 # User made episodes:
 http://mapstore.the.cz/

@@ -1,17 +1,17 @@
+# This is the mingw makefile
+# It must be included by a Makefile on a directory here
 #
+# It assumes that you have defined:
 #
-#
+# CXX (the mingw c++ compiler)
+# WINRES (the winres)
+# BIN_SRC (the binary source to be copyed - see the copyfiles rule)
+# INC_SRC (the include with SDL2 and Zip)
+# LIB_SRC (the libs with SDL2 and Zip)
 
-OPT = -O2
-
-CXX = $(PLAT)-w64-mingw32-g++
-BIN_SRC = /usr/local/$(PLAT)-w64-mingw32/bin/
-INC_SRC = /usr/local/$(PLAT)-w64-mingw32/include/
-
-SDL_CONF = $(BIN_SRC)/sdl2-config
-
-CXXFLAGS += $(shell $(SDL_CONF) --cflags) $(OPT) -I$(INC_SRC) -std=gnu++17 -Wall -Wno-sign-compare #-DNO_ZIP
-LDFLAGS += -static-libgcc -static-libstdc++ $(shell $(SDL_CONF) --libs) -lSDL2_mixer -lSDL2_image -lzip
+#Uncomment -DNO_ZIP if you don't want or don't have zip
+CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -D_REENTRANT $(OPT) -std=gnu++17 -Wall -Wno-sign-compare #-DNO_ZIP
+LDFLAGS += -static-libgcc -static-libstdc++ -L$(LIB_SRC) -Wl,-rpath,$(LIB_SRC) -Wl,--enable-new-dtags -lSDL2 -lSDL2_mixer -lSDL2_image -lzip
 
 SRC_DIR = ../../src/
 RES_DIR = ../../res/
@@ -36,8 +36,8 @@ pk2: $(PK2_BIN) copyfiles
 $(PK2_BIN): $(PK2_OBJ)
 	@echo -Linking Pekka Kana 2
 	@mkdir -p $(dir $@) >/dev/null
-	@$(PLAT)-w64-mingw32-windres ../version.rc  -O coff -o $(BUILD_DIR)version.res
-	@$(PLAT)-w64-mingw32-windres ../icon.rc  -O coff -o $(BUILD_DIR)icon.res
+	@$(WINRES) ../version.rc  -O coff -o $(BUILD_DIR)version.res
+	@$(WINRES) ../icon.rc  -O coff -o $(BUILD_DIR)icon.res
 	@$(CXX) $^ $(BUILD_DIR)version.res $(BUILD_DIR)icon.res $(LDFLAGS) -o $@
 ###########################
 
@@ -58,25 +58,9 @@ clean:
 copyfiles:
 	@echo -Copying libraries
 	@mkdir -p $(BIN_DIR) >/dev/null
-	
-	#@cp $(BIN_SRC)libFLAC-8.dll $(BIN_DIR)
-	#@cp $(BIN_SRC)LICENSE.FLAC.txt $(BIN_DIR)
 
 	@cp $(BIN_SRC)libogg-0.dll $(BIN_DIR)
 	@cp $(BIN_SRC)LICENSE.ogg-vorbis.txt $(BIN_DIR)
-	
-	#@cp $(BIN_SRC)libjpeg-9.dll $(BIN_DIR)
-	#@cp $(BIN_SRC)LICENSE.jpeg.txt $(BIN_DIR)
-	
-	#@cp $(BIN_SRC)libopus-0.dll $(BIN_DIR)
-	#@cp $(BIN_SRC)LICENSE.opus.txt $(BIN_DIR)
-
-	#@cp $(BIN_SRC)libopusfile-0.dll $(BIN_DIR)
-	#@cp $(BIN_SRC)LICENSE.opusfile.txt $(BIN_DIR)
-
-	#@cp $(BIN_SRC)libvorbis-0.dll $(BIN_DIR)
-
-	#@cp $(BIN_SRC)libvorbisfile-3.dll $(BIN_DIR)
 
 	@cp $(BIN_SRC)libmodplug-1.dll $(BIN_DIR)
 	@cp $(BIN_SRC)LICENSE.modplug.txt $(BIN_DIR)
@@ -87,20 +71,15 @@ copyfiles:
 	@cp $(BIN_SRC)libpng16-16.dll $(BIN_DIR)
 	@cp $(BIN_SRC)LICENSE.png.txt $(BIN_DIR)
 
-	#@cp $(BIN_SRC)libtiff-5.dll $(BIN_DIR)
-	#@cp $(BIN_SRC)LICENSE.tiff.txt $(BIN_DIR)
-
-	#@cp $(BIN_SRC)libwebp-7.dll $(BIN_DIR)
-	#@cp $(BIN_SRC)LICENSE.webp.txt $(BIN_DIR)
-
 	@cp $(BIN_SRC)zlib1.dll $(BIN_DIR)
 	@cp $(BIN_SRC)LICENSE.zlib.txt $(BIN_DIR)
 
+	@cp $(BIN_SRC)libzip.dll $(BIN_DIR)
+	@cp $(BIN_SRC)LICENSE.libzip.txt $(BIN_DIR)
+	
 	@cp $(BIN_SRC)SDL2.dll $(BIN_DIR)
 	@cp $(BIN_SRC)SDL2_image.dll $(BIN_DIR)
 	@cp $(BIN_SRC)SDL2_mixer.dll $(BIN_DIR)
-
-	@cp $(BIN_SRC)libzip.dll $(BIN_DIR)
 
 	@echo -Copying resources
 	@cp -r $(RES_DIR)/* $(BIN_DIR)

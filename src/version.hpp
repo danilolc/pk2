@@ -1,3 +1,7 @@
+//#########################
+//Pekka Kana 2
+//Copyright (c) 2003 Janne Kivilahti
+//#########################
 #pragma once
 
 #define PK2_NAME         "Pekka Kana 2"

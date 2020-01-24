@@ -1,6 +1,6 @@
 //#########################
 //Pekka Kana 2
-//by Janne Kivilahti from Piste Gamez (2003)
+//Copyright (c) 2003 Janne Kivilahti
 //-------------------------
 //It can be started with the "dev" argument to start the
 //cheats and "test" follown by the episode and level to

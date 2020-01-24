@@ -5,11 +5,11 @@
 # "make" - Creates Pekka Kana 2 binary
 # "make clean" - Removes all objects, executables and dependencies
 
-OPT = -g
+OPT = -Og
 #OPT = -O2
 
 CXX = g++
-CXXFLAGS += $(shell pkg-config libzip --cflags) $(shell pkg-config sdl2 --cflags) $(OPT) -std=gnu++17 -w -DNO_ZIP
+CXXFLAGS += $(shell pkg-config libzip --cflags) $(shell pkg-config sdl2 --cflags) $(OPT) -std=gnu++17 -w #-DNO_ZIP
 LDFLAGS += $(shell pkg-config libzip --libs) $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
 
 SRC_DIR = src/

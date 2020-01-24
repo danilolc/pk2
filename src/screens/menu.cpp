@@ -1,7 +1,6 @@
-
 //#########################
 //Pekka Kana 2
-//by Janne Kivilahti from Piste Gamez (2003)
+//Copyright (c) 2003 Janne Kivilahti
 //#########################
 #include "screens/screens.hpp"
 
@@ -1073,6 +1072,7 @@ void Draw_Menu_Language() {
 			} else {
 
 				strcpy(Settings.kieli, langlist[i].c_str());
+				Settings_Save();
 
 			}
 

@@ -1,6 +1,6 @@
 //#########################
 //Pekka Kana 2
-//by Janne Kivilahti from Piste Gamez (2003)
+//Copyright (c) 2003 Janne Kivilahti
 //#########################
 #include "engine/PLang.hpp"
 
