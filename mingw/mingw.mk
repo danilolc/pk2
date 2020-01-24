@@ -10,8 +10,8 @@
 # LIB_SRC (the libs with SDL2 and Zip)
 
 #Uncomment -DNO_ZIP if you don't want or don't have zip
-CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -D_REENTRANT $(OPT) -std=gnu++17 -Wall -Wno-sign-compare #-DNO_ZIP
-LDFLAGS += -static-libgcc -static-libstdc++ -L$(LIB_SRC) -Wl,-rpath,$(LIB_SRC) -Wl,--enable-new-dtags -lSDL2 -lSDL2_mixer -lSDL2_image -lzip
+CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main $(OPT) -std=gnu++17 -Wall -Wno-sign-compare #-DNO_ZIP
+LDFLAGS += -static-libgcc -static-libstdc++ -L$(LIB_SRC) -lmingw32 -mwindows -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image -lzip
 
 SRC_DIR = ../../src/
 RES_DIR = ../../res/

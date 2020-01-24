@@ -1,5 +1,7 @@
 ![pekka](res/gfx/pekka.png?raw=true)
 
+Copyright (c) 2003 Janne Kivilahti
+
 Ported to SDL by Samuli Tuomola (2010)
 https://github.com/stt/pk2
 
