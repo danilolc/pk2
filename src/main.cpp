@@ -6,7 +6,7 @@
 //cheats and "test" follown by the episode and level to
 //open directely on the level.
 //	Exemple:
-//	"./PK2 dev test rooster\ island\ 2/level13.map"
+//	"./pekka-kana-2 dev test rooster\ island\ 2/level13.map"
 //	Starts the level13.map on dev mode
 //#########################
 #include "engine/Piste.hpp"
@@ -25,7 +25,6 @@
 
 #include <cstring>
 
-//#define SDL_MAIN_HANDLED
 #include <SDL.h>
 
 void start_test(const char* arg) {

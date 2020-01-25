@@ -10,7 +10,7 @@
     <!-- Touchscreen support -->
     <uses-feature
         android:name="android.hardware.touchscreen"
-        android:required="true" />
+        android:required="false" />
 
     <!-- Game controller support -->
     <uses-feature

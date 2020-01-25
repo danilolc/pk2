@@ -6,10 +6,10 @@
 /.idea/
 
 *.iml
+*.log
 .DS_Store
 .externalNativeBuild
 .cxx
+.project
 
-/app/jni/*
-!/app/jni/Android.mk
 /captures

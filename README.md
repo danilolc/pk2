@@ -52,6 +52,11 @@ To make the removal, within the compiled directory, execute this command:
 
     $ make clean
 
+### Android
+Run `git submodule init` then `git submodule update` to get the SDL libs. Then `./gradlew build`
+on `android/` with the SDK and the NDK installed may work.
+
+SDL 2.0.10 have [bugs](https://bugzilla.libsdl.org/show_bug.cgi?id=4186) on audio. You must use the latest code.
 
 ### macOS - not tested
 Use [Homebrew](https://brew.sh/) to install SDL2 packages:
@@ -59,13 +64,6 @@ Use [Homebrew](https://brew.sh/) to install SDL2 packages:
 brew install sdl2 sdl2_gfx sdl2_image sdl2_mixer
 ```
 Now just clone the code and run `make` on pk2 directory, the PK2 binary will be in `bin/` directory.
-
-### Android
-Set a link to SDL2, SDL2_image and SDL2_mixer on `android/app/jni`. Then `./gradlew build`
-on `android/` with the SDK and the NDK installed may work.
-
-SDL 2.0.10 have [bugs](https://bugzilla.libsdl.org/show_bug.cgi?id=4186) on audio. You must use the latest code.
-I've copyed the SDL java code to `android/app/src/main/java/`. It'll probably be removed.
 
 # User made episodes:
 http://mapstore.the.cz/

@@ -441,30 +441,13 @@ void Draw_Menu_Name() {
 
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.playermenu_continue),tx_start,ty_start + 50)) {
+
 		editing_name = false;
 		PInput::EndKeyboard();
 		
-		/*if (episode_count == 1) { // Select episode even if just one
-		
-			if (Game) {
-				delete Game;
-				Game = nullptr;
-			}
-			if (Episode) {
-				delete Episode;
-				Episode = nullptr;
-			}
+		menu_nyt = MENU_EPISODES;
+		menu_valittu_id = menu_valinta_id = 1;
 
-			Episode = new EpisodeClass(menu_name, episodes[0]);
-			next_screen = SCREEN_MAP;
-		
-		}
-		else {*/
-
-			menu_nyt = MENU_EPISODES;
-			menu_valittu_id = menu_valinta_id = 1;
-		
-		//}
 	}
 
 	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.playermenu_clear),tx_start + 180,ty_start + 50)) {
@@ -520,6 +503,7 @@ void Draw_Menu_Load() {
 					Game = nullptr;
 				}
 				if (Episode) {
+					Save_Records(10);
 					delete Episode;
 					Episode = nullptr;
 				}
@@ -1035,6 +1019,7 @@ void Draw_Menu_Episodes() {
 				Game = nullptr;
 			}
 			if (Episode) {
+				Save_Records(10);
 				delete Episode;
 				Episode = nullptr;
 			}
