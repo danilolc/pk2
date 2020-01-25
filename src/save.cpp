@@ -15,7 +15,7 @@
 #define SAVES_FILE "saves.dat"
 #define VERSION "2"
 
-PK2SAVE saves_list[MAX_SAVES];
+PK2SAVE saves_list[SAVES_COUNT];
 
 #define SAVE_V1_LEVELS 50
 
@@ -34,7 +34,7 @@ int Empty_Records() {
 
 	memset(saves_list, 0, sizeof(saves_list));
 
-	for (int i = 0; i < MAX_SAVES; i++) {
+	for (int i = 0; i < SAVES_COUNT; i++) {
 
 		saves_list[i].empty = true;
 		strcpy(saves_list[i].episode, " ");
@@ -60,7 +60,7 @@ int Save_All_Records() {
 	char count_c[8];
 
 	memset(count_c, 0, sizeof(count_c));
-	itoa(MAX_SAVES, count_c, sizeof(count_c));
+	itoa(SAVES_COUNT, count_c, sizeof(count_c));
 
 	PFile::Path path(data_path + SAVES_FILE);
 	
@@ -106,8 +106,8 @@ int Load_SaveFile() {
 
 		PFile::ReadRW(file, count_c, sizeof(count_c));
 		count = atoi(count_c);
-		if (count > MAX_SAVES)
-			count = MAX_SAVES;
+		if (count > SAVES_COUNT)
+			count = SAVES_COUNT;
 
 		PFile::ReadRW(file, saves_list, sizeof(PK2SAVE) * count);
 	
@@ -115,10 +115,10 @@ int Load_SaveFile() {
 
 		PFile::ReadRW(file, count_c, sizeof(count_c));
 		count = atoi(count_c);
-		if (count > MAX_SAVES)
-			count = MAX_SAVES;
+		if (count > SAVES_COUNT)
+			count = SAVES_COUNT;
 
-		PK2SAVE_V1 temp[MAX_SAVES];
+		PK2SAVE_V1 temp[SAVES_COUNT];
 
 		PFile::ReadRW(file, temp, sizeof(PK2SAVE_V1) * count);
 

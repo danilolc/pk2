@@ -482,6 +482,7 @@ void Draw_Menu_Name() {
 }
 
 void Draw_Menu_Load() {
+
 	int my = 0, vali = 0;
 	char number[32];
 	char jaksoc[8];
@@ -493,11 +494,23 @@ void Draw_Menu_Load() {
 	PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.loadgame_info),50,110);
 	my = -20;
 
-	for ( int i = 0; i < MAX_SAVES; i++ ) {
-		itoa(i+1,ind,10);
-		strcpy(number,ind);
-		strcat(number,". ");
+	for ( int i = 0; i < SAVES_COUNT; i++ ) {
+		
+		if (i == 10) {
+			
+			if(saves_list[i].empty)
+				break;
+			strcpy(number, "bk. ");
+			my += 13;
 
+		} else {
+
+			itoa(i+1,ind,10);
+			strcpy(number,ind);
+			strcat(number,". ");
+
+		}
+		
 		strcat(number,saves_list[i].name);
 
 		if (Draw_Menu_Text(true,number,100,150+my)) {
@@ -549,7 +562,7 @@ void Draw_Menu_Save() {
 	PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.savegame_info),50,110);
 	my = -20;
 
-	for (int i = 0; i < MAX_SAVES; i++) {
+	for (int i = 0; i < SAVES_COUNT - 1; i++) {
 
 		itoa(i + 1, ind, 10);
 		strcpy(number, ind);
@@ -583,6 +596,7 @@ void Draw_Menu_Save() {
 }
 
 void Draw_Menu_Graphics() {
+
 	bool wasFullScreen, wasFiltered, wasFit, wasWide;
 	int my = 150;
 	static bool moreOptions = false;
@@ -783,6 +797,7 @@ void Draw_Menu_Graphics() {
 }
 
 void Draw_Menu_Sounds() {
+
 	int my = 0;
 
 	Draw_BGSquare(40, 70, 640-40, 410, 224);
@@ -842,6 +857,7 @@ void Draw_Menu_Sounds() {
 }
 
 void Draw_Menu_Controls() {
+	
 	int my = 0;
 
 	Draw_BGSquare(40, 70, 640-40, 410, 224);

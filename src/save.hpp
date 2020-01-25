@@ -8,7 +8,7 @@
 
 #include "engine/platform.hpp"
 
-const int MAX_SAVES = 10;
+const int SAVES_COUNT = 11;
 
 struct PK2SAVE {
 
@@ -22,7 +22,7 @@ struct PK2SAVE {
 	
 };
 
-extern PK2SAVE saves_list[MAX_SAVES];
+extern PK2SAVE saves_list[SAVES_COUNT];
 
 int Load_SaveFile();
 int Save_Records(int i);

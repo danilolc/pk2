@@ -17,6 +17,7 @@
 #include "game/game.hpp"
 #include "episode/episodeclass.hpp"
 #include "episode/mapstore.hpp"
+#include "save.hpp"
 #include "gui.hpp"
 #include "system.hpp"
 #include "language.hpp"
@@ -56,8 +57,10 @@ void quit() {
 	if (Game)
 		delete Game;
 	
-	if (Episode)
+	if (Episode) {
+		Save_Records(10); //Last save is backup
 		delete Episode;
+	}
 	
 	if(tekstit)
 		delete tekstit;
