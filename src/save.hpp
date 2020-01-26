@@ -10,6 +10,7 @@
 
 const int SAVES_COUNT = 11;
 
+// Save struct is not the ideal way because of byte order
 struct PK2SAVE {
 
 	bool  empty;

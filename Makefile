@@ -5,7 +5,7 @@
 # "make" - Creates Pekka Kana 2 binary
 # "make clean" - Removes all objects, executables and dependencies
 
-OPT = -Og
+OPT = -g
 #OPT = -O2
 
 CXX = g++

@@ -32,13 +32,15 @@ enum LEVEL_STATUS {
 
 //TODO - Make Scores 1.1
 struct PK2EPISODESCORES {
-	u32 best_score[EPISODI_MAX_LEVELS];         // the best score of each level in episode
-	char  top_player[EPISODI_MAX_LEVELS][20];     // the name of the player with more score in each level on episode
-	u32 best_time[EPISODI_MAX_LEVELS];          // the best time of each level
-	char  fastest_player[EPISODI_MAX_LEVELS][20]; // the name of the fastest player in each level
 
-	u32 episode_top_score;
-	char  episode_top_player[20];
+	u32  best_score[EPISODI_MAX_LEVELS];         // the best score of each level in episode
+	char top_player[EPISODI_MAX_LEVELS][20];     // the name of the player with more score in each level on episode
+	u32  best_time[EPISODI_MAX_LEVELS];          // the best time of each level
+	char fastest_player[EPISODI_MAX_LEVELS][20]; // the name of the fastest player in each level
+
+	u32  episode_top_score;
+	char episode_top_player[20];
+	
 };
 
 class EpisodeClass {

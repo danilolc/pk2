@@ -13,7 +13,7 @@
 .vscode/
 .directory
 
-/win32/
+*.zip
 
 /mingw/i686/build/
 /mingw/i686/PK2/

@@ -7,6 +7,7 @@
 #include "engine/platform.hpp"
 
 struct PK2SETTINGS {
+	
 	char versio[4];
 	bool ladattu; // if it was started here
 	char kieli[PE_PATH_SIZE]; // language
