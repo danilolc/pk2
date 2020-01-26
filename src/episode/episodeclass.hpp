@@ -18,10 +18,16 @@ struct PK2LEVEL {
 	char  nimi[40];
 	int   x, y;
 	int   order;
-	bool  cleared;
-	bool  all_apples;
 	int   icon;
 	
+};
+
+enum LEVEL_STATUS {
+
+	LEVEL_UNCLEAR   = 0b00,
+	LEVEL_PASSED    = 0b01,
+	LEVEL_ALLAPPLES = 0b10
+
 };
 
 //TODO - Make Scores 1.1
@@ -47,7 +53,10 @@ class EpisodeClass {
 
 		int level = 1;
 		int level_count = 0;
+		
 		PK2LEVEL levels_list[EPISODI_MAX_LEVELS];
+		u8 level_status[EPISODI_MAX_LEVELS];
+
 		PK2EPISODESCORES scores;
 
 		EpisodeClass(int save);

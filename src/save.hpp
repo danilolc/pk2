@@ -17,8 +17,7 @@ struct PK2SAVE {
 	char  episode[PE_PATH_SIZE];
 	char  name[20];
 	u32   score;
-	bool  level_cleared[EPISODI_MAX_LEVELS];
-	bool  all_apples[EPISODI_MAX_LEVELS];
+	u8    level_status[EPISODI_MAX_LEVELS];
 	
 };
 

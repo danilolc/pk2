@@ -149,8 +149,10 @@ void EpisodeClass::Load() {
 
 	delete temp;
 
+
+	// Order levels
 	PK2LEVEL temp2;
-	bool stop = false;
+	bool stop;
 
 	while (!stop){
 		stop = true;
@@ -198,8 +200,7 @@ EpisodeClass::EpisodeClass(int save) {
 
 	for (int j = 0; j < EPISODI_MAX_LEVELS; j++) {
 
-		this->levels_list[j].cleared = saves_list[save].level_cleared[j];
-		this->levels_list[j].all_apples = saves_list[save].all_apples[j];
+		this->level_status[j] = saves_list[save].level_status[j];
 
 	}
 
@@ -212,10 +213,8 @@ EpisodeClass::EpisodeClass(const char* player_name, episode_entry entry) {
 	this->entry = entry;
 	strcpy(this->player_name, player_name);
 
-	for (int j = 0; j < EPISODI_MAX_LEVELS; j++) {
-		this->levels_list[j].cleared = 0;
-		this->levels_list[j].all_apples = false;
-	}
+	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
+		this->level_status[j] = 0;
 	
 	this->Load();
 	

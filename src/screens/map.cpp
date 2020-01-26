@@ -105,7 +105,7 @@ int PK_Draw_Map() {
 
 	int njakso = Episode->level_count;
 	for (int i = 0; i < Episode->level_count; i++)
-		if (!Episode->levels_list[i].cleared && Episode->levels_list[i].order < njakso)
+		if (!Episode->level_status[i] && Episode->levels_list[i].order < njakso)
 			njakso = Episode->levels_list[i].order; // Find the first unclear level
 	
 	if(Episode->level < njakso)
@@ -119,7 +119,7 @@ int PK_Draw_Map() {
 				type = 1;
 			if (Episode->levels_list[i].order > Episode->level)
 				type = 2;
-			if (Episode->levels_list[i].cleared)
+			if (Episode->level_status[i] != 0)
 				type = 0;
 
 			if (Episode->levels_list[i].x == 0)
@@ -142,7 +142,7 @@ int PK_Draw_Map() {
 
 			paluu = PK_Draw_Map_Button(Episode->levels_list[i].x-5, Episode->levels_list[i].y-10, type);
 
-			if (type == 0 && Episode->levels_list[i].all_apples)
+			if (Episode->level_status[i] & LEVEL_ALLAPPLES)
 				PDraw::image_cutclip(game_assets2, 
 					Episode->levels_list[i].x - 10,
 					Episode->levels_list[i].y, 45, 379, 58, 394);

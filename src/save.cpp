@@ -17,19 +17,6 @@
 
 PK2SAVE saves_list[SAVES_COUNT];
 
-#define SAVE_V1_LEVELS 50
-
-struct PK2SAVE_V1 {
-
-	int   jakso;
-	char  episodi[PE_PATH_SIZE];
-	char  nimi[20];
-	bool  kaytossa;
-	bool  jakso_cleared[SAVE_V1_LEVELS];
-	u32   pisteet;
-
-};
-
 int Empty_Records() {
 
 	memset(saves_list, 0, sizeof(saves_list));
@@ -41,12 +28,8 @@ int Empty_Records() {
 		strcpy(saves_list[i].name,"empty");
 		saves_list[i].level = 0;
 		saves_list[i].score = 0;
-		for (int j = 0; j < EPISODI_MAX_LEVELS; j++) {
-
-			saves_list[i].level_cleared[j] = false;
-			saves_list[i].all_apples[j] = false;
-
-		}
+		for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
+			saves_list[i].level_status[j] = 0;
 		
 	}
 
@@ -111,32 +94,11 @@ int Load_SaveFile() {
 
 		PFile::ReadRW(file, saves_list, sizeof(PK2SAVE) * count);
 	
-	} else if (strncmp(versio,"1", 2) == 0) {
+	} else {
 
-		PFile::ReadRW(file, count_c, sizeof(count_c));
-		count = atoi(count_c);
-		if (count > SAVES_COUNT)
-			count = SAVES_COUNT;
+		PLog::Write(PLog::INFO, "PK2", "Can't read this save version");
+		return 1;
 
-		PK2SAVE_V1 temp[SAVES_COUNT];
-
-		PFile::ReadRW(file, temp, sizeof(PK2SAVE_V1) * count);
-
-		for (int i = 0; i < count; i++) {
-			
-			saves_list[i].empty = !temp[i].kaytossa;
-			saves_list[i].level = temp[i].jakso;
-			strcpy(saves_list[i].episode, temp[i].episodi);
-			strcpy(saves_list[i].name, temp[i].nimi);
-			saves_list[i].score = temp[i].pisteet;
-
-			for (int j = 0; j < SAVE_V1_LEVELS; j++) {
-				saves_list[i].level_cleared[j] = temp[i].jakso_cleared[j];
-				saves_list[i].all_apples[j] = false;
-			}
-
-		}
-	
 	}
 
 	PFile::CloseRW(file);
@@ -155,12 +117,8 @@ int Save_Records(int i) {
 	saves_list[i].level = Episode->level;
 	saves_list[i].score = Episode->player_score;
 
-	for (int j = 0; j < EPISODI_MAX_LEVELS; j++) {
-
-		saves_list[i].level_cleared[j] = Episode->levels_list[j].cleared;
-		saves_list[i].all_apples[j] = Episode->levels_list[j].all_apples;
-
-	}
+	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
+		saves_list[i].level_status[j] = Episode->level_status[j];
 
 	Save_All_Records();
 
