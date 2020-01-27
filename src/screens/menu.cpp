@@ -198,7 +198,7 @@ int Draw_BoolBox(int x, int y, bool muuttuja, bool active) {
 	if(active){
 		PDraw::image_cutclip(game_assets,img_src,img_dst);
 	} else{
-		PDraw::image_cutcliptransparent(game_assets,img_src,img_dst,50);
+		PDraw::image_cutcliptransparent(game_assets,img_src,img_dst,50, 255);
 		return false;
 	}
 

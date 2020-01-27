@@ -320,7 +320,7 @@ int image_clip(int index, int x, int y) {
 
 }
 
-int image_cliptransparent(int index, int x, int y, int alpha, int colorsum) {
+int image_cliptransparent(int index, int x, int y, int alpha, u8 colorsum) {
     
     return image_cutcliptransparent(
         index,
@@ -355,7 +355,7 @@ int image_cutclip(int index, RECT srcrect, RECT dstrect) {
 
 }
 
-int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, int colorsum) {
+int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, u8 colorsum) {
 
 	return image_cutcliptransparent(
         index, 
@@ -406,25 +406,21 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     for (int posx = x_start; posx < x_end; posx++)
         for (int posy = y_start; posy < y_end; posy++) {
 
-            u8 color1 = imagePix[ posx + imagePitch*posy ];
+            u8 color1 = imagePix[ posx + imagePitch * posy ];
             if (color1 != 255) {
+
                 int screen_x = posx + dst_x - src_x;
                 int screen_y = posy + dst_y - src_y;
                 
                 int fy = screen_x + screenPitch * screen_y;
 
-                // TODO - remove this
-                if (fy >= screenPitch * screen_height || fy < 0) {
-
-                    PLog::Write(PLog::FATAL, "PDraw", "Drawin out of bounds");
-                    drawscreen_end();
-                    drawimage_end(index);
-                    return 1;
-
-                }
+                int sum = colorsum;
+                if (sum == 255)
+                    sum = color1 & 0b11100000;
 
                 u8 color2 = screenPix[fy];
-                screenPix[fy] = blend_colors(color1, color2, alpha) + colorsum;
+                screenPix[fy] = blend_colors(color1, color2, alpha) + sum;
+
             }
 
         }
@@ -565,7 +561,7 @@ u8 blend_colors(u8 color, u8 colBack, int alpha) {
     result += colBack % 32;
     if(result > 31) result = 31;
 
-    return (u8)result;//+32*col
+    return (u8)result;
 
 }
 
