@@ -503,7 +503,8 @@ void Draw_Menu_Load() {
 					Game = nullptr;
 				}
 				if (Episode) {
-					Save_Records(10);
+					if (i != 10) //Don't save then load
+						Save_Records(10);
 					delete Episode;
 					Episode = nullptr;
 				}
