@@ -928,14 +928,14 @@ int SpriteClass::Piirra(int kamera_x, int kamera_y){
 	if (flip_x) {
 		
 		if(this->invisible)
-			PDraw::image_cliptransparent(tyyppi->framet_peilikuva[frame], x-l-1, y-h, 40, this->tyyppi->vari);
+			PDraw::image_cliptransparent(tyyppi->framet_peilikuva[frame], x-l-1, y-h, 40, COLOR_GRAY);
 		else
 			PDraw::image_clip(tyyppi->framet_peilikuva[frame], x-l-1, y-h);
 
 	} else {
 
 		if(this->invisible)
-			PDraw::image_cliptransparent(tyyppi->framet[frame], x-l-1, y-h, 40, this->tyyppi->vari);
+			PDraw::image_cliptransparent(tyyppi->framet[frame], x-l-1, y-h, 40, COLOR_GRAY);
 		else
 			PDraw::image_clip(tyyppi->framet[frame], x-l-1, y-h);
 	

@@ -42,6 +42,9 @@ int Screen_First_Start() {
 
 	Fadetext_Init();
 
+	if(PUtils::Is_Mobile())
+		GUI_Load();
+
 	tekstit = new PLang();
 	if (Load_Language(Settings.kieli) != 0) {
 
@@ -71,7 +74,7 @@ int Screen_First_Start() {
 
 		if (Load_Fonts(tekstit) != 0) {
 
-			PLog::Write(PLog::FATAL, "PK2", "Could load fonts!");
+			PLog::Write(PLog::FATAL, "PK2", "Couldn't load fonts!");
 			PK2_Error("Error");
 			return -1;
 
@@ -82,9 +85,6 @@ int Screen_First_Start() {
 	langlist = PFile::Path("language" PE_SEP).scandir(".txt");
 	
 	Search_Episodes();
-
-	if(PUtils::Is_Mobile())
-		GUI_Load();
 
 	MapClass_Set_Screen_Size(screen_width, screen_height);
 	

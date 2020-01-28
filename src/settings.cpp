@@ -50,7 +50,7 @@ void Settings_Init() {
 	Settings.isWide = true;
 
 	Settings.music_max_volume = 50;
-	Settings.sfx_max_volume = 80;
+	Settings.sfx_max_volume = 90;
 
 }
 
