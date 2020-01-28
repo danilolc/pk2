@@ -11,7 +11,8 @@
 
 extern PLang *tekstit;
 
-struct LANGUAGE{
+struct LANGUAGE {
+
 	int setup_options,
 		setup_videomodes,
 		setup_music_and_sounds,
@@ -156,6 +157,7 @@ struct LANGUAGE{
 		info17,
 		info18,
 		info19;
+	
 };
 
 extern LANGUAGE PK_txt;
