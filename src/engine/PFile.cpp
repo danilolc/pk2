@@ -234,7 +234,7 @@ std::vector<std::string> scan_zip(Zip* zip_file, const char* path, const char* t
 
 		if( pathcomp(path, st.name) ) {
 
-			std::string filename(st.name + path_size);
+			std::string filename(st.name + path_size + 1);
 			filename = filename.substr(0, filename.find("/")); //PE_SEP?
 
 			if(filename.size() == 0)
@@ -777,7 +777,7 @@ int CloseRW(RW* rw) {
 std::vector<std::string> Path::scandir(const char* type) {
     
 	int dif = this->find_last_of(PE_SEP);
-	std::string dir =  this->substr(0, dif + 1);
+	std::string dir =  this->substr(0, dif /*+ 1*/);
 	
 	const char* cstr = dir.c_str();
 	

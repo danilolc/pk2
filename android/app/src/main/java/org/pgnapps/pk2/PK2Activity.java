@@ -8,6 +8,7 @@ import org.libsdl.app.SDLActivity;
 
 import android.Manifest;
 import android.content.res.AssetManager;
+import android.util.Log;
 //import android.os.Environment;
 //import android.os.Build;
 //import android.content.pm.PackageManager;
@@ -18,7 +19,8 @@ import java.io.IOException;
 import java.util.Locale;
 
 public class PK2Activity extends SDLActivity {
-    private static final String LOG_TAG = "PK2";
+
+    private static final String TAG = "PJava";
 
     //boolean Permitted = false;
 
@@ -48,17 +50,19 @@ public class PK2Activity extends SDLActivity {
         return Environment.MEDIA_MOUNTED.equals(state);
     }*/
 
+    //@Keep
     private String[] listDir(String dir) {
 
-        AssetManager am = getAssets();
         String[] ret;
+        Log.i(TAG, "Scanning \"" + dir + "\" from APK");
         
         try {
 
-            ret = am.list(dir);
+            ret = getAssets().list(dir);
 
         } catch(IOException e) {
 
+            Log.e(TAG, "Error scaning");
             e.printStackTrace();
             ret = new String[] { "" };
 
@@ -68,6 +72,7 @@ public class PK2Activity extends SDLActivity {
 
     }
 
+    //@Keep
     private String getLocale() {
 
         return Locale.getDefault().getLanguage();
@@ -76,8 +81,9 @@ public class PK2Activity extends SDLActivity {
 
     @Override
     protected String[] getArguments() {
+
         return new String[0];
-        //return new String[] { "dev", "fps" };
+
     }
 
     @Override
@@ -91,14 +97,9 @@ public class PK2Activity extends SDLActivity {
                 "PK2"};
     }
 
-    //@Override
-    //protected void onCreate(Bundle savedInstanceState) {
-    //    makeFullScreen();
-    //    super.onCreate(savedInstanceState);
-    //}
-
     @Override
     protected void onStart() {
+        
         super.onStart();
         setWindowStyle(true);
 
@@ -106,8 +107,10 @@ public class PK2Activity extends SDLActivity {
 
     @Override
     protected void onResume() {
+        
         super.onResume();
         setWindowStyle(true);
+
     }
 
 }
