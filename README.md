@@ -1,4 +1,4 @@
-![pekka](res/gfx/pekka.png?raw=true)
+![pekka](res/gfx/manual/pekka.png?raw=true)
 
 Copyright (c) 2003 Janne Kivilahti
 
@@ -22,8 +22,8 @@ This game was tested on Windows, GNU/Linux and Android.
 # Binary distibution
 
 ### Windows
-There is a compiled binary with the "r2" version.
-https://files.fm/f/d6mvf3qr
+There is a compiled binary with the version 1.3.3-2.
+https://files.fm/f/vkw4hgxs
 
 
 # Compiling
