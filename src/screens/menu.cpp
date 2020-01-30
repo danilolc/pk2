@@ -866,14 +866,14 @@ void Draw_Menu_Controls() {
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_useitem),100,90+my);my+=20;
 
 	my = 40;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_left),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_right),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_jump),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_down),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_walk_slow),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_attack1),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_attack2),310,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_open_gift),310,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_left),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_right),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_jump),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_down),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_walk_slow),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_attack1),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_attack2),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_open_gift),380,90+my);my+=20;
 
 	/*
 	if (PInput::mouse_x > 310 && PInput::mouse_x < 580 && PInput::mouse_y > 130 && PInput::mouse_y < my-20){
