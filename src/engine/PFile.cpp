@@ -622,11 +622,12 @@ std::string Path::GetFileName() {
 
 }
 
+//SDL_RW interface --------
+extern "C" {
 static int SDLCALL pfile_mem_close(SDL_RWops* context) {
 
 	if (context) {
 
-		//PLog::Write(PLog::DEBUG, "PFile", "Freeing rw %p", context->hidden.mem.base);
 		SDL_free(context->hidden.mem.base);
 		SDL_FreeRW(context);
 
@@ -635,6 +636,59 @@ static int SDLCALL pfile_mem_close(SDL_RWops* context) {
 	return 0;
 
 }
+
+static Sint64 SDLCALL pfile_zip_size(SDL_RWops* context) {
+
+	return (Sint64)context->hidden.unknown.data2;
+
+}
+
+static Sint64 SDLCALL pfile_zip_seek(SDL_RWops* context, Sint64 offset, int whence) {
+
+	zip_file_t* zfile = (zip_file_t*)context->hidden.unknown.data1;
+
+	switch (whence) {
+		case RW_SEEK_SET:
+			zip_fseek(zfile, offset, SEEK_SET);
+		case RW_SEEK_CUR:
+			zip_fseek(zfile, offset, SEEK_CUR);
+		case RW_SEEK_END:
+			zip_fseek(zfile, offset, SEEK_END);
+		default:
+			return SDL_SetError("Unknown value for 'whence'");
+    }
+
+	return (Sint64)zip_ftell(zfile);
+
+}
+
+static size_t SDLCALL pfile_zip_read(SDL_RWops* context, void *ptr, size_t size, size_t maxnum) {
+
+	zip_file_t* zfile = (zip_file_t*)context->hidden.unknown.data1;
+
+	return zip_fread(zfile, ptr, size * maxnum);
+
+}
+
+static size_t SDLCALL pfile_zip_write(SDL_RWops* context, const void *ptr, size_t size, size_t num) {
+
+	SDL_SetError("Can't write zip RW");
+
+	return 0;
+
+}
+
+static int SDLCALL pfile_zip_close(SDL_RWops* context) {
+
+	zip_file_t* zfile = (zip_file_t*)context->hidden.unknown.data1;
+	zip_fclose(zfile);
+	SDL_FreeRW(context);
+
+	return 0;
+
+}
+}
+//-------------------------
 
 RW* Path::GetRW(const char* mode) {
 
@@ -663,6 +717,22 @@ RW* Path::GetRW(const char* mode) {
 			return nullptr;
 
 		}
+
+		/*ret = SDL_AllocRW();
+		if (ret != nullptr) {
+
+			ret->size = pfile_zip_size;
+			ret->seek = pfile_zip_seek;
+			ret->read = pfile_zip_read;
+			ret->write = pfile_zip_write;
+			ret->close = pfile_zip_close;
+			ret->hidden.unknown.data1 = zfile;
+			ret->hidden.unknown.data2 = (void*)size;
+			ret->type = 0;
+		
+		}
+		
+		return (RW*)ret;*/
 
 		void* buffer = SDL_malloc(size);
 		zip_fread(zfile, buffer, size);

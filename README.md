@@ -78,10 +78,9 @@ This example starts the level13.map on dev mode:
 ./pekka-kana-2 dev test "rooster island 2/level13.map"
 ```
 
-# To r3:
-* SDL Android isn't sending SDL_QUIT event
-
 # ROADMAP
+* SDL_QUIT on Android
+* Fix no animation bug
 * Traduct finnish language
 * Better documentation
 * Load pk2stuff and android controls from zip
