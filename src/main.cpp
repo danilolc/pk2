@@ -33,7 +33,7 @@ void start_test(const char* arg) {
 
 	std::string buffer(arg);
 
-	int sep = buffer.find_last_of(PE_SEP);
+	int sep = buffer.find_last_of("/");
 
 	episode_entry episode;
 	episode.name = buffer.substr(0, sep);

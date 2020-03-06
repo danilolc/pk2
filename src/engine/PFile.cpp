@@ -637,6 +637,7 @@ static int SDLCALL pfile_mem_close(SDL_RWops* context) {
 
 }
 
+#ifndef NO_ZIP
 static Sint64 SDLCALL pfile_zip_size(SDL_RWops* context) {
 
 	return (Sint64)context->hidden.unknown.data2;
@@ -687,6 +688,7 @@ static int SDLCALL pfile_zip_close(SDL_RWops* context) {
 	return 0;
 
 }
+#endif
 }
 //-------------------------
 
