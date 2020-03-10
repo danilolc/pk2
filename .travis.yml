@@ -1,10 +1,10 @@
 language: minimal
 
-before_install:
-  - sudo apt-get -y install g++ make libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+git:
+  submodules: false
 
-deploy:
-  provider: script
-  script: make -j$(nproc)
-  on:
-    branch: master
+install:
+  - sudo apt-get -y install build-essential libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+
+script:
+  - make
