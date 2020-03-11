@@ -1,10 +1,20 @@
-language: minimal
+language: cpp
+
+compiler:
+  - gcc
 
 git:
   submodules: false
 
-install:
-  - sudo apt-get -y install build-essential libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+before-install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 
+install:
+  - sudo apt-get -y install -y g++-4.8
+  - sudo apt-get -y install -y libsdl2-dev
+  - sudo apt-get -y install -y libsdl2-image-dev
+  - sudo apt-get -y install -y libsdl2-mixer-dev
+  
 script:
   - make
+  - ./bin/pekka-kana-2 version
