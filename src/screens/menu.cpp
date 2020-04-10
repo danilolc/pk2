@@ -1124,7 +1124,7 @@ int Draw_Menu() {
 	}
 
 	if (!Episode)
-		PDraw::font_write(fontti1, PK2_VERSION_STR, 0, 470);
+		PDraw::font_write(fontti1, PK2_VERSION, 0, 470);
 
 	Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
