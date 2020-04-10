@@ -152,7 +152,7 @@ void EpisodeClass::Load() {
 
 	// Order levels
 	PK2LEVEL temp2;
-	bool stop;
+	bool stop = false;
 
 	while (!stop){
 		stop = true;
