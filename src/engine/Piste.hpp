@@ -21,7 +21,7 @@ void terminate();
 
 void loop(int (*GameLogic)());
 void stop();
-float get_fps();
+int get_fps();
 
 void set_debug(bool set);
 void ignore_frame();

@@ -14,6 +14,7 @@
 #include "episode/mapstore.hpp"
 #include "save.hpp"
 #include "system.hpp"
+#include "version.hpp"
 
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
@@ -1121,6 +1122,9 @@ int Draw_Menu() {
 		case MENU_LANGUAGE : Draw_Menu_Language(); break;
 		default            : Draw_Menu_Main();     break;
 	}
+
+	if (!Episode)
+		PDraw::font_write(fontti1, PK2_VERSION_STR, 0, 470);
 
 	Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 

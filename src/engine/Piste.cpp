@@ -8,6 +8,8 @@
 
 #include <SDL.h>
 
+#define UPDATE_FPS 30 //Update FPS each 30 frames
+
 namespace Piste {
 
 static bool ready = false;
@@ -95,32 +97,34 @@ void terminate() {
 
 void loop(int (*GameLogic)()) {
 	
+	static int frame_counter = 0;
+	static int last_time = 0;
+		
 	int error = 0;
-	int last_time = 0;
-	int count = 0; // Count how much frames elapsed
-	float real_fps = 0;
-	
+
 	running = true;
 
 	while(running) {
-
-		count++;
 
 		error = GameLogic();
 		if (error) break;
 		
 		logic();
 
-		// Count fps
-		if (draw) {
-			real_fps = 1000.f / (SDL_GetTicks() - last_time);
-			real_fps *= count;
-			avrg_fps = avrg_fps*0.8 + real_fps*0.2;
-			last_time = SDL_GetTicks();
-			count = 0;
-		}
+		frame_counter++;
+		if (frame_counter >= UPDATE_FPS) {
 
+			frame_counter = 0;
+			int elapsed_time = (SDL_GetTicks() - last_time);
+
+			avrg_fps = 1000.f * UPDATE_FPS / elapsed_time;	
+
+			last_time += elapsed_time;
+		
+		}
+		
 		draw = true;
+	
 	}
 
 }
@@ -131,9 +135,9 @@ void stop() {
 
 }
 
-float get_fps() {
+int get_fps() {
 	
-	return avrg_fps;
+	return (int)avrg_fps;
 
 }
 

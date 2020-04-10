@@ -34,7 +34,6 @@ bool dev_mode = false;
 
 bool doublespeed = false;
 
-float fps = 0;
 bool show_fps = false;
 
 bool PK2_error = false;

@@ -511,13 +511,17 @@ int Draw_InGame() {
 		if (test_level)
 			PDraw::font_write(fontti1, "testing level", 0, 480 - 20);
 		if (show_fps) {
+			
+			int fps = Piste::get_fps();
+			
 			if (fps >= 100)
 				vali = PDraw::font_write(fontti1, "fps:", 570, 48);
 			else
 				vali = PDraw::font_write(fontti1, "fps: ", 570, 48);
-			fps = Piste::get_fps();
-			itoa((int)fps, luku, 10);
+			
+			itoa(fps, luku, 10);
 			PDraw::font_write(fontti1, luku, 570 + vali, 48);
+		
 		}
 	}
 
@@ -657,6 +661,9 @@ int Screen_InGame(){
 
 	static bool skip_frame = false;
 
+	if (doublespeed) skip_frame = !skip_frame;
+	else skip_frame = false;
+
 	if (!skip_frame) {
 
 		Draw_InGame();
@@ -667,10 +674,6 @@ int Screen_InGame(){
 
 	}
 	
-	//TODO - force 60/120 "fps"
-	if (doublespeed) skip_frame = !skip_frame;
-	else skip_frame = false;
-
 	Game->Move_Blocks();
 
 	if (!Game->paused) {
