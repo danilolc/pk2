@@ -212,7 +212,13 @@ int image_load(PFile::Path path, bool getPalette) {
     }
 
     PFile::RW* rw = path.GetRW("rb");
-    //imageList[index] = SDL_LoadBMP_RW((SDL_RWops*) rw, 0);
+    if (!rw) {
+
+        PLog::Write(PLog::ERR, "PDraw", "Couldn't find %s", path.c_str());
+        return -1;
+
+    }
+
     imageList[index] = IMG_Load_RW((SDL_RWops*) rw, 0);
     PFile::CloseRW(rw);
 
@@ -223,7 +229,7 @@ int image_load(PFile::Path path, bool getPalette) {
     
     }
 
-    if( imageList[index]->format->BitsPerPixel != 8) {
+    if(imageList[index]->format->BitsPerPixel != 8) {
 
         PLog::Write(PLog::ERR, "PDraw", "Failed to open %s, just 8bpp indexed images!", path.c_str());
         image_delete(index);

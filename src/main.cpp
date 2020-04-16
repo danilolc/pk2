@@ -103,7 +103,10 @@ int main(int argc, char *argv[]) {
 			}
 			else {
 				i++;
-				chdir(argv[i]);
+				if (chdir(argv[i]) != 0) {
+					printf("Invalid path\n");
+					exit(1);
+				}
 				path_set = true;
 				continue;
 			}
