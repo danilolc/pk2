@@ -15,7 +15,7 @@ const int FADE_NORMAL = 2;
 const int FADE_SLOW = 1;
 
 const char FILTER_NEAREST[] = "0";
-const char FILTER_BILINEAR[] = "1";
+const char FILTER_BILINEAR[] = "2";
 
 struct RECT {
 
