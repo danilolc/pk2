@@ -168,22 +168,22 @@ int Draw_InGame_DebugInfo() {
 		PDraw::set_xoffset(0);
 
 	vali = PDraw::font_write(fontti1,"spriteja: ",10,fy);
-	itoa(debug_sprites,lukua,10);
+	sprintf(lukua, "%i", debug_sprites);
 	PDraw::font_write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
 	vali = PDraw::font_write(fontti1,"aktiivisia: ",10,fy);
-	itoa(debug_active_sprites,lukua,10);
+	sprintf(lukua, "%i", debug_active_sprites);
 	PDraw::font_write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
 	vali = PDraw::font_write(fontti1,"piirretty: ",10,fy);
-	itoa(debug_drawn_sprites,lukua,10);
+	sprintf(lukua, "%i", debug_drawn_sprites);
 	PDraw::font_write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
 	for (int i=0;i<40;i++){
-		itoa(Prototypes_List[i].indeksi,lukua,10);
+		sprintf(lukua, "%i", Prototypes_List[i].indeksi);
 		PDraw::font_write(fontti1,lukua,410,10+i*10);
 		PDraw::font_write(fontti1,Prototypes_List[i].tiedosto,430,10+i*10);
 		PDraw::font_write(fontti1,Prototypes_List[i].bonus_sprite,545,10+i*10);
@@ -209,19 +209,19 @@ int Draw_InGame_DebugInfo() {
 
 	PDraw::font_write(fontti1, Game->map_file.c_str(), 10, 460);
 
-	itoa(Player_Sprite->hyppy_ajastin, lukua, 10);
+	sprintf(lukua, "%i", Player_Sprite->hyppy_ajastin);
 	PDraw::font_write(fontti1, lukua, 270, 460);
 
 	PDraw::font_write(fontti1, Episode->Get_Dir().c_str(), 10, 470);
 
-	itoa(Player_Sprite->invisible,lukua,10);
+	sprintf(lukua, "%i", Player_Sprite->invisible);
 	PDraw::font_write(fontti1,lukua,610,470);
 
-	itoa(Game->button1, lukua, 10);
+	sprintf(lukua, "%i", Game->button1);
 	PDraw::font_write(fontti1, lukua, 610, 460);
-	itoa(Game->button2, lukua, 10);
+	sprintf(lukua, "%i", Game->button2);
 	PDraw::font_write(fontti1, lukua, 610, 450);
-	itoa(Game->button3, lukua, 10);
+	sprintf(lukua, "%i", Game->button3);
 	PDraw::font_write(fontti1, lukua, 610, 440);
 
 	PDraw::set_xoffset(0);
@@ -360,7 +360,7 @@ int Draw_InGame_Lower_Menu() {
 		y = screen_height-39;
 		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_time),x,y-20);
 
-		itoa(min,luku,10);
+		sprintf(luku, "%i", min);
 		
 		vali += ShadowedText_Draw(luku, x, y);
 		vali += PDraw::font_write(fontti1,":",x+vali,y+9);
@@ -368,7 +368,7 @@ int Draw_InGame_Lower_Menu() {
 		if (sek < 10)
 			vali += ShadowedText_Draw("0", x + vali, y);
 		
-		itoa(sek,luku,10);
+		sprintf(luku, "%i", sek);
 		vali += ShadowedText_Draw(luku, x + vali, y);
 	}
 
@@ -380,7 +380,7 @@ int Draw_InGame_Lower_Menu() {
 		y = screen_height-39;
 		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_keys),x,y-20);
 
-		itoa(Game->keys,luku,10);
+		sprintf(luku, "%i", Game->keys);
 		ShadowedText_Draw(luku, x, y);
 	}
 
@@ -413,7 +413,7 @@ int Draw_InGame_UI(){
 	// Draw Energy
 	/////////////////
 	vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_energy),40,my);
-	ltoa(Player_Sprite->energia,luku,10);
+	sprintf(luku, "%i", Player_Sprite->energia);	
 	ShadowedText_Draw(luku, 40 + vali, my);
 
 	/////////////////
@@ -421,7 +421,7 @@ int Draw_InGame_UI(){
 	/////////////////
 	if(Player_Sprite->invisible > 0){
 		vali = PDraw::font_write(fontti1,"invisible:",40,my+27);
-		ltoa(Player_Sprite->invisible/60,luku,10);
+		sprintf(luku, "%i", Player_Sprite->invisible/60);	
 		PDraw::font_write(fontti2,luku,40+vali+1,my+27+1);
 		PDraw::font_write(fontti2,luku,40+vali,my+27);
 	}
@@ -430,7 +430,7 @@ int Draw_InGame_UI(){
 	// Draw Score
 	/////////////////
 	vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_score),230,my);
-	ltoa(Game->score,luku,10);
+	sprintf(luku, "%i", Game->score);		
 	ShadowedText_Draw(luku, 230 + vali, my);
 
 	/////////////////
@@ -519,7 +519,7 @@ int Draw_InGame() {
 			else
 				vali = PDraw::font_write(fontti1, "fps: ", 570, 48);
 			
-			itoa(fps, luku, 10);
+			sprintf(luku, "%i", fps);
 			PDraw::font_write(fontti1, luku, 570 + vali, 48);
 		
 		}

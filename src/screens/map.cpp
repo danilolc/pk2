@@ -73,19 +73,19 @@ int PK_Draw_Map() {
 
 	vali = ShadowedText_Draw(tekstit->Get_Text(PK_txt.map_total_score), 100, 92);
 	
-	ltoa(Episode->player_score,luku,10);
+	sprintf(luku, "%i", Episode->player_score);
 	ShadowedText_Draw(luku, 100 + vali + 15, 92);
 
 	if (Episode->scores.episode_top_score > 0) {
 		vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_best_player),360,72);
 		PDraw::font_write(fontti1,Episode->scores.episode_top_player,360+vali+10,72);
 		vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_hiscore),360,92);
-		ltoa(Episode->scores.episode_top_score,luku,10);
+		sprintf(luku, "%i", Episode->scores.episode_top_score);
 		PDraw::font_write(fontti2,luku,360+vali+15,92);
 	}
 
 	vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_next_level),100,120);
-	ltoa(Episode->level, luku, 10);
+	sprintf(luku, "%i", Episode->level);
 	PDraw::font_write(fontti1,luku,100+vali+15,120);
 
 	//PK_Particles_Draw();
@@ -165,7 +165,7 @@ int PK_Draw_Map() {
 				}
 			}
 
-			itoa(Episode->levels_list[i].order,luku,10);
+			sprintf(luku, "%i", Episode->levels_list[i].order);
 			PDraw::font_write(fontti1,luku,Episode->levels_list[i].x-12+2,Episode->levels_list[i].y-29+2);
 
 			// if mouse hoover
@@ -181,7 +181,7 @@ int PK_Draw_Map() {
                     PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_player),info_x,info_y+50,75);
 					PDraw::font_write(fontti1,Episode->scores.top_player[i],info_x,info_y+62);
 					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_hiscore),info_x,info_y+74,75);
-					ltoa(Episode->scores.best_score[i],luku,10);
+					sprintf(luku, "%i", Episode->scores.best_score[i]);
 					PDraw::font_write(fontti1,luku,info_x+vali,info_y+75);
 				
                 }
@@ -202,12 +202,12 @@ int PK_Draw_Map() {
 					min = time / 60;
 					sek = time % 60;
 
-					itoa(min,luku,10);
+					sprintf(luku, "%i", min);
 					vali += PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);
 					vali += PDraw::font_write(fontti1,":",info_x+vali,info_y+122);
                     if (sek < 10)
                         vali += PDraw::font_write(fontti1,"0",info_x+vali,info_y+122);
-					itoa(sek,luku,10);
+					sprintf(luku, "%i", sek);
 					PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);
 
 				}

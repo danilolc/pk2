@@ -6,11 +6,6 @@
 
 #include "engine/types.hpp"
 
-#ifndef _WIN32
-    #define itoa(X,Y,Z) sprintf(Y,"%i",X)
-    #define ltoa(X,Y,Z) sprintf(Y,"%l",X)
-#endif
-
 #ifdef _WIN32
 	#include <io.h>
 	#ifndef WIN32_LEAN_AND_MEAN
@@ -44,19 +39,6 @@
 
 // silence macro definition warnings (C4005)
 #pragma warning(disable: 4005)
-
-// redefinitions to silence error C4996 (The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name)
-#ifndef itoa
-#define itoa _itoa
-#endif
-
-#ifndef ltoa
-#define ltoa _ltoa
-#endif
-
-#ifndef strdup
-#define strdup _strdup
-#endif
 
 // require #include <direct.h>
 #ifndef getcwd

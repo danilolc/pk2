@@ -125,31 +125,31 @@ int Draw_ScoreCount() {
 
 	total_score = bonus_score + time_score + energy_score + gifts_score;
 	
-	ltoa(total_score,luku,10);
+	sprintf(luku, "%i", total_score);
 	ShadowedText_Draw(luku, 400, my);
 	my += 70;
 
 	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_bonus_score), 100, my);
 	
-	ltoa(bonus_score,luku,10);
+	sprintf(luku, "%i", bonus_score);
 	ShadowedText_Draw(luku, 400, my);
 	my += 30;
 
 	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_time_score), 100, my);
 	
-	ltoa(time_score,luku,10);
+	sprintf(luku, "%i", time_score);
 	ShadowedText_Draw(luku, 400, my);
 	my += 30;
 
 	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_energy_score), 100, my);
 
-	ltoa(energy_score,luku,10);
+	sprintf(luku, "%i", energy_score);
 	ShadowedText_Draw(luku, 400, my);
 	my += 30;
 
 	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_item_score), 100, my);
 	
-	ltoa(gifts_score,luku,10);
+	sprintf(luku, "%i", gifts_score);
 	ShadowedText_Draw(luku, 400, my);
 	my += 40;
 
@@ -186,7 +186,7 @@ int Draw_ScoreCount() {
 		
 		ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_total_score), 100, my);
 		
-		ltoa(Episode->player_score,luku,10);
+		sprintf(luku, "%i", Episode->player_score);
 		ShadowedText_Draw(luku, 400, my);
 		my += 25;
 

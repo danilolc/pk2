@@ -839,6 +839,7 @@ int init(int width, int height, const char* name, const char* icon) {
     #endif
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	
     SDL_RenderClear(renderer);
 
     frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);

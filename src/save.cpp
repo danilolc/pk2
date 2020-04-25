@@ -43,7 +43,7 @@ int Save_All_Records() {
 	char count_c[8];
 
 	memset(count_c, 0, sizeof(count_c));
-	itoa(SAVES_COUNT, count_c, sizeof(count_c));
+	snprintf(count_c, sizeof(count_c), "%i", SAVES_COUNT);
 
 	PFile::Path path(data_path + SAVES_FILE);
 	

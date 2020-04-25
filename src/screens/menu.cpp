@@ -489,7 +489,7 @@ void Draw_Menu_Load() {
 
 		} else {
 
-			itoa(i+1,ind,10);
+			sprintf(ind, "%i", i+1);
 			strcpy(number,ind);
 			strcat(number,". ");
 
@@ -521,7 +521,7 @@ void Draw_Menu_Load() {
 			vali += PDraw::font_write(fontti1,saves_list[i].episode,400+vali,150+my);
 			vali = 0;
 			vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.loadgame_level),400+vali,160+my);
-			itoa(saves_list[i].level,jaksoc,10);
+			sprintf(jaksoc, "%i", saves_list[i].level);
 			vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
 		}
 
@@ -550,7 +550,7 @@ void Draw_Menu_Save() {
 
 	for (int i = 0; i < SAVES_COUNT - 1; i++) {
 
-		itoa(i + 1, ind, 10);
+		sprintf(ind, "%i", i+1);
 		strcpy(number, ind);
 		strcat(number, ". ");
 
@@ -566,7 +566,7 @@ void Draw_Menu_Save() {
 			vali += PDraw::font_write(fontti1,saves_list[i].episode,400+vali,150+my);
 			vali = 0;
 			vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.savegame_level),400+vali,160+my);
-			itoa(saves_list[i].level,jaksoc,10);
+			sprintf(jaksoc, "%i", saves_list[i].level);
 			vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
 
 		}
@@ -995,10 +995,10 @@ void Draw_Menu_Episodes() {
 		int y = 50;//300;
 		
 		//vali += PDraw::font_write(fontti1,"page:",x,y+40);
-		itoa(episode_page + 1,luku,10);
+		sprintf(luku, "%i", episode_page + 1);
 		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 		vali += PDraw::font_write(fontti1,"/",x+vali,y+20);
-		itoa((int)(size/10)+1,luku,10);
+		sprintf(luku, "%i", int(size/10) + 1);
 		vali += PDraw::font_write(fontti1,luku,x+vali,y+20);
 
 		int nappi = Draw_BackNext(x,y);

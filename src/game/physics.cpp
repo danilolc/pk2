@@ -917,7 +917,7 @@ int Sprite_Movement(int i){
 
 				if (sprite.tyyppi->tyyppi == TYPE_GAME_CHARACTER && sprite.tyyppi->pisteet != 0){
 					char luku[10];
-					itoa(sprite.tyyppi->pisteet,luku,10);
+					sprintf(luku, "%i", sprite.tyyppi->pisteet);
 					Fadetext_New(fontti2,luku,(int)Sprites_List[i].x-8,(int)Sprites_List[i].y-8,80);
 					Game->score_increment += sprite.tyyppi->pisteet;
 				}
@@ -1363,7 +1363,7 @@ int Sprite_Movement(int i){
 		if (i == 0/*pelaaja_index*/) {
 
 			char lukua[50];
-			itoa(Game->palikat[1].yla,lukua,10);
+			sprintf(lukua, "%i", Game->palikat[1].yla);
 			//gcvt(sprite_a,7,lukua);
 			PDraw::font_write(fontti1,lukua,310,50);
 
@@ -1746,7 +1746,8 @@ int BonusSprite_Movement(int i){
 				if (!sprite.Onko_AI(AI_BONUS_AIKA)) {
 
 					char luku[10];
-					itoa(sprite.tyyppi->pisteet,luku,10);
+					sprintf(luku, "%i", sprite.tyyppi->pisteet);
+					
 					if (sprite.tyyppi->pisteet >= 50)
 						Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,100);
 					else
@@ -1767,8 +1768,8 @@ int BonusSprite_Movement(int i){
                 int sek = int(increase_time) % 60;
 				
 				char min_c[8], sek_c[8];
-                itoa(min, min_c, 8);
-				itoa(sek, sek_c, 8);
+				sprintf(min_c, "%i", min);
+				sprintf(sek_c, "%i", sek);
 
 				char luku[8];
 				strcpy(luku, min_c);
