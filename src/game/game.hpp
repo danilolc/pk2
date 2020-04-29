@@ -93,5 +93,5 @@ class GameClass {
 extern GameClass* Game;
 
 // TODO - remove
-bool Draw_Menu_Text(bool active, const char *teksti, int x, int y);
+bool Draw_Menu_Text(bool active, const char *teksti, int x, int y, char end = '\0');
 //

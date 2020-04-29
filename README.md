@@ -80,10 +80,13 @@ This example starts the level13.map on dev mode:
 
 # ROADMAP
 * SDL_QUIT on Android
+* BG screen on menu
 * Fix no animation bug
 * Traduct finnish language
 * Better documentation
 * Load pk2stuff and android controls from zip
 * Super mode -> energy = 0 on touch Pekka
-* Jump frames when FPS is slow
+* Set target fps (30, 60, 120, 200)
 * Make latin texts
+* Mouse speed
+* Menu selection speed

@@ -147,10 +147,10 @@ int Draw_BGSquare(int left, int top, int right, int bottom, u8 pvari){
 
 }
 
-bool Draw_Menu_Text(bool active, const char *teksti, int x, int y) {
+bool Draw_Menu_Text(bool active, const char *teksti, int x, int y, char end) {
 
 	if(!active) {
-		WavetextSlow_Draw(teksti, fontti2, x, y);
+		WavetextSlow_Draw(teksti, fontti2, x, y, end);
 		return false;
 	}
 
@@ -164,7 +164,7 @@ bool Draw_Menu_Text(bool active, const char *teksti, int x, int y) {
 	if ( mouse_on || (menu_valittu_id == menu_valinta_id) ) {
 
 		menu_valittu_id = menu_valinta_id;
-		Wavetext_Draw(teksti, fontti3, x, y);//
+		Wavetext_Draw(teksti, fontti3, x, y, end);//
 
 		if (( (PInput::MouseLeft() && mouse_on) || PInput::Keydown(PInput::SPACE)
 			/*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1)*/)
@@ -181,7 +181,7 @@ bool Draw_Menu_Text(bool active, const char *teksti, int x, int y) {
 
 	} else {
 	
-		WavetextSlow_Draw(teksti, fontti2, x, y);
+		WavetextSlow_Draw(teksti, fontti2, x, y, end);
 	
 	}
 	menu_valinta_id++;
@@ -1063,7 +1063,7 @@ void Draw_Menu_Language() {
 
 	for ( int i = langlistindex; i < end; i++ ) {
 
-		if(Draw_Menu_Text(true,langlist[i].c_str(),150,my)) {
+		if(Draw_Menu_Text(true,langlist[i].c_str(),150,my,'.')) {
 
 			Load_Language(langlist[i].c_str());
 			

@@ -176,50 +176,51 @@ int CreditsText_Draw(const char *text, int font, int x, int y, u32 start, u32 en
 	return 0;
 }
 
-int Wavetext_Draw(const char *teksti, int fontti, int x, int y){
-	int pituus = strlen(teksti);
-	int vali = 0;
-	char kirjain[3] = " \0";
-	int ys, xs;
+int Wavetext_Draw(const char *text, int fontti, int x, int y, char end) {
 
-	if (pituus > 0){
-		for (int i=0;i<pituus;i++){
-			ys = (int)(sin_table[((i+degree)*8)%360])/7;
-			xs = (int)(cos_table[((i+degree)*8)%360])/9;
-			kirjain[0] = teksti[i];
-			PDraw::font_write(fontti4,kirjain,x+vali-xs+3,y+ys+3);
-			vali += PDraw::font_write(fontti,kirjain,x+vali-xs,y+ys);
-		}
+	int pos = 0;
+	char kirjain[2] = " ";
+
+	for (int i = 0; text[i] != '\0' && text[i] != end; i++) {
+
+		int ys = (int)(sin_table[((i+degree)*8)%360])/7;
+		int xs = (int)(cos_table[((i+degree)*8)%360])/9;
+		kirjain[0] = text[i];
+		
+		PDraw::font_write(fontti4,kirjain,x+pos-xs+3,y+ys+3);
+		pos += PDraw::font_write(fontti,kirjain,x+pos-xs,y+ys);
+	
 	}
-	return vali;
+
+	return pos;
+
 }
 
-int WavetextSlow_Draw(const char *teksti, int fontti, int x, int y){
-	int pituus = strlen(teksti);
-	int vali = 0;
-	char kirjain[3] = " \0";
-	int ys, xs;
+int WavetextSlow_Draw(const char *text, int fontti, int x, int y, char end) {
+	
+	int pos = 0;
+	char kirjain[2] = " ";
 
-	if (pituus > 0){
-		for (int i=0;i<pituus;i++){
-			ys = (int)(sin_table[((i+degree)*4)%360])/9;
-			xs = (int)(cos_table[((i+degree)*4)%360])/11;
-			kirjain[0] = teksti[i];
+	for (int i = 0; text[i] != '\0' && text[i] != end; i++) {
+		
+		int ys = (int)(sin_table[((i+degree)*4)%360])/9;
+		int xs = (int)(cos_table[((i+degree)*4)%360])/11;
+		kirjain[0] = text[i];
 
-			if (Settings.transparent_text) {
-				vali += PDraw::font_writealpha(fontti,kirjain,x+vali-xs,y+ys,75);
-			
-			} else {
+		if (Settings.transparent_text) {
+		
+			pos += PDraw::font_writealpha(fontti,kirjain,x+pos-xs,y+ys,75);
+		
+		} else {
 
-				PDraw::font_write(fontti4,kirjain,x+vali-xs+1,y+ys+1);
-				vali += PDraw::font_write(fontti,kirjain,x+vali-xs,y+ys);
-			
-			}
-
-
+			PDraw::font_write(fontti4,kirjain,x+pos-xs+1,y+ys+1);
+			pos += PDraw::font_write(fontti,kirjain,x+pos-xs,y+ys);
+		
 		}
 	}
-	return vali;
+
+	return pos;
+
 }
 
 int ShadowedText_Draw(const char* text, int x, int y) {
