@@ -56,8 +56,6 @@ To make the removal, within the compiled directory, execute this command:
 Run `git submodule init` then `git submodule update` to get the SDL libs. Then `./gradlew build`
 on `android/` with the SDK and the NDK installed may work.
 
-SDL 2.0.10 have [bugs](https://bugzilla.libsdl.org/show_bug.cgi?id=4186) on audio. You must use the latest code.
-
 ### macOS - not tested
 Use [Homebrew](https://brew.sh/) to install SDL2 packages:
 ```
@@ -81,12 +79,15 @@ This example starts the level13.map on dev mode:
 # ROADMAP
 * SDL_QUIT on Android
 * BG screen on menu
-* Fix no animation bug
+* Fix SIGFAULT when sprite animation doesn't exist
 * Traduct finnish language
 * Better documentation
 * Load pk2stuff and android controls from zip
 * Super mode -> energy = 0 on touch Pekka
 * Set target fps (30, 60, 120, 200)
 * Make latin texts
-* Mouse speed
-* Menu selection speed
+* Fix mouse speed when on fullscreen
+* Draw big bg sprites almost outside screen
+* Language menu selection speed
+* Support game controlers
+* Mouse clicked when changing resolution
