@@ -76,18 +76,26 @@ This example starts the level13.map on dev mode:
 ./pekka-kana-2 dev test "rooster island 2/level13.map"
 ```
 
-# ROADMAP
+# FIXMEs
 * SDL_QUIT on Android
-* BG screen on menu
+* Fix BG screen on menu
 * Fix SIGFAULT when sprite animation doesn't exist
-* Traduct finnish language
-* Better documentation
-* Load pk2stuff and android controls from zip
-* Super mode -> energy = 0 on touch Pekka
-* Set target fps (30, 60, 120, 200)
-* Make latin texts
+* Translate finnish language
+* Set target fps (30, 60, 120, v-sync) (properly jump frames)
 * Fix mouse speed when on fullscreen
 * Draw big bg sprites almost outside screen
 * Language menu selection speed
-* Support game controlers
 * Mouse clicked when changing resolution
+* Use SDL_Read* to read files
+* "Trying outsize zip" even if no zip
+* Slower fade music
+* Properly play XM music and change SFX frequency
+
+# PLANS
+* Better documentation
+* Load pk2stuff and android controls from zip
+* Super mode -> energy = 0 on touch Pekka
+* Make latin accentuation
+* Support game controlers
+* Implement new layer on .map (regions)
+* Use Lua scripts
