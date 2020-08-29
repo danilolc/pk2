@@ -376,13 +376,10 @@ int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, u8 colors
     
 }
 
+// TODO - redo this function
 int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src_h,
 						 int dst_x, int dst_y, int alpha, u8 colorsum) {
     
-    u8 *imagePix = nullptr;
-    u8 *screenPix = nullptr;
-    u32 imagePitch, screenPitch;
-
     dst_x += x_offset;
 
     if (alpha > 100) alpha = 100;
@@ -406,6 +403,10 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
 
     if (x_start >= x_end || y_start >= y_end) return -1;    
     
+    u8 *imagePix = nullptr;
+    u8 *screenPix = nullptr;
+    u32 imagePitch, screenPitch;
+
     drawimage_start(index, *&imagePix, (u32 &)imagePitch);
     drawscreen_start(*&screenPix, (u32 &)screenPitch);
     
