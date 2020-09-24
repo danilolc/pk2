@@ -77,11 +77,14 @@ This example starts the level13.map on dev mode:
 ```
 
 # FIXMEs
+* Digital antroid controllers (<< < o > >>)
+* Use app bundles to minimize apk size
 * SDL_QUIT on Android
+* Set target fps (30, 60, 120, v-sync) (properly jump frames)
+
 * Fix BG screen on menu
 * Fix SIGFAULT when sprite animation doesn't exist
 * Translate finnish language
-* Set target fps (30, 60, 120, v-sync) (properly jump frames)
 * Fix mouse speed when on fullscreen
 * Draw big bg sprites almost outside screen
 * Language menu selection speed
@@ -91,11 +94,12 @@ This example starts the level13.map on dev mode:
 * Slower fade music
 * Properly play XM music and change SFX frequency
 
+
 # PLANS
 * Better documentation
 * Load pk2stuff and android controls from zip
 * Super mode -> energy = 0 on touch Pekka
 * Make latin accentuation
-* Support game controlers
+* Support game controllers
 * Implement new layer on .map (regions)
 * Use Lua scripts
