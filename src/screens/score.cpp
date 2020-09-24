@@ -22,22 +22,24 @@
 
 #include <cstring>
 
-bool going_to_map = false;
+bool going_to_map;
 
-int counting_phase = 0;
-int counting_delay = 0;
+int counting_phase;
+int counting_delay;
 
-u32 apples_got = 0;
+float apples_xoffset;
+u32 apples_counted;
+u32 apples_not_counted;
 
-u32 total_score = 0;
-u32 bonus_score = 0;
-u32 time_score = 0;
-u32 energy_score = 0;
-u32 gifts_score = 0;
+u32 total_score;
+u32 bonus_score;
+u32 time_score;
+u32 energy_score;
+u32 gifts_score;
 
-bool map_new_record = false;
-bool map_new_time_record = false;
-bool episode_new_record = false;
+bool map_new_record;
+bool map_new_time_record;
+bool episode_new_record;
 
 int EpisodeScore_Compare(int level, u32 episteet, u32 time, bool final_score){
 	
@@ -165,20 +167,27 @@ int Draw_ScoreCount() {
 	my += 20;
 
 	// Draw apples
+	
+
 	if (Game->apples_count > 0) {
 
-		uint i;
-		for (i = 0; i < apples_got; i++) {
-			if (apples_got >= Game->apples_count)
-				PDraw::image_cutclip(game_assets2, 100 + i * 32 + rand()%2, my + rand()%2, 61, 379, 87, 406);
+		uint i = 0;
+
+		for (; i < apples_counted; i++) {
+
+			if (apples_counted >= Game->apples_count)
+				PDraw::image_cutclip(game_assets2, apples_xoffset + i * 32 + rand()%2, my + rand()%2, 61, 379, 87, 406);
 			else
-				PDraw::image_cutclip(game_assets2, 100 + i * 32, my, 61, 379, 87, 406);
-			
+				PDraw::image_cutclip(game_assets2, apples_xoffset + i * 32, my, 61, 379, 87, 406);
+
 		}
 		for (; i < Game->apples_count; i++)
-			PDraw::image_cutcliptransparent(game_assets2, 61, 379, 26, 26, 100 + i * 32, my, 20, 0);
-
+			PDraw::image_cutcliptransparent(game_assets2, 61, 379, 26, 26, apples_xoffset + i * 32, my, 20, 0);
+		
 	}
+
+	if (apples_counted >= 13 && apples_not_counted != 0)
+		apples_xoffset -= 32.0 / 10;
 
 	my += 40;
 
@@ -190,7 +199,7 @@ int Draw_ScoreCount() {
 		ShadowedText_Draw(luku, 400, my);
 		my += 25;
 
-		//if (apples_got >= Game->apples_count && apples_got > 0) {
+		//if (apples_counted >= Game->apples_count && apples_counted > 0) {
 
 		//	PDraw::font_write(fontti2, "You have found all apples!", 100 + rand()%2, my + rand()%2);
 		//	my += 25;
@@ -263,7 +272,10 @@ int Screen_ScoreCount_Init() {
 	if (!Game->repeating)
 		Episode->player_score += temp_score;
 
-	apples_got = 0;
+	apples_counted = 0;
+	apples_not_counted = Game->apples_got;
+	apples_xoffset = 100;
+
 	total_score = 0;
 	counting_phase = 0;
 	counting_delay = 30;
@@ -351,16 +363,16 @@ int Screen_ScoreCount() {
 			Gifts_Remove(0); 
 			Play_MenuSFX(jump_sound, 100);
 
-		} else if (Game->apples_got > 0) {
+		} else if (apples_not_counted > 0) {
 
 			counting_phase = 1;
 			counting_delay = 10;
 
-			apples_got++;
-			Game->apples_got--;
+			apples_counted++;
+			apples_not_counted--;
 			Play_MenuSFX(apple_sound, 70);
 
-			if (Game->apples_got == 0)
+			if (apples_not_counted == 0)
 				counting_delay = 20;
 		
 		} else {
@@ -386,8 +398,10 @@ int Screen_ScoreCount() {
 
 			counting_phase = 6;
 
-			apples_got += Game->apples_got;
-			Game->apples_got = 0;
+			apples_counted += apples_not_counted;
+			apples_not_counted = 0;
+			if (Game->apples_got > 13)
+				apples_xoffset = 100.0 - (Game->apples_got - 13) * 32;
 
 			bonus_score = Game->score;
 

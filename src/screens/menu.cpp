@@ -1030,7 +1030,6 @@ void Draw_Menu_Episodes() {
 			next_screen = SCREEN_MAP;
 		}
 
-		//TODO draw episode origin
 		if (episodes[i].is_zip)
 			PDraw::font_write(fontti1, episodes[i].zipfile.c_str(), 450, 95+my);
 		else

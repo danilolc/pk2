@@ -63,6 +63,7 @@ int   image_fill(int index, int posx, int posy, int oikea, int ala, u8 color);
 int   screen_fill(u8 color);
 int   screen_fill(int posx, int posy, int oikea, int ala, u8 color);
 void  set_mask(int x, int y, int w, int h);
+void  reset_mask();
 
 int   drawscreen_start(u8 *&pixels, u32 &pitch);
 int   drawscreen_end();

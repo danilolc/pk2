@@ -526,6 +526,12 @@ void set_mask(int x, int y, int w, int h) {
 
 }
 
+void reset_mask() {
+
+    SDL_SetClipRect(frameBuffer8, NULL);
+
+}
+
 int drawscreen_start(u8* &pixels, u32 &pitch) {
 
     pixels = (u8*)frameBuffer8->pixels;
@@ -793,9 +799,13 @@ int get_xoffset() {
 
 }
 
+//TODO - change to set_wide
 void set_xoffset(int x) {
 
     x_offset = x;
+
+    SDL_Rect r = {x, 0, screen_width-x, screen_height};
+    SDL_SetClipRect(frameBuffer8, &r);
 
 }
 
