@@ -1048,7 +1048,7 @@ void MapClass::Place_Sprites() {
 			if (sprite != 255 && Prototypes_List[sprite].korkeus > 0) {
 
 				char* name = Prototypes_List[sprite].nimi;
-				if (strcmp(name, "big apple") == 0 || strcmp(name, "big apple 2") == 0)
+				if (strncmp(name, "big apple", 9) == 0)
 					Game->apples_count++;
 
 				Sprites_add(sprite, 0, x*32, y*32 - Prototypes_List[sprite].korkeus+32, MAX_SPRITEJA, false);
