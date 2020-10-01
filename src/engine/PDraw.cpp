@@ -804,7 +804,7 @@ void set_xoffset(int x) {
 
     x_offset = x;
 
-    SDL_Rect r = {x, 0, screen_width-x, screen_height};
+    SDL_Rect r = {x, 0, screen_width-2*x, screen_height};
     SDL_SetClipRect(frameBuffer8, &r);
 
 }

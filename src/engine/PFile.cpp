@@ -800,7 +800,7 @@ RW* Path::GetRW(const char* mode) {
 
 }
 
-int WriteRW(RW* rw, const void* buffer, int len) {
+size_t WriteRW(RW* rw, const void* buffer, int len) {
 
 	SDL_RWops* rwops = (SDL_RWops*) rw;
 
@@ -816,10 +816,39 @@ int WriteRW(RW* rw, const void* buffer, int len) {
 
 }
 
-int ReadRW(RW* rw, void* buffer, int len) {
+size_t ReadRW(RW* rw, void* buffer, int len) {
 
 	SDL_RWops* rwops = (SDL_RWops*) rw;
 	return SDL_RWread(rwops, buffer, len, 1);
+
+}
+
+size_t RWToBuffer(RW* rw, void** buffer) {
+
+	SDL_RWops* rwops = (SDL_RWops*) rw;
+	
+	size_t size = SDL_RWsize(rwops);
+	
+	if (size == 0) {
+
+		PLog::Write(PLog::ERR, "PFile", "RW size = 0");
+		return size;
+
+	}
+
+	*buffer = SDL_malloc(size);
+
+	if (*buffer) {
+
+		ReadRW(rw, *buffer, size);
+		return size;
+
+	} else {
+
+		PLog::Write(PLog::ERR, "PFile", "Could not alloc memory");
+		return 0;
+
+	}
 
 }
 

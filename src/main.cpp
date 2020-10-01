@@ -142,6 +142,52 @@ int main(int argc, char *argv[]) {
 	data_path = data_path_p; //SDL_AndroidGetExternalStoragePath();
 	SDL_free(data_path_p);
 
+	PFile::Path redirect = PFile::Path(data_path, "redirect.txt");
+	if (redirect.Find()) {
+
+		PLog::Write(PLog::DEBUG, "PK2", "Found redirect");
+		
+		PFile::RW *redirect_rw = redirect.GetRW("r");
+
+		char* buffer;
+		int size = PFile::RWToBuffer(redirect_rw, (void**) &buffer);
+		PFile::CloseRW(redirect_rw);
+		
+		if (size > 0) {
+
+			buffer[size - 1] = '\0';
+			PLog::Write(PLog::DEBUG, "PK2", "Changing path to %s", buffer);
+
+			data_path = buffer;
+			SDL_free(buffer);
+		
+		}
+
+	}
+
+	#ifdef __ANDROID__
+
+	if (SDL_AndroidGetExternalStorageState() == SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
+
+		PFile::Path settings_f = PFile::Path(data_path, "settings.ini");
+		if (!settings_f.Find()) {
+
+			std::string data_path_ex = SDL_AndroidGetExternalStoragePath();
+			external_dir = true;
+
+			settings_f = PFile::Path(data_path_ex, "settings.ini");
+			if (settings_f.Find()) {
+
+				data_path = data_path_ex;
+				external_dir = false;
+			
+			}
+		}
+	}
+
+	#endif
+
+
 	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"));
 
 	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 started!");

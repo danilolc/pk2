@@ -12,8 +12,11 @@ namespace PFile {
 struct Zip;
 typedef void* RW;
 
-int ReadRW(RW* rw, void* buffer, int len);
-int WriteRW(RW* rw, const void* buffer, int len);
+size_t ReadRW(RW* rw, void* buffer, int len);
+size_t WriteRW(RW* rw, const void* buffer, int len);
+
+size_t RWToBuffer(RW* rw, void** buffer);
+
 int CloseRW(RW* rw);
 
 class Path : public std::string {
