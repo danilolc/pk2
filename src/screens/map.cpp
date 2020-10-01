@@ -282,6 +282,8 @@ int Screen_Map_Init() {
 
 	degree = degree_temp;
 
+	Episode->Load_Assets();
+
 	PFile::Path path = Episode->Get_Dir();
 	path.SetFile("map.bmp");
 

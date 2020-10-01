@@ -597,6 +597,8 @@ void Draw_Menu_Graphics() {
 		wasFit = Settings.isFit;
 		wasWide = Settings.isWide;
 
+		#ifndef __ANDROID__
+
 		if (Settings.isFullScreen){
 			if (Draw_Menu_Text(true,"fullscreen mode is on",180,my)){
 				Settings.isFullScreen = false;
@@ -611,35 +613,7 @@ void Draw_Menu_Graphics() {
 		}
 		my += 30;
 
-		if (Settings.isFiltered){
-			if (Draw_Menu_Text(true,"bilinear filter is on",180,my)){
-				Settings.isFiltered = false;
-			}
-		} else{
-			if (Draw_Menu_Text(true,"bilinear filter is off",180,my)){
-				Settings.isFiltered = true;
-			}
-		}
-		if (Draw_BoolBox(100, my, Settings.isFiltered, true)) {
-			Settings.isFiltered = !Settings.isFiltered;
-		}
-		my += 30;
-
-		if (Settings.isFit){
-			if (Draw_Menu_Text(true,"screen fit is on",180,my)){
-				Settings.isFit = false;
-			}
-		} else{
-			if (Draw_Menu_Text(true,"screen fit is off",180,my)){
-				Settings.isFit = true;
-			}
-		}
-		if (Draw_BoolBox(100, my, Settings.isFit, true)) {
-			Settings.isFit = !Settings.isFit;
-		}
-		my += 30;
-
-		bool res_active = true;
+		bool res_active = false;
 
 		if (Settings.isWide) {
 			if (Draw_Menu_Text(res_active,"screen size 800x480", 180, my)) {
@@ -656,7 +630,67 @@ void Draw_Menu_Graphics() {
 		}
 		my += 30;
 
-		//Can add more options here
+		#endif
+
+
+		if (Settings.isFit){
+			if (Draw_Menu_Text(true,"screen fit is on",180,my)){
+				Settings.isFit = false;
+			}
+		} else{
+			if (Draw_Menu_Text(true,"screen fit is off",180,my)){
+				Settings.isFit = true;
+			}
+		}
+		if (Draw_BoolBox(100, my, Settings.isFit, true)) {
+			Settings.isFit = !Settings.isFit;
+		}
+		my += 30;
+
+
+		if (Settings.isFiltered){
+			if (Draw_Menu_Text(true,"bilinear filter is on",180,my)){
+				Settings.isFiltered = false;
+			}
+		} else{
+			if (Draw_Menu_Text(true,"bilinear filter is off",180,my)){
+				Settings.isFiltered = true;
+			}
+		}
+		if (Draw_BoolBox(100, my, Settings.isFiltered, true)) {
+			Settings.isFiltered = !Settings.isFiltered;
+		}
+		my += 30;
+
+		#ifdef __ANDROID__
+
+		//TODO - Request write permission
+		if (!external_dir) {
+			if (Draw_Menu_Text(true,"saving on internal storage",180,my)){
+				external_dir = true;
+			}
+		} else {
+			if (Draw_Menu_Text(true,"saving on external storage",180,my)){
+				external_dir = false;
+			}
+		}
+		if (Draw_BoolBox(100, my, !external_dir, true)) {
+			external_dir = !external_dir;
+		}
+		my += 30;
+
+		#endif
+
+
+
+
+
+		//Add more options here
+
+
+
+
+
 
 		if(wasFullScreen != Settings.isFullScreen) // If fullscreen changes
 			PDraw::set_fullscreen(Settings.isFullScreen);

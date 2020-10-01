@@ -17,6 +17,7 @@ int screen_width  = 800;
 int screen_height = 480;
 
 std::string data_path;
+bool external_dir = false;
 
 int game_assets = -1;
 int game_assets2 = -1;
@@ -64,6 +65,7 @@ void Draw_Cursor(int x, int y){
 	
 }
 
+//TODO - Receive Episode, organize this
 bool FindAsset(PFile::Path* path, const char* default_dir) {
 
 	if (!path->Find()) {

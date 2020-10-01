@@ -12,6 +12,7 @@ extern int screen_width;
 extern int screen_height;
 
 extern std::string data_path;
+extern bool external_dir;
 
 extern int game_assets;
 extern int game_assets2;

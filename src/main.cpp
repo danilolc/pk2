@@ -187,7 +187,6 @@ int main(int argc, char *argv[]) {
 
 	#endif
 
-
 	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"));
 
 	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 started!");

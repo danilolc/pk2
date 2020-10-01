@@ -13,6 +13,7 @@
 #include "engine/PLog.hpp"
 #include "engine/PUtils.hpp"
 #include "engine/PFile.hpp"
+#include "engine/PDraw.hpp"
 
 #include <cstring>
 #include <string>
@@ -116,6 +117,34 @@ void EpisodeClass::Load_Info() {
 	}
 
 	delete temp;
+
+}
+
+void EpisodeClass::Load_Assets() {
+
+	PFile::Path path = this->Get_Dir();
+
+	path.SetFile("pk2stuff.bmp");
+	if (FindAsset(&path, "gfx" PE_SEP)) {
+
+		PDraw::image_load(game_assets, path, true);
+
+	} else {
+
+		PLog::Write(PLog::ERR, "PK2", "Can't load map bg");
+
+	}
+
+	path.SetFile("pk2stuff2.bmp");
+	if (FindAsset(&path, "gfx" PE_SEP)) {
+
+		PDraw::image_load(game_assets2, path, true);
+
+	} else {
+
+		PLog::Write(PLog::ERR, "PK2", "Can't load map bg");
+
+	}
 
 }
 

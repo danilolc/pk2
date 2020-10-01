@@ -4,6 +4,7 @@
 //#########################
 #include "screens/screens.hpp"
 
+#include "episode/episodeclass.hpp"
 #include "gfx/text.hpp"
 #include "gui.hpp"
 #include "game/game.hpp"
@@ -11,6 +12,7 @@
 #include "system.hpp"
 #include "settings.hpp"
 
+#include "engine/PLog.hpp"
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
@@ -123,7 +125,18 @@ int Screen_Ending_Init() {
 	
 	PDraw::set_xoffset(Settings.isWide? 80 : 0);
 
-	PDraw::image_load(bg_screen, PFile::Path("gfx" PE_SEP "ending.bmp"), true);
+	PFile::Path path = Episode->Get_Dir();
+
+	path.SetFile("ending.bmp");
+	if (FindAsset(&path, "gfx" PE_SEP)) {
+
+		PDraw::image_load(bg_screen, path, true);
+
+	} else {
+
+		PLog::Write(PLog::ERR, "PK2", "Can't load map bg");
+
+	}
 
 	if (PSound::start_music(PFile::Path("music" PE_SEP "intro.xm")) == -1)
 		PK2_Error("Can't load intro.xm");

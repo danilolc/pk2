@@ -68,6 +68,7 @@ class EpisodeClass {
 		void Load();
 
 		void Load_Info();
+		void Load_Assets();
 
 		PFile::Path Get_Dir();
 
