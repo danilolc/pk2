@@ -595,6 +595,12 @@ bool Path::Find() {
 
 #endif
 
+bool Path::Is_Zip() {
+
+	return this->is_zip;
+
+}
+
 int Path::SetFile(std::string file) {
 
 	int dif = this->find_last_of(PE_SEP);

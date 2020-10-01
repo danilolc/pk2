@@ -120,6 +120,7 @@ void EpisodeClass::Load_Info() {
 
 }
 
+//TODO - don't load the same image again
 void EpisodeClass::Load_Assets() {
 
 	PFile::Path path = this->Get_Dir();
@@ -135,7 +136,7 @@ void EpisodeClass::Load_Assets() {
 
 	}
 
-	path.SetFile("pk2stuff2.bmp");
+	path.SetFile("pk2stuff2.png");
 	if (FindAsset(&path, "gfx" PE_SEP)) {
 
 		PDraw::image_load(game_assets2, path, true);

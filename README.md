@@ -90,7 +90,6 @@ This example starts the level13.map on dev mode:
 * Language menu selection speed
 * Mouse clicked when changing resolution
 * Use SDL_Read* to read files
-* "Trying outsize zip" even if no zip
 * Slower fade music
 * Properly play XM music and change SFX frequency
 
@@ -103,3 +102,4 @@ This example starts the level13.map on dev mode:
 * Support game controllers
 * Implement new layer on .map (regions)
 * Use Lua scripts
+* Find image (load .bmp or .png)

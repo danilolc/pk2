@@ -37,6 +37,8 @@ class Path : public std::string {
     bool NoCaseFind();
     bool Find();
 
+    bool Is_Zip();
+
     int SetFile(std::string file);
     int SetPath(std::string path);
     std::string GetFileName();

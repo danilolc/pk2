@@ -71,22 +71,28 @@ bool FindAsset(PFile::Path* path, const char* default_dir) {
 	if (!path->Find()) {
 
 		PLog::Write(PLog::WARN, "PK2", "Can't find %s", path->c_str());
+
 		path->SetPath(default_dir);
 		PLog::Write(PLog::INFO, "PK2", "Trying %s", path->c_str());
 		
 		if (!path->Find()) {
 			
 			PLog::Write(PLog::WARN, "PK2", "Can't find %s", path->c_str());
-			PLog::Write(PLog::INFO, "PK2", "Trying outsize zip");
 
-			std::string filename = path->GetFileName();
+			if (path->Is_Zip()) {
 
-			*path = PFile::Path(default_dir);
-			path->SetFile(filename);
-			if (!path->Find()) {
+				PLog::Write(PLog::INFO, "PK2", "Trying outsize zip");
 
-				PLog::Write(PLog::ERR, "PK2", "Can't find %s", path->c_str());
-				return false;
+				std::string filename = path->GetFileName();
+
+				*path = PFile::Path(default_dir);
+				path->SetFile(filename);
+				if (!path->Find()) {
+
+					PLog::Write(PLog::ERR, "PK2", "Can't find %s", path->c_str());
+					return false;
+
+				}
 
 			}
 		
