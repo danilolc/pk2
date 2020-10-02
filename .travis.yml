@@ -1,19 +1,9 @@
 language: cpp
-
-compiler:
-  - gcc
+dist: bionic
+compiler: gcc
 
 git:
   submodules: false
-
-before-install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-
-install:
-  - sudo apt-get -y install -y build-essential
-  - sudo apt-get -y install -y libsdl2-dev
-  - sudo apt-get -y install -y libsdl2-image-dev
-  - sudo apt-get -y install -y libsdl2-mixer-dev
   
 script:
   - make
