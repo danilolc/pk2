@@ -583,7 +583,6 @@ void Draw_Menu_Save() {
 
 void Draw_Menu_Graphics() {
 
-	bool wasFullScreen, wasFiltered, wasFit, wasWide;
 	int my = 150;
 	static bool moreOptions = false;
 
@@ -592,10 +591,10 @@ void Draw_Menu_Graphics() {
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.gfx_title),50,90);
 
 	if(moreOptions){
-		wasFullScreen = Settings.isFullScreen;
-		wasFiltered = Settings.isFiltered;
-		wasFit = Settings.isFit;
-		wasWide = Settings.isWide;
+		bool wasFullScreen = Settings.isFullScreen;
+		bool wasFiltered = Settings.isFiltered;
+		bool wasFit = Settings.isFit;
+		bool wasWide = Settings.isWide;
 
 		#ifndef __ANDROID__
 
@@ -616,12 +615,12 @@ void Draw_Menu_Graphics() {
 		bool res_active = false;
 
 		if (Settings.isWide) {
-			if (Draw_Menu_Text(res_active,"screen size 800x480", 180, my)) {
+			if (Draw_Menu_Text(res_active,"widescreen is on", 180, my)) {
 				Settings.isWide = false;
 			}
 		}
 		else {
-			if (Draw_Menu_Text(res_active,"screen size 640x480", 180, my)) {
+			if (Draw_Menu_Text(res_active,"widescreen is off", 180, my)) {
 				Settings.isWide = true;
 			}
 		}
@@ -631,7 +630,6 @@ void Draw_Menu_Graphics() {
 		my += 30;
 
 		#endif
-
 
 		if (Settings.isFit){
 			if (Draw_Menu_Text(true,"screen fit is on",180,my)){

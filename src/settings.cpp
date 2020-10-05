@@ -77,11 +77,9 @@ int Settings_Open() {
 	
 	PFile::ReadRW(file, &Settings, sizeof(PK2SETTINGS));
 	
-	if (PUtils::Is_Mobile()) { // TODO - don't change these settings on mobile
+	if (PUtils::Is_Mobile()) {
 
-		Settings.isFiltered = true;
-		Settings.isFit = true;
-		//Settings.isFullScreen = true;
+		Settings.isFullScreen = true;
 		Settings.isWide = true;
 
 	}

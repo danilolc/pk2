@@ -24,6 +24,7 @@
 #include "settings.hpp"
 
 #include <cstring>
+#include <algorithm>
 
 #include <SDL.h>
 
@@ -33,7 +34,20 @@ void start_test(const char* arg) {
 
 	std::string buffer(arg);
 
-	int sep = buffer.find_last_of("/");
+	size_t pos = 0;
+	while(1) {
+
+		pos = buffer.find_first_of(PE_NOSEP, pos);
+		
+		if (pos == std::string::npos)
+			break;
+		
+		buffer.replace(pos, 1, PE_SEP);
+		pos++;
+	
+	}
+
+	size_t sep = buffer.find_last_of(PE_SEP);
 
 	episode_entry episode;
 	episode.name = buffer.substr(0, sep);
@@ -57,7 +71,7 @@ void quit() {
 		delete Game;
 	
 	if (Episode) {
-		Save_Records(10); //Last save is backup
+		Save_Records(10); //Save #10 is the backup
 		delete Episode;
 	}
 	
@@ -139,9 +153,12 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	data_path = data_path_p; //SDL_AndroidGetExternalStoragePath();
+	data_path = data_path_p;
 	SDL_free(data_path_p);
 
+	#ifndef __ANDROID__
+
+	// Read redirect file do change data directory
 	PFile::Path redirect = PFile::Path(data_path, "redirect.txt");
 	if (redirect.Find()) {
 
@@ -165,22 +182,27 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	#ifdef __ANDROID__
+	#else
 
+	// Choose between internal or external path on Android
 	if (SDL_AndroidGetExternalStorageState() == SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
 
 		PFile::Path settings_f = PFile::Path(data_path, "settings.ini");
 		if (!settings_f.Find()) {
 
 			std::string data_path_ex = SDL_AndroidGetExternalStoragePath();
-			external_dir = true;
-
+			
 			settings_f = PFile::Path(data_path_ex, "settings.ini");
 			if (settings_f.Find()) {
 
 				data_path = data_path_ex;
-				external_dir = false;
+				external_dir = true;
 			
+			}
+			else {
+
+				external_dir = false;
+
 			}
 		}
 	}
@@ -199,8 +221,7 @@ int main(int argc, char *argv[]) {
 
 	Settings_Open();
 
-	if (!PUtils::Is_Mobile())
-		screen_width = Settings.isWide ? 800 : 640;
+	screen_width = Settings.isWide ? 800 : 640;
 
 	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp");
 	if (!Piste::is_ready()) {

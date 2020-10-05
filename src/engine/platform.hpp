@@ -28,8 +28,10 @@
 
 #ifdef _WIN32
     #define PE_SEP "\\"
+    #define PE_NOSEP "/"
 #else
     #define PE_SEP "/"
+    #define PE_NOSEP "\\"
 #endif
 
 #define PE_PATH_SIZE 128
