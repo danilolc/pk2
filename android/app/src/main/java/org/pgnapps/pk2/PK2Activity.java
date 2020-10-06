@@ -22,34 +22,6 @@ public class PK2Activity extends SDLActivity {
 
     private static final String TAG = "PJava";
 
-    //boolean Permitted = false;
-
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            Permitted = true;
-        else finish();
-    }
-
-    public boolean isExternalStorageWritable() {
-        if (Build.VERSION.SDK_INT > 22) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        1);
-                while(!Permitted);
-            } else {
-                Permitted = true;
-            }
-        }
-
-        String state = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED.equals(state);
-    }*/
-
     //@Keep
     private String[] listDir(String dir) {
 

@@ -24,6 +24,8 @@
 
 #include <cstring>
 
+#include <SDL_system.h>
+
 enum MENU {
 
 	MENU_MAIN,
@@ -727,7 +729,7 @@ void Draw_Menu_Graphics() {
 				if (SDL_AndroidGetExternalStorageState() != SDL_ANDROID_EXTERNAL_STORAGE_WRITE)
 					SDL_AndroidRequestPermission("android.permission.WRITE_EXTERNAL_STORAGE");
 				
-				if (SDL_AndroidGetExternalStorageState() == SDL_ANDROID_EXTERNAL_STORAGE_WRITE)
+				if (SDL_AndroidGetExternalStorageState() == SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
 					
 					//Copy from internal to external
 					PUtils::CreateDir(External_Path);

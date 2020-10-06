@@ -21,7 +21,8 @@ int screen_width  = 800;
 int screen_height = 480;
 
 //Android const paths
-char* External_Path, Internal_Path;
+const char* External_Path;
+const char* Internal_Path;
 
 std::string data_path;
 bool external_dir = false;

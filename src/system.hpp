@@ -11,7 +11,8 @@
 extern int screen_width;
 extern int screen_height;
 
-extern char* External_Path, Internal_Path;
+extern const char* External_Path;
+extern const char* Internal_Path;
 extern std::string data_path;
 extern bool external_dir;
 

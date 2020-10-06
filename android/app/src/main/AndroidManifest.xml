@@ -14,7 +14,13 @@
 
     <!-- Game controller support -->
     <uses-feature
+        android:name="android.hardware.bluetooth"
+        android:required="false" />
+    <uses-feature
         android:name="android.hardware.gamepad"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.usb.host"
         android:required="false" />
 
     <!-- External mouse input events -->
@@ -22,11 +28,14 @@
         android:name="android.hardware.type.pc"
         android:required="false" />
 
-    <!-- Allow writing to external storage 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <!-- Allow writing to external storage -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     
     <!-- Allow access to the vibrator -->
     <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Allow access to Bluetooth devices -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <!-- if you want to capture audio, uncomment this. -->
     <!-- <uses-permission android:name="android.permission.RECORD_AUDIO" /> -->
@@ -52,17 +61,17 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
+                 <data
                     android:scheme="https"
                     android:host="www.pistegamez.net"
                     android:pathPattern="/game_pk2.html" />
-            </intent-filter>
+            </intent-filter>-->
             <!-- Drop file event -->
             <!--
             <intent-filter>

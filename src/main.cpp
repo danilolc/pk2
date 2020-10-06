@@ -196,17 +196,21 @@ int main(int argc, char *argv[]) {
 	if (!Internal_Path)
 		PLog::Write(PLog::ERR, "PK2", "Couldn't find Internal Path");
 
+	PLog::Write(PLog::DEBUG, "PK2", "External %s", External_Path);
+	PLog::Write(PLog::DEBUG, "PK2", "Internal %s", Internal_Path);
+
 	// Choose between internal or external path on Android
 	if (SDL_AndroidGetExternalStorageState() == SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
 
 		PLog::Write(PLog::DEBUG, "PK2", "External access allowed");
 
-		PFile::Path settings_f = PFile::Path(Internal_Path, "settings.ini");
+		PFile::Path settings_f = PFile::Path("settings.ini");
+		settings_f.SetPath(Internal_Path);
 		if (!settings_f.Find()) {
 
 			PLog::Write(PLog::DEBUG, "PK2", "Settings not found on internal");
 
-			settings_f = PFile::Path(External_Path, "settings.ini");
+			settings_f.SetPath(External_Path);
 			if (settings_f.Find()) {
 
 				PLog::Write(PLog::DEBUG, "PK2", "Settings found on external");
