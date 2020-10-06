@@ -89,6 +89,7 @@ int main(int argc, char *argv[]) {
 	char* test_path = NULL;
 	bool path_set = false;
 
+	// Read args
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "version") == 0) {
 			printf(PK2_VERSION_STR "\n");
@@ -144,6 +145,10 @@ int main(int argc, char *argv[]) {
 	if(!path_set)
 		PUtils::Setcwd();
 
+	// Set data_path
+
+	#ifndef __ANDROID__
+
 	char* data_path_p = SDL_GetPrefPath(NULL, PK2_NAME);
 	if (data_path_p == NULL) {
 
@@ -156,9 +161,7 @@ int main(int argc, char *argv[]) {
 	data_path = data_path_p;
 	SDL_free(data_path_p);
 
-	#ifndef __ANDROID__
-
-	// Read redirect file do change data directory
+	// Read redirect file to change data directory
 	PFile::Path redirect = PFile::Path(data_path, "redirect.txt");
 	if (redirect.Find()) {
 
@@ -184,30 +187,57 @@ int main(int argc, char *argv[]) {
 
 	#else
 
+	//Must be free-ed at the end (but who cares?)
+	External_Path = SDL_AndroidGetExternalStoragePath();
+	Internal_Path = SDL_AndroidGetInternalStoragePath();
+
+	if (!External_Path)
+		PLog::Write(PLog::ERR, "PK2", "Couldn't find External Path");
+	if (!Internal_Path)
+		PLog::Write(PLog::ERR, "PK2", "Couldn't find Internal Path");
+
 	// Choose between internal or external path on Android
 	if (SDL_AndroidGetExternalStorageState() == SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
 
-		PFile::Path settings_f = PFile::Path(data_path, "settings.ini");
+		PLog::Write(PLog::DEBUG, "PK2", "External access allowed");
+
+		PFile::Path settings_f = PFile::Path(Internal_Path, "settings.ini");
 		if (!settings_f.Find()) {
 
-			std::string data_path_ex = SDL_AndroidGetExternalStoragePath();
-			
-			settings_f = PFile::Path(data_path_ex, "settings.ini");
+			PLog::Write(PLog::DEBUG, "PK2", "Settings not found on internal");
+
+			settings_f = PFile::Path(External_Path, "settings.ini");
 			if (settings_f.Find()) {
 
-				data_path = data_path_ex;
+				PLog::Write(PLog::DEBUG, "PK2", "Settings found on external");
 				external_dir = true;
 			
 			}
 			else {
 
+				PLog::Write(PLog::DEBUG, "PK2", "Settings not found on external");
 				external_dir = false;
 
 			}
+		} else {
+
+			PLog::Write(PLog::DEBUG, "PK2", "Settings found on internal");
+
 		}
+	} else {
+
+		PLog::Write(PLog::DEBUG, "PK2", "External access not allowed");
+
 	}
 
+	if (external_dir)
+		data_path = External_Path;
+	else
+		data_path = Internal_Path;
+
 	#endif
+
+	//Now data_path is set
 
 	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"));
 
@@ -215,9 +245,7 @@ int main(int argc, char *argv[]) {
 	PLog::Write(PLog::DEBUG, "PK2", "Game version: %s", PK2_VERSION_STR);
 
 	PLog::Write(PLog::DEBUG, "PK2", "Data path - %s", data_path.c_str());
-	PUtils::CreateDir(data_path);
-	PUtils::CreateDir(data_path + "scores" PE_SEP);
-	PUtils::CreateDir(data_path + "mapstore" PE_SEP);
+	Prepare_DataPath();
 
 	Settings_Open();
 

@@ -20,6 +20,7 @@
 #include "engine/PInput.hpp"
 #include "engine/PUtils.hpp"
 #include "engine/PSound.hpp"
+#include "engine/PLog.hpp"
 
 #include <cstring>
 
@@ -595,6 +596,7 @@ void Draw_Menu_Graphics() {
 		bool wasFiltered = Settings.isFiltered;
 		bool wasFit = Settings.isFit;
 		bool wasWide = Settings.isWide;
+		
 
 		#ifndef __ANDROID__
 
@@ -662,9 +664,10 @@ void Draw_Menu_Graphics() {
 
 		#ifdef __ANDROID__
 
-		//TODO - Request write permission
+		bool wasexternal = external_dir;
+
 		if (!external_dir) {
-			if (Draw_Menu_Text(true,"saving on internal storage",180,my)){
+			if (Draw_Menu_Text(true,"saving on internal storage",180,my)) {
 				external_dir = true;
 			}
 		} else {
@@ -712,6 +715,48 @@ void Draw_Menu_Graphics() {
 			
 			PDraw::set_xoffset(Settings.isWide? 80 : 0);
 		}
+
+		#ifdef __ANDROID__
+
+		//If the data directory change, it will copy all data from one place to another
+		if (wasexternal != external_dir) {
+
+			if (external_dir) {
+				
+				//Wait for permission
+				if (SDL_AndroidGetExternalStorageState() != SDL_ANDROID_EXTERNAL_STORAGE_WRITE)
+					SDL_AndroidRequestPermission("android.permission.WRITE_EXTERNAL_STORAGE");
+				
+				if (SDL_AndroidGetExternalStorageState() == SDL_ANDROID_EXTERNAL_STORAGE_WRITE)
+					
+					//Copy from internal to external
+					PUtils::CreateDir(External_Path);
+					Move_DataPath(External_Path);
+					
+				} else {
+					
+					external_dir = false;
+					
+				}
+
+			} else {
+				if (SDL_AndroidGetExternalStorageState() != SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
+
+					PLog::Write(PLog::ERR, "PK2", "Can't get files from external");
+
+				} else {
+				
+					//Copy from external to internal
+					PUtils::CreateDir(Internal_Path);
+					Move_DataPath(Internal_Path);
+
+
+				}
+			}
+
+		}
+
+		#endif
 
 		if (Draw_Menu_Text(true,"back",100,360)){
 			moreOptions = false;
@@ -798,11 +843,9 @@ void Draw_Menu_Graphics() {
 		}
 		my += 30;
 
-		if (!PUtils::Is_Mobile()) {
-			if (Draw_Menu_Text(true,"more",100,360)){
-				moreOptions = true;
-				menu_valittu_id = 0; //Set menu cursor to 0
-			}
+		if (Draw_Menu_Text(true,"more",100,360)){
+			moreOptions = true;
+			menu_valittu_id = 0; //Set menu cursor to 0
 		}
 
 	}

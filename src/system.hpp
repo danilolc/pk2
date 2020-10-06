@@ -11,6 +11,7 @@
 extern int screen_width;
 extern int screen_height;
 
+extern char* External_Path, Internal_Path;
 extern std::string data_path;
 extern bool external_dir;
 
@@ -40,6 +41,9 @@ void Calculate_SinCos();
 int PK2_Error(const char* msg);
 
 void Draw_Cursor(int x, int y);
+void Move_DataPath(std::string new_path);
+
+void Prepare_DataPath();
 
 bool FindAsset(PFile::Path* path, const char* default_dir);
 

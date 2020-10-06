@@ -55,6 +55,7 @@ void Lower(char* string) {
 	
 }
 
+//Remove spaces at the end of string
 void RemoveSpace(char* string) {
 
 	int len = strlen(string);
