@@ -70,7 +70,7 @@ void quit() {
 	if (Game)
 		delete Game;
 	
-	if (Episode) {
+	if (Episode && !test_level) {
 		Save_Records(10); //Save #10 is the backup
 		delete Episode;
 	}

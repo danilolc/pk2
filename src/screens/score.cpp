@@ -301,7 +301,7 @@ int Screen_ScoreCount_Init() {
 
 	}
 
-	// Save backup when finisshing a level
+	// Save backup when finishing a level
 	Save_Records(10);
 
 	PSound::set_musicvolume(Settings.music_max_volume);
