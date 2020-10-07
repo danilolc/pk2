@@ -87,7 +87,6 @@ This example starts the level13.map on dev mode:
 * Fix SIGFAULT when sprite animation doesn't exist
 * Translate finnish language
 * Fix mouse speed when on fullscreen
-* Draw big bg sprites almost outside screen
 * Language menu selection speed
 * Mouse clicked when changing resolution
 * Use SDL_Read* to read files

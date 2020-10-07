@@ -682,7 +682,7 @@ int font_write(int font_index, const char* text, int x, int y) {
 
 }
 
-int font_writealpha(int font_index, const char* text, int x, int y, u8 alpha) {
+int font_writealpha(int font_index, const char* text, int x, int y, int alpha) {
 
     return fontList[font_index]->write_trasparent(x + x_offset, y, text, alpha);
 

@@ -136,6 +136,7 @@ int PFont::write_trasparent(int posx, int posy, const char* text, int alpha) {
 	PDraw::get_buffer_size(&w, &h);
 
 	if (alpha > 100) alpha = 100;
+	if (alpha < 0) alpha = 0;
 	int a1 = alpha;
 	int a2 = 100 - alpha;
 

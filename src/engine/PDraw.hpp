@@ -75,7 +75,7 @@ int   create_shadow(int index, u32 width, u32 height, int startx);
 int   font_create(int image, int x, int y, int width, int height, int count);
 int   font_create(PFile::Path path);
 int   font_write(int font_index, const char* text, int x, int y);
-int   font_writealpha(int font_index, const char* text, int x, int y, u8 alpha);
+int   font_writealpha(int font_index, const char* text, int x, int y, int alpha);
 
 int   set_filter(const char* filter);
 void  set_fullscreen(bool set);

@@ -86,13 +86,13 @@ int Draw_InGame_BGSprites() {
 
 				sprite->x = alku_x-xl;
 				sprite->y = alku_y-yl;
-
-				//Tarkistetaanko onko sprite tai osa siit� kuvassa
-				if (sprite->x - sprite->tyyppi->leveys/2  < Game->camera_x+screen_width &&
-					sprite->x + sprite->tyyppi->leveys/2  > Game->camera_x &&
-					sprite->y - sprite->tyyppi->korkeus/2 < Game->camera_y+screen_height &&
-					sprite->y + sprite->tyyppi->korkeus/2 > Game->camera_y)
+				//Check whether the sprite is on the screen
+				if (sprite->x - sprite->tyyppi->kuva_frame_leveys/2  < Game->camera_x+screen_width &&
+					sprite->x + sprite->tyyppi->kuva_frame_leveys/2  > Game->camera_x &&
+					sprite->y - sprite->tyyppi->kuva_frame_korkeus/2 < Game->camera_y+screen_height &&
+					sprite->y + sprite->tyyppi->kuva_frame_korkeus/2 > Game->camera_y)
 				{
+
 					sprite->Piirra(Game->camera_x,Game->camera_y);
 					sprite->piilossa = false;
 
@@ -111,8 +111,6 @@ int Draw_InGame_BGSprites() {
 	return 0;
 }
 int Draw_InGame_Sprites() {
-	debug_sprites = 0;
-	debug_drawn_sprites = 0;
 	int stars, sx;
 	double star_x, star_y;
 
@@ -120,11 +118,12 @@ int Draw_InGame_Sprites() {
 		// Onko sprite n�kyv�
 		SpriteClass* sprite = &Sprites_List[i];
 		if (!sprite->piilota && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
-			//Check whether or not sprite is on the screen
-			if (sprite->x - sprite->tyyppi->leveys/2  < Game->camera_x+screen_width &&
-				sprite->x + sprite->tyyppi->leveys/2  > Game->camera_x &&
-				sprite->y - sprite->tyyppi->korkeus/2 < Game->camera_y+screen_height &&
-				sprite->y + sprite->tyyppi->korkeus/2 > Game->camera_y){
+			//Check whether the sprite is on the screen
+			if (sprite->x - sprite->tyyppi->kuva_frame_leveys/2  < Game->camera_x+screen_width &&
+				sprite->x + sprite->tyyppi->kuva_frame_leveys/2  > Game->camera_x &&
+				sprite->y - sprite->tyyppi->kuva_frame_korkeus/2 < Game->camera_y+screen_height &&
+				sprite->y + sprite->tyyppi->kuva_frame_korkeus/2 > Game->camera_y)
+			{
 
 				if (sprite->isku > 0 && sprite->tyyppi->tyyppi != TYPE_BONUS && sprite->energia < 1){
 					int framex = ((degree%12)/3) * 58;
@@ -143,7 +142,7 @@ int Draw_InGame_Sprites() {
 					}
 				}
 
-					debug_drawn_sprites++;
+				debug_drawn_sprites++;
 			} else{
 				if (!Game->paused)
 					sprite->Animoi();
@@ -450,9 +449,9 @@ int Draw_InGame_UI(){
 	// Draw Info
 	/////////////////
 	if (Game->info_timer > 0){
-		int ilm_pituus = strlen(Game->info) * 8 + 8; // 300
+		int box_size = strlen(Game->info) * 8 + 8; // 300
 
-		MAP_RECT alue = {screen_width/2-(ilm_pituus/2),60,screen_width/2+(ilm_pituus/2),60+20};
+		MAP_RECT alue = {screen_width/2-(box_size/2),60,screen_width/2+(box_size/2),60+20};
 
 		if (Game->info_timer < 20){
 			alue.top	+= (20 - Game->info_timer) / 2;
@@ -467,10 +466,10 @@ int Draw_InGame_UI(){
 		PDraw::screen_fill(alue.left-1,alue.top-1,alue.right+1,alue.bottom+1,51);
 		PDraw::screen_fill(alue.left,alue.top,alue.right,alue.bottom,38);
 
-		if (Game->info_timer >= 100)
+		if (Game->info_timer-11 >= 100)
 			PDraw::font_write(fontti1,Game->info,alue.left+4,alue.top+4);
 		else
-			PDraw::font_writealpha(fontti1,Game->info,alue.left+4,alue.top+4,Game->info_timer);
+			PDraw::font_writealpha(fontti1,Game->info,alue.left+4,alue.top+4,Game->info_timer-11);
 	}
 
 	return 0;
@@ -479,10 +478,12 @@ int Draw_InGame_UI(){
 int Draw_InGame() {
 
 	char luku[16];
-	int vali = 20;
+
+	debug_sprites = 0;
+	debug_drawn_sprites = 0;
 
 	Draw_InGame_BG();
-
+	
 	if (Settings.bg_sprites)
 		Draw_InGame_BGSprites();
 
@@ -513,14 +514,15 @@ int Draw_InGame() {
 		if (show_fps) {
 			
 			int fps = Piste::get_fps();
-			
+			int txt_size;
+
 			if (fps >= 100)
-				vali = PDraw::font_write(fontti1, "fps:", 570, 48);
+				txt_size = PDraw::font_write(fontti1, "fps:", 570, 48);
 			else
-				vali = PDraw::font_write(fontti1, "fps: ", 570, 48);
+				txt_size = PDraw::font_write(fontti1, "fps: ", 570, 48);
 			
 			sprintf(luku, "%i", fps);
-			PDraw::font_write(fontti1, luku, 570 + vali, 48);
+			PDraw::font_write(fontti1, luku, 570 + txt_size, 48);
 		
 		}
 	}
