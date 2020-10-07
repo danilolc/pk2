@@ -39,6 +39,7 @@ static PDraw::Gui* gui_menu   = nullptr;
 static PDraw::Gui* gui_touch  = nullptr;
 static PDraw::Gui* gui_tab    = nullptr;
 
+
 const static int PadBt_x = 275;
 const static int PadBt_y = 675;
 
@@ -157,6 +158,52 @@ static bool read_gui(PDraw::Gui* gui) {
 
 }
 
+// Hold pad on digital pad mode
+static float hold_pad(float pos_x, int* button) {
+
+	//pos_x varies from 0 to 1
+	//x varies from 0 to 4.5
+	float x = 4.5 * pos_x;
+
+	float a =  4.00;
+	float b = 16.00;
+
+	//Make the middle poits more close
+	if (x < 1.50) {
+		x = x + a*(x-0.50)*(x-1.00)*(x-1.50);
+		*button = 0;
+	
+	} else if (x < 2.00) {
+		x = x + b*(x-1.50)*(x-1.75)*(x-2.00);
+		*button = 1;
+	
+	} else if (x < 2.50) {
+		x = x + b*(x-2.00)*(x-2.25)*(x-2.50);
+		*button = 2;
+	
+	} else if (x < 3.00) {
+		x = x + b*(x-2.50)*(x-2.75)*(x-3.00);
+		*button = 3;
+	
+	} else if (x < 4.5) {
+		x = x + a*(x-3.00)*(x-3.50)*(x-4.00);
+		*button = 4;
+	
+	} else {
+		x = 4.5;
+		*button = 4;
+	}
+
+	if (x < 1.00)
+		x = 1.00;
+	if (x > 3.50)
+		x = 3.50;
+	
+	return (x - 1.00) / 2.50;
+
+}
+
+
 static int get_pad() {
 
 	float ret = 0;
@@ -198,7 +245,15 @@ static int get_pad() {
 
 		} else {
 
-			gui_padbt->x = last_touch->pos_x * 1920;
+			int button;
+
+			float touch = (last_touch->pos_x * 1920 - gui_padbg->x) / gui_padbg->w;
+			//printf("%f", touch);
+			float hold_touch = hold_pad(touch, &button);
+			//printf(" %f %i\n", hold_touch, button);
+
+			gui_padbt->x = gui_padbg->x + hold_touch * gui_padbg->w;
+			
 			gui_padbt->x -= gui_padbt->w / 2;
 
 			if (gui_padbt->x < gui_padbg->x)
