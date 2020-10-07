@@ -757,8 +757,8 @@ void change_resolution(int w, int h) {
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
     SDL_FillRect(frameBuffer8, NULL, 255);
 
-    SDL_Rect r = {0, 0, w, h};
-    SDL_SetClipRect(frameBuffer8, &r);
+    //SDL_Rect r = {0, 0, w, h};
+    //SDL_SetClipRect(frameBuffer8, &r);
 
     screen_width = w;
     screen_height = h;
@@ -804,8 +804,8 @@ void set_xoffset(int x) {
 
     x_offset = x;
 
-    SDL_Rect r = {x, 0, screen_width-2*x, screen_height};
-    SDL_SetClipRect(frameBuffer8, &r);
+    //SDL_Rect r = {x, 0, screen_width-2*x, screen_height};
+    //SDL_SetClipRect(frameBuffer8, &r);
 
 }
 
@@ -859,8 +859,8 @@ int init(int width, int height, const char* name, const char* icon) {
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
     SDL_FillRect(frameBuffer8, NULL, 255);
 
-    SDL_Rect r = {0, 0, width, height};
-    SDL_SetClipRect(frameBuffer8, &r);
+    //SDL_Rect r = {0, 0, width, height};
+    //SDL_SetClipRect(frameBuffer8, &r);
 
     screen_width = width;
     screen_height = height;

@@ -219,7 +219,7 @@ int Draw_BoolBox(int x, int y, bool muuttuja, bool active) {
 	return false;
 }
 
-int  Draw_BackNext(int x, int y){
+int  Draw_BackNext(int x, int y) {
 	int val = 45;
 
 	int randx = rand()%3 - rand()%3;
@@ -239,7 +239,7 @@ int  Draw_BackNext(int x, int y){
 		if ((PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)/* || PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)*/)
 			&& key_delay == 0){
 			Play_MenuSFX(menu_sound, 100);
-			key_delay = 20;
+			key_delay = 7;
 			return 1;
 		}
 	}
@@ -250,7 +250,7 @@ int  Draw_BackNext(int x, int y){
 		if ((PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)/* || PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)*/)
 			&& key_delay == 0){
 			Play_MenuSFX(menu_sound, 100);
-			key_delay = 20;
+			key_delay = 7;
 			return 2;
 		}
 	}
@@ -616,7 +616,7 @@ void Draw_Menu_Graphics() {
 		}
 		my += 30;
 
-		bool res_active = false;
+		bool res_active = true;
 
 		if (Settings.isWide) {
 			if (Draw_Menu_Text(res_active,"widescreen is on", 180, my)) {
@@ -862,6 +862,7 @@ void Draw_Menu_Graphics() {
 void Draw_Menu_Sounds() {
 
 	int my = 0;
+	int kdelay = 5;
 
 	Draw_BGSquare(40, 70, 640-40, 410, 224);
 
@@ -874,13 +875,17 @@ void Draw_Menu_Sounds() {
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.sound_sfx_volume),180,200+my);
 	my += 20;
 
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.sound_less),180,200+my))
+	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.sound_less),180,200+my)) {
+		key_delay = kdelay;
 		if (Settings.sfx_max_volume > 0)
 			Settings.sfx_max_volume -= 5;
+	}
 
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.sound_more),180+8*15,200+my))
+	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.sound_more),180+8*15,200+my)) {
+		key_delay = kdelay;
 		if (Settings.sfx_max_volume < 100)
 			Settings.sfx_max_volume += 5;
+	}
 
 	if (Settings.sfx_max_volume < 0)
 		Settings.sfx_max_volume = 0;
@@ -896,13 +901,17 @@ void Draw_Menu_Sounds() {
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.sound_music_volume),180,200+my);
 	my += 20;
 
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.sound_less),180,200+my))
+	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.sound_less),180,200+my)) {
+		key_delay = kdelay;
 		if (Settings.music_max_volume > 0)
 			Settings.music_max_volume -= 5;
+	}
 
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.sound_more),180+8*15,200+my))
+	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.sound_more),180+8*15,200+my)) {
+		key_delay = kdelay;
 		if (Settings.music_max_volume < 100)
 			Settings.music_max_volume += 5;
+	}
 
 	if (Settings.music_max_volume < 0)
 		Settings.music_max_volume = 0;

@@ -104,3 +104,4 @@ This example starts the level13.map on dev mode:
 * Implement new layer on .map (regions)
 * Use Lua scripts
 * Find image (load .bmp or .png)
+* Hqx filter

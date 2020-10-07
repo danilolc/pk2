@@ -14,6 +14,7 @@
 #include "game/sprites.hpp"
 #include "system.hpp"
 #include "settings.hpp"
+#include "save.hpp"
 
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
@@ -167,8 +168,7 @@ int Draw_ScoreCount() {
 	my += 20;
 
 	// Draw apples
-	
-
+	PDraw::set_mask(80, 0, screen_width-2*80, screen_height);
 	if (Game->apples_count > 0) {
 
 		uint i = 0;
@@ -185,6 +185,7 @@ int Draw_ScoreCount() {
 			PDraw::image_cutcliptransparent(game_assets2, 61, 379, 26, 26, apples_xoffset + i * 32, my, 20, 0);
 		
 	}
+	PDraw::reset_mask();
 
 	if (apples_counted >= 13 && apples_not_counted != 0)
 		apples_xoffset -= 32.0 / 10;
@@ -299,6 +300,9 @@ int Screen_ScoreCount_Init() {
 		Episode->Save_Scores();
 
 	}
+
+	// Save backup when finisshing a level
+	Save_Records(10);
 
 	PSound::set_musicvolume(Settings.music_max_volume);
 
