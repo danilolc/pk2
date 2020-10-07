@@ -40,13 +40,13 @@ static PDraw::Gui* gui_touch  = nullptr;
 static PDraw::Gui* gui_tab    = nullptr;
 
 
-const static int PadBt_x = 275;
+const static int PadBt_x = 315;
 const static int PadBt_y = 675;
 
 const static int Alpha = 110;
 
-const static int PadBt_a = 10;
-const static int PadBt_r = 880;
+const static int PadBt_a = 20;
+const static int PadBt_r = 890;
 const static int PadBt_b = PadBt_y + sqrt(PadBt_r*PadBt_r - PadBt_x*PadBt_x);
 
 static int UI_mode = UI_NONE;
@@ -105,7 +105,7 @@ void GUI_Load() {
 	gui_menu =   PDraw::create_gui(path, 50,130,w,h,Alpha);
 	
 	path.SetFile("padbg.png");
-	gui_padbg =  PDraw::create_gui(path, 50,620,641*0.9,362*0.9,Alpha);
+	gui_padbg =  PDraw::create_gui(path, 90,620,641*0.9,362*0.9,Alpha);
 
 	path.SetFile("padbt.png");
 	gui_padbt =  PDraw::create_gui(path, PadBt_x, PadBt_y,169*0.9,173*0.9,Alpha);
@@ -162,44 +162,44 @@ static bool read_gui(PDraw::Gui* gui) {
 static float hold_pad(float pos_x, int* button) {
 
 	//pos_x varies from 0 to 1
-	//x varies from 0 to 4.5
-	float x = 4.5 * pos_x;
+	//x varies from 0 to 3.2
+	float x = 3.2 * pos_x;
 
-	float a =  4.00;
-	float b = 16.00;
+	float a =  3.98;
+	float b = 25.00;
 
 	//Make the middle poits more close
-	if (x < 1.50) {
-		x = x + a*(x-0.50)*(x-1.00)*(x-1.50);
+	if (x < 1.00) {
+		x = x + a*(x-0.00)*(x-0.50)*(x-1.00);
 		*button = 0;
 	
-	} else if (x < 2.00) {
-		x = x + b*(x-1.50)*(x-1.75)*(x-2.00);
+	} else if (x < 1.40) {
+		x = x + b*(x-1.00)*(x-1.20)*(x-1.40);
 		*button = 1;
 	
-	} else if (x < 2.50) {
-		x = x + b*(x-2.00)*(x-2.25)*(x-2.50);
+	} else if (x < 1.80) {
+		x = x + b*(x-1.40)*(x-1.60)*(x-1.80);
 		*button = 2;
 	
-	} else if (x < 3.00) {
-		x = x + b*(x-2.50)*(x-2.75)*(x-3.00);
+	} else if (x < 2.20) {
+		x = x + b*(x-1.80)*(x-2.00)*(x-2.20);
 		*button = 3;
 	
-	} else if (x < 4.5) {
-		x = x + a*(x-3.00)*(x-3.50)*(x-4.00);
+	} else if (x < 3.2) {
+		x = x + a*(x-2.20)*(x-2.70)*(x-3.20);
 		*button = 4;
 	
 	} else {
-		x = 4.5;
+		x = 3.2;
 		*button = 4;
 	}
 
-	if (x < 1.00)
-		x = 1.00;
-	if (x > 3.50)
-		x = 3.50;
+	if (x < 0.00)
+		x = 0.00;
+	if (x > 3.20)
+		x = 3.20;
 	
-	return (x - 1.00) / 2.50;
+	return x / 3.20;
 
 }
 
@@ -265,10 +265,22 @@ static int get_pad() {
 			int x = gui_padbt->x - PadBt_a;
 			gui_padbt->y = PadBt_b - sqrt(PadBt_r*PadBt_r - x*x);
 
-			ret = gui_padbg->x + (gui_padbg->w - gui_padbt->w) / 2;
+			if (button == 0) {
+				ret = 100;
+			} else if (button == 1) {
+				ret = 20;
+			} else if (button == 2) {
+				ret = 0;
+			} else if (button == 3) {
+				ret = -20;
+			} else if (button == 4) {
+				ret = -100;
+			}
+
+			/*ret = gui_padbg->x + (gui_padbg->w - gui_padbt->w) / 2;
 			ret -= gui_padbt->x;
 			ret /= float(gui_padbg->w - gui_padbt->w) / 2;
-			ret *= 100;
+			ret *= 100;*/
 
 		}
 
