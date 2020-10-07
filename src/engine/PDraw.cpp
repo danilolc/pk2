@@ -376,7 +376,7 @@ int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, u8 colors
     
 }
 
-// TODO - redo this function
+// TODO - REDO THIS FUNCTION
 int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src_h,
 						 int dst_x, int dst_y, int alpha, u8 colorsum) {
     

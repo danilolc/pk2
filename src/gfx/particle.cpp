@@ -170,15 +170,15 @@ void Particle::draw_dust() {
 	if (alpha > 99 || !Settings.draw_transparent)
 		PDraw::image_cutclip(game_assets,x-cam_x,y-cam_y,226,2,224,49);
 	else
-		PDraw::image_cutcliptransparent(game_assets, 226, 2, 18, 19, x-cam_x, y-cam_y, alpha, color);
+		PDraw::image_cutcliptransparent(game_assets, 226, 2, 18, 19, int(x)-cam_x, int(y)-cam_y, alpha, color);
 	PDraw::image_cutclip(game_assets,x-cam_x,y-cam_y,226, 2, 18, 19);
 
 }
 
 void Particle::draw_waterdrop() {
 
-	int kx = (int)(x-cam_x);
-	int ky = (int)(y-cam_y);
+	int kx = int(x)-cam_x;
+	int ky = int(y)-cam_y;
 
 	PDraw::screen_fill(kx,ky,kx+1,ky+4,40+(int)b);
 
@@ -186,17 +186,17 @@ void Particle::draw_waterdrop() {
 
 void Particle::draw_leaf1() {
 
-	int kx = (int)(x-cam_x),
-		ky = (int)(y-cam_y);
+	int kx = int(x)-cam_x,
+		ky = int(y)-cam_y;
 
-	PDraw::screen_fill(kx,ky,kx+2,ky+2,96+6+(int)b+(int)(x+y)%10);
+	PDraw::screen_fill(kx,ky,kx+2,ky+2,96+6+(int)b+int(x+y)%10);
 
 }
 
 void Particle::draw_leaf2() {
 
-	int kx = (int)(x-cam_x),
-		ky = (int)(y-cam_y),
+	int kx = int(x)-cam_x,
+		ky = int(y)-cam_y,
 		frame = (int(y/10)%4)*23;
 
 	PDraw::image_cutclip(game_assets,kx,ky,1+frame,141,21+frame,152);
@@ -205,8 +205,8 @@ void Particle::draw_leaf2() {
 
 void Particle::draw_leaf3() {
 
-	int kx = (int)(x-cam_x),
-		ky = (int)(y-cam_y),
+	int kx = int(x)-cam_x,
+		ky = int(y)-cam_y,
 		frame = (int(y/5)%4)*20;
 
 	PDraw::image_cutclip(game_assets,kx,ky,93+frame,141,109+frame,150);
@@ -215,8 +215,8 @@ void Particle::draw_leaf3() {
 
 void Particle::draw_leaf4() {
 
-	int kx = (int)(x-cam_x),
-		ky = (int)(y-cam_y),
+	int kx = int(x)-cam_x,
+		ky = int(y)-cam_y,
 		frame = (int(y/5)%2)*14;
 
 	PDraw::image_cutclip(game_assets,kx,ky,173+frame,141,183+frame,150);
@@ -225,8 +225,8 @@ void Particle::draw_leaf4() {
 
 void Particle::draw_flake1() {
 
-	int kx = (int)(x-cam_x),
-		ky = (int)(y-cam_y);
+	int kx = int(x)-cam_x,
+		ky = int(y)-cam_y;
 
 	PDraw::image_cutclip(game_assets,kx,ky,1,155,8,162);
 
@@ -234,8 +234,8 @@ void Particle::draw_flake1() {
 
 void Particle::draw_flake2() {
 
-	int kx = (int)(x-cam_x),
-		ky = (int)(y-cam_y);
+	int kx = int(x)-cam_x,
+		ky = int(y)-cam_y;
 
 	PDraw::image_cutclip(game_assets,kx,ky,11,155,16,160);
 
@@ -243,8 +243,8 @@ void Particle::draw_flake2() {
 
 void Particle::draw_flake3() {
 
-	int kx = (int)(x-cam_x),
-		ky = (int)(y-cam_y);
+	int kx = int(x)-cam_x,
+		ky = int(y)-cam_y;
 
 	PDraw::image_cutclip(game_assets,kx,ky,19,155,22,158);
 
@@ -252,8 +252,8 @@ void Particle::draw_flake3() {
 
 void Particle::draw_flake4() {
 
-	int kx = (int)(x-cam_x),
-		ky = (int)(y-cam_y);
+	int kx = int(x)-cam_x,
+		ky = int(y)-cam_y;
 
 	PDraw::screen_fill(kx,ky,kx+2,ky+2,20+(int)b);
 

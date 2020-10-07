@@ -8,9 +8,15 @@
 
 #include <SDL.h>
 
+#include <chrono>
+#include <thread>
+#include <iostream>
+
 #define UPDATE_FPS 30 //Update FPS each 30 frames
 
 namespace Piste {
+
+static int desired_fps = 60;
 
 static bool ready = false;
 static bool running = false;
@@ -95,6 +101,26 @@ void terminate() {
 
 }
 
+static void wait_frame() {
+
+	using namespace std;
+	using namespace std::chrono;
+
+	static auto last_time = high_resolution_clock::now();
+
+	auto delta_time = high_resolution_clock::now() - last_time;
+	auto frame_time = chrono::nanoseconds(1000000000ll / desired_fps);
+
+	auto sleep_time = frame_time - delta_time;
+
+	//cout << float(sleep_time.count())/1000000 << endl;
+	if (sleep_time.count() > 100000)
+		this_thread::sleep_for(sleep_time);
+	
+	last_time = high_resolution_clock::now();
+
+}
+
 void loop(int (*GameLogic)()) {
 	
 	static int frame_counter = 0;
@@ -110,6 +136,7 @@ void loop(int (*GameLogic)()) {
 		if (error) break;
 		
 		logic();
+		//wait_frame();
 
 		frame_counter++;
 		if (frame_counter >= UPDATE_FPS) {
