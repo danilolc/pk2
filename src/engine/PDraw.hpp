@@ -70,7 +70,7 @@ int   drawscreen_end();
 int   drawimage_start(int index, u8 *&pixels, u32 &pitch);
 int   drawimage_end(int index);
 u8    blend_colors(u8 color, u8 colBack,int alpha);
-int   create_shadow(int index, u32 width, u32 height, int startx);
+int   create_shadow(int index, u32 width, u32 height, u32 startx);
 
 int   font_create(int image, int x, int y, int width, int height, int count);
 int   font_create(PFile::Path path);

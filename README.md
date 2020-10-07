@@ -82,6 +82,7 @@ This example starts the level13.map on dev mode:
 * SDL_QUIT on Android
 * Set target fps (30, 60, 120, v-sync) (properly jump frames)
 * Autosave settings option, ask when overwriting save, select save on new game
+* Low volume sounds not played on low volume
 
 * Fix BG screen on menu
 * Fix SIGFAULT when sprite animation doesn't exist
@@ -96,7 +97,6 @@ This example starts the level13.map on dev mode:
 
 # PLANS
 * Better documentation
-* Load pk2stuff and android controls from zip
 * Super mode -> energy = 0 on touch Pekka
 * Make latin accentuation
 * Support game controllers
