@@ -62,7 +62,7 @@ const u8 TAUSTA_PALLARX_HORI			= 2;
 const u8 TAUSTA_PALLARX_VERT_JA_HORI	= 3;
 
 void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys);
-void MapClass_Set_Screen_Size(int width, int height);
+void MapClass_Set_Screen_Size(u32 width, u32 height);
 
 class MapClass
 {

@@ -48,7 +48,7 @@ void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool
 	avaimet  = keys;
 }
 
-void MapClass_Set_Screen_Size(int width, int height){
+void MapClass_Set_Screen_Size(u32 width, u32 height){
 	ruudun_leveys_palikoina  = width/32 + 1;
 	ruudun_korkeus_palikoina = height/32 + 1;
 }
@@ -88,7 +88,7 @@ MapClass::MapClass(){
 	memset(this->spritet, 255, sizeof(spritet));
 	memset(this->reunat,  0,   sizeof(reunat));
 
-	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
 		strcpy(this->protot[i],"");
 
 	this->taustakuva_buffer = PDraw::image_new(640,480);
@@ -128,21 +128,19 @@ MapClass::MapClass(const MapClass &kartta){
 	this->y				= kartta.y;
 	this->icon			= kartta.icon;
 
-	int i;
-
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 		this->taustat[i] = kartta.taustat[i];
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 		this->seinat[i] = kartta.seinat[i];
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 		this->spritet[i] = kartta.spritet[i];
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 		this->reunat[i] = kartta.reunat[i];
 
-	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
 		strcpy(this->protot[i],kartta.protot[i]);
 
 
@@ -159,8 +157,8 @@ MapClass::~MapClass(){
 
 MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
 
-	int x,y;
-	int kartan_vasen = PK2KARTTA_KARTTA_LEVEYS,//PK2KARTTA_KARTTA_LEVEYS/2,
+	u32 x, y;
+	u32 kartan_vasen = PK2KARTTA_KARTTA_LEVEYS,//PK2KARTTA_KARTTA_LEVEYS/2,
 		kartan_oikea = 0,
 		kartan_yla	 = PK2KARTTA_KARTTA_KORKEUS,//PK2KARTTA_KARTTA_KORKEUS/2,
 		kartan_ala	 = 0,
@@ -170,8 +168,8 @@ MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
 	MAP_RECT rajat = {0,0,0,0};
 
 	// tutkitaan kartan reunimmaiset tilet ja asetetaan reunat niiden mukaan
-	for (y=0;y<PK2KARTTA_KARTTA_KORKEUS;y++) {
-		for (x=0;x<PK2KARTTA_KARTTA_LEVEYS;x++)	{
+	for (y=0; y<PK2KARTTA_KARTTA_KORKEUS; y++) {
+		for (x=0; x<PK2KARTTA_KARTTA_LEVEYS; x++)	{
 			if (lahde[x+y*PK2KARTTA_KARTTA_LEVEYS] != 255) {
 				if (x < kartan_vasen)
 					kartan_vasen = x;
@@ -199,8 +197,8 @@ MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
 	kohde = new u8[kartan_leveys*kartan_korkeus];
 	u8 tile;
 
-	for (y=0;y<kartan_korkeus;y++){
-		for (x=0;x<kartan_leveys;x++){
+	for (y=0; y<kartan_korkeus; y++){
+		for (x=0; x<kartan_leveys; x++){
 			tile = lahde[(x+kartan_vasen)+(y+kartan_yla)*PK2KARTTA_KARTTA_LEVEYS];
 			kohde[x+y*kartan_leveys] = tile;
 			if (x==0 || y==0 || x==kartan_leveys-1 || y==kartan_korkeus-1)
@@ -227,8 +225,8 @@ MAP_RECT MapClass::LaskeTallennusAlue(u8 *alue){
 	MAP_RECT rajat = {0,0,0,0};
 
 	// tutkitaan kartan reunimmaiset tilet ja asetetaan reunat niiden mukaan
-	for (y=0;y<PK2KARTTA_KARTTA_KORKEUS;y++) {
-		for (x=0;x<PK2KARTTA_KARTTA_LEVEYS;x++)	{
+	for (y=0; y<PK2KARTTA_KARTTA_KORKEUS; y++) {
+		for (x=0; x<PK2KARTTA_KARTTA_LEVEYS; x++)	{
 			if (alue[x+y*PK2KARTTA_KARTTA_LEVEYS] != 255) {
 
 				if (x < kartan_vasen) {
@@ -590,7 +588,7 @@ int MapClass::LoadVersion01(PFile::Path path){
 	this->extra		= 0;
 	this->tausta	= kartta.taustakuva;
 
-	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		this->seinat[i] = kartta.kartta[i%PK2KARTTA_KARTTA_LEVEYS + (i/PK2KARTTA_KARTTA_LEVEYS) * 640];
 
 	memset(this->taustat,255, sizeof(taustat));
@@ -623,13 +621,13 @@ int MapClass::LoadVersion10(PFile::Path path){
 	this->extra			= kartta->extra;
 	this->tausta		= kartta->tausta;
 
-	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 		this->taustat[i] = kartta->taustat[i];
 
-	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO;i++)
 		this->seinat[i] = kartta->seinat[i];
 
-	for (int i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 		this->spritet[i] = kartta->spritet[i];
 
 
@@ -668,17 +666,15 @@ int MapClass::LoadVersion11(PFile::Path path){
 
 	PFile::CloseRW(file);
 
-	int i;
-
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		if (seinat[i] != 255)
 			seinat[i] -= 50;
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		if (taustat[i] != 255)
 			taustat[i] -= 50;
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
 		if (spritet[i] != 255)
 			spritet[i] -= 50;
 
@@ -700,7 +696,7 @@ int MapClass::LoadVersion12(PFile::Path path){
 	memset(this->seinat , 255, sizeof(this->seinat));
 	memset(this->spritet, 255, sizeof(this->spritet));
 
-	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
 		strcpy(this->protot[i],"");
 
 	//tiedosto->read ((char *)this, sizeof (*this));
@@ -894,7 +890,7 @@ void MapClass::Tyhjenna(){
 	memset(this->seinat,  255, sizeof(seinat));
 	memset(this->spritet, 255, sizeof(spritet));
 
-	for (int i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+	for (u32 i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 		strcpy(this->protot[i],"");
 
 	//PDraw::image_fill(this->palikat_buffer,255);
@@ -916,15 +912,13 @@ MapClass &MapClass::operator = (const MapClass &kartta){
 	this->extra		= kartta.extra;
 	this->tausta	= kartta.tausta;
 
-	int i;
-
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 		this->seinat[i] = kartta.seinat[i];
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 		this->taustat[i] = kartta.taustat[i];
 
-	for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 		this->spritet[i] = kartta.spritet[i];
 
 	PDraw::image_copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
@@ -1008,18 +1002,16 @@ void MapClass::Kopioi(MapClass &kartta){
 		this->extra		= kartta.extra;
 		this->tausta	= kartta.tausta;
 
-		int i;
-
-		for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+		for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 			this->seinat[i] = kartta.seinat[i];
 
-		for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+		for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 			this->taustat[i] = kartta.taustat[i];
 
-		for (i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+		for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
 			this->spritet[i] = kartta.spritet[i];
 
-		for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+		for (u32 i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
 			strcpy(this->protot[i],kartta.protot[i]);
 
 		PDraw::image_fill(palikat_buffer,255);
@@ -1040,8 +1032,8 @@ void MapClass::Place_Sprites() {
 	Sprites_clear();
 	Sprites_add(this->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
 
-	for (int x = 0; x < PK2KARTTA_KARTTA_LEVEYS; x++) {
-		for (int y = 0; y < PK2KARTTA_KARTTA_KORKEUS; y++) {
+	for (u32 x = 0; x < PK2KARTTA_KARTTA_LEVEYS; x++) {
+		for (u32 y = 0; y < PK2KARTTA_KARTTA_KORKEUS; y++) {
 
 			int sprite = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
 
@@ -1064,26 +1056,26 @@ void MapClass::Place_Sprites() {
 void MapClass::Select_Start() {
 	double  pos_x = 320,
 			pos_y = 196;
-	int		alkujen_maara = 0, alku = 0,
-			x, y;
+	uint starts_count = 0, alku = 0;
+	uint x, y;
 
 	for (x=0; x<PK2KARTTA_KARTTA_KOKO; x++)
 		if (this->seinat[x] == BLOCK_ALOITUS)
-			alkujen_maara ++;
+			starts_count++;
 
-	if (alkujen_maara > 0){
-		alku = rand()%alkujen_maara + 1;
-		alkujen_maara = 1;
+	if (starts_count > 0){
+		alku = rand()%starts_count + 1;
+		starts_count = 1;
 
 		for (x=0; x < PK2KARTTA_KARTTA_LEVEYS; x++)
 			for (y=0; y < PK2KARTTA_KARTTA_KORKEUS; y++)
 				if (this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] == BLOCK_ALOITUS){
-					if (alkujen_maara == alku){
+					if (starts_count == alku){
 						pos_x = x*32;
 						pos_y = y*32;
 					}
 
-					alkujen_maara ++;
+					starts_count ++;
 				}
 	}
 
@@ -1174,8 +1166,8 @@ void MapClass::Calculate_Edges(){
 
 	memset(this->reunat, false, sizeof(this->reunat));
 
-	for (int x=1;x<PK2KARTTA_KARTTA_LEVEYS-1;x++)
-		for (int y=0;y<PK2KARTTA_KARTTA_KORKEUS-1;y++){
+	for (u32 x=1; x<PK2KARTTA_KARTTA_LEVEYS-1; x++)
+		for (u32 y=0; y<PK2KARTTA_KARTTA_KORKEUS-1; y++){
 			edge = false;
 
 			tile1 = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
@@ -1426,13 +1418,13 @@ int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 	int kartta_y = kamera_y/32;
 
 	for (int x = 0; x < ruudun_leveys_palikoina; x++){
-		if (x + kartta_x < 0 || x + kartta_x > PK2KARTTA_KARTTA_LEVEYS) continue;
+		if (x + kartta_x < 0 || uint(x + kartta_x) > PK2KARTTA_KARTTA_LEVEYS) continue;
 
 		for (int y = 0; y < ruudun_korkeus_palikoina; y++){
-			if (y + kartta_y < 0 || y + kartta_y > PK2KARTTA_KARTTA_KORKEUS) continue;
+			if (y + kartta_y < 0 || uint(y + kartta_y) > PK2KARTTA_KARTTA_KORKEUS) continue;
 
 			int i = x + kartta_x + (y + kartta_y) * PK2KARTTA_KARTTA_LEVEYS;
-			if( i < 0 || i >= sizeof(taustat) ) continue; //Dont access a not allowed address
+			if( i < 0 || i >= int(sizeof(taustat)) ) continue; //Dont access a not allowed address
 
 			int palikka = taustat[i];
 
@@ -1496,13 +1488,13 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 
 
 	for (int x = -1; x < ruudun_leveys_palikoina + 1; x++) {
-		if (x + kartta_x < 0 || x + kartta_x > PK2KARTTA_KARTTA_LEVEYS) continue;
+		if (x + kartta_x < 0 || uint(x + kartta_x) > PK2KARTTA_KARTTA_LEVEYS) continue;
 
 		for (int y = -1; y < ruudun_korkeus_palikoina + 1; y++) {
-			if (y + kartta_y < 0 || y + kartta_y > PK2KARTTA_KARTTA_KORKEUS) continue;
+			if (y + kartta_y < 0 || uint(y + kartta_y) > PK2KARTTA_KARTTA_KORKEUS) continue;
 
 			int i = x + kartta_x + (y + kartta_y) * PK2KARTTA_KARTTA_LEVEYS;
-			if( i < 0 || i >= sizeof(seinat) ) continue; //Dont access a not allowed address
+			if( i < 0 || i >= int(sizeof(seinat)) ) continue; //Dont access a not allowed address
 
 			palikka = seinat[i];
 
