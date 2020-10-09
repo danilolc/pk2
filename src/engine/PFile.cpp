@@ -883,9 +883,7 @@ int CloseRW(RW* rw) {
 
 std::vector<std::string> Path::scandir(const char* type) {
     
-	int dif = this->find_last_of(PE_SEP);
-	std::string dir =  this->substr(0, dif /*+ 1*/);
-	
+	std::string dir = this->substr(0, this->find_last_of(PE_SEP));
 	const char* cstr = dir.c_str();
 	
 	if (this->is_zip) {

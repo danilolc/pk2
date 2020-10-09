@@ -43,4 +43,4 @@ struct PK2BLOCKMASK {
 
 void Block_Set_Barriers(PK2BLOCK &palikka);
 
-PK2BLOCK Block_Get(int x, int y);
+PK2BLOCK Block_Get(u32 x, u32 y);

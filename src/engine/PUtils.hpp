@@ -16,6 +16,9 @@ void Lower(char* string);
 void RemoveSpace(char* string);
 
 int  CreateDir(std::string path);
+int  RemoveDir(std::string path);
+int  RenameDir(std::string old_path, std::string new_path);
+
 void Show_Error(const char* txt);
 
 void GetLanguage(char* lang);

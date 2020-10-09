@@ -16,10 +16,10 @@ int PFont::init_charlist() {
 
 	const char* chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "\xc5\xc4\xd6" "0123456789.!?:-.+=()/#\\_%";
 
-	for ( int i = 0; i < 256; i++ )
+	for ( uint i = 0; i < 256; i++ )
 		charlist[i] = -1;
 	
-	for ( int i = 0; i < sizeof(chars); i++)
+	for ( uint i = 0; i < sizeof(chars); i++)
 		charlist[(u8)chars[i]] = i * char_w;
 	
 	return 0;
@@ -147,12 +147,12 @@ int PFont::write_trasparent(int posx, int posy, const char* text, int alpha) {
 		curr_char = text[i];
 		int ix = charlist[(u8)(curr_char&~' ')];
 		if (ix > -1){
-			for (int x = 0; x < char_w; x++) {
+			for (uint x = 0; x < char_w; x++) {
 				
 				int fx = posx + x + i * char_w;
 				if(fx < 0 || fx >= w) break;
 
-				for (int y = 0; y < char_h; y++) {
+				for (uint y = 0; y < char_h; y++) {
 					
 					int fy = posy + y;
 					if (fy < 0 || fy >= h) break;

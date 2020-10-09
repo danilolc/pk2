@@ -11,17 +11,18 @@ typedef struct {
 	int left, top, right, bottom;
 } MAP_RECT;
 
-const char PK2KARTTA_VIIMEISIN_VERSIO[4] = "1.3";
+const char PK2MAP_LAST_VERSION[4] = "1.3";
 
-const u32 PK2KARTTA_KARTTA_LEVEYS  = 256;
-const u32 PK2KARTTA_KARTTA_KORKEUS = 224;
-const u32 PK2KARTTA_KARTTA_KOKO	 = PK2KARTTA_KARTTA_LEVEYS * PK2KARTTA_KARTTA_KORKEUS;
-const u32 PK2KARTTA_BLOCK_PALETTI_LEVEYS  = 320;
-const u32 PK2KARTTA_BLOCK_PALETTI_KORKEUS = 480;
-const u8 PK2KARTTA_TAUSTAKUVA_EI	 = 0;
-const u8 PK2KARTTA_EXTRA_EI		 = 0;
+const u32 PK2MAP_MAP_WIDTH  = 256;
+const u32 PK2MAP_MAP_HEIGHT = 224;
+const u32 PK2MAP_MAP_SIZE   = PK2MAP_MAP_WIDTH * PK2MAP_MAP_HEIGHT;
+const u32 PK2MAP_BLOCK_PALETTE_WIDTH  = 320;
+const u32 PK2MAP_BLOCK_PALETTE_HEIGHT = 480;
 
-const u32 PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA = 100;
+const u8 PK2KARTTA_TAUSTAKUVA_EI      = 0;
+const u8 PK2KARTTA_EXTRA_EI           = 0;
+
+const u32 PK2MAP_MAP_MAX_PROTOTYPES = 100;
 
 const u8 BLOCK_ESTO_ALAS		= 40;
 const u8 BLOCK_HISSI_HORI		= 41;
@@ -48,7 +49,7 @@ const u8 BLOCK_KYTKIN3			= 147;
 const u8 BLOCK_ALOITUS			= 148;
 const u8 BLOCK_LOPETUS			= 149;
 
-const int KYTKIN_ALOITUSARVO		= 2000;
+const int SWITCH_INITIAL_VALUE  = 2000;
 
 const u8 ILMA_NORMAALI			= 0;
 const u8 ILMA_SADE				= 1;
@@ -88,11 +89,11 @@ class MapClass
 	u32		kytkin3_aika;		// button 3 time - not used
 	int			pelaaja_sprite;		// player prototype
 
-	u8		taustat[PK2KARTTA_KARTTA_KOKO];	// map bg tiles 256*224
-	u8		seinat [PK2KARTTA_KARTTA_KOKO];	// map fg tiles 256*224
-	u8		spritet[PK2KARTTA_KARTTA_KOKO];	// map sprites 256*224
-	char		protot [PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA][13]; // map prototype list .spr
-	bool		reunat [PK2KARTTA_KARTTA_KOKO]; // map edges - calculated during game
+	u8		taustat[PK2MAP_MAP_SIZE];	// map bg tiles 256*224
+	u8		seinat [PK2MAP_MAP_SIZE];	// map fg tiles 256*224
+	u8		spritet[PK2MAP_MAP_SIZE];	// map sprites 256*224
+	char		protot [PK2MAP_MAP_MAX_PROTOTYPES][13]; // map prototype list .spr
+	bool		reunat [PK2MAP_MAP_SIZE]; // map edges - calculated during game
 
 	int			palikat_buffer;		// index of block palette
 	int			taustakuva_buffer;	// index of bg image

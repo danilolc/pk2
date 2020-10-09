@@ -135,6 +135,13 @@ int CreateDir(std::string path){
 	
 }
 
+int RemoveDir(std::string path) {
+
+	// TODO
+	return 1;
+
+}
+
 #else
 
 #ifdef __ANDROID__
@@ -183,9 +190,19 @@ int CreateDir(std::string path) {
 	
 }
 
+int RemoveDir(std::string path) {
 
+	return rmdir(path.c_str());
+
+}
 
 #endif
+
+int  RenameDir(std::string old_path, std::string new_path) {
+
+	return rename(old_path.c_str(), new_path.c_str());
+
+}
 
 void Show_Error(const char* txt) {
 	

@@ -61,7 +61,7 @@ MapClass::MapClass(){
 	this->taustakuva_buffer = -1;
 	this->palikat_vesi_buffer = -1;
 
-	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
+	strcpy(this->versio, PK2MAP_LAST_VERSION);
 	strcpy(this->palikka_bmp,"blox.bmp");
 	strcpy(this->taustakuva, "default.bmp");
 	strcpy(this->musiikki,   "default.xm");
@@ -71,9 +71,9 @@ MapClass::MapClass(){
 
 	this->jakso		= 0;
 	this->ilma		= ILMA_NORMAALI;
-	this->kytkin1_aika = KYTKIN_ALOITUSARVO;
-	this->kytkin2_aika = KYTKIN_ALOITUSARVO;
-	this->kytkin3_aika = KYTKIN_ALOITUSARVO;
+	this->kytkin1_aika = SWITCH_INITIAL_VALUE;
+	this->kytkin2_aika = SWITCH_INITIAL_VALUE;
+	this->kytkin3_aika = SWITCH_INITIAL_VALUE;
 	this->pelaaja_sprite = 0;
 	this->aika		= 0;
 	this->extra		= PK2KARTTA_EXTRA_EI;
@@ -88,12 +88,12 @@ MapClass::MapClass(){
 	memset(this->spritet, 255, sizeof(spritet));
 	memset(this->reunat,  0,   sizeof(reunat));
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
+	for (u32 i=0; i<PK2MAP_MAP_MAX_PROTOTYPES; i++)
 		strcpy(this->protot[i],"");
 
 	this->taustakuva_buffer = PDraw::image_new(640,480);
-	this->palikat_buffer = PDraw::image_new(PK2KARTTA_BLOCK_PALETTI_LEVEYS,PK2KARTTA_BLOCK_PALETTI_KORKEUS);
-	this->palikat_vesi_buffer = PDraw::image_new(PK2KARTTA_BLOCK_PALETTI_LEVEYS,32); //water
+	this->palikat_buffer = PDraw::image_new(PK2MAP_BLOCK_PALETTE_WIDTH,PK2MAP_BLOCK_PALETTE_HEIGHT);
+	this->palikat_vesi_buffer = PDraw::image_new(PK2MAP_BLOCK_PALETTE_WIDTH,32); //water
 
 	PDraw::image_fill(this->taustakuva_buffer,255);
 	PDraw::image_fill(this->palikat_buffer,255);
@@ -128,19 +128,19 @@ MapClass::MapClass(const MapClass &kartta){
 	this->y				= kartta.y;
 	this->icon			= kartta.icon;
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 		this->taustat[i] = kartta.taustat[i];
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 		this->seinat[i] = kartta.seinat[i];
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 		this->spritet[i] = kartta.spritet[i];
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 		this->reunat[i] = kartta.reunat[i];
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
+	for (u32 i=0; i<PK2MAP_MAP_MAX_PROTOTYPES; i++)
 		strcpy(this->protot[i],kartta.protot[i]);
 
 
@@ -158,9 +158,9 @@ MapClass::~MapClass(){
 MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
 
 	u32 x, y;
-	u32 kartan_vasen = PK2KARTTA_KARTTA_LEVEYS,//PK2KARTTA_KARTTA_LEVEYS/2,
+	u32 kartan_vasen = PK2MAP_MAP_WIDTH,//PK2MAP_MAP_WIDTH/2,
 		kartan_oikea = 0,
-		kartan_yla	 = PK2KARTTA_KARTTA_KORKEUS,//PK2KARTTA_KARTTA_KORKEUS/2,
+		kartan_yla	 = PK2MAP_MAP_HEIGHT,//PK2MAP_MAP_HEIGHT/2,
 		kartan_ala	 = 0,
 		kartan_korkeus = 0,
 		kartan_leveys = 0;
@@ -168,9 +168,9 @@ MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
 	MAP_RECT rajat = {0,0,0,0};
 
 	// tutkitaan kartan reunimmaiset tilet ja asetetaan reunat niiden mukaan
-	for (y=0; y<PK2KARTTA_KARTTA_KORKEUS; y++) {
-		for (x=0; x<PK2KARTTA_KARTTA_LEVEYS; x++)	{
-			if (lahde[x+y*PK2KARTTA_KARTTA_LEVEYS] != 255) {
+	for (y=0; y<PK2MAP_MAP_HEIGHT; y++) {
+		for (x=0; x<PK2MAP_MAP_WIDTH; x++)	{
+			if (lahde[x+y*PK2MAP_MAP_WIDTH] != 255) {
 				if (x < kartan_vasen)
 					kartan_vasen = x;
 				if (y < kartan_yla)
@@ -199,10 +199,10 @@ MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
 
 	for (y=0; y<kartan_korkeus; y++){
 		for (x=0; x<kartan_leveys; x++){
-			tile = lahde[(x+kartan_vasen)+(y+kartan_yla)*PK2KARTTA_KARTTA_LEVEYS];
+			tile = lahde[(x+kartan_vasen)+(y+kartan_yla)*PK2MAP_MAP_WIDTH];
 			kohde[x+y*kartan_leveys] = tile;
 			if (x==0 || y==0 || x==kartan_leveys-1 || y==kartan_korkeus-1)
-				lahde[(x+kartan_vasen)+(y+kartan_yla)*PK2KARTTA_KARTTA_LEVEYS] = 104;
+				lahde[(x+kartan_vasen)+(y+kartan_yla)*PK2MAP_MAP_WIDTH] = 104;
 		}
 	}
 
@@ -217,33 +217,33 @@ MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
 MAP_RECT MapClass::LaskeTallennusAlue(u8 *alue){
 
 	u32 x,y;
-	u32 kartan_vasen		= PK2KARTTA_KARTTA_LEVEYS,
+	u32 kartan_vasen		= PK2MAP_MAP_WIDTH,
 		  kartan_oikea		= 0,
-		  kartan_yla		= PK2KARTTA_KARTTA_KORKEUS,
+		  kartan_yla		= PK2MAP_MAP_HEIGHT,
 		  kartan_ala		= 0;
 
 	MAP_RECT rajat = {0,0,0,0};
 
 	// tutkitaan kartan reunimmaiset tilet ja asetetaan reunat niiden mukaan
-	for (y=0; y<PK2KARTTA_KARTTA_KORKEUS; y++) {
-		for (x=0; x<PK2KARTTA_KARTTA_LEVEYS; x++)	{
-			if (alue[x+y*PK2KARTTA_KARTTA_LEVEYS] != 255) {
+	for (y=0; y<PK2MAP_MAP_HEIGHT; y++) {
+		for (x=0; x<PK2MAP_MAP_WIDTH; x++)	{
+			if (alue[x+y*PK2MAP_MAP_WIDTH] != 255) {
 
 				if (x < kartan_vasen) {
 					kartan_vasen = x;
-					//alue[x+y*PK2KARTTA_KARTTA_LEVEYS] = 101;
+					//alue[x+y*PK2MAP_MAP_WIDTH] = 101;
 				}
 				if (y < kartan_yla) {
 					kartan_yla = y;
-					//alue[x+y*PK2KARTTA_KARTTA_LEVEYS] = 102;
+					//alue[x+y*PK2MAP_MAP_WIDTH] = 102;
 				}
 				if (x > kartan_oikea) {
 					kartan_oikea = x;
-					//alue[x+y*PK2KARTTA_KARTTA_LEVEYS] = 103;
+					//alue[x+y*PK2MAP_MAP_WIDTH] = 103;
 				}
 				if (y > kartan_ala) {
 					kartan_ala = y;
-					//alue[x+y*PK2KARTTA_KARTTA_LEVEYS] = 104;
+					//alue[x+y*PK2MAP_MAP_WIDTH] = 104;
 				}
 			}
 		}
@@ -280,11 +280,11 @@ void MapClass::LueTallennusAlue(u8 *lahde, MAP_RECT alue, int kohde){
 			for (x=0;x<kartan_leveys;x++) {
 				tile = lahde[x+y*kartan_leveys];
 				if (kohde == 1)
-					taustat[(x+kartan_vasen)+(y+kartan_yla)*PK2KARTTA_KARTTA_LEVEYS] = tile;
+					taustat[(x+kartan_vasen)+(y+kartan_yla)*PK2MAP_MAP_WIDTH] = tile;
 				if (kohde == 2)
-					seinat[(x+kartan_vasen)+(y+kartan_yla)*PK2KARTTA_KARTTA_LEVEYS] = tile;
+					seinat[(x+kartan_vasen)+(y+kartan_yla)*PK2MAP_MAP_WIDTH] = tile;
 				if (kohde == 3)
-					spritet[(x+kartan_vasen)+(y+kartan_yla)*PK2KARTTA_KARTTA_LEVEYS] = tile;
+					spritet[(x+kartan_vasen)+(y+kartan_yla)*PK2MAP_MAP_WIDTH] = tile;
 			}
 		}
 	}
@@ -297,7 +297,7 @@ int MapClass::Tallenna(char *filename){
 
 	PFile::RW* file = SDL_RWFromFile(filename, "w");
 
-	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
+	strcpy(this->versio, PK2MAP_LAST_VERSION);
 
 	//tiedosto->write ((char *)this, sizeof (*this));
 
@@ -370,7 +370,7 @@ int MapClass::Tallenna(char *filename){
 
 	int protoja = 0;
 
-	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+	for (i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
 		if (strlen(this->protot[i]) > 0)
 			protoja++;
 
@@ -379,7 +379,7 @@ int MapClass::Tallenna(char *filename){
 	SDL_RWwrite(file, luku, sizeof(luku), 1);
 	memset(luku, 0, sizeof(luku));
 
-	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+	for (i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
 		if (strlen(this->protot[i]) > 0)
 			SDL_RWwrite(file, this->protot[i], sizeof(this->protot[i]), 1);
 
@@ -416,7 +416,7 @@ int MapClass::Tallenna(char *filename){
 
 	for (y=offset_y;y<=offset_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
 		for (x=offset_x;x<=offset_x+leveys;x++) {
-			tile[0] = this->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+			tile[0] = this->taustat[x+y*PK2MAP_MAP_WIDTH];
 			SDL_RWwrite(file, tile, sizeof(tile), 1);
 		}
 	}
@@ -445,7 +445,7 @@ int MapClass::Tallenna(char *filename){
 	memset(luku, 0, sizeof(luku)); //TODO - MAKE A FUNCTION TO DO THIS
 	for (y=offset_y;y<=offset_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
 		for (x=offset_x;x<=offset_x+leveys;x++) {
-			tile[0] = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+			tile[0] = this->seinat[x+y*PK2MAP_MAP_WIDTH];
 			SDL_RWwrite(file, tile, sizeof(tile), 1);
 		}
 	}
@@ -478,7 +478,7 @@ int MapClass::Tallenna(char *filename){
 	memset(luku, 0, sizeof(luku));
 	for (y=offset_y;y<=offset_y+korkeus;y++) {	// Kirjoitetaan alue tiedostoon tile by tile
 		for (x=offset_x;x<=offset_x+leveys;x++) {
-			tile[0] = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
+			tile[0] = this->spritet[x+y*PK2MAP_MAP_WIDTH];
 			SDL_RWwrite(file, tile, sizeof(tile), 1);
 		}
 	}
@@ -576,7 +576,7 @@ int MapClass::LoadVersion01(PFile::Path path){
 	PFile::ReadRW(file, &kartta, sizeof(PK2KARTTA));
 	PFile::CloseRW(file);
 
-	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
+	strcpy(this->versio, PK2MAP_LAST_VERSION);
 	strcpy(this->palikka_bmp,"blox.bmp");
 	strcpy(this->taustakuva, "default.bmp");
 	strcpy(this->musiikki,   "default.xm");
@@ -588,8 +588,8 @@ int MapClass::LoadVersion01(PFile::Path path){
 	this->extra		= 0;
 	this->tausta	= kartta.taustakuva;
 
-	for (u32 i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
-		this->seinat[i] = kartta.kartta[i%PK2KARTTA_KARTTA_LEVEYS + (i/PK2KARTTA_KARTTA_LEVEYS) * 640];
+	for (u32 i=0;i<PK2MAP_MAP_SIZE;i++)
+		this->seinat[i] = kartta.kartta[i%PK2MAP_MAP_WIDTH + (i/PK2MAP_MAP_WIDTH) * 640];
 
 	memset(this->taustat,255, sizeof(taustat));
 
@@ -621,13 +621,13 @@ int MapClass::LoadVersion10(PFile::Path path){
 	this->extra			= kartta->extra;
 	this->tausta		= kartta->tausta;
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 		this->taustat[i] = kartta->taustat[i];
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0; i<PK2MAP_MAP_SIZE;i++)
 		this->seinat[i] = kartta->seinat[i];
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 		this->spritet[i] = kartta->spritet[i];
 
 
@@ -660,21 +660,21 @@ int MapClass::LoadVersion11(PFile::Path path){
 	PFile::ReadRW(file, &this->extra,      sizeof(u8));
 	PFile::ReadRW(file, &this->tausta,     sizeof(u8));
 	PFile::ReadRW(file, this->taustat,     sizeof(taustat));
-	if (PFile::ReadRW(file, this->seinat,  sizeof(seinat)) != PK2KARTTA_KARTTA_KOKO)
+	if (PFile::ReadRW(file, this->seinat,  sizeof(seinat)) != PK2MAP_MAP_SIZE)
 		virhe = 2;
 	PFile::ReadRW(file, this->spritet,     sizeof(spritet));
 
 	PFile::CloseRW(file);
 
-	for (u32 i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0;i<PK2MAP_MAP_SIZE;i++)
 		if (seinat[i] != 255)
 			seinat[i] -= 50;
 
-	for (u32 i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0;i<PK2MAP_MAP_SIZE;i++)
 		if (taustat[i] != 255)
 			taustat[i] -= 50;
 
-	for (u32 i=0;i<PK2KARTTA_KARTTA_KOKO;i++)
+	for (u32 i=0;i<PK2MAP_MAP_SIZE;i++)
 		if (spritet[i] != 255)
 			spritet[i] -= 50;
 
@@ -696,7 +696,7 @@ int MapClass::LoadVersion12(PFile::Path path){
 	memset(this->seinat , 255, sizeof(this->seinat));
 	memset(this->spritet, 255, sizeof(this->spritet));
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA; i++)
+	for (u32 i=0; i<PK2MAP_MAP_MAX_PROTOTYPES; i++)
 		strcpy(this->protot[i],"");
 
 	//tiedosto->read ((char *)this, sizeof (*this));
@@ -738,7 +738,7 @@ int MapClass::LoadVersion12(PFile::Path path){
 	PFile::ReadRW(file, seinat,  sizeof(seinat));
 	PFile::ReadRW(file, spritet, sizeof(spritet));
 
-	PFile::ReadRW(file, protot, sizeof(protot[0]) * PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA);
+	PFile::ReadRW(file, protot, sizeof(protot[0]) * PK2MAP_MAP_MAX_PROTOTYPES);
 
 	PFile::CloseRW(file);
 
@@ -761,7 +761,7 @@ int MapClass::LoadVersion13(PFile::Path path){
 	memset(this->seinat , 255, sizeof(this->seinat));
 	memset(this->spritet, 255, sizeof(this->spritet));
 
-	for (i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+	for (i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
 		strcpy(this->protot[i],"");
 
 	PFile::ReadRW(file, versio,      sizeof(versio));
@@ -834,7 +834,7 @@ int MapClass::LoadVersion13(PFile::Path path){
 	PFile::ReadRW(file, luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
 	PFile::ReadRW(file, luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
 	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
-		u32 x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
+		u32 x_start = offset_x + y * PK2MAP_MAP_WIDTH;
 		PFile::ReadRW(file, &taustat[x_start], leveys + 1);
 	}
 
@@ -844,7 +844,7 @@ int MapClass::LoadVersion13(PFile::Path path){
 	PFile::ReadRW(file, luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
 	PFile::ReadRW(file, luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
 	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
-		u32 x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
+		u32 x_start = offset_x + y * PK2MAP_MAP_WIDTH;
 		PFile::ReadRW(file, &seinat[x_start], leveys + 1);
 	}
 
@@ -854,7 +854,7 @@ int MapClass::LoadVersion13(PFile::Path path){
 	PFile::ReadRW(file, luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
 	PFile::ReadRW(file, luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
 	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
-		u32 x_start = offset_x + y * PK2KARTTA_KARTTA_LEVEYS;
+		u32 x_start = offset_x + y * PK2MAP_MAP_WIDTH;
 		PFile::ReadRW(file, &spritet[x_start], leveys + 1);
 	}
 
@@ -864,7 +864,7 @@ int MapClass::LoadVersion13(PFile::Path path){
 }
 
 void MapClass::Tyhjenna(){
-	strcpy(this->versio, PK2KARTTA_VIIMEISIN_VERSIO);
+	strcpy(this->versio, PK2MAP_LAST_VERSION);
 	strcpy(this->palikka_bmp,"blox.bmp");
 	strcpy(this->taustakuva, "default.bmp");
 	strcpy(this->musiikki,   "default.xm");
@@ -874,9 +874,9 @@ void MapClass::Tyhjenna(){
 
 	this->jakso			= 0;
 	this->ilma			= ILMA_NORMAALI;
-	this->kytkin1_aika	= KYTKIN_ALOITUSARVO;
-	this->kytkin2_aika	= KYTKIN_ALOITUSARVO;
-	this->kytkin3_aika	= KYTKIN_ALOITUSARVO;
+	this->kytkin1_aika	= SWITCH_INITIAL_VALUE;
+	this->kytkin2_aika	= SWITCH_INITIAL_VALUE;
+	this->kytkin3_aika	= SWITCH_INITIAL_VALUE;
 	this->pelaaja_sprite = 0;
 	this->aika		= 0;
 	this->extra		= PK2KARTTA_EXTRA_EI;
@@ -890,7 +890,7 @@ void MapClass::Tyhjenna(){
 	memset(this->seinat,  255, sizeof(seinat));
 	memset(this->spritet, 255, sizeof(spritet));
 
-	for (u32 i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+	for (u32 i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
 		strcpy(this->protot[i],"");
 
 	//PDraw::image_fill(this->palikat_buffer,255);
@@ -912,13 +912,13 @@ MapClass &MapClass::operator = (const MapClass &kartta){
 	this->extra		= kartta.extra;
 	this->tausta	= kartta.tausta;
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 		this->seinat[i] = kartta.seinat[i];
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 		this->taustat[i] = kartta.taustat[i];
 
-	for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 		this->spritet[i] = kartta.spritet[i];
 
 	PDraw::image_copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
@@ -1002,16 +1002,16 @@ void MapClass::Kopioi(MapClass &kartta){
 		this->extra		= kartta.extra;
 		this->tausta	= kartta.tausta;
 
-		for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+		for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 			this->seinat[i] = kartta.seinat[i];
 
-		for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+		for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 			this->taustat[i] = kartta.taustat[i];
 
-		for (u32 i=0; i<PK2KARTTA_KARTTA_KOKO; i++)
+		for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
 			this->spritet[i] = kartta.spritet[i];
 
-		for (u32 i=0;i<PK2KARTTA_KARTTA_MAX_PROTOTYYPPEJA;i++)
+		for (u32 i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
 			strcpy(this->protot[i],kartta.protot[i]);
 
 		PDraw::image_fill(palikat_buffer,255);
@@ -1032,10 +1032,10 @@ void MapClass::Place_Sprites() {
 	Sprites_clear();
 	Sprites_add(this->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
 
-	for (u32 x = 0; x < PK2KARTTA_KARTTA_LEVEYS; x++) {
-		for (u32 y = 0; y < PK2KARTTA_KARTTA_KORKEUS; y++) {
+	for (u32 x = 0; x < PK2MAP_MAP_WIDTH; x++) {
+		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT; y++) {
 
-			int sprite = this->spritet[x+y*PK2KARTTA_KARTTA_LEVEYS];
+			int sprite = this->spritet[x+y*PK2MAP_MAP_WIDTH];
 
 			if (sprite != 255 && Prototypes_List[sprite].korkeus > 0) {
 
@@ -1059,7 +1059,7 @@ void MapClass::Select_Start() {
 	uint starts_count = 0, alku = 0;
 	uint x, y;
 
-	for (x=0; x<PK2KARTTA_KARTTA_KOKO; x++)
+	for (x=0; x<PK2MAP_MAP_SIZE; x++)
 		if (this->seinat[x] == BLOCK_ALOITUS)
 			starts_count++;
 
@@ -1067,9 +1067,9 @@ void MapClass::Select_Start() {
 		alku = rand()%starts_count + 1;
 		starts_count = 1;
 
-		for (x=0; x < PK2KARTTA_KARTTA_LEVEYS; x++)
-			for (y=0; y < PK2KARTTA_KARTTA_KORKEUS; y++)
-				if (this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] == BLOCK_ALOITUS){
+		for (x=0; x < PK2MAP_MAP_WIDTH; x++)
+			for (y=0; y < PK2MAP_MAP_HEIGHT; y++)
+				if (this->seinat[x+y*PK2MAP_MAP_WIDTH] == BLOCK_ALOITUS){
 					if (starts_count == alku){
 						pos_x = x*32;
 						pos_y = y*32;
@@ -1096,7 +1096,7 @@ int MapClass::Count_Keys() {
 
 	int keys = 0;
 
-	for (x=0; x < PK2KARTTA_KARTTA_KOKO; x++){
+	for (x=0; x < PK2MAP_MAP_SIZE; x++){
 		sprite = this->spritet[x];
 		if (sprite != 255)
 			if (Prototypes_List[sprite].avain && 
@@ -1112,20 +1112,20 @@ void MapClass::Change_SkullBlocks() {
 	u8 front, back;
 	u32 x,y;
 
-	for (x=0; x<PK2KARTTA_KARTTA_LEVEYS; x++)
-		for (y=0; y<PK2KARTTA_KARTTA_KORKEUS; y++){
-			front = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
-			back  = this->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+	for (x=0; x<PK2MAP_MAP_WIDTH; x++)
+		for (y=0; y<PK2MAP_MAP_HEIGHT; y++){
+			front = this->seinat[x+y*PK2MAP_MAP_WIDTH];
+			back  = this->taustat[x+y*PK2MAP_MAP_WIDTH];
 
 			if (front == BLOCK_KALLOSEINA){
-				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
+				this->seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
 				if (back != BLOCK_KALLOSEINA)
 					Effect_SmokeClouds(x*32+24,y*32+6);
 
 			}
 
 			if (back == BLOCK_KALLOTAUSTA && front == 255)
-				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = BLOCK_KALLOSEINA;
+				this->seinat[x+y*PK2MAP_MAP_WIDTH] = BLOCK_KALLOSEINA;
 		}
 
 	//Put in game
@@ -1141,11 +1141,11 @@ void MapClass::Open_Locks() {
 	u8 palikka;
 	u32 x,y;
 
-	for (x=0; x < PK2KARTTA_KARTTA_LEVEYS; x++)
-		for (y=0; y < PK2KARTTA_KARTTA_KORKEUS; y++){
-			palikka = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+	for (x=0; x < PK2MAP_MAP_WIDTH; x++)
+		for (y=0; y < PK2MAP_MAP_HEIGHT; y++){
+			palikka = this->seinat[x+y*PK2MAP_MAP_WIDTH];
 			if (palikka == BLOCK_LUKKO){
-				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
+				this->seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
 				Effect_SmokeClouds(x*32+6,y*32+6);
 			}
 		}
@@ -1166,42 +1166,42 @@ void MapClass::Calculate_Edges(){
 
 	memset(this->reunat, false, sizeof(this->reunat));
 
-	for (u32 x=1; x<PK2KARTTA_KARTTA_LEVEYS-1; x++)
-		for (u32 y=0; y<PK2KARTTA_KARTTA_KORKEUS-1; y++){
+	for (u32 x=1; x<PK2MAP_MAP_WIDTH-1; x++)
+		for (u32 y=0; y<PK2MAP_MAP_HEIGHT-1; y++){
 			edge = false;
 
-			tile1 = this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+			tile1 = this->seinat[x+y*PK2MAP_MAP_WIDTH];
 
 			if (tile1 > BLOCK_LOPETUS)
-				this->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 255;
+				this->seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
 
-			tile2 = this->seinat[x+(y+1)*PK2KARTTA_KARTTA_LEVEYS];
+			tile2 = this->seinat[x+(y+1)*PK2MAP_MAP_WIDTH];
 
 			if (tile1 > 79 || tile1 == BLOCK_ESTO_ALAS) tile1 = 1; else tile1 = 0;
 			if (tile2 > 79) tile2 = 1; else tile2 = 0;
 
 			if (tile1 == 1 && tile2 == 1){
-				tile1 = this->seinat[x+1+(y+1)*PK2KARTTA_KARTTA_LEVEYS];
-				tile2 = this->seinat[x-1+(y+1)*PK2KARTTA_KARTTA_LEVEYS];
+				tile1 = this->seinat[x+1+(y+1)*PK2MAP_MAP_WIDTH];
+				tile2 = this->seinat[x-1+(y+1)*PK2MAP_MAP_WIDTH];
 
 				if (tile1 < 80  && !(tile1 < 60 && tile1 > 49)) tile1 = 1; else tile1 = 0;
 				if (tile2 < 80  && !(tile2 < 60 && tile2 > 49)) tile2 = 1; else tile2 = 0;
 
 				if (tile1 == 1){
-					tile3 = this->seinat[x+1+y*PK2KARTTA_KARTTA_LEVEYS];
+					tile3 = this->seinat[x+1+y*PK2MAP_MAP_WIDTH];
 					if (tile3 > 79 || (tile3 < 60 && tile3 > 49) || tile3 == BLOCK_ESTO_ALAS)
 						edge = true;
 				}
 
 				if (tile2 == 1){
-					tile3 = this->seinat[x-1+y*PK2KARTTA_KARTTA_LEVEYS];
+					tile3 = this->seinat[x-1+y*PK2MAP_MAP_WIDTH];
 					if (tile3 > 79 || (tile3 < 60 && tile3 > 49) || tile3 == BLOCK_ESTO_ALAS)
 						edge = true;
 				}
 
 				if (edge){
-					this->reunat[x+y*PK2KARTTA_KARTTA_LEVEYS] = true;
-					//this->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS] = 49; //Debug
+					this->reunat[x+y*PK2MAP_MAP_WIDTH] = true;
+					//this->taustat[x+y*PK2MAP_MAP_WIDTH] = 49; //Debug
 				}
 			}
 		}
@@ -1418,12 +1418,12 @@ int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 	int kartta_y = kamera_y/32;
 
 	for (int x = 0; x < ruudun_leveys_palikoina; x++){
-		if (x + kartta_x < 0 || uint(x + kartta_x) > PK2KARTTA_KARTTA_LEVEYS) continue;
+		if (x + kartta_x < 0 || uint(x + kartta_x) > PK2MAP_MAP_WIDTH) continue;
 
 		for (int y = 0; y < ruudun_korkeus_palikoina; y++){
-			if (y + kartta_y < 0 || uint(y + kartta_y) > PK2KARTTA_KARTTA_KORKEUS) continue;
+			if (y + kartta_y < 0 || uint(y + kartta_y) > PK2MAP_MAP_HEIGHT) continue;
 
-			int i = x + kartta_x + (y + kartta_y) * PK2KARTTA_KARTTA_LEVEYS;
+			int i = x + kartta_x + (y + kartta_y) * PK2MAP_MAP_WIDTH;
 			if( i < 0 || i >= int(sizeof(taustat)) ) continue; //Dont access a not allowed address
 
 			int palikka = taustat[i];
@@ -1462,8 +1462,8 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		if (ajastin1 < 64)
 			ajastin1_y = ajastin1;
 
-		if (ajastin1 > KYTKIN_ALOITUSARVO-64)
-			ajastin1_y = KYTKIN_ALOITUSARVO - ajastin1;
+		if (ajastin1 > SWITCH_INITIAL_VALUE-64)
+			ajastin1_y = SWITCH_INITIAL_VALUE - ajastin1;
 	}
 
 	if (ajastin2 > 0){
@@ -1472,8 +1472,8 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		if (ajastin2 < 64)
 			ajastin2_y = ajastin2;
 
-		if (ajastin2 > KYTKIN_ALOITUSARVO-64)
-			ajastin2_y = KYTKIN_ALOITUSARVO - ajastin2;
+		if (ajastin2 > SWITCH_INITIAL_VALUE-64)
+			ajastin2_y = SWITCH_INITIAL_VALUE - ajastin2;
 	}
 
 	if (ajastin3 > 0){
@@ -1482,18 +1482,18 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		if (ajastin3 < 64)
 			ajastin3_x = ajastin3;
 
-		if (ajastin3 > KYTKIN_ALOITUSARVO-64)
-			ajastin3_x = KYTKIN_ALOITUSARVO - ajastin3;
+		if (ajastin3 > SWITCH_INITIAL_VALUE-64)
+			ajastin3_x = SWITCH_INITIAL_VALUE - ajastin3;
 	}
 
 
 	for (int x = -1; x < ruudun_leveys_palikoina + 1; x++) {
-		if (x + kartta_x < 0 || uint(x + kartta_x) > PK2KARTTA_KARTTA_LEVEYS) continue;
+		if (x + kartta_x < 0 || uint(x + kartta_x) > PK2MAP_MAP_WIDTH) continue;
 
 		for (int y = -1; y < ruudun_korkeus_palikoina + 1; y++) {
-			if (y + kartta_y < 0 || uint(y + kartta_y) > PK2KARTTA_KARTTA_KORKEUS) continue;
+			if (y + kartta_y < 0 || uint(y + kartta_y) > PK2MAP_MAP_HEIGHT) continue;
 
-			int i = x + kartta_x + (y + kartta_y) * PK2KARTTA_KARTTA_LEVEYS;
+			int i = x + kartta_x + (y + kartta_y) * PK2MAP_MAP_WIDTH;
 			if( i < 0 || i >= int(sizeof(seinat)) ) continue; //Dont access a not allowed address
 
 			palikka = seinat[i];

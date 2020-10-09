@@ -12,10 +12,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <string>
-//C++17
-#include <filesystem>
-
-namespace fs = std::filesystem;
 
 int screen_width  = 800;
 int screen_height = 480;
@@ -83,13 +79,10 @@ void Prepare_DataPath() {
 
 void Move_DataPath(std::string new_path) {
 
-	PLog::Write(PLog::DEBUG, "PK2", "Moving data from %s to %s", data_path.c_str(), new_path.c_str());
+	PLog::Write(PLog::DEBUG, "PK2", "Renaming data from %s to %s", data_path.c_str(), new_path.c_str());
 
-	for(fs::path p : fs::directory_iterator(data_path)) {
-		std::string dst = new_path/p.filename();
-		PLog::Write(PLog::DEBUG, "PK2", "	rename file %s -> %s", p.c_str(), dst.c_str());
-        fs::rename(p, dst);
-    }
+	PUtils::RemoveDir(new_path);
+	PUtils::RenameDir(data_path, new_path);
 
 	data_path = new_path;
 

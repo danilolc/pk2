@@ -334,7 +334,7 @@ void Draw_Menu_Main() {
 void Draw_Menu_Name() {
 
 	bool mouse_on_text = false;
-	int nameSize = (int)strlen(menu_name);
+	size_t nameSize = strlen(menu_name);
 
 	int keyboard_size;
 	if(/*editing_name &&*/ PUtils::Is_Mobile())
@@ -396,7 +396,7 @@ void Draw_Menu_Name() {
 
 		if (in != '\0') {
 
-			for(int j = sizeof(menu_name) - 1; j > menu_name_index; j--)
+			for(uint j = sizeof(menu_name) - 1; j > menu_name_index; j--)
 				menu_name[j] = menu_name[j-1];
 			
 			menu_name[menu_name_index] = in;
@@ -633,7 +633,7 @@ void Draw_Menu_Graphics() {
 		}
 		my += 30;
 
-		#endif
+		//#endif //TODO - Fix touch position when screen fit 
 
 		if (Settings.isFit){
 			if (Draw_Menu_Text(true,"screen fit is on",180,my)){
@@ -649,6 +649,7 @@ void Draw_Menu_Graphics() {
 		}
 		my += 30;
 
+		#endif
 
 		if (Settings.isFiltered){
 			if (Draw_Menu_Text(true,"bilinear filter is on",180,my)){
@@ -725,6 +726,8 @@ void Draw_Menu_Graphics() {
 
 			if (external_dir) {
 				
+				PLog::Write(PLog::DEBUG, "PK2", "Android write state: %i", SDL_AndroidGetExternalStorageState());
+
 				//Wait for permission
 				if (SDL_AndroidGetExternalStorageState() != SDL_ANDROID_EXTERNAL_STORAGE_WRITE)
 					SDL_AndroidRequestPermission("android.permission.WRITE_EXTERNAL_STORAGE");
@@ -732,7 +735,6 @@ void Draw_Menu_Graphics() {
 				if (SDL_AndroidGetExternalStorageState() == SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
 					
 					//Copy from internal to external
-					PUtils::CreateDir(External_Path);
 					Move_DataPath(External_Path);
 					
 				} else {
@@ -749,9 +751,7 @@ void Draw_Menu_Graphics() {
 				} else {
 				
 					//Copy from external to internal
-					PUtils::CreateDir(Internal_Path);
 					Move_DataPath(Internal_Path);
-
 
 				}
 			}
@@ -1072,7 +1072,7 @@ void Draw_Menu_Episodes() {
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.episodes_choose_episode),50,90);
 	my += 80;
 
-	int size = episodes.size();
+	size_t size = episodes.size();
 	if (size > 10) {
 		
 		char luku[36];
@@ -1096,7 +1096,7 @@ void Draw_Menu_Episodes() {
 			episode_page++;
 	}
 
-	for (int i = episode_page*10; i < episode_page*10 + 10; i++) {
+	for (uint i = episode_page*10; i < episode_page*10 + 10; i++) {
 		if (i >= size)
 			break;
 		
@@ -1146,7 +1146,7 @@ void Draw_Menu_Language() {
 	if (end > langlistindex + 10)
 		end = langlistindex + 10;
 
-	for ( int i = langlistindex; i < end; i++ ) {
+	for ( uint i = langlistindex; i < end; i++ ) {
 
 		if(Draw_Menu_Text(true,langlist[i].c_str(),150,my,'.')) {
 

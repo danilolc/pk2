@@ -185,7 +185,7 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/* Examine if it is a key and touches lock wall                       */
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_LUKKO && sprite.tyyppi->avain){
-			Game->map->seinat[palikka.vasen/32+(palikka.yla/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
+			Game->map->seinat[palikka.vasen/32+(palikka.yla/32)*PK2MAP_MAP_WIDTH] = 255;
 			Game->map->Calculate_Edges();
 
 			sprite.piilota = true;
@@ -271,21 +271,21 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 
 					if (sprite.kytkinpaino >= 1) { // Sprite can press the buttons
 						if (palikka.koodi == BLOCK_KYTKIN1 && Game->button1 == 0) {
-							Game->button1 = KYTKIN_ALOITUSARVO;
+							Game->button1 = SWITCH_INITIAL_VALUE;
 							Game->button_moving = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 							PInput::Vibrate(1000);
 						}
 
 						if (palikka.koodi == BLOCK_KYTKIN2 && Game->button2 == 0) {
-							Game->button2 = KYTKIN_ALOITUSARVO;
+							Game->button2 = SWITCH_INITIAL_VALUE;
 							Game->button_moving = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 							PInput::Vibrate(1000);
 						}
 
 						if (palikka.koodi == BLOCK_KYTKIN3 && Game->button3 == 0) {
-							Game->button3 = KYTKIN_ALOITUSARVO;
+							Game->button3 = SWITCH_INITIAL_VALUE;
 							Game->button_moving = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 							PInput::Vibrate(1000);
@@ -1273,13 +1273,13 @@ int Sprite_Movement(int i){
 	if (sprite.y < -sprite_korkeus)
 		sprite.y = -sprite_korkeus;
 
-	if (sprite.x > PK2KARTTA_KARTTA_LEVEYS*32)
-		sprite.x = PK2KARTTA_KARTTA_LEVEYS*32;
+	if (sprite.x > PK2MAP_MAP_WIDTH*32)
+		sprite.x = PK2MAP_MAP_WIDTH*32;
 
 	// If the sprite falls under the lower edge of the map
-	if (sprite.y > PK2KARTTA_KARTTA_KORKEUS*32 + sprite_korkeus) {
+	if (sprite.y > PK2MAP_MAP_HEIGHT*32 + sprite_korkeus) {
 
-		sprite.y = PK2KARTTA_KARTTA_KORKEUS*32 + sprite_korkeus;
+		sprite.y = PK2MAP_MAP_HEIGHT*32 + sprite_korkeus;
 		sprite.energia = 0;
 		if (&sprite != Player_Sprite)
 			sprite.piilota = true;
@@ -1784,7 +1784,7 @@ int BonusSprite_Movement(int i){
 			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
 				Player_Sprite->invisible = sprite.tyyppi->latausaika;
 
-			//Game->map->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2KARTTA_KARTTA_LEVEYS] = 255;
+			//Game->map->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2MAP_MAP_WIDTH] = 255;
 
 			if (sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 				Player_Sprite->energia -= sprite.tyyppi->vahinko;

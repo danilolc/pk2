@@ -89,8 +89,8 @@ void Block_Set_Barriers(PK2BLOCK &block) {
 		if (Game->button1 < 64)
 			kytkin1_y = Game->button1;
 
-		if (Game->button1 > KYTKIN_ALOITUSARVO-64)
-			kytkin1_y = KYTKIN_ALOITUSARVO - Game->button1;
+		if (Game->button1 > SWITCH_INITIAL_VALUE-64)
+			kytkin1_y = SWITCH_INITIAL_VALUE - Game->button1;
 	
 	}
 
@@ -101,8 +101,8 @@ void Block_Set_Barriers(PK2BLOCK &block) {
 		if (Game->button2 < 64)
 			kytkin2_y = Game->button2;
 
-		if (Game->button2 > KYTKIN_ALOITUSARVO-64)
-			kytkin2_y = KYTKIN_ALOITUSARVO - Game->button2;
+		if (Game->button2 > SWITCH_INITIAL_VALUE-64)
+			kytkin2_y = SWITCH_INITIAL_VALUE - Game->button2;
 	
 	}
 
@@ -113,8 +113,8 @@ void Block_Set_Barriers(PK2BLOCK &block) {
 		if (Game->button3 < 64)
 			kytkin3_x = Game->button3;
 
-		if (Game->button3 > KYTKIN_ALOITUSARVO-64)
-			kytkin3_x = KYTKIN_ALOITUSARVO - Game->button3;
+		if (Game->button3 > SWITCH_INITIAL_VALUE-64)
+			kytkin3_x = SWITCH_INITIAL_VALUE - Game->button3;
 	
 	}
 
@@ -172,12 +172,12 @@ void Block_Set_Barriers(PK2BLOCK &block) {
 
 }
 
-PK2BLOCK Block_Get(int x, int y) {
+PK2BLOCK Block_Get(u32 x, u32 y) {
 
 	PK2BLOCK block;
 
     // Outside the screen
-	if (x < 0 || x > PK2KARTTA_KARTTA_LEVEYS || y < 0 || y > PK2KARTTA_KARTTA_KORKEUS) {
+	if (x > PK2MAP_MAP_WIDTH || y > PK2MAP_MAP_HEIGHT) {
 		
 		block.koodi  = 255;
 		block.tausta = true;
@@ -191,7 +191,7 @@ PK2BLOCK Block_Get(int x, int y) {
 
 	}
 
-	u8 i = Game->map->seinat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+	u8 i = Game->map->seinat[x+y*PK2MAP_MAP_WIDTH];
 
 	if (i<150) { //If it is ground
 
@@ -218,12 +218,12 @@ PK2BLOCK Block_Get(int x, int y) {
 	
 	}
 
-	i = Game->map->taustat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+	i = Game->map->taustat[x+y*PK2MAP_MAP_WIDTH];
 
 	if (i>131 && i<140)
 		block.water = true;
 
-	block.border = Game->map->reunat[x+y*PK2KARTTA_KARTTA_LEVEYS];
+	block.border = Game->map->reunat[x+y*PK2MAP_MAP_WIDTH];
 
 	return block;
 }

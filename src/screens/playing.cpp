@@ -633,11 +633,11 @@ int Update_Camera(){
 	if (Game->camera_y < 0)
 		Game->camera_y = 0;
 
-	if (Game->camera_x > int(PK2KARTTA_KARTTA_LEVEYS-screen_width/32)*32)
-		Game->camera_x = int(PK2KARTTA_KARTTA_LEVEYS-screen_width/32)*32;
+	if (Game->camera_x > int(PK2MAP_MAP_WIDTH-screen_width/32)*32)
+		Game->camera_x = int(PK2MAP_MAP_WIDTH-screen_width/32)*32;
 
-	if (Game->camera_y > int(PK2KARTTA_KARTTA_KORKEUS-screen_height/32)*32)
-		Game->camera_y = int(PK2KARTTA_KARTTA_KORKEUS-screen_height/32)*32;
+	if (Game->camera_y > int(PK2MAP_MAP_HEIGHT-screen_height/32)*32)
+		Game->camera_y = int(PK2MAP_MAP_HEIGHT-screen_height/32)*32;
 
 	return 0;
 }
@@ -787,9 +787,9 @@ int Screen_InGame(){
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::Z)) {
-				if (Game->button1 < KYTKIN_ALOITUSARVO - 64) Game->button1 = KYTKIN_ALOITUSARVO;
-				if (Game->button2 < KYTKIN_ALOITUSARVO - 64) Game->button2 = KYTKIN_ALOITUSARVO;
-				if (Game->button3 < KYTKIN_ALOITUSARVO - 64) Game->button3 = KYTKIN_ALOITUSARVO;
+				if (Game->button1 < SWITCH_INITIAL_VALUE - 64) Game->button1 = SWITCH_INITIAL_VALUE;
+				if (Game->button2 < SWITCH_INITIAL_VALUE - 64) Game->button2 = SWITCH_INITIAL_VALUE;
+				if (Game->button3 < SWITCH_INITIAL_VALUE - 64) Game->button3 = SWITCH_INITIAL_VALUE;
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::X)) {

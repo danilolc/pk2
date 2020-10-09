@@ -166,8 +166,8 @@ int GameClass::Move_Blocks() {
 		if (this->button1 < 64)
 			kytkin1_y = this->button1;
 
-		if (this->button1 > KYTKIN_ALOITUSARVO-64)
-			kytkin1_y = KYTKIN_ALOITUSARVO - this->button1;
+		if (this->button1 > SWITCH_INITIAL_VALUE-64)
+			kytkin1_y = SWITCH_INITIAL_VALUE - this->button1;
 	}
 
 	if (this->button2 > 0) {
@@ -176,8 +176,8 @@ int GameClass::Move_Blocks() {
 		if (this->button2 < 64)
 			kytkin2_y = this->button2;
 
-		if (this->button2 > KYTKIN_ALOITUSARVO-64)
-			kytkin2_y = KYTKIN_ALOITUSARVO - this->button2;
+		if (this->button2 > SWITCH_INITIAL_VALUE-64)
+			kytkin2_y = SWITCH_INITIAL_VALUE - this->button2;
 	}
 
 	if (this->button3 > 0) {
@@ -186,8 +186,8 @@ int GameClass::Move_Blocks() {
 		if (this->button3 < 64)
 			kytkin3_x = this->button3;
 
-		if (this->button3 > KYTKIN_ALOITUSARVO-64)
-			kytkin3_x = KYTKIN_ALOITUSARVO - this->button3;
+		if (this->button3 > SWITCH_INITIAL_VALUE-64)
+			kytkin3_x = SWITCH_INITIAL_VALUE - this->button3;
 	}
 
 	kytkin1_y /= 2;
