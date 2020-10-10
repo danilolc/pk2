@@ -23,21 +23,21 @@ enum BLOCKS {
 
 struct PK2BLOCK {
 
-	u8	koodi;
-	bool	tausta;
-	u8	vasemmalle, oikealle, ylos, alas;
-	int 	vasen, oikea, yla, ala;
-	bool	water;
-	bool	border;
+	u8   koodi;
+	bool tausta;
+	u8   vasemmalle, oikealle, ylos, alas;
+	int  vasen, oikea, yla, ala;
+	bool water;
+	bool border;
 
 };
 
 struct PK2BLOCKMASK {
 
-	short int	ylos[32];
-	short int	alas[32];
-	short int	vasemmalle[32];
-	short int	oikealle[32];
+	short int ylos[32];
+	short int alas[32];
+	short int vasemmalle[32];
+	short int oikealle[32];
 
 };
 

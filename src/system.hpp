@@ -11,10 +11,26 @@
 extern int screen_width;
 extern int screen_height;
 
+#ifdef __ANDROID__
+// Variables used on data menu
+
+extern bool external_dir;
+
+extern bool external_writable;
 extern const char* External_Path;
 extern const char* Internal_Path;
+
+extern bool save_on_external;
+extern bool save_on_internal;
+
+extern char external_save_code[8];
+extern char internal_save_code[8];
+
+#endif
+
+extern char id_code[8];
+
 extern std::string data_path;
-extern bool external_dir;
 
 extern int game_assets;
 extern int game_assets2;
@@ -38,8 +54,10 @@ extern bool show_fps;
 extern bool PK2_error;
 extern const char* PK2_error_msg;
 
+void Id_To_String(u32 id, char* string);
+
 void Calculate_SinCos();
-int PK2_Error(const char* msg);
+int  PK2_Error(const char* msg);
 
 void Draw_Cursor(int x, int y);
 void Move_DataPath(std::string new_path);

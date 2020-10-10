@@ -4,18 +4,32 @@
 //#########################
 #pragma once
 
+#include "types.hpp"
+
 #include <vector>
 #include <string>
 
 namespace PFile {
 
 struct Zip;
-typedef void* RW;
 
-size_t ReadRW(RW* rw, void* buffer, int len);
-size_t WriteRW(RW* rw, const void* buffer, int len);
+typedef void RW;
 
 size_t RWToBuffer(RW* rw, void** buffer);
+
+int ReadRW(RW* rw, void* val, size_t size);
+int ReadRW(RW* rw, bool& val);
+int ReadRW(RW* rw, u8& val);
+int ReadRW(RW* rw, u16& val);
+int ReadRW(RW* rw, u32& val);
+int ReadRW(RW* rw, u64& val);
+
+int WriteRW(RW* rw, const void* val, size_t size);
+int WriteRW(RW* rw, bool val);
+int WriteRW(RW* rw, u8 val);
+int WriteRW(RW* rw, u16 val);
+int WriteRW(RW* rw, u32 val);
+int WriteRW(RW* rw, u64 val);
 
 int CloseRW(RW* rw);
 

@@ -6,9 +6,12 @@
 
 #include "engine/platform.hpp"
 
+#include "engine/PFile.hpp"
+
 struct PK2SETTINGS {
 	
 	char versio[4];
+	u32  id;
 	bool ladattu; // if it was started here
 	char kieli[PE_PATH_SIZE]; // language
 
@@ -49,6 +52,8 @@ struct PK2SETTINGS {
 };
 
 extern PK2SETTINGS Settings;
+
+int Settings_GetId(PFile::Path path, u32 id);
 
 int Settings_Open();
 int Settings_Save();

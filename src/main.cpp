@@ -199,8 +199,13 @@ int main(int argc, char *argv[]) {
 	PLog::Write(PLog::DEBUG, "PK2", "External %s", External_Path);
 	PLog::Write(PLog::DEBUG, "PK2", "Internal %s", Internal_Path);
 
+	
+
+
+
+
 	// Choose between internal or external path on Android
-	if (SDL_AndroidGetExternalStorageState() == SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
+	if (SDL_AndroidGetExternalStorageState() | SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
 
 		PLog::Write(PLog::DEBUG, "PK2", "External access allowed");
 
@@ -226,11 +231,13 @@ int main(int argc, char *argv[]) {
 		} else {
 
 			PLog::Write(PLog::DEBUG, "PK2", "Settings found on internal");
+			external_dir = false;
 
 		}
 	} else {
 
 		PLog::Write(PLog::DEBUG, "PK2", "External access not allowed");
+		external_dir = false;
 
 	}
 
@@ -238,6 +245,8 @@ int main(int argc, char *argv[]) {
 		data_path = External_Path;
 	else
 		data_path = Internal_Path;
+
+	data_path += PE_SEP;
 
 	#endif
 

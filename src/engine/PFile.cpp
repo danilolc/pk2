@@ -806,28 +806,73 @@ RW* Path::GetRW(const char* mode) {
 
 }
 
-size_t WriteRW(RW* rw, const void* buffer, int len) {
+int ReadRW(RW* rw, void* val, size_t size) {
 
-	SDL_RWops* rwops = (SDL_RWops*) rw;
+	return SDL_RWread((SDL_RWops*)rw, val, 1, size);
 
-	if (rwops->type == 5) { //From const mem
-	
-		// This log may call this function again, doing a infinite loop
-		PLog::Write(PLog::ERR, "PFile", "Can't write const RW");
-		return 0;
-	
-	}
+}
+int ReadRW(RW* rw, bool& val) {
 
-	return SDL_RWwrite(rwops, buffer, len, 1);
+	val = SDL_ReadU8((SDL_RWops*)rw);
+	return 1;
+
+}
+int ReadRW(RW* rw, u8& val) {
+
+	val = SDL_ReadU8((SDL_RWops*)rw);
+	return 1;
+
+}
+int ReadRW(RW* rw, u16& val) {
+
+	val = SDL_ReadBE16((SDL_RWops*)rw);
+	return 1;
+
+}
+int ReadRW(RW* rw, u32& val) {
+
+	val = SDL_ReadBE32((SDL_RWops*)rw);
+	return 1;
+
+}
+int ReadRW(RW* rw, u64& val) {
+
+	val = SDL_ReadBE64((SDL_RWops*)rw);
+	return 1;
 
 }
 
-size_t ReadRW(RW* rw, void* buffer, int len) {
+int WriteRW(RW* rw, const void* val, size_t size) {
 
-	SDL_RWops* rwops = (SDL_RWops*) rw;
-	return SDL_RWread(rwops, buffer, len, 1);
+	return SDL_RWwrite((SDL_RWops*)rw, val, size, 1);
 
 }
+int WriteRW(RW* rw, bool val) {
+
+	return SDL_WriteU8((SDL_RWops*)rw, val);
+
+}
+int WriteRW(RW* rw, u8 val) {
+
+	return SDL_WriteU8((SDL_RWops*)rw, val);
+
+}
+int WriteRW(RW* rw, u16 val) {
+
+	return SDL_WriteBE16((SDL_RWops*)rw, val);
+
+}
+int WriteRW(RW* rw, u32 val) {
+
+	return SDL_WriteBE32((SDL_RWops*)rw, val);
+
+}
+int WriteRW(RW* rw, u64 val){
+
+	return SDL_WriteBE64((SDL_RWops*)rw, val);
+
+}
+
 
 size_t RWToBuffer(RW* rw, void** buffer) {
 

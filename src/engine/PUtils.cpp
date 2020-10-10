@@ -142,6 +142,13 @@ int RemoveDir(std::string path) {
 
 }
 
+int RenameDir(std::string old_path, std::string new_path) {
+
+	// TODO
+	return 1;
+
+}
+
 #else
 
 #ifdef __ANDROID__
@@ -192,17 +199,21 @@ int CreateDir(std::string path) {
 
 int RemoveDir(std::string path) {
 
-	return rmdir(path.c_str());
+	// TODO - find a better way
+	std::string command = "rm -rf " + path;
+	return system(command.c_str());
+
+}
+
+int RenameDir(std::string old_path, std::string new_path) {
+
+	// TODO - find a better way
+	std::string command = "mv " + old_path + " " + new_path;
+	return system(command.c_str());
 
 }
 
 #endif
-
-int  RenameDir(std::string old_path, std::string new_path) {
-
-	return rename(old_path.c_str(), new_path.c_str());
-
-}
 
 void Show_Error(const char* txt) {
 	

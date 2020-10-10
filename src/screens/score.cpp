@@ -227,7 +227,7 @@ int Draw_ScoreCount() {
 		}
 	}
 
-	if (Draw_Menu_Text(true,tekstit->Get_Text(PK_txt.score_screen_continue),15,430)) {
+	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.score_screen_continue),15,430)) {
 
 		going_to_map = true;
 		PSound::set_musicvolume(0);

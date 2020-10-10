@@ -45,7 +45,7 @@ int Save_All_Records() {
 	memset(count_c, 0, sizeof(count_c));
 	snprintf(count_c, sizeof(count_c), "%i", SAVES_COUNT);
 
-	PFile::Path path(data_path + SAVES_FILE);
+	PFile::Path path(data_path, SAVES_FILE);
 	
 	PFile::RW* file = path.GetRW("wb");
 	if (file == nullptr) {
@@ -73,7 +73,7 @@ int Load_SaveFile() {
 
 	Empty_Records();
 
-	PFile::Path path(data_path + SAVES_FILE);
+	PFile::Path path(data_path, SAVES_FILE);
 
 	PFile::RW* file = path.GetRW("rb");
 	if (file == nullptr){

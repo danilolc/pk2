@@ -36,7 +36,7 @@ void Fade_Quit() {
 
 int Screen_First_Start() {
 
-	srand((unsigned)time(NULL));
+	srand(Settings.id);
 	
 	Calculate_SinCos();
 

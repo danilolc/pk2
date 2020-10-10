@@ -16,12 +16,25 @@
 int screen_width  = 800;
 int screen_height = 480;
 
-//Android const paths
-const char* External_Path;
-const char* Internal_Path;
+#ifdef __ANDROID__
+
+bool external_dir;
+
+bool external_writable = false;
+const char* External_Path = nullptr;
+const char* Internal_Path = nullptr;
+
+bool save_on_external = false;
+bool save_on_internal = false;
+
+char external_save_code[8] = "";
+char internal_save_code[8] = "";
+
+#endif
+
+char id_code[8] = "";
 
 std::string data_path;
-bool external_dir = false;
 
 int game_assets = -1;
 int game_assets2 = -1;
@@ -52,6 +65,14 @@ int PK2_Error(const char* msg) {
 	return 0;
 }
 
+void Id_To_String(u32 id, char* string) {
+
+	if (!string) return;
+
+	sprintf(string, "_%06x", id & 0xFFFFFF);
+
+}
+
 void Calculate_SinCos(){
 
 	for ( int i = 0; i < 360; i++ ) {
@@ -78,6 +99,8 @@ void Prepare_DataPath() {
 }
 
 void Move_DataPath(std::string new_path) {
+
+	new_path += PE_SEP;
 
 	PLog::Write(PLog::DEBUG, "PK2", "Renaming data from %s to %s", data_path.c_str(), new_path.c_str());
 

@@ -94,8 +94,12 @@ int PK_Draw_Map() {
 		PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.episodes_no_maps),180,290);
 	}
 	
-	if (Draw_Menu_Text(!going_to_game,tekstit->Get_Text(PK_txt.mainmenu_return),100,430))
-		next_screen = SCREEN_MENU;
+	if (!going_to_game) {
+		if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),100,430))
+			next_screen = SCREEN_MENU;
+	} else {
+		WavetextSlow_Draw(tekstit->Get_Text(PK_txt.mainmenu_return), fontti2, 100, 430);
+	}
 
 	int paluu;
 	int min = 0, sek = 0;
