@@ -190,7 +190,7 @@ int PK_Draw_Map() {
 				
                 }
 
-				if (Episode->scores.best_time[i] != 0) { //TODO - Find a better way to know if score has time
+				if (Episode->scores.has_time[i]) {
 
 					PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_fastest_player),info_x,info_y+98,75);
 					PDraw::font_write(fontti1,Episode->scores.fastest_player[i],info_x,info_y+110);
