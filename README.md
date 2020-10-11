@@ -83,12 +83,12 @@ This example starts the level13.map on dev mode:
 * Set target fps (30, 60, 120, v-sync) (properly jump frames)
 * Autosave settings option, ask when overwriting save, select save on new game
 * Low volume sounds not played on low volume
+* Remove repeated languages
 
 * Fix BG screen on menu
 * Fix SIGFAULT when sprite animation doesn't exist
 * Translate finnish language
 * Fix mouse speed when on fullscreen
-* Language menu selection speed
 * Mouse clicked when changing resolution
 * Use SDL_Read* to read files
 * Slower fade music

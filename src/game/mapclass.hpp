@@ -81,7 +81,7 @@ class MapClass
 
 	int			jakso;				// level of the episode
 	int			ilma;				// map climate
-	int			aika;				// map time
+	int			aika;				// map time (in (dec)conds)
 	u8		extra;				// extra config - not used
 	u8		tausta;				// bg movemant type
 	u32		kytkin1_aika;		// button 1 time - not used

@@ -1759,13 +1759,12 @@ int BonusSprite_Movement(int i){
 
 			if (sprite.Onko_AI(AI_BONUS_AIKA)) {
 				
-				float increase_time = sprite.tyyppi->latausaika;
+				int increase_time = sprite.tyyppi->latausaika * TIME_FPS;
+				Game->timeout += increase_time;
 
-				Game->increase_time += increase_time;
-
-				increase_time *= float(TIME_FPS) / 60;
-                int min = int(increase_time / 60);
-                int sek = int(increase_time) % 60;
+				float shown_time = float(increase_time) / 60;
+				int min = int(shown_time / 60);
+				int sek = int(shown_time) % 60;
 				
 				char min_c[8], sek_c[8];
 				sprintf(min_c, "%i", min);

@@ -32,13 +32,15 @@ enum LEVEL_STATUS {
 
 struct PK2EPISODESCORES {
 
+	u8   has_score[EPISODI_MAX_LEVELS];          // if somebody played the level
+
 	u32  best_score[EPISODI_MAX_LEVELS];         // the best score of each level in episode
 	char top_player[EPISODI_MAX_LEVELS][20];     // the name of the player with more score in each level on episode
 	
-	u8   has_time[EPISODI_MAX_LEVELS];           // if the level has time counter
 	u32  max_apples[EPISODI_MAX_LEVELS];         // max big apples get on level
 	
-	s32  best_time[EPISODI_MAX_LEVELS];          // the best time of each level
+	u8   has_time[EPISODI_MAX_LEVELS];           // if the level has time counter
+	s32  best_time[EPISODI_MAX_LEVELS];          // the best time in frames
 	char fastest_player[EPISODI_MAX_LEVELS][20]; // the name of the fastest player in each level
 
 	u32  episode_top_score;
@@ -51,7 +53,7 @@ struct PK2EPISODESCORES10 {
 
 	u32  best_score[EPISODI_MAX_LEVELS];         // the best score of each level in episode
 	char top_player[EPISODI_MAX_LEVELS][20];     // the name of the player with more score in each level on episode
-	u32  best_time[EPISODI_MAX_LEVELS];          // the best time of each level
+	u32  best_time[EPISODI_MAX_LEVELS];          // the best time in (dec)conds
 	char fastest_player[EPISODI_MAX_LEVELS][20]; // the name of the fastest player in each level
 
 	u32  episode_top_score;

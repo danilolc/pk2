@@ -32,9 +32,11 @@ float apples_xoffset;
 u32 apples_counted;
 u32 apples_not_counted;
 
+u32 total_seconds;
+
 u32 total_score;
 u32 bonus_score;
-u32 time_score;
+s32 time_score;
 u32 energy_score;
 u32 gifts_score;
 
@@ -46,27 +48,32 @@ int LevelScore_Compare(int level, u32 score, u32 apples, s32 time){
 	
 	int ret = 0;
 
-	if (score > Episode->scores.best_score[level]) {
+	if (!Episode->scores.has_score[level] || (score > Episode->scores.best_score[level])) {
 
 		strcpy(Episode->scores.top_player[level], Episode->player_name);
 		Episode->scores.best_score[level] = score;
+		Episode->scores.has_score[level] = true;
 		map_new_record = true;
 		ret++;
-
+	
 	}
 
-	if (apples > Episode->scores.max_apples[level]) {
+	if (Game->apples_count > 0) {
+		if (apples > Episode->scores.max_apples[level]) {
 
-		Episode->scores.max_apples[level] = apples;
-		ret++;
+			Episode->scores.max_apples[level] = apples;
+			ret++;
 
+		}
 	}
 
 	if (Game->has_time) {
-		if (time < Episode->scores.best_time[level]) {
+
+		if (!Episode->scores.has_time[level] || (time < Episode->scores.best_time[level])) {
 
 			strcpy(Episode->scores.fastest_player[level],Episode->player_name);
 			Episode->scores.best_time[level] = time;
+			Episode->scores.has_time[level] = true;
 			map_new_time_record = true;
 			ret++;
 
@@ -275,7 +282,7 @@ int Screen_ScoreCount_Init() {
 	// Lasketaan pelaajan kokonaispisteet etuk�teen
 	u32 temp_score = 0;
 	temp_score += Game->score;
-	temp_score += Game->timeout * 5;
+	temp_score += Game->timeout / 12; //(Game->timeout / 60) * 5;
 	temp_score += Player_Sprite->energia * 300;
 	for (int i = 0; i < MAX_GIFTS; i++)
 		if (Gifts_Get(i) != -1)
@@ -298,7 +305,8 @@ int Screen_ScoreCount_Init() {
 
 	/* Check if broken level score and time record */
 	int episode_result = EpisodeScore_Compare(Episode->player_score);
-	int level_result = LevelScore_Compare(Game->level_id, temp_score, Game->apples_got, Game->map->aika - Game->timeout);
+	int level_result = 
+		LevelScore_Compare(Game->level_id, temp_score, Game->apples_got, Game->map->aika * TIME_FPS - Game->timeout);
 	
 	if (episode_result > 0 || level_result > 0) {
 
@@ -341,18 +349,19 @@ int Screen_ScoreCount() {
 				counting_delay = 50;
 			}
 
-		} else if (Game->timeout > 0) {
+		} else if (time_score < Game->timeout / 12) {
 
 			counting_phase = 3;
 			counting_delay = 0;
-			time_score+=5;
-			Game->timeout--;
+			time_score += 5;
 
 			if (degree%10==1)
 				Play_MenuSFX(score_sound, 70);
 
-			if (Game->timeout == 0)
+			if (time_score >= Game->timeout / 12) {
+				time_score = Game->timeout / 12;
 				counting_delay = 50;
+			}
 
 		} else if (Player_Sprite->energia > 0) {
 
@@ -413,8 +422,7 @@ int Screen_ScoreCount() {
 
 			bonus_score = Game->score;
 
-			time_score += Game->timeout * 5;
-			Game->timeout = 0;
+			time_score = Game->timeout / 12;
 
 			energy_score += Player_Sprite->energia * 300;
 			Player_Sprite->energia = 0;

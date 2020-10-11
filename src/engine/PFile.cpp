@@ -813,7 +813,11 @@ int RW::read(void* val, size_t size) {
 }
 int RW::read(bool& val) {
 
-	val = SDL_ReadU8((SDL_RWops*)this);
+	u8 v = SDL_ReadU8((SDL_RWops*)this);
+	
+	if (v == 0) val = false;
+	else val = true;
+
 	return 1;
 
 }
@@ -906,12 +910,12 @@ int RW::write(s32 val) {
 	return SDL_WriteLE32((SDL_RWops*)this, val);
 
 }
-int RW::write(u64 val){
+int RW::write(u64 val) {
 
 	return SDL_WriteLE64((SDL_RWops*)this, val);
 
 }
-int RW::write(s64 val){
+int RW::write(s64 val) {
 
 	return SDL_WriteLE64((SDL_RWops*)this, val);
 

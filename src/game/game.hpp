@@ -10,7 +10,7 @@
 #include "game/sprites.hpp"
 #include "game/blocks.hpp"
 
-const int TIME_FPS = 100;
+const int TIME_FPS = 100; //(dec)conds * TIME_FPS = FRAMES
 const int INFO_TIME = 700;
 
 class GameClass {
@@ -31,9 +31,7 @@ class GameClass {
 
 		u32 exit_timer = 0;
 
-		int timeout = 0;
-		int increase_time = 0;
-		int seconds = 0;
+		int timeout = 0; //timeout in frames
 		bool has_time = false;
 
 		int button_moving = 0;

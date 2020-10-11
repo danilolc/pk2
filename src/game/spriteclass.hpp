@@ -549,7 +549,7 @@ class PrototypeClass{
 
     u8		max_hyppy;										// hypyn maksimikesto
     double		max_nopeus;										// maksiminopeus
-    int			latausaika;										// ampumisen j�lkeinen odotus
+    int			latausaika;										// time increment (in (dec)conds)
     u8		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
     int			tuhoutuminen;									// miten sprite tuhoutuu

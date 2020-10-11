@@ -315,7 +315,7 @@ int GameClass::Open_Map() {
 	
 	}
 
-	timeout = map->aika;
+	timeout = map->aika * TIME_FPS;
 
 	if (timeout > 0)
 		has_time = true;

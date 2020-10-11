@@ -348,12 +348,9 @@ int Draw_InGame_Lower_Menu() {
 	//////////////
 	if (Game->has_time > 0) {
 
-		Game->timeout += Game->increase_time;
-		Game->increase_time = 0;
-
-		float shown_sec = (float)(Game->timeout * TIME_FPS + Game->seconds) / 60;
-		int min = (int)shown_sec/60,
-			sek = (int)shown_sec%60;
+		float shown_time = float(Game->timeout) / 60;
+		int min = int(shown_time/60);
+		int sek = int(shown_time)%60;
 
 		x = screen_width / 2 - 546 / 2 + 342;
 		y = screen_height-39;
@@ -369,6 +366,11 @@ int Draw_InGame_Lower_Menu() {
 		
 		sprintf(luku, "%i", sek);
 		vali += ShadowedText_Draw(luku, x + vali, y);
+
+		if (dev_mode) {
+			sprintf(luku, "%i", Game->timeout);
+			vali += PDraw::font_write(fontti1,luku,x,screen_height-10);
+		}
 	}
 
 	/////////////////
@@ -700,16 +702,12 @@ int Screen_InGame(){
 			Game->score_increment--;
 		}
 
-		if (Game->has_time && !Game->level_clear){
-			if (Game->seconds > 0)
-				Game->seconds --;
-			else{
-				Game->seconds = TIME_FPS;
-				if (Game->timeout > 0)
-					Game->timeout--;
-				else
-					Game->game_over = true;
-			}
+		if (Game->has_time && !Game->level_clear) {
+			if (Game->timeout > 0)
+				Game->timeout--;
+			else
+				Game->game_over = true;
+			
 		}
 	}
 

@@ -77,11 +77,14 @@ int PK_Draw_Map() {
 	ShadowedText_Draw(luku, 100 + vali + 15, 92);
 
 	if (Episode->scores.episode_top_score > 0) {
+
 		vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_best_player),360,72);
 		PDraw::font_write(fontti1,Episode->scores.episode_top_player,360+vali+10,72);
+		
 		vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_hiscore),360,92);
 		sprintf(luku, "%i", Episode->scores.episode_top_score);
 		PDraw::font_write(fontti2,luku,360+vali+15,92);
+
 	}
 
 	vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_next_level),100,120);
@@ -102,7 +105,6 @@ int PK_Draw_Map() {
 	}
 
 	int paluu;
-	int min = 0, sek = 0;
 	int icon;
 	int sinx = 0, cosy = 0;
 	int pekkaframe = 0;
@@ -180,9 +182,9 @@ int PK_Draw_Map() {
 				PDraw::image_cutclip(game_assets,info_x-3,info_y+26,473,0,607,121);
 				PDraw::font_write(fontti1,Episode->levels_list[i].nimi,info_x,info_y+30);
 
-				if (Episode->scores.best_score[i] > 0) { 
+				if (Episode->scores.has_score[i]) { 
 					
-                    PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_player),info_x,info_y+50,75);
+					PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_player),info_x,info_y+50,75);
 					PDraw::font_write(fontti1,Episode->scores.top_player[i],info_x,info_y+62);
 					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_hiscore),info_x,info_y+74,75);
 					sprintf(luku, "%i", Episode->scores.best_score[i]);
@@ -197,14 +199,14 @@ int PK_Draw_Map() {
 
 					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_time),info_x,info_y+122,75);
 
-					int time = (int)Episode->scores.best_time[i];
+					s32 time = Episode->scores.best_time[i] / 60;
 					if (time < 0) {
 						time = -time;
 						vali += PDraw::font_write(fontti1,"-",info_x+vali,info_y+122);
 					}
 
-					min = time / 60;
-					sek = time % 60;
+					s32 min = time / 60;
+					s32 sek = time % 60;
 
 					sprintf(luku, "%i", min);
 					vali += PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);

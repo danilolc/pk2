@@ -25,22 +25,7 @@ EpisodeClass* Episode = nullptr;
 void EpisodeClass::Clear_Scores() {
 
 	memset(&this->scores, 0, sizeof(this->scores));
-/*	for ( int i = 0; i < EPISODI_MAX_LEVELS; i++ ) {
 
-		this->scores.best_score[i] = 0;
-		strcpy(this->scores.top_player[i], " ");
-		
-		this->scores.has_time[i] = 0;
-		this->scores.max_apples[i] = 0;
-		
-		this->scores.best_time[i] = 0;
-		strcpy(this->scores.fastest_player[i], " ");
-	
-	}
-
-	this->scores.episode_top_score = 0;
-	strcpy(this->scores.episode_top_player, " ");
-*/
 }
 
 int EpisodeClass::Open_Scores() {
@@ -70,10 +55,12 @@ int EpisodeClass::Open_Scores() {
 
 		for (u32 i = 0; i < count; i++) {
 			
+			file->read(this->scores.has_score[i]);
 			file->read(this->scores.best_score[i]);
 			file->read(this->scores.top_player[i], 20);
-			file->read(this->scores.has_time[i]);
 			file->read(this->scores.max_apples[i]);
+			
+			file->read(this->scores.has_time[i]);
 			file->read(this->scores.best_time[i]);
 			file->read(this->scores.fastest_player[i], 20);
 
@@ -94,13 +81,15 @@ int EpisodeClass::Open_Scores() {
 
 		for (int i = 0; i < EPISODI_MAX_LEVELS; i++) {
 
+			this->scores.has_score[i] = (temp.best_score[i] != 0) ? 1 : 0;
+			
 			this->scores.best_score[i] = temp.best_score[i];
 			strncpy(this->scores.top_player[i], temp.top_player[i], 20);
 			
 			this->scores.has_time[i] = (temp.best_time[i] != 0) ? 1 : 0;
 			this->scores.max_apples[i] = 0;
 
-			this->scores.best_time[i] = temp.best_time[i];
+			this->scores.best_time[i] = (s32)temp.best_time[i] * 100; //FRAME = (dec)conds * 100
 			strncpy(this->scores.fastest_player[i], temp.fastest_player[i], 20);
 
 			this->Save_Scores();
@@ -144,10 +133,12 @@ int EpisodeClass::Save_Scores() {
 
 	for (u32 i = 0; i < level_count; i++) {
 		
+		file->write(this->scores.has_score[i]);
 		file->write(this->scores.best_score[i]);
 		file->write(this->scores.top_player[i], 20);
-		file->write(this->scores.has_time[i]);
 		file->write(this->scores.max_apples[i]);
+		
+		file->write(this->scores.has_time[i]);
 		file->write(this->scores.best_time[i]);
 		file->write(this->scores.fastest_player[i], 20);
 
