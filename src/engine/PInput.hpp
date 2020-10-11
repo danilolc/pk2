@@ -54,7 +54,7 @@ extern int mouse_x, mouse_y;
 
 const char* KeyName(u8 key);
 u8 GetKey();
-bool Keydown(int key);
+bool Keydown(u32 key);
 
 void StartKeyboard();
 void EndKeyboard();

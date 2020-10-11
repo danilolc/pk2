@@ -825,19 +825,19 @@ int ReadRW(RW* rw, u8& val) {
 }
 int ReadRW(RW* rw, u16& val) {
 
-	val = SDL_ReadBE16((SDL_RWops*)rw);
+	val = SDL_ReadLE16((SDL_RWops*)rw);
 	return 1;
 
 }
 int ReadRW(RW* rw, u32& val) {
 
-	val = SDL_ReadBE32((SDL_RWops*)rw);
+	val = SDL_ReadLE32((SDL_RWops*)rw);
 	return 1;
 
 }
 int ReadRW(RW* rw, u64& val) {
 
-	val = SDL_ReadBE64((SDL_RWops*)rw);
+	val = SDL_ReadLE64((SDL_RWops*)rw);
 	return 1;
 
 }
@@ -859,17 +859,17 @@ int WriteRW(RW* rw, u8 val) {
 }
 int WriteRW(RW* rw, u16 val) {
 
-	return SDL_WriteBE16((SDL_RWops*)rw, val);
+	return SDL_WriteLE16((SDL_RWops*)rw, val);
 
 }
 int WriteRW(RW* rw, u32 val) {
 
-	return SDL_WriteBE32((SDL_RWops*)rw, val);
+	return SDL_WriteLE32((SDL_RWops*)rw, val);
 
 }
 int WriteRW(RW* rw, u64 val){
 
-	return SDL_WriteBE64((SDL_RWops*)rw, val);
+	return SDL_WriteLE64((SDL_RWops*)rw, val);
 
 }
 

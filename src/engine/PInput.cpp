@@ -109,7 +109,14 @@ u8 GetKey() {
 
 }
 
-bool Keydown(int key) {
+bool Keydown(u32 key) {
+	
+	if (key >= sizeof(keylist)) {
+
+		PLog::Write(PLog::ERR, "PInput", "Unknown key %u", key);
+		return false;
+
+	}
 	
 	return keymap[keylist[key]];
 

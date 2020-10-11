@@ -192,10 +192,10 @@ bool Draw_Menu_HardText(const char *text, int x, int y, char end) {
 
 	const float TIME_START = 1.f;
 	const float TIME_END = 3.f;
-	const float TIME_DELTA = 0.017f;
+	const float TIME_DELTA = 0.02f;
 	
 	static float timer = 1.f;
-	static int id = -1;
+	static uint id = -1;
 
 	const int TEXT_W = 15, TEXT_H = 20;
 	int length = strlen(text) * TEXT_W;
