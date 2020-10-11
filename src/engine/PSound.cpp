@@ -87,7 +87,7 @@ int load_sfx(PFile::Path path) {
 
 			PFile::RW* rw = path.GetRW("rb");
 			chunks[i] = Mix_LoadWAV_RW((SDL_RWops*)rw, 0);
-			PFile::CloseRW(rw);
+			rw->close();
 			
 			return i;
 
@@ -200,7 +200,7 @@ int start_music(PFile::Path path) {
 
 	PFile::RW* rw = path.GetRW("rb");
 	music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);
-	PFile::CloseRW(rw);
+	rw->close();
 
 	if (music == NULL) {
 

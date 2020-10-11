@@ -54,7 +54,7 @@ Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
 
         PFile::RW* rw = path.GetRW("rb");
         tex = IMG_LoadTexture_RW(renderer, (SDL_RWops*)rw, 0);
-        PFile::CloseRW(rw);
+        rw->close();
 
         if (tex == NULL) {
 
@@ -220,7 +220,7 @@ int image_load(PFile::Path path, bool getPalette) {
     }
 
     imageList[index] = IMG_Load_RW((SDL_RWops*) rw, 0);
-    PFile::CloseRW(rw);
+    rw->close();
 
     if (imageList[index] == NULL) {
 

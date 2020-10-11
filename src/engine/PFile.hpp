@@ -13,25 +13,31 @@ namespace PFile {
 
 struct Zip;
 
-typedef void RW;
+struct RW {
 
-size_t RWToBuffer(RW* rw, void** buffer);
+    size_t to_buffer(void** buffer);
 
-int ReadRW(RW* rw, void* val, size_t size);
-int ReadRW(RW* rw, bool& val);
-int ReadRW(RW* rw, u8& val);
-int ReadRW(RW* rw, u16& val);
-int ReadRW(RW* rw, u32& val);
-int ReadRW(RW* rw, u64& val);
+    int read(void* val, size_t size);
+    int read(bool& val);
 
-int WriteRW(RW* rw, const void* val, size_t size);
-int WriteRW(RW* rw, bool val);
-int WriteRW(RW* rw, u8 val);
-int WriteRW(RW* rw, u16 val);
-int WriteRW(RW* rw, u32 val);
-int WriteRW(RW* rw, u64 val);
+    // Read the value always in little endian
+    int read(u8& val);
+    int read(u16& val);
+    int read(u32& val);
+    int read(u64& val);
 
-int CloseRW(RW* rw);
+    int write(const void* val, size_t size);
+    int write(bool val);
+
+    // Write the value always in little endian
+    int write(u8 val);
+    int write(u16 val);
+    int write(u32 val);
+    int write(u64 val);
+
+    int close();
+
+};
 
 class Path : public std::string {
 

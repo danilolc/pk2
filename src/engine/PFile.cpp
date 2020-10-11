@@ -806,77 +806,77 @@ RW* Path::GetRW(const char* mode) {
 
 }
 
-int ReadRW(RW* rw, void* val, size_t size) {
+int RW::read(void* val, size_t size) {
 
-	return SDL_RWread((SDL_RWops*)rw, val, 1, size);
+	return SDL_RWread((SDL_RWops*)this, val, 1, size);
 
 }
-int ReadRW(RW* rw, bool& val) {
+int RW::read(bool& val) {
 
-	val = SDL_ReadU8((SDL_RWops*)rw);
+	val = SDL_ReadU8((SDL_RWops*)this);
 	return 1;
 
 }
-int ReadRW(RW* rw, u8& val) {
+int RW::read(u8& val) {
 
-	val = SDL_ReadU8((SDL_RWops*)rw);
+	val = SDL_ReadU8((SDL_RWops*)this);
 	return 1;
 
 }
-int ReadRW(RW* rw, u16& val) {
+int RW::read(u16& val) {
 
-	val = SDL_ReadLE16((SDL_RWops*)rw);
+	val = SDL_ReadLE16((SDL_RWops*)this);
 	return 1;
 
 }
-int ReadRW(RW* rw, u32& val) {
+int RW::read(u32& val) {
 
-	val = SDL_ReadLE32((SDL_RWops*)rw);
+	val = SDL_ReadLE32((SDL_RWops*)this);
 	return 1;
 
 }
-int ReadRW(RW* rw, u64& val) {
+int RW::read(u64& val) {
 
-	val = SDL_ReadLE64((SDL_RWops*)rw);
+	val = SDL_ReadLE64((SDL_RWops*)this);
 	return 1;
 
 }
 
-int WriteRW(RW* rw, const void* val, size_t size) {
+int RW::write(const void* val, size_t size) {
 
-	return SDL_RWwrite((SDL_RWops*)rw, val, size, 1);
-
-}
-int WriteRW(RW* rw, bool val) {
-
-	return SDL_WriteU8((SDL_RWops*)rw, val);
+	return SDL_RWwrite((SDL_RWops*)this, val, size, 1);
 
 }
-int WriteRW(RW* rw, u8 val) {
+int RW::write(bool val) {
 
-	return SDL_WriteU8((SDL_RWops*)rw, val);
-
-}
-int WriteRW(RW* rw, u16 val) {
-
-	return SDL_WriteLE16((SDL_RWops*)rw, val);
+	return SDL_WriteU8((SDL_RWops*)this, val);
 
 }
-int WriteRW(RW* rw, u32 val) {
+int RW::write(u8 val) {
 
-	return SDL_WriteLE32((SDL_RWops*)rw, val);
-
-}
-int WriteRW(RW* rw, u64 val){
-
-	return SDL_WriteLE64((SDL_RWops*)rw, val);
+	return SDL_WriteU8((SDL_RWops*)this, val);
 
 }
+int RW::write(u16 val) {
+
+	return SDL_WriteLE16((SDL_RWops*)this, val);
+
+}
+int RW::write(u32 val) {
+
+	return SDL_WriteLE32((SDL_RWops*)this, val);
+
+}
+int RW::write(u64 val){
+
+	return SDL_WriteLE64((SDL_RWops*)this, val);
+
+}
 
 
-size_t RWToBuffer(RW* rw, void** buffer) {
+size_t RW::to_buffer(void** buffer) {
 
-	SDL_RWops* rwops = (SDL_RWops*) rw;
+	SDL_RWops* rwops = (SDL_RWops*) this;
 	
 	size_t size = SDL_RWsize(rwops);
 	
@@ -891,7 +891,7 @@ size_t RWToBuffer(RW* rw, void** buffer) {
 
 	if (*buffer) {
 
-		ReadRW(rw, *buffer, size);
+		this->read(*buffer, size);
 		return size;
 
 	} else {
@@ -903,16 +903,16 @@ size_t RWToBuffer(RW* rw, void** buffer) {
 
 }
 
-int CloseRW(RW* rw) {
+int RW::close() {
 
-	if (rw == nullptr) {
+	if (!this) {
 
 		PLog::Write(PLog::ERR, "PFile", "Tried to close a null rw");
 		return -1;
 
 	}
 
-	SDL_RWops* rwops = (SDL_RWops*) rw;
+	SDL_RWops* rwops = (SDL_RWops*) this;
 	
 	int ret = SDL_RWclose(rwops);
 

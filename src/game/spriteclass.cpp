@@ -636,12 +636,12 @@ int PrototypeClass::Load(PFile::Path path){
 	}
 
 	char versio[4];
-	PFile::ReadRW(file, versio, 4);
+	file->read(versio, 4);
 
 	if (strcmp(versio,"1.0") == 0){
 		this->Uusi();
 		PrototypeClass10 proto;
-		PFile::ReadRW(file, &proto, sizeof(proto));
+		file->read(&proto, sizeof(proto));
 		this->SetProto10(proto);
 		strcpy(this->versio,versio);
 		strcpy(this->tiedosto, filename.c_str());
@@ -649,7 +649,7 @@ int PrototypeClass::Load(PFile::Path path){
 	if (strcmp(versio,"1.1") == 0){
 		this->Uusi();
 		PrototypeClass11 proto;
-		PFile::ReadRW(file, &proto, sizeof(proto));
+		file->read(&proto, sizeof(proto));
 		this->SetProto11(proto);
 		strcpy(this->versio,versio);
 		strcpy(this->tiedosto, filename.c_str());
@@ -657,7 +657,7 @@ int PrototypeClass::Load(PFile::Path path){
 	if (strcmp(versio,"1.2") == 0){
 		this->Uusi();
 		PrototypeClass12 proto;
-		PFile::ReadRW(file, &proto, sizeof(proto));
+		file->read(&proto, sizeof(proto));
 		this->SetProto12(proto);
 		strcpy(this->versio,versio);
 		strcpy(this->tiedosto, filename.c_str());
@@ -665,13 +665,13 @@ int PrototypeClass::Load(PFile::Path path){
 	if (strcmp(versio,"1.3") == 0){
 		this->Uusi();
 		PrototypeClass13 proto;
-		PFile::ReadRW(file, &proto, sizeof(proto));
+		file->read(&proto, sizeof(proto));
 		this->SetProto13(proto);
 		strcpy(this->versio,versio);
 		strcpy(this->tiedosto, filename.c_str());
 	}
 
-	PFile::CloseRW(file);
+	file->close();
 
 	// Get sprite bmp
 	path.SetFile(this->kuvatiedosto);
@@ -742,7 +742,7 @@ void PrototypeClass::Tallenna(char *tiedoston_nimi) {
 	SDL_RWwrite(file, PK2SPRITE_CURRENT_VERSION, 4, 1);
 	SDL_RWwrite(file, &proto, sizeof(proto), 1);
 
-	PFile::CloseRW(file);
+	file->close();
 */
 }
 

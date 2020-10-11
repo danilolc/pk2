@@ -71,7 +71,7 @@ void quit() {
 		delete Game;
 	
 	if (Episode && !test_level) {
-		Save_Records(10); //Save #10 is the backup
+		Save_Record(10); //Save #10 is the backup
 		delete Episode;
 	}
 	
@@ -170,8 +170,8 @@ int main(int argc, char *argv[]) {
 		PFile::RW *redirect_rw = redirect.GetRW("r");
 
 		char* buffer;
-		int size = PFile::RWToBuffer(redirect_rw, (void**) &buffer);
-		PFile::CloseRW(redirect_rw);
+		int size = redirect_rw->to_buffer((void**) &buffer);
+		redirect_rw->close();
 		
 		if (size > 0) {
 

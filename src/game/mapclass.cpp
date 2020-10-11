@@ -483,7 +483,7 @@ int MapClass::Tallenna(char *filename){
 		}
 	}
 
-	PFile::CloseRW(file);
+	file->close();
 */
 	return 0;
 }
@@ -497,8 +497,8 @@ int MapClass::Load(PFile::Path path){
 		return 1;
 	}
 
-	PFile::ReadRW(file, versio, sizeof(versio));
-	PFile::CloseRW(file);
+	file->read(versio, sizeof(versio));
+	file->close();
 
 	int ok = 2;
 
@@ -543,8 +543,8 @@ int MapClass::Load_Plain_Data(PFile::Path path){
 		return 1;
 	}
 
-	PFile::ReadRW(file, versio, sizeof(versio));
-	PFile::CloseRW(file);
+	file->read(versio, sizeof(versio));
+	file->close();
 
 	if (strcmp(versio,"1.3")==0)
 		this->LoadVersion13(path);
@@ -573,8 +573,8 @@ int MapClass::LoadVersion01(PFile::Path path){
 		return 1;
 	}
 
-	PFile::ReadRW(file, &kartta, sizeof(PK2KARTTA));
-	PFile::CloseRW(file);
+	file->read(&kartta, sizeof(PK2KARTTA));
+	file->close();
 
 	strcpy(this->versio, PK2MAP_LAST_VERSION);
 	strcpy(this->palikka_bmp,"blox.bmp");
@@ -606,8 +606,8 @@ int MapClass::LoadVersion10(PFile::Path path){
 		return 1;
 	}
 
-	PFile::ReadRW(file, &kartta, sizeof(PK2KARTTA));
-	PFile::CloseRW(file);
+	file->read(&kartta, sizeof(PK2KARTTA));
+	file->close();
 
 	strcpy(this->versio,		kartta->versio);
 	strcpy(this->palikka_bmp,	kartta->palikka_bmp);
@@ -650,21 +650,21 @@ int MapClass::LoadVersion11(PFile::Path path){
 	memset(this->seinat , 255, sizeof(this->seinat));
 	memset(this->spritet, 255, sizeof(this->spritet));
 
-	PFile::ReadRW(file, this->versio,      sizeof(char) * 5);
-	PFile::ReadRW(file, this->palikka_bmp, sizeof(char) * 13);
-	PFile::ReadRW(file, this->taustakuva,  sizeof(char) * 13);
-	PFile::ReadRW(file, this->musiikki,    sizeof(char) * 13);
-	PFile::ReadRW(file, this->nimi,        sizeof(char) * 40);
-	PFile::ReadRW(file, this->tekija,      sizeof(char) * 40);
-	PFile::ReadRW(file, &this->aika,       sizeof(int));
-	PFile::ReadRW(file, &this->extra,      sizeof(u8));
-	PFile::ReadRW(file, &this->tausta,     sizeof(u8));
-	PFile::ReadRW(file, this->taustat,     sizeof(taustat));
-	if (PFile::ReadRW(file, this->seinat,  sizeof(seinat)) != PK2MAP_MAP_SIZE)
+	file->read(this->versio,      sizeof(char) * 5);
+	file->read(this->palikka_bmp, sizeof(char) * 13);
+	file->read(this->taustakuva,  sizeof(char) * 13);
+	file->read(this->musiikki,    sizeof(char) * 13);
+	file->read(this->nimi,        sizeof(char) * 40);
+	file->read(this->tekija,      sizeof(char) * 40);
+	file->read(&this->aika,       sizeof(int));
+	file->read(&this->extra,      sizeof(u8));
+	file->read(&this->tausta,     sizeof(u8));
+	file->read(this->taustat,     sizeof(taustat));
+	if (file->read(this->seinat,  sizeof(seinat)) != PK2MAP_MAP_SIZE)
 		virhe = 2;
-	PFile::ReadRW(file, this->spritet,     sizeof(spritet));
+	file->read(this->spritet,     sizeof(spritet));
 
-	PFile::CloseRW(file);
+	file->close();
 
 	for (u32 i=0;i<PK2MAP_MAP_SIZE;i++)
 		if (seinat[i] != 255)
@@ -700,47 +700,47 @@ int MapClass::LoadVersion12(PFile::Path path){
 		strcpy(this->protot[i],"");
 
 	//tiedosto->read ((char *)this, sizeof (*this));
-	PFile::ReadRW(file, versio,      sizeof(versio));
-	PFile::ReadRW(file, palikka_bmp, sizeof(palikka_bmp));
-	PFile::ReadRW(file, taustakuva,  sizeof(taustakuva));
-	PFile::ReadRW(file, musiikki,    sizeof(musiikki));
-	PFile::ReadRW(file, nimi,        sizeof(nimi));
-	PFile::ReadRW(file, tekija,      sizeof(tekija));
+	file->read(versio,      sizeof(versio));
+	file->read(palikka_bmp, sizeof(palikka_bmp));
+	file->read(taustakuva,  sizeof(taustakuva));
+	file->read(musiikki,    sizeof(musiikki));
+	file->read(nimi,        sizeof(nimi));
+	file->read(tekija,      sizeof(tekija));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->jakso = atoi(luku);
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->ilma = atoi(luku);
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->kytkin1_aika = atoi(luku);
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->kytkin2_aika = atoi(luku);
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->kytkin3_aika = atoi(luku);
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->aika = atoi(luku);
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->extra = atoi(luku);
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->tausta = atoi(luku);
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->pelaaja_sprite = atoi(luku);
 
-	PFile::ReadRW(file, taustat, sizeof(taustat));
-	PFile::ReadRW(file, seinat,  sizeof(seinat));
-	PFile::ReadRW(file, spritet, sizeof(spritet));
+	file->read(taustat, sizeof(taustat));
+	file->read(seinat,  sizeof(seinat));
+	file->read(spritet, sizeof(spritet));
 
-	PFile::ReadRW(file, protot, sizeof(protot[0]) * PK2MAP_MAP_MAX_PROTOTYPES);
+	file->read(protot, sizeof(protot[0]) * PK2MAP_MAP_MAX_PROTOTYPES);
 
-	PFile::CloseRW(file);
+	file->close();
 
 	//Load_BlockPalette(this->palikka_bmp);
 	//Load_BG(this->taustakuva);
@@ -764,101 +764,101 @@ int MapClass::LoadVersion13(PFile::Path path){
 	for (i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
 		strcpy(this->protot[i],"");
 
-	PFile::ReadRW(file, versio,      sizeof(versio));
-	PFile::ReadRW(file, palikka_bmp, sizeof(palikka_bmp));
-	PFile::ReadRW(file, taustakuva,  sizeof(taustakuva));
-	PFile::ReadRW(file, musiikki,    sizeof(musiikki));
-	PFile::ReadRW(file, nimi,        sizeof(nimi));
-	PFile::ReadRW(file, tekija,      sizeof(tekija));
+	file->read(versio,      sizeof(versio));
+	file->read(palikka_bmp, sizeof(palikka_bmp));
+	file->read(taustakuva,  sizeof(taustakuva));
+	file->read(musiikki,    sizeof(musiikki));
+	file->read(nimi,        sizeof(nimi));
+	file->read(tekija,      sizeof(tekija));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->jakso = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->ilma = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->kytkin1_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->kytkin2_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->kytkin3_aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->aika = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->extra = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->tausta = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->pelaaja_sprite = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->x = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->y = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	this->icon = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
 	u32 lkm;
-	PFile::ReadRW(file, luku, sizeof(luku));
+	file->read(luku, sizeof(luku));
 	lkm = (int)atoi(luku);
 
-	PFile::ReadRW(file, protot, sizeof(protot[0]) * lkm);
+	file->read(protot, sizeof(protot[0]) * lkm);
 
 	u32 leveys, korkeus;
 	u32 offset_x, offset_y;
 
 	// taustat
-	PFile::ReadRW(file, luku, sizeof(luku)); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
-	PFile::ReadRW(file, luku, sizeof(luku)); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
-	PFile::ReadRW(file, luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
-	PFile::ReadRW(file, luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
 	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
 		u32 x_start = offset_x + y * PK2MAP_MAP_WIDTH;
-		PFile::ReadRW(file, &taustat[x_start], leveys + 1);
+		file->read(&taustat[x_start], leveys + 1);
 	}
 
 	// seinat
-	PFile::ReadRW(file, luku, sizeof(luku)); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
-	PFile::ReadRW(file, luku, sizeof(luku)); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
-	PFile::ReadRW(file, luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
-	PFile::ReadRW(file, luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
 	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
 		u32 x_start = offset_x + y * PK2MAP_MAP_WIDTH;
-		PFile::ReadRW(file, &seinat[x_start], leveys + 1);
+		file->read(&seinat[x_start], leveys + 1);
 	}
 
 	//spritet
-	PFile::ReadRW(file, luku, sizeof(luku)); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
-	PFile::ReadRW(file, luku, sizeof(luku)); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
-	PFile::ReadRW(file, luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
-	PFile::ReadRW(file, luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); offset_x = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); offset_y = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); leveys   = atol(luku); memset(luku, 0, sizeof(luku));
+	file->read(luku, sizeof(luku)); korkeus  = atol(luku); memset(luku, 0, sizeof(luku));
 	for (u32 y = offset_y; y <= offset_y + korkeus; y++) {
 		u32 x_start = offset_x + y * PK2MAP_MAP_WIDTH;
-		PFile::ReadRW(file, &spritet[x_start], leveys + 1);
+		file->read(&spritet[x_start], leveys + 1);
 	}
 
-	PFile::CloseRW(file);
+	file->close();
 
 	return 0;
 }

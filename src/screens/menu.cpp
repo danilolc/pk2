@@ -588,7 +588,7 @@ void Draw_Menu_Load() {
 				}
 				if (Episode) {
 					if (i != 10) //Don't save then load
-						Save_Records(10);
+						Save_Record(10);
 					delete Episode;
 					Episode = nullptr;
 				}
@@ -640,7 +640,7 @@ void Draw_Menu_Save() {
 		strcat(number, saves_list[i].name);
 
 		if (Draw_Menu_HardText(number,100,150+my))
-			Save_Records(i);
+			Save_Record(i);
 
 		if (strcmp(saves_list[i].episode," ")!=0) {
 
@@ -1170,7 +1170,7 @@ void Draw_Menu_Episodes() {
 				Game = nullptr;
 			}
 			if (Episode) {
-				Save_Records(10);
+				Save_Record(10);
 				delete Episode;
 				Episode = nullptr;
 			}

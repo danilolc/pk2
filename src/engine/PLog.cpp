@@ -37,7 +37,7 @@ void Init(u8 level, PFile::Path file) {
     log_level = level;
 
     if (log_file != NULL)
-        PFile::CloseRW(log_file);
+        log_file->close();
     
     log_file = NULL;
 
@@ -54,15 +54,15 @@ static void write_on_file(const char* level_name, const char* origin, const char
     int size;
 
     size = snprintf(buffer, BUFFER_SIZE, "%s", level_name + 5);
-    PFile::WriteRW(log_file, buffer, size - 4);
+    log_file->write(buffer, size - 4);
 
     size = snprintf(buffer, BUFFER_SIZE, "\t%s\t- ", origin);
-    PFile::WriteRW(log_file, buffer, size);
+    log_file->write(buffer, size);
 
     size = vsnprintf(buffer, BUFFER_SIZE, format, *args);
-    PFile::WriteRW(log_file, buffer, size);
+    log_file->write(buffer, size);
     
-    PFile::WriteRW(log_file, END_LINE, sizeof(END_LINE) - 1);
+    log_file->write(END_LINE, sizeof(END_LINE) - 1);
 
 }
 
@@ -151,7 +151,7 @@ void Exit() {
     Write(DEBUG, "PLog", "PisteLog exited");
     
     if (log_file != NULL)
-        PFile::CloseRW(log_file);
+        log_file->close();
 
     log_file = NULL;
     log_level = 0;

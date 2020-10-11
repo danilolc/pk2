@@ -13,7 +13,7 @@
 #include <string>
 
 #define SAVES_FILE "saves.dat"
-#define VERSION "2"
+#define VERSION "3"
 
 PK2SAVE saves_list[SAVES_COUNT];
 
@@ -55,11 +55,22 @@ int Save_All_Records() {
 
 	}
 
-	PFile::WriteRW(file, versio, sizeof(versio)); // Write version "2"
-	PFile::WriteRW(file, count_c, sizeof(count_c)); // Write count "10"
-	PFile::WriteRW(file, saves_list, sizeof(saves_list)); // Write saves
+	file->write(versio, sizeof(versio)); // Write version "2"
+	file->write(count_c, sizeof(count_c)); // Write count "11"
+
+	// Write saves
+	for (int i = 0; i < SAVES_COUNT; i++) {
+
+		file->write(saves_list[i].empty);
+		file->write(saves_list[i].level);
+		file->write(saves_list[i].episode, PE_PATH_SIZE);
+		file->write(saves_list[i].name, 20);
+		file->write(saves_list[i].score);
+		file->write(saves_list[i].level_status, EPISODI_MAX_LEVELS);
+
+	}
 	
-	PFile::CloseRW(file);
+	file->close();
 	
 	return 0;
 
@@ -83,16 +94,40 @@ int Load_SaveFile() {
 	
 	}
 
-	PFile::ReadRW(file, versio, sizeof(versio));
+	file->read(versio, sizeof(versio));
 
-	if (strncmp(versio,"2", 2) == 0) {
+	// Version 3 is always little endian
+	if (strncmp(versio,"3", 2) == 0) {
 
-		PFile::ReadRW(file, count_c, sizeof(count_c));
+		PLog::Write(PLog::INFO, "PK2", "Loading save version 3");
+
+		file->read(count_c, sizeof(count_c));
 		count = atoi(count_c);
 		if (count > SAVES_COUNT)
 			count = SAVES_COUNT;
 
-		PFile::ReadRW(file, saves_list, sizeof(PK2SAVE) * count);
+		for (int i = 0; i < count; i++) {
+		
+			file->read(saves_list[i].empty);
+			file->read(saves_list[i].level);
+			file->read(saves_list[i].episode, PE_PATH_SIZE);
+			file->read(saves_list[i].name, 20);
+			file->read(saves_list[i].score);
+			file->read(saves_list[i].level_status, EPISODI_MAX_LEVELS);
+
+		}
+	
+	} else if (strncmp(versio,"2", 2) == 0) {
+
+		PLog::Write(PLog::INFO, "PK2", "Loading save version 2");
+
+		file->read(count_c, sizeof(count_c));
+		count = atoi(count_c);
+		if (count > SAVES_COUNT)
+			count = SAVES_COUNT;
+
+		file->read(saves_list, sizeof(PK2SAVE) * count);
+		Save_All_Records(); // Change to the current version
 	
 	} else {
 
@@ -101,18 +136,19 @@ int Load_SaveFile() {
 
 	}
 
-	PFile::CloseRW(file);
+	file->close();
 
 	return 0;
 
 }
 
-int Save_Records(int i) {
+int Save_Record(int i) {
 
+	//clean record
 	memset(&saves_list[i], 0, sizeof(PK2SAVE));
 
 	saves_list[i].empty = false;
-	strcpy(saves_list[i].episode, Episode->entry.name.c_str());
+	strcpy(saves_list[i].episode, Episode->entry.name.c_str()); //assert size 128
 	strcpy(saves_list[i].name, Episode->player_name);
 	saves_list[i].level = Episode->level;
 	saves_list[i].score = Episode->player_score;

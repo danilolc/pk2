@@ -50,17 +50,17 @@ int EpisodeClass::Open_Scores() {
 		return 1;
 	}
 
-	PFile::ReadRW(file, versio, 4);
+	file->read(versio, 4);
 	if (strncmp(versio, VERSION, 4) != 0) {
 
 		this->Clear_Scores();
-		PFile::CloseRW(file);
+		file->close();
 		return 2;
 
 	}
 	
-	PFile::ReadRW(file, &this->scores, sizeof(this->scores));
-	PFile::CloseRW(file);
+	file->read(&this->scores, sizeof(this->scores));
+	file->close();
 
 	return 0;
 
@@ -80,10 +80,10 @@ int EpisodeClass::Save_Scores() {
 
 	}
 
-	PFile::WriteRW(file, versio, 4);
-	PFile::WriteRW(file, &this->scores, sizeof(this->scores));
+	file->write(versio, 4);
+	file->write(&this->scores, sizeof(this->scores));
 	
-	PFile::CloseRW(file);
+	file->close();
 
 	return 0;
 

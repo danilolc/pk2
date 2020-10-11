@@ -25,4 +25,4 @@ struct PK2SAVE {
 extern PK2SAVE saves_list[SAVES_COUNT];
 
 int Load_SaveFile();
-int Save_Records(int i);
+int Save_Record(int i);

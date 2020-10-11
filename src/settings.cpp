@@ -26,14 +26,14 @@ int Settings_GetId(PFile::Path path, u32 id) {
 
 	char* version[4];
 
-	PFile::RW *rw = path.GetRW("rb");
-	if (rw == nullptr) {
+	PFile::RW *file = path.GetRW("rb");
+	if (file == nullptr) {
 
 		return 1;
 		
 	}
 
-	PFile::ReadRW(rw, version, 4);
+	file->read(version, 4);
 	if (strncmp(Settings.versio, SETTINGS_VERSION, 4) != 0) {
 
 		id = 0;
@@ -41,7 +41,7 @@ int Settings_GetId(PFile::Path path, u32 id) {
 
 	}
 
-	PFile::ReadRW(rw, id);
+	file->read(id);
 	return 0;
 
 }
@@ -108,7 +108,7 @@ int Settings_Open() {
 		return 1;
 	}
 
-	PFile::ReadRW(file, Settings.versio, 4);
+	file->read(Settings.versio, 4);
 	
 	if (strncmp(Settings.versio, SETTINGS_VERSION, 4) != 0) { 
 		// If settings isn't in current version
@@ -117,39 +117,39 @@ int Settings_Open() {
 		return 2;
 	}
 	
-	PFile::ReadRW(file, Settings.id);
-	PFile::ReadRW(file, Settings.ladattu);
-	PFile::ReadRW(file, Settings.kieli, sizeof(Settings.kieli));
+	file->read(Settings.id);
+	file->read(Settings.ladattu);
+	file->read(Settings.kieli, sizeof(Settings.kieli));
 
-	PFile::ReadRW(file, Settings.ruudun_leveys);
-	PFile::ReadRW(file, Settings.ruudun_korkeus);
-	PFile::ReadRW(file, Settings.draw_transparent);
-	PFile::ReadRW(file, Settings.transparent_text);
-	PFile::ReadRW(file, Settings.draw_weather);
-	PFile::ReadRW(file, Settings.draw_itembar);
-	PFile::ReadRW(file, Settings.bg_sprites);
+	file->read(Settings.ruudun_leveys);
+	file->read(Settings.ruudun_korkeus);
+	file->read(Settings.draw_transparent);
+	file->read(Settings.transparent_text);
+	file->read(Settings.draw_weather);
+	file->read(Settings.draw_itembar);
+	file->read(Settings.bg_sprites);
 
-	PFile::ReadRW(file, Settings.control_left);
-	PFile::ReadRW(file, Settings.control_right);
-	PFile::ReadRW(file, Settings.control_jump);
-	PFile::ReadRW(file, Settings.control_down);
-	PFile::ReadRW(file, Settings.control_walk_slow);
-	PFile::ReadRW(file, Settings.control_attack1);
-	PFile::ReadRW(file, Settings.control_attack2);
-	PFile::ReadRW(file, Settings.control_open_gift);
+	file->read(Settings.control_left);
+	file->read(Settings.control_right);
+	file->read(Settings.control_jump);
+	file->read(Settings.control_down);
+	file->read(Settings.control_walk_slow);
+	file->read(Settings.control_attack1);
+	file->read(Settings.control_attack2);
+	file->read(Settings.control_open_gift);
 
-	PFile::ReadRW(file, Settings.musiikki);
-	PFile::ReadRW(file, Settings.aanet);
+	file->read(Settings.musiikki);
+	file->read(Settings.aanet);
 
-	PFile::ReadRW(file, Settings.isFullScreen);
-	PFile::ReadRW(file, Settings.isFiltered);
-	PFile::ReadRW(file, Settings.isFit);
-	PFile::ReadRW(file, Settings.isWide);
+	file->read(Settings.isFullScreen);
+	file->read(Settings.isFiltered);
+	file->read(Settings.isFit);
+	file->read(Settings.isWide);
 
-	PFile::ReadRW(file, Settings.music_max_volume);
-	PFile::ReadRW(file, Settings.sfx_max_volume);
+	file->read(Settings.music_max_volume);
+	file->read(Settings.sfx_max_volume);
 	
-	PFile::CloseRW(file);
+	file->close();
 	
 	if (PUtils::Is_Mobile()) {
 
@@ -180,41 +180,41 @@ int Settings_Save() {
 	}
 	
 	// Save value by value, this defines the file structure
-	PFile::WriteRW(file, SETTINGS_VERSION, sizeof(SETTINGS_VERSION));
+	file->write(SETTINGS_VERSION, sizeof(SETTINGS_VERSION));
 
-	PFile::WriteRW(file, Settings.id);
-	PFile::WriteRW(file, Settings.ladattu);
-	PFile::WriteRW(file, Settings.kieli, sizeof(Settings.kieli));
+	file->write(Settings.id);
+	file->write(Settings.ladattu);
+	file->write(Settings.kieli, sizeof(Settings.kieli));
 
-	PFile::WriteRW(file, Settings.ruudun_leveys);
-	PFile::WriteRW(file, Settings.ruudun_korkeus);
-	PFile::WriteRW(file, Settings.draw_transparent);
-	PFile::WriteRW(file, Settings.transparent_text);
-	PFile::WriteRW(file, Settings.draw_weather);
-	PFile::WriteRW(file, Settings.draw_itembar);
-	PFile::WriteRW(file, Settings.bg_sprites);
+	file->write(Settings.ruudun_leveys);
+	file->write(Settings.ruudun_korkeus);
+	file->write(Settings.draw_transparent);
+	file->write(Settings.transparent_text);
+	file->write(Settings.draw_weather);
+	file->write(Settings.draw_itembar);
+	file->write(Settings.bg_sprites);
 
-	PFile::WriteRW(file, Settings.control_left);
-	PFile::WriteRW(file, Settings.control_right);
-	PFile::WriteRW(file, Settings.control_jump);
-	PFile::WriteRW(file, Settings.control_down);
-	PFile::WriteRW(file, Settings.control_walk_slow);
-	PFile::WriteRW(file, Settings.control_attack1);
-	PFile::WriteRW(file, Settings.control_attack2);
-	PFile::WriteRW(file, Settings.control_open_gift);
+	file->write(Settings.control_left);
+	file->write(Settings.control_right);
+	file->write(Settings.control_jump);
+	file->write(Settings.control_down);
+	file->write(Settings.control_walk_slow);
+	file->write(Settings.control_attack1);
+	file->write(Settings.control_attack2);
+	file->write(Settings.control_open_gift);
 
-	PFile::WriteRW(file, Settings.musiikki);
-	PFile::WriteRW(file, Settings.aanet);
+	file->write(Settings.musiikki);
+	file->write(Settings.aanet);
 
-	PFile::WriteRW(file, Settings.isFullScreen);
-	PFile::WriteRW(file, Settings.isFiltered);
-	PFile::WriteRW(file, Settings.isFit);
-	PFile::WriteRW(file, Settings.isWide);
+	file->write(Settings.isFullScreen);
+	file->write(Settings.isFiltered);
+	file->write(Settings.isFit);
+	file->write(Settings.isWide);
 
-	PFile::WriteRW(file, Settings.music_max_volume);
-	PFile::WriteRW(file, Settings.sfx_max_volume);
+	file->write(Settings.music_max_volume);
+	file->write(Settings.sfx_max_volume);
 	
-	PFile::CloseRW(file);
+	file->close();
 
 	return 0;
 

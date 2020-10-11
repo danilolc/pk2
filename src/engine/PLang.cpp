@@ -57,7 +57,7 @@ bool PLang::Read_File(PFile::Path path){
 
 	bool jatka = true;
 
-	while(jatka && PFile::ReadRW(io, &merkki, 1)) {
+	while(jatka && io->read(&merkki, 1)) {
 		switch (merkki){
 			case MARKER_1:
 				if (read == LUE_SKIP){
@@ -119,7 +119,7 @@ bool PLang::Read_File(PFile::Path path){
 			jatka = false;
 	}
 
-    PFile::CloseRW(io);
+    io->close();
 	return true;
 }
 
