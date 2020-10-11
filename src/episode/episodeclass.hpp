@@ -17,8 +17,8 @@ struct PK2LEVEL {
 	char  tiedosto[PE_PATH_SIZE];
 	char  nimi[40];
 	int   x, y;
-	int   order;
-	int   icon;
+	u32   order;
+	u32   icon;
 	
 };
 
@@ -38,7 +38,7 @@ struct PK2EPISODESCORES {
 	u8   has_time[EPISODI_MAX_LEVELS];           // if the level has time counter
 	u32  max_apples[EPISODI_MAX_LEVELS];         // max big apples get on level
 	
-	u32  best_time[EPISODI_MAX_LEVELS];          // the best time of each level
+	s32  best_time[EPISODI_MAX_LEVELS];          // the best time of each level
 	char fastest_player[EPISODI_MAX_LEVELS][20]; // the name of the fastest player in each level
 
 	u32  episode_top_score;

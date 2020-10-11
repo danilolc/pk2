@@ -17,7 +17,7 @@ class GameClass {
 
 	public:
 
-		int level_id = -1;
+		u32 level_id = -1;
 		MapClass* map = nullptr;
 		std::string map_file;
 
@@ -31,7 +31,7 @@ class GameClass {
 
 		u32 exit_timer = 0;
 
-		u32 timeout = 0;
+		int timeout = 0;
 		int increase_time = 0;
 		int seconds = 0;
 		bool has_time = false;

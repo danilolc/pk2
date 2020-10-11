@@ -346,7 +346,7 @@ int Draw_InGame_Lower_Menu() {
 	//////////////
 	// Draw time
 	//////////////
-	if (Game->timeout > 0) {
+	if (Game->has_time > 0) {
 
 		Game->timeout += Game->increase_time;
 		Game->increase_time = 0;

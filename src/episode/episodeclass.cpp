@@ -68,7 +68,7 @@ int EpisodeClass::Open_Scores() {
 		if (count > this->level_count)
 			count = this->level_count;
 
-		for (int i = 0; i < count; i++) {
+		for (u32 i = 0; i < count; i++) {
 			
 			file->read(this->scores.best_score[i]);
 			file->read(this->scores.top_player[i], 20);
@@ -142,7 +142,7 @@ int EpisodeClass::Save_Scores() {
 	file->write(versio, 4);
 	file->write(level_count);
 
-	for (int i = 0; i < level_count; i++) {
+	for (u32 i = 0; i < level_count; i++) {
 		
 		file->write(this->scores.best_score[i]);
 		file->write(this->scores.top_player[i], 20);
@@ -233,7 +233,7 @@ void EpisodeClass::Load() {
 
 	MapClass *temp = new MapClass();
 
-	for (int i = 0; i < this->level_count; i++) {
+	for (u32 i = 0; i < this->level_count; i++) {
 
 		char* mapname = this->levels_list[i].tiedosto;
 		strcpy(mapname, list[i].c_str());
@@ -260,7 +260,7 @@ void EpisodeClass::Load() {
 	while (!stop){
 		stop = true;
 
-		for (int i = 0; i < this->level_count - 1; i++) {
+		for (u32 i = 0; i < this->level_count - 1; i++) {
 
 			if (this->levels_list[i].order > this->levels_list[i+1].order) {
 

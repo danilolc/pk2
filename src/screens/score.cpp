@@ -42,21 +42,28 @@ bool map_new_record;
 bool map_new_time_record;
 bool episode_new_record;
 
-int EpisodeScore_Compare(int level, u32 episteet, u32 time, bool final_score){
+int LevelScore_Compare(int level, u32 score, u32 apples, s32 time){
 	
 	int ret = 0;
 
-	if (!final_score) {
+	if (score > Episode->scores.best_score[level]) {
 
-		if (episteet > Episode->scores.best_score[level]) {
+		strcpy(Episode->scores.top_player[level], Episode->player_name);
+		Episode->scores.best_score[level] = score;
+		map_new_record = true;
+		ret++;
 
-			strcpy(Episode->scores.top_player[level], Episode->player_name);
-			Episode->scores.best_score[level] = episteet;
-			map_new_record = true;
-			ret++;
+	}
 
-		}
-		if ((time < Episode->scores.best_time[level] || Episode->scores.best_time[level] == 0) && Game->map->aika > 0) {
+	if (apples > Episode->scores.max_apples[level]) {
+
+		Episode->scores.max_apples[level] = apples;
+		ret++;
+
+	}
+
+	if (Game->has_time) {
+		if (time < Episode->scores.best_time[level]) {
 
 			strcpy(Episode->scores.fastest_player[level],Episode->player_name);
 			Episode->scores.best_time[level] = time;
@@ -64,17 +71,21 @@ int EpisodeScore_Compare(int level, u32 episteet, u32 time, bool final_score){
 			ret++;
 
 		}
+	}
 
-	} else {
+	return ret;
 
-		if (episteet > Episode->scores.episode_top_score) {
+}
+int EpisodeScore_Compare(u32 score){
 
-		    Episode->scores.episode_top_score = episteet;
-			strcpy(Episode->scores.episode_top_player,Episode->player_name);
-			episode_new_record = true;
-			ret++;
+	int ret = 0;
 
-		}
+	if (score > Episode->scores.episode_top_score) {
+
+		Episode->scores.episode_top_score = score;
+		strcpy(Episode->scores.episode_top_player,Episode->player_name);
+		episode_new_record = true;
+		ret++;
 
 	}
 
@@ -286,16 +297,10 @@ int Screen_ScoreCount_Init() {
 	gifts_score = 0;
 
 	/* Check if broken level score and time record */
-	int compare_result = EpisodeScore_Compare(Game->level_id, temp_score, Game->map->aika - Game->timeout, false);
-	if (compare_result > 0) {
-
-		Episode->Save_Scores();
-
-	}
-
-	/* Check if broken episode score */ //TODO
-	compare_result = EpisodeScore_Compare(0, Episode->player_score, 0, true);
-	if (compare_result > 0) {
+	int episode_result = EpisodeScore_Compare(Episode->player_score);
+	int level_result = LevelScore_Compare(Game->level_id, temp_score, Game->apples_got, Game->map->aika - Game->timeout);
+	
+	if (episode_result > 0 || level_result > 0) {
 
 		Episode->Save_Scores();
 
@@ -307,7 +312,6 @@ int Screen_ScoreCount_Init() {
 	PSound::set_musicvolume(Settings.music_max_volume);
 
 	going_to_map = false;
-
 	PDraw::fade_in(PDraw::FADE_FAST);
 
 	return 0;

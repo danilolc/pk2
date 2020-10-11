@@ -107,15 +107,15 @@ int PK_Draw_Map() {
 	int sinx = 0, cosy = 0;
 	int pekkaframe = 0;
 
-	int njakso = Episode->level_count;
-	for (int i = 0; i < Episode->level_count; i++)
+	u32 njakso = Episode->level_count;
+	for (u32 i = 0; i < Episode->level_count; i++)
 		if (!Episode->level_status[i] && Episode->levels_list[i].order < njakso)
 			njakso = Episode->levels_list[i].order; // Find the first unclear level
 	
 	if(Episode->level < njakso)
 		Episode->level = njakso;
 
-	for (int i = 0; i < Episode->level_count; i++) {
+	for (u32 i = 0; i < Episode->level_count; i++) {
 		if (strcmp(Episode->levels_list[i].nimi,"")!=0 && Episode->levels_list[i].order > 0) {
 			
 			int type = -1;

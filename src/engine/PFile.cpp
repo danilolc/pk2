@@ -823,7 +823,19 @@ int RW::read(u8& val) {
 	return 1;
 
 }
+int RW::read(s8& val) {
+
+	val = SDL_ReadU8((SDL_RWops*)this);
+	return 1;
+
+}
 int RW::read(u16& val) {
+
+	val = SDL_ReadLE16((SDL_RWops*)this);
+	return 1;
+
+}
+int RW::read(s16& val) {
 
 	val = SDL_ReadLE16((SDL_RWops*)this);
 	return 1;
@@ -835,7 +847,19 @@ int RW::read(u32& val) {
 	return 1;
 
 }
+int RW::read(s32& val) {
+
+	val = SDL_ReadLE32((SDL_RWops*)this);
+	return 1;
+
+}
 int RW::read(u64& val) {
+
+	val = SDL_ReadLE64((SDL_RWops*)this);
+	return 1;
+
+}
+int RW::read(s64& val) {
 
 	val = SDL_ReadLE64((SDL_RWops*)this);
 	return 1;
@@ -857,7 +881,17 @@ int RW::write(u8 val) {
 	return SDL_WriteU8((SDL_RWops*)this, val);
 
 }
+int RW::write(s8 val) {
+
+	return SDL_WriteU8((SDL_RWops*)this, val);
+
+}
 int RW::write(u16 val) {
+
+	return SDL_WriteLE16((SDL_RWops*)this, val);
+
+}
+int RW::write(s16 val) {
 
 	return SDL_WriteLE16((SDL_RWops*)this, val);
 
@@ -867,7 +901,17 @@ int RW::write(u32 val) {
 	return SDL_WriteLE32((SDL_RWops*)this, val);
 
 }
+int RW::write(s32 val) {
+
+	return SDL_WriteLE32((SDL_RWops*)this, val);
+
+}
 int RW::write(u64 val){
+
+	return SDL_WriteLE64((SDL_RWops*)this, val);
+
+}
+int RW::write(s64 val){
 
 	return SDL_WriteLE64((SDL_RWops*)this, val);
 
@@ -905,7 +949,7 @@ size_t RW::to_buffer(void** buffer) {
 
 int RW::close() {
 
-	if (!this) {
+	if (this == nullptr) {
 
 		PLog::Write(PLog::ERR, "PFile", "Tried to close a null rw");
 		return -1;
