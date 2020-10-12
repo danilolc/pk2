@@ -13,6 +13,7 @@
 #include "game/sprites.hpp"
 #include "gfx/text.hpp"
 #include "gfx/particles.hpp"
+#include "gfx/effect.hpp"
 #include "gui.hpp"
 #include "episode/episodeclass.hpp"
 #include "language.hpp"
@@ -22,7 +23,7 @@
 
 static int debug_active_sprites = 0;
 
-static bool draw_dubug_info = false;
+static bool draw_debug_info = false;
 static int debug_sprites = 0;
 static int debug_drawn_sprites = 0;
 
@@ -223,6 +224,9 @@ int Draw_InGame_DebugInfo() {
 	sprintf(lukua, "%i", Game->button3);
 	PDraw::font_write(fontti1, lukua, 610, 440);
 
+	sprintf(lukua, "%i", Game->timeout);
+	vali += PDraw::font_write(fontti1,lukua,390,screen_height-10);
+
 	PDraw::set_xoffset(0);
 	return 0;
 }
@@ -367,10 +371,6 @@ int Draw_InGame_Lower_Menu() {
 		sprintf(luku, "%i", sek);
 		vali += ShadowedText_Draw(luku, x + vali, y);
 
-		if (dev_mode) {
-			sprintf(luku, "%i", Game->timeout);
-			vali += PDraw::font_write(fontti1,luku,x,screen_height-10);
-		}
 	}
 
 	/////////////////
@@ -506,7 +506,7 @@ int Draw_InGame() {
 
 	Draw_InGame_UI();
 
-	if (draw_dubug_info)
+	if (draw_debug_info)
 		Draw_InGame_DebugInfo();
 	else {
 		if (dev_mode)
@@ -821,7 +821,7 @@ int Screen_InGame(){
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::I)) {
-				draw_dubug_info = !draw_dubug_info;
+				draw_debug_info = !draw_debug_info;
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::R)) {
@@ -836,8 +836,9 @@ int Screen_InGame(){
 			if (PInput::Keydown(PInput::A)/* && key_delay == 0*/) {
 				//key_delay = 20;
 				*Player_Sprite = SpriteClass(&Prototypes_List[0], 1, false, Player_Sprite->x, Player_Sprite->y);
-				for (int r = 1; r < 6; r++)
-					Particles_New(PARTICLE_SPARK, Player_Sprite->x + rand() % 10 - rand() % 10, Player_Sprite->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
+				Effect_Stars(Player_Sprite->x, Player_Sprite->y, COLOR_VIOLET);
+//				for (int r = 1; r < 6; r++)
+//					Particles_New(PARTICLE_SPARK, Player_Sprite->x + rand() % 10 - rand() % 10, Player_Sprite->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
 			}
 		}
 		if (PInput::Keydown(PInput::U))

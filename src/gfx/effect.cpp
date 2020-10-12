@@ -6,8 +6,40 @@
 
 #include "gfx/particles.hpp"
 #include "game/sprites.hpp"
+#include "system.hpp"
 
 #include <cstdlib>
+
+void Effect_Circle_Star(double x, double y, u8 color) {
+	
+	float weight = 0.01;
+	int time = 50;
+
+	for (int angle = 0; angle < 180; angle += 20) {
+		Particles_New(PARTICLE_STAR, x, y, sin_table[angle]/20, cos_table[angle]/20, time, weight, color);
+		Particles_New(PARTICLE_SPARK, x, y, sin_table[angle+10]/21, cos_table[angle+10]/21, time, weight, color);
+	}
+
+}
+
+void Effect_Super(double x, double y, int w, int h) {
+
+	const int colors[] = {COLOR_GRAY,COLOR_BLUE,COLOR_ORANGE,COLOR_GREEN,COLOR_TURQUOISE};
+
+	float weight = 0.01;
+	int time = 20;
+
+	for (int i = 0; i < 3; i++) {
+		int angle = rand() % 180;
+		int px = x + rand()%w - w / 2;
+		int py = y + rand()%h - h / 2;
+
+		int d = 30 + rand()%40;
+		int color = colors[rand()%5];
+
+		Particles_New(PARTICLE_STAR, px, py, sin_table[angle]/d, cos_table[angle]/d, time, weight, color);
+	}
+}
 
 void Effect_Feathers(double x, double y) {
 	for (int i=0;i<9;i++)//6

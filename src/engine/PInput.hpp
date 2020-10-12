@@ -37,7 +37,11 @@ enum KEY {
 	M,	N,	O,	P,
 	Q,	R,	S,	T,
 	U,	V,	W,	X,
-	Y,	Z
+	Y,	Z,
+
+	N1, N2, N3, N4,
+	N5, N6, N7, N8,
+	N9, N0
 
 };
 
