@@ -220,6 +220,8 @@ int resume_music() {
 	}
 
 	overlay_playing = false;
+
+	return 0;
 	
 }
 
@@ -247,6 +249,8 @@ int play_overlay_music() {
 	}
 
 	overlay_playing = true;
+
+	return 0;
 
 }
 
@@ -389,6 +393,7 @@ int terminate() {
 	overlay_music = NULL;
 
 	Mix_CloseAudio();
+	Mix_Quit();
 	return 0;
 
 }

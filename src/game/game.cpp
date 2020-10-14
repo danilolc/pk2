@@ -31,12 +31,16 @@ GameClass::GameClass(std::string map_file) {
 	this->map_file = map_file;
 	this->from_index = false;
 
-	for (int i = 0; i < Episode->level_count; i++) {
-		if (map_file == Episode->levels_list[i].tiedosto)
+	bool found = false;
+
+	for (uint i = 0; i < Episode->level_count; i++) {
+		if (map_file == Episode->levels_list[i].tiedosto) {
 			this->level_id = i;
+			found = true;
+		}
 	}
 
-	if (this->level_id == -1) {
+	if (!found) {
 		PLog::Write(PLog::FATAL, "PK2", "Couldn't find %s on episode", map_file.c_str());
 		PK2_Error("Couldn't find test map on episode");
 	}

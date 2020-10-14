@@ -909,6 +909,8 @@ int terminate(){
 
     if(window_icon != NULL) SDL_FreeSurface(window_icon);
 
+    IMG_Quit();
+
     ready = false;
     return 0;
 
