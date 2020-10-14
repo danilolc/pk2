@@ -26,4 +26,8 @@ void set_musicvolume(int volume);
 void set_musicvolume_now(int volume);
 void stop_music();
 
+int resume_music();
+int play_overlay_music();
+int load_overlay_music(PFile::Path path);
+
 }

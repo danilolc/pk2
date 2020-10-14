@@ -44,7 +44,7 @@ void Effect_Super(double x, double y, int w, int h) {
 void Effect_Feathers(double x, double y) {
 	for (int i=0;i<9;i++)//6
 		Particles_New(PARTICLE_FEATHER,x+rand()%17-rand()%17,y+rand()%20-rand()%10,
-							(rand()%16-rand()%16)/10.0,(45+rand()%45)/100.0,300+rand()%40,0,0);
+							double(rand()%16-rand()%16)/10,double(45+rand()%45)/100,300+rand()%40,0,0);
 }
 
 void Effect_Splash(double x, double y, u8 color) {
@@ -55,7 +55,7 @@ void Effect_Splash(double x, double y, u8 color) {
 							rand()%50+60,0.025,color);*/
 	for (int i=0;i<7;i++)
 		Particles_New(	PARTICLE_SPARK,x+rand()%17-13,y+rand()%17-13,
-							(rand()%5-rand()%5)/4.0,(rand()%4-rand()%7)/3.0,
+							double(rand()%5-rand()%5)/4,double(rand()%4-rand()%7)/3,
 							rand()%50+40,0.025,color);//0.015
 
 	for (int i=0;i<20;i++)
@@ -73,18 +73,18 @@ void Effect_Explosion(double x, double y, u8 color) {
 
 	for (i=0;i<9;i++)//12
 		Particles_New(	PARTICLE_LIGHT,x+rand()%17-13,y+rand()%17-13,
-							(rand()%7-rand()%7)/5.0,(rand()%7-rand()%7)/3.0,
+							double(rand()%7-rand()%7)/5.0,double(rand()%7-rand()%7)/3.0,
 							rand()%40+60,0.025,color);
 
 	for (i=0;i<8;i++)//8//10
 		Particles_New(	PARTICLE_SPARK,x+rand()%17-13,y+rand()%17-13,
 							(rand()%3-rand()%3),//(rand()%7-rand()%7)/5,
-							(rand()%7-rand()%7)/3,
+							double(rand()%7-rand()%7)/3,
 							rand()%20+60,0.015,color);//50+60
 
 	for (i=0;i<20;i++)//12
 		Particles_New(	PARTICLE_POINT,x+rand()%17-13,y+rand()%17-13,
-							(rand()%7-rand()%7)/5.0,(rand()%7-rand()%7)/3.0,
+							double(rand()%7-rand()%7)/5,double(rand()%7-rand()%7)/3,
 							rand()%40+60,0.025,color);
 }
 
@@ -105,10 +105,10 @@ void Effect_SmokeClouds(double x, double y) {
 
 void Effect_Stars(double x, double y, u8 color) {
 	for (int i = 0; i < 5; i++)
-		Particles_New(PARTICLE_STAR,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0/* 0.05*/,color);//300
+		Particles_New(PARTICLE_STAR,x-5, y-5, double(rand()%30-rand()%30)/15, rand()%3*-1,100,(rand()%5+5)/100.0/* 0.05*/,color);//300
 
 	for (int i=0;i<3;i++)//12
-		Particles_New(	PARTICLE_POINT,x-5, y-5, (rand()%3-rand()%3)/1.5, rand()%3*-1,100,(rand()%5+5)/100.0,color);
+		Particles_New(	PARTICLE_POINT,x-5, y-5, double(rand()%30-rand()%30)/15, rand()%3*-1,100,(rand()%5+5)/100.0,color);
 }
 
 void Effect_Destruction(u8 tehoste, double x, double y) {

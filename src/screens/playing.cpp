@@ -214,15 +214,16 @@ int Draw_InGame_DebugInfo() {
 
 	PDraw::font_write(fontti1, Episode->Get_Dir().c_str(), 10, 470);
 
+	sprintf(lukua, "%i", Player_Sprite->super_mode);
+	PDraw::font_write(fontti1, lukua, 610, 470);
 	sprintf(lukua, "%i", Player_Sprite->invisible);
-	PDraw::font_write(fontti1,lukua,610,470);
-
-	sprintf(lukua, "%i", Game->button1);
 	PDraw::font_write(fontti1, lukua, 610, 460);
-	sprintf(lukua, "%i", Game->button2);
+	sprintf(lukua, "%i", Game->button1);
 	PDraw::font_write(fontti1, lukua, 610, 450);
-	sprintf(lukua, "%i", Game->button3);
+	sprintf(lukua, "%i", Game->button2);
 	PDraw::font_write(fontti1, lukua, 610, 440);
+	sprintf(lukua, "%i", Game->button3);
+	PDraw::font_write(fontti1, lukua, 610, 430);
 
 	sprintf(lukua, "%i", Game->timeout);
 	vali += PDraw::font_write(fontti1,lukua,390,screen_height-10);
@@ -255,6 +256,7 @@ int Draw_InGame_DevKeys() {
 		"u: go up",
 		"r: back to start",
 		"v: set invisible",
+		"s: set super mode",
 		"e: set energy to max",
 		"a: set rooster",
 		"end: end level",
@@ -847,6 +849,14 @@ int Screen_InGame(){
 			Player_Sprite->energia = 10;
 		if (PInput::Keydown(PInput::V))
 			Player_Sprite->invisible = 3000;
+		if (PInput::Keydown(PInput::S)) {
+			PSound::play_overlay_music();
+			Player_Sprite->super_mode = 490;
+			key_delay = 30;
+		}
+
+		if (Player_Sprite->super_mode == 0)
+			PSound::resume_music();
 	}
 
 	if (Game->exit_timer == 1 && !PDraw::is_fading()) {

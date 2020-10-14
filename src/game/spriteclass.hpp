@@ -601,7 +601,7 @@ class PrototypeClass{
     void Kopioi(const PrototypeClass &proto);
     int  Animation_Uusi(int anim_i, u8 *sekvenssi, bool looppi);
     int  Load(PFile::Path path);
-    void Tallenna(char *tiedoston_nimi);
+    void Tallenna(const char* filename);
     int  Piirra(int x, int y, int frame);
     bool Onko_AI(int AI);
 
@@ -639,7 +639,8 @@ class SpriteClass{
     double kytkinpaino;		// spriten paino + muiden spritejen panot, joihin kosketaan
     bool   kyykky;				// onko sprite kyykyss�
     int    isku;				// damage timer
-    int    invisible;          // invisibility timer
+    int    invisible;           // invisibility timer
+    int    super_mode;          // super mode timer
     int    lataus;				// jos on ammuttu, odotetaan
     int    hyokkays1;			// ajastin joka laskee hy�kk�ys 1:n j�lkeen
     int    hyokkays2;			// ajastin joka laskee hy�kk�ys 2:n j�lkeen

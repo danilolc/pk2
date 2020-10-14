@@ -25,8 +25,12 @@ static int def_freq = 22050;
 static int mus_volume = 100;
 static int mus_volume_now = 100;
 
+
 static Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
 static Uint8* freq_chunks[CHANNELS];  //The chunk allocated for each channel
+
+static Mix_Music* overlay_music = NULL;
+static bool overlay_playing = false;
 
 static Mix_Music* music = NULL;
 static std::string playingMusic = "";
@@ -193,10 +197,88 @@ void clear_channels() {
 
 }
 
+int resume_music() {
+
+	if (!overlay_playing) {
+
+		return -1;
+
+	}
+
+	if (music == NULL) {
+
+		PLog::Write(PLog::WARN, "PSound", "No music loaded");
+		return -1;
+	
+	}
+	if (Mix_PlayMusic(music, -1) == -1) {
+
+		PLog::Write(PLog::ERR, "PSound", Mix_GetError());
+		Mix_ClearError();
+		return -1;
+	
+	}
+
+	overlay_playing = false;
+	
+}
+
+int play_overlay_music() {
+
+	if (overlay_playing) {
+
+		return -1;
+
+	}
+
+	if (overlay_music == NULL) {
+
+		PLog::Write(PLog::WARN, "PSound", "No overlay music loaded");
+		return -1;
+	
+	}
+
+	if (Mix_PlayMusic(overlay_music, -1) == -1) {
+
+		PLog::Write(PLog::ERR, "PSound", Mix_GetError());
+		Mix_ClearError();
+		return -1;
+	
+	}
+
+	overlay_playing = true;
+
+}
+
+int load_overlay_music(PFile::Path path) {
+
+	if (overlay_music)
+		Mix_FreeMusic(music);
+
+	PFile::RW* rw = path.GetRW("rb");
+	overlay_music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);
+	rw->close();
+
+	if (overlay_music == NULL) {
+
+		PLog::Write(PLog::WARN, "PSound", Mix_GetError());
+		Mix_ClearError();
+		return -1;
+	
+	}
+
+	PLog::Write(PLog::DEBUG, "PSound", "Loaded %s to overlay music", path.c_str());
+	return 0;
+
+}
+
 int start_music(PFile::Path path) {
 
 	if (playingMusic == path)
 		return 1;
+	
+	if (music)
+		Mix_FreeMusic(music);
 
 	PFile::RW* rw = path.GetRW("rb");
 	music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);
@@ -287,6 +369,9 @@ int update() {
 
 	else if (mus_volume_now > mus_volume)
 		Mix_VolumeMusic(--mus_volume_now * MIX_MAX_VOLUME / 100);
+	
+	if (overlay_playing && !Mix_PlayingMusic())
+		resume_music();
 
 	return 0;
 
@@ -300,6 +385,9 @@ int terminate() {
 	if(music != NULL) Mix_FreeMusic(music);
 	music = NULL;
 	
+	if(overlay_music != NULL) Mix_FreeMusic(music);
+	overlay_music = NULL;
+
 	Mix_CloseAudio();
 	return 0;
 

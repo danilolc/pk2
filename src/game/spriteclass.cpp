@@ -5,6 +5,7 @@
 #include "game/spriteclass.hpp"
 
 #include "system.hpp"
+#include "gfx/effect.hpp"
 
 #include "engine/PDraw.hpp"
 #include "engine/PLog.hpp"
@@ -732,18 +733,19 @@ int PrototypeClass::Load(PFile::Path path){
 }
 
 //Save
-void PrototypeClass::Tallenna(char *tiedoston_nimi) {
-/*
-   	strcpy(this->tiedosto,tiedoston_nimi);
+void PrototypeClass::Tallenna(const char* filename) {
+
+	PFile::Path path(filename);
+	path.SetPath(this->tiedosto);
+	PFile::RW* file = path.GetRW("w");
 
 	PrototypeClass13 proto = GetProto13();
 
-	SDL_RWops* file = SDL_RWFromFile(tiedoston_nimi, "w");
-	SDL_RWwrite(file, PK2SPRITE_CURRENT_VERSION, 4, 1);
-	SDL_RWwrite(file, &proto, sizeof(proto), 1);
+	file->write(PK2SPRITE_CURRENT_VERSION, 4);
+	file->write(&proto, sizeof(proto));
 
 	file->close();
-*/
+
 }
 
 int PrototypeClass::Piirra(int x, int y, int frame){
@@ -788,6 +790,7 @@ SpriteClass::SpriteClass(){
 	this->sekvenssi_index = 0;
 	this->isku			= 0;
 	this->invisible     = 0;
+	this->super_mode    = 0;
 	this->lataus		= 0;
 	this->hyokkays1		= 0;
 	this->hyokkays2		= 0;
@@ -832,6 +835,7 @@ SpriteClass::SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, doub
 		this->sekvenssi_index = 0;
 		this->isku			= 0;
 		this->invisible     = 0;
+		this->super_mode    = 0;
 		this->lataus		= 0;
 		this->hyokkays1		= 0;
 		this->hyokkays2		= 0;
@@ -940,6 +944,9 @@ int SpriteClass::Piirra(int kamera_x, int kamera_y){
 			PDraw::image_clip(tyyppi->framet[frame], x-l-1, y-h);
 	
 	}
+
+	if (this->super_mode)
+		Effect_Super(this->x, this->y, this->tyyppi->leveys, this->tyyppi->korkeus);
 
 	return 0;
 }

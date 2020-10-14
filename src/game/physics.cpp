@@ -555,6 +555,9 @@ int Sprite_Movement(int i){
 
 	if (sprite.invisible > 0)
 		sprite.invisible--;
+	
+	if (sprite.super_mode > 0)
+		sprite.super_mode--;
 
 	/*****************************************************************************************/
 	/* Gravity effect                                                                        */
@@ -769,14 +772,14 @@ int Sprite_Movement(int i){
 					}
 				}
 
-				/* spritet voivat vaihtaa tietoa pelaajan olinpaikasta */
+				/* sprites can exchange information about a player's whereabouts */ //TODO - test this sometime
 	/*			if (sprite.pelaaja_x != -1 && sprite2->pelaaja_x == -1)
 				{
 					sprite2->pelaaja_x = sprite.pelaaja_x + rand()%30 - rand()%30;
 					sprite.pelaaja_x = -1;
 				} */
 
-
+				// If two sprites from different teams touch each other
 				if (sprite.vihollinen != sprite2->vihollinen && sprite.emosprite != sprite_index) {
 					if (sprite2->tyyppi->tyyppi != TYPE_BACKGROUND &&
 						sprite.tyyppi->tyyppi   != TYPE_BACKGROUND &&
@@ -788,14 +791,24 @@ int Sprite_Movement(int i){
 						sprite2->saatu_vahinko < 1)
 					{
 
-						// Tippuuko toinen sprite p��lle?
-
+						if (sprite.super_mode > 0 && sprite2->super_mode == 0) {
+							sprite2->saatu_vahinko = 500;
+							sprite2->saatu_vahinko_tyyppi = DAMAGE_ALL;
+						}
+						if (sprite2->super_mode > 0 && sprite.super_mode == 0) {
+							sprite.saatu_vahinko = 500;
+							sprite.saatu_vahinko_tyyppi = DAMAGE_ALL;
+						}
+						
+						//Bounce on the sprite head
 						if (sprite2->b > 2 && sprite2->paino >= 0.5 &&
 							sprite2->y < sprite_y && !sprite.tyyppi->este &&
 							sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 						{
-							//sprite.saatu_vahinko = (int)sprite2->paino;//1;
-							sprite.saatu_vahinko = (int)(sprite2->paino+sprite2->b/4);
+							if (sprite2->super_mode)
+								sprite.saatu_vahinko = 500;
+							else
+								sprite.saatu_vahinko = (int)(sprite2->paino+sprite2->b/4);
 							sprite.saatu_vahinko_tyyppi = DAMAGE_DROP;
 							sprite2->hyppy_ajastin = 1;
 						}
@@ -807,7 +820,7 @@ int Sprite_Movement(int i){
 							sprite2->saatu_vahinko_tyyppi = sprite.tyyppi->vahinko_tyyppi;
 							
 							if ( !(sprite2->pelaaja && sprite2->invisible) ) //If sprite2 isn't a invisible player
-								sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika; //Then sprite attack
+								sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika; //Then sprite attack??
 
 							// The projectiles are shattered by shock
 							if (sprite2->tyyppi->tyyppi == TYPE_PROJECTILE) {
@@ -834,7 +847,11 @@ int Sprite_Movement(int i){
 	/*****************************************************************************************/
 	/* If the sprite has suffered damage                                                     */
 	/*****************************************************************************************/
-	
+	if (sprite.saatu_vahinko != 0 && sprite.super_mode != 0) {
+		sprite.saatu_vahinko = 0;
+		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
+	}
+
 	// If it is invisible, just these damages can injury it
 	if (sprite.saatu_vahinko != 0 && sprite.invisible != 0 && 
 		sprite.saatu_vahinko_tyyppi != DAMAGE_FIRE &&
