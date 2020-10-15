@@ -95,8 +95,11 @@ int Draw_InGame_BGSprites() {
 				{
 
 					sprite->Piirra(Game->camera_x,Game->camera_y);
-					sprite->piilossa = false;
 
+					if (sprite->super_mode && !Game->paused)
+						Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
+
+					sprite->piilossa = false;
 					debug_drawn_sprites++;
 				} else {
 					if (!Game->paused)
@@ -134,6 +137,7 @@ int Draw_InGame_Sprites() {
 
 				sprite->Piirra(Game->camera_x,Game->camera_y);
 
+				// Draw stars on dead sprite
 				if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYPE_PROJECTILE){
 					sx = (int)sprite->x;
 					for (stars=0; stars<3; stars++){
@@ -142,6 +146,9 @@ int Draw_InGame_Sprites() {
 						PDraw::image_cutclip(game_assets,star_x-Game->camera_x, star_y-Game->camera_y,1,1,11,11);
 					}
 				}
+
+				if (sprite->super_mode && !Game->paused)
+					Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
 
 				debug_drawn_sprites++;
 			} else{

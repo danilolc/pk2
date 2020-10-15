@@ -5,7 +5,6 @@
 #include "game/spriteclass.hpp"
 
 #include "system.hpp"
-#include "gfx/effect.hpp"
 
 #include "engine/PDraw.hpp"
 #include "engine/PLog.hpp"
@@ -945,9 +944,6 @@ int SpriteClass::Piirra(int kamera_x, int kamera_y){
 	
 	}
 
-	if (this->super_mode)
-		Effect_Super(this->x, this->y, this->tyyppi->leveys, this->tyyppi->korkeus);
-
 	return 0;
 }
 
@@ -1708,9 +1704,7 @@ int SpriteClass::AI_Liikkuu_X(double liike){
 }
 int SpriteClass::AI_Liikkuu_Y(double liike){
 	if (energia > 0)
-	{
 		this->y = this->alku_y + liike;
-	}
 
 	return 0;
 }

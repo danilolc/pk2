@@ -162,6 +162,7 @@ int GameClass::Clean_TileBuffer() {
 	return 0;
 }
 
+// This moves the collisions of the blocks palette
 int GameClass::Move_Blocks() {
 
 	this->lasketut_palikat[BLOCK_HISSI_HORI].vasen = (int)cos_table[degree%360];
