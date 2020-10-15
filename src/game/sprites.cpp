@@ -332,7 +332,7 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 				Sprites_List[i].alku_y = Sprites_List[i].y;
 				Sprites_List[i].hyppy_ajastin = 1;
 				Sprites_List[i].a = rand()%2 - rand()%4;
-				Sprites_List[i].isku = 35;//25
+				Sprites_List[i].damage_timer = 35;//25
 
 			} else {
 

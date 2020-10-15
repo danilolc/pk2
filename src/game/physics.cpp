@@ -104,7 +104,7 @@ void Check_Blocks2(SpriteClass &sprite, PK2BLOCK &palikka) {
 
 					if (sprite_yla < palikka.ala)
 						if (palikka.koodi != BLOCK_HISSI_HORI)
-							sprite.kyykky = true;
+							sprite.crouched = true;
 				}
 			}
 		}
@@ -128,7 +128,7 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		/* Examine if it touches the fire                                     */
 		/**********************************************************************/
-		if (palikka.koodi == BLOCK_TULI && Game->button1 == 0 && sprite.isku == 0){
+		if (palikka.koodi == BLOCK_TULI && Game->button1 == 0 && sprite.damage_timer == 0){
 			sprite.saatu_vahinko = 2;
 			sprite.saatu_vahinko_tyyppi = DAMAGE_FIRE;
 		}
@@ -155,7 +155,7 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		/* Examine if it touches the fire                                     */
 		/**********************************************************************/
-		if (palikka.koodi == BLOCK_TULI && Game->button1 == 0 && sprite.isku == 0){
+		if (palikka.koodi == BLOCK_TULI && Game->button1 == 0 && sprite.damage_timer == 0){
 			sprite.saatu_vahinko = 2;
 			sprite.saatu_vahinko_tyyppi = DAMAGE_FIRE;
 		}
@@ -300,16 +300,16 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 					ylos = false;
 
 					if (sprite_yla < palikka.ala) {
-						if (palikka.koodi == BLOCK_HISSI_VERT && sprite.kyykky) {
+						if (palikka.koodi == BLOCK_HISSI_VERT && sprite.crouched) {
 							sprite.saatu_vahinko = 2;
 							sprite.saatu_vahinko_tyyppi = DAMAGE_IMPACT;
 						}
 
 						if (palikka.koodi != BLOCK_HISSI_HORI) {
-							//if (sprite.kyykky)
+							//if (sprite.crouched)
 							//	sprite_y = palikka.ala + sprite_korkeus /2;
 
-							sprite.kyykky = true;
+							sprite.crouched = true;
 						}
 					}
 				}
@@ -355,7 +355,7 @@ int Sprite_Movement(int i){
 	map_vasen = 0;
 	map_yla   = 0;
 
-	sprite.kyykky = false;
+	sprite.crouched = false;
 
 	sprite.reuna_vasemmalla = false;
 	sprite.reuna_oikealla = false;
@@ -376,8 +376,8 @@ int Sprite_Movement(int i){
 	if (sprite.lataus > 0)	// aika kahden ampumisen (munimisen) v�lill�
 		sprite.lataus --;
 
-	if (sprite.muutos_ajastin > 0)	// aika muutokseen
-		sprite.muutos_ajastin --;
+	if (sprite.mutation_timer > 0)	// aika muutokseen
+		sprite.mutation_timer --;
 
 	/*****************************************************************************************/
 	/* Player-sprite and its controls                                                        */
@@ -399,9 +399,9 @@ int Sprite_Movement(int i){
 				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
 
 		/* CROUCH */
-		sprite.kyykky = false;
+		sprite.crouched = false;
 		if ((PInput::Keydown(Settings.control_down) || Gui_down) && !sprite.alas) {
-			sprite.kyykky = true;
+			sprite.crouched = true;
 			sprite_yla += sprite_korkeus/1.5;
 		}
 
@@ -417,7 +417,7 @@ int Sprite_Movement(int i){
 		double a_lisays = 0.04;//0.08;
 
 		if (add_speed) {
-			if (rand()%20 == 1 && sprite.animaatio_index == ANIMATION_WALKING) // Draw dust
+			if (rand()%20 == 1 && sprite.animation_index == ANIMATION_WALKING) // Draw dust
 				Particles_New(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,0.25,-0.25,40,0,0);
 
 			a_lisays += 0.09;//0.05
@@ -433,15 +433,15 @@ int Sprite_Movement(int i){
 		else if (navigation < 0)
 			sprite.flip_x = true;
 
-		if (sprite.kyykky)	// Slow when couch
+		if (sprite.crouched)	// Slow when couch
 			a_lisays /= 10;
 
 		sprite_a += a_lisays;
 
 		/* JUMPING */
-		if (sprite.tyyppi->paino > 0) {
+		if (sprite.tyyppi->weight > 0) {
 			if (PInput::Keydown(Settings.control_jump) || Gui_up) {
-				if (!sprite.kyykky) {
+				if (!sprite.crouched) {
 					if (sprite.hyppy_ajastin == 0)
 						Play_GameSFX(jump_sound, 100, (int)sprite_x, (int)sprite_y,
 									  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
@@ -491,8 +491,8 @@ int Sprite_Movement(int i){
 					sprite.AI_Muutos_Ajastin(Prototypes_List[sprite.tyyppi->muutos]);
 			break;
 			
-			case AI_VAHINGOITTUU_VEDESTA:
-				sprite.AI_Vahingoittuu_Vedesta();
+			case AI_DAMAGED_BY_WATER:
+				sprite.AI_Damaged_by_Water();
 			break;
 			
 			case AI_MUUTOS_JOS_OSUTTU:
@@ -546,25 +546,25 @@ int Sprite_Movement(int i){
 	/* Hit recovering                                                                        */
 	/*****************************************************************************************/
 
-	if (sprite.isku > 0)
-		sprite.isku--;
+	if (sprite.damage_timer > 0)
+		sprite.damage_timer--;
 
 	/*****************************************************************************************/
 	/* Invisibility                                                                          */
 	/*****************************************************************************************/
 
-	if (sprite.invisible > 0)
-		sprite.invisible--;
+	if (sprite.invisible_timer > 0)
+		sprite.invisible_timer--;
 	
-	if (sprite.super_mode > 0)
-		sprite.super_mode--;
+	if (sprite.super_mode_timer > 0)
+		sprite.super_mode_timer--;
 
 	/*****************************************************************************************/
 	/* Gravity effect                                                                        */
 	/*****************************************************************************************/
 
-	if (sprite.paino != 0 && (sprite.hyppy_ajastin <= 0 || sprite.hyppy_ajastin >= 45))
-		sprite_b += sprite.paino/1.25;// + sprite_b/1.5;
+	if (sprite.weight != 0 && (sprite.hyppy_ajastin <= 0 || sprite.hyppy_ajastin >= 45))
+		sprite_b += sprite.weight/1.25;// + sprite_b/1.5;
 
 	if (gliding && sprite_b > 0) // If gliding
 		sprite_b /= 1.3;//1.5;//3
@@ -630,7 +630,7 @@ int Sprite_Movement(int i){
 			if (sprite_b > 0)
 				sprite_b /= 2.0;
 
-			sprite_b -= (1.5-sprite.paino)/10;*/
+			sprite_b -= (1.5-sprite.weight)/10;*/
 			sprite_b /= 2.0;
 			sprite_a /= 1.05;
 
@@ -651,11 +651,11 @@ int Sprite_Movement(int i){
 	/* Sprite weight                                                                         */
 	/*****************************************************************************************/
 
-	sprite.paino = sprite.alkupaino;
-	sprite.kytkinpaino = sprite.paino;
+	sprite.weight = sprite.initial_weight;
+	sprite.kytkinpaino = sprite.weight;
 
-	if (sprite.energia < 1 && sprite.paino == 0) // Fall when is death
-		sprite.paino = 1;
+	if (sprite.energia < 1 && sprite.weight == 0) // Fall when is death
+		sprite.weight = 1;
 
 	/*****************************************************************************************/
 	/* Sprite collision with other sprites                                                   */
@@ -672,7 +672,7 @@ int Sprite_Movement(int i){
 		sprite2 = &Sprites_List[sprite_index];
 
 		if (sprite_index != i && /*!sprite2->piilota*/sprite2->aktiivinen) {
-			if (sprite2->kyykky)
+			if (sprite2->crouched)
 				sprite2_yla = sprite2->tyyppi->korkeus / 3;//1.5;
 			else
 				sprite2_yla = 0;
@@ -773,10 +773,10 @@ int Sprite_Movement(int i){
 				}
 
 				/* sprites can exchange information about a player's whereabouts */ //TODO - test this sometime
-	/*			if (sprite.pelaaja_x != -1 && sprite2->pelaaja_x == -1)
+	/*			if (sprite.seen_player_x != -1 && sprite2->seen_player_x == -1)
 				{
-					sprite2->pelaaja_x = sprite.pelaaja_x + rand()%30 - rand()%30;
-					sprite.pelaaja_x = -1;
+					sprite2->seen_player_x = sprite.seen_player_x + rand()%30 - rand()%30;
+					sprite.seen_player_x = -1;
 				} */
 
 				// If two sprites from different teams touch each other
@@ -784,31 +784,31 @@ int Sprite_Movement(int i){
 					if (sprite2->tyyppi->tyyppi != TYPE_BACKGROUND &&
 						sprite.tyyppi->tyyppi   != TYPE_BACKGROUND &&
 						sprite2->tyyppi->tyyppi != TYPE_TELEPORT &&
-						sprite2->isku == 0 &&
-						sprite.isku == 0 &&
+						sprite2->damage_timer == 0 &&
+						sprite.damage_timer == 0 &&
 						sprite2->energia > 0 &&
 						sprite.energia > 0 &&
 						sprite2->saatu_vahinko < 1)
 					{
 
-						if (sprite.super_mode > 0 && sprite2->super_mode == 0) {
+						if (sprite.super_mode_timer > 0 && sprite2->super_mode_timer == 0) {
 							sprite2->saatu_vahinko = 500;
 							sprite2->saatu_vahinko_tyyppi = DAMAGE_ALL;
 						}
-						if (sprite2->super_mode > 0 && sprite.super_mode == 0) {
+						if (sprite2->super_mode_timer > 0 && sprite.super_mode_timer == 0) {
 							sprite.saatu_vahinko = 500;
 							sprite.saatu_vahinko_tyyppi = DAMAGE_ALL;
 						}
 						
 						//Bounce on the sprite head
-						if (sprite2->b > 2 && sprite2->paino >= 0.5 &&
+						if (sprite2->b > 2 && sprite2->weight >= 0.5 &&
 							sprite2->y < sprite_y && !sprite.tyyppi->este &&
 							sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 						{
-							if (sprite2->super_mode)
+							if (sprite2->super_mode_timer)
 								sprite.saatu_vahinko = 500;
 							else
-								sprite.saatu_vahinko = (int)(sprite2->paino+sprite2->b/4);
+								sprite.saatu_vahinko = (int)(sprite2->weight+sprite2->b/4);
 							sprite.saatu_vahinko_tyyppi = DAMAGE_DROP;
 							sprite2->hyppy_ajastin = 1;
 						}
@@ -819,7 +819,7 @@ int Sprite_Movement(int i){
 							sprite2->saatu_vahinko        = sprite.tyyppi->vahinko;
 							sprite2->saatu_vahinko_tyyppi = sprite.tyyppi->vahinko_tyyppi;
 							
-							if ( !(sprite2->pelaaja && sprite2->invisible) ) //If sprite2 isn't a invisible player
+							if ( !(sprite2->pelaaja && sprite2->invisible_timer) ) //If sprite2 isn't a invisible player
 								sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika; //Then sprite attack??
 
 							// The projectiles are shattered by shock
@@ -836,9 +836,9 @@ int Sprite_Movement(int i){
 					}
 				}
 
-				// lis�t��n spriten painoon sit� koskettavan toisen spriten paino
-				if (sprite.paino > 0)
-					sprite.kytkinpaino += sprite2->tyyppi->paino;
+				// lis�t��n spriten painoon sit� koskettavan toisen spriten weight
+				if (sprite.weight > 0)
+					sprite.kytkinpaino += sprite2->tyyppi->weight;
 
 			}
 		}
@@ -847,13 +847,13 @@ int Sprite_Movement(int i){
 	/*****************************************************************************************/
 	/* If the sprite has suffered damage                                                     */
 	/*****************************************************************************************/
-	if (sprite.saatu_vahinko != 0 && sprite.super_mode != 0) {
+	if (sprite.saatu_vahinko != 0 && sprite.super_mode_timer != 0) {
 		sprite.saatu_vahinko = 0;
 		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
 	}
 
 	// If it is invisible, just these damages can injury it
-	if (sprite.saatu_vahinko != 0 && sprite.invisible != 0 && 
+	if (sprite.saatu_vahinko != 0 && sprite.invisible_timer != 0 && 
 		sprite.saatu_vahinko_tyyppi != DAMAGE_FIRE &&
 		sprite.saatu_vahinko_tyyppi != DAMAGE_COMPRESSION &&
 		sprite.saatu_vahinko_tyyppi != DAMAGE_DROP &&
@@ -866,10 +866,10 @@ int Sprite_Movement(int i){
 	if (sprite.saatu_vahinko != 0 && sprite.energia > 0 && sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU){
 		if (sprite.tyyppi->suojaus != sprite.saatu_vahinko_tyyppi || sprite.tyyppi->suojaus == DAMAGE_NONE){
 			sprite.energia -= sprite.saatu_vahinko;
-			sprite.isku = DAMAGE_TIME;
+			sprite.damage_timer = DAMAGE_TIME;
 
 			if (sprite.saatu_vahinko_tyyppi == DAMAGE_ELECTRIC)
-				sprite.isku *= 6;
+				sprite.damage_timer *= 6;
 
 			Play_GameSFX(sprite.tyyppi->aanet[SOUND_DAMAGE], 100, (int)sprite.x, (int)sprite.y,
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
@@ -886,12 +886,12 @@ int Sprite_Movement(int i){
 			if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
 				Game->map->Change_SkullBlocks();
 
-			if (sprite.Onko_AI(AI_HYOKKAYS_1_JOS_OSUTTU)){
+			if (sprite.Onko_AI(AI_ATTACK_1_JOS_OSUTTU)){
 				sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
 				sprite.lataus = 0;
 			}
 
-			if (sprite.Onko_AI(AI_HYOKKAYS_2_JOS_OSUTTU)){
+			if (sprite.Onko_AI(AI_ATTACK_2_JOS_OSUTTU)){
 				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
 				sprite.lataus = 0;
 			}
@@ -943,7 +943,7 @@ int Sprite_Movement(int i){
 		}
 	}
 
-	if (sprite.isku == 0)
+	if (sprite.damage_timer == 0)
 		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
 
 
@@ -972,7 +972,7 @@ int Sprite_Movement(int i){
 			if (sprite.hyppy_ajastin > 0){
 				if (sprite.hyppy_ajastin >= 90+10){
 					Play_GameSFX(pump_sound,30,(int)sprite_x, (int)sprite_y,
-				                  int(25050-sprite.paino*3000),true);
+				                  int(25050-sprite.weight*3000),true);
 
 					//Particles_New(	PARTICLE_DUST_CLOUDS,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
 					//			  0,-0.2,rand()%50+20,0,0);
@@ -984,8 +984,8 @@ int Sprite_Movement(int i){
 									  	   -0.3,-0.1,450,0,0);
 					}
 
-					if (sprite.paino > 1)
-						Game->vibration = 34 + int(sprite.paino * 20);
+					if (sprite.weight > 1)
+						Game->vibration = 34 + int(sprite.weight * 20);
 				}
 
 				sprite.hyppy_ajastin = 0;
@@ -1016,7 +1016,7 @@ int Sprite_Movement(int i){
 	if (sprite.energia > sprite.tyyppi->energia)
 		sprite.energia = sprite.tyyppi->energia;
 
-	if (sprite.isku == 0 || sprite.pelaaja == 1) {
+	if (sprite.damage_timer == 0 || sprite.pelaaja == 1) {
 		sprite_x += sprite_a;
 		sprite_y += sprite_b;
 	}
@@ -1049,15 +1049,15 @@ int Sprite_Movement(int i){
 	sprite.ylos = ylos;
 
 	/*
-	sprite.paino = sprite.tyyppi->paino;
+	sprite.weight = sprite.tyyppi->weight;
 
-	if (sprite.energia < 1 && sprite.paino == 0)
-		sprite.paino = 1;*/
+	if (sprite.energia < 1 && sprite.weight == 0)
+		sprite.weight = 1;*/
 
 	if (sprite.hyppy_ajastin < 0)
 		sprite.alas = false;
 
-	//sprite.kyykky   = false;
+	//sprite.crouched   = false;
 
 	/*****************************************************************************************/
 	/* AI                                                                                    */
@@ -1084,9 +1084,9 @@ int Sprite_Movement(int i){
 													break;
 				case AI_AMMUS:						sprite.AI_Ammus();
 													break;
-				case AI_HYPPIJA:					sprite.AI_Hyppija();
+				case AI_JUMPING:					sprite.AI_Jumping();
 													break;
-				case AI_BASIC:						sprite.AI_Perus();
+				case AI_BASIC:						sprite.AI_Basic();
 													break;
 				case AI_NONSTOP:					sprite.AI_NonStop();
 													break;
@@ -1102,51 +1102,51 @@ int Sprite_Movement(int i){
 													break;
 				case AI_RANDOM_JUMP:				sprite.AI_Random_Hyppy();
 													break;
-				case AI_FOLLOW_PLAYER:			if (Player_Sprite->invisible == 0)
+				case AI_FOLLOW_PLAYER:			if (Player_Sprite->invisible_timer == 0)
 														sprite.AI_Seuraa_Pelaajaa(*Player_Sprite);
 													break;
-				case AI_SEURAA_PELAAJAA_JOS_NAKEE:	if (Player_Sprite->invisible == 0)
+				case AI_SEURAA_PELAAJAA_JOS_NAKEE:	if (Player_Sprite->invisible_timer == 0)
 														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee(*Player_Sprite);
 													break;
-				case AI_SEURAA_PELAAJAA_VERT_HORI:	if (Player_Sprite->invisible == 0)
+				case AI_SEURAA_PELAAJAA_VERT_HORI:	if (Player_Sprite->invisible_timer == 0)
 														sprite.AI_Seuraa_Pelaajaa_Vert_Hori(*Player_Sprite);
 													break;
 				case AI_SEURAA_PELAAJAA_JOS_NAKEE_VERT_HORI:
-													if (Player_Sprite->invisible == 0)
+													if (Player_Sprite->invisible_timer == 0)
 														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(*Player_Sprite);
 													break;
-				case AI_PAKENEE_PELAAJAA_JOS_NAKEE:	if (Player_Sprite->invisible == 0)
+				case AI_PAKENEE_PELAAJAA_JOS_NAKEE:	if (Player_Sprite->invisible_timer == 0)
 														sprite.AI_Pakenee_Pelaajaa_Jos_Nakee(*Player_Sprite);
 													break;
 				case AI_POMMI:						sprite.AI_Pommi();
 													break;
-				case AI_HYOKKAYS_1_JOS_OSUTTU:		sprite.AI_Hyokkays_1_Jos_Osuttu();
+				case AI_ATTACK_1_JOS_OSUTTU:		sprite.AI_Attack_1_Jos_Osuttu();
 													break;
-				case AI_HYOKKAYS_2_JOS_OSUTTU:		sprite.AI_Hyokkays_2_Jos_Osuttu();
+				case AI_ATTACK_2_JOS_OSUTTU:		sprite.AI_Attack_2_Jos_Osuttu();
 													break;
-				case AI_HYOKKAYS_1_NONSTOP:			sprite.AI_Hyokkays_1_Nonstop();
+				case AI_ATTACK_1_NONSTOP:			sprite.AI_Attack_1_Nonstop();
 													break;
-				case AI_HYOKKAYS_2_NONSTOP:			sprite.AI_Hyokkays_2_Nonstop();
+				case AI_ATTACK_2_NONSTOP:			sprite.AI_Attack_2_Nonstop();
 													break;
-				case AI_HYOKKAYS_1_JOS_PELAAJA_EDESSA:
-													if (Player_Sprite->invisible == 0)
-														sprite.AI_Hyokkays_1_Jos_Pelaaja_Edessa(*Player_Sprite);
+				case AI_ATTACK_1_IF_PLAYER_IN_FRONT:
+													if (Player_Sprite->invisible_timer == 0)
+														sprite.AI_Attack_1_if_Player_in_Front(*Player_Sprite);
 													break;
-				case AI_HYOKKAYS_2_JOS_PELAAJA_EDESSA:
-													if (Player_Sprite->invisible == 0)
-														sprite.AI_Hyokkays_2_Jos_Pelaaja_Edessa(*Player_Sprite);
+				case AI_ATTACK_2_IF_PLAYER_IN_FRONT:
+													if (Player_Sprite->invisible_timer == 0)
+														sprite.AI_Attack_2_if_Player_in_Front(*Player_Sprite);
 													break;
-				case AI_HYOKKAYS_1_JOS_PELAAJA_ALAPUOLELLA:
-													if (Player_Sprite->invisible == 0)
-														sprite.AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(*Player_Sprite);
+				case AI_ATTACK_1_IF_PLAYER_BELLOW:
+													if (Player_Sprite->invisible_timer == 0)
+														sprite.AI_Attack_1_if_Player_Bellow(*Player_Sprite);
 													break;
 				case AI_HYPPY_JOS_PELAAJA_YLAPUOLELLA:
-													if (Player_Sprite->invisible == 0)
+													if (Player_Sprite->invisible_timer == 0)
 														sprite.AI_Hyppy_Jos_Pelaaja_Ylapuolella(*Player_Sprite);
 													break;
-				case AI_VAHINGOITTUU_VEDESTA:		sprite.AI_Vahingoittuu_Vedesta();
+				case AI_DAMAGED_BY_WATER:		sprite.AI_Damaged_by_Water();
 													break;
-				case AI_TAPA_KAIKKI:				sprite.AI_Tapa_Kaikki();
+				case AI_KILL_EVERYONE:				sprite.AI_Kill_Everyone();
 													break;
 				case AI_KITKA_VAIKUTTAA:			sprite.AI_Kitka_Vaikuttaa();
 													break;
@@ -1172,7 +1172,7 @@ int Sprite_Movement(int i){
 													break;
 				case AI_LIIKKUU_Y_SIN_HIDAS:		sprite.AI_Liikkuu_Y(sin_table[(degree/2)%360]);
 													break;
-				case AI_LIIKKUU_Y_SIN_VAPAA:		sprite.AI_Liikkuu_Y(sin_table[(sprite.ajastin/2)%360]);
+				case AI_LIIKKUU_Y_SIN_VAPAA:		sprite.AI_Liikkuu_Y(sin_table[(sprite.action_timer/2)%360]);
 													break;
 				case AI_CHANGE_WHEN_ENERGY_UNDER_2:	if (sprite.tyyppi->muutos > -1)
 														sprite.AI_Change_When_Energy_Under_2(Prototypes_List[sprite.tyyppi->muutos]);
@@ -1317,7 +1317,7 @@ int Sprite_Movement(int i){
 	/*****************************************************************************************/
 
 	// If the sprite is ready and isn't crouching
-	if (sprite.lataus == 0 && !sprite.kyykky) {
+	if (sprite.lataus == 0 && !sprite.crouched) {
 		// hy�kk�ysaika on "tapissa" mik� tarkoittaa sit�, ett� aloitetaan hy�kk�ys
 		if (sprite.hyokkays1 == sprite.tyyppi->hyokkays1_aika) {
 			// provides recovery time, after which the sprite can attack again
@@ -1469,14 +1469,14 @@ int BonusSprite_Movement(int i){
 	sprite_ala	 = sprite_y+sprite_korkeus/2;
 
 
-	if (sprite.isku > 0)
-		sprite.isku--;
+	if (sprite.damage_timer > 0)
+		sprite.damage_timer--;
 
 	if (sprite.lataus > 0)
 		sprite.lataus--;
 
-	if (sprite.muutos_ajastin > 0)	// aika muutokseen
-		sprite.muutos_ajastin --;
+	if (sprite.mutation_timer > 0)	// aika muutokseen
+		sprite.mutation_timer --;
 
 	// Hyppyyn liittyv�t seikat
 
@@ -1494,14 +1494,14 @@ int BonusSprite_Movement(int i){
 
 
 
-	if (sprite.paino != 0)	// jos bonuksella on paino, tutkitaan ymp�rist�
+	if (sprite.weight != 0)	// jos bonuksella on weight, tutkitaan ymp�rist�
 	{
 		// o
 		//
 		// |  Gravity
 		// V
 
-		sprite_b += sprite.paino + sprite_b/1.25;
+		sprite_b += sprite.weight + sprite_b/1.25;
 
 		if (sprite.vedessa)
 		{
@@ -1514,7 +1514,7 @@ int BonusSprite_Movement(int i){
 
 		sprite.vedessa = false;
 
-		sprite.kytkinpaino = sprite.paino;
+		sprite.kytkinpaino = sprite.weight;
 
 		/* TOISET SPRITET */
 
@@ -1562,14 +1562,14 @@ int BonusSprite_Movement(int i){
 					sprite_x > sprite2->x - sprite2->tyyppi->leveys/2 &&
 					sprite_y < sprite2->y + sprite2->tyyppi->korkeus/2 &&
 					sprite_y > sprite2->y - sprite2->tyyppi->korkeus/2 &&
-					sprite.isku == 0)
+					sprite.damage_timer == 0)
 				{
 					if (sprite2->tyyppi->tyyppi != TYPE_BONUS &&
 						!(sprite2 == Player_Sprite && sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU))
 						sprite_a += sprite2->a*(rand()%4);
 
-					// lis�t��n spriten painoon sit� koskettavan toisen spriten paino
-					sprite.kytkinpaino += sprite2->tyyppi->paino;
+					// lis�t��n spriten painoon sit� koskettavan toisen spriten weight
+					sprite.kytkinpaino += sprite2->tyyppi->weight;
 
 					// samanmerkkiset spritet vaihtavat suuntaa t�rm�tess��n
 					if (sprite.tyyppi->indeksi == sprite2->tyyppi->indeksi &&
@@ -1690,7 +1690,7 @@ int BonusSprite_Movement(int i){
 					sprite.hyppy_ajastin = 0;
 				//	if (/*sprite_b == 4*/!maassa)
 				//		Play_GameSFX(pump_sound,20,(int)sprite_x, (int)sprite_y,
-				//				      int(25050-sprite.tyyppi->paino*4000),true);
+				//				      int(25050-sprite.tyyppi->weight*4000),true);
 				}
 
 				if (sprite_b > 2)
@@ -1733,13 +1733,13 @@ int BonusSprite_Movement(int i){
 		sprite.alas = alas;
 		sprite.ylos = ylos;
 	}
-	else	// jos spriten paino on nolla, tehd��n spritest� "kelluva"
+	else	// jos spriten weight on nolla, tehd��n spritest� "kelluva"
 	{
 		sprite.y = sprite.alku_y + cos_table[int(degree+(sprite.alku_x+sprite.alku_y))%360] / 3.0;
 		sprite_y = sprite.y;
 	}
 
-	sprite.paino = sprite.alkupaino;
+	sprite.weight = sprite.initial_weight;
 
 	int tuhoutuminen;
 
@@ -1748,7 +1748,7 @@ int BonusSprite_Movement(int i){
 		sprite_x > Player_Sprite->x - Player_Sprite->tyyppi->leveys/2 &&
 		sprite_y < Player_Sprite->y + Player_Sprite->tyyppi->korkeus/2 &&
 		sprite_y > Player_Sprite->y - Player_Sprite->tyyppi->korkeus/2 &&
-		sprite.isku == 0)
+		sprite.damage_timer == 0)
 	{
 		if (sprite.energia > 0 && Player_Sprite->energia > 0)
 		{
@@ -1798,7 +1798,7 @@ int BonusSprite_Movement(int i){
 			}
 
 			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
-				Player_Sprite->invisible = sprite.tyyppi->latausaika;
+				Player_Sprite->invisible_timer = sprite.tyyppi->latausaika;
 
 			//Game->map->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2MAP_MAP_WIDTH] = 255;
 
@@ -1845,7 +1845,7 @@ int BonusSprite_Movement(int i){
 						Player_Sprite->tyyppi = &Prototypes_List[sprite.tyyppi->muutos];
 						Player_Sprite->ammus1 = Player_Sprite->tyyppi->ammus1;
 						Player_Sprite->ammus2 = Player_Sprite->tyyppi->ammus2;
-						Player_Sprite->alkupaino = Player_Sprite->tyyppi->paino;
+						Player_Sprite->initial_weight = Player_Sprite->tyyppi->weight;
 						Player_Sprite->y -= Player_Sprite->tyyppi->korkeus/2;
 						//Game->Show_Info("pekka has been transformed!");
 					}
@@ -1880,7 +1880,7 @@ int BonusSprite_Movement(int i){
 		
 		case AI_BONUS:				sprite.AI_Bonus(); break;
 
-		case AI_BASIC:				sprite.AI_Perus(); break;
+		case AI_BASIC:				sprite.AI_Basic(); break;
 
 		case AI_MUUTOS_AJASTIN:		if (sprite.tyyppi->muutos > -1)
 										sprite.AI_Muutos_Ajastin(Prototypes_List[sprite.tyyppi->muutos]);

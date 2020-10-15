@@ -24,12 +24,15 @@ void Effect_Circle_Star(double x, double y, u8 color) {
 
 void Effect_Super(double x, double y, int w, int h) {
 
-	const int colors[] = {COLOR_GRAY,COLOR_BLUE,COLOR_ORANGE,COLOR_GREEN,COLOR_TURQUOISE};
+	const int colors[] = {COLOR_BLUE,COLOR_ORANGE,COLOR_GREEN,COLOR_TURQUOISE,COLOR_RED};
 
 	float weight = 0.01;
-	int time = 20;
+	int time = 25;
 
-	for (int i = 0; i < 3; i++) {
+	//int stars = (w * h) / 500;
+	int stars = 3;
+
+	for (int i = 0; i < stars; i++) {
 		int angle = rand() % 180;
 		int px = x + rand()%w - w / 2;
 		int py = y + rand()%h - h / 2;

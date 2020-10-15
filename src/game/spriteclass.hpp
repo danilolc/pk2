@@ -48,13 +48,96 @@ enum {
 };
 
 enum {
+/*NO_AI
+CHICKEN
+AN_EGG
+BABY_CHICKEN
+BONUS_(B)
+JUMPER
+BASIC_AI_(B)
+TURN_HORIZONTALLY
+LOOKS_OUT_FOR_CLIFFS
+RANDOM_HORIZONTAL_CHANGE_OF_DIRECTION
+RANDOM_JUMPING
+FOLLOW_THE_PLAYER
+RANDOM_HORIZONTAL_CHANGE_OF_DIRECTION
+FOLLOW_THE_PLAYER_IF_PLAYER_IS_IN_FRONT
+TRANSFORMATION_IF_ENERGY_BELOW_2_(P)
+TRANSFORMATION_IF_ENERGY_ABOVE_1_(P)
+START_DIRECTIONS_TOWARDS_PLAYER
+AMMONITION
+NON_STOP
+ATTACK_1_IF_DAMAGED
+SELF_DESTRUCTION
+ATTACK_1_IF_PLAYER_IS_IN_FRONT
+ATTACK_1_IF_PLAYER_IS_BELOW
+DAMAGED_BY_WATER_(P)
+ATTACK_2_IF_PLAYER_IS_IN_FRONT
+KILL_'EM_ALL
+AFFECTED_BY_FRICTION
+HIDE
+RETURN_TO_START_POSITION_X
+RETURN_TO_START_POSITION_Y
+TELEPORT
+THROWABLE_WEAPON
+FALLS_WHEN_SHAKEN_(B)
+CHANGE_TRAP_STONES_IF_KO'ED
+CHANGE_TRAP_STONES_IF_DAMAGED
+SELF_DESTRUCTS_WITH_MOTHER_SPRITE
+MOVES_X_COS
+MOVES_Y_COS
+MOVES_X_SIN
+MOVES_Y_SIN
+MOVES_X_COS_FAST
+MOVES_Y_SIN_FAST
+MOVES_X_COS_SLOW
+MOVES_Y_SIN_SLOW
+MOVES_Y_SIN_FREE
+RANDOM_TURNING
+JUMP_IF_PLAYER_IS_ABOVE
+TRANSFORMATION_TIMER_(B)
+FALLS_IF_SWITCH_1_IS_PRESSED_(B)
+FALLS_IF_SWITCH_2_IS_PRESSED_(B)
+FALLS_IF_SWITCH_3_IS_PRESSED_(B)
+MOVES_DOWN_IF_SWITCH_1_IS_PRESSED
+MOVES_UP_IF_SWITCH_1_IS_PRESSED
+MOVES_RIGHT_IF_SWITCH_1_IS_PRESSED
+MOVES_LEFT_IF_SWITCH_1_IS_PRESSED
+MOVES_DOWN_IF_SWITCH_2_IS_PRESSED
+MOVES_UP_IF_SWITCH_2_IS_PRESSED
+MOVES_RIGHT_IF_SWITCH_2_IS_PRESSED
+MOVES_LEFT_IF_SWITCH_2_IS_PRESSED
+MOVES_DOWN_IF_SWITCH_3_IS_PRESSED
+MOVES_UP_IF_SWITCH_3_IS_PRESSED
+MOVES_RIGHT_IF_SWITCH_3_IS_PRESSED
+MOVES_LEFT_IF_SWITCH_3_IS_PRESSED
+TURNS_VERTICALLY_FROM_OBSTACLE
+RANDOM_VERTICAL_STARTING_DIRECTION
+STARTING_DIRECTION_TOWARDS_PLAYER
+CLIMBER
+CLIMBER_TYPE_2
+RUNS_AWAY_FROM_PLAYER_IF_SEES_PLAYER
+REBORN_(B)
+ARROW_LEFT
+ARROW_RIGHT
+ARROW_UP
+ARROW_DOWN
+MOVE_TO_ARROWS_DIRECTION
+BACKGROUND_SPRITE_MOON
+BACKGROUND_SPRITE_MOVES_TO_LEFT
+BACKGROUND_SPRITE_MOVES_TO_RIGHT
+ADD_TIME_TO_CLOCK
+MAKE_PLAYER_INVISIBLE
+FOLLOW_THE_PLAYER_VERTIC._AND_HORIZ.
+FOLLOW_THE_PLAYER_VERTIC._AND_HORIZ.,_IF_PLAYER_IS_IN_FRONT
+RANDOM_MOVE_VERTIC._AND_HORIZ.*/
 
     AI_NONE,
     AI_KANA,
     AI_EGG,
     AI_LITTLE_CHICKEN,
     AI_BONUS,
-    AI_HYPPIJA, //?
+    AI_JUMPING, //?
     AI_BASIC,
     AI_KAANTYY_ESTEESTA_HORI,
     AI_VAROO_KUOPPAA,
@@ -68,24 +151,28 @@ enum {
     AI_ALOITUSSUUNTA_PELAAJAA_KOHTI,
     AI_AMMUS,
     AI_NONSTOP,
-    AI_HYOKKAYS_1_JOS_OSUTTU,
+    AI_ATTACK_1_JOS_OSUTTU,
     AI_POMMI,
-    AI_HYOKKAYS_1_JOS_PELAAJA_EDESSA,
-    AI_HYOKKAYS_1_JOS_PELAAJA_ALAPUOLELLA,
-    AI_VAHINGOITTUU_VEDESTA,
-    AI_HYOKKAYS_2_JOS_PELAAJA_EDESSA,
-    AI_TAPA_KAIKKI,
+    AI_ATTACK_1_IF_PLAYER_IN_FRONT,
+    AI_ATTACK_1_IF_PLAYER_BELLOW,
+    AI_DAMAGED_BY_WATER,
+    AI_ATTACK_2_IF_PLAYER_IN_FRONT,
+    AI_KILL_EVERYONE,
     AI_KITKA_VAIKUTTAA,
     AI_PIILOUTUU,
     AI_PALAA_ALKUUN_X,
     AI_PALAA_ALKUUN_Y,
     AI_TELEPORT,
 
+    // AI_31 - AI_34
+
     AI_HEITTOASE = 35,
     AI_TIPPUU_TARINASTA,
     AI_VAIHDA_KALLOT_JOS_TYRMATTY,
     AI_VAIHDA_KALLOT_JOS_OSUTTU,
     AI_TUHOUTUU_JOS_EMO_TUHOUTUU,
+
+    // AI_40
 
     AI_LIIKKUU_X_COS = 41,
     AI_LIIKKUU_Y_COS,
@@ -118,6 +205,8 @@ enum {
     AI_LIIKKUU_VASEMMALLE_JOS_KYTKIN3_PAINETTU,
     AI_LIIKKUU_OIKEALLE_JOS_KYTKIN3_PAINETTU,
 
+    // AI_68, AI_69
+
     AI_KAANTYY_ESTEESTA_VERT = 70,
     AI_RANDOM_ALOITUSSUUNTA_VERT,
     AI_ALOITUSSUUNTA_PELAAJAA_KOHTI_VERT,
@@ -132,15 +221,21 @@ enum {
     AI_NUOLI_ALAS,
     AI_NUOLET_VAIKUTTAVAT,
 
+    // AI_82 - AI_100
+
     AI_TAUSTA_KUU = 101,
     AI_TAUSTA_LIIKKUU_VASEMMALLE,
     AI_TAUSTA_LIIKKUU_OIKEALLE,
+
+    // AI_104 - AI_119
 
     AI_BONUS_AIKA = 120,
     AI_BONUS_NAKYMATTOMYYS,
     AI_BONUS_SUPERHYPPY,
     AI_BONUS_SUPERTULITUS,
     AI_BONUS_SUPERVAUHTI,
+
+    // AI_125 - AI_128
 
     AI_MUUTOS_JOS_OSUTTU = 129,
     AI_SEURAA_PELAAJAA_VERT_HORI,
@@ -149,11 +244,13 @@ enum {
     AI_SAMMAKKO1,
     AI_SAMMAKKO2,
     AI_SAMMAKKO3,
-    AI_HYOKKAYS_2_JOS_OSUTTU,
-    AI_HYOKKAYS_1_NONSTOP,
-    AI_HYOKKAYS_2_NONSTOP,
+    AI_ATTACK_2_JOS_OSUTTU,
+    AI_ATTACK_1_NONSTOP,
+    AI_ATTACK_2_NONSTOP,
     AI_KAANTYY_JOS_OSUTTU,
     AI_EVIL_ONE,
+
+    // AI_141 - AI_200
 
     AI_INFO1 = 201,
     AI_INFO2,
@@ -174,6 +271,8 @@ enum {
     AI_INFO17,
     AI_INFO18,
     AI_INFO19
+
+    // AI_220 - AI_255
 
 };
 
@@ -299,7 +398,7 @@ struct PrototypeClass10{
     char		nimi[30];										// spriten nimi (n�kyy editorissa)
     u32		leveys;											// spriten leveys
     u32		korkeus;										// spriten korkeus
-    double		paino;											// sprite paino (vaikuttaa hyppyyn ja kytkimiin)
+    double		weight;											// sprite weight (vaikuttaa hyppyyn ja kytkimiin)
     bool		vihollinen;										// onko sprite vihollinen
     u32		energia;										// monta iskua kest��
     u32		vahinko;										// paljon vahinkoa tekee jos osuu
@@ -341,7 +440,7 @@ struct PrototypeClass11{
     char		nimi[30];										// spriten nimi (n�kyy editorissa)
     u32		leveys;											// spriten leveys
     u32		korkeus;										// spriten korkeus
-    double		paino;											// sprite paino (vaikuttaa hyppyyn ja kytkimiin)
+    double		weight;											// sprite weight (vaikuttaa hyppyyn ja kytkimiin)
     bool		vihollinen;										// onko sprite vihollinen
     u32		energia;										// monta iskua kest��
     u32		vahinko;										// paljon vahinkoa tekee jos osuu
@@ -390,7 +489,7 @@ struct PrototypeClass12{
     char		nimi[30];										// spriten nimi (n�kyy editorissa)
     u32		leveys;											// spriten leveys
     u32		korkeus;										// spriten korkeus
-    double		paino;											// sprite paino (vaikuttaa hyppyyn ja kytkimiin)
+    double		weight;											// sprite weight (vaikuttaa hyppyyn ja kytkimiin)
     bool		vihollinen;										// onko sprite vihollinen
     u32		energia;										// monta iskua kest��
     u32		vahinko;										// paljon vahinkoa tekee jos osuu
@@ -449,7 +548,7 @@ struct PrototypeClass13{
     char   nimi[30];										// name
     u32    leveys;											// width
     u32    korkeus;										// height
-    double paino;											// weight (for jump and switches)
+    double weight;											// weight (for jump and switches)
     bool   vihollinen;										// if sprite is a enemy
     u32    energia;										//?sprite energy
     u32    vahinko;										//?damage if hitted
@@ -536,7 +635,7 @@ class PrototypeClass{
     char		nimi[30];										// spriten nimi (n�kyy editorissa)
     int			leveys;											// spriten leveys
     int			korkeus;										// spriten korkeus
-    double		paino;											// sprite paino (vaikuttaa hyppyyn ja kytkimiin)
+    double		weight;											// sprite weight (vaikuttaa hyppyyn ja kytkimiin)
 
     bool		vihollinen;										// onko sprite vihollinen
     int			energia;										// monta iskua kest��
@@ -635,33 +734,33 @@ class SpriteClass{
     bool   reuna_oikealla;		// onko spriten vasemmalla puolella kuoppa?
     int    energia;			// monta osumaa sprite viel� kest��
     int    emosprite;			// jos spriten on luonut jokin toinen sprite
-    double paino;				// spriten oma yksil�llinen paino
-    double kytkinpaino;		// spriten paino + muiden spritejen panot, joihin kosketaan
-    bool   kyykky;				// onko sprite kyykyss�
-    int    isku;				// damage timer
-    int    invisible;           // invisibility timer
-    int    super_mode;          // super mode timer
+    double weight;				//  sprite weight
+    double kytkinpaino;		// sprite weight + weight above him (why it doesn't work?)
+    bool   crouched;				// onko sprite kyykyss�
+    int    damage_timer;				// damage timer
+    int    invisible_timer;           // invisibility timer
+    int    super_mode_timer;          // super mode timer
     int    lataus;				// jos on ammuttu, odotetaan
-    int    hyokkays1;			// ajastin joka laskee hy�kk�ys 1:n j�lkeen
-    int    hyokkays2;			// ajastin joka laskee hy�kk�ys 2:n j�lkeen
+    int    hyokkays1;			// timer joka laskee hy�kk�ys 1:n j�lkeen
+    int    hyokkays2;			// timer joka laskee hy�kk�ys 2:n j�lkeen
     bool   vedessa;			// onko sprite vedess�
     bool   piilossa;			// onko sprite piilossa
-    double alkupaino;			// spriten alkuper�inen paino - sama kuin prototyypin
+    double initial_weight;			// spriten alkuper�inen weight - sama kuin prototyypin
     int    saatu_vahinko;		// v�hennet��n energiasta jos erisuuri kuin 0
     u8     saatu_vahinko_tyyppi; // saadun vahingon tyyppi (esim. lumi).
     bool   vihollinen;			// if it is a enemy
     int    ammus1;				// projectile 1 index
     int    ammus2;				// projectile 2 index
 
-    int    pelaaja_x;			// where the player was last seen
-    int    pelaaja_y;
+    int    seen_player_x;			// where the player was last seen
+    int    seen_player_y;
 
-    int    ajastin;			// ajastin jonka arvo py�rii v�lill� 1 - 32000 (timer)
+    int    action_timer;			// timer jonka arvo py�rii v�lill� 1 - 32000 (timer)
  
-    u8     animaatio_index;	// animation index
-    u8     sekvenssi_index;	// current sequence
-    u8     frame_aika;			// frame times
-    int    muutos_ajastin;		// sprite muuttuu muutosspriteksi kun t�m� nollautuu
+    u8     animation_index;	// animation index
+    u8     current_sequence;	// current sequence
+    u8     frame_timer;			// frame times
+    int    mutation_timer;		// sprite muuttuu muutosspriteksi kun t�m� nollautuu
 
     SpriteClass();
     SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, double x, double y);
@@ -676,10 +775,10 @@ class SpriteClass{
     int AI_Bonus();
     int AI_Egg();
     int AI_Ammus();
-    int AI_Hyppija();
+    int AI_Jumping();
     int AI_Sammakko1();
     int AI_Sammakko2();
-    int AI_Perus();
+    int AI_Basic();
     int AI_Kaantyy_Esteesta_Hori();
     int AI_Kaantyy_Esteesta_Vert();
     int AI_Varoo_Kuoppaa();
@@ -697,18 +796,18 @@ class SpriteClass{
     int AI_Change_When_Energy_Over_1(PrototypeClass &muutos);
     int AI_Muutos_Ajastin(PrototypeClass &muutos);
     int AI_Muutos_Jos_Osuttu(PrototypeClass &muutos);
-    int AI_Hyokkays_1_Jos_Osuttu();
-    int AI_Hyokkays_2_Jos_Osuttu();
-    int AI_Hyokkays_1_Nonstop();
-    int AI_Hyokkays_2_Nonstop();
-    int AI_Hyokkays_1_Jos_Pelaaja_Edessa(SpriteClass &pelaaja);
-    int AI_Hyokkays_2_Jos_Pelaaja_Edessa(SpriteClass &pelaaja);
-    int AI_Hyokkays_1_Jos_Pelaaja_Alapuolella(SpriteClass &pelaaja);
+    int AI_Attack_1_Jos_Osuttu();
+    int AI_Attack_2_Jos_Osuttu();
+    int AI_Attack_1_Nonstop();
+    int AI_Attack_2_Nonstop();
+    int AI_Attack_1_if_Player_in_Front(SpriteClass &pelaaja);
+    int AI_Attack_2_if_Player_in_Front(SpriteClass &pelaaja);
+    int AI_Attack_1_if_Player_Bellow(SpriteClass &pelaaja);
     int AI_NonStop();
     int AI_Hyppy_Jos_Pelaaja_Ylapuolella(SpriteClass &pelaaja);
     int AI_Pommi();
-    int AI_Vahingoittuu_Vedesta();
-    int AI_Tapa_Kaikki();
+    int AI_Damaged_by_Water();
+    int AI_Kill_Everyone();
     int AI_Kitka_Vaikuttaa();
     int AI_Piiloutuu();
     int AI_Palaa_Alkuun_X();

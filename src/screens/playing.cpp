@@ -96,7 +96,7 @@ int Draw_InGame_BGSprites() {
 
 					sprite->Piirra(Game->camera_x,Game->camera_y);
 
-					if (sprite->super_mode && !Game->paused)
+					if (sprite->super_mode_timer && !Game->paused)
 						Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
 
 					sprite->piilossa = false;
@@ -129,7 +129,7 @@ int Draw_InGame_Sprites() {
 				sprite->y + sprite->tyyppi->kuva_frame_korkeus/2 > Game->camera_y)
 			{
 
-				if (sprite->isku > 0 && sprite->tyyppi->tyyppi != TYPE_BONUS && sprite->energia < 1){
+				if (sprite->damage_timer > 0 && sprite->tyyppi->tyyppi != TYPE_BONUS && sprite->energia < 1){
 					int framex = ((degree%12)/3) * 58;
 					u32 hit_x = sprite->x-8, hit_y = sprite->y-8;
 					PDraw::image_cutclip(game_assets,hit_x-Game->camera_x-28+8, hit_y-Game->camera_y-27+8,1+framex,83,1+57+framex,83+55);
@@ -147,7 +147,7 @@ int Draw_InGame_Sprites() {
 					}
 				}
 
-				if (sprite->super_mode && !Game->paused)
+				if (sprite->super_mode_timer && !Game->paused)
 					Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
 
 				debug_drawn_sprites++;
@@ -221,9 +221,9 @@ int Draw_InGame_DebugInfo() {
 
 	PDraw::font_write(fontti1, Episode->Get_Dir().c_str(), 10, 470);
 
-	sprintf(lukua, "%i", Player_Sprite->super_mode);
+	sprintf(lukua, "%i", Player_Sprite->super_mode_timer);
 	PDraw::font_write(fontti1, lukua, 610, 470);
-	sprintf(lukua, "%i", Player_Sprite->invisible);
+	sprintf(lukua, "%i", Player_Sprite->invisible_timer);
 	PDraw::font_write(fontti1, lukua, 610, 460);
 	sprintf(lukua, "%i", Game->button1);
 	PDraw::font_write(fontti1, lukua, 610, 450);
@@ -429,9 +429,9 @@ int Draw_InGame_UI(){
 	/////////////////
 	// Draw Invisible
 	/////////////////
-	if(Player_Sprite->invisible > 0){
+	if(Player_Sprite->invisible_timer > 0){
 		vali = PDraw::font_write(fontti1,"invisible:",40,my+27);
-		sprintf(luku, "%i", Player_Sprite->invisible/60);	
+		sprintf(luku, "%i", Player_Sprite->invisible_timer/60);	
 		PDraw::font_write(fontti2,luku,40+vali+1,my+27+1);
 		PDraw::font_write(fontti2,luku,40+vali,my+27);
 	}
@@ -855,14 +855,14 @@ int Screen_InGame(){
 		if (PInput::Keydown(PInput::E))
 			Player_Sprite->energia = 10;
 		if (PInput::Keydown(PInput::V))
-			Player_Sprite->invisible = 3000;
+			Player_Sprite->invisible_timer = 3000;
 		if (PInput::Keydown(PInput::S)) {
 			PSound::play_overlay_music();
-			Player_Sprite->super_mode = 490;
+			Player_Sprite->super_mode_timer = 490;
 			key_delay = 30;
 		}
 
-		if (Player_Sprite->super_mode == 0)
+		if (Player_Sprite->super_mode_timer == 0)
 			PSound::resume_music();
 	}
 

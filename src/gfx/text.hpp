@@ -22,6 +22,6 @@ int WavetextSlow_Draw(const char *text, int fontti, int x, int y, char end = '\0
 int ShadowedText_Draw(const char* text, int x, int y);
 
 void Fadetext_Init();
-void Fadetext_New(int fontti, char *teksti, u32 x, u32 y, u32 ajastin);
+void Fadetext_New(int fontti, char *teksti, u32 x, u32 y, u32 timer);
 int Fadetext_Draw();
 void Fadetext_Update();
