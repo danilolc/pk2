@@ -212,7 +212,7 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/*********************************************************************/
 		/* Examine if sprite is on the border to fall                        */
 		/*********************************************************************/
-		if (palikka.border && sprite.hyppy_ajastin <= 0 && sprite_y < palikka.ala && sprite_y > palikka.yla){
+		if (palikka.border && sprite.jump_timer <= 0 && sprite_y < palikka.ala && sprite_y > palikka.yla){
 			/* && sprite_ala <= palikka.ala+2)*/ // onko sprite tullut borderlle
 			if (sprite_vasen > palikka.vasen)
 				sprite.reuna_vasemmalla = true;
@@ -442,21 +442,21 @@ int Sprite_Movement(int i){
 		if (sprite.tyyppi->weight > 0) {
 			if (PInput::Keydown(Settings.control_jump) || Gui_up) {
 				if (!sprite.crouched) {
-					if (sprite.hyppy_ajastin == 0)
+					if (sprite.jump_timer == 0)
 						Play_GameSFX(jump_sound, 100, (int)sprite_x, (int)sprite_y,
 									  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
-					if (sprite.hyppy_ajastin <= 0)
-						sprite.hyppy_ajastin = 1; //10;
+					if (sprite.jump_timer <= 0)
+						sprite.jump_timer = 1; //10;
 				}
 			} else {
-				if (sprite.hyppy_ajastin > 0 && sprite.hyppy_ajastin < 45)
-					sprite.hyppy_ajastin = 55;
+				if (sprite.jump_timer > 0 && sprite.jump_timer < 45)
+					sprite.jump_timer = 55;
 			}
 
 			/* tippuminen hiljaa alasp�in */
-			if ((PInput::Keydown(Settings.control_jump) || Gui_up) && sprite.hyppy_ajastin >= 150/*90+20*/ &&
-				sprite.tyyppi->liitokyky)
+			if ((PInput::Keydown(Settings.control_jump) || Gui_up) && sprite.jump_timer >= 150/*90+20*/ &&
+				sprite.tyyppi->can_glide)
 				gliding = true;
 		}
 		/* MOVING UP AND DOWN */
@@ -468,7 +468,7 @@ int Sprite_Movement(int i){
 			if (PInput::Keydown(Settings.control_down) || Gui_down)
 				sprite_b += 0.15;
 
-			sprite.hyppy_ajastin = 0;
+			sprite.jump_timer = 0;
 		}
 
 		/* AI */
@@ -512,35 +512,35 @@ int Sprite_Movement(int i){
 	/* Jump                                                                                  */
 	/*****************************************************************************************/
 
-	bool hyppy_maximissa = sprite.hyppy_ajastin >= 90;
+	bool hyppy_maximissa = sprite.jump_timer >= 90;
 
 	// Jos ollaan hyp�tty / ilmassa:
-	if (sprite.hyppy_ajastin > 0) {
-		if (sprite.hyppy_ajastin < 50-sprite.tyyppi->max_hyppy)
-			sprite.hyppy_ajastin = 50-sprite.tyyppi->max_hyppy;
+	if (sprite.jump_timer > 0) {
+		if (sprite.jump_timer < 50-sprite.tyyppi->max_hyppy)
+			sprite.jump_timer = 50-sprite.tyyppi->max_hyppy;
 
-		if (sprite.hyppy_ajastin < 10)
-			sprite.hyppy_ajastin = 10;
+		if (sprite.jump_timer < 10)
+			sprite.jump_timer = 10;
 
 		if (!hyppy_maximissa) {
-		// sprite_b = (sprite.tyyppi->max_hyppy/2 - sprite.hyppy_ajastin/2)/-2.0;//-4
-		   sprite_b = -sin_table[sprite.hyppy_ajastin]/8;//(sprite.tyyppi->max_hyppy/2 - sprite.hyppy_ajastin/2)/-2.5;
+		// sprite_b = (sprite.tyyppi->max_hyppy/2 - sprite.jump_timer/2)/-2.0;//-4
+		   sprite_b = -sin_table[sprite.jump_timer]/8;//(sprite.tyyppi->max_hyppy/2 - sprite.jump_timer/2)/-2.5;
 			if (sprite_b > sprite.tyyppi->max_hyppy){
 				sprite_b = sprite.tyyppi->max_hyppy/10.0;
-				sprite.hyppy_ajastin = 90 - sprite.hyppy_ajastin;
+				sprite.jump_timer = 90 - sprite.jump_timer;
 			}
 
 		}
 
-		if (sprite.hyppy_ajastin < 180)
-			sprite.hyppy_ajastin += 2;
+		if (sprite.jump_timer < 180)
+			sprite.jump_timer += 2;
 	}
 
-	if (sprite.hyppy_ajastin < 0)
-		sprite.hyppy_ajastin++;
+	if (sprite.jump_timer < 0)
+		sprite.jump_timer++;
 
 	if (sprite_b > 0 && !hyppy_maximissa)
-		sprite.hyppy_ajastin = 90;//sprite.tyyppi->max_hyppy*2;
+		sprite.jump_timer = 90;//sprite.tyyppi->max_hyppy*2;
 
 	/*****************************************************************************************/
 	/* Hit recovering                                                                        */
@@ -550,20 +550,28 @@ int Sprite_Movement(int i){
 		sprite.damage_timer--;
 
 	/*****************************************************************************************/
-	/* Invisibility                                                                          */
+	/* Timers                                                                                */
 	/*****************************************************************************************/
 
-	if (sprite.invisible_timer > 0)
-		sprite.invisible_timer--;
+	if (sprite.invisible_timer > 0) {
 	
-	if (sprite.super_mode_timer > 0)
+		sprite.invisible_timer--;
+
+	}
+	
+	if (sprite.super_mode_timer > 0) {
+
 		sprite.super_mode_timer--;
+		if (Player_Sprite->super_mode_timer == 0)
+			PSound::resume_music();
+	
+	}
 
 	/*****************************************************************************************/
 	/* Gravity effect                                                                        */
 	/*****************************************************************************************/
 
-	if (sprite.weight != 0 && (sprite.hyppy_ajastin <= 0 || sprite.hyppy_ajastin >= 45))
+	if (sprite.weight != 0 && (sprite.jump_timer <= 0 || sprite.jump_timer >= 45))
 		sprite_b += sprite.weight/1.25;// + sprite_b/1.5;
 
 	if (gliding && sprite_b > 0) // If gliding
@@ -625,7 +633,7 @@ int Sprite_Movement(int i){
 
 	if (sprite.vedessa) {
 
-		if (!sprite.tyyppi->osaa_uida || sprite.energia < 1) {
+		if (!sprite.tyyppi->can_swim || sprite.energia < 1) {
 			/*
 			if (sprite_b > 0)
 				sprite_b /= 2.0;
@@ -634,8 +642,8 @@ int Sprite_Movement(int i){
 			sprite_b /= 2.0;
 			sprite_a /= 1.05;
 
-			if (sprite.hyppy_ajastin > 0 && sprite.hyppy_ajastin < 90)
-				sprite.hyppy_ajastin--;
+			if (sprite.jump_timer > 0 && sprite.jump_timer < 90)
+				sprite.jump_timer--;
 		}
 
 		if (rand()%80 == 1)
@@ -810,7 +818,7 @@ int Sprite_Movement(int i){
 							else
 								sprite.saatu_vahinko = (int)(sprite2->weight+sprite2->b/4);
 							sprite.saatu_vahinko_tyyppi = DAMAGE_DROP;
-							sprite2->hyppy_ajastin = 1;
+							sprite2->jump_timer = 1;
 						}
 
 						// If there is another sprite damaging
@@ -911,7 +919,7 @@ int Sprite_Movement(int i){
 
 			if (tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU){
 				if (sprite.tyyppi->bonus > -1 && sprite.tyyppi->bonusten_lkm > 0)
-					if (sprite.tyyppi->bonus_aina || rand()%4 == 1)
+					if (sprite.tyyppi->bonus_always || rand()%4 == 1)
 						for (int bi=0; bi<sprite.tyyppi->bonusten_lkm; bi++)
 							Sprites_add(sprite.tyyppi->bonus,0,sprite_x-11+(10-rand()%20),
 											  sprite_ala-16-(10+rand()%20), i, true);
@@ -964,13 +972,13 @@ int Sprite_Movement(int i){
 			sprite_b = 0;
 
 		if (!hyppy_maximissa)
-			sprite.hyppy_ajastin = 95;//sprite.tyyppi->max_hyppy * 2;
+			sprite.jump_timer = 95;//sprite.tyyppi->max_hyppy * 2;
 	}
 
 	if (!alas)
 		if (sprite_b >= 0){ //If sprite is falling
-			if (sprite.hyppy_ajastin > 0){
-				if (sprite.hyppy_ajastin >= 90+10){
+			if (sprite.jump_timer > 0){
+				if (sprite.jump_timer >= 90+10){
 					Play_GameSFX(pump_sound,30,(int)sprite_x, (int)sprite_y,
 				                  int(25050-sprite.weight*3000),true);
 
@@ -988,7 +996,7 @@ int Sprite_Movement(int i){
 						Game->vibration = 34 + int(sprite.weight * 20);
 				}
 
-				sprite.hyppy_ajastin = 0;
+				sprite.jump_timer = 0;
 			}
 
 			sprite_b = 0;
@@ -1054,7 +1062,7 @@ int Sprite_Movement(int i){
 	if (sprite.energia < 1 && sprite.weight == 0)
 		sprite.weight = 1;*/
 
-	if (sprite.hyppy_ajastin < 0)
+	if (sprite.jump_timer < 0)
 		sprite.alas = false;
 
 	//sprite.crouched   = false;
@@ -1480,17 +1488,17 @@ int BonusSprite_Movement(int i){
 
 	// Hyppyyn liittyv�t seikat
 
-	if (Game->button_moving + Game->vibration > 0 && sprite.hyppy_ajastin == 0)
-		sprite.hyppy_ajastin = sprite.tyyppi->max_hyppy / 2;
+	if (Game->button_moving + Game->vibration > 0 && sprite.jump_timer == 0)
+		sprite.jump_timer = sprite.tyyppi->max_hyppy / 2;
 
-	if (sprite.hyppy_ajastin > 0 && sprite.hyppy_ajastin < sprite.tyyppi->max_hyppy)
+	if (sprite.jump_timer > 0 && sprite.jump_timer < sprite.tyyppi->max_hyppy)
 	{
-		sprite.hyppy_ajastin ++;
-		sprite_b = (sprite.tyyppi->max_hyppy - sprite.hyppy_ajastin)/-4.0;//-2
+		sprite.jump_timer ++;
+		sprite_b = (sprite.tyyppi->max_hyppy - sprite.jump_timer)/-4.0;//-2
 	}
 
 	if (sprite_b > 0)
-		sprite.hyppy_ajastin = sprite.tyyppi->max_hyppy;
+		sprite.jump_timer = sprite.tyyppi->max_hyppy;
 
 
 
@@ -1678,16 +1686,16 @@ int BonusSprite_Movement(int i){
 			if (sprite_b < 0)
 				sprite_b = 0;
 
-			sprite.hyppy_ajastin = sprite.tyyppi->max_hyppy;
+			sprite.jump_timer = sprite.tyyppi->max_hyppy;
 		}
 
 		if (!alas)
 		{
 			if (sprite_b >= 0)
 			{
-				if (sprite.hyppy_ajastin > 0)
+				if (sprite.jump_timer > 0)
 				{
-					sprite.hyppy_ajastin = 0;
+					sprite.jump_timer = 0;
 				//	if (/*sprite_b == 4*/!maassa)
 				//		Play_GameSFX(pump_sound,20,(int)sprite_x, (int)sprite_y,
 				//				      int(25050-sprite.tyyppi->weight*4000),true);
@@ -1799,6 +1807,11 @@ int BonusSprite_Movement(int i){
 
 			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
 				Player_Sprite->invisible_timer = sprite.tyyppi->latausaika;
+
+			if (sprite.Onko_AI(AI_BONUS_SUPERMODE)) {
+				Player_Sprite->super_mode_timer = sprite.tyyppi->latausaika;
+				PSound::play_overlay_music();
+			}
 
 			//Game->map->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2MAP_MAP_WIDTH] = 255;
 

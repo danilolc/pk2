@@ -216,7 +216,7 @@ int Draw_InGame_DebugInfo() {
 
 	PDraw::font_write(fontti1, Game->map_file.c_str(), 10, 460);
 
-	sprintf(lukua, "%i", Player_Sprite->hyppy_ajastin);
+	sprintf(lukua, "%i", Player_Sprite->jump_timer);
 	PDraw::font_write(fontti1, lukua, 270, 460);
 
 	PDraw::font_write(fontti1, Episode->Get_Dir().c_str(), 10, 470);
@@ -862,8 +862,6 @@ int Screen_InGame(){
 			key_delay = 30;
 		}
 
-		if (Player_Sprite->super_mode_timer == 0)
-			PSound::resume_music();
 	}
 
 	if (Game->exit_timer == 1 && !PDraw::is_fading()) {
@@ -887,6 +885,7 @@ int Screen_InGame(){
 
 	}
 
+	// TODO - FIX
 	if (next_screen == SCREEN_MENU) {
 
 		int w, h;

@@ -240,6 +240,7 @@ int play_overlay_music() {
 	
 	}
 
+	Mix_HaltMusic();
 	if (Mix_PlayMusic(overlay_music, -1) == -1) {
 
 		PLog::Write(PLog::ERR, "PSound", Mix_GetError());
@@ -281,6 +282,9 @@ int start_music(PFile::Path path) {
 	if (playingMusic == path)
 		return 1;
 	
+	Mix_HaltMusic();
+	overlay_playing = false;
+
 	if (music)
 		Mix_FreeMusic(music);
 
@@ -328,7 +332,8 @@ void set_musicvolume_now(int volume) {
 
 void stop_music(){
 
-	Mix_FadeOutMusic(0);
+	Mix_HaltMusic();
+	overlay_playing = false;
 
 }
 
@@ -361,6 +366,8 @@ int init() {
 	Mix_QuerySpec(&frequency, &format, NULL);
 
 	PLog::Write(PLog::DEBUG, "PSound", "Got %ihz 0x%x", frequency, format);
+
+	overlay_playing = false;
 
 	return 0;
 

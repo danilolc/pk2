@@ -235,7 +235,9 @@ RANDOM_MOVE_VERTIC._AND_HORIZ.*/
     AI_BONUS_SUPERTULITUS,
     AI_BONUS_SUPERVAUHTI,
 
-    // AI_125 - AI_128
+    AI_BONUS_SUPERMODE,
+
+    // AI_126 - AI_128
 
     AI_MUUTOS_JOS_OSUTTU = 129,
     AI_SEURAA_PELAAJAA_VERT_HORI,
@@ -455,7 +457,7 @@ struct PrototypeClass11{
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
     u32		tuhoutuminen;									// miten sprite tuhoutuu
     bool		avain;											// Voiko sprite avata lukkoja
-    bool		tarisee;										// Tariseek� sprite satunnaisesti
+    bool		vibrate;										// Tariseek� sprite satunnaisesti
     u8        bonusten_lkm;									// Bonusten lukum��r�
     u32       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     u32       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
@@ -504,7 +506,7 @@ struct PrototypeClass12{
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
     u32		tuhoutuminen;									// miten sprite tuhoutuu
     bool		avain;											// Voiko sprite avata lukkoja
-    bool		tarisee;										// Tariseek� sprite satunnaisesti
+    bool		vibrate;										// Tariseek� sprite satunnaisesti
     u8        bonusten_lkm;									// Bonusten lukum��r�
     u32       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     u32       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
@@ -551,9 +553,9 @@ struct PrototypeClass13{
     double weight;											// weight (for jump and switches)
     bool   vihollinen;										// if sprite is a enemy
     u32    energia;										//?sprite energy
-    u32    vahinko;										//?damage if hitted
-    u8     vahinko_tyyppi;									//?damage type
-    u8     suojaus;										//?protection type
+    u32    vahinko;										//?damage if it got hit
+    u8     vahinko_tyyppi;								//?damage type
+    u8     suojaus;										  //?protection type
     u32    pisteet;										// how much score
     u32    AI[10];											// AI type (max 10)
     u8     max_hyppy;										// max jump time
@@ -563,7 +565,7 @@ struct PrototypeClass13{
     bool   este;											// is a wall
     u32    tuhoutuminen;									// how sprite is destroyed
     bool   avain;											// can sprite open locks
-    bool   tarisee;										//?sprite randomly
+    bool   vibrate;										//?sprite randomly
     u8     bonusten_lkm;									// number of bonuses
     u32    hyokkays1_aika;									// attack 1 duration (frames)
     u32    hyokkays2_aika;									// attack 2 duration (frames)
@@ -587,13 +589,13 @@ struct PrototypeClass13{
     bool   este_vasemmalle;                                // if is wall at left
 
 
-    u8     lapinakyvyys;									// transparency
-    bool   hehkuu;											// is transparent?
+    u8     lapinakyvyys;									// transparency //unnused
+    bool   hehkuu;											// if is transparent //unnused
     u32    tulitauko;										//*ammuspriten ampujalle aiheuttama latausaika
-    bool   liitokyky;										//*voiko tippua hiljaa alas?
-    bool   boss;											// if it is a boss
-    bool   bonus_aina;										// allways gives bonus
-    bool   osaa_uida;										// be alive in water
+    bool   can_glide;										// can drip quietly down?
+    bool   boss;											// if it is a boss //unnused
+    bool   bonus_always;									// if not there is 1/4 chance of droping bonus
+    bool   can_swim;										// walk fast under water
 
 };
 
@@ -653,7 +655,7 @@ class PrototypeClass{
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
     int			tuhoutuminen;									// miten sprite tuhoutuu
     bool		avain;											// Voiko sprite avata lukkoja
-    bool		tarisee;										// T�riseek� sprite satunnaisesti
+    bool		vibrate;										// T�riseek� sprite satunnaisesti
     u8       bonusten_lkm;									// Bonusten lukum��r�
     int         hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
     int         hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
@@ -686,10 +688,10 @@ class PrototypeClass{
     u8		lapinakyvyys;									// 0 = ei n�y - 100 = ei l�pin�kyv�
     bool		hehkuu;											// 0 = ei hehku (t�ytyy olla l�pin�kyv�)
     int			tulitauko;										// ammuspriten ampujalle aiheuttama latausaika
-    bool		liitokyky;										// voiko tippua hiljaa alas?
+    bool		can_glide;										// voiko tippua hiljaa alas?
     bool		boss;											// onko johtaja
-    bool		bonus_aina;										// j�tt�� aina bonuksen tuhoutuessa
-    bool		osaa_uida;										// vaikuttaako painovoima vedess�?
+    bool		bonus_always;										// j�tt�� aina bonuksen tuhoutuessa
+    bool		can_swim;										// vaikuttaako painovoima vedess�?
 
     // Muodostimet
     PrototypeClass();
@@ -725,7 +727,7 @@ class SpriteClass{
     double b;					// vertical speed
     bool   flip_x;				// true = peilikuva sivusuunnassa
     bool   flip_y;				// true = peilikuva pystysuunnassa
-    int    hyppy_ajastin;		// hypyn kesto: 0 = ei hypyss�, > 0 = hypyss�, < 0 = tullut alas
+    int    jump_timer;		// hypyn kesto: 0 = ei hypyss�, > 0 = hypyss�, < 0 = tullut alas
     bool   ylos;				// voiko sprite juuri nyt liikkua yl�s
     bool   alas;				// voiko sprite juuri nyt liikkua ....
     bool   oikealle;			// voiko sprite juuri nyt liikkua ....

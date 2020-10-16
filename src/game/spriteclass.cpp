@@ -64,7 +64,7 @@ PrototypeClass::PrototypeClass(){
 	pisteet			= 0;
 	random_frq		= true;
 	suojaus			= DAMAGE_NONE;
-	tarisee         = false;
+	vibrate         = false;
 	tiletarkistus	= true;
 	tuhoutuminen	= FX_DESTRUCT_ANIMAATIO;
 	tyyppi			= TYPE_NOTHING;
@@ -76,10 +76,10 @@ PrototypeClass::PrototypeClass(){
 	lapinakyvyys	= false;
 	hehkuu			= false;
 	tulitauko		= 0;
-	liitokyky		= false;
+	can_glide		= false;
 	boss			= false;
-	bonus_aina		= false;
-	osaa_uida		= false;
+	bonus_always		= false;
+	can_swim		= false;
 
 	for (int i=0;i<SPRITE_MAX_AI;i++){
 		AI[i] = AI_NONE;
@@ -150,7 +150,7 @@ void PrototypeClass::Kopioi(const PrototypeClass &proto){
 	pisteet			= proto.pisteet;
 	random_frq		= proto.random_frq;
 	suojaus			= proto.suojaus;
-	tarisee         = proto.tarisee;
+	vibrate         = proto.vibrate;
 	tiletarkistus	= proto.tiletarkistus;
 	tuhoutuminen	= proto.tuhoutuminen;
 	tyyppi			= proto.tyyppi;
@@ -162,10 +162,10 @@ void PrototypeClass::Kopioi(const PrototypeClass &proto){
 	lapinakyvyys	= proto.lapinakyvyys;
 	hehkuu			= proto.hehkuu;
 	tulitauko		= proto.tulitauko;
-	liitokyky		= proto.liitokyky;
+	can_glide		= proto.can_glide;
 	boss			= proto.boss;
-	bonus_aina		= proto.bonus_aina;
-	osaa_uida		= proto.osaa_uida;
+	bonus_always		= proto.bonus_always;
+	can_swim		= proto.can_swim;
 
 	for (int i=0;i<SPRITE_MAX_AI;i++)
 	{
@@ -232,7 +232,7 @@ void PrototypeClass::Uusi(){
 	pisteet			= 0;
 	random_frq		= true;
 	suojaus			= DAMAGE_NONE;
-	tarisee         = false;
+	vibrate         = false;
 	tiletarkistus	= true;
 	tuhoutuminen	= FX_DESTRUCT_ANIMAATIO;
 	tyyppi			= TYPE_NOTHING;
@@ -244,10 +244,10 @@ void PrototypeClass::Uusi(){
 	lapinakyvyys	= false;
 	hehkuu			= false;
 	tulitauko		= 0;
-	liitokyky		= false;
+	can_glide		= false;
 	boss			= false;
-	bonus_aina		= false;
-	osaa_uida		= false;
+	bonus_always		= false;
+	can_swim		= false;
 
 	int i=0;
 
@@ -383,7 +383,7 @@ void PrototypeClass::SetProto11(PrototypeClass11 &proto){
 	pallarx_kerroin		= proto.pallarx_kerroin;
 	pisteet				= proto.pisteet;
 	suojaus				= proto.suojaus;
-	tarisee				= proto.tarisee;
+	vibrate				= proto.vibrate;
 	tuhoutuminen		= proto.tuhoutuminen;
 	tyyppi				= proto.tyyppi;
 	vahinko				= proto.vahinko;
@@ -447,7 +447,7 @@ void PrototypeClass::SetProto12(PrototypeClass12 &proto){
 	pisteet				= proto.pisteet;
 	random_frq			= proto.random_frq;
 	suojaus				= proto.suojaus;
-	tarisee				= proto.tarisee;
+	vibrate				= proto.vibrate;
 	tiletarkistus		= proto.tiletarkistus;
 	tuhoutuminen		= proto.tuhoutuminen;
 	tyyppi				= proto.tyyppi;
@@ -512,7 +512,7 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 	pisteet				= proto.pisteet;
 	random_frq			= proto.random_frq;
 	suojaus				= proto.suojaus;
-	tarisee				= proto.tarisee;
+	vibrate				= proto.vibrate;
 	tiletarkistus		= proto.tiletarkistus;
 	tuhoutuminen		= proto.tuhoutuminen;
 	tyyppi				= proto.tyyppi;
@@ -524,10 +524,10 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 	lapinakyvyys		= proto.lapinakyvyys;
 	hehkuu				= proto.hehkuu;
 	tulitauko			= proto.tulitauko;
-	liitokyky			= proto.liitokyky;
+	can_glide			= proto.can_glide;
 	boss				= proto.boss;
-	bonus_aina			= proto.bonus_aina;
-	osaa_uida			= proto.osaa_uida;
+	bonus_always			= proto.bonus_always;
+	can_swim			= proto.can_swim;
 
 	for (int i=0;i<10;i++)
 	{
@@ -588,7 +588,7 @@ PrototypeClass13 PrototypeClass::GetProto13(){
 	proto.pisteet			= pisteet;
 	proto.random_frq		= random_frq;
 	proto.suojaus			= suojaus;
-	proto.tarisee			= tarisee;
+	proto.vibrate			= vibrate;
 	proto.tiletarkistus		= tiletarkistus;
 	proto.tuhoutuminen		= tuhoutuminen;
 	proto.tyyppi			= tyyppi;
@@ -600,10 +600,10 @@ PrototypeClass13 PrototypeClass::GetProto13(){
 	proto.lapinakyvyys		= lapinakyvyys;
 	proto.hehkuu			= hehkuu;
 	proto.tulitauko			= tulitauko;
-	proto.liitokyky			= liitokyky;
+	proto.can_glide			= can_glide;
 	proto.boss				= boss;
-	proto.bonus_aina		= bonus_aina;
-	proto.osaa_uida			= osaa_uida;
+	proto.bonus_always		= bonus_always;
+	proto.can_swim			= can_swim;
 
 	for (int i=0;i<10;i++)
 	{
@@ -770,7 +770,7 @@ SpriteClass::SpriteClass(){
 	this->alku_y		= 0;
 	this->a				= 0;
 	this->b				= 0;
-	this->hyppy_ajastin	= 0;
+	this->jump_timer	= 0;
 	this->crouched		= false;
 	this->energia		= 0;
 	this->initial_weight		= 0;
@@ -815,7 +815,7 @@ SpriteClass::SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, doub
 		this->alku_y		= y;
 		this->a				= 0;
 		this->b				= 0;
-		this->hyppy_ajastin	= 0;
+		this->jump_timer	= 0;
 		this->energia		= tyyppi->energia;
 		this->initial_weight     = tyyppi->weight;
 		this->weight			= this->initial_weight;
@@ -923,7 +923,7 @@ int SpriteClass::Piirra(int kamera_x, int kamera_y){
 
 	frame = this->Animoi();
 
-	if (tyyppi->tarisee){
+	if (tyyppi->vibrate){
 		x += rand()%2 - rand()%2;
 		y += rand()%2 - rand()%2;
 	}
@@ -1112,9 +1112,9 @@ int SpriteClass::AI_Varoo_Kuoppaa(){
 int SpriteClass::AI_Random_Hyppy(){
 	if (energia > 0)
 	{
-		if (rand()%150 == 10 && b == 0 && hyppy_ajastin == 0 && ylos)
+		if (rand()%150 == 10 && b == 0 && jump_timer == 0 && ylos)
 		{
-			hyppy_ajastin = 1;
+			jump_timer = 1;
 		}
 	}
 	return 0;
@@ -1122,9 +1122,9 @@ int SpriteClass::AI_Random_Hyppy(){
 int SpriteClass::AI_Sammakko1(){
 	if (energia > 0)
 	{
-		if (action_timer%100 == 0 && hyppy_ajastin == 0 && ylos)
+		if (action_timer%100 == 0 && jump_timer == 0 && ylos)
 		{
-			hyppy_ajastin = 1;
+			jump_timer = 1;
 		}
 	}
 	return 0;
@@ -1134,11 +1134,11 @@ int SpriteClass::AI_Sammakko2(){
 	{
 		if (action_timer%100 == 0 && ylos)
 		{
-			hyppy_ajastin = 1;
+			jump_timer = 1;
 
 		}
 
-		if (hyppy_ajastin > 0)
+		if (jump_timer > 0)
 		{
 			if (!flip_x)
 				a = this->tyyppi->max_nopeus / 3.5;
@@ -1564,12 +1564,12 @@ int SpriteClass::AI_Attack_1_if_Player_Bellow(SpriteClass &pelaaja){
 	return 0;
 }
 int SpriteClass::AI_Hyppy_Jos_Pelaaja_Ylapuolella(SpriteClass &pelaaja){
-	if (energia > 0 && hyppy_ajastin == 0 && pelaaja.energia > 0)
+	if (energia > 0 && jump_timer == 0 && pelaaja.energia > 0)
 	{
 		if ((pelaaja.x - x < tyyppi->leveys && pelaaja.x - x > -tyyppi->leveys) &&
 			(pelaaja.y < y && y - pelaaja.y < 350))
 		{
-			hyppy_ajastin = 1;
+			jump_timer = 1;
 			return 1;
 		}
 	}
@@ -1682,9 +1682,9 @@ int SpriteClass::AI_Jumping(){
 
 	if (energia > 0)
 	{
-		if (!alas && b==0 && hyppy_ajastin == 0)
+		if (!alas && b==0 && jump_timer == 0)
 		{
-			hyppy_ajastin = 1;
+			jump_timer = 1;
 		}
 	}
 
@@ -1758,23 +1758,23 @@ int SpriteClass::AI_Kana(){
 		if (rand()%50 == 10 && a != 0)
 			a /= 1.1;
 
-		if (rand()%150 == 10 && b == 0 && hyppy_ajastin == 0 && ylos)
+		if (rand()%150 == 10 && b == 0 && jump_timer == 0 && ylos)
 		{
-			hyppy_ajastin = 1;
+			jump_timer = 1;
 			while (a == 0)
 				a = rand()%2 - rand()%2;
 		}
 
-		if (rand()%20 == 1 && b == 0 && hyppy_ajastin == 0 && !oikealle && !flip_x)
+		if (rand()%20 == 1 && b == 0 && jump_timer == 0 && !oikealle && !flip_x)
 		{
-			hyppy_ajastin = 1;
+			jump_timer = 1;
 			while (a == 0)
 				a = rand()%2;
 		}
 
-		if (rand()%20 == 1 && b == 0 && hyppy_ajastin == 0 && !vasemmalle && flip_x)
+		if (rand()%20 == 1 && b == 0 && jump_timer == 0 && !vasemmalle && flip_x)
 		{
-			hyppy_ajastin = 1;
+			jump_timer = 1;
 			while (a == 0)
 				a = rand()%2 * -1;
 		}
@@ -1782,7 +1782,7 @@ int SpriteClass::AI_Kana(){
 		if (rand()%200 == 10)
 			a = rand()%2 - rand()%2;
 
-		if (hyppy_ajastin == tyyppi->max_hyppy && a == 0)
+		if (jump_timer == tyyppi->max_hyppy && a == 0)
 		{
 			while (a == 0)
 				a = rand()%2 - rand()%2;
@@ -1977,13 +1977,13 @@ int SpriteClass::Animation_Perus(){
 	else
 	{
 
-		if (a > -0.2 && a < 0.2 && b == 0 && hyppy_ajastin <= 0)
+		if (a > -0.2 && a < 0.2 && b == 0 && jump_timer <= 0)
 		{
 			uusi_animaatio = ANIMATION_IDLE;
 			alusta = true;
 		}
 
-		if ((a < -0.2 || a > 0.2) && hyppy_ajastin <= 0)
+		if ((a < -0.2 || a > 0.2) && jump_timer <= 0)
 		{
 			uusi_animaatio = ANIMATION_WALKING;
 			alusta = false;
@@ -1995,7 +1995,7 @@ int SpriteClass::Animation_Perus(){
 			alusta = false;
 		}
 
-		if ((hyppy_ajastin > tyyppi->max_hyppy || b > 1.5) && alas)
+		if ((jump_timer > tyyppi->max_hyppy || b > 1.5) && alas)
 		{
 			uusi_animaatio = ANIMATION_HYPPY_DOWN;
 			alusta = false;
@@ -2044,14 +2044,14 @@ int SpriteClass::Animation_Kana(){
 	
 	} else {
 
-		if (a > -0.2 && a < 0.2 && b == 0 && hyppy_ajastin <= 0) {
+		if (a > -0.2 && a < 0.2 && b == 0 && jump_timer <= 0) {
 
 			uusi_animaatio = ANIMATION_IDLE;
 			alusta = true;
 		
 		}
 
-		if ((a < -0.2 || a > 0.2) && hyppy_ajastin <= 0) {
+		if ((a < -0.2 || a > 0.2) && jump_timer <= 0) {
 
 			uusi_animaatio = ANIMATION_WALKING;
 			alusta = false;
@@ -2065,7 +2065,7 @@ int SpriteClass::Animation_Kana(){
 
 		}
 
-		if ((hyppy_ajastin > 90+10/*tyyppi->max_hyppy || b > 1.5*/) && alas) {
+		if ((jump_timer > 90+10/*tyyppi->max_hyppy || b > 1.5*/) && alas) {
 		
 			uusi_animaatio = ANIMATION_HYPPY_DOWN;
 			alusta = false;
