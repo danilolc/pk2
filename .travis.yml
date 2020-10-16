@@ -1,21 +1,14 @@
 language: cpp
+dist: bionic
 compiler: gcc
-
-os: linux
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-7
 
 git:
   submodules: false
 
 install:
-  - sudo apt-get -y install -y libsdl2-dev
-  - sudo apt-get -y install -y libsdl2-image-dev
-  - sudo apt-get -y install -y libsdl2-mixer-dev
+  - sudo apt install -y libsdl2-dev
+  - sudo apt install -y libsdl2-image-dev
+  - sudo apt install -y libsdl2-mixer-dev
 
 script:
   - make

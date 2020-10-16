@@ -15,7 +15,7 @@ CXXFLAGS += -O3
 CXXFLAGS += -Wall
 
 # Standart:
-#CXXFLAGS += --std=c++11
+CXXFLAGS += --std=c++11
 
 # SDL2:
 CXXFLAGS += $(shell pkg-config sdl2 --cflags)
