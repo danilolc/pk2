@@ -34,10 +34,10 @@ struct PK2BLOCK {
 
 struct PK2BLOCKMASK {
 
-	short int ylos[32];
-	short int alas[32];
-	short int vasemmalle[32];
-	short int oikealle[32];
+	int ylos[32];
+	int alas[32];
+	int vasemmalle[32];
+	int oikealle[32];
 
 };
 

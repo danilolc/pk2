@@ -38,7 +38,7 @@ To compile **Pekka Kana 2** into Debian GNU/Linux based distributions,
 you need the **SDL2**, **SDL2_image**, **SDL2_mixer** and **Zip** libraries installed on
 the system. To get everything you need, just run the following command on the terminal:
 
-    # apt install g++ make libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libzip-dev
+    $ apt install g++ make libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libzip-dev
 
 Then run the "**make**" command inside the "**Pekka Kana 2**" directory.
 
@@ -92,12 +92,11 @@ This example starts the level13.map on dev mode:
 * Mouse clicked when changing resolution
 * Use SDL_Read* to read files
 * Slower fade music
-* Properly play XM music and change SFX frequency
+* Properly play XM music and change SFX frequency (SDL2_mixer problem)
 
 
 # PLANS
 * Better documentation
-* Super mode -> energy = 0 on touch Pekka
 * Make latin accentuation
 * Support game controllers
 * Implement new layer on .map (regions)

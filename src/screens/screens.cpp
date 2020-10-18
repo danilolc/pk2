@@ -106,7 +106,7 @@ int Screen_First_Start() {
 	PDraw::fade_in(PDraw::FADE_SLOW);
 	PSound::set_musicvolume_now(Settings.music_max_volume);
 
-	PSound::load_overlay_music(PFile::Path("music" PE_SEP "super_loop.xm"));
+	PSound::load_overlay_music(PFile::Path("music" PE_SEP "super.xm"));
 	
 	return 0;
 

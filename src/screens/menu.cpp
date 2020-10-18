@@ -578,7 +578,11 @@ void Draw_Menu_Load() {
 
 		}
 		
-		strcat(number,saves_list[i].name);
+		if (saves_list[i].empty)
+			strcat(number, "empty");
+		else
+			strcat(number, saves_list[i].name);
+		
 
 		if (Draw_Menu_Text(number,100,150+my)) {
 			if (!saves_list[i].empty) {
@@ -598,7 +602,8 @@ void Draw_Menu_Load() {
 			}
 		}
 
-		if (strcmp(saves_list[i].episode," ") != 0) {
+		if (!saves_list[i].empty) {
+
 			vali = 0;
 			vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.loadgame_episode),400,150+my);
 			vali += PDraw::font_write(fontti1,saves_list[i].episode,400+vali,150+my);
@@ -606,6 +611,7 @@ void Draw_Menu_Load() {
 			vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.loadgame_level),400+vali,160+my);
 			sprintf(jaksoc, "%i", saves_list[i].level);
 			vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
+		
 		}
 
 		my += 22;
@@ -637,12 +643,15 @@ void Draw_Menu_Save() {
 		strcpy(number, ind);
 		strcat(number, ". ");
 
-		strcat(number, saves_list[i].name);
+		if (saves_list[i].empty)
+			strcat(number, "empty");
+		else
+			strcat(number, saves_list[i].name);
 
 		if (Draw_Menu_HardText(number,100,150+my))
 			Save_Record(i);
 
-		if (strcmp(saves_list[i].episode," ")!=0) {
+		if (!saves_list[i].empty) {
 
 			vali = 0;
 			vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.savegame_episode),400,150+my);

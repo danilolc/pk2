@@ -765,7 +765,7 @@ RW* Path::GetRW(const char* mode) {
 	}
 	
 	#ifdef __ANDROID__
-	if (cstr[0] != '/') { //From APK
+	if (cstr[0] != '/') { //From APK --TODO why?
 
 		SDL_RWops* temp = SDL_RWFromFile(cstr, mode);
 		if (!temp) {

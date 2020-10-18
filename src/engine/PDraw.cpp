@@ -818,6 +818,8 @@ int init(int width, int height, const char* name, const char* icon) {
 
     if (ready) return -1;
 
+    IMG_Init(IMG_INIT_PNG);
+
     if (game_palette == NULL) {
         
         game_palette = SDL_AllocPalette(256);
