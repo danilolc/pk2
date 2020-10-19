@@ -219,7 +219,7 @@ int Draw_InGame_DebugInfo() {
 	sprintf(lukua, "%i", Player_Sprite->jump_timer);
 	PDraw::font_write(fontti1, lukua, 270, 460);
 
-	PDraw::font_write(fontti1, Episode->Get_Dir().c_str(), 10, 470);
+	PDraw::font_write(fontti1, Episode->Get_Dir("").c_str(), 10, 470);
 
 	sprintf(lukua, "%i", Player_Sprite->super_mode_timer);
 	PDraw::font_write(fontti1, lukua, 610, 470);

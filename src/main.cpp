@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
 
 	#ifdef PORTABLE
 
-	data_path = "./data/";
+	data_path = "." PE_SEP "data" PE_SEP;
 
 	#else
 

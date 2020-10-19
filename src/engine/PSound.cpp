@@ -90,6 +90,13 @@ int load_sfx(PFile::Path path) {
 		if (chunks[i] == NULL) {
 
 			PFile::RW* rw = path.GetRW("rb");
+			if (rw == nullptr) {
+
+				PLog::Write(PLog::ERR, "PSound", "Couldn't open %s", path.c_str());
+				return -1;
+
+			}
+
 			chunks[i] = Mix_LoadWAV_RW((SDL_RWops*)rw, 0);
 			rw->close();
 			

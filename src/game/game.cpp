@@ -320,8 +320,7 @@ int GameClass::Calculate_Tiles() {
 
 int GameClass::Open_Map() {
 	
-	PFile::Path path = Episode->Get_Dir();
-	path.SetFile(map_file);
+	PFile::Path path = Episode->Get_Dir(map_file);
 	
 	if (map->Load(path) == 1) {
 
@@ -358,8 +357,8 @@ int GameClass::Open_Map() {
 	Particles_LoadBG(map);
 
 	if ( strcmp(map->musiikki, "") != 0 ) {
-		PFile::Path music_path = Episode->Get_Dir();
-		music_path.SetFile(map->musiikki);
+
+		PFile::Path music_path = Episode->Get_Dir(map->musiikki);
 
 		if (!FindAsset(&music_path, "music" PE_SEP)) {
 

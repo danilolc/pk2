@@ -158,7 +158,7 @@ void EpisodeClass::Load_Info() {
 
 	PLang* temp;
 
-	PFile::Path infofile = PFile::Path(this->Get_Dir(), "infosign.txt");
+	PFile::Path infofile = this->Get_Dir("infosign.txt");
 	char otsikko[] = "info00";
 	int indeksi1, indeksi2, i;
 
@@ -187,9 +187,7 @@ void EpisodeClass::Load_Info() {
 //TODO - don't load the same image again
 void EpisodeClass::Load_Assets() {
 
-	PFile::Path path = this->Get_Dir();
-
-	path.SetFile("pk2stuff.bmp");
+	PFile::Path path = this->Get_Dir("pk2stuff.bmp");
 	if (FindAsset(&path, "gfx" PE_SEP)) {
 
 		PDraw::image_load(game_assets, path, true);
@@ -200,7 +198,7 @@ void EpisodeClass::Load_Assets() {
 
 	}
 
-	path.SetFile("pk2stuff2.png");
+	path = this->Get_Dir("pk2stuff2.png");
 	if (FindAsset(&path, "gfx" PE_SEP)) {
 
 		PDraw::image_load(game_assets2, path, true);
@@ -218,7 +216,7 @@ void EpisodeClass::Load() {
 	if (entry.is_zip)
 		this->source_zip = PFile::OpenZip(data_path + "mapstore" PE_SEP + entry.zipfile);
 
-	PFile::Path path = this->Get_Dir();
+	PFile::Path path = this->Get_Dir("");
 	std::vector<std::string> list = path.scandir(".map");
 	this->level_count = list.size();
 
@@ -321,10 +319,10 @@ EpisodeClass::~EpisodeClass() {
 
 }
 
-PFile::Path EpisodeClass::Get_Dir() {
+PFile::Path EpisodeClass::Get_Dir(std::string file) {
 
 	std::string path("episodes" PE_SEP);
-	path += entry.name + PE_SEP;
+	path += entry.name + PE_SEP + file;
 
 	if (this->entry.is_zip)
 		return PFile::Path(this->source_zip, path);

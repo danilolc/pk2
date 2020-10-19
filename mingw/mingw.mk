@@ -9,8 +9,8 @@
 # INC_SRC (the include with SDL2 and Zip)
 # LIB_SRC (the libs with SDL2 and Zip)
 
-#Uncomment -DNO_ZIP if you don't want or don't have zip
-CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main $(OPT) -std=gnu++17 -Wall -DPORTABLE -DNO_ZIP
+#Remove -DUSE_ZIP if you don't want or don't have zip
+CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main $(OPT) -std=gnu++17 -Wall -DPORTABLE -DUSE_ZIP
 LDFLAGS += -static-libgcc -static-libstdc++ -L$(LIB_SRC) -lmingw32 -mwindows -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image -lzip
 
 SRC_DIR = ../../src/

@@ -17,7 +17,7 @@
 
 #include <SDL.h>
 
-#ifndef NO_ZIP
+#ifdef USE_ZIP
 #include <zip.h>
 #endif
 
@@ -30,7 +30,7 @@ namespace PFile {
 
 struct Zip {
 
-	#ifndef NO_ZIP
+	#ifdef USE_ZIP
 	std::string name;
 	zip_t *zip;
 	zip_source* src;
@@ -40,7 +40,7 @@ struct Zip {
 
 void CloseZip(Zip* zp) {
 
-	#ifndef NO_ZIP
+	#ifdef USE_ZIP
 	if (zp) {
 	
 		//zip_close(zp->zip);
@@ -57,7 +57,7 @@ void CloseZip(Zip* zp) {
 
 Zip* OpenZip(std::string path) {
 
-	#ifndef NO_ZIP
+	#ifdef USE_ZIP
 	
 	SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
 	if (rw == NULL) {
@@ -171,7 +171,7 @@ bool is_type(const char* file, const char* type) {
 
 }
 
-#ifndef NO_ZIP
+#ifdef USE_ZIP
 
 static int zip_get_index(zip_t* z, const char* filename, int* size) {
 
@@ -643,7 +643,7 @@ static int SDLCALL pfile_mem_close(SDL_RWops* context) {
 
 }
 
-#ifndef NO_ZIP
+#ifdef USE_ZIP
 static Sint64 SDLCALL pfile_zip_size(SDL_RWops* context) {
 
 	return (Sint64)context->hidden.unknown.data2;
@@ -707,7 +707,7 @@ RW* Path::GetRW(const char* mode) {
 	//TODO - define a RWops type 0 for zip
 	if (this->is_zip) {
 
-		#ifndef NO_ZIP
+		#ifdef USE_ZIP
 		
 		int size;
 		int index = zip_get_index(this->zip_file->zip, cstr, &size);
@@ -981,7 +981,7 @@ std::vector<std::string> Path::scandir(const char* type) {
 	
 	if (this->is_zip) {
 
-    	#ifndef NO_ZIP
+    	#ifdef USE_ZIP
         
 		return scan_zip(this->zip_file, cstr, type);
 		

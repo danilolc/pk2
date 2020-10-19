@@ -57,12 +57,11 @@ int Prototypes_get(const char* name) {
 
 	PrototypeClass& protot = Prototypes_List[next_free_prototype];
 
-	PFile::Path sprite_path = Episode->Get_Dir();
-	sprite_path.SetFile(name);
-	FindAsset(&sprite_path, "sprites" PE_SEP);
+	PFile::Path path = Episode->Get_Dir(name);
+	FindAsset(&path, "sprites" PE_SEP);
 
 	//Check if it can be loaded
-	if (protot.Load(sprite_path) == 1)
+	if (protot.Load(path) == 1)
 		return 1;
 
 	protot.indeksi = next_free_prototype;
@@ -72,11 +71,11 @@ int Prototypes_get(const char* name) {
 
 		if (strcmp(protot.aanitiedostot[i],"") != 0) {
 
-			sprite_path.SetFile(protot.aanitiedostot[i]);
+			path = Episode->Get_Dir(protot.aanitiedostot[i]);
 
-			if (FindAsset(&sprite_path, "sprites" PE_SEP)) {
+			if (FindAsset(&path, "sprites" PE_SEP)) {
 
-				protot.aanet[i] = PSound::load_sfx(sprite_path);
+				protot.aanet[i] = PSound::load_sfx(path);
 
 			} else {
 
@@ -205,8 +204,7 @@ int Prototypes_GetAll() {
 
 			last_prototype = i;
 
-			PFile::Path path = Episode->Get_Dir();
-			path.SetFile(Game->map->protot[i]);
+			PFile::Path path = Episode->Get_Dir(Game->map->protot[i]);
 
 			if (Prototypes_get(Game->map->protot[i]) != 0) {
 

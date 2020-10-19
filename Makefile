@@ -22,8 +22,7 @@ CXXFLAGS += $(shell pkg-config sdl2 --cflags)
 LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
 
 # LibZip (read episodes on zip files):
-#CXXFLAGS += -DNO_ZIP
-CXXFLAGS += $(shell pkg-config libzip --cflags)
+CXXFLAGS += -DUSE_ZIP $(shell pkg-config libzip --cflags)
 LDFLAGS += $(shell pkg-config libzip --libs)
 
 # Portable (data is stored with resorces):

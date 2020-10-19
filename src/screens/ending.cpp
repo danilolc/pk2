@@ -125,9 +125,7 @@ int Screen_Ending_Init() {
 	
 	PDraw::set_xoffset(Settings.isWide? 80 : 0);
 
-	PFile::Path path = Episode->Get_Dir();
-
-	path.SetFile("ending.bmp");
+	PFile::Path path = Episode->Get_Dir("ending.bmp");
 	if (FindAsset(&path, "gfx" PE_SEP)) {
 
 		PDraw::image_load(bg_screen, path, true);

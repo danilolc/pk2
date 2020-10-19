@@ -226,7 +226,7 @@ int PK_Draw_Map() {
 
 int Play_Music() {
 
-	PFile::Path mapmus = Episode->Get_Dir();
+	PFile::Path mapmus = Episode->Get_Dir("");
 
 	mapmus.SetFile("map.mp3");
 	if (mapmus.Find())
@@ -290,8 +290,7 @@ int Screen_Map_Init() {
 
 	Episode->Load_Assets();
 
-	PFile::Path path = Episode->Get_Dir();
-	path.SetFile("map.bmp");
+	PFile::Path path = Episode->Get_Dir("map.bmp");
 
 	if (FindAsset(&path, "gfx" PE_SEP)) {
 

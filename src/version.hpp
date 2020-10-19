@@ -24,10 +24,10 @@
 #define PK2_PLATFORM " (Unknown)"
 #endif
 
-#ifdef NO_ZIP
-#define PK2_ZIP " (no-zip)"
-#else
+#ifdef USE_ZIP
 #define PK2_ZIP " (zip)"
+#else
+#define PK2_ZIP " (no-zip)"
 #endif
 
 #ifdef PORTABLE
