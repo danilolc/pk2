@@ -84,21 +84,20 @@ This example starts the level13.map on dev mode:
 * Autosave settings option, ask when overwriting save, select save on new game
 * Low volume sounds not played on low volume
 * Remove repeated languages
-
 * Fix BG screen on menu
 * Fix SIGFAULT when sprite animation doesn't exist
 * Translate finnish language
 * Fix mouse speed when on fullscreen
-* Mouse clicked when changing resolution
+* Mouse clicked when changing resolution?
 * Use SDL_Read* to read files
 * Slower fade music
 * Properly play XM music and change SFX frequency (SDL2_mixer problem)
-
+* Portable mode on windows
+* Support game controllers
 
 # PLANS
 * Better documentation
 * Make latin accentuation
-* Support game controllers
 * Implement new layer on .map (regions)
 * Use Lua scripts
 * Find image (load .bmp or .png)

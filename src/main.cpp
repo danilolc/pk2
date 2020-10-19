@@ -149,6 +149,12 @@ int main(int argc, char *argv[]) {
 
 	#ifndef __ANDROID__
 
+	#ifdef PORTABLE
+
+	data_path = "./data/";
+
+	#else
+
 	char* data_path_p = SDL_GetPrefPath(NULL, PK2_NAME);
 	if (data_path_p == NULL) {
 
@@ -160,6 +166,8 @@ int main(int argc, char *argv[]) {
 
 	data_path = data_path_p;
 	SDL_free(data_path_p);
+
+	#endif //PORTABLE
 
 	// Read redirect file to change data directory
 	PFile::Path redirect = PFile::Path(data_path, "redirect.txt");
@@ -185,7 +193,7 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	#else
+	#else //__ANDROID__
 
 	//Must be free-ed at the end (but who cares?)
 	External_Path = SDL_AndroidGetExternalStoragePath();
@@ -198,11 +206,6 @@ int main(int argc, char *argv[]) {
 
 	PLog::Write(PLog::DEBUG, "PK2", "External %s", External_Path);
 	PLog::Write(PLog::DEBUG, "PK2", "Internal %s", Internal_Path);
-
-	
-
-
-
 
 	// Choose between internal or external path on Android
 	if (SDL_AndroidGetExternalStorageState() | SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
@@ -248,7 +251,7 @@ int main(int argc, char *argv[]) {
 
 	data_path += PE_SEP;
 
-	#endif
+	#endif //__ANDROID__
 
 	//Now data_path is set
 

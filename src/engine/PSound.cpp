@@ -14,7 +14,7 @@
 #define PS_FREQ        MIX_DEFAULT_FREQUENCY
 #define PS_FORMAT      MIX_DEFAULT_FORMAT
 #define PS_CHANNELS    MIX_DEFAULT_CHANNELS
-#define PS_BUFFER_SIZE /*4096*/ /*2048*/ 1024 /*512*/ //game speed vs audio latency
+#define PS_BUFFER_SIZE /*4096*/ 2048 /*1024*/ /*512*/ //game speed vs audio latency
 
 namespace PSound {
 
@@ -129,7 +129,7 @@ int play_sfx(int index, int volume, int panoramic, int freq) {
 	int channel = find_channel();
 	if (channel == -1) {
 	
-		//PLog::Write(PLog::ERR, "PSound", "play_sfx got index -1");
+		PLog::Write(PLog::ERR, "PSound", "play_sfx got index -1");
 		return -1;
 	
 	}
@@ -255,10 +255,13 @@ int play_overlay_music() {
 
 }
 
-int load_overlay_music(PFile::Path path) {
+int load_overlay_music(PFile::Path path) { //TODO - load ovarlay from zip
+
+	if (overlay_playing)
+		resume_music();
 
 	if (overlay_music)
-		Mix_FreeMusic(music);
+		Mix_FreeMusic(overlay_music);
 
 	PFile::RW* rw = path.GetRW("rb");
 	overlay_music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);

@@ -21,11 +21,13 @@ CXXFLAGS += --std=c++11
 CXXFLAGS += $(shell pkg-config sdl2 --cflags)
 LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
 
-# LibZip:
+# LibZip (read episodes on zip files):
 #CXXFLAGS += -DNO_ZIP
 CXXFLAGS += $(shell pkg-config libzip --cflags)
 LDFLAGS += $(shell pkg-config libzip --libs)
 
+# Portable (data is stored with resorces):
+CXXFLAGS += -DPORTABLE
 
 # Directories:
 SRC_DIR = src/

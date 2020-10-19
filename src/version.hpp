@@ -12,22 +12,28 @@
 #define PK2_VER_MINOR 3
 #define PK2_VER_REVISION 5
 
-#define PK2_VERSION_NAME "(r3)"
-
-#ifdef NO_ZIP
-#define PK2_ZIP "(no-zip)"
-#else
-#define PK2_ZIP "(zip)"
-#endif
+#define PK2_VERSION_NAME " (r3)"
 
 #ifdef __ANDROID__
-#define PK2_PLATFORM "(Android)"
+#define PK2_PLATFORM " (Android)"
 #elif _WIN32
-#define PK2_PLATFORM "(Windows)"
+#define PK2_PLATFORM " (Windows)"
 #elif __linux
-#define PK2_PLATFORM "(Linux)"
+#define PK2_PLATFORM " (Linux)"
 #else
-#define PK2_PLATFORM "(Unknown)"
+#define PK2_PLATFORM " (Unknown)"
 #endif
 
-#define PK2_VERSION_STR PK2_VERSION " " PK2_VERSION_NAME " " PK2_PLATFORM " " PK2_ZIP
+#ifdef NO_ZIP
+#define PK2_ZIP " (no-zip)"
+#else
+#define PK2_ZIP " (zip)"
+#endif
+
+#ifdef PORTABLE
+#define PK2_PORTABLE " (portable)"
+#else
+#define PK2_PORTABLE ""
+#endif
+
+#define PK2_VERSION_STR PK2_VERSION PK2_VERSION_NAME PK2_PLATFORM PK2_ZIP PK2_PORTABLE
