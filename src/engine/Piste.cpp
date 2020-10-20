@@ -100,7 +100,7 @@ void terminate() {
 	ready = false;
 
 }
-
+/*
 static void wait_frame() {
 
 	using namespace std;
@@ -119,7 +119,7 @@ static void wait_frame() {
 	
 	last_time = high_resolution_clock::now();
 
-}
+}*/
 
 void loop(int (*GameLogic)()) {
 	

@@ -19,8 +19,7 @@ const char* window_name;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 
-SDL_Surface* window_icon; 
-
+// 8-bit indexed surface, it's the game frame buffer
 SDL_Surface* frameBuffer8 = NULL;
 SDL_Palette* game_palette = NULL;
 
@@ -762,9 +761,6 @@ void change_resolution(int w, int h) {
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
     SDL_FillRect(frameBuffer8, NULL, 255);
 
-    //SDL_Rect r = {0, 0, w, h};
-    //SDL_SetClipRect(frameBuffer8, &r);
-
     screen_width = w;
     screen_height = h;
     SDL_SetWindowSize(window, w, h);
@@ -809,14 +805,13 @@ void set_xoffset(int x) {
 
     x_offset = x;
 
-    //SDL_Rect r = {x, 0, screen_width-2*x, screen_height};
-    //SDL_SetClipRect(frameBuffer8, &r);
-
 }
 
 int init(int width, int height, const char* name, const char* icon) {
 
     if (ready) return -1;
+
+    PLog::Write(PLog::DEBUG, "PDraw", "Initializing graphics");
 
     IMG_Init(IMG_INIT_PNG);
 
@@ -845,34 +840,57 @@ int init(int width, int height, const char* name, const char* icon) {
     }
 
     window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_WINDOW_SHOWN);
+    if (!window) {
 
+        PLog::Write(PLog::FATAL, "PDraw", "Couldn't create window!");
+        return -2;
+
+    }
     #else
 
     window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN );
+    if (!window) {
 
-    window_icon = SDL_LoadBMP(icon);
-    SDL_SetWindowIcon(window, window_icon);
+        PLog::Write(PLog::FATAL, "PDraw", "Couldn't create window!");
+        return -2;
+
+    }
+
+
+    SDL_Surface* window_icon = SDL_LoadBMP(icon);
+    if (window_icon) {
+        SDL_SetWindowIcon(window, window_icon);
+        SDL_FreeSurface(window_icon);
+    }
+    
     SDL_ShowCursor(SDL_DISABLE);
-
+    
     #endif
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	
+    if (!renderer) {
+
+        PLog::Write(PLog::FATAL, "PDraw", "Couldn't create renderer!");
+        return -3;
+
+    }
+
     SDL_RenderClear(renderer);
 
     frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
     frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
     frameBuffer8->format->palette = game_palette;
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
-    SDL_FillRect(frameBuffer8, NULL, 255);
 
-    //SDL_Rect r = {0, 0, width, height};
-    //SDL_SetClipRect(frameBuffer8, &r);
+    SDL_SetClipRect(frameBuffer8, NULL);
+    SDL_FillRect(frameBuffer8, NULL, 255);
 
     screen_width = width;
     screen_height = height;
     adjust_screen();
 
+    PLog::Write(PLog::DEBUG, "PDraw", "Video driver: %s", SDL_GetCurrentVideoDriver());
+    
     ready = true;
     return 0;
 
@@ -908,8 +926,6 @@ int terminate(){
     SDL_FreeSurface(frameBuffer8);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-
-    if(window_icon != NULL) SDL_FreeSurface(window_icon);
 
     IMG_Quit();
 
