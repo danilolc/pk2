@@ -92,7 +92,6 @@ This example starts the level13.map on dev mode:
 * Use SDL_Read* to read files
 * Slower fade music
 * Properly play XM music and change SFX frequency (SDL2_mixer problem)
-* Portable mode on windows
 * Support game controllers
 
 # PLANS

@@ -1070,33 +1070,35 @@ void Draw_Menu_Controls() {
 
 	my += 20;
 
-	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.controls_gp4def),100,90+my)){
-		/*Settings.control_left      = PI_OHJAIN1_VASEMMALLE;
-		Settings.control_right     = PI_OHJAIN1_OIKEALLE;
-		Settings.control_jump      = PI_OHJAIN1_YLOS;
-		Settings.control_down      = PI_OHJAIN1_ALAS;
-		Settings.control_walk_slow = PI_OHJAIN1_NAPPI2;
-		Settings.control_attack1   = PI_OHJAIN1_NAPPI1;
-		Settings.control_attack2   = PI_OHJAIN1_NAPPI3;
-		Settings.control_open_gift = PI_OHJAIN1_NAPPI4;*/
-		menu_lue_kontrollit = 0;
-		menu_valittu_id = 0;
-	}
-
-	my += 20;
-
-	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.controls_gp6def),100,90+my)){
-		/*Settings.control_left      = PI_OHJAIN1_VASEMMALLE;
+	/*if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.controls_gp4def),100,90+my)){
+		Settings.control_left      = PI_OHJAIN1_VASEMMALLE;
 		Settings.control_right     = PI_OHJAIN1_OIKEALLE;
 		Settings.control_jump      = PI_OHJAIN1_YLOS;//PI_OHJAIN1_NAPPI1;
 		Settings.control_down      = PI_OHJAIN1_ALAS;
 		Settings.control_walk_slow = PI_OHJAIN1_NAPPI2;
 		Settings.control_attack1   = PI_OHJAIN1_NAPPI1;
 		Settings.control_attack2   = PI_OHJAIN1_NAPPI4;
-		Settings.control_open_gift = PI_OHJAIN1_NAPPI6;*/
+		Settings.control_open_gift = PI_OHJAIN1_NAPPI6;
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
 	}
+
+	my += 20;*/
+
+	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.controls_gp6def),100,90+my)){
+		Settings.control_left      = PInput::JOY_LEFT;
+		Settings.control_right     = PInput::JOY_RIGHT;
+		Settings.control_jump      = PInput::JOY_UP;
+		Settings.control_down      = PInput::JOY_DOWN;
+		Settings.control_walk_slow = PInput::JOY_Y;
+		Settings.control_attack1   = PInput::JOY_A;
+		Settings.control_attack2   = PInput::JOY_B;
+		Settings.control_open_gift = PInput::JOY_GUIDE;
+		menu_lue_kontrollit = 0;
+		menu_valittu_id = 0;
+	}
+
+	my += 20;
 
 	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),180,400)){
 		menu_nyt = MENU_MAIN;

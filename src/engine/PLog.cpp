@@ -42,7 +42,7 @@ void Init(u8 level, PFile::Path file) {
     log_file = NULL;
 
     if (file.size() > 0)
-        log_file = file.GetRW("wb");
+        log_file = file.GetRW("w");
 
 }
 

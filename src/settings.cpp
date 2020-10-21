@@ -170,8 +170,7 @@ int Settings_Save() {
 
 	PFile::Path path(data_path, SETTINGS_FILE);
 
-	PFile::RW *file = path.GetRW("wb");
-
+	PFile::RW* file = path.GetRW("w");
 	if (file == nullptr) {
 
 		PLog::Write(PLog::ERR, "PK2", "Can't save settings");

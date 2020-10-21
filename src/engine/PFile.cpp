@@ -770,7 +770,7 @@ RW* Path::GetRW(const char* mode) {
 		SDL_RWops* temp = SDL_RWFromFile(cstr, mode);
 		if (!temp) {
 
-			PLog::Write(PLog::ERR, "PFile", "Can't get RW from file \"%s\"", cstr);
+			PLog::Write(PLog::ERR, "PFile", "Can't get RW from apk file \"%s\"", cstr);
 			return nullptr;
 
 		}
@@ -963,11 +963,10 @@ int RW::close() {
 	SDL_RWops* rwops = (SDL_RWops*) this;
 	
 	int ret = SDL_RWclose(rwops);
-
 	if (ret != 0) {
-
+	
 		PLog::Write(PLog::ERR, "PFile", "Error freeing rw");
-
+	
 	}
 
 	return ret;

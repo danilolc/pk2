@@ -812,7 +812,8 @@ int init(int width, int height, const char* name, const char* icon) {
     if (ready) return -1;
 
     PLog::Write(PLog::DEBUG, "PDraw", "Initializing graphics");
-
+    PLog::Write(PLog::DEBUG, "PDraw", "Video driver: %s", SDL_GetCurrentVideoDriver());
+    
     IMG_Init(IMG_INIT_PNG);
 
     if (game_palette == NULL) {
@@ -889,8 +890,6 @@ int init(int width, int height, const char* name, const char* icon) {
     screen_height = height;
     adjust_screen();
 
-    PLog::Write(PLog::DEBUG, "PDraw", "Video driver: %s", SDL_GetCurrentVideoDriver());
-    
     ready = true;
     return 0;
 

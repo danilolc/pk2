@@ -23,6 +23,7 @@ int mouse_x, mouse_y;
 int mouse_key;
 
 SDL_Haptic *Haptic = nullptr;
+SDL_GameController *Controller = nullptr;
 
 static const u8* keymap = nullptr;
 
@@ -57,11 +58,32 @@ const int keylist[] = {
 
 	SDL_SCANCODE_1, SDL_SCANCODE_2, SDL_SCANCODE_3, SDL_SCANCODE_4, 
 	SDL_SCANCODE_5, SDL_SCANCODE_6, SDL_SCANCODE_7, SDL_SCANCODE_8, 
-	SDL_SCANCODE_9, SDL_SCANCODE_0
+	SDL_SCANCODE_9, SDL_SCANCODE_0,
+
+	SDL_CONTROLLER_BUTTON_INVALID,
+
+	SDL_CONTROLLER_BUTTON_A, SDL_CONTROLLER_BUTTON_B,
+	SDL_CONTROLLER_BUTTON_X, SDL_CONTROLLER_BUTTON_Y,
+	
+	SDL_CONTROLLER_BUTTON_BACK,
+	SDL_CONTROLLER_BUTTON_GUIDE,
+	SDL_CONTROLLER_BUTTON_START,
+	
+	SDL_CONTROLLER_BUTTON_LEFTSTICK,
+	SDL_CONTROLLER_BUTTON_RIGHTSTICK,
+	SDL_CONTROLLER_BUTTON_LEFTSHOULDER,
+	SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
+	
+	SDL_CONTROLLER_BUTTON_DPAD_UP,
+	SDL_CONTROLLER_BUTTON_DPAD_DOWN,
+	SDL_CONTROLLER_BUTTON_DPAD_LEFT,
+	SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
+	
+	SDL_CONTROLLER_BUTTON_MAX
 
 };
 
-const char keynames[][16] = {
+const char keynames[][20] = {
 
 	"unknown key",
 
@@ -92,7 +114,17 @@ const char keynames[][16] = {
 
 	"1","2","3","4",
 	"5","6","7","8",
-	"9","0"
+	"9","0",
+
+	"unknown joy key",
+
+	"joy a", "joy b", "joy x", "joy y",
+	"joy back", "joy guide", "joy start",
+	"joy left stick", "joy right stick",
+	"joy left shoulder", "joy right shoulder",
+	"joy up", "joy down", "joy left", "joy right",
+
+	"joy max"
 
 };
 
@@ -119,14 +151,20 @@ u8 GetKey() {
 
 bool Keydown(u32 key) {
 	
+	if (key < END_KEYBOARD) {
+	
+		return keymap[keylist[key]];
+	
+	}
+
 	if (key >= sizeof(keylist)) {
 
 		PLog::Write(PLog::ERR, "PInput", "Unknown key %u", key);
 		return false;
 
 	}
-	
-	return keymap[keylist[key]];
+
+	return SDL_GameControllerGetButton(Controller, (SDL_GameControllerButton)keylist[key]);
 
 }
 
@@ -418,11 +456,36 @@ static int init_haptic() {
 
 	return 0;
 
-} 
+}
+
+
+static int init_controller() {
+
+	int start = 0;
+
+	char* cont = getenv("PK2_CONTROLLER");
+	if (cont)
+		start = atoi(cont);
+
+	for (int i = start; i < SDL_NumJoysticks(); ++i) {
+		if (SDL_IsGameController(i)) {
+			Controller = SDL_GameControllerOpen(i);
+			if (Controller) {
+				PLog::Write(PLog::DEBUG, "PInput", "Controller found: %s", SDL_GameControllerName(Controller));
+				return 0;
+			}
+		}
+	}
+
+	PLog::Write(PLog::INFO, "PInput", "No Controller found");
+	return -1;
+
+}
 
 int init() {
 
 	init_haptic();
+	init_controller();
 	
 	keymap = SDL_GetKeyboardState(NULL);
 
@@ -441,6 +504,9 @@ int terminate() {
 
 	if (Haptic != NULL)
 		SDL_HapticClose(Haptic);
+
+	if (Controller != NULL)
+		SDL_GameControllerClose(Controller);
 
 	return 0;
 
