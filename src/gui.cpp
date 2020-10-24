@@ -15,6 +15,10 @@
 
 int Gui_pad = 0;
 
+//  0 1 2 3 4
+// << < | > >>
+int Gui_pad_button = 2;
+
 bool Gui_up = false;
 bool Gui_down = false;
 bool Gui_egg = false;
@@ -206,7 +210,7 @@ static float hold_pad(float pos_x, int* button) {
 
 static int get_pad() {
 
-	float ret = 0;
+	int button = 2;
 
 	if (!pad_grab) {
 		for (PInput::touch_t touch : PInput::touchlist) {
@@ -245,8 +249,6 @@ static int get_pad() {
 
 		} else {
 
-			int button;
-
 			float touch = (last_touch->pos_x * 1920 - gui_padbg->x) / gui_padbg->w;
 			//printf("%f", touch);
 			float hold_touch = hold_pad(touch, &button);
@@ -265,7 +267,7 @@ static int get_pad() {
 			int x = gui_padbt->x - PadBt_a;
 			gui_padbt->y = PadBt_b - sqrt(PadBt_r*PadBt_r - x*x);
 
-			if (button == 0) {
+			/*if (button == 0) {
 				ret = 100;
 			} else if (button == 1) {
 				ret = 20;
@@ -275,7 +277,7 @@ static int get_pad() {
 				ret = -20;
 			} else if (button == 4) {
 				ret = -100;
-			}
+			}*/
 
 			/*ret = gui_padbg->x + (gui_padbg->w - gui_padbt->w) / 2;
 			ret -= gui_padbt->x;
@@ -286,7 +288,7 @@ static int get_pad() {
 
 	}
 
-	return -int(ret);
+	return button;
 
 }
 
@@ -298,7 +300,7 @@ void GUI_Update() {
 		gui_egg->active = Player_Sprite->ammus1 != -1;
 		gui_gift->active = Gifts_Count() > 0;
 	
-		Gui_pad = get_pad();
+		Gui_pad_button = get_pad();
 
 		Gui_up = read_gui(gui_up);
 		Gui_down = read_gui(gui_down);

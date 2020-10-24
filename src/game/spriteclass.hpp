@@ -297,7 +297,7 @@ enum { //Damage
 
 };
 
-enum { // unnused
+enum { // unused
 
     PROTOTYPE_KANA,
     PROTOTYPE_MUNA,
@@ -589,11 +589,11 @@ struct PrototypeClass13{
     bool   este_vasemmalle;                                // if is wall at left
 
 
-    u8     lapinakyvyys;									// transparency //unnused
-    bool   hehkuu;											// if is transparent //unnused
+    u8     lapinakyvyys;									// transparency //unused
+    bool   hehkuu;											// if it is transparent //unused
     u32    tulitauko;										//*ammuspriten ampujalle aiheuttama latausaika
     bool   can_glide;										// can drip quietly down?
-    bool   boss;											// if it is a boss //unnused
+    bool   boss;											// if it is a boss //unused
     bool   bonus_always;									// if not there is 1/4 chance of droping bonus
     bool   can_swim;										// walk fast under water
 

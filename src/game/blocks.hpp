@@ -12,12 +12,12 @@ enum BLOCKS {
 
 	BLOCK_BACKGROUND,
 	BLOCK_WALL,
-	BLOCK_MAKI_OIKEA_YLOS, //unnused
-	BLOCK_MAKI_VASEN_YLOS, //unnused
-	BLOCK_MAKI_OIKEA_ALAS, //unnused
-	BLOCK_MAKI_VASEN_ALAS, //unnused
-	BLOCK_MAKI_YLOS,       //unnused
-	BLOCK_MAKI_ALAS        //unnused
+	BLOCK_MAKI_OIKEA_YLOS, //unused
+	BLOCK_MAKI_VASEN_YLOS, //unused
+	BLOCK_MAKI_OIKEA_ALAS, //unused
+	BLOCK_MAKI_VASEN_ALAS, //unused
+	BLOCK_MAKI_YLOS,       //unused
+	BLOCK_MAKI_ALAS        //unused
 
 };
 

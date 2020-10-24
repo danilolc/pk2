@@ -134,7 +134,7 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 		}
 
 		/**********************************************************************/
-		/* Examine if bloc is hideway (unnused)                               */
+		/* Examine if bloc is hideway (unused)                               */
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_PIILO)
 			sprite.piilossa = true;
@@ -388,7 +388,8 @@ int Sprite_Movement(int i){
 
 	if (sprite.pelaaja != 0 && sprite.energia > 0){
 		/* SLOW WALK */
-		if (PInput::Keydown(Settings.control_walk_slow))
+		if (PInput::Keydown(Settings.control_walk_slow)
+		|| Gui_pad_button == 1 || Gui_pad_button == 3)
 			add_speed = false;
 
 		/* ATTACK 1 */
@@ -406,7 +407,12 @@ int Sprite_Movement(int i){
 		}
 
 		/* NAVIGATING*/
-		int navigation = Gui_pad;
+		int navigation = 0;
+
+		if (Gui_pad_button == 0 || Gui_pad_button == 1)
+			navigation = -100;
+		else if (Gui_pad_button == 3 || Gui_pad_button == 4)
+			navigation = 100;
 
 		if (PInput::Keydown(Settings.control_right))
 			navigation = 100;
