@@ -409,7 +409,7 @@ struct PrototypeClass10{
     u32		suojaus;										// miten suojattu iskuilta
     u8		max_hyppy;										// hypyn maksimikesto
     u8		max_nopeus;										// maksimi nopeus
-    u32		latausaika;										// ampumisen j�lkeinen odotus
+    u32		charge_time;										// ampumisen j�lkeinen odotus
     u8		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
     u32		tuhoutuminen;									// miten sprite tuhoutuu
@@ -452,15 +452,15 @@ struct PrototypeClass11{
     u32		AI[5];											// mit� teko�lyj� k�ytet��n
     u8		max_hyppy;										// hypyn maksimikesto
     u8		max_nopeus;										// maksimi nopeus
-    u32		latausaika;										// ampumisen j�lkeinen odotus
+    u32		charge_time;										// ampumisen j�lkeinen odotus
     u8		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
     u32		tuhoutuminen;									// miten sprite tuhoutuu
     bool		avain;											// Voiko sprite avata lukkoja
     bool		vibrate;										// Tariseek� sprite satunnaisesti
     u8        bonusten_lkm;									// Bonusten lukum��r�
-    u32       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
-    u32       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
+    u32       attack1_time;									// Hy�kk�ysanimaation 1 kesto (frameja)
+    u32       attack2_time;									// Hy�kk�ysanimaation 2 kesto (frameja)
     u32		pallarx_kerroin;								// Vain TYPE_BACKGROUND. Suhde taustakuvaan.
     // Yhteys toisiin spriteihin
     char		muutos_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
@@ -501,15 +501,15 @@ struct PrototypeClass12{
     u32		AI[5];											// mit� teko�lyj� k�ytet��n
     u8		max_hyppy;										// hypyn maksimikesto
     u8		max_nopeus;										// maksimi nopeus
-    u32		latausaika;										// ampumisen j�lkeinen odotus
+    u32		charge_time;										// ampumisen j�lkeinen odotus
     u8		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
     u32		tuhoutuminen;									// miten sprite tuhoutuu
     bool		avain;											// Voiko sprite avata lukkoja
     bool		vibrate;										// Tariseek� sprite satunnaisesti
     u8        bonusten_lkm;									// Bonusten lukum��r�
-    u32       hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
-    u32       hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
+    u32       attack1_time;									// Hy�kk�ysanimaation 1 kesto (frameja)
+    u32       attack2_time;									// Hy�kk�ysanimaation 2 kesto (frameja)
     u32		pallarx_kerroin;								// Vain TYPE_BACKGROUND. Suhde taustakuvaan.
     // Yhteys toisiin spriteihin
     char		muutos_sprite[13];								// Toinen sprite joksi t�m� sprite voi muuttua
@@ -560,15 +560,15 @@ struct PrototypeClass13{
     u32    AI[10];											// AI type (max 10)
     u8     max_hyppy;										// max jump time
     double max_nopeus;										// max speed
-    u32    latausaika;										//?wait post shoot
+    u32    charge_time;										//?wait post shoot
     u8     vari;											// color
     bool   este;											// is a wall
     u32    tuhoutuminen;									// how sprite is destroyed
     bool   avain;											// can sprite open locks
     bool   vibrate;										//?sprite randomly
     u8     bonusten_lkm;									// number of bonuses
-    u32    hyokkays1_aika;									// attack 1 duration (frames)
-    u32    hyokkays2_aika;									// attack 2 duration (frames)
+    u32    attack1_time;									// attack 1 duration (frames)
+    u32    attack2_time;									// attack 2 duration (frames)
     u32    pallarx_kerroin;								// parallax type (just to TYPE_BACKGROUND)
 
 
@@ -591,7 +591,7 @@ struct PrototypeClass13{
 
     u8     lapinakyvyys;									// transparency //unused
     bool   hehkuu;											// if it is transparent //unused
-    u32    tulitauko;										//*ammuspriten ampujalle aiheuttama latausaika
+    u32    tulitauko;										//*ammuspriten ampujalle aiheuttama charge_time
     bool   can_glide;										// can drip quietly down?
     bool   boss;											// if it is a boss //unused
     bool   bonus_always;									// if not there is 1/4 chance of droping bonus
@@ -650,15 +650,15 @@ class PrototypeClass{
 
     u8		max_hyppy;										// hypyn maksimikesto
     double		max_nopeus;										// maksiminopeus
-    int			latausaika;										// time increment (in (dec)conds)
+    int			charge_time;										// time increment (in (dec)conds)
     u8		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
     bool		este;											// k�ytt�ytyyk� sprite kuin sein�
     int			tuhoutuminen;									// miten sprite tuhoutuu
     bool		avain;											// Voiko sprite avata lukkoja
     bool		vibrate;										// T�riseek� sprite satunnaisesti
     u8       bonusten_lkm;									// Bonusten lukum��r�
-    int         hyokkays1_aika;									// Hy�kk�ysanimaation 1 kesto (frameja)
-    int         hyokkays2_aika;									// Hy�kk�ysanimaation 2 kesto (frameja)
+    int         attack1_time;									// Hy�kk�ysanimaation 1 kesto (frameja)
+    int         attack2_time;									// Hy�kk�ysanimaation 2 kesto (frameja)
 
     int			pallarx_kerroin;								// Vain TYPE_BACKGROUND. Suhde taustakuvaan.
 
@@ -687,7 +687,7 @@ class PrototypeClass{
     // Lis�ykset 1.3 versiossa
     u8		lapinakyvyys;									// 0 = ei n�y - 100 = ei l�pin�kyv�
     bool		hehkuu;											// 0 = ei hehku (t�ytyy olla l�pin�kyv�)
-    int			tulitauko;										// ammuspriten ampujalle aiheuttama latausaika
+    int			tulitauko;										// ammuspriten ampujalle aiheuttama charge_time
     bool		can_glide;										// voiko tippua hiljaa alas?
     bool		boss;											// onko johtaja
     bool		bonus_always;										// j�tt�� aina bonuksen tuhoutuessa
@@ -742,9 +742,9 @@ class SpriteClass{
     int    damage_timer;				// damage timer
     int    invisible_timer;           // invisibility timer
     int    super_mode_timer;          // super mode timer
-    int    lataus;				// jos on ammuttu, odotetaan
-    int    hyokkays1;			// timer joka laskee hy�kk�ys 1:n j�lkeen
-    int    hyokkays2;			// timer joka laskee hy�kk�ys 2:n j�lkeen
+    int    charging_timer;				// jos on ammuttu, odotetaan
+    int    attack1_timer;			// timer joka laskee hy�kk�ys 1:n j�lkeen
+    int    attack2_timer;			// timer joka laskee hy�kk�ys 2:n j�lkeen
     bool   vedessa;			// onko sprite vedess�
     bool   piilossa;			// onko sprite piilossa
     double initial_weight;			// spriten alkuper�inen weight - sama kuin prototyypin

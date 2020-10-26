@@ -46,15 +46,15 @@ PrototypeClass::PrototypeClass(){
 	este_vasemmalle	= true;
 	frameja			= 0;
 	frame_rate		= 0;
-	hyokkays1_aika  = 60;
-	hyokkays2_aika  = 60;
+	attack1_time  = 60;
+	attack2_time  = 60;
 	indeksi			= 0;
 	kuva_x			= 0;
 	kuva_y			= 0;
 	kuva_frame_leveys  = 0;
 	kuva_frame_korkeus = 0;
 	korkeus			= 0;
-	latausaika		= 0;
+	charge_time		= 0;
 	leveys			= 0;
 	max_hyppy		= 0;
 	max_nopeus		= 3;
@@ -132,15 +132,15 @@ void PrototypeClass::Kopioi(const PrototypeClass &proto){
 	este_vasemmalle	= proto.este_vasemmalle;
 	frameja			= proto.frameja;
 	frame_rate		= proto.frame_rate;
-	hyokkays1_aika  = proto.hyokkays1_aika;
-	hyokkays2_aika  = proto.hyokkays2_aika;
+	attack1_time  = proto.attack1_time;
+	attack2_time  = proto.attack2_time;
 	indeksi			= proto.indeksi;
 	kuva_x			= proto.kuva_x;
 	kuva_y			= proto.kuva_y;
 	kuva_frame_leveys  = proto.kuva_frame_leveys;
 	kuva_frame_korkeus = proto.kuva_frame_korkeus;
 	korkeus			= proto.korkeus;
-	latausaika		= proto.latausaika;
+	charge_time		= proto.charge_time;
 	leveys			= proto.leveys;
 	max_hyppy		= proto.max_hyppy;
 	max_nopeus		= proto.max_nopeus;
@@ -214,15 +214,15 @@ void PrototypeClass::Uusi(){
 	este_vasemmalle	= true;
 	frameja			= 0;
 	frame_rate		= 0;
-	hyokkays1_aika  = 60;
-	hyokkays2_aika  = 60;
+	attack1_time  = 60;
+	attack2_time  = 60;
 	indeksi			= 0;
 	kuva_x			= 0;
 	kuva_y			= 0;
 	kuva_frame_leveys  = 0;
 	kuva_frame_korkeus = 0;
 	korkeus			= 0;
-	latausaika		= 0;
+	charge_time		= 0;
 	leveys			= 0;
 	max_hyppy		= 0;
 	max_nopeus		= 3;
@@ -320,7 +320,7 @@ void PrototypeClass::SetProto10(PrototypeClass10 &proto){
 	kuva_frame_leveys	= proto.kuva_frame_leveys;
 	kuva_frame_korkeus	= proto.kuva_frame_korkeus;
 	korkeus				= proto.korkeus;
-	latausaika			= proto.latausaika;
+	charge_time			= proto.charge_time;
 	leveys				= proto.leveys;
 	max_hyppy			= proto.max_hyppy;
 	max_nopeus			= proto.max_nopeus;
@@ -368,14 +368,14 @@ void PrototypeClass::SetProto11(PrototypeClass11 &proto){
 	este				= proto.este;
 	frameja				= proto.frameja;
 	frame_rate			= proto.frame_rate;
-	hyokkays1_aika		= proto.hyokkays1_aika;
-	hyokkays2_aika		= proto.hyokkays2_aika;
+	attack1_time		= proto.attack1_time;
+	attack2_time		= proto.attack2_time;
 	kuva_x				= proto.kuva_x;
 	kuva_y				= proto.kuva_y;
 	kuva_frame_leveys	= proto.kuva_frame_leveys;
 	kuva_frame_korkeus	= proto.kuva_frame_korkeus;
 	korkeus				= proto.korkeus;
-	latausaika			= proto.latausaika;
+	charge_time			= proto.charge_time;
 	leveys				= proto.leveys;
 	max_hyppy			= proto.max_hyppy;
 	max_nopeus			= proto.max_nopeus;
@@ -431,14 +431,14 @@ void PrototypeClass::SetProto12(PrototypeClass12 &proto){
 	este_vasemmalle		= proto.este_vasemmalle;
 	frameja				= proto.frameja;
 	frame_rate			= proto.frame_rate;
-	hyokkays1_aika		= proto.hyokkays1_aika;
-	hyokkays2_aika		= proto.hyokkays2_aika;
+	attack1_time		= proto.attack1_time;
+	attack2_time		= proto.attack2_time;
 	kuva_x				= proto.kuva_x;
 	kuva_y				= proto.kuva_y;
 	kuva_frame_leveys	= proto.kuva_frame_leveys;
 	kuva_frame_korkeus	= proto.kuva_frame_korkeus;
 	korkeus				= proto.korkeus;
-	latausaika			= proto.latausaika;
+	charge_time			= proto.charge_time;
 	leveys				= proto.leveys;
 	max_hyppy			= proto.max_hyppy;
 	max_nopeus			= proto.max_nopeus;
@@ -496,14 +496,14 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 	este_vasemmalle		= proto.este_vasemmalle;
 	frameja				= proto.frameja;
 	frame_rate			= proto.frame_rate;
-	hyokkays1_aika		= proto.hyokkays1_aika;
-	hyokkays2_aika		= proto.hyokkays2_aika;
+	attack1_time		= proto.attack1_time;
+	attack2_time		= proto.attack2_time;
 	kuva_x				= proto.kuva_x;
 	kuva_y				= proto.kuva_y;
 	kuva_frame_leveys	= proto.kuva_frame_leveys;
 	kuva_frame_korkeus	= proto.kuva_frame_korkeus;
 	korkeus				= proto.korkeus;
-	latausaika			= proto.latausaika;
+	charge_time			= proto.charge_time;
 	leveys				= proto.leveys;
 	max_hyppy			= proto.max_hyppy;
 	max_nopeus			= proto.max_nopeus;
@@ -572,14 +572,14 @@ PrototypeClass13 PrototypeClass::GetProto13(){
 	proto.este_vasemmalle	= este_vasemmalle;
 	proto.frameja			= frameja;
 	proto.frame_rate		= frame_rate;
-	proto.hyokkays1_aika	= hyokkays1_aika;
-	proto.hyokkays2_aika	= hyokkays2_aika;
+	proto.attack1_time	= attack1_time;
+	proto.attack2_time	= attack2_time;
 	proto.kuva_x			= kuva_x;
 	proto.kuva_y			= kuva_y;
 	proto.kuva_frame_leveys = kuva_frame_leveys;
 	proto.kuva_frame_korkeus= kuva_frame_korkeus;
 	proto.korkeus			= korkeus;
-	proto.latausaika		= latausaika;
+	proto.charge_time		= charge_time;
 	proto.leveys			= leveys;
 	proto.max_hyppy			= max_hyppy;
 	proto.max_nopeus		= max_nopeus;
@@ -790,9 +790,9 @@ SpriteClass::SpriteClass(){
 	this->damage_timer			= 0;
 	this->invisible_timer     = 0;
 	this->super_mode_timer    = 0;
-	this->lataus		= 0;
-	this->hyokkays1		= 0;
-	this->hyokkays2		= 0;
+	this->charging_timer		= 0;
+	this->attack1_timer		= 0;
+	this->attack2_timer		= 0;
 	this->vedessa		= false;
 	this->piilossa      = false;
 	this->saatu_vahinko = 0;
@@ -835,9 +835,9 @@ SpriteClass::SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, doub
 		this->damage_timer			= 0;
 		this->invisible_timer     = 0;
 		this->super_mode_timer    = 0;
-		this->lataus		= 0;
-		this->hyokkays1		= 0;
-		this->hyokkays2		= 0;
+		this->charging_timer		= 0;
+		this->attack1_timer		= 0;
+		this->attack2_timer		= 0;
 		this->vedessa		= false;
 		this->piilossa      = false;
 		this->saatu_vahinko = 0;
@@ -1315,7 +1315,7 @@ int SpriteClass::AI_Jahtaa_Pelaajaa(SpriteClass &pelaaja){
 		}
 
 		if (((pelaaja.x < x && !flip_x) || (pelaaja.x > x && flip_x)) &&
-			pelaaja.hyokkays2 != pelaaja.tyyppi->latausaika)
+			pelaaja.attack2_timer != pelaaja.tyyppi->charge_time)
 			return 0;
 
 		if ((pelaaja.x - x < 300 && pelaaja.x - x > -300) &&
@@ -1428,10 +1428,10 @@ int SpriteClass::AI_Change_When_Energy_Over_1(PrototypeClass &muutos){
 int SpriteClass::AI_Muutos_Ajastin(PrototypeClass &muutos){
 	if (energia > 0 && muutos.indeksi != tyyppi->indeksi)
 	{
-		if (mutation_timer/*lataus*/ == 0)
-			mutation_timer/*lataus*/ = tyyppi->latausaika;
+		if (mutation_timer/*charging_timer*/ == 0)
+			mutation_timer/*charging_timer*/ = tyyppi->charge_time;
 
-		if (mutation_timer/*lataus*/ == 1)
+		if (mutation_timer/*charging_timer*/ == 1)
 		{
 			tyyppi = &muutos;
 			initial_weight = tyyppi->weight;
@@ -1486,8 +1486,8 @@ int SpriteClass::AI_Tuhoutuu_Jos_Emo_Tuhoutuu(SpriteClass *spritet){
 int SpriteClass::AI_Attack_1_Jos_Osuttu(){
 	if (saatu_vahinko > 0 && energia > 0)
 	{
-		this->hyokkays1 = this->tyyppi->hyokkays1_aika;
-		this->lataus = 0;
+		this->attack1_timer = this->tyyppi->attack1_time;
+		this->charging_timer = 0;
 		return 1;
 	}
 
@@ -1496,26 +1496,26 @@ int SpriteClass::AI_Attack_1_Jos_Osuttu(){
 int SpriteClass::AI_Attack_2_Jos_Osuttu(){
 	if (saatu_vahinko > 0 && energia > 0)
 	{
-		this->hyokkays2 = this->tyyppi->hyokkays2_aika;
-		this->lataus = 0;
+		this->attack2_timer = this->tyyppi->attack2_time;
+		this->charging_timer = 0;
 		return 1;
 	}
 
 	return 0;
 }
 int SpriteClass::AI_Attack_1_Nonstop(){
-	if (this->lataus == 0 && energia > 0)
+	if (this->charging_timer == 0 && energia > 0)
 	{
-		this->hyokkays1 = this->tyyppi->hyokkays1_aika;
+		this->attack1_timer = this->tyyppi->attack1_time;
 		return 1;
 	}
 
 	return 0;
 }
 int SpriteClass::AI_Attack_2_Nonstop(){
-	if (this->lataus == 0 && energia > 0)
+	if (this->charging_timer == 0 && energia > 0)
 	{
-		this->hyokkays2 = this->tyyppi->hyokkays2_aika;
+		this->attack2_timer = this->tyyppi->attack2_time;
 		return 1;
 	}
 
@@ -1529,7 +1529,7 @@ int SpriteClass::AI_Attack_1_if_Player_in_Front(SpriteClass &pelaaja){
 		{
 			if ((pelaaja.x < x && flip_x) || (pelaaja.x > x && !flip_x))
 			{
-				this->hyokkays1 = this->tyyppi->hyokkays1_aika;
+				this->attack1_timer = this->tyyppi->attack1_time;
 				return 1;
 			}
 		}
@@ -1544,7 +1544,7 @@ int SpriteClass::AI_Attack_2_if_Player_in_Front(SpriteClass &pelaaja){
 		{
 			if ((pelaaja.x < x && flip_x) || (pelaaja.x > x && !flip_x))
 			{
-				this->hyokkays2 = this->tyyppi->hyokkays2_aika;
+				this->attack2_timer = this->tyyppi->attack2_time;
 				return 1;
 			}
 		}
@@ -1557,7 +1557,7 @@ int SpriteClass::AI_Attack_1_if_Player_Bellow(SpriteClass &pelaaja){
 		if ((pelaaja.x - x < tyyppi->leveys && pelaaja.x - x > -tyyppi->leveys) &&
 			(pelaaja.y > y && pelaaja.y - y < 350))
 		{
-			this->hyokkays1 = this->tyyppi->hyokkays2_aika;
+			this->attack1_timer = this->tyyppi->attack2_time;
 			return 1;
 		}
 	}
@@ -1836,10 +1836,10 @@ int SpriteClass::AI_Egg(){
 
 	//a /= 1.01;
 
-	if (energia == 0 && lataus == 0)
-		lataus = tyyppi->latausaika;
+	if (energia == 0 && charging_timer == 0)
+		charging_timer = tyyppi->charge_time;
 
-	if (this->lataus == 1)
+	if (this->charging_timer == 1)
 		this->piilota = true;
 
 	return 0;
@@ -1861,10 +1861,10 @@ int SpriteClass::AI_Ammus(){
 	if (a > 0)
 		flip_x = false;
 
-	if (this->lataus == 0)
-		lataus = this->tyyppi->latausaika;
+	if (this->charging_timer == 0)
+		charging_timer = this->tyyppi->charge_time;
 
-	if (this->lataus == 1)
+	if (this->charging_timer == 1)
 	{
 		this->saatu_vahinko = this->tyyppi->energia;
 		this->saatu_vahinko_tyyppi = DAMAGE_ALL;
@@ -1876,10 +1876,10 @@ int SpriteClass::AI_Ammus(){
 	return 0;
 }
 int SpriteClass::AI_Pommi(){
-	if (this->lataus == 0)
-		lataus = this->tyyppi->latausaika;
+	if (this->charging_timer == 0)
+		charging_timer = this->tyyppi->charge_time;
 
-	if (this->lataus == 1)
+	if (this->charging_timer == 1)
 	{
 		this->saatu_vahinko = this->energia;
 		this->saatu_vahinko_tyyppi = DAMAGE_ALL;
@@ -1890,7 +1890,7 @@ int SpriteClass::AI_Pommi(){
 int SpriteClass::AI_Teleportti(int oma_i, SpriteClass *spritet, int max, SpriteClass &sprite){
 	int siirto = 0;
 
-	if (energia > 0 && lataus == 0 && hyokkays1 == 0)
+	if (energia > 0 && charging_timer == 0 && attack1_timer == 0)
 	{
 		if (sprite.x <= x + tyyppi->leveys /2 && sprite.x >= x - tyyppi->leveys /2 &&
 			sprite.y <= y + tyyppi->korkeus/2 && sprite.y >= y - tyyppi->korkeus/2 )
@@ -1950,12 +1950,12 @@ int SpriteClass::AI_Teleportti(int oma_i, SpriteClass *spritet, int max, SpriteC
 			{
 				sprite.x = spritet[i].x;
 				sprite.y = spritet[i].y;
-				//lataus    = tyyppi->latausaika;
-				//hyokkays1 = tyyppi->hyokkays1_aika;
-				//spritet[i].lataus    = spritet[i].tyyppi->latausaika;
-				spritet[i].hyokkays1 = spritet[i].tyyppi->hyokkays1_aika;
-				lataus = 0;
-				spritet[i].lataus = 0;
+				//charging_timer    = tyyppi->charge_time;
+				//attack1_timer = tyyppi->attack1_time;
+				//spritet[i].charging_timer    = spritet[i].tyyppi->charge_time;
+				spritet[i].attack1_timer = spritet[i].tyyppi->attack1_time;
+				charging_timer = 0;
+				spritet[i].charging_timer = 0;
 				siirto = 1;
 			}
 		}
@@ -2007,13 +2007,13 @@ int SpriteClass::Animation_Perus(){
 			alusta = true;
 		}
 
-		if (hyokkays1 > 0)
+		if (attack1_timer > 0)
 		{
 			uusi_animaatio = ANIMATION_ATTACK1;
 			alusta = true;
 		}
 
-		if (hyokkays2 > 0)
+		if (attack2_timer > 0)
 		{
 			uusi_animaatio = ANIMATION_ATTACK2;
 			alusta = true;
@@ -2072,14 +2072,14 @@ int SpriteClass::Animation_Kana(){
 		
 		}
 
-		if (hyokkays1 > 0) {
+		if (attack1_timer > 0) {
 
 			uusi_animaatio = ANIMATION_ATTACK1;
 			alusta = true;
 
 		}
 
-		if (hyokkays2 > 0) {
+		if (attack2_timer > 0) {
 
 			uusi_animaatio = ANIMATION_ATTACK2;
 			alusta = true;

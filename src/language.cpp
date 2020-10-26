@@ -154,7 +154,7 @@ int Load_Language(const char* language) {
 
 	PK_txt.mainmenu_return			= tekstit->Hae_Indeksi("back to main menu");
 
-	// Lataus
+	// charging_timer
 	PK_txt.loadgame_title			= tekstit->Hae_Indeksi("load menu title");
 	PK_txt.loadgame_info			= tekstit->Hae_Indeksi("load menu info");
 	PK_txt.loadgame_episode			= tekstit->Hae_Indeksi("load menu episode");

@@ -367,14 +367,14 @@ int Sprite_Movement(int i){
 
 	// Calculate the remainder of the sprite towards
 
-	if (sprite.hyokkays1 > 0)
-		sprite.hyokkays1--;
+	if (sprite.attack1_timer > 0)
+		sprite.attack1_timer--;
 
-	if (sprite.hyokkays2 > 0)
-		sprite.hyokkays2--;
+	if (sprite.attack2_timer > 0)
+		sprite.attack2_timer--;
 
-	if (sprite.lataus > 0)	// aika kahden ampumisen (munimisen) v�lill�
-		sprite.lataus --;
+	if (sprite.charging_timer > 0)	// aika kahden ampumisen (munimisen) v�lill�
+		sprite.charging_timer --;
 
 	if (sprite.mutation_timer > 0)	// aika muutokseen
 		sprite.mutation_timer --;
@@ -393,11 +393,11 @@ int Sprite_Movement(int i){
 			add_speed = false;
 
 		/* ATTACK 1 */
-		if ((PInput::Keydown(Settings.control_attack1) || Gui_egg) && sprite.lataus == 0 && sprite.ammus1 != -1)
-			sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
+		if ((PInput::Keydown(Settings.control_attack1) || Gui_egg) && sprite.charging_timer == 0 && sprite.ammus1 != -1)
+			sprite.attack1_timer = sprite.tyyppi->attack1_time;
 		/* ATTACK 2 */
-		else if ((PInput::Keydown(Settings.control_attack2) || Gui_doodle) && sprite.lataus == 0 && sprite.ammus2 != -1)
-				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
+		else if ((PInput::Keydown(Settings.control_attack2) || Gui_doodle) && sprite.charging_timer == 0 && sprite.ammus2 != -1)
+				sprite.attack2_timer = sprite.tyyppi->attack2_time;
 
 		/* CROUCH */
 		sprite.crouched = false;
@@ -834,7 +834,7 @@ int Sprite_Movement(int i){
 							sprite2->saatu_vahinko_tyyppi = sprite.tyyppi->vahinko_tyyppi;
 							
 							if ( !(sprite2->pelaaja && sprite2->invisible_timer) ) //If sprite2 isn't a invisible player
-								sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika; //Then sprite attack??
+								sprite.attack1_timer = sprite.tyyppi->attack1_time; //Then sprite attack??
 
 							// The projectiles are shattered by shock
 							if (sprite2->tyyppi->tyyppi == TYPE_PROJECTILE) {
@@ -901,13 +901,13 @@ int Sprite_Movement(int i){
 				Game->map->Change_SkullBlocks();
 
 			if (sprite.Onko_AI(AI_ATTACK_1_JOS_OSUTTU)){
-				sprite.hyokkays1 = sprite.tyyppi->hyokkays1_aika;
-				sprite.lataus = 0;
+				sprite.attack1_timer = sprite.tyyppi->attack1_time;
+				sprite.charging_timer = 0;
 			}
 
 			if (sprite.Onko_AI(AI_ATTACK_2_JOS_OSUTTU)){
-				sprite.hyokkays2 = sprite.tyyppi->hyokkays2_aika;
-				sprite.lataus = 0;
+				sprite.attack2_timer = sprite.tyyppi->attack2_time;
+				sprite.charging_timer = 0;
 			}
 
 		}
@@ -1331,19 +1331,19 @@ int Sprite_Movement(int i){
 	/*****************************************************************************************/
 
 	// If the sprite is ready and isn't crouching
-	if (sprite.lataus == 0 && !sprite.crouched) {
-		// hy�kk�ysaika on "tapissa" mik� tarkoittaa sit�, ett� aloitetaan hy�kk�ys
-		if (sprite.hyokkays1 == sprite.tyyppi->hyokkays1_aika) {
+	if (sprite.charging_timer == 0 && !sprite.crouched) {
+		// the attack has just started
+		if (sprite.attack1_timer == sprite.tyyppi->attack1_time) {
 			// provides recovery time, after which the sprite can attack again
-			sprite.lataus = sprite.tyyppi->latausaika;
-			if(sprite.lataus == 0) sprite.lataus = 5;
-			// jos spritelle ei ole m��ritelty omaa latausaikaa ...
-			if (sprite.ammus1 > -1 && sprite.tyyppi->latausaika == 0)
-			// ... ja ammukseen on, otetaan latausaika ammuksesta
+			sprite.charging_timer = sprite.tyyppi->charge_time;
+			if(sprite.charging_timer == 0) sprite.charging_timer = 5;
+			// if you don't have your own charging time ...
+			if (sprite.ammus1 > -1 && sprite.tyyppi->charge_time == 0)
+			// ... and the projectile has, take charge_time from the projectile
 				if (Prototypes_List[sprite.ammus1].tulitauko > 0)
-					sprite.lataus = Prototypes_List[sprite.ammus1].tulitauko;
+					sprite.charging_timer = Prototypes_List[sprite.ammus1].tulitauko;
 
-			// soitetaan hy�kk�ys��ni
+			// attack sound
 			Play_GameSFX(sprite.tyyppi->aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
@@ -1356,13 +1356,13 @@ int Sprite_Movement(int i){
 			}
 		}
 
-		// Sama kuin hy�kk�ys 1:ss�
-		if (sprite.hyokkays2 == sprite.tyyppi->hyokkays2_aika) {
-			sprite.lataus = sprite.tyyppi->latausaika;
-			if(sprite.lataus == 0) sprite.lataus = 5;
-			if (sprite.ammus2 > -1  && sprite.tyyppi->latausaika == 0)
+		// Same as attack 1
+		if (sprite.attack2_timer == sprite.tyyppi->attack2_time) {
+			sprite.charging_timer = sprite.tyyppi->charge_time;
+			if(sprite.charging_timer == 0) sprite.charging_timer = 5;
+			if (sprite.ammus2 > -1  && sprite.tyyppi->charge_time == 0)
 				if (Prototypes_List[sprite.ammus2].tulitauko > 0)
-					sprite.lataus = Prototypes_List[sprite.ammus2].tulitauko;
+					sprite.charging_timer = Prototypes_List[sprite.ammus2].tulitauko;
 
 			Play_GameSFX(sprite.tyyppi->aanet[SOUND_ATTACK2],100,(int)sprite_x, (int)sprite_y,
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
@@ -1384,7 +1384,7 @@ int Sprite_Movement(int i){
 					  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
 
 
-	// KEHITYSVAIHEEN APUTOIMINTOJA
+	// DEVELOPMENT AUXILIARY ACTIVITIES -- doesn't work, put on sprite draw
 
 	u8 color;
 	u32 plk;
@@ -1486,8 +1486,8 @@ int BonusSprite_Movement(int i){
 	if (sprite.damage_timer > 0)
 		sprite.damage_timer--;
 
-	if (sprite.lataus > 0)
-		sprite.lataus--;
+	if (sprite.charging_timer > 0)
+		sprite.charging_timer--;
 
 	if (sprite.mutation_timer > 0)	// aika muutokseen
 		sprite.mutation_timer --;
@@ -1790,7 +1790,7 @@ int BonusSprite_Movement(int i){
 
 			if (sprite.Onko_AI(AI_BONUS_AIKA)) {
 				
-				int increase_time = sprite.tyyppi->latausaika * TIME_FPS;
+				int increase_time = sprite.tyyppi->charge_time * TIME_FPS;
 				Game->timeout += increase_time;
 
 				float shown_time = float(increase_time) / 60;
@@ -1812,10 +1812,10 @@ int BonusSprite_Movement(int i){
 			}
 
 			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
-				Player_Sprite->invisible_timer = sprite.tyyppi->latausaika;
+				Player_Sprite->invisible_timer = sprite.tyyppi->charge_time;
 
 			if (sprite.Onko_AI(AI_BONUS_SUPERMODE)) {
-				Player_Sprite->super_mode_timer = sprite.tyyppi->latausaika;
+				Player_Sprite->super_mode_timer = sprite.tyyppi->charge_time;
 				PSound::play_overlay_music();
 			}
 
