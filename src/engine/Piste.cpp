@@ -34,12 +34,16 @@ static void logic() {
 		
 		if(event.type == SDL_QUIT)
 			running = false;
-		if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
+		else if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
 			PDraw::adjust_screen();
-		if(event.type == SDL_TEXTINPUT && PInput::Is_Editing())
+		else if(event.type == SDL_TEXTINPUT && PInput::Is_Editing())
 			PInput::InjectText(event.text.text);
-		if(event.type == SDL_KEYDOWN && PInput::Is_Editing())
+		else if(event.type == SDL_KEYDOWN && PInput::Is_Editing())
 			PInput::InjectKey(event.key.keysym.scancode);
+		//else if(event.type == SDL_CONTROLLERAXISMOTION)
+		//	printf("%i %i\n", event.caxis.axis, event.caxis.value);
+		else if(event.type == SDL_CONTROLLERBUTTONDOWN)
+			printf("%i\n", event.cbutton.button);
 		
 	}
 

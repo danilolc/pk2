@@ -142,7 +142,7 @@ u8 GetKey() {
 	int count = sizeof(keylist)/sizeof(int);
 
 	for(int key = 0; key < count; key++)
-		if(keymap[keylist[key]])
+		if (Keydown(key))
 			return key;
 	
 	return UNKNOWN;
@@ -157,7 +157,7 @@ bool Keydown(u32 key) {
 	
 	}
 
-	if (key >= sizeof(keylist)) {
+	if (key >= sizeof(keylist)/sizeof(int)) {
 
 		PLog::Write(PLog::ERR, "PInput", "Unknown key %u", key);
 		return false;
