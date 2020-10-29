@@ -165,9 +165,7 @@ bool Draw_Menu_Text(const char *teksti, int x, int y, char end) {
 		menu_valittu_id = menu_valinta_id;
 		Wavetext_Draw(teksti, fontti3, x, y, end);//
 
-		if (( (PInput::MouseLeft() && mouse_on) || PInput::Keydown(PInput::SPACE)
-			/*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1)*/)
-			&& key_delay == 0) {
+		if ( Clicked() ) {
 
 			Play_MenuSFX(menu_sound, 100);
 			key_delay = 20;
@@ -199,16 +197,13 @@ bool Draw_Menu_HardText(const char *text, int x, int y, char end) {
 
 	const int TEXT_W = 15, TEXT_H = 20;
 	int length = strlen(text) * TEXT_W;
-
-	bool clicked = PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)
-		/*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1)*/;
 	
 	bool mouse_on = PInput::mouse_x > x && PInput::mouse_x < x + length 
 		&& PInput::mouse_y > y && PInput::mouse_y < y + TEXT_H;
 
 	if (menu_valinta_id == id) {
 
-		if (clicked && mouse_on) {
+		if (Clicked() && mouse_on) {
 
 			WavetextLap_Draw(text, fontti3, x, y, timer, '\0');
 			
@@ -245,7 +240,7 @@ bool Draw_Menu_HardText(const char *text, int x, int y, char end) {
 		menu_valittu_id = menu_valinta_id;
 		Wavetext_Draw(text, fontti3, x, y, end);//
 
-		if (( (PInput::MouseLeft() && mouse_on) || PInput::Keydown(PInput::SPACE)
+		if (( ((Clicked() == 1) && mouse_on) || PInput::Keydown(PInput::SPACE)
 			/*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1)*/)
 			&& key_delay == 0) {
 
@@ -279,8 +274,7 @@ int Draw_BoolBox(int x, int y, bool muuttuja, bool active) {
 	}
 
 	if (PInput::mouse_x > x && PInput::mouse_x < x+30 && PInput::mouse_y > y && PInput::mouse_y < y+31){
-		if ((PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)/* || PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)*/)
-			&& key_delay == 0){
+		if (Clicked()){
 
 			Play_MenuSFX(menu_sound, 100);
 			key_delay = 20;
@@ -308,8 +302,7 @@ int  Draw_BackNext(int x, int y) {
 		PDraw::image_cutclip(game_assets,x+val,y,535,124,535+31,124+31);
 
 	if ((PInput::mouse_x > x && PInput::mouse_x < x+30 && PInput::mouse_y > y && PInput::mouse_y < y+31) || (menu_valittu_id == menu_valinta_id)){
-		if ((PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)/* || PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)*/)
-			&& key_delay == 0){
+		if (Clicked()){
 			Play_MenuSFX(menu_sound, 100);
 			key_delay = 7;
 			return 1;
@@ -319,8 +312,7 @@ int  Draw_BackNext(int x, int y) {
 	x += val;
 
 	if ((PInput::mouse_x > x && PInput::mouse_x < x+30 && PInput::mouse_y > y && PInput::mouse_y < y+31) || (menu_valittu_id == menu_valinta_id+1)){
-		if ((PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)/* || PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)*/)
-			&& key_delay == 0){
+		if (Clicked()) {
 			Play_MenuSFX(menu_sound, 100);
 			key_delay = 7;
 			return 2;

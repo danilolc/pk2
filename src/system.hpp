@@ -59,11 +59,11 @@ void Id_To_String(u32 id, char* string);
 void Calculate_SinCos();
 int  PK2_Error(const char* msg);
 
+int Clicked();
+
 void Draw_Cursor(int x, int y);
 void Move_DataPath(std::string new_path);
 
 void Prepare_DataPath();
 
 bool FindAsset(PFile::Path* path, const char* default_dir);
-
-

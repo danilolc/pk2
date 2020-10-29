@@ -32,8 +32,7 @@ int PK_Draw_Map_Button(int x, int y, int type){
 	if (PInput::mouse_x > x && PInput::mouse_x < x + BORDER
 		&& PInput::mouse_y > y && PInput::mouse_y < y + BORDER) {
 
-		if (key_delay == 0 && (PInput::MouseLeft() || PInput::Keydown(PInput::SPACE)
-													    /*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1)*/)){
+		if (Clicked()) {
 			key_delay = 30;
 			return 2;
 		}

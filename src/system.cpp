@@ -6,6 +6,7 @@
 
 #include "engine/PLog.hpp"
 #include "engine/PUtils.hpp"
+#include "engine/PInput.hpp"
 #include "engine/PDraw.hpp"
 #include "settings.hpp"
 
@@ -81,6 +82,23 @@ void Calculate_SinCos(){
 		sin_table[i] = sin(M_PI*2*i/180) * 33;
 	
 	}
+
+}
+
+int Clicked() {
+
+	if (key_delay) return 0;
+
+	if (PInput::MouseLeft())
+		return 1;
+
+	if (PInput::Keydown(PInput::SPACE) || PInput::Keydown(PInput::RETURN))
+		return 2;
+
+	if (PInput::Keydown(PInput::JOY_A) || PInput::Keydown(PInput::JOY_START))
+		return 3;
+	
+	return 0;
 
 }
 
