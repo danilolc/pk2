@@ -188,6 +188,9 @@ bool Draw_Menu_Text(const char *teksti, int x, int y, char end) {
 
 bool Draw_Menu_HardText(const char *text, int x, int y, char end) {
 
+	return Draw_Menu_Text(text, x, y, end);
+	//
+
 	const float TIME_START = 1.f;
 	const float TIME_END = 3.f;
 	const float TIME_DELTA = 0.02f;
@@ -240,8 +243,8 @@ bool Draw_Menu_HardText(const char *text, int x, int y, char end) {
 		menu_valittu_id = menu_valinta_id;
 		Wavetext_Draw(text, fontti3, x, y, end);//
 
-		if (( ((Clicked() == 1) && mouse_on) || PInput::Keydown(PInput::SPACE)
-			/*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1)*/)
+		if (( PInput::MouseLeft() && mouse_on) || PInput::Keydown(PInput::SPACE)
+			/*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1)*/
 			&& key_delay == 0) {
 
 			id = menu_valinta_id;
