@@ -22,7 +22,7 @@ using namespace std::chrono;
 
 PK2SETTINGS Settings;
 
-int Settings_GetId(PFile::Path path, u32 id) {
+int Settings_GetId(PFile::Path path, u32& id) {
 
 	char* version[4];
 
@@ -37,11 +37,13 @@ int Settings_GetId(PFile::Path path, u32 id) {
 	if (strncmp(Settings.versio, SETTINGS_VERSION, 4) != 0) {
 
 		id = 0;
+		file->close();
 		return 2;
 
 	}
 
 	file->read(id);
+	file->close();
 	return 0;
 
 }
@@ -170,7 +172,7 @@ int Settings_Save() {
 
 	PFile::Path path(data_path, SETTINGS_FILE);
 
-	PFile::RW* file = path.GetRW("w");
+	PFile::RW* file = path.GetRW("wb");
 	if (file == nullptr) {
 
 		PLog::Write(PLog::ERR, "PK2", "Can't save settings");

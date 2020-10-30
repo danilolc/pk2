@@ -47,7 +47,7 @@ int Save_All_Records() {
 
 	PFile::Path path(data_path, SAVES_FILE);
 	
-	PFile::RW* file = path.GetRW("w");
+	PFile::RW* file = path.GetRW("wb");
 	if (file == nullptr) {
 
 		PLog::Write(PLog::ERR, "PK2", "Can't save records");

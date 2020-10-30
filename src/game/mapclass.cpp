@@ -295,7 +295,7 @@ int MapClass::Tallenna(char *filename){
 	/*char luku[8]; //Size can't be changed
 	u32 i;
 
-	PFile::RW* file = SDL_RWFromFile(filename, "w");
+	PFile::RW* file = SDL_RWFromFile(filename, "wb");
 
 	strcpy(this->versio, PK2MAP_LAST_VERSION);
 

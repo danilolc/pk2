@@ -120,7 +120,7 @@ int EpisodeClass::Save_Scores() {
 
 	PFile::Path path(data_path + "scores" PE_SEP + this->entry.name + ".dat");
 
-	PFile::RW* file = path.GetRW("w");
+	PFile::RW* file = path.GetRW("wb");
 	if (file == nullptr) {
 
 		PLog::Write(PLog::ERR, "PK2", "Can't save scores");

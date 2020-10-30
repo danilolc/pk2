@@ -53,7 +53,7 @@ struct PK2SETTINGS {
 
 extern PK2SETTINGS Settings;
 
-int Settings_GetId(PFile::Path path, u32 id);
+int Settings_GetId(PFile::Path path, u32& id);
 
 int Settings_Open();
 int Settings_Save();

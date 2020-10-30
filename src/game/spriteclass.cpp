@@ -736,7 +736,7 @@ void PrototypeClass::Tallenna(const char* filename) {
 
 	PFile::Path path(filename);
 	path.SetPath(this->tiedosto);
-	PFile::RW* file = path.GetRW("w");
+	PFile::RW* file = path.GetRW("wb");
 
 	PrototypeClass13 proto = GetProto13();
 

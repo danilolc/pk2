@@ -1324,7 +1324,8 @@ int Draw_Menu() {
 
 int Screen_Menu_Init() {
 	
-	Settings_GetId(PFile::Path(data_path, "settings.ini"), 0xBABACA);
+	//u32 a;
+	//Settings_GetId(PFile::Path(data_path, "settings.ini"), a);
 
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_CURSOR);
