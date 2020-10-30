@@ -1171,15 +1171,18 @@ int SpriteClass::AI_Random_Kaantyminen(){
 	}
 	return 0;
 }
-int SpriteClass::AI_Kaantyy_Jos_Osuttu(){
-	int dam = (DAMAGE_TIME > 0 && energia > 0)? 1 : 0; //Damage
-	if (damage_timer == dam) {
-		if (a != 0)
-			a = -a;
+int SpriteClass::AI_Kaantyy_Jos_Osuttu() {
+
+	if (damage_timer == 1 && energia > 0) {
+		
+		if (a != 0) a = -a;
 
 		flip_x = !flip_x;
+	
 	}
+
 	return 0;
+
 }
 int SpriteClass::AI_Random_Liikahdus_Vert_Hori(){
 	if (energia > 0)
