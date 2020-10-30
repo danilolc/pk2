@@ -40,10 +40,6 @@ static void logic() {
 			PInput::InjectText(event.text.text);
 		else if(event.type == SDL_KEYDOWN && PInput::Is_Editing())
 			PInput::InjectKey(event.key.keysym.scancode);
-		//else if(event.type == SDL_CONTROLLERAXISMOTION)
-		//	printf("%i %i\n", event.caxis.axis, event.caxis.value);
-		else if(event.type == SDL_CONTROLLERBUTTONDOWN)
-			printf("%i\n", event.cbutton.button);
 		
 	}
 

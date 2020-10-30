@@ -738,7 +738,7 @@ int Screen_InGame(){
 			Game->exit_timer = 700;//800;//2000;
 
 		if (PInput::Keydown(Settings.control_attack1) || PInput::Keydown(Settings.control_attack2) ||
-			PInput::Keydown(Settings.control_jump) || PInput::Keydown(PInput::RETURN) ||
+			PInput::Keydown(Settings.control_jump) || Clicked() ||
 			Gui_egg || Gui_doodle || Gui_gift || Gui_up || Gui_down || Gui_menu)
 			if (Game->exit_timer > 2 && Game->exit_timer < 500/*600*//*1900*/ && key_delay == 0)
 				Game->exit_timer = 2;
@@ -771,7 +771,7 @@ int Screen_InGame(){
 				key_delay = 10;
 			}
 
-			if (PInput::Keydown(PInput::ESCAPE) || Gui_menu) {
+			if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_GUIDE) || Gui_menu) {
 				if(test_level)
 					Fade_Quit();
 				else {

@@ -402,7 +402,7 @@ int Screen_ScoreCount() {
 	if (counting_delay > 0)
 		counting_delay--;
 
-	if ((key_delay == 0 && PInput::Keydown(PInput::RETURN)) || going_to_map){
+	if (Clicked() || going_to_map){
 
 		if(counting_phase == 6 && !going_to_map) {
 

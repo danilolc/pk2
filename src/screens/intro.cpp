@@ -117,7 +117,7 @@ int Screen_Intro(){
 
 	if (!closing_intro) {
 
-		if (PInput::Keydown(PInput::RETURN) || PInput::Keydown(PInput::SPACE) || Gui_touch || intro_counter >= 3500){
+		if (Clicked() || Gui_touch || intro_counter >= 3500){
 			closing_intro = true;
 			PDraw::fade_out(PDraw::FADE_SLOW);
 		}

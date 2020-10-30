@@ -253,12 +253,13 @@ int ReadKeyboard(char* c) {
 
 int Vibrate(int length) {
 
-	if(Haptic == NULL)
+	if (SDL_GameControllerRumble(Controller, 0xFFFF/2, 0xFFFF/2, length) != 0)
 		return -1;
 	if (SDL_HapticRumblePlay(Haptic, 0.5, length) != 0)
 		return -1;
 	
 	return 0;
+
 }
 
 #ifdef _WIN32
@@ -367,6 +368,27 @@ int GetTouchPos(float& x, float& y) {
 
 }
 
+float GetAxis(int axis) {
+
+	const float fac = 1.f/32768;
+
+	if (axis == 0)
+		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_LEFTX);
+	if (axis == 1)
+		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_LEFTY);
+	if (axis == 2)
+		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_RIGHTX);
+	if (axis == 3)
+		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_RIGHTY);
+	if (axis == 4)
+		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT);
+	if (axis == 5)
+		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
+
+	return 0.f;
+
+}
+
 void UpdateMouse(bool keyMove, bool relative) {
 
 	int sw, sh;
@@ -400,6 +422,11 @@ void UpdateMouse(bool keyMove, bool relative) {
 
 			//mouse_x += PInput::Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
 			//mouse_y += PInput::Ohjain_Y(PI_PELIOHJAIN_1)/30;
+
+			if (Keydown(JOY_LEFT))  mouse_x += -3; //Move mouse with d-pad
+			if (Keydown(JOY_RIGHT)) mouse_x += 3;
+			if (Keydown(JOY_UP))    mouse_y += -3;
+			if (Keydown(JOY_DOWN))  mouse_y += 3;
 
 			if (Keydown(LEFT))  mouse_x += -3; //Move mouse with keys
 			if (Keydown(RIGHT)) mouse_x += 3;

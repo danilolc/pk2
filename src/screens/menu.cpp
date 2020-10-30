@@ -479,10 +479,10 @@ void Draw_Menu_Name() {
 
 		}
 
-		/*if (PInput::Ohjain_Nappi(PI_PELIOHJAIN_1,PI_OHJAIN_NAPPI_1) && key_delay == 0 && editing_name) {
+		if (PInput::Keydown(PInput::JOY_START) && key_delay == 0 && editing_name) {
 			editing_name = false;
 			PInput::EndKeyboard();
-		}*/
+		}
 
 		if (key == PInput::DEL) {
 			for (int c=menu_name_index;c<19;c++)
@@ -1368,8 +1368,8 @@ int Screen_Menu_Init() {
 int Screen_Menu() {
 	
 	if (!editing_name && key_delay == 0 && menu_lue_kontrollit == 0) {
-		if (PInput::Keydown(PInput::UP) || PInput::Keydown(PInput::LEFT) /*||
-			PInput::Ohjain_X(PI_PELIOHJAIN_1) < 0 || PInput::Ohjain_Y(PI_PELIOHJAIN_1) < 0*/){
+		if (PInput::Keydown(PInput::UP) || PInput::Keydown(PInput::LEFT) ||
+			PInput::Keydown(PInput::JOY_UP) || PInput::Keydown(PInput::JOY_LEFT)){
 			menu_valittu_id--;
 
 			if (menu_valittu_id < 1)
@@ -1378,8 +1378,8 @@ int Screen_Menu() {
 			key_delay = 15;
 		}
 
-		if (PInput::Keydown(PInput::DOWN) || PInput::Keydown(PInput::RIGHT) /*||
-			PInput::Ohjain_X(PI_PELIOHJAIN_1) > 0 || PInput::Ohjain_Y(PI_PELIOHJAIN_1) > 0*/){
+		if (PInput::Keydown(PInput::DOWN) || PInput::Keydown(PInput::RIGHT) ||
+			PInput::Keydown(PInput::JOY_DOWN) || PInput::Keydown(PInput::JOY_RIGHT)){
 			menu_valittu_id++;
 
 			if (menu_valittu_id > menu_valinta_id-1)

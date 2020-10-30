@@ -319,7 +319,7 @@ int Screen_Map() {
 
 	if (!going_to_game && key_delay == 0) {
 
-		if (PInput::Keydown(PInput::ESCAPE)) {
+		if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_GUIDE)) {
 			next_screen = SCREEN_MENU;
 			key_delay = 20;
 		}
