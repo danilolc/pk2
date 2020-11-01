@@ -858,9 +858,9 @@ bool SpriteClass::Onko_AI(int ai){
 			return true;
 	return false;
 }
-int SpriteClass::Animaatio(int anim_i, bool nollaus){
+int SpriteClass::Animaatio(int anim_i, bool reset){
 	if (anim_i != animation_index){
-		if (nollaus)
+		if (reset)
 			current_sequence = 0;
 
 		animation_index = anim_i;
@@ -869,8 +869,7 @@ int SpriteClass::Animaatio(int anim_i, bool nollaus){
 	return 0;
 }
 int SpriteClass::Animoi(){
-	int frame = 0;
-
+	
 	switch (tyyppi->AI[0]){
 		case AI_KANA:		Animation_Kana();break;
 		case AI_LITTLE_CHICKEN:	Animation_Kana();break;
@@ -888,28 +887,30 @@ int SpriteClass::Animoi(){
 	if (current_sequence >= animaatio.frameja)
 		current_sequence = 0;
 
-	frame = animaatio.sekvenssi[current_sequence]-1;
+	int frame = animaatio.sekvenssi[current_sequence] - 1;
 
-	// Lasketaan kuinka paljon talla hetkella voimassa olevaa framea viela naytetaan
+	// Calculate how much of the currently valid frame is still displayed
 	if (frame_timer < tyyppi->frame_rate)
 		frame_timer++;
-	// Jos aika on kulunut loppuun, vaihdetaan seuraava frame tamanhetkisesta animaatiosta
-	else{
+	// If the time has elapsed, the next frame of the current animation is changed
+	else {
 		frame_timer = 0;
 
-		// Onko animaatiossa enaa frameja?
-		if (current_sequence < animaatio.frameja-1)
+		// Are there more frames in the animation?
+		if (current_sequence < animaatio.frameja - 1)
 			current_sequence++;
-		// Jos ei ja animaatio on asetettu luuppaamaan, aloitetaan animaatio alusta.
-		else
-		{
+		// If not and the animation is set to loop, the animation is started from the beginning.
+		else {
 			if (animaatio.looppi)
 				current_sequence = 0;
 		}
 	}
 
-	if (frame > tyyppi->frameja)
-		frame = tyyppi->frameja;
+	if (frame < 0)
+		frame = 0;
+	
+	if (frame >= tyyppi->frameja)
+		frame = tyyppi->frameja - 1;
 
 	return frame;
 }
@@ -918,10 +919,9 @@ int SpriteClass::Piirra(int kamera_x, int kamera_y){
 	int	l = (int)tyyppi->kuva_frame_leveys/2,//leveys
 		h = (int)tyyppi->kuva_frame_korkeus/2,
 		x = (int)this->x-(kamera_x),
-		y = (int)this->y-(kamera_y),
-		frame = 0;
+		y = (int)this->y-(kamera_y);
 
-	frame = this->Animoi();
+	int frame = this->Animoi();
 
 	if (tyyppi->vibrate){
 		x += rand()%2 - rand()%2;
