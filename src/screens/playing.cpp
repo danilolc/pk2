@@ -189,14 +189,15 @@ int Draw_InGame_DebugInfo() {
 	PDraw::font_write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
-	for (int i=0;i<40;i++){
+	
+	for (int i = 0; i < 40; i++) {
 		sprintf(lukua, "%i", Prototypes_List[i].indeksi);
 		PDraw::font_write(fontti1,lukua,410,10+i*10);
 		PDraw::font_write(fontti1,Prototypes_List[i].tiedosto,430,10+i*10);
 		PDraw::font_write(fontti1,Prototypes_List[i].bonus_sprite,545,10+i*10);
 	}
 
-	for (int i=0;i<EPISODI_MAX_LEVELS;i++)
+	for (uint i = 0; i < Episode->level_count; i++)
 		if (strcmp(Episode->levels_list[i].nimi,"")!=0)
 			PDraw::font_write(fontti1,Episode->levels_list[i].nimi,0,240+i*10);
 
