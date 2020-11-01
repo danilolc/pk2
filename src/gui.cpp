@@ -250,9 +250,7 @@ static int get_pad() {
 		} else {
 
 			float touch = (last_touch->pos_x * 1920 - gui_padbg->x) / gui_padbg->w;
-			//printf("%f", touch);
 			float hold_touch = hold_pad(touch, &button);
-			//printf(" %f %i\n", hold_touch, button);
 
 			gui_padbt->x = gui_padbg->x + hold_touch * gui_padbg->w;
 			

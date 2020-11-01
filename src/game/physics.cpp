@@ -1080,7 +1080,7 @@ int Sprite_Movement(int i){
 	//TODO run sprite lua script
 	
 	if (sprite.pelaaja == 0) {
-		for (int ai=0;ai < SPRITE_MAX_AI; ai++)
+		for (int ai=0;ai < SPRITE_MAX_AI; ai++) {
 			switch (sprite.tyyppi->AI[ai]) {
 				case AI_NONE:							ai = SPRITE_MAX_AI; // lopetetaan
 													break;
@@ -1098,19 +1098,19 @@ int Sprite_Movement(int i){
 													break;
 				case AI_AMMUS:						sprite.AI_Ammus();
 													break;
-				case AI_JUMPING:					sprite.AI_Jumping();
+				case AI_JUMPER:					sprite.AI_Jumper();
 													break;
 				case AI_BASIC:						sprite.AI_Basic();
 													break;
 				case AI_NONSTOP:					sprite.AI_NonStop();
 													break;
-				case AI_KAANTYY_ESTEESTA_HORI:		sprite.AI_Kaantyy_Esteesta_Hori();
+				case AI_TURNING_HORIZONTALLY:		sprite.AI_Kaantyy_Esteesta_Hori();
 													break;
 				case AI_KAANTYY_ESTEESTA_VERT:		sprite.AI_Kaantyy_Esteesta_Vert();
 													break;
-				case AI_VAROO_KUOPPAA:				sprite.AI_Varoo_Kuoppaa();
+				case AI_LOOK_FOR_CLIFFS:				sprite.AI_Varoo_Kuoppaa();
 													break;
-				case AI_RANDOM_SUUNNANVAIHTO_HORI:	sprite.AI_Random_Suunnanvaihto_Hori();
+				case AI_RANDOM_CHANGE_DIRECTION_H:	sprite.AI_Random_Suunnanvaihto_Hori();
 													break;
 				case AI_RANDOM_KAANTYMINEN:			sprite.AI_Random_Kaantyminen();
 													break;
@@ -1119,13 +1119,13 @@ int Sprite_Movement(int i){
 				case AI_FOLLOW_PLAYER:			if (Player_Sprite->invisible_timer == 0)
 														sprite.AI_Seuraa_Pelaajaa(*Player_Sprite);
 													break;
-				case AI_SEURAA_PELAAJAA_JOS_NAKEE:	if (Player_Sprite->invisible_timer == 0)
+				case AI_FOLLOW_PLAYER_IF_IN_FRONT:	if (Player_Sprite->invisible_timer == 0)
 														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee(*Player_Sprite);
 													break;
-				case AI_SEURAA_PELAAJAA_VERT_HORI:	if (Player_Sprite->invisible_timer == 0)
+				case AI_FOLLOW_PLAYER_VERT_HORI:	if (Player_Sprite->invisible_timer == 0)
 														sprite.AI_Seuraa_Pelaajaa_Vert_Hori(*Player_Sprite);
 													break;
-				case AI_SEURAA_PELAAJAA_JOS_NAKEE_VERT_HORI:
+				case AI_FOLLOW_PLAYER_IF_IN_FRONT_VERT_HORI:
 													if (Player_Sprite->invisible_timer == 0)
 														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(*Player_Sprite);
 													break;
@@ -1264,28 +1264,20 @@ int Sprite_Movement(int i){
 				case AI_EVIL_ONE:					if (sprite.energia < 1) PSound::set_musicvolume(0);
 													break;
 
-				case AI_INFO1:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info01));break;
-				case AI_INFO2:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info02));break;
-				case AI_INFO3:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info03));break;
-				case AI_INFO4:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info04));break;
-				case AI_INFO5:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info05));break;
-				case AI_INFO6:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info06));break;
-				case AI_INFO7:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info07));break;
-				case AI_INFO8:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info08));break;
-				case AI_INFO9:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info09));break;
-				case AI_INFO10:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info10));break;
-				case AI_INFO11:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info11));break;
-				case AI_INFO12:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info12));break;
-				case AI_INFO13:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info13));break;
-				case AI_INFO14:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info14));break;
-				case AI_INFO15:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info15));break;
-				case AI_INFO16:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info16));break;
-				case AI_INFO17:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info17));break;
-				case AI_INFO18:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info18));break;
-				case AI_INFO19:						if (sprite.AI_Info(*Player_Sprite))	Game->Show_Info(tekstit->Get_Text(PK_txt.info19));break;
+				default:
 
-				default:							break;
+				if (sprite.tyyppi->AI[ai] >= AI_INFOS_BEGIN && sprite.tyyppi->AI[ai] <= AI_INFOS_END)
+					if (sprite.AI_Info(*Player_Sprite)) {
+
+						int info = sprite.tyyppi->AI[ai] - AI_INFOS_BEGIN + 1;
+						Game->Show_Info(tekstit->Get_Text(PK_txt.infos[info]));
+
+					}
 			}
+
+
+
+		}
 	}
 
 	//if (kaiku == 1 && sprite.tyyppi->tyyppi == TYPE_PROJECTILE && sprite.tyyppi->vahinko_tyyppi == DAMAGE_NOISE &&

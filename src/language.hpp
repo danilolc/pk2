@@ -11,6 +11,8 @@
 
 extern PLang *tekstit;
 
+const int MAX_INFOS = 100;
+
 struct LANGUAGE {
 
 	int setup_options,
@@ -138,25 +140,7 @@ struct LANGUAGE {
 		end_chickens_saved,
 		end_the_end,
 
-		info01,
-		info02,
-		info03,
-		info04,
-		info05,
-		info06,
-		info07,
-		info08,
-		info09,
-		info10,
-		info11,
-		info12,
-		info13,
-		info14,
-		info15,
-		info16,
-		info17,
-		info18,
-		info19;
+		infos[MAX_INFOS];
 	
 };
 

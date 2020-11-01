@@ -876,7 +876,7 @@ int SpriteClass::Animoi(){
 		case AI_BONUS:		Animation_Bonus();break;
 		case AI_EGG:		Animation_Egg();break;
 		case AI_AMMUS:		Animation_Ammus();break;
-		case AI_JUMPING:	Animation_Kana();break;
+		case AI_JUMPER:	Animation_Kana();break;
 		case AI_BASIC:		Animation_Perus();break;
 		case AI_TELEPORT:	Animation_Perus();break;
 		default:			break;
@@ -1672,7 +1672,7 @@ int SpriteClass::AI_Kill_Everyone(){
 
 	return 0;
 }
-int SpriteClass::AI_Jumping(){
+int SpriteClass::AI_Jumper(){
 	if (x < 10)
 	{
 		x = 10;

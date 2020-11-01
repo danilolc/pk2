@@ -288,7 +288,7 @@ void Sprites_start_directions() {
 				}
 			}
 
-			if (Sprites_List[i].tyyppi->Onko_AI(AI_ALOITUSSUUNTA_PELAAJAA_KOHTI)){
+			if (Sprites_List[i].tyyppi->Onko_AI(AI_START_DIRECTIONS_TOWARDS_PLAYER)){
 
 				if (Sprites_List[i].x < Player_Sprite->x)
 					Sprites_List[i].a = Sprites_List[i].tyyppi->max_nopeus / 3.5;
@@ -297,7 +297,7 @@ void Sprites_start_directions() {
 					Sprites_List[i].a = (Sprites_List[i].tyyppi->max_nopeus * -1) / 3.5;
 			}
 
-			if (Sprites_List[i].tyyppi->Onko_AI(AI_ALOITUSSUUNTA_PELAAJAA_KOHTI_VERT)){
+			if (Sprites_List[i].tyyppi->Onko_AI(AI_START_DIRECTIONS_TOWARDS_PLAYER_VERT)){
 
 				if (Sprites_List[i].y < Player_Sprite->y)
 					Sprites_List[i].b = Sprites_List[i].tyyppi->max_nopeus / -3.5;

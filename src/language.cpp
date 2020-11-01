@@ -254,25 +254,15 @@ int Load_Language(const char* language) {
 	PK_txt.end_chickens_saved	= tekstit->Hae_Indeksi("end chickens saved");
 	PK_txt.end_the_end			= tekstit->Hae_Indeksi("end the end");
 
-	PK_txt.info01					= tekstit->Hae_Indeksi("info01");
-	PK_txt.info02					= tekstit->Hae_Indeksi("info02");
-	PK_txt.info03					= tekstit->Hae_Indeksi("info03");
-	PK_txt.info04					= tekstit->Hae_Indeksi("info04");
-	PK_txt.info05					= tekstit->Hae_Indeksi("info05");
-	PK_txt.info06					= tekstit->Hae_Indeksi("info06");
-	PK_txt.info07					= tekstit->Hae_Indeksi("info07");
-	PK_txt.info08					= tekstit->Hae_Indeksi("info08");
-	PK_txt.info09					= tekstit->Hae_Indeksi("info09");
-	PK_txt.info10					= tekstit->Hae_Indeksi("info10");
-	PK_txt.info11					= tekstit->Hae_Indeksi("info11");
-	PK_txt.info12					= tekstit->Hae_Indeksi("info12");
-	PK_txt.info13					= tekstit->Hae_Indeksi("info13");
-	PK_txt.info14					= tekstit->Hae_Indeksi("info14");
-	PK_txt.info15					= tekstit->Hae_Indeksi("info15");
-	PK_txt.info16					= tekstit->Hae_Indeksi("info16");
-	PK_txt.info17					= tekstit->Hae_Indeksi("info17");
-	PK_txt.info18					= tekstit->Hae_Indeksi("info18");
-	PK_txt.info19					= tekstit->Hae_Indeksi("info19");
+	for (int i = 1; i <= MAX_INFOS; i++) {
+
+		std::string index = "info";
+		if (i < 10) index += '0';
+		index += std::to_string(i);
+
+		PK_txt.infos[i] = tekstit->Hae_Indeksi(index.c_str());
+
+	}
 
 	return 0;
 }

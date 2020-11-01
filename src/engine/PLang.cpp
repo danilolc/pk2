@@ -14,23 +14,18 @@ const int LUE_SKIP    = 0,
 const char MARKER_1 = '*',
            MARKER_2 = ':';
 
-PLang::PLang(){
+PLang::PLang() {
+
 	read = LUE_SKIP;
-	for (int i=0;i<MAX_TEXTS;i++){
-		strcpy(tekstit[i],"");
-		strcpy(otsikot[i],"");
-	}
+
+	tekstit.clear();
+	titles.clear();
 
 }
 
 PLang::PLang(PFile::Path path) {
 
 	read = LUE_SKIP;
-
-	for (int i=0;i<MAX_TEXTS;i++){
-		strcpy(tekstit[i],"");
-		strcpy(otsikot[i],"");
-	}
 
 	Read_File(path);
 
@@ -45,42 +40,38 @@ bool PLang::Read_File(PFile::Path path){
 	if (io == nullptr)
 		return false;
 
-	for (int i = 0; i < MAX_TEXTS; i++) {
-		strcpy(tekstit[i],"");
-		strcpy(otsikot[i],"");
-	}
+	tekstit.clear();
+	titles.clear();
 
-	char merkki;
-	int taulukko_index = 0;
-	int mjono_index = 0;
+	u8 marker;
+	int table_index = 0;
 	read = LUE_SKIP;
 
-	bool jatka = true;
+	tekstit.push_back("");
+	titles.push_back("");
 
-	while(jatka && io->read(&merkki, 1)) {
-		switch (merkki){
+	while(io->read(&marker, 1)) {
+		switch (marker) {
 			case MARKER_1:
-				if (read == LUE_SKIP){
+				if (read == LUE_SKIP) {
 					read = LUE_OTSIKKO;
-					mjono_index = 0;
-				} else{
+				} else {
 					read = LUE_SKIP;
-					taulukko_index++;
+
+					tekstit.push_back("");
+					titles.push_back("");
+					table_index++;
+					
 				}
 				break;
 
 			case MARKER_2:
-				if (read == LUE_OTSIKKO){
+				if (read == LUE_OTSIKKO) {
 					read = LUE_TEKSTI;
-					mjono_index = 0;
 					break;
 				}
-				if (read == LUE_TEKSTI){
-					if (mjono_index < MAX_TEXT_LENGTH){
-						tekstit[taulukko_index][mjono_index] = merkki;
-						tekstit[taulukko_index][mjono_index+1] = '\0';
-						mjono_index++;
-					}
+				if (read == LUE_TEKSTI) {
+					tekstit[table_index] += marker;
 				}
 				break;
 
@@ -88,7 +79,11 @@ bool PLang::Read_File(PFile::Path path){
 			case '\n':
 				if (read != LUE_SKIP){
 					read = LUE_SKIP;
-					taulukko_index++;
+					
+					tekstit.push_back("");
+					titles.push_back("");
+					table_index++;
+					
 				}
 				break;
 
@@ -96,54 +91,54 @@ bool PLang::Read_File(PFile::Path path){
 			case '\v': break;
 
 			default:
-				if (read != LUE_SKIP && !(mjono_index == 0 && merkki == ' ')){
-					if (read == LUE_OTSIKKO){
-						if (mjono_index < MAX_HEAD_LENGTH){
-							otsikot[taulukko_index][mjono_index] = merkki;
-							otsikot[taulukko_index][mjono_index+1] = '\0';
-							mjono_index++;
-						}
+				if (read != LUE_SKIP){
+					if (read == LUE_OTSIKKO) {
+						titles[table_index] += marker;
 					}
-					if (read == LUE_TEKSTI){
-						if (mjono_index < MAX_TEXT_LENGTH){
-							tekstit[taulukko_index][mjono_index] = merkki;
-							tekstit[taulukko_index][mjono_index+1] = '\0';
-							mjono_index++;
-						}
+					if (read == LUE_TEKSTI) {
+						tekstit[table_index] += marker;
 					}
 				}
 				break;
 		}
-
-		if (taulukko_index >= MAX_TEXTS)
-			jatka = false;
 	}
 
     io->close();
 	return true;
 }
 
-int PLang::Hae_Indeksi(const char *otsikko){
-	int i=0;
+int PLang::Hae_Indeksi(const char *otsikko) {
 
-	while (i < MAX_TEXTS && strcmp(otsikot[i],otsikko) != 0)
-		i++;
+	size_t i;
+	for (i = 0; i < titles.size(); i++)
+		if (titles[i] == otsikko) break;
 
-	if (i == MAX_TEXTS)
+	if (i >= titles.size())
 		return -1;
 
 	return i;
 
 }
 
-const char* PLang::Get_Text(int index){
-	if (index >= 0 && index < MAX_TEXTS)
-		return tekstit[index];
+const char* PLang::Get_Text(size_t index) {
+	if (index < tekstit.size())
+		return tekstit[index].c_str(); //?
 	else
 		return ".....";
 }
 
-void PLang::Replace_Text(int index, const char *teksti){
-	if (index >= 0 && index < MAX_TEXTS)
-		strcpy(tekstit[index], teksti);
+void PLang::Set_Text(const char* title, const char* text) {
+
+	int idx = this->Hae_Indeksi(title);
+	if (idx != -1) {
+	
+		tekstit[idx] = text;
+	
+	} else {
+
+		titles.push_back(title);
+		tekstit.push_back(title);
+	
+	}
+
 }

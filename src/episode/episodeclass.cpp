@@ -159,23 +159,25 @@ void EpisodeClass::Load_Info() {
 	PLang* temp;
 
 	PFile::Path infofile = this->Get_Dir("infosign.txt");
-	char otsikko[] = "info00";
-	int indeksi1, indeksi2, i;
 
 	temp = new PLang();
 
 	if (infofile.Find()){
 		if (temp->Read_File(infofile)){
 
-			for (i = 0 ; i<19 ; i++){
-				if(i+1 >= 10) otsikko[4] = '1'; //Make "info" + itos(i)
-				otsikko[5] = '1' + (char)(i%10);
+			std::string infon;
 
-				indeksi1 = tekstit->Hae_Indeksi(otsikko);
-				indeksi2 = temp->Hae_Indeksi(otsikko);
+			for (int i = 1; i < MAX_INFOS; i++){
+				
+				infon = "info"; //info + number
+				if (i < 10) infon += '0';
+				infon += std::to_string(i);
 
-				if (indeksi1 != -1 && indeksi2 != -1)
-					tekstit->Replace_Text(indeksi1,temp->Get_Text(indeksi2));
+				int indeksi = temp->Hae_Indeksi(infon.c_str());
+
+				if (indeksi != -1)
+					tekstit->Set_Text(infon.c_str(), temp->Get_Text(indeksi));
+				
 			}
 		}
 	}

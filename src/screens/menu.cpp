@@ -243,7 +243,7 @@ bool Draw_Menu_HardText(const char *text, int x, int y, char end) {
 		menu_valittu_id = menu_valinta_id;
 		Wavetext_Draw(text, fontti3, x, y, end);//
 
-		if (( PInput::MouseLeft() && mouse_on) || PInput::Keydown(PInput::SPACE)
+		if ((( PInput::MouseLeft() && mouse_on) || PInput::Keydown(PInput::SPACE))
 			/*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1)*/
 			&& key_delay == 0) {
 
