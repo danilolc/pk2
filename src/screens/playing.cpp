@@ -189,7 +189,6 @@ int Draw_InGame_DebugInfo() {
 	PDraw::font_write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
-	
 	for (int i = 0; i < 40; i++) {
 		sprintf(lukua, "%i", Prototypes_List[i].indeksi);
 		PDraw::font_write(fontti1,lukua,410,10+i*10);

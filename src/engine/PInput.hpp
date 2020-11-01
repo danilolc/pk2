@@ -63,7 +63,7 @@ struct touch_t {
 
 extern std::vector<touch_t> touchlist;
 
-extern int mouse_x, mouse_y;
+extern float mouse_x, mouse_y;
 
 const char* KeyName(u8 key);
 u8 GetKey();
