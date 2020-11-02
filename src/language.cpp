@@ -254,9 +254,10 @@ int Load_Language(const char* language) {
 	PK_txt.end_chickens_saved	= tekstit->Hae_Indeksi("end chickens saved");
 	PK_txt.end_the_end			= tekstit->Hae_Indeksi("end the end");
 
-	for (int i = 1; i <= MAX_INFOS; i++) {
+	std::string index;
+	for (int i = 1; i < MAX_INFOS; i++) {
 
-		std::string index = "info";
+		index = "info"; //info + number
 		if (i < 10) index += '0';
 		index += std::to_string(i);
 

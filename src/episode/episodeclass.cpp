@@ -166,7 +166,6 @@ void EpisodeClass::Load_Info() {
 		if (temp->Read_File(infofile)){
 
 			std::string infon;
-
 			for (int i = 1; i < MAX_INFOS; i++){
 				
 				infon = "info"; //info + number
