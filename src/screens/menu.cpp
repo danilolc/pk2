@@ -48,6 +48,8 @@ struct MENU_RECT {
 
 } bg_square;
 
+bool mouse_hidden = false;
+
 int menu_nyt = MENU_MAIN;
 int menu_lue_kontrollit = 0;
 
@@ -158,14 +160,15 @@ bool Draw_Menu_Text(const char *teksti, int x, int y, char end) {
 	int length = strlen(teksti) * 15;
 
 	bool mouse_on = PInput::mouse_x > x && PInput::mouse_x < x + length 
-		&& PInput::mouse_y > y && PInput::mouse_y < y + TEXT_H;
+		&& PInput::mouse_y > y && PInput::mouse_y < y + TEXT_H
+		&& !mouse_hidden;
 
 	if ( mouse_on || (menu_valittu_id == menu_valinta_id) ) {
 
 		menu_valittu_id = menu_valinta_id;
 		Wavetext_Draw(teksti, fontti3, x, y, end);//
 
-		if ( Clicked() ) {
+		if ( Clicked() && mouse_on ) {
 
 			Play_MenuSFX(menu_sound, 100);
 			key_delay = 20;
@@ -202,7 +205,8 @@ bool Draw_Menu_HardText(const char *text, int x, int y, char end) {
 	int length = strlen(text) * TEXT_W;
 	
 	bool mouse_on = PInput::mouse_x > x && PInput::mouse_x < x + length 
-		&& PInput::mouse_y > y && PInput::mouse_y < y + TEXT_H;
+		&& PInput::mouse_y > y && PInput::mouse_y < y + TEXT_H
+		&& !mouse_hidden;
 
 	if (menu_valinta_id == id) {
 
@@ -294,32 +298,36 @@ int  Draw_BackNext(int x, int y) {
 	int randx = rand()%3 - rand()%3;
 	int randy = rand()%3 - rand()%3;
 
-	if (menu_valittu_id == menu_valinta_id)
+	bool mouse_on1 = PInput::mouse_x > x && PInput::mouse_x < x + 31
+		&& PInput::mouse_y > y && PInput::mouse_y < y + 31
+		&& !mouse_hidden;
+
+	bool mouse_on2 = PInput::mouse_x > x+val && PInput::mouse_x < x+val + 31 
+		&& PInput::mouse_y > y && PInput::mouse_y < y + 31
+		&& !mouse_hidden;
+
+	if (mouse_on1 || menu_valittu_id == menu_valinta_id) {
 		PDraw::image_cutclip(game_assets,x+randx,y+randy,566,124,566+31,124+31);
-	else
+		menu_valittu_id = menu_valinta_id;
+	} else
 		PDraw::image_cutclip(game_assets,x,y,566,124,566+31,124+31);
 
-	if (menu_valittu_id == menu_valinta_id+1)
+	if (mouse_on2 || menu_valittu_id == menu_valinta_id+1) {
 		PDraw::image_cutclip(game_assets,x+val+randx,y+randy,535,124,535+31,124+31);
-	else
+		menu_valittu_id = menu_valinta_id+1;
+	} else
 		PDraw::image_cutclip(game_assets,x+val,y,535,124,535+31,124+31);
 
-	if ((PInput::mouse_x > x && PInput::mouse_x < x+30 && PInput::mouse_y > y && PInput::mouse_y < y+31) || (menu_valittu_id == menu_valinta_id)){
-		if (Clicked()){
-			Play_MenuSFX(menu_sound, 100);
-			key_delay = 7;
-			return 1;
-		}
+	if (Clicked() && mouse_on1){
+		Play_MenuSFX(menu_sound, 100);
+		key_delay = 7;
+		return 1;
 	}
 
-	x += val;
-
-	if ((PInput::mouse_x > x && PInput::mouse_x < x+30 && PInput::mouse_y > y && PInput::mouse_y < y+31) || (menu_valittu_id == menu_valinta_id+1)){
-		if (Clicked()) {
-			Play_MenuSFX(menu_sound, 100);
-			key_delay = 7;
-			return 2;
-		}
+	if (Clicked() && mouse_on2) {
+		Play_MenuSFX(menu_sound, 100);
+		key_delay = 7;
+		return 2;
 	}
 
 	menu_valinta_id += 2;
@@ -1314,7 +1322,8 @@ int Draw_Menu() {
 	if (!Episode)
 		PDraw::font_write(fontti1, PK2_VERSION, 0, 470);
 
-	Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
+	if (!mouse_hidden)
+		Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
 	return 0;
 
@@ -1368,10 +1377,11 @@ int Screen_Menu_Init() {
 
 int Screen_Menu() {
 	
-	if (!editing_name && key_delay == 0 && menu_lue_kontrollit == 0) {
-		if (PInput::Keydown(PInput::UP) || PInput::Keydown(PInput::LEFT) ||
-			PInput::Keydown(PInput::JOY_UP) || PInput::Keydown(PInput::JOY_LEFT)){
+	if (key_delay == 0 && menu_lue_kontrollit == 0) {
+		if (PInput::Keydown(PInput::UP) || (PInput::Keydown(PInput::LEFT) && !editing_name)
+			|| PInput::Keydown(PInput::JOY_UP) || (PInput::Keydown(PInput::JOY_LEFT) && !editing_name)){
 			menu_valittu_id--;
+			mouse_hidden = true;
 
 			if (menu_valittu_id < 1)
 				menu_valittu_id = menu_valinta_id-1;
@@ -1379,9 +1389,10 @@ int Screen_Menu() {
 			key_delay = 15;
 		}
 
-		if (PInput::Keydown(PInput::DOWN) || PInput::Keydown(PInput::RIGHT) ||
-			PInput::Keydown(PInput::JOY_DOWN) || PInput::Keydown(PInput::JOY_RIGHT)){
+		if (PInput::Keydown(PInput::DOWN) || (PInput::Keydown(PInput::RIGHT) && !editing_name)
+			|| PInput::Keydown(PInput::JOY_DOWN) || (PInput::Keydown(PInput::JOY_RIGHT) && !editing_name)){
 			menu_valittu_id++;
+			mouse_hidden = true;
 
 			if (menu_valittu_id > menu_valinta_id-1)
 				menu_valittu_id = 1;
@@ -1393,6 +1404,7 @@ int Screen_Menu() {
 		static bool wasPressed = false;
 
 		if (!wasPressed && PInput::Keydown(PInput::ESCAPE) && menu_nyt == MENU_MAIN) {
+			mouse_hidden = true;
 			if(menu_valittu_id == menu_valinta_id-1)
 				Fade_Quit();
 			else
@@ -1403,7 +1415,7 @@ int Screen_Menu() {
 
 	}
 
-	if (editing_name || menu_lue_kontrollit > 0) {
+	if (menu_lue_kontrollit > 0) {
 		menu_valittu_id = 0;
 	}
 
@@ -1412,6 +1424,18 @@ int Screen_Menu() {
 		PInput::EndKeyboard();
 	}
 	int menu_ennen = menu_nyt;
+
+	static int mx, my, mb;
+	int cx = PInput::mouse_x, 
+	    cy = PInput::mouse_y,
+		cb = PInput::MouseLeft() || PInput::MouseRight();
+
+	if (mx != cx || my != cy || mb != cb)
+		mouse_hidden = false;
+
+	mx = cx;
+	my = cy;
+	mb = cb;
 
 	Draw_Menu();
 

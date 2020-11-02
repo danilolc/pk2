@@ -83,7 +83,6 @@ std::vector<touch_t> GetTouch();
 int GetTouchPos(float& x, float& y);
 
 float GetAxis(int axis);
-void GetMouse(int& x, int& y);
 void UpdateMouse(bool keyMove, bool relative);
 bool MouseLeft();
 bool MouseRight();
