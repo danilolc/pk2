@@ -10,7 +10,6 @@
 #include "engine/PFile.hpp"
 
 const int EPISODI_MAX_LEVELS = 100; //50;
-const int MAX_EPISODEJA	= 300;
 
 struct PK2LEVEL {
 
@@ -24,7 +23,6 @@ struct PK2LEVEL {
 
 enum LEVEL_STATUS {
 
-	LEVEL_UNCLEAR   = 0b00,
 	LEVEL_PASSED    = 0b01,
 	LEVEL_ALLAPPLES = 0b10
 

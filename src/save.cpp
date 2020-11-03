@@ -21,17 +21,8 @@ int Empty_Records() {
 
 	memset(saves_list, 0, sizeof(saves_list));
 
-	for (int i = 0; i < SAVES_COUNT; i++) {
-
+	for (int i = 0; i < SAVES_COUNT; i++)
 		saves_list[i].empty = true;
-		/*strcpy(saves_list[i].episode, " ");
-		strcpy(saves_list[i].name,"empty");
-		saves_list[i].level = 0;
-		saves_list[i].score = 0;
-		for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-			saves_list[i].level_status[j] = 0;*/
-		
-	}
 
 	return 0;
 	

@@ -272,8 +272,8 @@ void Fadetext_New(int fontti, char *teksti, u32 x, u32 y, u32 timer) {
 int Fadetext_Draw(){
 	int pros;
 
-	for (PK2FADETEXT& text : fadetekstit)
-		if (text.timer > 0){
+	for (PK2FADETEXT& text : fadetekstit) {
+		if (text.timer > 0) {
 			if (text.timer > 50)
 				pros = 100;
 			else
@@ -288,27 +288,25 @@ int Fadetext_Draw(){
 				PDraw::font_write(text.fontti, text.teksti, x, y);
 
 		}
+	}
+	
 	return 0;
 }
 
-static bool is_timeover (PK2FADETEXT& t) { 
+static bool update_done (PK2FADETEXT& t) { 
 
+	if (t.timer > 0){
+		t.timer--;
+
+		if (t.timer%2 == 0)
+			t.y--;
+	}
 	return t.timer == 0; 
 
 }
 
 void Fadetext_Update() {
 
-	for (PK2FADETEXT& text : fadetekstit) {
-
-		if (text.timer > 0){
-			text.timer--;
-
-			if (text.timer%2 == 0)
-				text.y--;
-		}
-	}
-	
-	fadetekstit.remove_if(is_timeover);
+	fadetekstit.remove_if(update_done);
 
 }

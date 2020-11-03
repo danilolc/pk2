@@ -17,18 +17,16 @@ std::vector<Particle> BGParticles;
 
 const int nof_bg_particles = 300;
 
-static bool is_timeover (Particle& p) { 
+static bool update_done (Particle& p) { 
 
+	p.update();
 	return p.time_over(); 
 
 }
 
 void Particles_Update() {
-	
-	for (Particle& p : Particles)
-		p.update();
 
-	Particles.remove_if(is_timeover);
+	Particles.remove_if(update_done);
 
 	for (Particle& p : BGParticles)
 		p.update();
