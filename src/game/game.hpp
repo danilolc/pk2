@@ -92,5 +92,4 @@ extern GameClass* Game;
 
 // TODO - remove
 bool Draw_Menu_Text(const char *teksti, int x, int y, char end = '\0');
-bool Draw_Menu_HardText(const char *text, int x, int y, char end = '\0');
 //

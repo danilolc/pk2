@@ -168,7 +168,8 @@ bool Draw_Menu_Text(const char *teksti, int x, int y, char end) {
 		menu_valittu_id = menu_valinta_id;
 		Wavetext_Draw(teksti, fontti3, x, y, end);//
 
-		if ( Clicked() && mouse_on ) {
+		int c = Clicked();
+		if ( (c == 1 && mouse_on) || (c > 1) ) {
 
 			Play_MenuSFX(menu_sound, 100);
 			key_delay = 20;
@@ -188,83 +189,6 @@ bool Draw_Menu_Text(const char *teksti, int x, int y, char end) {
 
 	return false;
 }
-
-bool Draw_Menu_HardText(const char *text, int x, int y, char end) {
-
-	return Draw_Menu_Text(text, x, y, end);
-	//
-
-	const float TIME_START = 1.f;
-	const float TIME_END = 3.f;
-	const float TIME_DELTA = 0.02f;
-	
-	static float timer = 1.f;
-	static uint id = -1;
-
-	const int TEXT_W = 15, TEXT_H = 20;
-	int length = strlen(text) * TEXT_W;
-	
-	bool mouse_on = PInput::mouse_x > x && PInput::mouse_x < x + length 
-		&& PInput::mouse_y > y && PInput::mouse_y < y + TEXT_H
-		&& !mouse_hidden;
-
-	if (menu_valinta_id == id) {
-
-		if (Clicked() && mouse_on) {
-
-			WavetextLap_Draw(text, fontti3, x, y, timer, '\0');
-			
-			timer += TIME_DELTA;
-			if (timer > TIME_END) {
-
-				id = -1;
-				timer = TIME_START;
-
-				Play_MenuSFX(menu_sound, 100);
-				key_delay = 20;
-				menu_valinta_id++;
-				return true;
-
-			} else {
-				key_delay = 20;
-				menu_valinta_id++;
-				return false;
-			}
-
-		} else {
-
-			id = -1;
-			timer = TIME_START;
-			menu_valinta_id++;
-			return false;
-
-		}
-
-	}
-
-	if ( mouse_on || (menu_valittu_id == menu_valinta_id) ) {
-
-		menu_valittu_id = menu_valinta_id;
-		Wavetext_Draw(text, fontti3, x, y, end);//
-
-		if ((( PInput::MouseLeft() && mouse_on) || PInput::Keydown(PInput::SPACE))
-			/*|| PInput::Ohjain_Nappi(PI_PELIOHJAIN_1, PI_OHJAIN_NAPPI_1)*/
-			&& key_delay == 0) {
-
-			id = menu_valinta_id;
-
-		}
-
-	} else {
-	
-		WavetextSlow_Draw(text, fontti2, x, y, end);
-	
-	}
-	menu_valinta_id++;
-
-	return false;
-}
-
 
 int Draw_BoolBox(int x, int y, bool muuttuja, bool active) {
 	
@@ -318,21 +242,26 @@ int  Draw_BackNext(int x, int y) {
 	} else
 		PDraw::image_cutclip(game_assets,x+val,y,535,124,535+31,124+31);
 
-	if (Clicked() && mouse_on1){
-		Play_MenuSFX(menu_sound, 100);
-		key_delay = 7;
-		return 1;
-	}
+	int ret = 0;
 
-	if (Clicked() && mouse_on2) {
+	int c = Clicked();
+	if ((c == 1 && mouse_on1) || (c > 1 && menu_valittu_id == menu_valinta_id)) {
+	
 		Play_MenuSFX(menu_sound, 100);
 		key_delay = 7;
-		return 2;
+		ret = 1;
+	
+	} else if ((c == 1 && mouse_on2) || (c > 1 && menu_valittu_id == menu_valinta_id + 1)) {
+	
+		Play_MenuSFX(menu_sound, 100);
+		key_delay = 7;
+		ret = 2;
+	
 	}
 
 	menu_valinta_id += 2;
 
-	return 0;
+	return ret;
 }
 
 void Draw_Menu_Main() {
@@ -651,7 +580,7 @@ void Draw_Menu_Save() {
 		else
 			strcat(number, saves_list[i].name);
 
-		if (Draw_Menu_HardText(number,100,150+my))
+		if (Draw_Menu_Text(number,100,150+my))
 			Save_Record(i);
 
 		if (!saves_list[i].empty) {
@@ -1279,8 +1208,8 @@ void Draw_Menu_Data() {
 	PDraw::font_write(fontti2, "data location:", align_left, my);
 	if (Draw_Menu_Text("internal",align_right - 15*8, my)) /**/;
 
-	//Draw_Menu_HardText("yes", align_right - 15*8, my);
-	//Draw_Menu_HardText("no", align_right - 15*8 + 100, my);
+	//Draw_Menu_Text("yes", align_right - 15*8, my);
+	//Draw_Menu_Text("no", align_right - 15*8 + 100, my);
 
 	my += 30;
 
@@ -1386,7 +1315,7 @@ int Screen_Menu() {
 			if (menu_valittu_id < 1)
 				menu_valittu_id = menu_valinta_id-1;
 
-			key_delay = 15;
+			key_delay = 9;
 		}
 
 		if (PInput::Keydown(PInput::DOWN) || (PInput::Keydown(PInput::RIGHT) && !editing_name)
@@ -1397,8 +1326,7 @@ int Screen_Menu() {
 			if (menu_valittu_id > menu_valinta_id-1)
 				menu_valittu_id = 1;
 
-			key_delay = 15;
-			//PInput::mouse_y += 3;
+			key_delay = 9;
 		}
 
 		static bool wasPressed = false;
