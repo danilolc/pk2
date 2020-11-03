@@ -9,33 +9,29 @@
 #include "system.hpp"
 
 #include <cstdlib>
+#include <list>
 #include <vector>
 
-std::vector<Particle> Particles;
+std::list<Particle> Particles;
 std::vector<Particle> BGParticles;
 
 const int nof_bg_particles = 300;
 
+static bool is_timeover (Particle& p) { 
+
+	return p.time_over(); 
+
+}
+
 void Particles_Update() {
 	
-	//for (Particle p : Particles) { This method doesn't work
-	for (uint i = 0; i < Particles.size();) {
+	for (Particle& p : Particles)
+		p.update();
 
-		Particles[i].update();
+	Particles.remove_if(is_timeover);
 
-		if (Particles[i].time_over()) {
-
-			Particles.erase(Particles.begin() + i);
-			continue;
-
-		}
-
-		i++;
-
-	}
-
-	for (uint i = 0; i < BGParticles.size(); i++)
-		BGParticles[i].update();
+	for (Particle& p : BGParticles)
+		p.update();
 
 }
 
@@ -47,16 +43,16 @@ void Particles_New(int type, double x, double y, double a, double b, int time, d
 
 void Particles_DrawFront(int cam_x, int cam_y) {
 
-	for (uint i = 0; i < Particles.size(); i++)
-		Particles[i].draw(cam_x, cam_y);
+	for (Particle& p : Particles)
+		p.draw(cam_x, cam_y);
 
 }
 
 void Particles_DrawBG(int cam_x, int cam_y) {
 
 	if (Settings.draw_weather)
-		for (uint i = 0; i < BGParticles.size(); i++)
-			BGParticles[i].draw(cam_x, cam_y);
+		for (Particle& p : BGParticles)
+			p.draw(cam_x, cam_y);
 
 }
 

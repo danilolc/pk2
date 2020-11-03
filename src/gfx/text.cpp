@@ -12,8 +12,8 @@
 #include "engine/PDraw.hpp"
 
 #include <cstring>
-
-const int MAX_FADETEKSTEJA = 50; //40;
+#include <iostream>
+#include <list>
 
 struct PK2FADETEXT {
 	char teksti[20];
@@ -21,8 +21,7 @@ struct PK2FADETEXT {
 	int x,y,timer;
 };
 
-PK2FADETEXT fadetekstit[MAX_FADETEKSTEJA];
-int fadeteksti_index = 0;
+std::list<PK2FADETEXT> fadetekstit;
 
 //Fonts
 int fontti1 = -1;
@@ -251,54 +250,65 @@ int ShadowedText_Draw(const char* text, int x, int y) {
 }
 
 void Fadetext_Init(){
-	for (int i=0;i<MAX_FADETEKSTEJA;i++)
-		fadetekstit[i].timer = 0;
+
+	fadetekstit.clear();
+
 }
 
-void Fadetext_New(int fontti, char *teksti, u32 x, u32 y, u32 timer){
-	fadetekstit[fadeteksti_index].fontti = fontti;
-	strcpy(fadetekstit[fadeteksti_index].teksti,teksti);
-	fadetekstit[fadeteksti_index].x = x;
-	fadetekstit[fadeteksti_index].y = y;
-	fadetekstit[fadeteksti_index].timer = timer;
-	fadeteksti_index++;
+void Fadetext_New(int fontti, char *teksti, u32 x, u32 y, u32 timer) {
 
-	if (fadeteksti_index >= MAX_FADETEKSTEJA)
-		fadeteksti_index = 0;
+	PK2FADETEXT tt;
+	
+	tt.fontti = fontti;
+	strcpy(tt.teksti,teksti);
+	tt.x = x;
+	tt.y = y;
+	tt.timer = timer;
+	
+	fadetekstit.push_back(tt);
+
 }
 
 int Fadetext_Draw(){
 	int pros;
 
-	for (int i=0; i<MAX_FADETEKSTEJA; i++)
-		if (fadetekstit[i].timer > 0){
-			if (fadetekstit[i].timer > 50)
+	for (PK2FADETEXT& text : fadetekstit)
+		if (text.timer > 0){
+			if (text.timer > 50)
 				pros = 100;
 			else
-				pros = fadetekstit[i].timer * 2;
+				pros = text.timer * 2;
 
-			int x = fadetekstit[i].x - Game->camera_x;
-			int y = fadetekstit[i].y - Game->camera_y;
+			int x = text.x - Game->camera_x;
+			int y = text.y - Game->camera_y;
 
 			if (Settings.draw_transparent && pros < 100)
-				PDraw::font_writealpha(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y, pros);
+				PDraw::font_writealpha(text.fontti, text.teksti, x, y, pros);
 			else
-				PDraw::font_write(fadetekstit[i].fontti, fadetekstit[i].teksti, x, y);
+				PDraw::font_write(text.fontti, text.teksti, x, y);
 
 		}
 	return 0;
 }
 
-void Fadetext_Update(){
-	for (int i=0;i<MAX_FADETEKSTEJA;i++)
-		if (fadetekstit[i].timer > 0){
-			fadetekstit[i].timer--;
+static bool is_timeover (PK2FADETEXT& t) { 
 
-			if (fadetekstit[i].timer%2 == 0)
-				fadetekstit[i].y--;
+	return t.timer == 0; 
 
-			/*if (fadetekstit[i].x < Game->camera_x || fadetekstit[i].x > Game->camera_x + screen_width ||
-				fadetekstit[i].y < Game->camera_y || fadetekstit[i].y > Game->camera_y + screen_height)
-				fadetekstit[i].timer = 0;*/
+}
+
+void Fadetext_Update() {
+
+	for (PK2FADETEXT& text : fadetekstit) {
+
+		if (text.timer > 0){
+			text.timer--;
+
+			if (text.timer%2 == 0)
+				text.y--;
 		}
+	}
+	
+	fadetekstit.remove_if(is_timeover);
+
 }
