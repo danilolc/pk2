@@ -11,7 +11,7 @@
 
 extern PLang *tekstit;
 
-const int MAX_INFOS = 100;
+const uint MAX_INFOS = 100;
 
 struct LANGUAGE {
 

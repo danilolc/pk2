@@ -255,7 +255,7 @@ int Load_Language(const char* language) {
 	PK_txt.end_the_end			= tekstit->Hae_Indeksi("end the end");
 
 	std::string index;
-	for (int i = 1; i < MAX_INFOS; i++) {
+	for (uint i = 1; i < MAX_INFOS; i++) {
 
 		index = "info"; //info + number
 		if (i < 10) index += '0';

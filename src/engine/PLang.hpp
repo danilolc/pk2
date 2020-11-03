@@ -19,7 +19,7 @@ class PLang {
 		bool Read_File(PFile::Path path);
 		int Hae_Indeksi(const char *title);
 		const char* Get_Text(size_t index);
-		void Set_Text(const char* title, const char* text);
+		int Set_Text(const char* title, const char* text);
 
 	private:
 		std::vector<std::string> tekstit;

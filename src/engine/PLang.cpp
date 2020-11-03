@@ -127,18 +127,18 @@ const char* PLang::Get_Text(size_t index) {
 		return ".....";
 }
 
-void PLang::Set_Text(const char* title, const char* text) {
+int PLang::Set_Text(const char* title, const char* text) {
 
 	int idx = this->Hae_Indeksi(title);
 	if (idx != -1) {
 	
 		tekstit[idx] = text;
-	
-	} else {
-
-		titles.push_back(title);
-		tekstit.push_back(title);
+		return idx;
 	
 	}
+
+	titles.push_back(title);
+	tekstit.push_back(text);
+	return titles.size() - 1;
 
 }
