@@ -114,10 +114,10 @@ Scores
 ------------------------------------------------------------------------------------
 *score screen title:			total de pontos
 *score screen level score:		pontuação da fase
-*score screen bonus score:		pontuação de bonus
-*score screen time score:		tempo de bonus
-*score screen energy score:		energia de bonus
-*score screen item score:		itens de bonus
+*score screen bonus score:		bônus de pontuação
+*score screen time score:		bônus de tempo
+*score screen energy score:		bônus de energia
+*score screen item score:		bônus de itens
 *score screen continue:			mapa
 *score screen total score:		pontuação total
 *score screen new level hiscore:	você bateu o recorde!
@@ -165,8 +165,8 @@ Info Signs
 *info09:			Você pode usar os itens de presentes quando quiser.
 *info10:			Penas recuperam sua energia.
 *info11:			Teletransporte pode te enganar! Não vá se perder!
-*info12:			Nocautes e bonus aumentam a sua pontuação.
-*info13:			Sempre procure por bonus escondidos!
+*info12:			Nocautes e bônus aumentam a sua pontuação.
+*info13:			Sempre procure por bônus escondidos!
 *info14:			As trancas de abrem se uma chave as tocam. 
 *info15:			Cuidado com as armadilhas! hee hee...
 *info16:			Ande logo! O tempo está passando!

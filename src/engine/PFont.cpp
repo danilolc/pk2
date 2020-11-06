@@ -98,8 +98,8 @@ int PFont::load(PFile::Path path) {
 
 int PFont::write(int posx, int posy, const char *text) {
 	
-	int i = 0, i2;
-	int ix;
+	int i = 0;
+	int ix, ox = posx;
 	char curr_char;
 
 	PDraw::RECT srcrect, dstrect;
@@ -111,12 +111,12 @@ int PFont::write(int posx, int posy, const char *text) {
 	do {
 		curr_char = text[i];
 		ix = charlist[(u8)(curr_char&~' ')];
-		i2 = i * char_w + posx;
 		if (ix > -1) {
 			srcrect.x = ix;
-			dstrect.x = i2;
+			dstrect.x = ox;
 			PDraw::image_cutclip(image_index,srcrect,dstrect);
 		}
+		ox += char_w;
 		i++;
 	} while(curr_char != '\0');
 
