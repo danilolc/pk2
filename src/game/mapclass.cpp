@@ -534,7 +534,7 @@ int MapClass::Load(PFile::Path path){
 	return ok;
 }
 
-int MapClass::Load_Plain_Data(PFile::Path path){
+int MapClass::Load_Plain_Data(PFile::Path path) {
 	
 	char versio[8];
 

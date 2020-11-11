@@ -82,17 +82,14 @@ This example starts the level13.map on dev mode:
 * SDL_QUIT on Android
 * Set target fps (30, 60, 120, v-sync) (properly jump frames)
 * Autosave settings option, ask when overwriting save, select save on new game
-* Low volume sounds not played on low volume
 * Remove repeated languages
-* Fix BG screen on menu
-* Fix SIGFAULT when sprite animation doesn't exist
 * Translate finnish language
-* Fix mouse speed when on fullscreen
-* Mouse clicked when changing resolution?
-* Use SDL_Read* to read files
 * Slower fade music
+* Low volume sounds not played on low volume
 * Properly play XM music and change SFX frequency (SDL2_mixer problem)
 * Support game controllers
+* Fix BG screen on menu?
+* Use SDL_Read* to read files?
 
 # PLANS
 * Better documentation

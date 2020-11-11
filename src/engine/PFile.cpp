@@ -11,6 +11,7 @@
 #include <cstring>
 #include <sys/stat.h>
 
+#include <map>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -296,28 +297,14 @@ bool Path::NoCaseFind() {
 
 }
 
+std::map<std::string, std::vector<std::string>> scan_cache;
+
 #ifdef __ANDROID__
 
 std::vector<std::vector<std::string>> apk_results;
 std::vector<std::string> apk_entries;
 
 std::vector<std::string> scan_apk(const char* dir, const char* type) {
-
-	std::string entry(dir);
-	entry += "$";
-	entry += type;
-
-	int sz = apk_entries.size();
-	for (int i = 0; i < sz; i++) {
-
-		if (apk_entries[i] == entry) {
-
-			PLog::Write(PLog::DEBUG, "PFile", "Got apk cache on \"%s\" for \"%s\"", dir, type);
-			return apk_results[i];
-
-		}
-
-	}
 
 	JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
 	jobject activity = (jobject)SDL_AndroidGetActivity();
@@ -372,37 +359,16 @@ std::vector<std::string> scan_apk(const char* dir, const char* type) {
 
     PLog::Write(PLog::DEBUG, "PFile", "Scanned APK on \"%s\" for \"%s\". Found %i matches", dir, type, (int)result.size());
 
-	apk_entries.push_back(entry);
-	apk_results.push_back(result);
 	return result;
 
 }
 
 #endif
 
-std::vector<std::vector<std::string>> scan_results;
-std::vector<std::string> scan_entries;
-
 #ifdef _WIN32
 
 std::vector<std::string> scan_file(const char* dir, const char* type) {
 	
-	std::string entry(dir);
-	entry += "$";
-	entry += type;
-
-	int sz = scan_entries.size();
-	for (int i = 0; i < sz; i++) {
-
-		if (scan_entries[i] == entry) {
-
-			PLog::Write(PLog::DEBUG, "PFile", "Got cache on \"%s\" for \"%s\"", dir, type);
-			return scan_results[i];
-
-		}
-
-	}
-
 	std::vector<std::string> result;
     struct _finddata_t map_file;
 
@@ -426,8 +392,7 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 	long hFile = _findfirst(buffer.c_str(), &map_file);
 	if (hFile == -1L) {
 
-		scan_entries.push_back(entry);
-		scan_results.push_back(result);
+		PLog::Write(PLog::WARN, "PFile", "Couldn't scan on \"%s\"", dir);
 		return result;
 
 	} else {
@@ -451,8 +416,6 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 
     PLog::Write(PLog::DEBUG, "PFile", "Scanned on \"%s\" for \"%s\". Found %i matches", dir, type, (int)result.size());
 
-	scan_entries.push_back(entry);
-	scan_results.push_back(result);
 	return result;
 
 }
@@ -488,23 +451,6 @@ bool Path::Find() {
 
 std::vector<std::string> scan_file(const char* dir, const char* type) {
 
-	
-	std::string entry(dir);
-	entry += "$";
-	entry += type;
-
-	int sz = scan_entries.size();
-	for (int i = 0; i < sz; i++) {
-
-		if (scan_entries[i] == entry) {
-
-			PLog::Write(PLog::DEBUG, "PFile", "Got cache on \"%s\" for \"%s\"", dir, type);
-			return scan_results[i];
-
-		}
-
-	}
-
 	std::vector<std::string> result;
 	struct dirent **namelist;
 
@@ -512,10 +458,7 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 	
 	if (numb == -1) {
 
-		PLog::Write(PLog::WARN, "PFile", "Can't scan \"%s\"", dir);
-		
-		scan_entries.push_back(entry);
-		scan_results.push_back(result);
+		PLog::Write(PLog::WARN, "PFile", "Couldn't scan on \"%s\"", dir);
 		return result;
 	
 	}
@@ -555,8 +498,6 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 
 	PLog::Write(PLog::DEBUG, "PFile", "Scanned on \"%s\" for \"%s\". Found %i matches", dir, type, (int)result.size());
 	
-	scan_entries.push_back(entry);
-	scan_results.push_back(result);
 	return result;
     
 }
@@ -975,7 +916,11 @@ int RW::close() {
 
 std::vector<std::string> Path::scandir(const char* type) {
     
+	std::vector<std::string> ret;
+
 	std::string dir = this->substr(0, this->find_last_of(PE_SEP));
+	std::string cache_entry(dir + type);
+	
 	const char* cstr = dir.c_str();
 	
 	if (this->is_zip) {
@@ -986,21 +931,36 @@ std::vector<std::string> Path::scandir(const char* type) {
 		
 		#else
 		
-		std::vector<std::string> ret;
 		return ret;
 		
 		#endif
 
 	}
 	
+	// Look the cache	
+	auto it = scan_cache.find(cache_entry);
+	if (it != scan_cache.end()) {
+
+		PLog::Write(PLog::DEBUG, "PFile", "Got cache on \"%s\" for \"%s\"", cstr, type);
+		return it->second;
+
+	}
+
     #ifdef __ANDROID__
 
-    if (cstr[0] != '/')
-        return scan_apk(cstr, type);
+    if (cstr[0] != '/') {
+
+		ret = scan_apk(cstr, type);
+		scan_cache[cache_entry] = ret;
+        return ret;
+
+	}
 
     #endif
-
-    return scan_file(cstr, type);
+	
+	ret = scan_file(cstr, type);
+	scan_cache[cache_entry] = ret;
+	return ret;
 
 }
 

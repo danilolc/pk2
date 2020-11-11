@@ -16,6 +16,7 @@ LDFLAGS += -static-libgcc -static-libstdc++ -L$(LIB_SRC) -lmingw32 -mwindows -lS
 SRC_DIR = ../../src/
 RES_DIR = ../../res/
 BIN_DIR = PK2/
+LICENSES = $(BIN_DIR)licenses/
 BUILD_DIR = build/
 
 PK2_SRC  = $(wildcard $(SRC_DIR)*.cpp) $(wildcard $(SRC_DIR)*/*.cpp)
@@ -58,24 +59,25 @@ clean:
 copyfiles:
 	@echo -Copying libraries
 	@mkdir -p $(BIN_DIR) >/dev/null
+	@mkdir -p $(LICENSES) >/dev/null
 
 	@cp $(BIN_SRC)libogg-0.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.ogg-vorbis.txt $(BIN_DIR)
+	@cp $(BIN_SRC)LICENSE.ogg-vorbis.txt $(LICENSES)
 
 	@cp $(BIN_SRC)libmodplug-1.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.modplug.txt $(BIN_DIR)
+	@cp $(BIN_SRC)LICENSE.modplug.txt $(LICENSES)
 
 	@cp $(BIN_SRC)libmpg123-0.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.mpg123.txt $(BIN_DIR)
+	@cp $(BIN_SRC)LICENSE.mpg123.txt $(LICENSES)
 
 	@cp $(BIN_SRC)libpng16-16.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.png.txt $(BIN_DIR)
+	@cp $(BIN_SRC)LICENSE.png.txt $(LICENSES)
 
 	@cp $(BIN_SRC)zlib1.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.zlib.txt $(BIN_DIR)
+	@cp $(BIN_SRC)LICENSE.zlib.txt $(LICENSES)
 
 	@cp $(BIN_SRC)libzip.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.libzip.txt $(BIN_DIR)
+	@cp $(BIN_SRC)LICENSE.libzip.txt $(LICENSES)
 	
 	@cp $(BIN_SRC)SDL2.dll $(BIN_DIR)
 	@cp $(BIN_SRC)SDL2_image.dll $(BIN_DIR)
