@@ -26,6 +26,25 @@ static float avrg_fps = 0;
 static bool debug = false;
 static bool draw = true;
 
+static void wait_frame() {
+
+	using namespace std;
+	using namespace std::chrono;
+
+	static auto last_time = high_resolution_clock::now();
+
+	auto delta_time = high_resolution_clock::now() - last_time;
+	auto frame_time = chrono::nanoseconds(1000000000ll / desired_fps);
+
+	auto sleep_time = frame_time - delta_time;
+
+	if (sleep_time.count() > 100000)
+		this_thread::sleep_for(sleep_time);
+	
+	last_time = high_resolution_clock::now();
+
+}
+
 static void logic() {
 	
 	SDL_Event event;
@@ -44,6 +63,9 @@ static void logic() {
 	}
 
 	PDraw::update(draw);
+	if (!PDraw::is_vsync() && (desired_fps > 0) && draw)
+		wait_frame();
+
 	PInput::update();
 	PSound::update();
 	
@@ -85,6 +107,8 @@ void init(int width, int height, const char* name, const char* icon) {
 	PInput::init();
 	PSound::init();
 
+	PDraw::set_vsync(false);
+
 	ready = true;
 
 }
@@ -100,31 +124,11 @@ void terminate() {
 	ready = false;
 
 }
-/*
-static void wait_frame() {
-
-	using namespace std;
-	using namespace std::chrono;
-
-	static auto last_time = high_resolution_clock::now();
-
-	auto delta_time = high_resolution_clock::now() - last_time;
-	auto frame_time = chrono::nanoseconds(1000000000ll / desired_fps);
-
-	auto sleep_time = frame_time - delta_time;
-
-	//cout << float(sleep_time.count())/1000000 << endl;
-	if (sleep_time.count() > 100000)
-		this_thread::sleep_for(sleep_time);
-	
-	last_time = high_resolution_clock::now();
-
-}*/
 
 void loop(int (*GameLogic)()) {
 	
 	static int frame_counter = 0;
-	static int last_time = 0;
+	static u32 last_time = 0;
 		
 	int error = 0;
 
@@ -136,13 +140,12 @@ void loop(int (*GameLogic)()) {
 		if (error) break;
 		
 		logic();
-		//wait_frame();
 
 		frame_counter++;
 		if (frame_counter >= UPDATE_FPS) {
 
 			frame_counter = 0;
-			int elapsed_time = (SDL_GetTicks() - last_time);
+			u32 elapsed_time = (SDL_GetTicks() - last_time);
 
 			avrg_fps = 1000.f * UPDATE_FPS / elapsed_time;	
 
@@ -171,6 +174,21 @@ int get_fps() {
 void set_debug(bool set) {
 
 	debug = set;
+
+}
+
+void set_fps(int fps) {
+
+	// Vsync true
+	if (fps == -1) {
+
+		PDraw::set_vsync(true);
+		return;
+
+	}
+
+	PDraw::set_vsync(false);
+	desired_fps = fps;
 
 }
 

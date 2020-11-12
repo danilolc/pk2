@@ -60,7 +60,7 @@ Zip* OpenZip(std::string path) {
 
 	#ifdef USE_ZIP
 	
-	SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "rb");
+	SDL_RWops* rw = SDL_RWFromFile(path.c_str(), "r");
 	if (rw == NULL) {
 
         PLog::Write(PLog::ERR, "PFile", "Can't open %s", path.c_str());
@@ -297,12 +297,7 @@ bool Path::NoCaseFind() {
 
 }
 
-std::map<std::string, std::vector<std::string>> scan_cache;
-
 #ifdef __ANDROID__
-
-std::vector<std::vector<std::string>> apk_results;
-std::vector<std::string> apk_entries;
 
 std::vector<std::string> scan_apk(const char* dir, const char* type) {
 
@@ -913,6 +908,9 @@ int RW::close() {
 	return ret;
 
 }
+
+std::map<std::string, std::vector<std::string>> scan_cache;
+//std::map<std::string, std::vector<std::string>> scan_cache_zip; //TODO
 
 std::vector<std::string> Path::scandir(const char* type) {
     

@@ -295,7 +295,7 @@ int MapClass::Tallenna(char *filename){
 	/*char luku[8]; //Size can't be changed
 	u32 i;
 
-	PFile::RW* file = SDL_RWFromFile(filename, "wb");
+	PFile::RW* file = SDL_RWFromFile(filename, "w");
 
 	strcpy(this->versio, PK2MAP_LAST_VERSION);
 
@@ -492,7 +492,7 @@ int MapClass::Load(PFile::Path path){
 	
 	char versio[8];
 
-	PFile::RW* file = path.GetRW("rb");
+	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr){
 		return 1;
 	}
@@ -538,7 +538,7 @@ int MapClass::Load_Plain_Data(PFile::Path path) {
 	
 	char versio[8];
 
-	PFile::RW* file = path.GetRW("rb");
+	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr){
 		return 1;
 	}

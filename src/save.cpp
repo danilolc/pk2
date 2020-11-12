@@ -38,7 +38,7 @@ int Save_All_Records() {
 
 	PFile::Path path(data_path, SAVES_FILE);
 	
-	PFile::RW* file = path.GetRW("wb");
+	PFile::RW* file = path.GetRW("w");
 	if (file == nullptr) {
 
 		PLog::Write(PLog::ERR, "PK2", "Can't save records");
@@ -77,7 +77,7 @@ int Load_SaveFile() {
 
 	PFile::Path path(data_path, SAVES_FILE);
 
-	PFile::RW* file = path.GetRW("rb");
+	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr){
 
 		PLog::Write(PLog::INFO, "PK2", "No save file");

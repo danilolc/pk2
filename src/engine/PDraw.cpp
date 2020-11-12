@@ -14,36 +14,37 @@
 
 namespace PDraw {
 
-const char* window_name;
+static const char* window_name;
 
-SDL_Window* window = NULL;
-SDL_Renderer* renderer = NULL;
+static SDL_Window* window = NULL;
+static SDL_Renderer* renderer = NULL;
 
 // 8-bit indexed surface, it's the game frame buffer
-SDL_Surface* frameBuffer8 = NULL;
-SDL_Palette* game_palette = NULL;
+static SDL_Surface* frameBuffer8 = NULL;
+static SDL_Palette* game_palette = NULL;
 
 // All images have its original palette on
 // 'userdata' and game_palette on 'palette'.
 // The original palette is stored to properly
 // free the image on the end. 
-std::vector<SDL_Surface*> imageList;
-std::vector<PFont*> fontList;
+static std::vector<SDL_Surface*> imageList;
+static std::vector<PFont*> fontList;
 
-std::vector<Gui*> gui_textures;
+static std::vector<Gui*> gui_textures;
 
-int screen_width;
-int screen_height;
+static int screen_width;
+static int screen_height;
 
-SDL_Rect screen_dest = {0, 0, 0, 0};
-bool screen_fit = false;
+static SDL_Rect screen_dest = {0, 0, 0, 0};
+static bool screen_fit = false;
+static bool vsync_set = false;
 
-bool ready = false;
+static bool ready = false;
 
-int fade_speed = 0;
-int alpha = 100;
+static int fade_speed = 0;
+static int alpha = 100;
 
-int x_offset = 0;
+static int x_offset = 0;
 
 Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
 
@@ -51,7 +52,7 @@ Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
 
     if (path.GetFileName().size() > 0) {
 
-        PFile::RW* rw = path.GetRW("rb");
+        PFile::RW* rw = path.GetRW("r");
         tex = IMG_LoadTexture_RW(renderer, (SDL_RWops*)rw, 0);
         rw->close();
 
@@ -210,7 +211,7 @@ int image_load(PFile::Path path, bool getPalette) {
     
     }
 
-    PFile::RW* rw = path.GetRW("rb");
+    PFile::RW* rw = path.GetRW("r");
     if (!rw) {
 
         PLog::Write(PLog::ERR, "PDraw", "Couldn't find %s", path.c_str());
@@ -805,6 +806,40 @@ void set_xoffset(int x) {
 
     x_offset = x;
 
+}
+
+int set_vsync(bool set) {
+
+    if (set == vsync_set)
+        return 0;
+
+    if (renderer) {
+
+        SDL_DestroyRenderer(renderer);
+
+    }
+
+    Uint32 sync = set? SDL_RENDERER_PRESENTVSYNC : 0;
+
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | sync);
+    if (!renderer) {
+
+        PLog::Write(PLog::FATAL, "PDraw", "Couldn't create renderer!");
+        return -1;
+
+    }
+
+    vsync_set = set;
+
+    SDL_RenderClear(renderer);
+    return 0;
+
+}
+
+bool is_vsync() {
+
+    return vsync_set;
+    
 }
 
 int init(int width, int height, const char* name, const char* icon) {

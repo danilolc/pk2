@@ -23,6 +23,7 @@ void loop(int (*GameLogic)());
 void stop();
 int get_fps();
 
+void set_fps(int fps);
 void set_debug(bool set);
 void ignore_frame();
 bool is_ready();

@@ -49,6 +49,9 @@ struct PK2SETTINGS {
 	u8 music_max_volume;
 	u8 sfx_max_volume;
 
+	//Version 1.4
+	s32 fps;
+
 };
 
 extern PK2SETTINGS Settings;

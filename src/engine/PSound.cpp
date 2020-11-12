@@ -89,7 +89,7 @@ int load_sfx(PFile::Path path) {
 	for( int i = 0; i < MAX_SOUNDS; i++ )
 		if (chunks[i] == NULL) {
 
-			PFile::RW* rw = path.GetRW("rb");
+			PFile::RW* rw = path.GetRW("r");
 			if (rw == nullptr) {
 
 				PLog::Write(PLog::ERR, "PSound", "Couldn't open %s", path.c_str());
@@ -270,7 +270,7 @@ int load_overlay_music(PFile::Path path) { //TODO - load ovarlay from zip
 	if (overlay_music)
 		Mix_FreeMusic(overlay_music);
 
-	PFile::RW* rw = path.GetRW("rb");
+	PFile::RW* rw = path.GetRW("r");
 	overlay_music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);
 	rw->close();
 
@@ -298,7 +298,7 @@ int start_music(PFile::Path path) {
 	if (music)
 		Mix_FreeMusic(music);
 
-	PFile::RW* rw = path.GetRW("rb");
+	PFile::RW* rw = path.GetRW("r");
 	music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);
 	rw->close();
 

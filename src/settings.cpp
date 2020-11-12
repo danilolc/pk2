@@ -26,7 +26,7 @@ int Settings_GetId(PFile::Path path, u32& id) {
 
 	char* version[4];
 
-	PFile::RW *file = path.GetRW("rb");
+	PFile::RW *file = path.GetRW("r");
 	if (file == nullptr) {
 
 		return 1;
@@ -102,7 +102,7 @@ int Settings_Open() {
 
 	PFile::Path path(data_path, SETTINGS_FILE);
 
-	PFile::RW* file = path.GetRW("rb");
+	PFile::RW* file = path.GetRW("r");
 
 	if (file == nullptr) {
 		Settings_Init();
@@ -172,7 +172,7 @@ int Settings_Save() {
 
 	PFile::Path path(data_path, SETTINGS_FILE);
 
-	PFile::RW* file = path.GetRW("wb");
+	PFile::RW* file = path.GetRW("w");
 	if (file == nullptr) {
 
 		PLog::Write(PLog::ERR, "PK2", "Can't save settings");
