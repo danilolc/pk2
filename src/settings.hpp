@@ -8,6 +8,13 @@
 
 #include "engine/PFile.hpp"
 
+enum {
+	SETTINGS_VSYNC,
+	SETTINGS_60FPS,
+	SETTINGS_85FPS,
+	SETTINGS_120FPS
+};
+
 struct PK2SETTINGS {
 	
 	char versio[4];

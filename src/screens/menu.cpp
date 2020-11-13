@@ -16,11 +16,7 @@
 #include "system.hpp"
 #include "version.hpp"
 
-#include "engine/PDraw.hpp"
-#include "engine/PInput.hpp"
-#include "engine/PUtils.hpp"
-#include "engine/PSound.hpp"
-#include "engine/PLog.hpp"
+#include "engine/Piste.hpp"
 
 #include <cstring>
 
@@ -262,6 +258,57 @@ int  Draw_BackNext(int x, int y) {
 	menu_valinta_id += 2;
 
 	return ret;
+}
+
+
+int  Draw_Radio(int x, int y, int num, int sel) {
+
+	const PDraw::RECT sel_src = {504,124,31,31};
+	const PDraw::RECT uns_src = {473,124,31,31};
+	
+	int val = 15;
+
+	int randx = rand()%3 - rand()%3;
+	int randy = rand()%3 - rand()%3;
+
+	bool mouse_on_y = PInput::mouse_y > y && PInput::mouse_y < y + 31 && !mouse_hidden;
+
+	int ret = -1;
+	int c = Clicked();
+
+	for (int i = 0; i < num; i++) {
+
+		int xn = x + i * (val + 31);
+		int yn = y;
+
+		bool mouse_on = mouse_on_y && PInput::mouse_x > xn && PInput::mouse_x < xn + 31;\
+
+		if (mouse_on) {
+			xn += randx;
+			yn += randy;
+			menu_valittu_id = menu_valinta_id + i;
+		}
+
+		if ((c == 1 && mouse_on) || (c > 1 && menu_valittu_id == menu_valinta_id + i)) {
+
+			Play_MenuSFX(menu_sound, 100);
+			key_delay = 10;
+			sel = i;
+			ret = i;
+
+		}
+		
+		PDraw::RECT img_dst = {xn,yn,0,0};
+		if (sel == i)
+			PDraw::image_cutclip(game_assets,sel_src,img_dst);
+		else
+			PDraw::image_cutclip(game_assets,uns_src,img_dst);
+
+	}
+
+	menu_valinta_id += num;
+	return ret;
+
 }
 
 void Draw_Menu_Main() {
@@ -619,6 +666,7 @@ void Draw_Menu_Graphics() {
 		bool wasFiltered = Settings.isFiltered;
 		bool wasFit = Settings.isFit;
 		bool wasWide = Settings.isWide;
+		int  oldfps = Settings.fps;
 		
 
 		#ifndef __ANDROID__
@@ -684,29 +732,42 @@ void Draw_Menu_Graphics() {
 		if (Draw_BoolBox(100, my, Settings.isFiltered, true)) {
 			Settings.isFiltered = !Settings.isFiltered;
 		}
-		my += 30;
+		my += 50;
 
 
+		int option = Draw_Radio(100, my, 4, Settings.fps);
+
+		if (option != -1)
+			Settings.fps = option;
 
 
 		//Add more options here
 
 
 
+		bool save_settings = false;
 
-
-		if(wasFullScreen != Settings.isFullScreen) // If fullscreen changes
+		if(wasFullScreen != Settings.isFullScreen) {// If fullscreen changes
+			save_settings = true;
 			PDraw::set_fullscreen(Settings.isFullScreen);
+		}
 
-		if(wasFiltered && !Settings.isFiltered) // If filter changes
+		if(wasFiltered && !Settings.isFiltered) { // If filter changes
+			save_settings = true;
 			PDraw::set_filter(PDraw::FILTER_NEAREST);
-		if(!wasFiltered && Settings.isFiltered)
-			PDraw::set_filter(PDraw::FILTER_BILINEAR);
 
-		if(wasFit != Settings.isFit) // If fit changes
+		} else if(!wasFiltered && Settings.isFiltered) {
+			save_settings = true;
+			PDraw::set_filter(PDraw::FILTER_BILINEAR);
+		}
+		
+		if(wasFit != Settings.isFit) { // If fit changes
+			save_settings = true;
 			PDraw::fit_screen(Settings.isFit);
+		}
 
 		if (wasWide != Settings.isWide) {
+			save_settings = true;
 			screen_width = Settings.isWide ? 800 : 640;
 			
 			MapClass_Set_Screen_Size(screen_width, screen_height);
@@ -716,6 +777,19 @@ void Draw_Menu_Graphics() {
 				PDraw::image_fill(bg_screen, 0);
 			
 			PDraw::set_xoffset(Settings.isWide? 80 : 0);
+		}
+
+		if (Settings.fps != oldfps) {
+			save_settings = true;
+			if (Settings.fps == SETTINGS_VSYNC)
+				Piste::set_fps(-1);
+			else if (Settings.fps == SETTINGS_60FPS)
+				Piste::set_fps(60);
+			else if (Settings.fps == SETTINGS_85FPS)
+				Piste::set_fps(85);
+			else if (Settings.fps == SETTINGS_120FPS)
+				Piste::set_fps(120);
+			
 		}
 
 		/*#ifdef __ANDROID__
@@ -764,10 +838,14 @@ void Draw_Menu_Graphics() {
 
 		#endif*/
 
-		if (Draw_Menu_Text("back",100,360)){
+		if (Draw_Menu_Text("back",100,360)) {
 			moreOptions = false;
 			menu_valittu_id = 0; //Set menu cursor to 0
 		}
+
+		if (save_settings)
+			Settings_Save();
+
 
 	}
 	else {
