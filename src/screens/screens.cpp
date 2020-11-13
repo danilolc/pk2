@@ -95,6 +95,15 @@ int Screen_First_Start() {
 
 	PDraw::fit_screen(Settings.isFit);
 	PDraw::set_fullscreen(Settings.isFullScreen);
+
+	if (Settings.fps == SETTINGS_VSYNC)
+		Piste::set_fps(-1);
+	else if (Settings.fps == SETTINGS_60FPS)
+		Piste::set_fps(60);
+	else if (Settings.fps == SETTINGS_85FPS)
+		Piste::set_fps(85);
+	else if (Settings.fps == SETTINGS_120FPS)
+		Piste::set_fps(120);
 	
 	PDraw::image_load(game_assets, PFile::Path("gfx" PE_SEP "pk2stuff.bmp"), false);
 	PDraw::image_load(game_assets2, PFile::Path("gfx" PE_SEP "pk2stuff2.png"), false);

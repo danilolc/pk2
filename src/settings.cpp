@@ -18,7 +18,7 @@
 using namespace std::chrono;
 
 #define SETTINGS_FILE "settings.ini"
-#define SETTINGS_VERSION "1.3"
+#define SETTINGS_VERSION "1.4"
 
 PK2SETTINGS Settings;
 
@@ -94,6 +94,8 @@ void Settings_Init() {
 	Settings.music_max_volume = 50;
 	Settings.sfx_max_volume = 90;
 
+	Settings.fps = SETTINGS_60FPS; //SETTINGS_VSYNC;
+
 	Id_To_String(Settings.id, id_code);
 
 }
@@ -150,6 +152,8 @@ int Settings_Open() {
 
 	file->read(Settings.music_max_volume);
 	file->read(Settings.sfx_max_volume);
+
+	file->read(Settings.fps);
 	
 	file->close();
 	
@@ -214,6 +218,8 @@ int Settings_Save() {
 
 	file->write(Settings.music_max_volume);
 	file->write(Settings.sfx_max_volume);
+
+	file->write(Settings.fps);
 	
 	file->close();
 

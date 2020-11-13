@@ -732,9 +732,19 @@ void Draw_Menu_Graphics() {
 		if (Draw_BoolBox(100, my, Settings.isFiltered, true)) {
 			Settings.isFiltered = !Settings.isFiltered;
 		}
-		my += 50;
+		my += 40;
 
-
+		int mx = 100;
+		PDraw::font_write(fontti1, "vsync", mx, my);
+		mx += 15 + 31;
+		PDraw::font_write(fontti1, "60fps", mx, my);
+		mx += 15 + 31;
+		PDraw::font_write(fontti1, "85fps", mx, my);
+		mx += 15 + 31;
+		PDraw::font_write(fontti1, "120 fps", mx, my);
+		my += 10;
+		
+		
 		int option = Draw_Radio(100, my, 4, Settings.fps);
 
 		if (option != -1)

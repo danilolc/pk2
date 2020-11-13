@@ -80,7 +80,6 @@ This example starts the level13.map on dev mode:
 * Digital antroid controllers (<< < o > >>)
 * Use app bundles to minimize apk size
 * SDL_QUIT on Android
-* Set target fps (30, 60, 120, v-sync) (properly jump frames)
 * Autosave settings option, ask when overwriting save, select save on new game
 * Remove repeated languages
 * Translate finnish language
