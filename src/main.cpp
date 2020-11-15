@@ -32,29 +32,14 @@ void start_test(const char* arg) {
 	
 	if (arg == NULL) return;
 
-	std::string buffer(arg);
-
-	size_t pos = 0;
-	while(1) {
-
-		pos = buffer.find_first_of(PE_NOSEP, pos);
-		
-		if (pos == std::string::npos)
-			break;
-		
-		buffer.replace(pos, 1, PE_SEP);
-		pos++;
-	
-	}
-
-	size_t sep = buffer.find_last_of(PE_SEP);
+	PFile::Path path(arg);
 
 	episode_entry episode;
-	episode.name = buffer.substr(0, sep);
+	episode.name = path.GetPath();
 	episode.is_zip = false;
 	Episode = new EpisodeClass("test", episode);
 
-	Game = new GameClass(buffer.substr(sep + 1));
+	Game = new GameClass(path.GetFileName());
 
 	PLog::Write(PLog::DEBUG, "PK2", "Testing episode '%s' level '%s'", episode.name.c_str(), Game->map_file.c_str());
 
@@ -276,6 +261,8 @@ int main(int argc, char *argv[]) {
 
 	}
 
+	Screen_First_Start();
+
 	next_screen = SCREEN_INTRO;
 	if (dev_mode)
 		next_screen = SCREEN_MENU;
@@ -283,8 +270,6 @@ int main(int argc, char *argv[]) {
 		start_test(test_path);
 		next_screen = SCREEN_GAME;
 	}
-
-	Screen_First_Start();
 
 	Piste::loop(Screen_Loop); //The game loop
 

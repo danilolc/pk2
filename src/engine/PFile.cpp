@@ -98,10 +98,19 @@ Zip* OpenZip(std::string path) {
 
 }
 
+void Path::Loc() {
+
+	const char* nosep = PE_NOSEP;
+	const char* sep = PE_SEP;
+	std::replace(this->begin(), this->end(), nosep[0], sep[0]);
+
+}
+
 Path::Path(std::string path) {
 
 	path = path.substr(0, path.find_last_not_of(" ") + 1);
     this->assign(path);
+	this->Loc();
     this->is_zip = false;
 
 }
@@ -110,6 +119,7 @@ Path::Path(Zip* zip_file, std::string path) {
 
 	path = path.substr(0, path.find_last_not_of(" ") + 1);
     this->assign(path);
+	this->Loc();
 	this->is_zip = true;
     this->zip_file = zip_file;
 
@@ -120,6 +130,7 @@ Path::Path(Path path, std::string file) {
 	file = file.substr(0, file.find_last_not_of(" ") + 1);
 	*this = path;
 	*this += file;
+	this->Loc();
 
 }
 
@@ -554,6 +565,13 @@ int Path::SetPath(std::string path) {
 	this->assign(path + this->GetFileName());
 
 	return 0;
+
+}
+
+std::string Path::GetPath() {
+
+	int dif = this->find_last_of(PE_SEP);
+	return this->substr(0, dif);
 
 }
 

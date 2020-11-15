@@ -69,6 +69,9 @@ class Path : public std::string {
 
     int SetFile(std::string file);
     int SetPath(std::string path);
+    void Loc();
+
+    std::string GetPath();
     std::string GetFileName();
 
     RW* GetRW(const char* mode);

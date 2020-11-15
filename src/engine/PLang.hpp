@@ -17,7 +17,7 @@ class PLang {
 		PLang(PFile::Path path);
 		~PLang();
 		bool Read_File(PFile::Path path);
-		int Hae_Indeksi(const char *title);
+		int Search_Id(const char *title);
 		const char* Get_Text(size_t index);
 		int Set_Text(const char* title, const char* text);
 

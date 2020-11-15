@@ -284,9 +284,12 @@ int  Draw_Radio(int x, int y, int num, int sel) {
 		bool mouse_on = mouse_on_y && PInput::mouse_x > xn && PInput::mouse_x < xn + 31;\
 
 		if (mouse_on) {
+			menu_valittu_id = menu_valinta_id + i;
+		}
+
+		if (menu_valittu_id == menu_valinta_id + i) {
 			xn += randx;
 			yn += randy;
-			menu_valittu_id = menu_valinta_id + i;
 		}
 
 		if ((c == 1 && mouse_on) || (c > 1 && menu_valittu_id == menu_valinta_id + i)) {

@@ -50,28 +50,28 @@ int PFont::load(PFile::Path path) {
 	
 	}
 
-	//i = param_file->Hae_Indeksi("image width");
+	//i = param_file->Search_Id("image width");
 	//int buf_width = atoi(param_file->Get_Text(i));
 
-	i = param_file->Hae_Indeksi("image x");
+	i = param_file->Search_Id("image x");
 	int buf_x = atoi(param_file->Get_Text(i));
 
-	i = param_file->Hae_Indeksi("image y");
+	i = param_file->Search_Id("image y");
 	int buf_y = atoi(param_file->Get_Text(i));
 
-	i = param_file->Hae_Indeksi("letters");
+	i = param_file->Search_Id("letters");
 	this->char_count = strlen(param_file->Get_Text(i));
 
-	i = param_file->Hae_Indeksi("letter width");
+	i = param_file->Search_Id("letter width");
 	this->char_w = atoi(param_file->Get_Text(i));
 
-	i = param_file->Hae_Indeksi("letter height");
+	i = param_file->Search_Id("letter height");
 	this->char_h = atoi(param_file->Get_Text(i));
 
-	i = param_file->Hae_Indeksi("letters");
+	i = param_file->Search_Id("letters");
 	strcpy(chars, param_file->Get_Text(i));
 
-	i = param_file->Hae_Indeksi("image");
+	i = param_file->Search_Id("image");
 	path.SetFile(param_file->Get_Text(i));
 
 	delete param_file;

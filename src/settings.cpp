@@ -94,7 +94,7 @@ void Settings_Init() {
 	Settings.music_max_volume = 50;
 	Settings.sfx_max_volume = 90;
 
-	Settings.fps = SETTINGS_60FPS; //SETTINGS_VSYNC;
+	Settings.fps = SETTINGS_VSYNC;
 
 	Id_To_String(Settings.id, id_code);
 

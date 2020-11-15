@@ -107,11 +107,11 @@ bool PLang::Read_File(PFile::Path path){
 	return true;
 }
 
-int PLang::Hae_Indeksi(const char *otsikko) {
+int PLang::Search_Id(const char *text) {
 
 	size_t i;
 	for (i = 0; i < titles.size(); i++)
-		if (titles[i] == otsikko) break;
+		if (titles[i] == text) break;
 
 	if (i >= titles.size())
 		return -1;
@@ -129,7 +129,7 @@ const char* PLang::Get_Text(size_t index) {
 
 int PLang::Set_Text(const char* title, const char* text) {
 
-	int idx = this->Hae_Indeksi(title);
+	int idx = this->Search_Id(title);
 	if (idx != -1) {
 	
 		tekstit[idx] = text;

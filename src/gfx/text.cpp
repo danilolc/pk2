@@ -37,7 +37,7 @@ int Load_Fonts(PLang* lang) {
 	PFile::Path fonts_path("language" PE_SEP "fonts" PE_SEP);
 	PFile::Path index_path("");
 
-	int ind_path = lang->Hae_Indeksi("font path");
+	int ind_path = lang->Search_Id("font path");
 	if (ind_path != -1) {
 
 		index_path = PFile::Path(lang->Get_Text(ind_path));
@@ -45,7 +45,7 @@ int Load_Fonts(PLang* lang) {
 
 	}
 
-	int ind_font = lang->Hae_Indeksi("font small font");
+	int ind_font = lang->Search_Id("font small font");
 	if (ind_path == -1 || ind_font == -1) {
 
 		fonts_path.SetFile("ScandicSmall.txt");
@@ -72,7 +72,7 @@ int Load_Fonts(PLang* lang) {
 	
 	}
 
-	ind_font = lang->Hae_Indeksi("font big font normal");
+	ind_font = lang->Search_Id("font big font normal");
 	if (ind_path == -1 || ind_font == -1) {
 
 		fonts_path.SetFile("ScandicBig1.txt");
@@ -98,7 +98,7 @@ int Load_Fonts(PLang* lang) {
 		}
 	}
 
-	ind_font = lang->Hae_Indeksi("font big font hilite");
+	ind_font = lang->Search_Id("font big font hilite");
 	if (ind_path == -1 || ind_font == -1) {
 
 		fonts_path.SetFile("ScandicBig2.txt");
@@ -124,7 +124,7 @@ int Load_Fonts(PLang* lang) {
 		}
 	}
 
-	ind_font = lang->Hae_Indeksi("font big font shadow");
+	ind_font = lang->Search_Id("font big font shadow");
 	if (ind_path == -1 || ind_font == -1) {
 
 		fonts_path.SetFile("ScandicBig3.txt");
