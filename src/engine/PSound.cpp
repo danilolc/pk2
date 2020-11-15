@@ -14,7 +14,7 @@
 #define PS_FREQ        MIX_DEFAULT_FREQUENCY
 #define PS_FORMAT      MIX_DEFAULT_FORMAT
 #define PS_CHANNELS    MIX_DEFAULT_CHANNELS
-#define PS_BUFFER_SIZE /*4096*/ 2048 /*1024*/ /*512*/ //game speed vs audio latency
+#define PS_BUFFER_SIZE /*4096*/ /*2048*/ 1024 /*512*/ //game speed vs audio latency
 
 namespace PSound {
 
