@@ -37,7 +37,7 @@ static int screen_height;
 
 static SDL_Rect screen_dest = {0, 0, 0, 0};
 static bool screen_fit = false;
-static bool vsync_set = false;
+static bool vsync_set = true;
 
 static bool ready = false;
 

@@ -115,8 +115,6 @@ void init(int width, int height, const char* name, const char* icon) {
 	PInput::init();
 	PSound::init();
 
-	PDraw::set_vsync(false);
-
 	ready = true;
 
 }
