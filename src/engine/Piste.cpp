@@ -38,16 +38,16 @@ static void wait_frame() {
 
 	auto sleep_time = frame_time - delta_time;
 
-	#ifdef _WIN32
+	//#ifdef _WIN32
 
 	
 
-	#else
+	//#else
 
 	if (sleep_time.count() > 100000)
 		this_thread::sleep_for(sleep_time);
 
-	#endif
+	//#endif
 	
 	last_time = high_resolution_clock::now();
 

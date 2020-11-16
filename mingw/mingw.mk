@@ -11,7 +11,7 @@
 
 #Remove -DUSE_ZIP if you don't want or don't have zip
 CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main $(OPT) -std=gnu++17 -Wall -DPORTABLE -DUSE_ZIP
-LDFLAGS += -static-libgcc -static-libstdc++ -L$(LIB_SRC) -lmingw32 -mwindows -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image -lzip
+LDFLAGS += -static-libgcc -L$(LIB_SRC) -lmingw32 -mwindows -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image -lzip -Wl,-Bstatic -lstdc++ -lpthread
 
 SRC_DIR = ../../src/
 RES_DIR = ../../res/
