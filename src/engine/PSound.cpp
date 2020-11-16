@@ -30,9 +30,11 @@ static Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
 static Uint8* freq_chunks[CHANNELS];  //The chunk allocated for each channel
 
 static Mix_Music* overlay_music = NULL;
+static PFile::RW* overlay_rw = NULL;
 static bool overlay_playing = false;
 
 static Mix_Music* music = NULL;
+static PFile::RW* music_rw = NULL;
 static std::string playingMusic = "";
 
 static int find_channel() {
@@ -267,17 +269,20 @@ int load_overlay_music(PFile::Path path) { //TODO - load ovarlay from zip
 	if (overlay_playing)
 		resume_music();
 
-	if (overlay_music)
+	if (overlay_music) {
 		Mix_FreeMusic(overlay_music);
+		overlay_rw->close();
+	}
 
-	PFile::RW* rw = path.GetRW("r");
-	overlay_music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);
-	rw->close();
+	overlay_rw = path.GetRW("r");
+	overlay_music = Mix_LoadMUS_RW((SDL_RWops*) overlay_rw, 0);
 
 	if (overlay_music == NULL) {
 
 		PLog::Write(PLog::WARN, "PSound", Mix_GetError());
 		Mix_ClearError();
+		overlay_rw->close();
+
 		return -1;
 	
 	}
@@ -295,17 +300,20 @@ int start_music(PFile::Path path) {
 	Mix_HaltMusic();
 	overlay_playing = false;
 
-	if (music)
+	if (music) {
 		Mix_FreeMusic(music);
+		music_rw->close();
+	}
 
-	PFile::RW* rw = path.GetRW("r");
-	music = Mix_LoadMUS_RW((SDL_RWops*) rw, 0);
-	rw->close();
-
+	music_rw = path.GetRW("r");
+	music = Mix_LoadMUS_RW((SDL_RWops*) music_rw, 0);
+	
 	if (music == NULL) {
 
 		PLog::Write(PLog::WARN, "PSound", Mix_GetError());
 		Mix_ClearError();
+		music_rw->close();
+
 		return -1;
 	
 	}
@@ -313,6 +321,12 @@ int start_music(PFile::Path path) {
 
 		PLog::Write(PLog::ERR, "PSound", Mix_GetError());
 		Mix_ClearError();
+
+		//TODO OO
+		Mix_FreeMusic(music);
+		music = NULL;
+		music_rw->close();
+
 		return -1;
 	
 	}
@@ -403,11 +417,19 @@ int terminate() {
 	clear_channels();
 	reset_sfx();
 	
-	if(music != NULL) Mix_FreeMusic(music);
+	if(music != NULL) {
+		Mix_FreeMusic(music);
+		music_rw->close();
+	}
 	music = NULL;
-	
-	if(overlay_music != NULL) Mix_FreeMusic(music);
+	music_rw = NULL;
+
+	if(overlay_music != NULL) {
+		Mix_FreeMusic(music);
+		overlay_rw->close();
+	}
 	overlay_music = NULL;
+	overlay_rw = NULL;
 
 	Mix_CloseAudio();
 	Mix_Quit();
