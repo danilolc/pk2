@@ -401,13 +401,15 @@ int Sprite_Movement(int i){
 
 		/* CROUCH */
 		sprite.crouched = false;
-		if ((PInput::Keydown(Settings.control_down) || Gui_down) && !sprite.alas) {
+		if ((PInput::Keydown(Settings.control_down) || Gui_down || PInput::GetAxis(1) > 0.5) && !sprite.alas) {
 			sprite.crouched = true;
 			sprite_yla += sprite_korkeus/1.5;
 		}
 
 		/* NAVIGATING*/
 		int navigation = 0;
+
+		navigation = PInput::GetAxis(0) * 100;
 
 		if (Gui_pad_button == 0 || Gui_pad_button == 1)
 			navigation = -100;
@@ -460,8 +462,8 @@ int Sprite_Movement(int i){
 					sprite.jump_timer = 55;
 			}
 
-			/* tippuminen hiljaa alasp�in */
-			if ((PInput::Keydown(Settings.control_jump) || Gui_up) && sprite.jump_timer >= 150/*90+20*/ &&
+			/* dripping quietly down */
+			if ((PInput::Keydown(Settings.control_jump) || Gui_up || PInput::GetAxis(1) < -0.5) && sprite.jump_timer >= 150/*90+20*/ &&
 				sprite.tyyppi->can_glide)
 				gliding = true;
 		}

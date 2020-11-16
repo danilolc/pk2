@@ -425,8 +425,8 @@ void UpdateMouse(bool keyMove, bool relative) {
 
 		if(keyMove) {
 
-			//mouse_x += PInput::Ohjain_X(PI_PELIOHJAIN_1)/30; //Move mouse with joystick
-			//mouse_y += PInput::Ohjain_Y(PI_PELIOHJAIN_1)/30;
+			mouse_x += GetAxis(0) * 3;
+			mouse_y += GetAxis(1) * 3;
 
 			if (Keydown(JOY_LEFT))  mouse_x += -3; //Move mouse with d-pad
 			if (Keydown(JOY_RIGHT)) mouse_x += 3;

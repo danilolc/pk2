@@ -77,18 +77,15 @@ This example starts the level13.map on dev mode:
 ```
 
 # FIXMEs
-* Digital antroid controllers (<< < o > >>)
 * Use app bundles to minimize apk size
 * SDL_QUIT on Android
 * Autosave settings option, ask when overwriting save, select save on new game
+* Digital antroid controllers (<< < o > >>)
 * Remove repeated languages
 * Translate finnish language
 * Slower fade music
 * Low volume sounds not played on low volume
-* Properly play XM music and change SFX frequency (SDL2_mixer problem)
-* Support game controllers
 * Fix BG screen on menu?
-* Use SDL_Read* to read files?
 
 # PLANS
 * Better documentation
