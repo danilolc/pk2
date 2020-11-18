@@ -83,7 +83,6 @@ This example starts the level13.map on dev mode:
 * Digital antroid controllers (<< < o > >>)
 * Remove repeated languages
 * Translate finnish language
-* Slower fade music
 * Low volume sounds not played on low volume
 * Fix BG screen on menu?
 

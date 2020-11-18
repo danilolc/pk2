@@ -188,7 +188,7 @@ bool Draw_Menu_Text(const char *teksti, int x, int y, char end) {
 
 int Draw_BoolBox(int x, int y, bool muuttuja, bool active) {
 	
-	PDraw::RECT img_src, img_dst = {(u32)x,(u32)y,0,0};
+	PDraw::RECT img_src, img_dst = {x , y, 0, 0};
 
 	if(muuttuja) img_src = {504,124,31,31};
 	else img_src = {473,124,31,31};
@@ -301,7 +301,7 @@ int  Draw_Radio(int x, int y, int num, int sel) {
 
 		}
 		
-		PDraw::RECT img_dst = {xn,yn,0,0};
+		PDraw::RECT img_dst = { xn, yn, 0, 0};
 		if (sel == i)
 			PDraw::image_cutclip(game_assets,sel_src,img_dst);
 		else

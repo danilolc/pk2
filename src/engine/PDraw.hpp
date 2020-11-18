@@ -19,7 +19,7 @@ const char FILTER_BILINEAR[] = "2";
 
 struct RECT {
 
-    u32 x, y, w, h;
+    s32 x, y, w, h;
 
 };
 

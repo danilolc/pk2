@@ -160,7 +160,7 @@ int Settings_Open() {
 	if (PUtils::Is_Mobile()) {
 
 		Settings.isFullScreen = false;
-		//Settings.isFullScreen = true; //TODO
+		Settings.isFullScreen = true;
 		Settings.isWide = true;
 
 	}

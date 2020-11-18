@@ -344,8 +344,8 @@ int image_cliptransparent(int index, int x, int y, int alpha, u8 colorsum) {
 //TODO - keep a default order (src_x, src_y, src_w, src_h, dst_x, dst_y)
 int image_cutclip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala) {
 
-    RECT src = {(u32)srcx, (u32)srcy, (u32)oikea-srcx, (u32)ala-srcy};
-    RECT dst = {(u32)dstx, (u32)dsty, (u32)oikea-srcx, (u32)ala-srcy};
+    RECT src = {srcx, srcy, oikea-srcx, ala-srcy};
+    RECT dst = {dstx, dsty, oikea-srcx, ala-srcy};
     image_cutclip(index, src, dst);
 
     return 0;

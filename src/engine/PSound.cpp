@@ -23,7 +23,7 @@ const int MAX_SOUNDS = 300;
 static int def_freq = 22050;
 
 static int mus_volume = 100;
-static int mus_volume_now = 100;
+static float mus_volume_now = 100;
 
 
 static Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
@@ -322,7 +322,6 @@ int start_music(PFile::Path path) {
 		PLog::Write(PLog::ERR, "PSound", Mix_GetError());
 		Mix_ClearError();
 
-		//TODO OO
 		Mix_FreeMusic(music);
 		music = NULL;
 		music_rw->close();
@@ -350,7 +349,7 @@ void set_musicvolume_now(int volume) {
 
 	mus_volume = volume;
 	mus_volume_now = volume;
-	Mix_VolumeMusic(volume * MIX_MAX_VOLUME / 100);
+	Mix_VolumeMusic(float(volume) * MIX_MAX_VOLUME / 100);
 	
 }
 
@@ -399,11 +398,14 @@ int init() {
 
 int update() {
 
-	if (mus_volume_now < mus_volume)
-		Mix_VolumeMusic(++mus_volume_now * MIX_MAX_VOLUME / 100);
+	const float VOLUME_DELAY = 19.f;
 
-	else if (mus_volume_now > mus_volume)
-		Mix_VolumeMusic(--mus_volume_now * MIX_MAX_VOLUME / 100);
+	mus_volume_now = (VOLUME_DELAY * mus_volume_now + mus_volume) / (VOLUME_DELAY + 1);
+
+	int volume = mus_volume_now * MIX_MAX_VOLUME / 100;
+
+	if (volume != Mix_VolumeMusic(-1))
+		Mix_VolumeMusic(volume);
 	
 	if (overlay_playing && !Mix_PlayingMusic())
 		resume_music();
