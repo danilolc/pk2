@@ -134,7 +134,7 @@ int main(int argc, char *argv[]) {
 
 	#ifndef __ANDROID__
 
-	#ifdef PORTABLE
+	#ifdef PK2_PORTABLE
 
 	data_path = "." PE_SEP "data" PE_SEP;
 	PUtils::CreateDir(data_path);
@@ -153,7 +153,7 @@ int main(int argc, char *argv[]) {
 	data_path = data_path_p;
 	SDL_free(data_path_p);
 
-	#endif //PORTABLE
+	#endif //PK2_PORTABLE
 
 	// Read redirect file to change data directory
 	PFile::Path redirect = PFile::Path(data_path, "redirect.txt");

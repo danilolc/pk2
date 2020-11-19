@@ -24,16 +24,22 @@
 #define PK2_PLATFORM " (Unknown)"
 #endif
 
-#ifdef USE_ZIP
-#define PK2_ZIP " (zip)"
+#ifdef PK2_USE_ZIP
+#define PK2_ZIP_STR " (zip)"
 #else
-#define PK2_ZIP " (no-zip)"
+#define PK2_ZIP_STR " (no-zip)"
 #endif
 
-#ifdef PORTABLE
-#define PK2_PORTABLE " (portable)"
+#ifdef PK2_PORTABLE
+#define PK2_PORTABLE_STR " (portable)"
 #else
-#define PK2_PORTABLE ""
+#define PK2_PORTABLE_STR ""
 #endif
 
-#define PK2_VERSION_STR PK2_VERSION PK2_VERSION_NAME PK2_PLATFORM PK2_ZIP PK2_PORTABLE
+#ifdef PK2_NO_THREAD
+#define PK2_NO_THREAD_STR " (no thread)"
+#else
+#define PK2_NO_THREAD_STR ""
+#endif
+
+#define PK2_VERSION_STR PK2_VERSION PK2_VERSION_NAME PK2_PLATFORM PK2_ZIP_STR PK2_PORTABLE_STR PK2_NO_THREAD_STR

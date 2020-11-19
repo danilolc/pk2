@@ -760,6 +760,7 @@ void Draw_Menu_Graphics() {
 		}
 		my += 40;
 
+		#ifndef PK2_NO_THREAD
 
 		int mx = 100;
 		PDraw::font_write(fontti1, "vsync", mx, my);
@@ -770,13 +771,13 @@ void Draw_Menu_Graphics() {
 		mx += 15 + 31;
 		PDraw::font_write(fontti1, "120 fps", mx, my);
 		my += 10;
-		
-		
+
 		int option = Draw_Radio(100, my, 4, Settings.fps);
 
 		if (option != -1)
 			Settings.fps = option;
 
+		#endif
 
 		//Add more options here
 

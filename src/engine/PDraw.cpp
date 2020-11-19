@@ -810,6 +810,8 @@ void set_xoffset(int x) {
 
 int set_vsync(bool set) {
 
+    #ifndef PK2_NO_THREAD
+
     if (set == vsync_set)
         return 0;
 
@@ -833,6 +835,12 @@ int set_vsync(bool set) {
 
     SDL_RenderClear(renderer);
     return 0;
+
+    #else
+
+    return -1;
+
+    #endif
 
 }
 

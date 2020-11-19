@@ -26,6 +26,8 @@ static float avrg_fps = 0;
 static bool debug = false;
 static bool draw = true;
 
+#ifndef PK2_NO_THREAD
+
 static void wait_frame() {
 
 	using namespace std;
@@ -45,6 +47,8 @@ static void wait_frame() {
 
 }
 
+#endif
+
 static void logic() {
 	
 	SDL_Event event;
@@ -63,8 +67,10 @@ static void logic() {
 	}
 
 	PDraw::update(draw);
+	#ifndef PK2_NO_THREAD
 	if (!PDraw::is_vsync() && (desired_fps > 0) && draw)
 		wait_frame();
+	#endif
 
 	PInput::update();
 	PSound::update();
