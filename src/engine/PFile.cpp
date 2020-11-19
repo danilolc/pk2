@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <fstream>
 
 #include <SDL.h>
 
@@ -440,8 +441,9 @@ bool Path::Find() {
 		if (filename[i] == '/')
 			filename[i] = '\\';*/
 
-
-	if (INVALID_FILE_ATTRIBUTES == GetFileAttributes(cstr) && GetLastError() == ERROR_FILE_NOT_FOUND) {
+	std::ifstream ifile(cstr);
+	if (!(bool)ifile
+		/*INVALID_FILE_ATTRIBUTES == GetFileAttributes(cstr) && GetLastError() == ERROR_FILE_NOT_FOUND*/) {
 
 		PLog::Write(PLog::INFO, "PFile", "%s not found", cstr);
 		return false;

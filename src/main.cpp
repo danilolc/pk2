@@ -137,6 +137,7 @@ int main(int argc, char *argv[]) {
 	#ifdef PORTABLE
 
 	data_path = "." PE_SEP "data" PE_SEP;
+	PUtils::CreateDir(data_path);
 
 	#else
 
