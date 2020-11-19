@@ -19,6 +19,7 @@ namespace PInput {
 
 std::vector<touch_t> touchlist;
 
+u16 vibration = 0;
 float mouse_x, mouse_y;
 int mouse_key;
 
@@ -250,10 +251,15 @@ int ReadKeyboard(char* c) {
 
 }
 
+void SetVibration(u16 vib) {
+
+	vibration = vib;
+
+}
 
 int Vibrate(int length) {
 
-	if (SDL_GameControllerRumble(Controller, 0xFFFF/2, 0xFFFF/2, length) != 0)
+	if (SDL_GameControllerRumble(Controller, vibration, vibration, length) != 0)
 		return -1;
 	if (SDL_HapticRumblePlay(Haptic, 0.5, length) != 0)
 		return -1;
@@ -266,10 +272,10 @@ int Vibrate(int length) {
 
 //TODO
 void SetMousePosition(int x, int y) {
-	int wx = 0, wy = 0;
+	/*int wx = 0, wy = 0;
 
 	GetWindowPosition(&wx, &wy);
-	SetCursorPos(x + wx, y+wy);
+	SetCursorPos(x + wx, y+wy);*/
 }
 
 
@@ -437,8 +443,8 @@ void UpdateMouse(bool keyMove, bool relative) {
 
 	if(keyMove) {
 
-		int delta_x = 0;
-		int delta_y = 0;
+		float delta_x = 0;
+		float delta_y = 0;
 
 		delta_x += GetAxis(0) * 3;
 		delta_y += GetAxis(1) * 3;
@@ -453,7 +459,8 @@ void UpdateMouse(bool keyMove, bool relative) {
 		if (Keydown(UP))    delta_y += -3;
 		if (Keydown(DOWN))  delta_y += 3;
 
-		if (delta_x != 0 || delta_y != 0)
+		if (delta_x > 0.1 || delta_x < -0.1 || 
+		    delta_y > 0.1 || delta_y < -0.1)
 			ignore_mouse = true;
 
 		mouse_x += delta_x;

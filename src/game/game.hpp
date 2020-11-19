@@ -91,5 +91,6 @@ class GameClass {
 extern GameClass* Game;
 
 // TODO - remove
+extern bool mouse_hidden;
 bool Draw_Menu_Text(const char *teksti, int x, int y, char end = '\0');
 //

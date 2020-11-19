@@ -76,6 +76,7 @@ void InjectText(const char* text);
 void InjectKey(int key);
 int ReadKeyboard(char* c);
 
+void SetVibration(u16 vib);
 int Vibrate(int length);
 void SetMousePosition(int x, int y);
 

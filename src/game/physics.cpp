@@ -1015,8 +1015,10 @@ int Sprite_Movement(int i){
 									  	   -0.3,-0.1,450,0,0);
 					}
 
-					if (sprite.weight > 1)
+					if (sprite.weight > 1) {
 						Game->vibration = 34 + int(sprite.weight * 20);
+						PInput::Vibrate(500);
+					}
 				}
 
 				sprite.jump_timer = 0;

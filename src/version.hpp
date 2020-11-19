@@ -6,7 +6,7 @@
 
 #define PK2_NAME "Pekka Kana 2"
 
-#define PK2_VERSION "1.3.5-pre4"
+#define PK2_VERSION "1.3.5"
 #define PK2_VERNUM 0x0306
 #define PK2_VER_MAJOR 1
 #define PK2_VER_MINOR 3

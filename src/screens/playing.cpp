@@ -771,7 +771,7 @@ int Screen_InGame(){
 				key_delay = 10;
 			}
 
-			if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_GUIDE) || Gui_menu) {
+			if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_START) || Gui_menu) {
 				if(test_level)
 					Fade_Quit();
 				else {

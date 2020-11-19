@@ -723,6 +723,7 @@ void Draw_Menu_Graphics() {
 
 		#endif
 
+
 		if (Settings.isFiltered){
 			if (Draw_Menu_Text("bilinear filter is on",180,my)){
 				Settings.isFiltered = false;
@@ -735,7 +736,30 @@ void Draw_Menu_Graphics() {
 		if (Draw_BoolBox(100, my, Settings.isFiltered, true)) {
 			Settings.isFiltered = !Settings.isFiltered;
 		}
+		my += 30;
+		
+		
+		if (Settings.vibration > 0){
+			if (Draw_Menu_Text("controller vibration is on",180,my)){
+				Settings.vibration = 0;
+				PInput::SetVibration(Settings.vibration);
+			}
+		} else{
+			if (Draw_Menu_Text("controller vibration is off",180,my)){
+				Settings.vibration = 0xFFFF/2;
+				PInput::SetVibration(Settings.vibration);
+			}
+		}
+		if (Draw_BoolBox(100, my, Settings.vibration, true)) {
+			if (Settings.vibration == 0)
+				Settings.vibration = 0xFFFF/2;
+			else
+				Settings.vibration = 0;
+
+			PInput::SetVibration(Settings.vibration);
+		}
 		my += 40;
+
 
 		int mx = 100;
 		PDraw::font_write(fontti1, "vsync", mx, my);
@@ -1116,7 +1140,7 @@ void Draw_Menu_Controls() {
 		Settings.control_walk_slow = PInput::JOY_Y;
 		Settings.control_attack1   = PInput::JOY_A;
 		Settings.control_attack2   = PInput::JOY_B;
-		Settings.control_open_gift = PInput::JOY_GUIDE;
+		Settings.control_open_gift = PInput::JOY_LEFT;
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
 	}

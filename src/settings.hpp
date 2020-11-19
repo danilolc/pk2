@@ -58,6 +58,7 @@ struct PK2SETTINGS {
 
 	//Version 1.4
 	s32 fps;
+	u16 vibration;
 
 };
 

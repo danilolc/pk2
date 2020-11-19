@@ -1130,7 +1130,7 @@ void MapClass::Change_SkullBlocks() {
 
 	//Put in game
 	Game->vibration = 90;//60
-	PInput::Vibrate(2000);
+	PInput::Vibrate(1000);
 
 	//Game->Show_Info(tekstit->Get_Text(PK_txt.game_locksopen));
 
@@ -1152,7 +1152,7 @@ void MapClass::Open_Locks() {
 
 	//Put in game
 	Game->vibration = 90;//60
-	PInput::Vibrate(2000);
+	PInput::Vibrate(1000);
 
 	Game->Show_Info(tekstit->Get_Text(PK_txt.game_locksopen));
 

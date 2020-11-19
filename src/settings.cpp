@@ -95,6 +95,7 @@ void Settings_Init() {
 	Settings.sfx_max_volume = 90;
 
 	Settings.fps = SETTINGS_VSYNC;
+	Settings.vibration = 0xFFFF/2;
 
 	Id_To_String(Settings.id, id_code);
 
@@ -154,6 +155,7 @@ int Settings_Open() {
 	file->read(Settings.sfx_max_volume);
 
 	file->read(Settings.fps);
+	file->read(Settings.vibration);
 	
 	file->close();
 	
@@ -220,6 +222,7 @@ int Settings_Save() {
 	file->write(Settings.sfx_max_volume);
 
 	file->write(Settings.fps);
+	file->write(Settings.vibration);
 	
 	file->close();
 

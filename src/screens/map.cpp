@@ -279,6 +279,8 @@ int Screen_Map_Init() {
 
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_CURSOR);
+
+	mouse_hidden = false;
 	
 	if (Settings.isWide)
 		PDraw::set_xoffset(80);
@@ -319,7 +321,7 @@ int Screen_Map() {
 
 	if (!going_to_game && key_delay == 0) {
 
-		if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_GUIDE)) {
+		if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_START)) {
 			next_screen = SCREEN_MENU;
 			key_delay = 20;
 		}
