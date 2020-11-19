@@ -89,7 +89,7 @@ int Load_SaveFile() {
 	file->read(versio, sizeof(versio));
 
 	// Version 3 is always little endian
-	if (strncmp(versio,"3", 2) == 0) {
+	if (strncmp(versio, "3", 2) == 0) {
 
 		PLog::Write(PLog::INFO, "PK2", "Loading save version 3");
 
@@ -109,7 +109,7 @@ int Load_SaveFile() {
 
 		}
 	
-	} else if (strncmp(versio,"2", 2) == 0) {
+	} else if (strncmp(versio, "2", 2) == 0) {
 
 		PLog::Write(PLog::INFO, "PK2", "Loading save version 2");
 
@@ -121,15 +121,30 @@ int Load_SaveFile() {
 		file->read(saves_list, sizeof(PK2SAVE) * count);
 		Save_All_Records(); // Change to the current version
 	
+	} else if (strncmp(versio, "1", 2) == 0) {
+
+		PLog::Write(PLog::INFO, "PK2", "Can't read saves version 1");
+		file->close();
+		return 1;
+
+		/*struct PK2SAVE_V1{
+			s32   jakso;
+			char  episodi[260]; //260, 256, 128?
+			char  nimi[20];
+			bool  kaytossa;
+			bool  jakso_lapaisty[100]; //100, 50?
+			u32   pisteet;
+		};*/
+
 	} else {
 
 		PLog::Write(PLog::INFO, "PK2", "Can't read this save version");
+		file->close();
 		return 1;
 
 	}
 
 	file->close();
-
 	return 0;
 
 }
