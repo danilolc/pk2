@@ -50,7 +50,7 @@ bool alas;
 
 bool vedessa;
 
-u8 max_nopeus;
+double max_nopeus;
 
 void Check_Blocks2(SpriteClass &sprite, PK2BLOCK &palikka) {
 
@@ -342,7 +342,7 @@ int Sprite_Movement(int i){
 	sprite_yla	 = sprite_y-sprite_korkeus/2;
 	sprite_ala	 = sprite_y+sprite_korkeus/2;
 
-	max_nopeus = (u8)sprite.tyyppi->max_nopeus;
+	max_nopeus = sprite.tyyppi->max_nopeus;
 
 	vedessa = sprite.vedessa;
 
@@ -1486,7 +1486,7 @@ int BonusSprite_Movement(int i){
 
 	vedessa = sprite.vedessa;
 
-	max_nopeus = (int)sprite.tyyppi->max_nopeus;
+	max_nopeus = sprite.tyyppi->max_nopeus;
 
 	// Siirret��n varsinaiset muuttujat apumuuttujiin.
 
