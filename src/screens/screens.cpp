@@ -36,7 +36,10 @@ void Fade_Quit() {
 
 int Screen_First_Start() {
 
-	srand(Settings.id);
+	if(test_level)
+		srand(time(NULL));
+	else
+		srand(Settings.id);
 	
 	Calculate_SinCos();
 
@@ -88,6 +91,8 @@ int Screen_First_Start() {
 
 	MapClass_Set_Screen_Size(screen_width, screen_height);
 	
+	PInput::SetVibration(Settings.vibration);
+
 	if (Settings.isFiltered)
 		PDraw::set_filter(PDraw::FILTER_BILINEAR);
 	else
