@@ -281,7 +281,7 @@ int  Draw_Radio(int x, int y, int num, int sel) {
 		int xn = x + i * (val + 31);
 		int yn = y;
 
-		bool mouse_on = mouse_on_y && PInput::mouse_x > xn && PInput::mouse_x < xn + 31;\
+		bool mouse_on = mouse_on_y && PInput::mouse_x > xn && PInput::mouse_x < xn + 31;
 
 		if (mouse_on) {
 			menu_valittu_id = menu_valinta_id + i;
@@ -1438,7 +1438,7 @@ int Screen_Menu() {
 		menu_valittu_id = 0;
 	}
 
-	if (menu_nyt != MENU_NAME){
+	if (menu_nyt != MENU_NAME){ //TODO - Why run this every frame?
 		editing_name = false;
 		PInput::EndKeyboard();
 	}

@@ -387,6 +387,9 @@ float GetAxis(int axis) {
 
 void UpdateMouse(bool keyMove, bool relative) {
 
+	static int last_x, last_y;
+	static bool ignore_mouse = false;
+
 	int sw, sh;
 	PDraw::get_resolution(&sw, &sh);
 
@@ -401,17 +404,28 @@ void UpdateMouse(bool keyMove, bool relative) {
 		int tmpx, tmpy;
 		mouse_key = SDL_GetMouseState(&tmpx, &tmpy);
 
-		mouse_x = float(tmpx);
-		mouse_y = float(tmpy);
-
 		//Problem with fitScreen
-		mouse_x *= float(bw) / sw;
-		mouse_y *= float(bh) / sh;
-		mouse_x -= off;
+		tmpx *= float(bw) / sw;
+		tmpy *= float(bh) / sh;
+
+		tmpx -= off;
+
+		// Mouse moved
+		if (abs(last_x - tmpx) > 0 || abs(last_y - tmpy) > 0)
+			ignore_mouse = false;
+
+		last_x = tmpx;
+		last_y = tmpy;
+		
+		if (!ignore_mouse) {
+			mouse_x = float(tmpx);
+			mouse_y = float(tmpy);
+		}
 	
 	} else {
-
 		SDL_SetRelativeMouseMode(SDL_TRUE);
+
+		ignore_mouse = false;
 
 		int delta_x, delta_y;
 		mouse_key = SDL_GetRelativeMouseState(&delta_x, &delta_y);
@@ -419,24 +433,34 @@ void UpdateMouse(bool keyMove, bool relative) {
 		mouse_x += 0.4 * delta_x;
 		mouse_y += 0.4 * delta_y;
 
-		if(keyMove) {
-
-			mouse_x += GetAxis(0) * 3;
-			mouse_y += GetAxis(1) * 3;
-
-			if (Keydown(JOY_LEFT))  mouse_x += -3; //Move mouse with d-pad
-			if (Keydown(JOY_RIGHT)) mouse_x += 3;
-			if (Keydown(JOY_UP))    mouse_y += -3;
-			if (Keydown(JOY_DOWN))  mouse_y += 3;
-
-			if (Keydown(LEFT))  mouse_x += -3; //Move mouse with keys
-			if (Keydown(RIGHT)) mouse_x += 3;
-			if (Keydown(UP))    mouse_y += -3;
-			if (Keydown(DOWN))  mouse_y += 3;
-		
-		}
 	}
-	
+
+	if(keyMove) {
+
+		int delta_x = 0;
+		int delta_y = 0;
+
+		delta_x += GetAxis(0) * 3;
+		delta_y += GetAxis(1) * 3;
+
+		if (Keydown(JOY_LEFT))  delta_x += -3; //Move mouse with d-pad
+		if (Keydown(JOY_RIGHT)) delta_x += 3;
+		if (Keydown(JOY_UP))    delta_y += -3;
+		if (Keydown(JOY_DOWN))  delta_y += 3;
+
+		if (Keydown(LEFT))  delta_x += -3; //Move mouse with keys
+		if (Keydown(RIGHT)) delta_x += 3;
+		if (Keydown(UP))    delta_y += -3;
+		if (Keydown(DOWN))  delta_y += 3;
+
+		if (delta_x != 0 || delta_y != 0)
+			ignore_mouse = true;
+
+		mouse_x += delta_x;
+		mouse_y += delta_y;
+		
+	}
+
 	// set limits
 	if (mouse_x < -off) mouse_x = -off;
 	if (mouse_x > bw - off - 19) mouse_x = bw - off - 19;
