@@ -268,15 +268,10 @@ int Vibrate(int length) {
 void SetMousePosition(int x, int y) {
 	int wx = 0, wy = 0;
 
-	//SDL_GetWindowPosition(&wx, &wy);
-	//SetCursorPos(x + wx, y+wy);
+	GetWindowPosition(&wx, &wy);
+	SetCursorPos(x + wx, y+wy);
 }
 
-//TODO
-void GetWindowPosition(int* x, int* y) {
-
-
-}
 
 #else
 
@@ -284,12 +279,13 @@ void SetMousePosition(int x, int y) {
 	//TODO
 }
 
+#endif
+
 void GetWindowPosition(int* x, int* y) {
 
-
+	//SDL_GetWindowPosition(x, y);
+	
 }
-
-#endif
 
 void UpdateTouch(){
 

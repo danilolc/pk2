@@ -51,6 +51,7 @@ bool alas;
 bool vedessa;
 
 u8 max_nopeus;
+
 void Check_Blocks2(SpriteClass &sprite, PK2BLOCK &palikka) {
 
 	//left and right
@@ -317,6 +318,7 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 		}
 	}
 }
+
 int Sprite_Movement(int i){
 	if (i >= MAX_SPRITEJA || i < 0)
 		return -1;
@@ -386,6 +388,15 @@ int Sprite_Movement(int i){
 	bool add_speed = true;
 	bool gliding = false;
 
+	bool swimming = sprite.vedessa && (sprite.Onko_AI(AI_SWIMMING) || sprite.Onko_AI(AI_MAX_SPEED_SWIMMING));
+	bool max_speed = sprite.Onko_AI(AI_MAX_SPEED_PLAYER) ||
+		(swimming && sprite.Onko_AI(AI_MAX_SPEED_SWIMMING)) ||
+		(sprite.super_mode_timer > 0 && sprite.Onko_AI(AI_MAX_SPEED_PLAYER_ON_SUPER));
+	
+	/*swimming = sprite.vedessa;
+	max_speed = sprite.vedessa;
+	sprite.tyyppi->can_swim = true;*/
+
 	if (sprite.pelaaja != 0 && sprite.energia > 0){
 		/* SLOW WALK */
 		if (PInput::Keydown(Settings.control_walk_slow)
@@ -436,6 +447,9 @@ int Sprite_Movement(int i){
 
 		a_lisays *= double(navigation) / 100;
 
+		if (max_speed)
+			a_lisays *= max_nopeus;
+				
 		if (navigation > 0)
 			sprite.flip_x = false;
 		else if (navigation < 0)
@@ -447,7 +461,7 @@ int Sprite_Movement(int i){
 		sprite_a += a_lisays;
 
 		/* JUMPING */
-		if (sprite.tyyppi->weight > 0) {
+		if (sprite.tyyppi->weight > 0 && !swimming) {
 			if (PInput::Keydown(Settings.control_jump) || Gui_up) {
 				if (!sprite.crouched) {
 					if (sprite.jump_timer == 0)
@@ -470,11 +484,15 @@ int Sprite_Movement(int i){
 		/* MOVING UP AND DOWN */
 		else { // if the player sprite-weight is 0 - like birds
 
+			double speed = 0.15;
+			if (max_speed)
+				speed *= max_nopeus;
+
 			if (PInput::Keydown(Settings.control_jump) || Gui_up)
-				sprite_b -= 0.15;
+				sprite_b -= speed;
 
 			if (PInput::Keydown(Settings.control_down) || Gui_down)
-				sprite_b += 0.15;
+				sprite_b += speed;
 
 			sprite.jump_timer = 0;
 		}
@@ -578,8 +596,8 @@ int Sprite_Movement(int i){
 	/*****************************************************************************************/
 	/* Gravity effect                                                                        */
 	/*****************************************************************************************/
-
-	if (sprite.weight != 0 && (sprite.jump_timer <= 0 || sprite.jump_timer >= 45))
+	
+	if (sprite.weight != 0 && (sprite.jump_timer <= 0 || sprite.jump_timer >= 45) && !swimming)
 		sprite_b += sprite.weight/1.25;// + sprite_b/1.5;
 
 	if (gliding && sprite_b > 0) // If gliding
@@ -595,6 +613,7 @@ int Sprite_Movement(int i){
 	if (sprite_b < -4.0)
 		sprite_b = -4.0;
 
+	//Limit speed 1
 	if (sprite_a > max_nopeus)
 		sprite_a = max_nopeus;
 
@@ -642,11 +661,7 @@ int Sprite_Movement(int i){
 	if (sprite.vedessa) {
 
 		if (!sprite.tyyppi->can_swim || sprite.energia < 1) {
-			/*
-			if (sprite_b > 0)
-				sprite_b /= 2.0;
 
-			sprite_b -= (1.5-sprite.weight)/10;*/
 			sprite_b /= 2.0;
 			sprite_a /= 1.05;
 
@@ -659,7 +674,7 @@ int Sprite_Movement(int i){
 	}
 
 	if (vedessa != sprite.vedessa) { // Sprite comes in or out from water
-		Effect_Splash((int)sprite_x,(int)sprite_y,32);
+		Effect_Splash(sprite_x, sprite_y, 32);
 		Play_GameSFX(splash_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, true);
 	}
 
@@ -1020,6 +1035,7 @@ int Sprite_Movement(int i){
 	if (sprite_b < -4.0)
 		sprite_b = -4.0;
 
+	//Limit speed 2
 	if (sprite_a > max_nopeus)
 		sprite_a = max_nopeus;
 
@@ -1431,6 +1447,7 @@ int Sprite_Movement(int i){
 
 	return 0;
 }
+
 int BonusSprite_Movement(int i){
 	sprite_x = 0;
 	sprite_y = 0;
