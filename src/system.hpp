@@ -46,8 +46,6 @@ extern int degree_temp;
 extern bool test_level;
 extern bool dev_mode;
 
-extern bool doublespeed;
-
 extern float fps;
 extern bool show_fps;
 

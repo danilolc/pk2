@@ -11,7 +11,7 @@ namespace PSound {
 
 const int CHANNELS = 32;//16;
 
-int init();
+int init(int buffer_size);
 int update();
 int terminate();
 

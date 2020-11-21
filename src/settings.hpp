@@ -60,6 +60,10 @@ struct PK2SETTINGS {
 	s32 fps;
 	u16 vibration;
 
+	//Version 1.5
+	bool double_speed;
+	u32 audio_buffer_size;
+
 };
 
 extern PK2SETTINGS Settings;

@@ -253,7 +253,7 @@ int main(int argc, char *argv[]) {
 
 	screen_width = Settings.isWide ? 800 : 640;
 
-	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp");
+	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", Settings.audio_buffer_size);
 	if (!Piste::is_ready()) {
 
 		PLog::Write(PLog::FATAL, "PK2", "Failed to init PisteEngine");

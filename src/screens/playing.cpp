@@ -677,7 +677,7 @@ int Screen_InGame(){
 
 	static bool skip_frame = false;
 
-	if (doublespeed) skip_frame = !skip_frame;
+	if (Settings.double_speed) skip_frame = !skip_frame;
 	else skip_frame = false;
 
 	if (!skip_frame) {
@@ -808,7 +808,7 @@ int Screen_InGame(){
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::T)) {
-				doublespeed = !doublespeed;
+				Settings.double_speed = !Settings.double_speed;
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::G)) {

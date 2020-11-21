@@ -18,7 +18,7 @@
 using namespace std::chrono;
 
 #define SETTINGS_FILE "settings.ini"
-#define SETTINGS_VERSION "1.4"
+#define SETTINGS_VERSION "1.5"
 
 PK2SETTINGS Settings;
 
@@ -97,6 +97,9 @@ void Settings_Init() {
 	Settings.fps = SETTINGS_VSYNC;
 	Settings.vibration = 0xFFFF/2;
 
+	Settings.double_speed = false;
+	Settings.audio_buffer_size = /*4096*/ /*2048*/ 1024 /*512*/; //game speed vs audio latency
+
 	Id_To_String(Settings.id, id_code);
 
 }
@@ -156,6 +159,9 @@ int Settings_Open() {
 
 	file->read(Settings.fps);
 	file->read(Settings.vibration);
+
+	file->read(Settings.double_speed);
+	file->read(Settings.audio_buffer_size);
 	
 	file->close();
 	
@@ -223,6 +229,9 @@ int Settings_Save() {
 
 	file->write(Settings.fps);
 	file->write(Settings.vibration);
+
+	file->write(Settings.double_speed);
+	file->write(Settings.audio_buffer_size);
 	
 	file->close();
 

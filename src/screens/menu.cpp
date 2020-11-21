@@ -953,15 +953,15 @@ void Draw_Menu_Graphics() {
 		my += 30;
 
 
-		if (doublespeed){
+		if (Settings.double_speed){
 			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_speed_double),180,my))
-				doublespeed = false;
+				Settings.double_speed = false;
 		} else{
 			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_speed_normal),180,my))
-				doublespeed = true;
+				Settings.double_speed = true;
 		}
-		if (Draw_BoolBox(100, my, doublespeed, true)) {
-			doublespeed = !doublespeed;
+		if (Draw_BoolBox(100, my, Settings.double_speed, true)) {
+			Settings.double_speed = !Settings.double_speed;
 		}
 		my += 30;
 
@@ -1488,7 +1488,7 @@ int Screen_Menu() {
 
 	degree = 1 + degree % 360;
 
-	if (doublespeed)
+	if (Settings.double_speed)
 		degree = 1 + degree % 360;
 
 	return 0;

@@ -51,8 +51,6 @@ int degree_temp = 0;
 bool test_level = false;
 bool dev_mode = false;
 
-bool doublespeed = false;
-
 bool show_fps = false;
 
 bool PK2_error = false;

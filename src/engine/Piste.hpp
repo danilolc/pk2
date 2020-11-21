@@ -16,7 +16,7 @@
 
 namespace Piste {
 
-void init(int width, int height, const char* name, const char* icon);
+void init(int width, int height, const char* name, const char* icon, int audio_buffer_size);
 void terminate();
 
 void loop(int (*GameLogic)());

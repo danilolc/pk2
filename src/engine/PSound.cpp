@@ -14,7 +14,6 @@
 #define PS_FREQ        MIX_DEFAULT_FREQUENCY
 #define PS_FORMAT      MIX_DEFAULT_FORMAT
 #define PS_CHANNELS    MIX_DEFAULT_CHANNELS
-#define PS_BUFFER_SIZE /*4096*/ /*2048*/ 1024 /*512*/ //game speed vs audio latency
 
 namespace PSound {
 
@@ -369,9 +368,9 @@ void channelDone(int channel) {
 
 }
 
-int init() {
+int init(int buffer_size) {
 
-	if (Mix_OpenAudio(PS_FREQ, PS_FORMAT, PS_CHANNELS, PS_BUFFER_SIZE) < 0) {
+	if (Mix_OpenAudio(PS_FREQ, PS_FORMAT, PS_CHANNELS, buffer_size) < 0) {
 	
 		PLog::Write(PLog::FATAL, "PSound", "Unable to init Mixer: %s", Mix_GetError());
 		return -1;
@@ -382,6 +381,7 @@ int init() {
 	Mix_AllocateChannels(CHANNELS);
 	Mix_ChannelFinished(channelDone);
 
+	PLog::Write(PLog::DEBUG, "PSound", "buffer size: %i", buffer_size);
 	PLog::Write(PLog::DEBUG, "PSound", "Desired %ihz 0x%x", PS_FREQ, PS_FORMAT);
 
 	int frequency;
