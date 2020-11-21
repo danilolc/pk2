@@ -175,6 +175,8 @@ int Settings_Open() {
 
 	Settings.ladattu = true;
 	Id_To_String(Settings.id, id_code);
+
+	PLog::Write(PLog::DEBUG, "PK2", "Opened settings");
 	
 	return 0;
 
@@ -234,6 +236,8 @@ int Settings_Save() {
 	file->write(Settings.audio_buffer_size);
 	
 	file->close();
+	
+	PLog::Write(PLog::DEBUG, "PK2", "Saved settings");
 
 	return 0;
 

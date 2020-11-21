@@ -771,14 +771,16 @@ int Screen_InGame(){
 				key_delay = 10;
 			}
 
-			if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_START) || Gui_menu) {
-				if(test_level)
-					Fade_Quit();
-				else {
-					next_screen = SCREEN_MENU;
-					degree_temp = degree;
+			if (!skip_frame) {
+				if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_START) || Gui_menu) {
+					if(test_level)
+						Fade_Quit();
+					else {
+						next_screen = SCREEN_MENU;
+						degree_temp = degree;
+					}
+					key_delay = 20;
 				}
-				key_delay = 20;
 			}
 		}
 
@@ -846,8 +848,6 @@ int Screen_InGame(){
 				//key_delay = 20;
 				*Player_Sprite = SpriteClass(&Prototypes_List[0], 1, false, Player_Sprite->x, Player_Sprite->y);
 				Effect_Stars(Player_Sprite->x, Player_Sprite->y, COLOR_VIOLET);
-//				for (int r = 1; r < 6; r++)
-//					Particles_New(PARTICLE_SPARK, Player_Sprite->x + rand() % 10 - rand() % 10, Player_Sprite->y + rand() % 10 - rand() % 10, 0, 0, rand() % 100, 0.1, 32);
 			}
 		}
 		if (PInput::Keydown(PInput::U))

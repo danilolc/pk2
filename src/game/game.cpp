@@ -152,7 +152,7 @@ int GameClass::Clean_TileBuffer() {
 	u32 leveys;
 	int x,y;
 
-	PDraw::drawimage_start(map->palikat_buffer,*&buffer,(u32 &)leveys);
+	PDraw::drawimage_start(map->palikat_buffer, buffer, leveys);
 	for (y=0;y<480;y++)
 		for(x=0;x<320;x++)
 			if (buffer[x+y*leveys] == 254)

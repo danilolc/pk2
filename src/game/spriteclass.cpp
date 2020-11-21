@@ -695,7 +695,7 @@ int PrototypeClass::Load(PFile::Path path){
 
 		u8 *buffer = NULL;
 		u32 leveys;
-		PDraw::drawimage_start(bufferi,*&buffer,leveys);
+		PDraw::drawimage_start(bufferi, buffer, leveys);
 
 		for (int x = 0; x < w; x++)
 			for (int y = 0; y < h; y++)

@@ -412,8 +412,8 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     u8 *screenPix = nullptr;
     u32 imagePitch, screenPitch;
 
-    drawimage_start(index, *&imagePix, (u32 &)imagePitch);
-    drawscreen_start(*&screenPix, (u32 &)screenPitch);
+    drawimage_start(index, imagePix, imagePitch);
+    drawscreen_start(screenPix, screenPitch);
     
     for (int posx = x_start; posx < int(x_end); posx++)
         for (int posy = y_start; posy < int(y_end); posy++) {
@@ -473,7 +473,7 @@ int image_fliphori(int index) {
 }
 int image_snapshot(int index) {
 
-    SDL_FillRect(imageList[index], NULL, 0); //needed?
+    //SDL_FillRect(imageList[index], NULL, 0);
 
     return SDL_BlitSurface(frameBuffer8, NULL, imageList[index], NULL);
 
@@ -588,7 +588,7 @@ int create_shadow(int index, u32 width, u32 height, u32 startx){
     u8* buffer = NULL;
     u32 leveys;
 
-	if (drawimage_start(index, *&buffer, (u32&)leveys) != 0)
+	if (drawimage_start(index, buffer, leveys) != 0)
 		return 1;
 
 	if (width > leveys)

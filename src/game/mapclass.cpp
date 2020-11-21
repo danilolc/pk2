@@ -944,7 +944,7 @@ int MapClass::Load_BG(PFile::Path path){
 	u8 *buffer = NULL;
 	u32 leveys;
 
-	PDraw::drawimage_start(taustakuva_buffer,*&buffer,(u32 &)leveys);
+	PDraw::drawimage_start(taustakuva_buffer, buffer, leveys);
 
 	for ( int x = 0; x < 640; x++)
 		for ( int y = 0; y < 480; y++) {
@@ -1215,7 +1215,7 @@ void MapClass::Animoi_Tuli(void){
 	int x,y;
 	int color;
 
-	PDraw::drawimage_start(palikat_buffer,*&buffer,(u32 &)leveys);
+	PDraw::drawimage_start(palikat_buffer, buffer, leveys);
 
 	for (x=128;x<160;x++)
 		for (y=448;y<479;y++)
@@ -1261,7 +1261,7 @@ void MapClass::Animoi_Vesiputous(void){
 
 	u8 temp[32*32];
 
-	PDraw::drawimage_start(palikat_buffer,*&buffer,(u32 &)leveys);
+	PDraw::drawimage_start(palikat_buffer, buffer, leveys);
 
 	for (x=32;x<64;x++)
 		for (y=416;y<448;y++)
@@ -1302,7 +1302,7 @@ void MapClass::Animoi_Vedenpinta(void){
 
 	u8 temp[32];
 
-	PDraw::drawimage_start(palikat_buffer,*&buffer,(u32 &)leveys);
+	PDraw::drawimage_start(palikat_buffer, buffer, leveys);
 
 	for (y=416;y<448;y++)
 		temp[y-416] = buffer[y*leveys];
@@ -1331,8 +1331,8 @@ void MapClass::Animoi_Vesi(void){
 	int i;
 
 
-	PDraw::drawimage_start(palikat_buffer,		*&buffer_kohde,(u32 &)leveys_kohde);
-	PDraw::drawimage_start(palikat_vesi_buffer,*&buffer_lahde,(u32 &)leveys_lahde);
+	PDraw::drawimage_start(palikat_buffer, buffer_kohde, leveys_kohde);
+	PDraw::drawimage_start(palikat_vesi_buffer, buffer_lahde, leveys_lahde);
 
 	for (y=0;y<32;y++){
 		d2 = d1;
@@ -1393,7 +1393,7 @@ void MapClass::Animoi_Virta_Ylos(void){
 
 	u8 temp[32];
 
-	PDraw::drawimage_start(palikat_buffer,*&buffer,(u32 &)leveys);
+	PDraw::drawimage_start(palikat_buffer, buffer, leveys);
 
 	for (x=64;x<96;x++)
 		temp[x-64] = buffer[x+448*leveys];

@@ -140,8 +140,8 @@ int PFont::write_trasparent(int posx, int posy, const char* text, int alpha) {
 	int a1 = alpha;
 	int a2 = 100 - alpha;
 
-	PDraw::drawscreen_start(*&back_buffer, (u32 &)back_w);
-	PDraw::drawimage_start(image_index, *&txt_buffer, (u32 &)txt_w);
+	PDraw::drawscreen_start(back_buffer, back_w);
+	PDraw::drawimage_start(image_index, txt_buffer, txt_w);
 
 	do {
 		curr_char = text[i];

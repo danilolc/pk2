@@ -83,7 +83,6 @@ This example starts the level13.map on dev mode:
 * Remove repeated languages
 * Translate finnish language
 * Low volume sounds not played on low volume
-* Fix BG screen on menu?
 * Add option to audio latency
 * Jump frames when fps is slow
 

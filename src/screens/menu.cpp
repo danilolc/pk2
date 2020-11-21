@@ -811,7 +811,7 @@ void Draw_Menu_Graphics() {
 			MapClass_Set_Screen_Size(screen_width, screen_height);
 			PDraw::change_resolution(screen_width, screen_height);
 			
-			if(Episode)
+			if (Episode)
 				PDraw::image_fill(bg_screen, 0);
 			
 			PDraw::set_xoffset(Settings.isWide? 80 : 0);
@@ -1377,9 +1377,6 @@ int Draw_Menu() {
 
 
 int Screen_Menu_Init() {
-	
-	//u32 a;
-	//Settings_GetId(PFile::Path(data_path, "settings.ini"), a);
 
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_CURSOR);
@@ -1396,13 +1393,6 @@ int Screen_Menu_Init() {
 	
 	} else {
 
-		//int w, h;
-		//PDraw::image_getsize(bg_screen, w, h);
-		//if (w != screen_width) {
-		//	PDraw::image_delete(bg_screen);
-		//	bg_screen = PDraw::image_new(screen_width, screen_height);
-		//}
-		//PDraw::image_snapshot(bg_screen); //TODO - take snapshot without text and cursor
 		PDraw::create_shadow(bg_screen, 640, 480, Settings.isWide? 110 : 30);
 
 	}
