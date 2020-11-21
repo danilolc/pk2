@@ -82,13 +82,12 @@ This example starts the level13.map on dev mode:
 * Digital antroid controllers (<< < o > >>)
 * Remove repeated languages
 * Translate finnish language
-* Low volume sounds not played on low volume
+* Low volume sounds not played on low volume - music playing on volume 0
 * Add option to audio latency
 * Jump frames when fps is slow
 
 # PLANS
 * Better documentation
-* Make latin accentuation
 * Implement new layer on .map (regions)
 * Use Lua scripts
 * Find image (load .bmp or .png)
