@@ -22,9 +22,8 @@ This game was tested on Windows, GNU/Linux and Android.
 # Binary distibution
 
 ### Windows
-There is a compiled binary with the version 1.3.3-2.
-https://files.fm/f/vkw4hgxs
-
+There is a compiled binary with the version 1.3.5.
+https://files.fm/f/9q2np9y6h
 
 # Compiling
 
@@ -35,14 +34,14 @@ Edit the `/mingw/i686/Makefile` as you need and run Make on this directory.
 
 ### Debian
 To compile **Pekka Kana 2** into Debian GNU/Linux based distributions,
-you need the **SDL2**, **SDL2_image**, **SDL2_mixer** and **Zip** libraries installed on
+you need the **SDL2**, **SDL2_image** and **SDL2_mixer** libraries installed on
 the system. To get everything you need, just run the following command on the terminal:
 
-    $ apt install g++ make libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libzip-dev
+    $ apt install g++ make libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
 
 Then run the "**make**" command inside the "**Pekka Kana 2**" directory.
 
-    $ make -j$(nproc)
+    $ make
 
 The PK2 binary will be in "**bin/**" directory.
 

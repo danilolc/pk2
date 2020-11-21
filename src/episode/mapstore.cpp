@@ -35,6 +35,8 @@ void Search_Episodes() {
         
 	}
 
+	#ifdef PK2_USE_ZIP
+
 	std::string mapstore_path(data_path + "mapstore" PE_SEP);
 	
 	list = PFile::Path(mapstore_path).scandir(".zip");
@@ -63,6 +65,8 @@ void Search_Episodes() {
 		PFile::CloseZip(zp);
 		
 	}
+
+	#endif
 
 	if (episodes.size() > 1)
 		std::sort(episodes.begin(), episodes.end(), Alphabetical);
