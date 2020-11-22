@@ -17,6 +17,7 @@
 
 #include <cinttypes>
 #include <cstring>
+#include <cmath>
 
 int aste,
 	vesiaste = 0,
@@ -1506,10 +1507,10 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 
 				if (!editor){
 					if (palikka == BLOCK_HISSI_VERT)
-						ay = (int)sin_table[aste%360];
+						ay = floor(sin_table[aste%360]);
 
 					if (palikka == BLOCK_HISSI_HORI)
-						ax = (int)cos_table[aste%360];
+						ax = floor(cos_table[aste%360]);
 
 					if (palikka == BLOCK_KYTKIN1)
 						ay = ajastin1_y/2;
