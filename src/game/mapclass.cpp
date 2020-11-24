@@ -770,6 +770,10 @@ int MapClass::LoadVersion13(PFile::Path path){
 	file->read(taustakuva,  sizeof(taustakuva));
 	file->read(musiikki,    sizeof(musiikki));
 	file->read(nimi,        sizeof(nimi));
+
+	for (int i = 38; i > 0 && (nimi[i] == (char)0xCD); i--)
+		nimi[i] = 0;
+	
 	file->read(tekija,      sizeof(tekija));
 
 	file->read(luku, sizeof(luku));
