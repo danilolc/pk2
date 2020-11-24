@@ -588,7 +588,7 @@ void Draw_Menu_Load() {
 
 			vali = 0;
 			vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.loadgame_episode),400,150+my);
-			vali += PDraw::font_write(fontti1,saves_list[i].episode,400+vali,150+my);
+			vali += PDraw::font_write(fontti1,saves_list[i].episode.c_str(),400+vali,150+my);
 			vali = 0;
 			vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.loadgame_level),400+vali,160+my);
 			sprintf(jaksoc, "%i", saves_list[i].level);
@@ -637,7 +637,7 @@ void Draw_Menu_Save() {
 
 			vali = 0;
 			vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.savegame_episode),400,150+my);
-			vali += PDraw::font_write(fontti1,saves_list[i].episode,400+vali,150+my);
+			vali += PDraw::font_write(fontti1,saves_list[i].episode.c_str(),400+vali,150+my);
 			vali = 0;
 			vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.savegame_level),400+vali,160+my);
 			sprintf(jaksoc, "%i", saves_list[i].level);

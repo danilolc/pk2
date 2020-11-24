@@ -197,8 +197,7 @@ int Draw_InGame_DebugInfo() {
 	}
 
 	for (uint i = 0; i < Episode->level_count; i++)
-		if (strcmp(Episode->levels_list[i].nimi,"")!=0)
-			PDraw::font_write(fontti1,Episode->levels_list[i].nimi,0,240+i*10);
+		PDraw::font_write(fontti1,Episode->levels_list[i].nimi.c_str(),0,240+i*10);
 
 	char dluku[50];
 

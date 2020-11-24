@@ -13,12 +13,13 @@ const int EPISODI_MAX_LEVELS = 100; //50;
 
 struct PK2LEVEL {
 
-	char  tiedosto[PE_PATH_SIZE];
-	char  nimi[40];
+	std::string tiedosto;
+	std::string nimi;
 	int   x, y;
 	u32   order;
 	u32   icon;
-	
+	u8 status;
+
 };
 
 enum LEVEL_STATUS {
@@ -72,8 +73,7 @@ class EpisodeClass {
 		u32 level = 1;
 		u32 level_count = 0;
 		
-		PK2LEVEL levels_list[EPISODI_MAX_LEVELS];
-		u8 level_status[EPISODI_MAX_LEVELS];
+		std::vector<PK2LEVEL> levels_list;
 
 		PK2EPISODESCORES scores;
 

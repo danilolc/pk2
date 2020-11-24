@@ -13,12 +13,13 @@ const int SAVES_COUNT = 11;
 // Save struct is not the ideal way because of byte order
 struct PK2SAVE {
 
-	bool  empty;
-	u32   level;
-	char  episode[PE_PATH_SIZE];
-	char  name[20];
-	u32   score;
-	u8    level_status[EPISODI_MAX_LEVELS];
+	bool        empty;
+	u32         level;
+	std::string episode;
+	char        name[20];
+	u32         score;
+	u32         level_count;
+	u8          level_status[EPISODI_MAX_LEVELS];
 	
 };
 

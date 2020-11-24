@@ -223,17 +223,16 @@ void EpisodeClass::Load() {
 	PFile::Path path = this->Get_Dir("");
 	std::vector<std::string> list = path.scandir(".map");
 	this->level_count = list.size();
+	this->levels_list.resize(this->level_count);
 
 	MapClass *temp = new MapClass();
 
 	for (u32 i = 0; i < this->level_count; i++) {
 
-		char* mapname = this->levels_list[i].tiedosto;
-		strcpy(mapname, list[i].c_str());
+		this->levels_list[i].tiedosto = list[i];
+		if (temp->Load_Plain_Data(PFile::Path(path, list[i])) == 0) {
 
-		if (temp->Load_Plain_Data(PFile::Path(path, mapname)) == 0) {
-
-			strcpy(this->levels_list[i].nimi, temp->nimi);
+			this->levels_list[i].nimi = temp->nimi;
 			this->levels_list[i].x = temp->x;//   142 + i*35;
 			this->levels_list[i].y = temp->y;// 270;
 			this->levels_list[i].order = temp->jakso;
@@ -294,13 +293,11 @@ EpisodeClass::EpisodeClass(int save) {
 	this->level = saves_list[save].level;
 	this->player_score = saves_list[save].score;
 
-	for (int j = 0; j < EPISODI_MAX_LEVELS; j++) {
-
-		this->level_status[j] = saves_list[save].level_status[j];
-
-	}
-
 	this->Load();
+
+	for (uint j = 0; j < this->level_count; j++)
+		this->levels_list[j].status = saves_list[save].level_status[j];
+
 
 }
 
@@ -308,9 +305,6 @@ EpisodeClass::EpisodeClass(const char* player_name, episode_entry entry) {
 
 	this->entry = entry;
 	strcpy(this->player_name, player_name);
-
-	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-		this->level_status[j] = 0;
 	
 	this->Load();
 	

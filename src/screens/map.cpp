@@ -110,21 +110,21 @@ int PK_Draw_Map() {
 
 	u32 njakso = Episode->level_count;
 	for (u32 i = 0; i < Episode->level_count; i++)
-		if (!Episode->level_status[i] && Episode->levels_list[i].order < njakso)
+		if (!Episode->levels_list[i].status && Episode->levels_list[i].order < njakso)
 			njakso = Episode->levels_list[i].order; // Find the first unclear level
 	
 	if(Episode->level < njakso)
 		Episode->level = njakso;
 
 	for (u32 i = 0; i < Episode->level_count; i++) {
-		if (strcmp(Episode->levels_list[i].nimi,"")!=0 && Episode->levels_list[i].order > 0) {
+		if (Episode->levels_list[i].order > 0) {
 			
 			int type = -1;
 			if (Episode->levels_list[i].order == Episode->level)
 				type = 1;
 			if (Episode->levels_list[i].order > Episode->level)
 				type = 2;
-			if (Episode->level_status[i] != 0)
+			if (Episode->levels_list[i].status != 0)
 				type = 0;
 
 			if (Episode->levels_list[i].x == 0)
@@ -147,7 +147,7 @@ int PK_Draw_Map() {
 
 			paluu = PK_Draw_Map_Button(Episode->levels_list[i].x-5, Episode->levels_list[i].y-10, type);
 
-			if (Episode->level_status[i] & LEVEL_ALLAPPLES)
+			if (Episode->levels_list[i].status & LEVEL_ALLAPPLES)
 				PDraw::image_cutclip(game_assets2, 
 					Episode->levels_list[i].x - 10,
 					Episode->levels_list[i].y, 45, 379, 58, 394);
@@ -179,7 +179,7 @@ int PK_Draw_Map() {
 				int info_x = 489+3, info_y = 341-26;
 
 				PDraw::image_cutclip(game_assets,info_x-3,info_y+26,473,0,607,121);
-				PDraw::font_write(fontti1,Episode->levels_list[i].nimi,info_x,info_y+30);
+				PDraw::font_write(fontti1,Episode->levels_list[i].nimi.c_str(),info_x,info_y+30);
 
 				if (Episode->scores.has_score[i]) { 
 					

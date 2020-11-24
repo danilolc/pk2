@@ -762,6 +762,22 @@ RW* Path::GetRW(const char* mode) {
 
 }
 
+int RW::read(std::string& str) {
+
+	str.clear();
+
+	while(1) {
+		u8 c = SDL_ReadU8((SDL_RWops*)this);
+
+		if (c == 0)
+			return str.size();
+		
+		str += c;
+	
+	}
+
+}
+
 int RW::read(void* val, size_t size) {
 
 	return SDL_RWread((SDL_RWops*)this, val, 1, size);
@@ -823,6 +839,12 @@ int RW::read(s64& val) {
 
 	val = SDL_ReadLE64((SDL_RWops*)this);
 	return 1;
+
+}
+
+int RW::write(std::string& str) {
+
+	return SDL_RWwrite((SDL_RWops*)this, str.c_str(), 1, str.size() + 1);
 
 }
 

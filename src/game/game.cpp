@@ -66,7 +66,7 @@ int GameClass::Start() {
 		int index = this->level_id;
 
 		this->map_file = Episode->levels_list[index].tiedosto;
-		if (Episode->level_status[index] & LEVEL_PASSED)
+		if (Episode->levels_list[index].status & LEVEL_PASSED)
 			this->repeating = true;
 		else
 			this->repeating = false;
@@ -100,11 +100,11 @@ int GameClass::Finnish() {
 	
 	this->level_clear = true;
 	
-	Episode->level_status[this->level_id] |= LEVEL_PASSED;
+	Episode->levels_list[this->level_id].status |= LEVEL_PASSED;
 	
 	if (this->apples_count > 0)
 		if (this->apples_got >= this->apples_count)
-			Episode->level_status[this->level_id] |= LEVEL_ALLAPPLES;
+			Episode->levels_list[this->level_id].status |= LEVEL_ALLAPPLES;
 
 	if (Episode->levels_list[this->level_id].order == Episode->level)
 		Episode->level++;
