@@ -5,6 +5,7 @@
 # "make" - Creates Pekka Kana 2 binary
 # "make clean" - Removes all objects, executables and dependencies
 
+# Compiler:
 CXX = g++
 
 # Optimization:
@@ -22,8 +23,8 @@ CXXFLAGS += $(shell pkg-config sdl2 --cflags)
 LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
 
 # LibZip (read episodes on zip files):
-#CXXFLAGS += -DPK2_USE_ZIP $(shell pkg-config libzip --cflags)
-#LDFLAGS += $(shell pkg-config libzip --libs)
+CXXFLAGS += -DPK2_USE_ZIP $(shell pkg-config libzip --cflags)
+LDFLAGS += $(shell pkg-config libzip --libs)
 
 # Portable (data is stored with resorces):
 CXXFLAGS += -DPK2_PORTABLE
@@ -33,17 +34,23 @@ SRC_DIR = src/
 BIN_DIR = bin/
 BUILD_DIR = build/
 
-# Files:
-PK2_SRC  = $(wildcard $(SRC_DIR)*.cpp) $(wildcard $(SRC_DIR)*/*.cpp)
+# Source files:
+PK2_SRC  = *.cpp */*.cpp
+PK2_SRC := $(addprefix $(SRC_DIR), $(PK2_SRC))
+PK2_SRC := $(wildcard $(PK2_SRC))
+
+# Object files:
 PK2_OBJ := $(basename $(PK2_SRC))
 PK2_OBJ := $(subst $(SRC_DIR), ,$(PK2_OBJ))
 PK2_OBJ := $(addsuffix .o, $(PK2_OBJ))
 PK2_OBJ := $(addprefix $(BUILD_DIR), $(PK2_OBJ))
 
+# Dependency files:
 DEPENDENCIES := $(PK2_OBJ)
 DEPENDENCIES := $(basename $(DEPENDENCIES))
 DEPENDENCIES := $(addsuffix .d, $(DEPENDENCIES))
 
+# Binary output:
 PK2_BIN = $(BIN_DIR)pekka-kana-2
 
 pk2: $(PK2_BIN)
