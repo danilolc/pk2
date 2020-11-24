@@ -20,6 +20,8 @@ struct RW {
     int read(void* val, size_t size);
     int read(bool& val);
 
+    int read(std::string& str);
+
     // Read the value always in little endian
     int read(u8& val);
     int read(s8& val);
@@ -32,6 +34,8 @@ struct RW {
 
     int write(const void* val, size_t size);
     int write(bool val);
+
+    int write(std::string& str);
 
     // Write the value always in little endian
     int write(u8 val);
