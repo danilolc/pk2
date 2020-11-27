@@ -62,7 +62,7 @@ struct PK2SETTINGS {
 
 	//Version 1.5
 	bool double_speed;
-	u32 audio_buffer_size;
+	u32  audio_buffer_size;
 
 };
 

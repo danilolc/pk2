@@ -132,7 +132,7 @@ int Screen_Ending_Init() {
 
 	} else {
 
-		PLog::Write(PLog::ERR, "PK2", "Can't load map bg");
+		PLog::Write(PLog::ERR, "PK2", "Can't load ending bg"); //"Can't load map bg"
 
 	}
 

@@ -198,7 +198,7 @@ void EpisodeClass::Load_Assets() {
 
 	} else {
 
-		PLog::Write(PLog::ERR, "PK2", "Can't load map bg");
+		PLog::Write(PLog::ERR, "PK2", "Can't load pk2stuff"); //"Can't load map bg"
 
 	}
 
@@ -209,7 +209,7 @@ void EpisodeClass::Load_Assets() {
 
 	} else {
 
-		PLog::Write(PLog::ERR, "PK2", "Can't load map bg");
+		PLog::Write(PLog::ERR, "PK2", "Can't load pk2stuff2"); //"Can't load map bg"
 
 	}
 
