@@ -21,6 +21,8 @@ LDFLAGS += -Wl,-Bstatic -lstdc++ -lpthread
 
 CXXFLAGS += -fno-exceptions -fno-rtti
 
+CXXFLAGS += -DCOMMIT_HASH='"$(shell git rev-parse --short HEAD)"'
+
 SRC_DIR = ../../src/
 RES_DIR = ../../res/
 BIN_DIR = PK2/

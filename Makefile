@@ -9,8 +9,8 @@
 CXX = g++
 
 # Optimization:
-#CXXFLAGS += -g
-CXXFLAGS += -O2
+CXXFLAGS += -g
+#CXXFLAGS += -O2
 
 # Warnings:
 CXXFLAGS += -Wall
@@ -28,6 +28,9 @@ LDFLAGS += $(shell pkg-config libzip --libs)
 
 # Portable (data is stored with resorces):
 CXXFLAGS += -DPK2_PORTABLE
+
+# Commit hash
+CXXFLAGS += -DCOMMIT_HASH='"$(shell git rev-parse --short HEAD)"'
 
 # Directories:
 SRC_DIR = src/

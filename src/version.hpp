@@ -6,12 +6,15 @@
 
 #define PK2_NAME "Pekka Kana 2"
 
-#define PK2_VERSION "1.3.5"
-#define PK2_VERNUM 0x0306
 #define PK2_VER_MAJOR 1
 #define PK2_VER_MINOR 3
-#define PK2_VER_REVISION 5
+#define PK2_VER_REVISION 6
 
+#define TO_VERSION2(X, Y, Z) #X "." #Y "." #Z
+#define TO_VERSION(X, Y, Z) TO_VERSION2(X, Y, Z)
+
+#define PK2_VERNUM (PK2_VER_MINOR << 8) + PK2_VER_REVISION
+#define PK2_VERSION TO_VERSION(PK2_VER_MAJOR, PK2_VER_MINOR, PK2_VER_REVISION)
 #define PK2_VERSION_NAME " (r3)"
 
 #ifdef __ANDROID__
