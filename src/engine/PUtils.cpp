@@ -114,21 +114,6 @@ int Alphabetical_Compare(const char *a, const char *b) {
 
 #ifdef _WIN32
 
-//TODO
-void GetLanguage(char* lang) {
-
-	LCID lc_id = GetSystemDefaultLCID();
-	wchar_t LanguageCode[16];
-	GetLocaleInfoW(lc_id, LOCALE_SISO639LANGNAME, LanguageCode, 16);
-
-	PLog::Write(PLog::DEBUG, "PUtils", "Language %s", LanguageCode);
-
-	lang[0] = LanguageCode[0];
-	lang[1] = LanguageCode[1];
-	lang[2] = '\0';
-
-}
-
 int CreateDir(std::string path){
 	
 	return CreateDirectory(path.c_str(), NULL);
@@ -150,46 +135,6 @@ int RenameDir(std::string old_path, std::string new_path) {
 }
 
 #else
-
-#ifdef __ANDROID__
-
-void GetLanguage(char* lang) {
-
-	JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
-	jobject activity = (jobject)SDL_AndroidGetActivity();
-	jclass clazz(env->GetObjectClass(activity));
-	jmethodID method_id = env->GetMethodID(clazz, "getLocale", "()Ljava/lang/String;");
-
-	jstring language = (jstring)env->CallObjectMethod(activity, method_id);
-
-	jboolean isCopy;
-	const char* clang = env->GetStringUTFChars(language, &isCopy);
-
-	lang[0] = clang[0] | ' '; // lower
-	lang[1] = clang[1] | ' '; 
-	lang[2] = '\0';
-
-	if (isCopy == JNI_TRUE) {
-    	env->ReleaseStringUTFChars(language, clang);
-	}
-	env->DeleteLocalRef(activity);
-	env->DeleteLocalRef(clazz);
-
-}
-
-#else
-
-void GetLanguage(char* lang) {
-
-	const char* locale = std::locale("").name().c_str();
-
-	lang[0] = locale[0] | ' '; // lower
-	lang[1] = locale[1] | ' '; 
-	lang[2] = '\0';
-
-}
-
-#endif
 
 int CreateDir(std::string path) {
 
@@ -214,6 +159,22 @@ int RenameDir(std::string old_path, std::string new_path) {
 }
 
 #endif
+
+//TODO - test it on android
+void GetLanguage(char* lang) {
+
+	#if (SDL_COMPILEDVERSION < 2014)
+		#warning SDL version must be at least 2.0.14 to support locale
+		const char* locale = "en";
+	#else
+		const char* locale = SDL_GetPreferredLocales()->language;
+	#endif
+
+	lang[0] = SDL_tolower(locale[0]);
+	lang[1] = SDL_tolower(locale[1]); 
+	lang[2] = '\0';
+
+}
 
 void Show_Error(const char* txt) {
 	
