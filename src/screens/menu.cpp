@@ -787,21 +787,21 @@ void Draw_Menu_Graphics() {
 
 		if(wasFullScreen != Settings.isFullScreen) {// If fullscreen changes
 			save_settings = true;
-			PDraw::set_fullscreen(Settings.isFullScreen);
+			PRender::set_fullscreen(Settings.isFullScreen);
 		}
 
 		if(wasFiltered && !Settings.isFiltered) { // If filter changes
 			save_settings = true;
-			PDraw::set_filter(PDraw::FILTER_NEAREST);
+			PRender::set_filter(PRender::FILTER_NEAREST);
 
 		} else if(!wasFiltered && Settings.isFiltered) {
 			save_settings = true;
-			PDraw::set_filter(PDraw::FILTER_BILINEAR);
+			PRender::set_filter(PRender::FILTER_BILINEAR);
 		}
 		
 		if(wasFit != Settings.isFit) { // If fit changes
 			save_settings = true;
-			PDraw::fit_screen(Settings.isFit);
+			PRender::fit_screen(Settings.isFit);
 		}
 
 		if (wasWide != Settings.isWide) {
@@ -809,7 +809,8 @@ void Draw_Menu_Graphics() {
 			screen_width = Settings.isWide ? 800 : 640;
 			
 			MapClass_Set_Screen_Size(screen_width, screen_height);
-			PDraw::change_resolution(screen_width, screen_height);
+			PRender::change_window_size(screen_width, screen_height);
+			PDraw::change_buffer_size(screen_width, screen_height);
 			
 			if (Episode)
 				PDraw::image_fill(bg_screen, 0);

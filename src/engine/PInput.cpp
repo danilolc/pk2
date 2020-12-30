@@ -6,6 +6,7 @@
 
 #include "engine/PLog.hpp"
 #include "engine/PDraw.hpp"
+#include "engine/PRender.hpp"
 #include "engine/PUtils.hpp"
 #include "engine/platform.hpp"
 
@@ -397,7 +398,7 @@ void UpdateMouse(bool keyMove, bool relative) {
 	static bool ignore_mouse = false;
 
 	int sw, sh;
-	PDraw::get_resolution(&sw, &sh);
+	PRender::get_window_size(&sw, &sh);
 
 	int bw, bh;
 	PDraw::get_buffer_size(&bw, &bh);

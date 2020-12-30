@@ -14,11 +14,6 @@
 
 namespace PDraw {
 
-static const char* window_name;
-
-static SDL_Window* window = NULL;
-static SDL_Renderer* renderer = NULL;
-
 // 8-bit indexed surface, it's the game frame buffer
 static SDL_Surface* frameBuffer8 = NULL;
 static SDL_Palette* game_palette = NULL;
@@ -30,24 +25,21 @@ static SDL_Palette* game_palette = NULL;
 static std::vector<SDL_Surface*> imageList;
 static std::vector<PFont*> fontList;
 
-static std::vector<Gui*> gui_textures;
+/*static std::vector<Gui*> gui_textures;*/
 
-static int screen_width;
-static int screen_height;
-
-static SDL_Rect screen_dest = {0, 0, 0, 0};
-static bool screen_fit = false;
-static bool vsync_set = true;
+static int buffer_width;
+static int buffer_height;
 
 static bool ready = false;
 
+// Fade must be part of PK2, not PisteDraw
 static int fade_speed = 0;
 static int alpha = 100;
 
 static int x_offset = 0;
 
 Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
-
+/*
     SDL_Texture* tex = NULL;
 
     if (path.GetFileName().size() > 0) {
@@ -83,11 +75,11 @@ Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
 
     gui_textures.push_back(gui);
     return gui;
-
+*/
 }
 
 int remove_gui(Gui* gui) {
-
+/*
     if (!gui)
         return -1;
 
@@ -101,11 +93,11 @@ int remove_gui(Gui* gui) {
     
 
     return 0;
-
+*/
 }
 
 int draw_gui() {
-
+/*
 	int w, h;
 	SDL_GetRendererOutputSize(renderer, &w, &h);
 	
@@ -132,7 +124,7 @@ int draw_gui() {
 	}
     
     return 0;
-
+*/
 }
 
 int findfreeimage() {
@@ -390,7 +382,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     if (dst_x < 0) x_start -= dst_x;
 
     uint x_end = src_x + src_w;
-    int dx = dst_x + (src_w - screen_width);
+    int dx = dst_x + (src_w - buffer_width);
     if (dx > int(x_end)) return -1;
     if (dx > 0) x_end -= dx;
 
@@ -401,7 +393,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     if (dst_y < 0) y_start -= dst_y;
 
     uint y_end = src_y + src_h;
-    int dy = dst_y + (src_h - screen_height);
+    int dy = dst_y + (src_h - buffer_height);
     if (dy > int(y_end)) return -1;
     if (dy > 0) y_end -= dy;
 
@@ -693,63 +685,9 @@ int font_writealpha(int font_index, const char* text, int x, int y, int alpha) {
 
 }
 
-int set_filter(const char* filter) {
-
-    if(SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, filter) == SDL_TRUE)
-        return 0;
-
-    return 1;
-}
-
-void set_fullscreen(bool set) {
-    #ifndef __ANDROID__
-    if(set)
-        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    else {
-        SDL_SetWindowFullscreen(window, 0);
-        SDL_SetWindowSize(window, screen_width, screen_height);
-        SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED , SDL_WINDOWPOS_CENTERED);
-        //TODO - adjust dst_rect too and turn off filters
-    }
-
-    adjust_screen();
-    #endif
-}
-
-void adjust_screen() {
-
-    int w, h;
-    SDL_GetWindowSize(window, &w, &h);
-
-    float screen_prop = (float)w / h;
-    float buff_prop   = (float)screen_width / screen_height;
-
-    if (buff_prop > screen_prop) {
-
-        screen_dest.w = w;
-        screen_dest.h = (int)(h / buff_prop);
-        screen_dest.x = 0;
-        screen_dest.y = (int)((h - screen_dest.h) / 2);
+void change_buffer_size(int w, int h) {
     
-    }else {
-
-        screen_dest.w = (int)(buff_prop * h);
-        screen_dest.h = h;
-        screen_dest.x = (int)((w - screen_dest.w) / 2);
-        screen_dest.y = 0;
-
-    }
-}
-
-void fit_screen(bool fit) {
-
-    screen_fit = fit;
-
-}
-
-void change_resolution(int w, int h) {
-
-    if (w == screen_width && h == screen_height)
+    if (w == buffer_width && h == buffer_height)
         return;
 
     frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
@@ -762,36 +700,15 @@ void change_resolution(int w, int h) {
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
     SDL_FillRect(frameBuffer8, NULL, 255);
 
-    screen_width = w;
-    screen_height = h;
-    SDL_SetWindowSize(window, w, h);
-    SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-    
-    adjust_screen();
-    SDL_RenderClear(renderer);
+    buffer_width = w;
+    buffer_height = h;
 
 }
 
-int get_resolution(int* w, int* h) {
+void get_buffer_size(int* w, int* h) {
 
-    SDL_GetWindowSize(window, w, h);
-
-    return 0;
-
-}
-
-int get_buffer_size(int* w, int* h) {
-
-    *w = screen_width;
-    *h = screen_height;
-
-    return 0;
-
-}
-
-void get_windowposition(int* x, int* y) {
-
-    SDL_GetWindowPosition(window, x, y);
+    *w = buffer_width;
+    *h = buffer_height;
 
 }
 
@@ -808,49 +725,7 @@ void set_xoffset(int x) {
 
 }
 
-int set_vsync(bool set) {
-
-    #ifndef PK2_NO_THREAD
-
-    if (set == vsync_set)
-        return 0;
-
-    if (renderer) {
-
-        SDL_DestroyRenderer(renderer);
-
-    }
-
-    Uint32 sync = set? SDL_RENDERER_PRESENTVSYNC : 0;
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | sync);
-    if (!renderer) {
-
-        PLog::Write(PLog::FATAL, "PDraw", "Couldn't create renderer!");
-        return -1;
-
-    }
-
-    vsync_set = set;
-
-    SDL_RenderClear(renderer);
-    return 0;
-
-    #else
-
-    return -1;
-
-    #endif
-
-}
-
-bool is_vsync() {
-
-    return vsync_set;
-    
-}
-
-int init(int width, int height, const char* name, const char* icon) {
+int init(int width, int height) {
 
     if (ready) return -1;
 
@@ -869,58 +744,6 @@ int init(int width, int height, const char* name, const char* icon) {
 
     }
 
-    window_name = name;
-
-    #ifdef __ANDROID__
-
-    SDL_DisplayMode DM;
-    SDL_GetCurrentDisplayMode(0, &DM);
-    auto Width = DM.w;
-    auto Height = DM.h;
-    auto x = Height;
-    if(Width < Height){
-        Height = Width;
-        Width = x;
-    }
-
-    window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Width, Height, SDL_WINDOW_SHOWN);
-    if (!window) {
-
-        PLog::Write(PLog::FATAL, "PDraw", "Couldn't create window!");
-        return -2;
-
-    }
-    #else
-
-    window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN );
-    if (!window) {
-
-        PLog::Write(PLog::FATAL, "PDraw", "Couldn't create window!");
-        return -2;
-
-    }
-
-
-    SDL_Surface* window_icon = SDL_LoadBMP(icon);
-    if (window_icon) {
-        SDL_SetWindowIcon(window, window_icon);
-        SDL_FreeSurface(window_icon);
-    }
-    
-    SDL_ShowCursor(SDL_DISABLE);
-    
-    #endif
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!renderer) {
-
-        PLog::Write(PLog::FATAL, "PDraw", "Couldn't create renderer!");
-        return -3;
-
-    }
-
-    SDL_RenderClear(renderer);
-
     frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
     frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
     frameBuffer8->format->palette = game_palette;
@@ -929,9 +752,8 @@ int init(int width, int height, const char* name, const char* icon) {
     SDL_SetClipRect(frameBuffer8, NULL);
     SDL_FillRect(frameBuffer8, NULL, 255);
 
-    screen_width = width;
-    screen_height = height;
-    adjust_screen();
+    buffer_width = width;
+    buffer_height = height;
 
     ready = true;
     return 0;
@@ -966,8 +788,6 @@ int terminate(){
 
     frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
     SDL_FreeSurface(frameBuffer8);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
 
     IMG_Quit();
 
@@ -976,31 +796,16 @@ int terminate(){
 
 }
 
-void update(bool draw) {
+void get_buffer_data(void** _buffer8, int* _alpha) {
+
+    *_buffer8 = frameBuffer8;
+    *_alpha = alpha;
+
+}
+
+void update() {
+
     if(!ready) return;
-
-    if(draw) {
-        
-        SDL_Texture* texture;
-        u8 alpha2 = (u8)(alpha*255/100);
-
-        texture = SDL_CreateTextureFromSurface(renderer,frameBuffer8);
-        SDL_SetTextureColorMod(texture,alpha2,alpha2,alpha2);
-
-        SDL_RenderClear(renderer);
-
-        if(screen_fit)
-            SDL_RenderCopy(renderer, texture, NULL, NULL);
-        else
-            SDL_RenderCopy(renderer, texture, NULL, &screen_dest);
-
-        draw_gui();
-
-        SDL_RenderPresent(renderer);
-
-        SDL_DestroyTexture(texture);
-    
-    }
 
     if (is_fading()) {
 
@@ -1010,10 +815,7 @@ void update(bool draw) {
     
     }
 
-    //SDL_Rect r = {0, 0, x_offset, screen_height}; // Fill the unused borders
-    //SDL_FillRect(frameBuffer8, &r, 0);
-    //r.x = screen_width - x_offset;
-    //SDL_FillRect(frameBuffer8, &r, 0);
+    //Needed? (flip buffer?)
     SDL_FillRect(frameBuffer8, NULL, 0);
 
 }

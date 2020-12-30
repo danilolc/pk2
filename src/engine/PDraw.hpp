@@ -14,9 +14,6 @@ const int FADE_FAST = 5;
 const int FADE_NORMAL = 2;
 const int FADE_SLOW = 1;
 
-const char FILTER_NEAREST[] = "0";
-const char FILTER_BILINEAR[] = "2";
-
 struct RECT {
 
     s32 x, y, w, h;
@@ -77,24 +74,15 @@ int   font_create(PFile::Path path);
 int   font_write(int font_index, const char* text, int x, int y);
 int   font_writealpha(int font_index, const char* text, int x, int y, int alpha);
 
-int   set_filter(const char* filter);
-void  set_fullscreen(bool set);
-void  adjust_screen();
-void  fit_screen(bool fit);
-void  change_resolution(int w, int h);
-int   get_resolution(int* w, int* h);
-int   get_buffer_size(int* w, int* h);
-
-void  get_windowposition(int* x, int* y);
-
+void  change_buffer_size(int w, int h);
+void  get_buffer_size(int* w, int* h);
 int   get_xoffset();
 void  set_xoffset(int x);
 void  clear_fonts();
-void  update(bool draw);
 
-int  set_vsync(bool set);
-bool is_vsync();
-int  init(int width, int height, const char* name, const char* icon);
-int  terminate();
+void  get_buffer_data(void** _buffer8, int* _alpha);
+void  update();
+int   init(int width, int height);
+int   terminate();
 
 }

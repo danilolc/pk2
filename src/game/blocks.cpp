@@ -195,10 +195,10 @@ PK2BLOCK Block_Get(u32 x, u32 y) {
 
 	if (i<150) { //If it is ground
 
-		block = Game->lasketut_palikat[i];
+		block        = Game->lasketut_palikat[i];
 		block.vasen  = x*32+Game->lasketut_palikat[i].vasen;
 		block.oikea  = x*32+32+Game->lasketut_palikat[i].oikea;
-		block.yla	   = y*32+Game->lasketut_palikat[i].yla;
+		block.yla    = y*32+Game->lasketut_palikat[i].yla;
 		block.ala    = y*32+32+Game->lasketut_palikat[i].ala;
 
 	} else { //If it is sky - Need to reset
@@ -207,9 +207,9 @@ PK2BLOCK Block_Get(u32 x, u32 y) {
 		block.tausta = true;
 		block.vasen  = x*32;
 		block.oikea  = x*32+32;
-		block.yla	   = y*32;
+		block.yla    = y*32;
 		block.ala    = y*32+32;
-		block.water   = false;
+		block.water  = false;
 
 		block.vasemmalle = 0;
 		block.oikealle = 0;
@@ -220,7 +220,7 @@ PK2BLOCK Block_Get(u32 x, u32 y) {
 
 	i = Game->map->taustat[x+y*PK2MAP_MAP_WIDTH];
 
-	if (i>131 && i<140)
+	if (i > 131 && i < 140)
 		block.water = true;
 
 	block.border = Game->map->reunat[x+y*PK2MAP_MAP_WIDTH];

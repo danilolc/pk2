@@ -7,6 +7,7 @@
 #include "engine/platform.hpp"
 
 #include "engine/PDraw.hpp"
+#include "engine/PRender.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
 #include "engine/PUtils.hpp"

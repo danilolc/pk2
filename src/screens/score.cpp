@@ -23,6 +23,16 @@
 
 #include <cstring>
 
+enum {
+	COUNT_NOTHING,
+	COUNT_BONUS,
+	COUNT_TIME,
+	COUNT_ENERGY,
+	COUNT_GIFTS,
+	COUNT_APPLES,
+	COUNT_ENDED
+};
+
 bool going_to_map;
 
 int counting_phase;
@@ -152,13 +162,19 @@ int Draw_ScoreCount() {
 
 	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_bonus_score), 100, my);
 	
-	sprintf(luku, "%i", bonus_score);
+	if (counting_phase == COUNT_BONUS)
+		sprintf(luku, "%i", bonus_score + rand()%10);
+	else
+		sprintf(luku, "%i", bonus_score);
 	ShadowedText_Draw(luku, 400, my);
 	my += 30;
 
 	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_time_score), 100, my);
 	
-	sprintf(luku, "%i", time_score);
+	if (counting_phase == COUNT_TIME)
+		sprintf(luku, "%i", time_score - (time_score%10) + rand()%10);
+	else
+		sprintf(luku, "%i", time_score);
 	ShadowedText_Draw(luku, 400, my);
 	my += 30;
 
@@ -210,7 +226,7 @@ int Draw_ScoreCount() {
 
 	my += 40;
 
-	if (counting_phase >= 6) {
+	if (counting_phase == COUNT_ENDED) {
 		
 		ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_total_score), 100, my);
 		
@@ -296,7 +312,7 @@ int Screen_ScoreCount_Init() {
 	apples_xoffset = 100;
 
 	total_score = 0;
-	counting_phase = 0;
+	counting_phase = COUNT_NOTHING;
 	counting_delay = 30;
 	bonus_score = 0;
 	time_score = 0;
@@ -332,12 +348,12 @@ int Screen_ScoreCount() {
 
 	degree = 1 + degree % 360;
 
-	// PISTELASKU
+	counting_phase = COUNT_NOTHING;
 
 	if (counting_delay == 0){
 		if (bonus_score < Game->score) {
 
-			counting_phase = 2;
+			counting_phase = COUNT_BONUS;
 			counting_delay = 0;
 			bonus_score += 10;
 
@@ -351,7 +367,7 @@ int Screen_ScoreCount() {
 
 		} else if (time_score < Game->timeout / 12) {
 
-			counting_phase = 3;
+			counting_phase = COUNT_TIME;
 			counting_delay = 0;
 			time_score += 5;
 
@@ -365,7 +381,7 @@ int Screen_ScoreCount() {
 
 		} else if (Player_Sprite->energia > 0) {
 
-			counting_phase = 4;
+			counting_phase = COUNT_ENERGY;
 			counting_delay = 10;
 			energy_score+=300;
 			Player_Sprite->energia--;
@@ -374,7 +390,7 @@ int Screen_ScoreCount() {
 
 		} else if (Gifts_Count() > 0) {
 			
-			counting_phase = 5;
+			counting_phase = COUNT_GIFTS;
 			counting_delay = 30;
 			gifts_score += Gifts_GetProtot(0)->pisteet + 500;
 			Gifts_Remove(0); 
@@ -382,7 +398,7 @@ int Screen_ScoreCount() {
 
 		} else if (apples_not_counted > 0) {
 
-			counting_phase = 1;
+			counting_phase = COUNT_APPLES;
 			counting_delay = 10;
 
 			apples_counted++;
@@ -394,7 +410,7 @@ int Screen_ScoreCount() {
 		
 		} else {
 			
-			counting_phase = 6;
+			counting_phase = COUNT_ENDED;
 		
 		}
 	}
@@ -404,7 +420,7 @@ int Screen_ScoreCount() {
 
 	if (Clicked() || going_to_map){
 
-		if(counting_phase == 6 && !going_to_map) {
+		if(counting_phase == COUNT_ENDED && !going_to_map) {
 
 			going_to_map = true;
 			PDraw::fade_out(PDraw::FADE_SLOW);
@@ -413,7 +429,7 @@ int Screen_ScoreCount() {
 
 		} else {
 
-			counting_phase = 6;
+			counting_phase = COUNT_ENDED;
 
 			apples_counted += apples_not_counted;
 			apples_not_counted = 0;

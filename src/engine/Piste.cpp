@@ -58,7 +58,7 @@ static void logic() {
 		if(event.type == SDL_QUIT)
 			running = false;
 		else if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
-			PDraw::adjust_screen();
+			PRender::adjust_screen();
 		else if(event.type == SDL_TEXTINPUT && PInput::Is_Editing())
 			PInput::InjectText(event.text.text);
 		else if(event.type == SDL_KEYDOWN && PInput::Is_Editing())
@@ -66,9 +66,19 @@ static void logic() {
 		
 	}
 
-	PDraw::update(draw);
+	// Pass PDraw informations do PRender
+	if (draw) {
+		void* buffer8;
+		int alpha;
+		PDraw::get_buffer_data(&buffer8, &alpha);
+		PRender::update(buffer8, alpha);
+	}
+
+	// Clear PDraw buffer
+	PDraw::update();
+
 	#ifndef PK2_NO_THREAD
-	if (!PDraw::is_vsync() && (desired_fps > 0) && draw)
+	if (!PRender::is_vsync() && (desired_fps > 0) && draw)
 		wait_frame();
 	#endif
 
@@ -109,7 +119,8 @@ void init(int width, int height, const char* name, const char* icon, int audio_b
 
 	sdl_show();
 	
-	PDraw::init(width, height, name, icon);
+	PDraw::init(width, height);
+	PRender::init(width, height, name, icon);
 	PInput::init();
 	PSound::init(audio_buffer_size);
 
@@ -120,6 +131,7 @@ void init(int width, int height, const char* name, const char* icon, int audio_b
 void terminate() {
 	
 	PDraw::terminate();
+	PRender::terminate();
 	PInput::terminate();
 	PSound::terminate();
 
@@ -186,12 +198,12 @@ void set_fps(int fps) {
 	// Vsync true
 	if (fps == -1) {
 
-		PDraw::set_vsync(true);
+		PRender::set_vsync(true);
 		return;
 
 	}
 
-	PDraw::set_vsync(false);
+	PRender::set_vsync(false);
 	desired_fps = fps;
 
 }

@@ -94,12 +94,12 @@ int Screen_First_Start() {
 	PInput::SetVibration(Settings.vibration);
 
 	if (Settings.isFiltered)
-		PDraw::set_filter(PDraw::FILTER_BILINEAR);
+		PRender::set_filter(PRender::FILTER_BILINEAR);
 	else
-		PDraw::set_filter(PDraw::FILTER_NEAREST);
+		PRender::set_filter(PRender::FILTER_NEAREST);
 
-	PDraw::fit_screen(Settings.isFit);
-	PDraw::set_fullscreen(Settings.isFullScreen);
+	PRender::fit_screen(Settings.isFit);
+	PRender::set_fullscreen(Settings.isFullScreen);
 
 	if (Settings.fps == SETTINGS_VSYNC)
 		Piste::set_fps(-1);
