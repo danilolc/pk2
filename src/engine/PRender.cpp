@@ -8,6 +8,8 @@
 #include "engine/PLog.hpp"
 #include "engine/types.hpp"
 
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
 #include <SDL.h>
 
 namespace PRender {
@@ -17,8 +19,6 @@ static bool screen_fit = false;
 
 static const char* window_name;
 static SDL_Window* window = NULL;
-
-static SDL_Renderer* renderer = NULL;
 
 static bool vsync_set = true;
 
@@ -107,7 +107,7 @@ void fit_screen(bool fit) {
 
 int set_vsync(bool set) {
 
-    #ifndef PK2_NO_THREAD
+    /*#ifndef PK2_NO_THREAD
 
     if (set == vsync_set)
         return 0;
@@ -138,7 +138,7 @@ int set_vsync(bool set) {
     return -1;
 
     #endif
-
+*/
 }
 
 bool is_vsync() {
@@ -147,11 +147,239 @@ bool is_vsync() {
     
 }
 
+
+
+
+
+GLchar Log_message[1024];
+
+GLchar* load_source(const char* file) {
+
+	SDL_RWops* rw =  SDL_RWFromFile(file, "rb");
+	if (!rw) return NULL;
+
+	Sint64 size = SDL_RWsize(rw);
+	if (size <= 0) {
+		SDL_RWclose(rw);
+		return NULL;
+	}
+
+	Uint8* ret = (Uint8*)malloc(size + 1);
+	if (!ret) {
+		SDL_RWclose(rw);
+		return NULL;
+	}
+
+	SDL_RWread(rw, ret, size, 1);
+	ret[size] = '\0';
+
+	SDL_RWclose(rw);
+	return (GLchar*)ret;
+
+}
+
+GLuint load_shader(const char* file_name, GLenum shaderType) {
+
+	GLuint shader = glCreateShader(shaderType);
+	if (!shader) return 0;
+
+	GLchar* source = load_source(file_name);
+	if (!source) {
+		printf("Can't load %s\n", file_name);
+		return 0;
+	}
+
+	glShaderSource(shader, 1, &source, NULL);
+	glCompileShader(shader);
+
+	free(source);
+
+	GLint compiled;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+
+	if (!compiled) {
+		
+	    glGetShaderInfoLog(shader, 1024, NULL, Log_message);
+		printf("Error compiling %s:\n%s\n", file_name, Log_message);
+
+		glDeleteShader(shader);
+		return 0;
+
+	}
+
+	return shader;
+
+}
+
+int create_program(const char* vs_file, const char* fs_file, GLuint* vs, GLuint* fs) {
+
+	GLuint _vs, _fs;
+	if (!vs) vs = &_vs;
+	if (!fs) fs = &_fs;
+
+	*vs = load_shader(vs_file, GL_VERTEX_SHADER);
+	if(!*vs) {
+		printf("Can't load vertex shader\n");
+		return 0;
+	}
+
+	*fs = load_shader(fs_file, GL_FRAGMENT_SHADER);
+	if(!*fs) {
+		printf("Can't load frament shader\n");
+		glDeleteShader(*vs);
+		return 0;
+	}
+	
+	GLuint program = glCreateProgram();
+	if(!program) {
+		printf("Can't create program\n");
+		glDeleteShader(*vs);
+		glDeleteShader(*fs);
+		glDeleteProgram(program);
+		return 0;
+	}
+
+	glAttachShader(program, *vs);
+	glAttachShader(program, *fs);
+	glLinkProgram(program);
+	
+	GLint linked;
+	glGetProgramiv(program, GL_LINK_STATUS, &linked);
+
+	if (!linked) {
+		glGetProgramInfoLog(program, 1024, NULL, Log_message);
+		printf("Can't link program\n%s\n", Log_message);
+		glDeleteShader(*vs);
+		glDeleteShader(*fs);
+		glDeleteProgram(program);
+		return 0;
+	}
+
+	return program;
+
+}
+
+GLuint indexed_vs;
+GLuint indexed_fs;
+GLuint indexed_program;
+
+GLint uniPosition;
+GLint uniTex;
+
+void create_indexed_program() {
+
+	indexed_program = create_program("indexed.vs", "indexed.fs", &indexed_vs, &indexed_fs);
+	if (!indexed_program) {
+		printf("Can't create indexed program\n");
+		return;
+	}
+
+	glUseProgram(indexed_program);
+
+	GLint vbo_att = glGetAttribLocation(indexed_program, "vbo");
+	glEnableVertexAttribArray(vbo_att);
+	glVertexAttribPointer(vbo_att, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	uniPosition = glGetUniformLocation(indexed_program, "position");
+	uniTex      = glGetUniformLocation(indexed_program, "tex");
+
+	glBindFragDataLocation(indexed_program, 0, "color");
+
+}
+
+GLuint screen_vs;
+GLuint screen_fs;
+GLuint screen_program;
+
+GLint uniPalette;
+GLint uniIndexTex;
+
+void create_screen_program() {
+
+	screen_program = create_program("screen.vs", "screen.fs", &screen_vs, &screen_fs);
+	if (!screen_program) {
+		printf("Can't create indexed program\n");
+		return;
+	}
+
+	glUseProgram(screen_program);
+
+	GLint vbo_att = glGetAttribLocation(screen_program, "vbo");
+	glEnableVertexAttribArray(vbo_att);
+	glVertexAttribPointer(vbo_att, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+	uniPalette  = glGetUniformLocation(screen_program, "palette");
+	uniIndexTex = glGetUniformLocation(screen_program, "indexed_tex");
+
+	glBindFragDataLocation(screen_program, 0, "color");
+
+}
+
+GLint screen_buffer;
+
+GLuint indexed_buffer;
+GLuint indexed_texture;
+
+void load_buffers() {
+
+	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &screen_buffer);
+	
+	glGenFramebuffers(1, &indexed_buffer);
+	glGenTextures(1, &indexed_texture);
+	
+	glBindTexture(GL_TEXTURE_2D, indexed_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8UI, 800, 480, 0,  GL_RED_INTEGER, GL_UNSIGNED_BYTE, NULL);
+	//glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, 800, 480, 0,  GL_RED_INTEGER, GL_UNSIGNED_INT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, indexed_texture, 0);
+
+	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+	glDrawBuffers(1, DrawBuffers);
+
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+
+		printf("Error creating frame buffer\n");
+		return;
+
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, screen_buffer);
+
+}
+
+void create_arrays() {
+
+	const float Vertices[] = {
+		 0.0f,  1.0f,
+		 1.0f,  0.0f,
+		 0.0f,  0.0f,
+		 0.0f,  1.0f,
+		 1.0f,  1.0f,
+		 1.0f,  0.0f
+	};
+
+	// Create Vertex Array Object
+    /*GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);*/
+
+    // Create a Vertex Buffer Object and copy the vertex data to it
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+
+}
+
 int init(int width, int height, const char* name, const char* icon) {
 
     window_name = name;
 
-    window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
     if (!window) {
 
         PLog::Write(PLog::FATAL, "PRender", "Couldn't create window!");
@@ -171,22 +399,28 @@ int init(int width, int height, const char* name, const char* icon) {
     
     #endif
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!renderer) {
+    SDL_GLContext ctx = SDL_GL_CreateContext(window);
+   	glViewport(0, 0, 800, 640);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_DITHER);
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
 
-        PLog::Write(PLog::FATAL, "PRender", "Couldn't create renderer!");
-        return -3;
+    load_buffers();
+    create_arrays();
 
-    }
+    create_screen_program();
+	create_indexed_program();
 
-    SDL_RenderClear(renderer);
     adjust_screen();
+
+    return 0;
 
 }
 
 void terminate() {
 
-    SDL_DestroyRenderer(renderer);
+    //SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 
 }
@@ -195,24 +429,6 @@ void update(void* _buffer8, int alpha) {
 
     SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
     
-    SDL_Texture* texture;
-    u8 alpha2 = (u8)(alpha*255/100);
-
-    texture = SDL_CreateTextureFromSurface(renderer, buffer8);
-    SDL_SetTextureColorMod(texture,alpha2,alpha2,alpha2);
-
-    SDL_RenderClear(renderer);
-
-    if(screen_fit)
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
-    else
-        SDL_RenderCopy(renderer, texture, NULL, &screen_dest);
-
-    //draw_gui();
-
-    SDL_RenderPresent(renderer);
-
-    SDL_DestroyTexture(texture);
 
 }
 
