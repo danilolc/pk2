@@ -20,7 +20,7 @@ CXXFLAGS += --std=c++11
 
 # SDL2:
 CXXFLAGS += $(shell pkg-config sdl2 --cflags)
-LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
+LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image -lGL
 
 # LibZip (read episodes on zip files):
 CXXFLAGS += -DPK2_USE_ZIP $(shell pkg-config libzip --cflags)

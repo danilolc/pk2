@@ -268,7 +268,7 @@ GLint uniTex;
 
 void create_indexed_program() {
 
-	indexed_program = create_program("indexed.vs", "indexed.fs", &indexed_vs, &indexed_fs);
+	indexed_program = create_program("shader/indexed.vs", "shader/indexed.fs", &indexed_vs, &indexed_fs);
 	if (!indexed_program) {
 		printf("Can't create indexed program\n");
 		return;
@@ -296,7 +296,7 @@ GLint uniIndexTex;
 
 void create_screen_program() {
 
-	screen_program = create_program("screen.vs", "screen.fs", &screen_vs, &screen_fs);
+	screen_program = create_program("shader/screen.vs", "shader/screen.fs", &screen_vs, &screen_fs);
 	if (!screen_program) {
 		printf("Can't create indexed program\n");
 		return;
@@ -319,6 +319,7 @@ GLint screen_buffer;
 
 GLuint indexed_buffer;
 GLuint indexed_texture;
+GLfloat indexed_palette[256*3];
 
 void load_buffers() {
 
@@ -412,6 +413,11 @@ int init(int width, int height, const char* name, const char* icon) {
     create_screen_program();
 	create_indexed_program();
 
+    /*glGenTextures(1, &gl_texture);
+	glBindTexture(GL_TEXTURE_2D, gl_texture);
+   	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);*/
+
     adjust_screen();
 
     return 0;
@@ -428,7 +434,58 @@ void terminate() {
 void update(void* _buffer8, int alpha) {
 
     SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
+
+    SDL_LockSurface(buffer8);
+	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8UI, buffer8->w, buffer8->h, 0,  GL_RED_INTEGER, GL_UNSIGNED_BYTE, buffer8->pixels);
+
+    float a = float(alpha) / 100;
+    // Only if changed?
+    for (int i = 0; i < 256; i++) {
+		indexed_palette[3*i] = (float)buffer8->format->palette->colors[i].r * a / 256;
+		indexed_palette[3*i + 1] = (float)buffer8->format->palette->colors[i].g * a / 256;
+		indexed_palette[3*i + 2] = (float)buffer8->format->palette->colors[i].b * a / 256;
+	}
     
+    SDL_UnlockSurface(buffer8);
+
+
+
+	// Indexed buffer
+	glViewport(0, 0, 800, 640);
+	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);
+	glUseProgram(indexed_program);
+	
+	/*static GLuint i = 0;
+	i++;
+	if (i > 255)
+		i = 0;
+	const GLuint val[] = {i,0,0,0};
+	glClearBufferuiv(GL_COLOR, 0, val);*/
+
+	//glUniform1i()
+
+	/*glUniform1i(uniTex, 0);
+	glDrawArrays(GL_TRIANGLES, 0, 6);*/
+
+	// Screen
+
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
+	glViewport(0, 0, w, h);
+	glBindFramebuffer(GL_FRAMEBUFFER, screen_buffer);
+	glUseProgram(screen_program);
+
+	glUniform3fv(uniPalette, 256, indexed_palette);
+
+	glBindTexture(GL_TEXTURE_2D, indexed_texture);
+	glUniform1i(uniIndexTex, 0);
+
+	glClearColor(0.5f, 0.5f, 0.5f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    SDL_GL_SwapWindow(window);
 
 }
 
