@@ -380,7 +380,6 @@ int init(int width, int height, const char* name, const char* icon) {
 
 void terminate() {
 
-    //SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 	SDL_GL_DeleteContext(context);
 

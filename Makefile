@@ -9,8 +9,8 @@
 CXX = g++
 
 # Optimization:
-CXXFLAGS += -g
-#CXXFLAGS += -O2
+#CXXFLAGS += -g
+CXXFLAGS += -O2
 
 # Warnings:
 CXXFLAGS += -Wall

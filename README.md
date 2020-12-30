@@ -76,6 +76,12 @@ This example starts the level13.map on dev mode:
 ```
 
 # FIXMEs
+* Random SIGFAULT
+* Don't leave level after pressing 'E' on dev mode
+* Lua settings
+* Hqx filter
+* Android data path
+* Recover gui buttons, wide bg, OpenGL ES
 * Use app bundles to minimize apk size
 * SDL_QUIT on Android
 * Autosave settings option, ask when overwriting save, select save on new game
@@ -83,12 +89,10 @@ This example starts the level13.map on dev mode:
 * Remove repeated languages
 * Translate finnish language
 * Low volume sounds not played on low volume - music playing on volume 0
-* Add option to audio latency
-* Jump frames when fps is slow
+* Jump frames when fps is low
 
 # PLANS
 * Better documentation
 * Implement new layer on .map (regions)
-* Use Lua scripts
 * Find image (load .bmp or .png)
-* Hqx filter
+
