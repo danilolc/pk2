@@ -19,6 +19,7 @@ static bool screen_fit = false;
 
 static const char* window_name;
 static SDL_Window* window = NULL;
+static SDL_GLContext context;
 
 static bool vsync_set = true;
 
@@ -107,30 +108,28 @@ void fit_screen(bool fit) {
 
 int set_vsync(bool set) {
 
-    /*#ifndef PK2_NO_THREAD
+    #ifndef PK2_NO_THREAD
 
     if (set == vsync_set)
         return 0;
 
-    if (renderer) {
+    int sync = set? -1 : 0;
 
-        SDL_DestroyRenderer(renderer);
+	printf("%i AAA\n", sync);
 
-    }
+	if (!set)
+		SDL_GL_SetSwapInterval(0);
+	else {
+		// Try adaptative vsync
+		int ret = SDL_GL_SetSwapInterval(-1);
 
-    Uint32 sync = set? SDL_RENDERER_PRESENTVSYNC : 0;
+		// If fail try normal vsync
+		if (ret == -1)
+			SDL_GL_SetSwapInterval(1);
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | sync);
-    if (!renderer) {
+	}
+	vsync_set = set;
 
-        PLog::Write(PLog::FATAL, "PRender", "Couldn't create renderer!");
-        return -1;
-
-    }
-
-    vsync_set = set;
-
-    SDL_RenderClear(renderer);
     return 0;
 
     #else
@@ -138,7 +137,7 @@ int set_vsync(bool set) {
     return -1;
 
     #endif
-*/
+
 }
 
 bool is_vsync() {
@@ -360,8 +359,9 @@ int init(int width, int height, const char* name, const char* icon) {
     
     #endif
 
-    SDL_GLContext ctx = SDL_GL_CreateContext(window);
-   	glViewport(0, 0, 800, 480);
+    context = SDL_GL_CreateContext(window);
+	   
+	glViewport(0, 0, 800, 480);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DITHER);
 	glDisable(GL_BLEND);
@@ -382,6 +382,7 @@ void terminate() {
 
     //SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+	SDL_GL_DeleteContext(context);
 
 }
 
