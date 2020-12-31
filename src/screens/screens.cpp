@@ -98,7 +98,6 @@ int Screen_First_Start() {
 	else
 		PRender::set_filter(PRender::FILTER_NEAREST);
 
-	PRender::fit_screen(Settings.isFit);
 	PRender::set_fullscreen(Settings.isFullScreen);
 
 	if (Settings.fps == SETTINGS_VSYNC)

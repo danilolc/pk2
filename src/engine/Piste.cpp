@@ -125,11 +125,6 @@ static void sdl_show() {
 
 
 void init(int width, int height, const char* name, const char* icon, int audio_buffer_size) {
-
-	/*printf("AAA --- %lu\n", SDL_GetPerformanceFrequency());
-	printf("AAA --- %lu\n", SDL_GetPerformanceCounter());
-	printf("AAA --- %lu\n", SDL_GetPerformanceCounter());
-	printf("AAA --- %lu\n", SDL_GetPerformanceCounter());*/
 	
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 

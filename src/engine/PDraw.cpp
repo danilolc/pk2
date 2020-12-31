@@ -685,26 +685,6 @@ int font_writealpha(int font_index, const char* text, int x, int y, int alpha) {
 
 }
 
-void change_buffer_size(int w, int h) {
-    
-    if (w == buffer_width && h == buffer_height)
-        return;
-
-    frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
-    SDL_FreeSurface(frameBuffer8);
-    
-    frameBuffer8 = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
-    frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
-    frameBuffer8->format->palette = game_palette;
-
-    SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
-    SDL_FillRect(frameBuffer8, NULL, 255);
-
-    buffer_width = w;
-    buffer_height = h;
-
-}
-
 void get_buffer_size(int* w, int* h) {
 
     *w = buffer_width;

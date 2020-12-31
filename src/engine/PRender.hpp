@@ -13,7 +13,6 @@ int  set_filter(const char* filter);
 
 void adjust_screen();
 void set_fullscreen(bool set);
-void change_window_size(int w, int h);
 void get_window_size(int* w, int* h);
 void get_window_position(int* x, int* y);
 void fit_screen(bool fit);
