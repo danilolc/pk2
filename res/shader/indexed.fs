@@ -5,6 +5,8 @@ out vec3 color;
 
 uniform vec3 palette[256];
 uniform usampler2D indexed_tex;
+uniform vec2 indexed_res;
+uniform float time;
 
 void main(void) {
 
