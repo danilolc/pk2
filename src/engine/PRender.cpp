@@ -342,17 +342,53 @@ void create_indexed_program() {
 
 }
 
+char const* gl_error_string(GLenum const err)
+{
+  switch (err)
+  {
+    // opengl 2 errors (8)
+    case GL_NO_ERROR:
+      return "GL_NO_ERROR";
+
+    case GL_INVALID_ENUM:
+      return "GL_INVALID_ENUM";
+
+    case GL_INVALID_VALUE:
+      return "GL_INVALID_VALUE";
+
+    case GL_INVALID_OPERATION:
+      return "GL_INVALID_OPERATION";
+
+    case GL_STACK_OVERFLOW:
+      return "GL_STACK_OVERFLOW";
+
+    case GL_STACK_UNDERFLOW:
+      return "GL_STACK_UNDERFLOW";
+
+    case GL_OUT_OF_MEMORY:
+      return "GL_OUT_OF_MEMORY";
+
+    case GL_TABLE_TOO_LARGE:
+      return "GL_TABLE_TOO_LARGE";
+
+    // opengl 3 errors (1)
+    case GL_INVALID_FRAMEBUFFER_OPERATION:
+      return "GL_INVALID_FRAMEBUFFER_OPERATION";
+
+    // gles 2, 3 and gl 4 error are handled by the switch above
+    default:
+      return nullptr;
+  }
+}
+
+void check_error() {
+	printf("GLError: %s\n",  gl_error_string(glGetError()));
+
+}
+
 void load_buffers() {
-
-	glGenTextures(1, &screen_texture);
-	glBindTexture(GL_TEXTURE_2D, screen_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 480, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE);
-
-
+	
+	// Indexed texture (recieve game buffer)
 	glGenTextures(1, &indexed_texture);
 	glBindTexture(GL_TEXTURE_2D, indexed_texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -361,13 +397,28 @@ void load_buffers() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE);
 
 
+	// RGB texture (indexed texture converted to RGB)
+	glGenTextures(1, &screen_texture);
+	glBindTexture(GL_TEXTURE_2D, screen_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 800, 480, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE);
+
+
 	glGetIntegerv(GL_FRAMEBUFFER_BINDING, &screen_buffer);
+	check_error();
 	glGenFramebuffers(1, &indexed_buffer);
+	check_error();
 	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);
+	check_error();
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, screen_texture, 0);
+	check_error();
 
 	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
 	glDrawBuffers(1, DrawBuffers);
+	check_error();
 
 	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
 
@@ -488,7 +539,7 @@ void update(void* _buffer8, int alpha) {
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
 	glUniform1i(uniScreenTex, 0);
 	glUniform2f(uniScreenIdxRes, 800, 480);
-	glUniform2f(uniScreenRes, 1920, 1080);
+	glUniform2f(uniScreenRes, w, h);
 	glUniform4f(uniScreenDst, 0, 0, 1, 1);
 	glUniform1f(uniScreenTime, shader_time);
 	glClearColor(0, 0, 0, 1);
