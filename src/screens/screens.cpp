@@ -94,7 +94,7 @@ int Screen_First_Start() {
 	PInput::SetVibration(Settings.vibration);
 
 	if (Settings.isFiltered)
-		PRender::set_filter(PRender::FILTER_BILINEAR);
+		PRender::set_filter(PRender::FILTER_LINEAR);
 	else
 		PRender::set_filter(PRender::FILTER_NEAREST);
 

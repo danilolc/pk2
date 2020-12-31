@@ -725,11 +725,11 @@ void Draw_Menu_Graphics() {
 
 
 		if (Settings.isFiltered){
-			if (Draw_Menu_Text("bilinear filter is on",180,my)){
+			if (Draw_Menu_Text("linear filter is on",180,my)){
 				Settings.isFiltered = false;
 			}
 		} else{
-			if (Draw_Menu_Text("bilinear filter is off",180,my)){
+			if (Draw_Menu_Text("linear filter is off",180,my)){
 				Settings.isFiltered = true;
 			}
 		}
@@ -796,7 +796,7 @@ void Draw_Menu_Graphics() {
 
 		} else if(!wasFiltered && Settings.isFiltered) {
 			save_settings = true;
-			PRender::set_filter(PRender::FILTER_BILINEAR);
+			PRender::set_filter(PRender::FILTER_LINEAR);
 		}
 		
 		if(wasFit != Settings.isFit) { // If fit changes

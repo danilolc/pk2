@@ -23,6 +23,29 @@ static SDL_GLContext context;
 
 static bool vsync_set = true;
 
+static GLchar Log_message[1024];
+
+static GLuint screen_vs;
+static GLuint screen_fs;
+static GLuint screen_program;
+
+static GLint  uniScreenTex;
+static GLuint screen_texture;
+
+static GLuint indexed_vs;
+static GLuint indexed_fs;
+static GLuint indexed_program;
+
+static GLint uniPalette;
+static GLint uniIndexTex;
+
+static GLuint indexed_texture;
+static GLfloat indexed_palette[256*3];
+
+static GLuint indexed_buffer;
+static GLint screen_buffer;
+
+
 void set_fullscreen(bool set) {
 
     #ifndef __ANDROID__
@@ -82,10 +105,17 @@ void change_window_size(int w, int h) {
 
 int set_filter(const char* filter) {
 
-    if(SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, filter) == SDL_TRUE)
-        return 0;
+	glBindTexture(GL_TEXTURE_2D, screen_texture);
 
-    return 1;
+	if (strcmp(filter, FILTER_LINEAR) == 0) {
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	} else if (strcmp(filter, FILTER_NEAREST) == 0) {
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+
+    return 0;
 }
 
 void get_window_size(int* w, int* h) {
@@ -146,11 +176,6 @@ bool is_vsync() {
     
 }
 
-
-
-
-
-GLchar Log_message[1024];
 
 GLchar* load_source(const char* file) {
 
@@ -258,12 +283,7 @@ int create_program(const char* vs_file, const char* fs_file, GLuint* vs, GLuint*
 
 }
 
-GLuint screen_vs;
-GLuint screen_fs;
-GLuint screen_program;
 
-GLint  uniScreenTex;
-GLuint screen_texture;
 
 void create_screen_program() {
 
@@ -285,12 +305,7 @@ void create_screen_program() {
 
 }
 
-GLuint indexed_vs;
-GLuint indexed_fs;
-GLuint indexed_program;
 
-GLint uniPalette;
-GLint uniIndexTex;
 
 void create_indexed_program() {
 
@@ -313,11 +328,7 @@ void create_indexed_program() {
 
 }
 
-GLuint indexed_texture;
-GLfloat indexed_palette[256*3];
 
-GLuint indexed_buffer;
-GLint screen_buffer;
 
 void load_buffers() {
 

@@ -7,7 +7,7 @@
 namespace PRender {
 
 const char FILTER_NEAREST[] = "0";
-const char FILTER_BILINEAR[] = "2";
+const char FILTER_LINEAR[] = "2";
 
 int  set_filter(const char* filter);
 
