@@ -352,6 +352,7 @@ void load_buffers() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE);
 
+
 	glGenTextures(1, &indexed_texture);
 	glBindTexture(GL_TEXTURE_2D, indexed_texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -424,7 +425,8 @@ int init(int width, int height, const char* name, const char* icon) {
     #endif
 
     context = SDL_GL_CreateContext(window);
-	   
+	printf("OpenGL version: %s\n", glGetString(GL_VERSION));   
+
 	glViewport(0, 0, 800, 480);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DITHER);
