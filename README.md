@@ -77,9 +77,11 @@ This example starts the level13.map on dev mode:
 
 # FIXMEs
 * Random SIGFAULT
+* Music won't play twice if map music doesn't exist
+* Score menu blinking on pressing enter
+* New graphics and controllers menu
 * Don't leave level after pressing 'E' on dev mode
-* Lua settings
-* Hqx filter
+* Lua settings?
 * Android data path
 * Recover gui buttons, wide bg, OpenGL ES
 * Use app bundles to minimize apk size
@@ -95,4 +97,4 @@ This example starts the level13.map on dev mode:
 * Better documentation
 * Implement new layer on .map (regions)
 * Find image (load .bmp or .png)
-
+* Thunder on rainy levels?
