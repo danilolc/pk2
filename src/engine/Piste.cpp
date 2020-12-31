@@ -184,7 +184,7 @@ void loop(int (*GameLogic)()) {
 		u64 delta = SDL_GetPerformanceCounter() - l_time;
 		l_time = SDL_GetPerformanceCounter();
 
-		printf("%f %f %f\n", double(t_cur)/delta, double(t_draw)/delta, double(t_copy)/delta);
+		//printf("%f %f %f\n", double(t_cur)/delta, double(t_draw)/delta, double(t_copy)/delta);
 		
 		logic();
 
