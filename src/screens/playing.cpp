@@ -169,10 +169,7 @@ int Draw_InGame_DebugInfo() {
 	int vali, fy = 70;
 	char lukua[20];
 
-	if (Settings.isWide)
-		PDraw::set_xoffset(80);
-	else
-		PDraw::set_xoffset(0);
+	PDraw::set_xoffset(640);
 
 	vali = PDraw::font_write(fontti1,"spriteja: ",10,fy);
 	sprintf(lukua, "%i", debug_sprites);
@@ -235,7 +232,7 @@ int Draw_InGame_DebugInfo() {
 	sprintf(lukua, "%i", Game->timeout);
 	vali += PDraw::font_write(fontti1,lukua,390,screen_height-10);
 
-	PDraw::set_xoffset(0);
+	PDraw::set_xoffset(screen_width);
 	return 0;
 }
 int Draw_InGame_DevKeys() {
@@ -574,7 +571,7 @@ int Screen_InGame_Init(){
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_GAME_BUTTONS);
 	
-	PDraw::set_xoffset(0);
+	PDraw::set_xoffset(screen_width);
 
 	if (!Game->isStarted()) {
 

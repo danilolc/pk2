@@ -374,9 +374,12 @@ void load_buffers() {
 
 
 	// RGB texture (indexed texture converted to RGB)
+	int w, h;
+	PDraw::get_buffer_size(&w, &h);
+	printf("AAAAAAAAAAA %i %i \n", w, h);
 	glGenTextures(1, &screen_texture);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 800, 480, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE);
@@ -435,7 +438,6 @@ int init(int width, int height, const char* name, const char* icon) {
     context = SDL_GL_CreateContext(window);
 	PLog::Write(PLog::DEBUG, "PRender", "OpenGL version: %s", glGetString(GL_VERSION));   
 
-	glViewport(0, 0, 800, 480);
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DITHER);
 	glDisable(GL_BLEND);
@@ -474,7 +476,7 @@ void update(void* _buffer8) {
 		indexed_palette[3*i + 2] = (float)buffer8->format->palette->colors[i].b / 256;
 	}
     
-	glViewport(0, 0, 800, 480);
+	glViewport(0, 0, buffer8->w, buffer8->h);
 	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);
 	glUseProgram(indexed_program);
 	glBindTexture(GL_TEXTURE_2D, indexed_texture);
@@ -483,19 +485,19 @@ void update(void* _buffer8) {
 	glUniform1i(uniIndexTex, 0);
 	glUniform3fv(uniIndexPalette, 256, indexed_palette);
 	glUniform1f(uniIndexTime, shader_time);
-	glUniform2f(uniIndexRes, 800, 480);
+	glUniform2f(uniIndexRes, buffer8->w, buffer8->h);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	// Only if changed?
 	int w, h;
-    SDL_GetWindowSize(window, &w, &h);
+	SDL_GetWindowSize(window, &w, &h);
 	glViewport(0, 0, w, h);
 	glBindFramebuffer(GL_FRAMEBUFFER, screen_buffer);
 	glUseProgram(screen_program);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
 	glBindBuffer(GL_ARRAY_BUFFER, screen_vbo);
 	glUniform1i(uniScreenTex, 0);
-	glUniform2f(uniScreenIdxRes, 800, 480);
+	glUniform2f(uniScreenIdxRes, buffer8->w, buffer8->h);
 	glUniform2f(uniScreenRes, w, h);
 	glUniform1f(uniScreenTime, shader_time);
 	glClearColor(0, 0, 0, 1);

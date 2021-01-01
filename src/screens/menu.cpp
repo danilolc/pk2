@@ -666,9 +666,6 @@ void Draw_Menu_Graphics() {
 
 	if(moreOptions){
 		bool wasFullScreen = Settings.isFullScreen;
-		bool wasFiltered = Settings.isFiltered;
-		bool wasFit = Settings.isFit;
-		bool wasWide = Settings.isWide;
 		int  oldfps = Settings.fps;
 		
 
@@ -690,55 +687,10 @@ void Draw_Menu_Graphics() {
 
 		bool res_active = true;
 
-		if (Settings.isWide) {
-			if (Draw_Menu_Text("widescreen is on", 180, my)) {
-				Settings.isWide = false;
-			}
-		}
-		else {
-			if (Draw_Menu_Text("widescreen is off", 180, my)) {
-				Settings.isWide = true;
-			}
-		}
-		if (Draw_BoolBox(100, my, Settings.isWide, res_active)) {
-			Settings.isWide = !Settings.isWide;
-		}
-		my += 30;
-
-		//#endif //TODO - Fix touch position when screen fit 
-
-		if (Settings.isFit){
-			if (Draw_Menu_Text("screen fit is on",180,my)){
-				Settings.isFit = false;
-			}
-		} else{
-			if (Draw_Menu_Text("screen fit is off",180,my)){
-				Settings.isFit = true;
-			}
-		}
-		if (Draw_BoolBox(100, my, Settings.isFit, true)) {
-			Settings.isFit = !Settings.isFit;
-		}
-		my += 30;
+		//#endif //TODO - Fix touch position when screen fit
 
 		#endif
 
-
-		if (Settings.isFiltered){
-			if (Draw_Menu_Text("linear filter is on",180,my)){
-				Settings.isFiltered = false;
-			}
-		} else{
-			if (Draw_Menu_Text("linear filter is off",180,my)){
-				Settings.isFiltered = true;
-			}
-		}
-		if (Draw_BoolBox(100, my, Settings.isFiltered, true)) {
-			Settings.isFiltered = !Settings.isFiltered;
-		}
-		my += 30;
-		
-		
 		if (Settings.vibration > 0){
 			if (Draw_Menu_Text("controller vibration is on",180,my)){
 				Settings.vibration = 0;
@@ -788,15 +740,6 @@ void Draw_Menu_Graphics() {
 		if(wasFullScreen != Settings.isFullScreen) {// If fullscreen changes
 			save_settings = true;
 			PRender::set_fullscreen(Settings.isFullScreen);
-		}
-
-		if(wasFiltered && !Settings.isFiltered) { // If filter changes
-			save_settings = true;
-			PRender::set_filter(PRender::FILTER_NEAREST);
-
-		} else if(!wasFiltered && Settings.isFiltered) {
-			save_settings = true;
-			PRender::set_filter(PRender::FILTER_LINEAR);
 		}
 
 		if (Settings.fps != oldfps) {
@@ -1258,12 +1201,12 @@ void Draw_Menu_Language() {
 			
 			if (Load_Fonts(tekstit) == -1) {
 
-				Load_Language(Settings.kieli);
+				Load_Language(Settings.language);
 				Load_Fonts(tekstit);
 
 			} else {
 
-				strcpy(Settings.kieli, langlist[i].c_str());
+				strcpy(Settings.language, langlist[i].c_str());
 				Settings_Save();
 
 			}
@@ -1328,7 +1271,8 @@ void Draw_Menu_Data() {
 
 int Draw_Menu() {
 
-	PDraw::image_clip(bg_screen, (Episode && Settings.isWide)? -80 : 0, 0);
+	//TODO WIDE
+	//PDraw::image_clip(bg_screen, 0, 0);
 
 	menu_valinta_id = 1;
 
@@ -1363,7 +1307,7 @@ int Screen_Menu_Init() {
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_CURSOR);
 	
-	PDraw::set_xoffset(Settings.isWide? 80 : 0);
+	PDraw::set_xoffset(640);
 	
 	langlistindex = 0;
 
@@ -1375,7 +1319,8 @@ int Screen_Menu_Init() {
 	
 	} else {
 
-		PDraw::create_shadow(bg_screen, 640, 480, Settings.isWide? 110 : 30);
+		//TODO WIDE
+		//PDraw::create_shadow(bg_screen, 640, 480, Settings.isWide? 110 : 30);
 
 	}
 

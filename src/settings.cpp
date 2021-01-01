@@ -18,13 +18,10 @@
 using namespace std::chrono;
 
 #define SETTINGS_FILE "settings.ini"
-#define SETTINGS_VERSION "1.5"
 
 PK2SETTINGS Settings;
 
 int Settings_GetId(PFile::Path path, u32& id) {
-
-	char* version[4];
 
 	PFile::RW *file = path.GetRW("r");
 	if (file == nullptr) {
@@ -33,8 +30,10 @@ int Settings_GetId(PFile::Path path, u32& id) {
 		
 	}
 
+	char version[4];
+
 	file->read(version, 4);
-	if (strncmp(Settings.versio, SETTINGS_VERSION, 4) != 0) {
+	if (strncmp(version, SETTINGS_VERSION, 4) != 0) {
 
 		id = 0;
 		file->close();
@@ -50,9 +49,6 @@ int Settings_GetId(PFile::Path path, u32& id) {
 
 void Settings_Init() {
 
-	strcpy(Settings.versio, SETTINGS_VERSION);
-	Settings.ladattu = false;
-
 	auto clockk = high_resolution_clock::now();
 	uint ns = duration_cast<nanoseconds>(clockk.time_since_epoch()).count();
 
@@ -66,7 +62,7 @@ void Settings_Init() {
 	Settings.id <<= 1;
 	Settings.id ^= rand();
 
-	strcpy(Settings.kieli, Language_Name());
+	strcpy(Settings.language, Language_Name());
 
 	Settings.draw_transparent = true;
 	Settings.transparent_text = false;
@@ -74,8 +70,10 @@ void Settings_Init() {
 	Settings.draw_itembar = true;
 	Settings.bg_sprites = true;
 
-	Settings.aanet = true;
-	Settings.musiikki = true;
+	Settings.fps = SETTINGS_VSYNC;
+	Settings.isFullScreen = true;
+	Settings.double_speed = false;
+	Settings.shader_type = SETTINGS_SHADER_LINEAR;
 
 	Settings.control_left      = PInput::LEFT;
 	Settings.control_right     = PInput::RIGHT;
@@ -86,18 +84,18 @@ void Settings_Init() {
 	Settings.control_attack2   = PInput::LSHIFT;
 	Settings.control_open_gift = PInput::SPACE;
 
-	Settings.isFiltered = true;
-	Settings.isFit = true;
-	Settings.isFullScreen = true;
-	Settings.isWide = true;
+	Settings.vibration     = 0xFFFF/2;
+	Settings.joy_left      = PInput::JOY_LEFT;
+	Settings.joy_right     = PInput::JOY_RIGHT;
+	Settings.joy_jump      = PInput::JOY_UP;
+	Settings.joy_down      = PInput::JOY_DOWN;
+	Settings.joy_walk_slow = PInput::JOY_Y;
+	Settings.joy_attack1   = PInput::JOY_X;
+	Settings.joy_attack2   = PInput::JOY_A;
+	Settings.joy_open_gift = PInput::JOY_B;
 
 	Settings.music_max_volume = 50;
 	Settings.sfx_max_volume = 90;
-
-	Settings.fps = SETTINGS_VSYNC;
-	Settings.vibration = 0xFFFF/2;
-
-	Settings.double_speed = false;
 	Settings.audio_buffer_size = /*4096*/ /*2048*/ 1024 /*512*/; //game speed vs audio latency
 
 	Id_To_String(Settings.id, id_code);
@@ -116,27 +114,30 @@ int Settings_Open() {
 		return 1;
 	}
 
-	file->read(Settings.versio, 4);
+	char version[4];
+	file->read(version, 4);
 	
-	if (strncmp(Settings.versio, SETTINGS_VERSION, 4) != 0) { 
+	if (strncmp(version, SETTINGS_VERSION, 4) != 0) { 
 		// If settings isn't in current version
 		Settings_Init();
         Settings_Save();
 		return 2;
 	}
-	
-	file->read(Settings.id);
-	file->read(Settings.ladattu);
-	file->read(Settings.kieli, sizeof(Settings.kieli));
 
-	file->read(Settings.ruudun_leveys);
-	file->read(Settings.ruudun_korkeus);
+	file->read(Settings.id);
+	file->read(Settings.language, sizeof(Settings.language));
+
 	file->read(Settings.draw_transparent);
 	file->read(Settings.transparent_text);
 	file->read(Settings.draw_weather);
 	file->read(Settings.draw_itembar);
 	file->read(Settings.bg_sprites);
-
+	
+	file->read(Settings.fps);
+	file->read(Settings.isFullScreen);
+	file->read(Settings.double_speed);
+	file->read(Settings.shader_type);
+	
 	file->read(Settings.control_left);
 	file->read(Settings.control_right);
 	file->read(Settings.control_jump);
@@ -146,34 +147,22 @@ int Settings_Open() {
 	file->read(Settings.control_attack2);
 	file->read(Settings.control_open_gift);
 
-	file->read(Settings.musiikki);
-	file->read(Settings.aanet);
-
-	file->read(Settings.isFullScreen);
-	file->read(Settings.isFiltered);
-	file->read(Settings.isFit);
-	file->read(Settings.isWide);
+	file->read(Settings.vibration);
+	file->read(Settings.joy_left);
+	file->read(Settings.joy_right);
+	file->read(Settings.joy_jump);
+	file->read(Settings.joy_down);
+	file->read(Settings.joy_walk_slow);
+	file->read(Settings.joy_attack1);
+	file->read(Settings.joy_attack2);
+	file->read(Settings.joy_open_gift);
 
 	file->read(Settings.music_max_volume);
 	file->read(Settings.sfx_max_volume);
-
-	file->read(Settings.fps);
-	file->read(Settings.vibration);
-
-	file->read(Settings.double_speed);
 	file->read(Settings.audio_buffer_size);
 	
 	file->close();
-	
-	if (PUtils::Is_Mobile()) {
 
-		Settings.isFullScreen = false;
-		Settings.isFullScreen = true;
-		Settings.isWide = true;
-
-	}
-
-	Settings.ladattu = true;
 	Id_To_String(Settings.id, id_code);
 
 	PLog::Write(PLog::DEBUG, "PK2", "Opened settings");
@@ -198,17 +187,19 @@ int Settings_Save() {
 	file->write(SETTINGS_VERSION, sizeof(SETTINGS_VERSION));
 
 	file->write(Settings.id);
-	file->write(Settings.ladattu);
-	file->write(Settings.kieli, sizeof(Settings.kieli));
+	file->write(Settings.language, sizeof(Settings.language));
 
-	file->write(Settings.ruudun_leveys);
-	file->write(Settings.ruudun_korkeus);
 	file->write(Settings.draw_transparent);
 	file->write(Settings.transparent_text);
 	file->write(Settings.draw_weather);
 	file->write(Settings.draw_itembar);
 	file->write(Settings.bg_sprites);
-
+	
+	file->write(Settings.fps);
+	file->write(Settings.isFullScreen);
+	file->write(Settings.double_speed);
+	file->write(Settings.shader_type);
+	
 	file->write(Settings.control_left);
 	file->write(Settings.control_right);
 	file->write(Settings.control_jump);
@@ -218,21 +209,18 @@ int Settings_Save() {
 	file->write(Settings.control_attack2);
 	file->write(Settings.control_open_gift);
 
-	file->write(Settings.musiikki);
-	file->write(Settings.aanet);
-
-	file->write(Settings.isFullScreen);
-	file->write(Settings.isFiltered);
-	file->write(Settings.isFit);
-	file->write(Settings.isWide);
+	file->write(Settings.vibration);
+	file->write(Settings.joy_left);
+	file->write(Settings.joy_right);
+	file->write(Settings.joy_jump);
+	file->write(Settings.joy_down);
+	file->write(Settings.joy_walk_slow);
+	file->write(Settings.joy_attack1);
+	file->write(Settings.joy_attack2);
+	file->write(Settings.joy_open_gift);
 
 	file->write(Settings.music_max_volume);
 	file->write(Settings.sfx_max_volume);
-
-	file->write(Settings.fps);
-	file->write(Settings.vibration);
-
-	file->write(Settings.double_speed);
 	file->write(Settings.audio_buffer_size);
 	
 	file->close();

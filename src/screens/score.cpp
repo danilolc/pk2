@@ -202,7 +202,7 @@ int Draw_ScoreCount() {
 	my += 20;
 
 	// Draw apples
-	PDraw::set_mask(80, 0, screen_width-2*80, screen_height);
+	PDraw::set_mask(0, 0, 640, screen_height);
 	if (Game->apples_count > 0) {
 
 		uint i = 0;
@@ -280,10 +280,7 @@ int Screen_ScoreCount_Init() {
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_CURSOR);
 	
-	if (Settings.isWide)
-		PDraw::set_xoffset(80);
-	else
-		PDraw::set_xoffset(0);
+	PDraw::set_xoffset(640);
 
 	PDraw::image_delete(bg_screen);
 	bg_screen = PDraw::image_load(PFile::Path("gfx" PE_SEP "menu.bmp"), true);

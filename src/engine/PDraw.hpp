@@ -76,7 +76,7 @@ int   font_writealpha(int font_index, const char* text, int x, int y, int alpha)
 
 void  get_buffer_size(int* w, int* h);
 int   get_xoffset();
-void  set_xoffset(int x);
+void  set_xoffset(int width);
 void  clear_fonts();
 
 void  get_buffer_data(void** _buffer8);

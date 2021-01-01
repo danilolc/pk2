@@ -256,7 +256,7 @@ int main(int argc, char *argv[]) {
 
 	Settings_Open();
 
-	screen_width = Settings.isWide ? 800 : 640;
+	// TODO - set screen_width
 
 	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", Settings.audio_buffer_size);
 	if (!Piste::is_ready()) {

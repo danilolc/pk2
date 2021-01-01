@@ -49,12 +49,12 @@ int Screen_First_Start() {
 		GUI_Load();
 
 	tekstit = new PLang();
-	if (Load_Language(Settings.kieli) != 0) {
+	if (Load_Language(Settings.language) != 0) {
 
-		PLog::Write(PLog::ERR, "PK2", "Could not find %s!", Settings.kieli);
-		strcpy(Settings.kieli, "english.txt");
+		PLog::Write(PLog::ERR, "PK2", "Could not find %s!", Settings.language);
+		strcpy(Settings.language, "english.txt");
 		
-		if(Load_Language(Settings.kieli) != 0) {
+		if(Load_Language(Settings.language) != 0) {
 
 			PLog::Write(PLog::FATAL, "PK2", "Could not find the default language file!");
 			PK2_Error("Error");
@@ -66,8 +66,8 @@ int Screen_First_Start() {
 	
 	if (Load_Fonts(tekstit) != 0) {
 
-		strcpy(Settings.kieli, "english.txt");
-		if(Load_Language(Settings.kieli) != 0) {
+		strcpy(Settings.language, "english.txt");
+		if(Load_Language(Settings.language) != 0) {
 
 			PLog::Write(PLog::FATAL, "PK2", "Could not find the default language file!");
 			PK2_Error("Error");
@@ -93,10 +93,11 @@ int Screen_First_Start() {
 	
 	PInput::SetVibration(Settings.vibration);
 
-	if (Settings.isFiltered)
+	// TODO set shader
+	/*if (Settings.isFiltered)
 		PRender::set_filter(PRender::FILTER_LINEAR);
 	else
-		PRender::set_filter(PRender::FILTER_NEAREST);
+		PRender::set_filter(PRender::FILTER_NEAREST);*/
 
 	PRender::set_fullscreen(Settings.isFullScreen);
 

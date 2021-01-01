@@ -520,7 +520,7 @@ int screen_fill(int posx, int posy, int oikea, int ala, u8 color) {
 
 void set_mask(int x, int y, int w, int h) {
 
-    SDL_Rect r = {x, y, w, h};
+    SDL_Rect r = {x + x_offset, y, w, h};
     SDL_SetClipRect(frameBuffer8, &r);
 
 }
@@ -700,10 +700,17 @@ int get_xoffset() {
 
 }
 
-//TODO - change to set_wide
-void set_xoffset(int x) {
+void set_xoffset(int width) {
 
-    x_offset = x;
+    if (width < buffer_width) {
+
+        x_offset = (buffer_width - width) / 2;
+
+    } else {
+
+        x_offset = 0;
+
+    }
 
 }
 
