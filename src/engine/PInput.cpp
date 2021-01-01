@@ -403,7 +403,8 @@ void UpdateMouse(bool keyMove, bool relative) {
 	int bw, bh;
 	PDraw::get_buffer_size(&bw, &bh);
 
-	int off = PDraw::get_xoffset();
+	int off_x, off_y;
+	PDraw::get_offset(&off_x, &off_y);
 
 	if (!relative || PUtils::Is_Mobile()) {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
@@ -415,7 +416,8 @@ void UpdateMouse(bool keyMove, bool relative) {
 		tmpx *= float(bw) / sw;
 		tmpy *= float(bh) / sh;
 
-		tmpx -= off;
+		tmpx -= off_x;
+		tmpy -= off_y;
 
 		// Mouse moved
 		if (abs(last_x - tmpx) > 0 || abs(last_y - tmpy) > 0)
@@ -470,10 +472,10 @@ void UpdateMouse(bool keyMove, bool relative) {
 	}
 
 	// set limits
-	if (mouse_x < -off) mouse_x = -off;
-	if (mouse_x > bw - off - 19) mouse_x = bw - off - 19;
-	if (mouse_y < 0) mouse_y = 0;
-	if (mouse_y > bh - 19) mouse_y = 480 - 19;
+	if (mouse_x < -off_x) mouse_x = -off_x;
+	if (mouse_x > bw - off_x - 19) mouse_x = bw - off_x - 19;
+	if (mouse_y < -off_y) mouse_y = -off_y;
+	if (mouse_y > bh - off_y - 19) mouse_y = bh - off_y - 19;
 
 }
 

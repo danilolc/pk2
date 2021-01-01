@@ -88,7 +88,7 @@ int Screen_Intro_Init() {
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_TOUCH_TO_START);
 	
-	PDraw::set_xoffset(640);
+	PDraw::set_offset(640, 480);
 
 	PDraw::image_delete(bg_screen);
 	bg_screen = PDraw::image_load(PFile::Path("gfx" PE_SEP "intro.bmp"), true);

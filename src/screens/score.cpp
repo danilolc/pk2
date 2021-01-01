@@ -115,7 +115,7 @@ int Draw_ScoreCount() {
 	char luku[20];
 	int x, y;
 
-	PDraw::image_clip(bg_screen, 0, 0);
+	PDraw::image_clip(bg_screen);
 
 	/* BG Effect */
 	for (int i = 0; i < 18; i++) {
@@ -202,7 +202,7 @@ int Draw_ScoreCount() {
 	my += 20;
 
 	// Draw apples
-	PDraw::set_mask(0, 0, 640, screen_height);
+	PDraw::set_mask(0, 0, 640, 480);
 	if (Game->apples_count > 0) {
 
 		uint i = 0;
@@ -280,11 +280,11 @@ int Screen_ScoreCount_Init() {
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_CURSOR);
 	
-	PDraw::set_xoffset(640);
+	PDraw::set_offset(640, 480);
 
 	PDraw::image_delete(bg_screen);
 	bg_screen = PDraw::image_load(PFile::Path("gfx" PE_SEP "menu.bmp"), true);
-	PDraw::create_shadow(bg_screen, 640, 480, 30);
+	PDraw::create_shadow(bg_screen, 640, 480);
 
 	map_new_record = false;
 	map_new_time_record = false;

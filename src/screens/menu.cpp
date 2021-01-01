@@ -1271,8 +1271,7 @@ void Draw_Menu_Data() {
 
 int Draw_Menu() {
 
-	//TODO WIDE
-	//PDraw::image_clip(bg_screen, 0, 0);
+	PDraw::image_clip(bg_screen);
 
 	menu_valinta_id = 1;
 
@@ -1307,7 +1306,7 @@ int Screen_Menu_Init() {
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_CURSOR);
 	
-	PDraw::set_xoffset(640);
+	PDraw::set_offset(640, 480);
 	
 	langlistindex = 0;
 
@@ -1319,8 +1318,7 @@ int Screen_Menu_Init() {
 	
 	} else {
 
-		//TODO WIDE
-		//PDraw::create_shadow(bg_screen, 640, 480, Settings.isWide? 110 : 30);
+		PDraw::create_shadow(bg_screen, 640, 480);
 
 	}
 

@@ -14,8 +14,8 @@
 #include <cmath>
 #include <string>
 
-int screen_width  = 800;
-int screen_height = 480;
+int screen_width  = 1000;//800;
+int screen_height = 600;//480;
 
 #ifdef __ANDROID__
 

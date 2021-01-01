@@ -169,7 +169,7 @@ int Draw_InGame_DebugInfo() {
 	int vali, fy = 70;
 	char lukua[20];
 
-	PDraw::set_xoffset(640);
+	PDraw::set_offset(640, 480);
 
 	vali = PDraw::font_write(fontti1,"spriteja: ",10,fy);
 	sprintf(lukua, "%i", debug_sprites);
@@ -232,7 +232,7 @@ int Draw_InGame_DebugInfo() {
 	sprintf(lukua, "%i", Game->timeout);
 	vali += PDraw::font_write(fontti1,lukua,390,screen_height-10);
 
-	PDraw::set_xoffset(screen_width);
+	PDraw::set_offset(screen_width, screen_height);
 	return 0;
 }
 int Draw_InGame_DevKeys() {
@@ -518,7 +518,7 @@ int Draw_InGame() {
 		if (dev_mode)
 			Draw_InGame_DevKeys();
 		if (test_level)
-			PDraw::font_write(fontti1, "testing level", 0, 480 - 20);
+			PDraw::font_write(fontti1, "testing level", 0, screen_height - 20);
 		if (show_fps) {
 			
 			int fps = Piste::get_fps();
@@ -571,7 +571,7 @@ int Screen_InGame_Init(){
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_GAME_BUTTONS);
 	
-	PDraw::set_xoffset(screen_width);
+	PDraw::set_offset(screen_width, screen_height);
 
 	if (!Game->isStarted()) {
 

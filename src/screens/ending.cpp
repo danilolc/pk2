@@ -123,7 +123,7 @@ int Screen_Ending_Init() {
 	if(PUtils::Is_Mobile())
 		GUI_Change(UI_TOUCH_TO_START);
 	
-	PDraw::set_xoffset(640);
+	PDraw::set_offset(640, 480);
 
 	PFile::Path path = Episode->Get_Dir("ending.bmp");
 	if (FindAsset(&path, "gfx" PE_SEP)) {

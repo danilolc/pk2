@@ -45,7 +45,7 @@ static GLuint screen_vs;
 static GLuint screen_fs;
 static GLuint screen_program;
 
-static GLfloat shader_time;
+static GLfloat shader_time = 0;
 
 static GLint  uniScreenTex;
 static GLint  uniScreenIdxRes;
@@ -372,14 +372,9 @@ void load_buffers() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE);
 
-
-	// RGB texture (indexed texture converted to RGB)
-	int w, h;
-	PDraw::get_buffer_size(&w, &h);
-	printf("AAAAAAAAAAA %i %i \n", w, h);
 	glGenTextures(1, &screen_texture);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 800, 480, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE);
@@ -464,6 +459,8 @@ void terminate() {
 void update(void* _buffer8, int alpha) {
 
 	shader_time += 1.f/60;
+	if (shader_time > M_PI)
+		shader_time -= M_PI;
 
     SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
 
@@ -471,7 +468,8 @@ void update(void* _buffer8, int alpha) {
 
 	float a = float(alpha) / 100;
 
-    // Only if changed?
+    // Set uniforms and size only if changed?
+
     for (int i = 0; i < 256; i++) {
 		indexed_palette[3*i] = float(buffer8->format->palette->colors[i].r) * a / 256;
 		indexed_palette[3*i + 1] = float(buffer8->format->palette->colors[i].g) * a / 256;
@@ -482,25 +480,25 @@ void update(void* _buffer8, int alpha) {
 	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);
 	glUseProgram(indexed_program);
 	glBindTexture(GL_TEXTURE_2D, indexed_texture);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8UI, buffer8->w, buffer8->h, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, buffer8->pixels);
-	glUniform1i(uniIndexTex, 0);
-	glUniform3fv(uniIndexPalette, 256, indexed_palette);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glUniform1i(uniIndexTex, 0); //
+	glUniform3fv(uniIndexPalette, 256, indexed_palette); //
 	glUniform1f(uniIndexTime, shader_time);
-	glUniform2f(uniIndexRes, buffer8->w, buffer8->h);
+	glUniform2f(uniIndexRes, buffer8->w, buffer8->h); //
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
-	// Only if changed?
 	int w, h;
-	SDL_GetWindowSize(window, &w, &h);
+	SDL_GetWindowSize(window, &w, &h); //
 	glViewport(0, 0, w, h);
 	glBindFramebuffer(GL_FRAMEBUFFER, screen_buffer);
 	glUseProgram(screen_program);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, buffer8->w, buffer8->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); //
 	glBindBuffer(GL_ARRAY_BUFFER, screen_vbo);
-	glUniform1i(uniScreenTex, 0);
-	glUniform2f(uniScreenIdxRes, buffer8->w, buffer8->h);
-	glUniform2f(uniScreenRes, w, h);
+	glUniform1i(uniScreenTex, 0); //
+	glUniform2f(uniScreenIdxRes, buffer8->w, buffer8->h); //
+	glUniform2f(uniScreenRes, w, h); //
 	glUniform1f(uniScreenTime, shader_time);
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);

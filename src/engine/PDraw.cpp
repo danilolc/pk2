@@ -37,6 +37,7 @@ static int fade_speed = 0;
 static int alpha = 100;
 
 static int x_offset = 0;
+static int y_offset = 0;
 
 Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
 /*
@@ -302,12 +303,28 @@ int image_cut(int ImgIndex, RECT area) {
 
 }
 
+// Clip on the center of the screen
+int image_clip(int index) {
+
+    SDL_Rect dstrect;
+    SDL_Surface* image = imageList[index];
+
+    dstrect.x = (buffer_width - image->w) / 2;
+    dstrect.y = (buffer_height - image->h) / 2;
+    dstrect.w = image->w;
+    dstrect.h = image->h;
+    
+    SDL_BlitSurface(image, NULL, frameBuffer8, &dstrect);
+
+    return 0;
+}
+
 int image_clip(int index, int x, int y) {
 
     SDL_Rect dstrect;
 
     dstrect.x = x + x_offset;
-    dstrect.y = y;
+    dstrect.y = y + y_offset;
     dstrect.w = imageList[index]->w;
     dstrect.h = imageList[index]->h;
 
@@ -346,6 +363,7 @@ int image_cutclip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, 
 int image_cutclip(int index, RECT srcrect, RECT dstrect) {
 
     dstrect.x += x_offset;
+    dstrect.y += y_offset;
     SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
 
     return 0;
@@ -372,6 +390,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
 						 int dst_x, int dst_y, int alpha, u8 colorsum) {
     
     dst_x += x_offset;
+    dst_y += y_offset;
 
     if (alpha > 100) alpha = 100;
     if (alpha <= 0) alpha = 0;
@@ -510,14 +529,14 @@ int screen_fill(u8 color) {
 
 int screen_fill(int posx, int posy, int oikea, int ala, u8 color) {
 
-    SDL_Rect r = {posx + x_offset, posy, oikea-posx, ala-posy};
+    SDL_Rect r = {posx + x_offset, posy + y_offset, oikea-posx, ala-posy};
     return SDL_FillRect(frameBuffer8, &r, color);
 
 }
 
 void set_mask(int x, int y, int w, int h) {
 
-    SDL_Rect r = {x + x_offset, y, w, h};
+    SDL_Rect r = {x + x_offset, y + y_offset, w, h};
     SDL_SetClipRect(frameBuffer8, &r);
 
 }
@@ -574,29 +593,49 @@ u8 blend_colors(u8 color, u8 colBack, int alpha) {
 
 }
 
-int create_shadow(int index, u32 width, u32 height, u32 startx){
-	
+// TODO check
+int create_shadow(int index, u32 width, u32 height){
+
+    int startx = (imageList[index]->w - width) / 2;
+    int starty = (imageList[index]->h - height) / 2;
+
+    startx += 30;
+    starty += 35;
+
+    width  -= 30;
+    height -= 35;
+
+    width  -= 32;
+    height -= 32;
+
+    int endx = width + startx;
+    int endy = height + starty;
+
+    if (startx >= endx || starty >= endy)
+        return 1;
+
+    if (startx < 0)
+        startx = 0;
+    if (starty < 0)
+        starty = 0;
+    if (endx >= imageList[index]->w)
+		endx = imageList[index]->w - 1;
+    if (endy >= imageList[index]->h)
+        endy = imageList[index]->h - 1;
+
+	double factor = 3;
+
     u8* buffer = NULL;
     u32 leveys;
 
 	if (drawimage_start(index, buffer, leveys) != 0)
-		return 1;
+		return 2;
 
-	if (width > leveys)
-		width = leveys;
-
-	height -= 2;
-	width  -= 2;
-
-	width += startx - 30;
-
-	double factor = 3;
-
-	for (u32 y = 35; y < height - 30; y++) {
+	for (u32 y = starty; y < endy; y++) {
 
 		u32 my = y * leveys;
 
-		for(u32 x = startx; x < width - 30; x++) {
+		for(u32 x = startx; x < endx; x++) {
 
 			u32 mx = x + my;
 
@@ -605,7 +644,7 @@ int create_shadow(int index, u32 width, u32 height, u32 startx){
             u8 color2 = 192; //Turquoise
             color %= 32;
 
-			if (x == startx || x == width-31 || y == 35 || y == height-31)
+			if (x == startx || x == endx-1 || y == starty || y == endy-1)
 				color = int((double)color / (factor / 1.5));
 			else
 				color = int((double)color / factor);
@@ -621,7 +660,7 @@ int create_shadow(int index, u32 width, u32 height, u32 startx){
 	}
 
 	if (drawimage_end(index) != 0)
-		return 1;
+		return 2;
 
 	return 0;
     
@@ -680,7 +719,7 @@ int font_write(int font_index, const char* text, int x, int y) {
 
 int font_writealpha(int font_index, const char* text, int x, int y, int alpha) {
 
-    return fontList[font_index]->write_trasparent(x + x_offset, y, text, alpha);
+    return fontList[font_index]->write_trasparent(x + x_offset, y + y_offset, text, alpha);
 
 }
 
@@ -691,13 +730,14 @@ void get_buffer_size(int* w, int* h) {
 
 }
 
-int get_xoffset() {
+void get_offset(int* x, int* y) {
 
-    return x_offset;
+    *x = x_offset;
+    *y = y_offset;
 
 }
 
-void set_xoffset(int width) {
+void set_offset(int width, int height) {
 
     if (width < buffer_width) {
 
@@ -706,6 +746,16 @@ void set_xoffset(int width) {
     } else {
 
         x_offset = 0;
+
+    }
+
+    if (height < buffer_height) {
+
+        y_offset = (buffer_height - height) / 2;
+
+    } else {
+
+        y_offset = 0;
 
     }
 

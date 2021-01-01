@@ -43,6 +43,7 @@ int   image_load(int& index, PFile::Path path, bool getPalette);
 int   image_copy(int src_i, int dst_i);
 int   image_cut(int ImgIndex, int x, int y, int w, int h);
 int   image_cut(int ImgIndex, RECT area);
+int   image_clip(int index);
 int   image_clip(int index, int x, int y);
 int   image_cliptransparent(int index, int x, int y, int alpha, u8 colorsum);
 int   image_cutclip(int index, int dstx, int dsty, int srcx, int srcy, int oikea, int ala);
@@ -67,7 +68,7 @@ int   drawscreen_end();
 int   drawimage_start(int index, u8 *&pixels, u32 &pitch);
 int   drawimage_end(int index);
 u8    blend_colors(u8 color, u8 colBack,int alpha);
-int   create_shadow(int index, u32 width, u32 height, u32 startx);
+int   create_shadow(int index, u32 width, u32 height);
 
 int   font_create(int image, int x, int y, int width, int height, int count);
 int   font_create(PFile::Path path);
@@ -75,8 +76,8 @@ int   font_write(int font_index, const char* text, int x, int y);
 int   font_writealpha(int font_index, const char* text, int x, int y, int alpha);
 
 void  get_buffer_size(int* w, int* h);
-int   get_xoffset();
-void  set_xoffset(int width);
+void  get_offset(int* x, int* y);
+void  set_offset(int width, int height);
 void  clear_fonts();
 
 void  get_buffer_data(void** _buffer8, int* _alpha);

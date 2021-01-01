@@ -282,7 +282,7 @@ int Screen_Map_Init() {
 
 	mouse_hidden = false;
 	
-	PDraw::set_xoffset(640);
+	PDraw::set_offset(640, 480);
 
 	degree = degree_temp;
 
@@ -348,7 +348,7 @@ int Screen_Map() {
 		next_screen = SCREEN_GAME;
 		
 		//Draw "loading" text
-		PDraw::set_xoffset(screen_width);
+		PDraw::set_offset(screen_width, screen_height);
 		PDraw::screen_fill(0);
 		PDraw::font_write(fontti2, tekstit->Get_Text(PK_txt.game_loading), screen_width / 2 - 82, screen_height / 2 - 9);
 		PDraw::fade_out(0);
