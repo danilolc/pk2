@@ -46,6 +46,7 @@ static GLuint screen_fs;
 static GLuint screen_program;
 
 static GLfloat shader_time = 0;
+const  GLfloat time_cycle = M_PI * 3 * 4 * 5;// * 7;
 
 static GLint  uniScreenTex;
 static GLint  uniScreenIdxRes;
@@ -459,8 +460,8 @@ void terminate() {
 void update(void* _buffer8, int alpha) {
 
 	shader_time += 1.f/60;
-	if (shader_time > M_PI)
-		shader_time -= M_PI;
+	if (shader_time > time_cycle)
+		shader_time -= time_cycle;
 
     SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
 

@@ -92,6 +92,7 @@ This example starts the level13.map on dev mode:
 * Remove repeated languages
 * Translate finnish language
 * Low volume sounds not played on low volume - music playing on volume 0
+* Better sound quality
 * Jump frames when fps is low
 
 # PLANS
