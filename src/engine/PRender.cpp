@@ -7,9 +7,8 @@
 #include "engine/PDraw.hpp"
 #include "engine/PLog.hpp"
 #include "engine/types.hpp"
+#include "engine/PGl.hpp"
 
-#define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
 #include <SDL.h>
 
 namespace PRender {
@@ -431,10 +430,11 @@ int init(int width, int height, const char* name, const char* icon) {
     
     #endif
 
+	load_lib();
     context = SDL_GL_CreateContext(window);
 	PLog::Write(PLog::DEBUG, "PRender", "OpenGL version: %s", glGetString(GL_VERSION));   
 
-	glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 	glDisable(GL_DITHER);
 	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
