@@ -49,11 +49,6 @@ static void wait_frame() {
 
 #endif
 
-u64 t_draw = 0, t_copy = 0;
-
-u8 a_buf[900*640];
-u8 c_buf[900*640];
-
 static void logic() {
 	
 	SDL_Event event;
@@ -71,27 +66,17 @@ static void logic() {
 		
 	}
 
-	u64 a = SDL_GetPerformanceCounter();
+	PDraw::update();
 
 	// Pass PDraw informations do PRender
 	if (draw) {
 		void* buffer8;
-		int alpha;
-		PDraw::get_buffer_data(&buffer8, &alpha);
-		PRender::update(buffer8, alpha);
+		PDraw::get_buffer_data(&buffer8);
+		PRender::update(buffer8);
 	}
 
-	u64 b = SDL_GetPerformanceCounter();
-
-	memcpy(a_buf, c_buf, 900*640);
-
-	u64 c = SDL_GetPerformanceCounter();
-
-	t_draw = b - a;
-	t_copy = c - b;
-
 	// Clear PDraw buffer
-	PDraw::update();
+	PDraw::clear_buffer();
 
 	#ifndef PK2_NO_THREAD
 	if (!PRender::is_vsync() && (desired_fps > 0) && draw)
@@ -167,19 +152,9 @@ void loop(int (*GameLogic)()) {
 	running = true;
 
 	while(running) {
-
-		u64 a = SDL_GetPerformanceCounter();
 		
 		error = GameLogic();
 		if (error) break;
-
-		u64 b = SDL_GetPerformanceCounter();
-
-		u64 t_cur = b-a;
-		u64 delta = SDL_GetPerformanceCounter() - l_time;
-		l_time = SDL_GetPerformanceCounter();
-
-		//printf("%f %f %f\n", double(t_cur)/delta, double(t_draw)/delta, double(t_copy)/delta);
 		
 		logic();
 

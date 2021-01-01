@@ -79,8 +79,9 @@ int   get_xoffset();
 void  set_xoffset(int x);
 void  clear_fonts();
 
-void  get_buffer_data(void** _buffer8, int* _alpha);
+void  get_buffer_data(void** _buffer8);
 void  update();
+void  clear_buffer();
 int   init(int width, int height);
 int   terminate();
 

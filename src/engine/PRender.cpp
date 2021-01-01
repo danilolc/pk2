@@ -140,7 +140,7 @@ void adjust_screen() {
 	glBindBuffer(GL_ARRAY_BUFFER, screen_vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(screen_vbo_data), screen_vbo_data, GL_DYNAMIC_DRAW);
 
-	printf("%f %f %f %f\n", x, y, a, b);
+	//printf("%f %f %f %f\n", x, y, a, b);
 
 }
 
@@ -459,7 +459,7 @@ void terminate() {
 
 }
 
-void update(void* _buffer8, int alpha) {
+void update(void* _buffer8) {
 
 	shader_time += 1.f/60;
 
@@ -468,11 +468,10 @@ void update(void* _buffer8, int alpha) {
     SDL_LockSurface(buffer8);
 
     // Only if changed?
-    float a = float(alpha) / 100;
     for (int i = 0; i < 256; i++) {
-		indexed_palette[3*i] = (float)buffer8->format->palette->colors[i].r * a / 256;
-		indexed_palette[3*i + 1] = (float)buffer8->format->palette->colors[i].g * a / 256;
-		indexed_palette[3*i + 2] = (float)buffer8->format->palette->colors[i].b * a / 256;
+		indexed_palette[3*i] = (float)buffer8->format->palette->colors[i].r / 256;
+		indexed_palette[3*i + 1] = (float)buffer8->format->palette->colors[i].g / 256;
+		indexed_palette[3*i + 2] = (float)buffer8->format->palette->colors[i].b / 256;
 	}
     
 	glViewport(0, 0, 800, 480);

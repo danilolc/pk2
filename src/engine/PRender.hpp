@@ -15,13 +15,12 @@ void adjust_screen();
 void set_fullscreen(bool set);
 void get_window_size(int* w, int* h);
 void get_window_position(int* x, int* y);
-void fit_screen(bool fit);
 
 int  set_vsync(bool set);
 bool is_vsync();
 
 int  init(int width, int height, const char* name, const char* icon);
 void terminate();
-void update(void* _buffer8, int alpha);
+void update(void* _buffer8);
 
 }
