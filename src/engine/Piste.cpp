@@ -66,17 +66,18 @@ static void logic() {
 		
 	}
 
-	PDraw::update();
+	
 
 	// Pass PDraw informations do PRender
 	if (draw) {
 		void* buffer8;
-		PDraw::get_buffer_data(&buffer8);
-		PRender::update(buffer8);
+		int alpha;
+		PDraw::get_buffer_data(&buffer8, &alpha);
+		PRender::update(buffer8, alpha);
 	}
 
 	// Clear PDraw buffer
-	PDraw::clear_buffer();
+	PDraw::update();
 
 	#ifndef PK2_NO_THREAD
 	if (!PRender::is_vsync() && (desired_fps > 0) && draw)

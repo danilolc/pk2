@@ -21,6 +21,6 @@ bool is_vsync();
 
 int  init(int width, int height, const char* name, const char* icon);
 void terminate();
-void update(void* _buffer8);
+void update(void* _buffer8, int alpha);
 
 }

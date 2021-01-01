@@ -461,7 +461,7 @@ void terminate() {
 
 }
 
-void update(void* _buffer8) {
+void update(void* _buffer8, int alpha) {
 
 	shader_time += 1.f/60;
 
@@ -469,11 +469,13 @@ void update(void* _buffer8) {
 
     SDL_LockSurface(buffer8);
 
+	float a = float(alpha) / 100;
+
     // Only if changed?
     for (int i = 0; i < 256; i++) {
-		indexed_palette[3*i] = (float)buffer8->format->palette->colors[i].r / 256;
-		indexed_palette[3*i + 1] = (float)buffer8->format->palette->colors[i].g / 256;
-		indexed_palette[3*i + 2] = (float)buffer8->format->palette->colors[i].b / 256;
+		indexed_palette[3*i] = float(buffer8->format->palette->colors[i].r) * a / 256;
+		indexed_palette[3*i + 1] = float(buffer8->format->palette->colors[i].g) * a / 256;
+		indexed_palette[3*i + 2] = float(buffer8->format->palette->colors[i].b) * a / 256;
 	}
     
 	glViewport(0, 0, buffer8->w, buffer8->h);

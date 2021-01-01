@@ -17,9 +17,6 @@ namespace PDraw {
 // 8-bit indexed surface, it's the game frame buffer
 static SDL_Surface* frameBuffer8 = NULL;
 static SDL_Palette* game_palette = NULL;
-static SDL_Palette* game_palette_bkp = NULL;
-
-static SDL_Palette** current_palette = &game_palette;
 
 // All images have its original palette on
 // 'userdata' and game_palette on 'palette'.
@@ -172,7 +169,7 @@ int  fade_in(int speed){
 }
 void rotate_palette(u8 start, u8 end){
 
-    SDL_Color* game_colors = (*current_palette)->colors;
+    SDL_Color* game_colors = game_palette->colors;
     SDL_Color temp_color = game_colors[end];
 
     for (uint i = end; i > start; i--)
@@ -238,7 +235,7 @@ int image_load(PFile::Path path, bool getPalette) {
     if(getPalette) {
 
         SDL_Palette* pal = imageList[index]->format->palette;
-        SDL_memcpy((*current_palette)->colors, pal->colors, sizeof(SDL_Color) * 256);
+        SDL_memcpy(game_palette->colors, pal->colors, sizeof(SDL_Color) * 256);
     
     }
 
@@ -726,9 +723,6 @@ int init(int width, int height) {
     if (game_palette == NULL)
         game_palette = SDL_AllocPalette(256);
 
-    if (game_palette_bkp == NULL)
-        game_palette_bkp = SDL_AllocPalette(256);
-
     frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
     frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
     frameBuffer8->format->palette = game_palette;
@@ -770,7 +764,6 @@ int terminate(){
     clear_fonts();
 
     SDL_FreePalette(game_palette);
-    SDL_FreePalette(game_palette_bkp);
 
     frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
     SDL_FreeSurface(frameBuffer8);
@@ -782,16 +775,14 @@ int terminate(){
 
 }
 
-void get_buffer_data(void** _buffer8) {
+void get_buffer_data(void** _buffer8, int* _alpha) {
 
     *_buffer8 = frameBuffer8;
-    frameBuffer8->format->palette = game_palette;
+    *_alpha = alpha;
 
 }
 
 void update() {
-
-    static bool palette_changed = false;
 
     if (is_fading()) {
 
@@ -800,37 +791,6 @@ void update() {
         if(alpha > 100) alpha = 100;
     
     }
-
-    if(alpha < 100) {
-
-        if (!palette_changed) {
-            SDL_memcpy(game_palette_bkp->colors, game_palette->colors, sizeof(SDL_Color) * 256);
-            palette_changed = true;
-            current_palette = &game_palette_bkp;
-        }
-
-        for (int i = 0; i < 256; i++) {
-
-            game_palette->colors[i].r = game_palette_bkp->colors[i].r * alpha / 100;
-            game_palette->colors[i].g = game_palette_bkp->colors[i].g * alpha / 100;
-            game_palette->colors[i].b = game_palette_bkp->colors[i].b * alpha / 100;
-
-        }
-
-    
-    } else {
-
-        if (palette_changed) {
-            SDL_memcpy(game_palette->colors, game_palette_bkp->colors, sizeof(SDL_Color) * 256);
-            palette_changed = false;
-            current_palette = &game_palette;
-        }
-
-    }
-
-}
-
-void clear_buffer() {
 
     SDL_FillRect(frameBuffer8, NULL, 0);
 

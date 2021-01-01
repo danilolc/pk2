@@ -79,6 +79,7 @@ This example starts the level13.map on dev mode:
 * Random SIGFAULT
 * Music won't play twice if map music doesn't exist
 * Score menu blinking on pressing enter
+* Bug when changing fullscreen
 * New graphics and controllers menu
 * Don't leave level after pressing 'E' on dev mode
 * Lua settings?
