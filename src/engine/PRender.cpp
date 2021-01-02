@@ -173,7 +173,7 @@ void get_window_position(int* x, int* y) {
 
 int set_vsync(bool set) {
 
-    #ifndef PK2_NO_THREAD
+	#ifndef PK2_NO_THREAD
 
 	if (set == vsync_set)
 		return 0;
@@ -432,8 +432,11 @@ int init(int width, int height, const char* name, const char* icon) {
 
     context = SDL_GL_CreateContext(window);
 	load_lib();
+
+	set_vsync(true);
     
-	PLog::Write(PLog::DEBUG, "PRender", "OpenGL version: %s", glGetString(GL_VERSION));   
+	PLog::Write(PLog::DEBUG, "PRender", "OpenGL version: %s", glGetString(GL_VERSION));
+	PLog::Write(PLog::DEBUG, "PRender", "GLSL version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	//glDisable(GL_LIGHTING);
 	glDisable(GL_DITHER);

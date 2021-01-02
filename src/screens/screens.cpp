@@ -103,6 +103,8 @@ int Screen_First_Start() {
 
 	if (Settings.fps == SETTINGS_VSYNC)
 		Piste::set_fps(-1);
+	else if (Settings.fps == SETTINGS_30FPS)
+		Piste::set_fps(30);
 	else if (Settings.fps == SETTINGS_60FPS)
 		Piste::set_fps(60);
 	else if (Settings.fps == SETTINGS_85FPS)
