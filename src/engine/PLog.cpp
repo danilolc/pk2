@@ -31,8 +31,9 @@ namespace PLog {
 
 static PFile::RW* log_file = NULL;
 static u8 log_level = 0;
+static bool print_to_stdout = false;
 
-void Init(u8 level, PFile::Path file) {
+void Init(u8 level, PFile::Path file, bool to_stdout) {
 
     log_level = level;
 
@@ -43,6 +44,8 @@ void Init(u8 level, PFile::Path file) {
 
     if (file.size() > 0)
         log_file = file.GetRW("w");
+    
+    print_to_stdout = to_stdout;
 
 }
 
@@ -103,36 +106,40 @@ void Write(u8 level, const char* origin, const char* format, ...) {
 
     }
 
-    #ifdef __ANDROID__
+    if (print_to_stdout) {
+        
+        #ifdef __ANDROID__
 
-    int android_level;
+        int android_level;
 
-    switch (level) {
+        switch (level) {
 
-        case DEBUG:
-            android_level = ANDROID_LOG_DEBUG; break;
-        case INFO:
-            android_level = ANDROID_LOG_INFO; break;
-        case WARN:
-            android_level = ANDROID_LOG_WARN; break;
-        case ERR:
-            android_level = ANDROID_LOG_ERROR; break;
-        case FATAL:
-            android_level = ANDROID_LOG_FATAL; break;
-        default:
-            android_level = ANDROID_LOG_UNKNOWN; break;
+            case DEBUG:
+                android_level = ANDROID_LOG_DEBUG; break;
+            case INFO:
+                android_level = ANDROID_LOG_INFO; break;
+            case WARN:
+                android_level = ANDROID_LOG_WARN; break;
+            case ERR:
+                android_level = ANDROID_LOG_ERROR; break;
+            case FATAL:
+                android_level = ANDROID_LOG_FATAL; break;
+            default:
+                android_level = ANDROID_LOG_UNKNOWN; break;
+
+        }
+
+        __android_log_vprint(android_level, origin, format, args);
+
+        #else
+
+        printf("%s\t%s\t- ", level_name, origin);
+        vprintf(format, args);
+        printf("\n");
+
+        #endif
 
     }
-
-    __android_log_vprint(android_level, origin, format, args);
-
-    #else
-
-    printf("%s\t%s\t- ", level_name, origin);
-    vprintf(format, args);
-    printf("\n");
-
-    #endif
 
     if (log_file != NULL) {
         

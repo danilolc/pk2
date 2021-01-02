@@ -21,7 +21,7 @@ enum {
     
 };
 
-void Init(u8 level, PFile::Path file);
+void Init(u8 level, PFile::Path file, bool to_stdout);
 void Write(const char* txt);
 void Write(u8 level, const char* origin, const char* format, ...);
 void Exit();

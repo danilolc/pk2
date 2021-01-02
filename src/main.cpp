@@ -75,6 +75,11 @@ int main(int argc, char *argv[]) {
 
 	char* test_path = NULL;
 	bool path_set = false;
+	bool print_logs = true;
+
+	#ifdef _WIN32
+		print_logs = false;
+	#endif
 
 	// Read args
 	for (int i = 1; i < argc; i++) {
@@ -127,7 +132,7 @@ int main(int argc, char *argv[]) {
 
 	}
 
-	PLog::Init(PLog::ALL, PFile::Path(""));
+	PLog::Init(PLog::ALL, PFile::Path(""), print_logs);
 
 	if(!path_set)
 		PUtils::Setcwd();
@@ -243,7 +248,7 @@ int main(int argc, char *argv[]) {
 
 	//Now data_path is set
 
-	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"));
+	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"), print_logs);
 
 	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 started!");
 	PLog::Write(PLog::DEBUG, "PK2", "Game version: %s", PK2_VERSION_STR);
