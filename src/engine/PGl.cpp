@@ -751,7 +751,7 @@ void load_funcs() {
 	// gl_BeginQuery = (PFNGLBEGINQUERYPROC) get_proc("glBeginQuery");
 	// gl_BeginQueryIndexed = (PFNGLBEGINQUERYINDEXEDPROC) get_proc("glBeginQueryIndexed");
 	// gl_BeginTransformFeedback = (PFNGLBEGINTRANSFORMFEEDBACKPROC) get_proc("glBeginTransformFeedback");
-	// gl_BindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC) get_proc("glBindAttribLocation");
+	gl_BindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC) get_proc("glBindAttribLocation");
 	gl_BindBuffer = (PFNGLBINDBUFFERPROC) get_proc("glBindBuffer");
 	// gl_BindBufferBase = (PFNGLBINDBUFFERBASEPROC) get_proc("glBindBufferBase");
 	// gl_BindBufferRange = (PFNGLBINDBUFFERRANGEPROC) get_proc("glBindBufferRange");
@@ -770,7 +770,7 @@ void load_funcs() {
 	// gl_BindTextureUnit = (PFNGLBINDTEXTUREUNITPROC) get_proc("glBindTextureUnit");
 	// gl_BindTextures = (PFNGLBINDTEXTURESPROC) get_proc("glBindTextures");
 	// gl_BindTransformFeedback = (PFNGLBINDTRANSFORMFEEDBACKPROC) get_proc("glBindTransformFeedback");
-	// gl_BindVertexArray = (PFNGLBINDVERTEXARRAYPROC) get_proc("glBindVertexArray");
+	gl_BindVertexArray = (PFNGLBINDVERTEXARRAYPROC) get_proc("glBindVertexArray");
 	// gl_BindVertexBuffer = (PFNGLBINDVERTEXBUFFERPROC) get_proc("glBindVertexBuffer");
 	// gl_BindVertexBuffers = (PFNGLBINDVERTEXBUFFERSPROC) get_proc("glBindVertexBuffers");
 	// gl_BlendColor = (PFNGLBLENDCOLORPROC) get_proc("glBlendColor");
@@ -935,7 +935,7 @@ void load_funcs() {
 	// gl_GenSamplers = (PFNGLGENSAMPLERSPROC) get_proc("glGenSamplers");
 	gl_GenTextures = (PFNGLGENTEXTURESPROC) get_proc("glGenTextures");
 	// gl_GenTransformFeedbacks = (PFNGLGENTRANSFORMFEEDBACKSPROC) get_proc("glGenTransformFeedbacks");
-	// gl_GenVertexArrays = (PFNGLGENVERTEXARRAYSPROC) get_proc("glGenVertexArrays");
+	gl_GenVertexArrays = (PFNGLGENVERTEXARRAYSPROC) get_proc("glGenVertexArrays");
 	// gl_GenerateMipmap = (PFNGLGENERATEMIPMAPPROC) get_proc("glGenerateMipmap");
 	// gl_GenerateTextureMipmap = (PFNGLGENERATETEXTUREMIPMAPPROC) get_proc("glGenerateTextureMipmap");
 	// gl_GetActiveAtomicCounterBufferiv = (PFNGLGETACTIVEATOMICCOUNTERBUFFERIVPROC) get_proc("glGetActiveAtomicCounterBufferiv");

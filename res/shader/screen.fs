@@ -13,5 +13,6 @@ uniform float time;
 void main(void) {
 
 	color = texture(screen_tex, UV).rgb;
+	//color = vec3(0.5);
 
 }

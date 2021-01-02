@@ -13,11 +13,25 @@
 
 namespace PRender {
 
+float cover_width, cover_height;
+
 struct GLRect {
 	GLfloat x, y, w, h;
 };
 
+const GLint VBO_LOCATION = 0;
+const GLint UBO_LOCATION = 1;
+
 const GLfloat vbo_data[] = {
+	0.0f,  1.0f,
+	1.0f,  0.0f,
+	0.0f,  0.0f,
+	0.0f,  1.0f,
+	1.0f,  1.0f,
+	1.0f,  0.0f
+};
+
+const GLfloat ubo_data[] = {
 	0.0f,  1.0f,
 	1.0f,  0.0f,
 	0.0f,  0.0f,
@@ -36,8 +50,7 @@ static bool vsync_set = true;
 
 static GLchar Log_message[1024];
 
-GLuint vbo;
-GLuint screen_vbo;
+GLuint vao, vbo, ubo;
 
 // Screen shader
 static GLuint screen_vs;
@@ -104,13 +117,13 @@ void adjust_screen() {
     if (buff_prop > screen_prop) {
 
         screen_dest.w = 1.f;
-        screen_dest.h = 1.f / buff_prop;
+        screen_dest.h = screen_prop / buff_prop;
         screen_dest.x = 0.f;
         screen_dest.y = (1.f - screen_dest.h) / 2;
     
     } else {
 
-        screen_dest.w = buff_prop;
+        screen_dest.w = buff_prop / screen_prop;
         screen_dest.h = 1.f;
         screen_dest.x = (1.f - screen_dest.w) / 2;
         screen_dest.y = 0.f;
@@ -122,13 +135,9 @@ void adjust_screen() {
 	float a = x + screen_dest.w;
 	float b = y + screen_dest.h;
 
-	a /= 2;
-	x += 0.5;
-	y += 1;
-
 	GLfloat screen_vbo_data[] = {
 
-		a,  b,
+		x,  b,
 		a,  y,
 		x,  y,
 		x,  b,
@@ -137,10 +146,11 @@ void adjust_screen() {
 
 	};
 
-	glBindBuffer(GL_ARRAY_BUFFER, screen_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(screen_vbo_data), screen_vbo_data, GL_DYNAMIC_DRAW);
 
-	//printf("%f %f %f %f\n", x, y, a, b);
+	cover_width = screen_dest.w * w;
+	cover_height = screen_dest.h * h;
 
 }
 
@@ -294,6 +304,9 @@ int create_program(const char* vs_file, const char* fs_file, GLuint* vs, GLuint*
 		return 0;
 	}
 
+	glBindAttribLocation(program, UBO_LOCATION, "uv_in");
+	glBindAttribLocation(program, VBO_LOCATION, "vbo_in");
+
 	glAttachShader(program, *vs);
 	glAttachShader(program, *fs);
 	glLinkProgram(program);
@@ -326,10 +339,6 @@ void create_screen_program() {
 
 	glUseProgram(screen_program);
 
-	GLint vbo_att = glGetAttribLocation(screen_program, "position");
-	glEnableVertexAttribArray(vbo_att);
-	glVertexAttribPointer(vbo_att, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
 	uniScreenTex    = glGetUniformLocation(screen_program, "screen_tex");
 	uniScreenIdxRes = glGetUniformLocation(screen_program, "buffer_res");
 	uniScreenRes    = glGetUniformLocation(screen_program, "screen_res");
@@ -348,10 +357,6 @@ void create_indexed_program() {
 	}
 
 	glUseProgram(indexed_program);
-
-	GLint vbo_att = glGetAttribLocation(indexed_program, "position");
-	glEnableVertexAttribArray(vbo_att);
-	glVertexAttribPointer(vbo_att, 2, GL_FLOAT, GL_FALSE, 0, 0);
 
 	uniIndexPalette = glGetUniformLocation(indexed_program, "palette");
 	uniIndexTex     = glGetUniformLocation(indexed_program, "indexed_tex");
@@ -398,11 +403,20 @@ void load_buffers() {
 
 	glBindFramebuffer(GL_FRAMEBUFFER, screen_buffer);
 
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vbo_data), vbo_data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vbo_data), vbo_data, GL_DYNAMIC_DRAW);
+	glVertexAttribPointer(VBO_LOCATION, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(VBO_LOCATION);
 
-	glGenBuffers(1, &screen_vbo);
+	glGenBuffers(1, &ubo);
+	glBindBuffer(GL_ARRAY_BUFFER, ubo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(ubo_data), ubo_data, GL_STATIC_DRAW);
+	glVertexAttribPointer(UBO_LOCATION, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(UBO_LOCATION);
 
 }
 
@@ -487,7 +501,7 @@ void update(void* _buffer8, int alpha) {
 	glUseProgram(indexed_program);
 	glBindTexture(GL_TEXTURE_2D, indexed_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8UI, buffer8->w, buffer8->h, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, buffer8->pixels);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	//glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glUniform1i(uniIndexTex, 0); //
 	glUniform3fv(uniIndexPalette, 256, indexed_palette); //
 	glUniform1f(uniIndexTime, shader_time);
@@ -501,10 +515,10 @@ void update(void* _buffer8, int alpha) {
 	glUseProgram(screen_program);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, buffer8->w, buffer8->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); //
-	glBindBuffer(GL_ARRAY_BUFFER, screen_vbo);
+	//glBindBuffer(GL_ARRAY_BUFFER, ubo);
 	glUniform1i(uniScreenTex, 0); //
 	glUniform2f(uniScreenIdxRes, buffer8->w, buffer8->h); //
-	glUniform2f(uniScreenRes, w, h); //
+	glUniform2f(uniScreenRes, cover_width, cover_height); //
 	glUniform1f(uniScreenTime, shader_time);
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);

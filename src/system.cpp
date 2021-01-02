@@ -14,7 +14,7 @@
 #include <cmath>
 #include <string>
 
-int screen_width  = 800;//800;
+int screen_width  = 640;//800;
 int screen_height = 480;//480;
 
 int audio_buffer_size = 1024;
