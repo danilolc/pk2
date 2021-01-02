@@ -685,8 +685,6 @@ void Draw_Menu_Graphics() {
 		}
 		my += 30;
 
-		bool res_active = true;
-
 		//#endif //TODO - Fix touch position when screen fit
 
 		#endif
@@ -1254,8 +1252,8 @@ void Draw_Menu_Data() {
 
 	my += 30;
 
-	const char* path = "/home/pekka/files/apples/";
-	int len = strlen(path);
+	//const char* path = "/home/pekka/files/apples/";
+	//int len = strlen(path);
 	PDraw::font_write(fontti1, data_path.c_str(), align_right - data_path.size()*8, my);
 	my += 10;
 

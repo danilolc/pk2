@@ -144,7 +144,7 @@ void terminate() {
 }
 
 void loop(int (*GameLogic)()) {
-	static u64 l_time;
+	
 	static int frame_counter = 0;
 	static u32 last_time = 0;
 		

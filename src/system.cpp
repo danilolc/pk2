@@ -17,6 +17,9 @@
 int screen_width  = 800;//800;
 int screen_height = 480;//480;
 
+int audio_buffer_size = 1024;
+int drawing_method = DRAW_OPENGL;
+
 #ifdef __ANDROID__
 
 bool external_dir;

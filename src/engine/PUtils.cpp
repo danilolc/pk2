@@ -31,16 +31,17 @@ int Setcwd() {
 	
 	#else
 
+	int ret = 0;
 	char* path = SDL_GetBasePath();
 	
 	if (path) {
 		
-		chdir(path);
+		ret = chdir(path);
 		SDL_free(path);
 	
 	}
 
-	return chdir(".." PE_SEP "res");
+	return ret + chdir(".." PE_SEP "res");
 
 	#endif
 

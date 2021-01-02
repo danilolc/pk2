@@ -50,7 +50,9 @@ void quit() {
 	Settings_Save();
 
 	PSound::stop_music();
-	GUI_Exit();
+
+	if (PUtils::Is_Mobile())
+		GUI_Exit();
 
 	if (Game)
 		delete Game;
@@ -258,7 +260,7 @@ int main(int argc, char *argv[]) {
 
 	// TODO - set screen_width
 
-	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", Settings.audio_buffer_size);
+	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", audio_buffer_size);
 	if (!Piste::is_ready()) {
 
 		PLog::Write(PLog::FATAL, "PK2", "Failed to init PisteEngine");

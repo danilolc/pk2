@@ -64,7 +64,6 @@ struct PK2SETTINGS {
 	// Audio
 	u8  music_max_volume;
 	u8  sfx_max_volume;
-	u32 audio_buffer_size;
 
 };
 

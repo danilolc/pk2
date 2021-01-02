@@ -96,7 +96,6 @@ void Settings_Init() {
 
 	Settings.music_max_volume = 50;
 	Settings.sfx_max_volume = 90;
-	Settings.audio_buffer_size = /*4096*/ /*2048*/ 1024 /*512*/; //game speed vs audio latency
 
 	Id_To_String(Settings.id, id_code);
 
@@ -159,7 +158,6 @@ int Settings_Open() {
 
 	file->read(Settings.music_max_volume);
 	file->read(Settings.sfx_max_volume);
-	file->read(Settings.audio_buffer_size);
 	
 	file->close();
 
@@ -221,7 +219,6 @@ int Settings_Save() {
 
 	file->write(Settings.music_max_volume);
 	file->write(Settings.sfx_max_volume);
-	file->write(Settings.audio_buffer_size);
 	
 	file->close();
 	

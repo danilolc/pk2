@@ -596,8 +596,11 @@ u8 blend_colors(u8 color, u8 colBack, int alpha) {
 // TODO check
 int create_shadow(int index, u32 width, u32 height){
 
-    int startx = (imageList[index]->w - width) / 2;
-    int starty = (imageList[index]->h - height) / 2;
+    u32 img_w = imageList[index]->w;
+    u32 img_h = imageList[index]->h;
+
+    u32 startx = (img_w - width) / 2;
+    u32 starty = (img_h - height) / 2;
 
     startx += 30;
     starty += 35;
@@ -608,22 +611,18 @@ int create_shadow(int index, u32 width, u32 height){
     width  -= 32;
     height -= 32;
 
-    int endx = width + startx;
-    int endy = height + starty;
+    u32 endx = width + startx;
+    u32 endy = height + starty;
+
+    if (endx >= img_w)
+        endx = img_w - 1;
+    if (endy >= img_h)
+        endy = img_h - 1;
 
     if (startx >= endx || starty >= endy)
         return 1;
 
-    if (startx < 0)
-        startx = 0;
-    if (starty < 0)
-        starty = 0;
-    if (endx >= imageList[index]->w)
-		endx = imageList[index]->w - 1;
-    if (endy >= imageList[index]->h)
-        endy = imageList[index]->h - 1;
-
-	double factor = 3;
+    double factor = 3;
 
     u8* buffer = NULL;
     u32 leveys;

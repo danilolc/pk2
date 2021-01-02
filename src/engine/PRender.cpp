@@ -430,8 +430,9 @@ int init(int width, int height, const char* name, const char* icon) {
     
     #endif
 
-	load_lib();
     context = SDL_GL_CreateContext(window);
+	load_lib();
+    
 	PLog::Write(PLog::DEBUG, "PRender", "OpenGL version: %s", glGetString(GL_VERSION));   
 
 	//glDisable(GL_LIGHTING);
@@ -454,6 +455,7 @@ void terminate() {
 
     SDL_DestroyWindow(window);
 	SDL_GL_DeleteContext(context);
+    free_lib();
 
 }
 
