@@ -46,7 +46,7 @@ static const char* window_name;
 static SDL_Window* window = NULL;
 static SDL_GLContext context;
 
-static bool vsync_set = true;
+static bool vsync_set = false;
 
 static GLchar Log_message[1024];
 
@@ -85,50 +85,55 @@ static GLint  screen_buffer;
 
 void set_fullscreen(bool set) {
 
-    #ifndef __ANDROID__
-    if(set)
-        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    else {
-        int buf_w, buf_h;
-        PDraw::get_buffer_size(&buf_w, &buf_h);
+	#ifndef __ANDROID__
 
-        SDL_SetWindowFullscreen(window, 0);
-        SDL_SetWindowSize(window, buf_w, buf_h);
-        SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED , SDL_WINDOWPOS_CENTERED);
-        //TODO - adjust dst_rect too and turn off filters
-    }
+	glClearColor(0, 0, 0, 1);
+	glClear(GL_COLOR_BUFFER_BIT);
+	SDL_GL_SwapWindow(window);
 
-    adjust_screen();
-    #endif
+	if(set)
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	else {
+		int buf_w, buf_h;
+		PDraw::get_buffer_size(&buf_w, &buf_h);
+
+		SDL_SetWindowFullscreen(window, 0);
+		SDL_SetWindowSize(window, buf_w, buf_h);
+		SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED , SDL_WINDOWPOS_CENTERED);
+		//TODO - adjust dst_rect too and turn off filters
+	}
+
+	adjust_screen();
+	#endif
 
 }
 
 void adjust_screen() {
 
-    int w, h;
-    SDL_GetWindowSize(window, &w, &h);
+	int w, h;
+	SDL_GetWindowSize(window, &w, &h);
 
-    int buf_w, buf_h;
-    PDraw::get_buffer_size(&buf_w, &buf_h);
+	int buf_w, buf_h;
+	PDraw::get_buffer_size(&buf_w, &buf_h);
 
-    float screen_prop = (float)w / h;
-    float buff_prop   = (float)buf_w / buf_h;
+	float screen_prop = (float)w / h;
+	float buff_prop   = (float)buf_w / buf_h;
 
-    if (buff_prop > screen_prop) {
+	if (buff_prop > screen_prop) {
 
-        screen_dest.w = 1.f;
-        screen_dest.h = screen_prop / buff_prop;
-        screen_dest.x = 0.f;
-        screen_dest.y = (1.f - screen_dest.h) / 2;
-    
-    } else {
+		screen_dest.w = 1.f;
+		screen_dest.h = screen_prop / buff_prop;
+		screen_dest.x = 0.f;
+		screen_dest.y = (1.f - screen_dest.h) / 2;
+	
+	} else {
 
-        screen_dest.w = buff_prop / screen_prop;
-        screen_dest.h = 1.f;
-        screen_dest.x = (1.f - screen_dest.w) / 2;
-        screen_dest.y = 0.f;
+		screen_dest.w = buff_prop / screen_prop;
+		screen_dest.h = 1.f;
+		screen_dest.x = (1.f - screen_dest.w) / 2;
+		screen_dest.y = 0.f;
 
-    }
+	}
 
 	float x = screen_dest.x;
 	float y = screen_dest.y;
@@ -166,18 +171,18 @@ int set_filter(const char* filter) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
 
-    return 0;
+	return 0;
 }
 
 void get_window_size(int* w, int* h) {
 
-    SDL_GetWindowSize(window, w, h);
+	SDL_GetWindowSize(window, w, h);
 
 }
 
 void get_window_position(int* x, int* y) {
 
-    SDL_GetWindowPosition(window, x, y);
+	SDL_GetWindowPosition(window, x, y);
 
 }
 
@@ -201,20 +206,20 @@ int set_vsync(bool set) {
 	}
 	vsync_set = set;
 
-    return 0;
+	return 0;
 
-    #else
+	#else
 
-    return -1;
+	return -1;
 
-    #endif
+	#endif
 
 }
 
 bool is_vsync() {
 
-    return vsync_set;
-    
+	return vsync_set;
+	
 }
 
 
@@ -264,7 +269,7 @@ GLuint load_shader(const char* file_name, GLenum shaderType) {
 
 	if (!compiled) {
 		
-	    glGetShaderInfoLog(shader, 1024, NULL, Log_message);
+		glGetShaderInfoLog(shader, 1024, NULL, Log_message);
 		PLog::Write(PLog::ERR, "PRender", "Error compiling %s:\n%s", file_name, Log_message);
 
 		glDeleteShader(shader);
@@ -345,7 +350,6 @@ void create_screen_program() {
 	uniScreenTime   = glGetUniformLocation(screen_program, "time");
 
 	glBindFragDataLocation(screen_program, 0, "color");
-
 }
 
 void create_indexed_program() {
@@ -422,33 +426,35 @@ void load_buffers() {
 
 int init(int width, int height, const char* name, const char* icon) {
 
-    window_name = name;
+	PLog::Write(PLog::DEBUG, "PRender", "Initializing renderer");
 
-    window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    if (!window) {
+	window_name = name;
 
-        PLog::Write(PLog::FATAL, "PRender", "Couldn't create window!");
-        return -2;
+	window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+	if (!window) {
 
-    }
+		PLog::Write(PLog::FATAL, "PRender", "Couldn't create window!");
+		return -2;
 
-    #ifndef __ANDROID__
+	}
 
-    SDL_Surface* window_icon = SDL_LoadBMP(icon);
-    if (window_icon) {
-        SDL_SetWindowIcon(window, window_icon);
-        SDL_FreeSurface(window_icon);
-    }
-    
-    SDL_ShowCursor(SDL_DISABLE);
-    
-    #endif
+	#ifndef __ANDROID__
 
-    context = SDL_GL_CreateContext(window);
+	SDL_Surface* window_icon = SDL_LoadBMP(icon);
+	if (window_icon) {
+		SDL_SetWindowIcon(window, window_icon);
+		SDL_FreeSurface(window_icon);
+	}
+	
+	SDL_ShowCursor(SDL_DISABLE);
+	
+	#endif
+
+	context = SDL_GL_CreateContext(window);
 	load_lib();
 
 	set_vsync(true);
-    
+	
 	PLog::Write(PLog::DEBUG, "PRender", "OpenGL version: %s", glGetString(GL_VERSION));
 	PLog::Write(PLog::DEBUG, "PRender", "GLSL version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
@@ -457,33 +463,33 @@ int init(int width, int height, const char* name, const char* icon) {
 	//glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 
-    load_buffers();
+	load_buffers();
 
-    create_screen_program();
+	create_screen_program();
 	create_indexed_program();
 
-    adjust_screen();
+	adjust_screen();
 
-    return 0;
+	return 0;
 
 }
 
 void terminate() {
 
-    SDL_DestroyWindow(window);
+	SDL_DestroyWindow(window);
 
-    glDeleteTextures(1, &screen_texture);
+	glDeleteTextures(1, &screen_texture);
 	glDeleteTextures(1, &indexed_texture);
 	glDeleteFramebuffers(1, &indexed_buffer);
-    glDeleteVertexArrays(1, &vao);
-    glDeleteBuffers(1, &vbo);
-    glDeleteBuffers(1, &ubo);
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &ubo);
 
-    glDeleteProgram(screen_program);
+	glDeleteProgram(screen_program);
 	glDeleteProgram(indexed_program);
 	
 	SDL_GL_DeleteContext(context);
-    free_lib();
+	free_lib();
 
 }
 
@@ -493,20 +499,20 @@ void update(void* _buffer8, int alpha) {
 	if (shader_time > time_cycle)
 		shader_time -= time_cycle;
 
-    SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
+	SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
 
-    SDL_LockSurface(buffer8);
+	SDL_LockSurface(buffer8);
 
 	float a = float(alpha) / 100;
 
-    // Set uniforms and size only if changed?
+	// Set uniforms and size only if changed?
 
-    for (int i = 0; i < 256; i++) {
+	for (int i = 0; i < 256; i++) {
 		indexed_palette[3*i] = float(buffer8->format->palette->colors[i].r) * a / 256;
 		indexed_palette[3*i + 1] = float(buffer8->format->palette->colors[i].g) * a / 256;
 		indexed_palette[3*i + 2] = float(buffer8->format->palette->colors[i].b) * a / 256;
 	}
-    
+	
 	glViewport(0, 0, buffer8->w, buffer8->h);
 	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);
 	glUseProgram(indexed_program);
@@ -534,7 +540,7 @@ void update(void* _buffer8, int alpha) {
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	SDL_UnlockSurface(buffer8);
-    SDL_GL_SwapWindow(window);
+	SDL_GL_SwapWindow(window);
 
 }
 
