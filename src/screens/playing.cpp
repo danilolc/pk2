@@ -849,9 +849,10 @@ int Screen_InGame(){
 		}
 		if (PInput::Keydown(PInput::U))
 			Player_Sprite->b = -10;
-		if (PInput::Keydown(PInput::E))
+		if (PInput::Keydown(PInput::E)) {
 			Player_Sprite->energia = 10;
-		if (PInput::Keydown(PInput::V))
+			Game->game_over = false;
+		} if (PInput::Keydown(PInput::V))
 			Player_Sprite->invisible_timer = 3000;
 		if (PInput::Keydown(PInput::S)) {
 			PSound::play_overlay_music();

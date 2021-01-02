@@ -80,7 +80,6 @@ This example starts the level13.map on dev mode:
 * Score menu blinking on pressing enter
 * Bug when changing fullscreen
 * New graphics and controllers menu
-* Don't leave level after pressing 'E' on dev mode
 * Lua settings?
 * Android data path
 * Recover gui buttons, wide bg, OpenGL ES
@@ -95,6 +94,7 @@ This example starts the level13.map on dev mode:
 * Jump frames when fps is low
 
 # PLANS
+* Speed-run mode (frame counter, ghost)
 * Better documentation
 * Implement new layer on .map (regions)
 * Find image (load .bmp or .png)
