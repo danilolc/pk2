@@ -437,7 +437,7 @@ int init(int width, int height, const char* name, const char* icon) {
 
 	//glDisable(GL_LIGHTING);
 	glDisable(GL_DITHER);
-	glDisable(GL_BLEND);
+	//glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 
     load_buffers();
