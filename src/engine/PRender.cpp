@@ -424,7 +424,7 @@ int init(int width, int height, const char* name, const char* icon) {
 
     window_name = name;
 
-    window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (!window) {
 
         PLog::Write(PLog::FATAL, "PRender", "Couldn't create window!");
@@ -471,6 +471,17 @@ int init(int width, int height, const char* name, const char* icon) {
 void terminate() {
 
     SDL_DestroyWindow(window);
+
+    glDeleteTextures(1, &screen_texture);
+	glDeleteTextures(1, &indexed_texture);
+	glDeleteFramebuffers(1, &indexed_buffer);
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ubo);
+
+    glDeleteProgram(screen_program);
+	glDeleteProgram(indexed_program);
+	
 	SDL_GL_DeleteContext(context);
     free_lib();
 
@@ -501,7 +512,6 @@ void update(void* _buffer8, int alpha) {
 	glUseProgram(indexed_program);
 	glBindTexture(GL_TEXTURE_2D, indexed_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8UI, buffer8->w, buffer8->h, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, buffer8->pixels);
-	//glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glUniform1i(uniIndexTex, 0); //
 	glUniform3fv(uniIndexPalette, 256, indexed_palette); //
 	glUniform1f(uniIndexTime, shader_time);
@@ -515,7 +525,6 @@ void update(void* _buffer8, int alpha) {
 	glUseProgram(screen_program);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, buffer8->w, buffer8->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); //
-	//glBindBuffer(GL_ARRAY_BUFFER, ubo);
 	glUniform1i(uniScreenTex, 0); //
 	glUniform2f(uniScreenIdxRes, buffer8->w, buffer8->h); //
 	glUniform2f(uniScreenRes, cover_width, cover_height); //

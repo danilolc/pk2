@@ -860,8 +860,8 @@ void load_funcs() {
 	// gl_DebugMessageControlARB = (PFNGLDEBUGMESSAGECONTROLARBPROC) get_proc("glDebugMessageControlARB");
 	// gl_DebugMessageInsert = (PFNGLDEBUGMESSAGEINSERTPROC) get_proc("glDebugMessageInsert");
 	// gl_DebugMessageInsertARB = (PFNGLDEBUGMESSAGEINSERTARBPROC) get_proc("glDebugMessageInsertARB");
-	// gl_DeleteBuffers = (PFNGLDELETEBUFFERSPROC) get_proc("glDeleteBuffers");
-	// gl_DeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC) get_proc("glDeleteFramebuffers");
+	gl_DeleteBuffers = (PFNGLDELETEBUFFERSPROC) get_proc("glDeleteBuffers");
+	gl_DeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC) get_proc("glDeleteFramebuffers");
 	// gl_DeleteNamedStringARB = (PFNGLDELETENAMEDSTRINGARBPROC) get_proc("glDeleteNamedStringARB");
 	gl_DeleteProgram = (PFNGLDELETEPROGRAMPROC) get_proc("glDeleteProgram");
 	// gl_DeleteProgramPipelines = (PFNGLDELETEPROGRAMPIPELINESPROC) get_proc("glDeleteProgramPipelines");
@@ -870,9 +870,9 @@ void load_funcs() {
 	// gl_DeleteSamplers = (PFNGLDELETESAMPLERSPROC) get_proc("glDeleteSamplers");
 	gl_DeleteShader = (PFNGLDELETESHADERPROC) get_proc("glDeleteShader");
 	// gl_DeleteSync = (PFNGLDELETESYNCPROC) get_proc("glDeleteSync");
-	// gl_DeleteTextures = (PFNGLDELETETEXTURESPROC) get_proc("glDeleteTextures");
+	gl_DeleteTextures = (PFNGLDELETETEXTURESPROC) get_proc("glDeleteTextures");
 	// gl_DeleteTransformFeedbacks = (PFNGLDELETETRANSFORMFEEDBACKSPROC) get_proc("glDeleteTransformFeedbacks");
-	// gl_DeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC) get_proc("glDeleteVertexArrays");
+	gl_DeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC) get_proc("glDeleteVertexArrays");
 	// gl_DepthFunc = (PFNGLDEPTHFUNCPROC) get_proc("glDepthFunc");
 	// gl_DepthMask = (PFNGLDEPTHMASKPROC) get_proc("glDepthMask");
 	// gl_DepthRange = (PFNGLDEPTHRANGEPROC) get_proc("glDepthRange");
