@@ -59,6 +59,7 @@ extern bool dev_mode;
 
 extern float fps;
 extern bool show_fps;
+extern bool speedrun_mode;
 
 extern bool PK2_error;
 extern const char* PK2_error_msg;

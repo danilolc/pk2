@@ -533,6 +533,10 @@ int Draw_InGame() {
 			PDraw::font_write(fontti1, luku, 570 + txt_size, 48);
 		
 		}
+		if (speedrun_mode) {
+			sprintf(luku, "%li", long(Game->frame_count));
+			PDraw::font_write(fontti1, luku, 570, 58);
+		}
 	}
 
 	if (Game->paused) {
@@ -666,8 +670,10 @@ int Screen_InGame(){
 
 		Particles_Update();
 
-		if (!Game->level_clear && (!Game->has_time || Game->timeout > 0))
+		if (!Game->level_clear && (!Game->has_time || Game->timeout > 0)) {
 			debug_active_sprites = Update_Sprites();
+			Game->frame_count++;
+		}
 		Fadetext_Update();
 
 	}
