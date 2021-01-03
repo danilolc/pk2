@@ -615,7 +615,7 @@ class PrototypeClass{
     int			kuva_frame_vali;								// kahden framen vali
 
     // Spriten ominaisuudet
-    char		nimi[30];										// spriten nimi (n�kyy editorissa)
+    char		nimi[100];										// spriten nimi (n�kyy editorissa)
     int			leveys;											// spriten leveys
     int			korkeus;										// spriten korkeus
     double		weight;											// sprite weight (vaikuttaa hyppyyn ja kytkimiin)

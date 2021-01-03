@@ -76,7 +76,7 @@ class Path {
 
     int SetFile(std::string file);
     int SetPath(std::string path);
-    void Loc();
+    void FixSep();
 
     std::string GetDirectory();
     std::string GetFileName();

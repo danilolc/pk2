@@ -1045,7 +1045,7 @@ void Draw_Menu_Controls() {
 			Input->walk_slow = PInput::JOY_Y;
 			Input->attack1   = PInput::JOY_A;
 			Input->attack2   = PInput::JOY_B;
-			Input->open_gift = PInput::JOY_LEFT;
+			Input->open_gift = PInput::JOY_LEFTSHOULDER;
 		}
 
 		menu_lue_kontrollit = 0;
@@ -1084,11 +1084,13 @@ void Draw_Menu_Controls() {
 		else
 			k = PInput::GetKeyController();
 
-		if (k == PInput::ESCAPE || k == PInput::RETURN || k == PInput::JOY_START) {
+		if (k == PInput::ESCAPE || k == PInput::RETURN || k == PInput::JOY_START
+		|| PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::RETURN) || PInput::Keydown(PInput::JOY_START)) {
 		
 			menu_lue_kontrollit = 0;
 			menu_valittu_id = 0;		
-			key_delay = 20;	
+			key_delay = 20;
+			Settings_Save();
 		
 		} else {
 
@@ -1112,6 +1114,7 @@ void Draw_Menu_Controls() {
 			if (menu_lue_kontrollit > 8) {
 				menu_lue_kontrollit = 0;
 				menu_valittu_id = 0;
+				Settings_Save();
 			}
 
 		}

@@ -99,7 +99,7 @@ Zip* OpenZip(std::string path) {
 
 }
 
-void Path::Loc() {
+void Path::FixSep() {
 
 	const char* nosep = PE_NOSEP;
 	const char* sep = PE_SEP;
@@ -111,8 +111,10 @@ Path::Path(std::string path) {
 
 	path = path.substr(0, path.find_last_not_of(" ") + 1);
     this->path = path;
-	this->Loc();
+	
 	this->zip_file = nullptr;
+
+	this->FixSep();
 
 }
 
@@ -126,17 +128,21 @@ Path::Path(Zip* zip_file, std::string path) {
 
 	path = path.substr(0, path.find_last_not_of(" ") + 1);
     this->path = path;
-	this->Loc();
+	
     this->zip_file = zip_file;
+
+	this->FixSep();
 
 }
 
 Path::Path(Path path, std::string file) {
 
-	file = file.substr(0, file.find_last_not_of(" ") + 1);
 	*this = path;
+	
+	file = file.substr(0, file.find_last_not_of(" ") + 1);
 	this->path += file;
-	this->Loc();
+	
+	this->FixSep();
 
 }
 
@@ -144,9 +150,9 @@ Path::~Path() {
 
 }
 
-bool Path::operator==(Path path) {
+bool Path::operator==(Path path) { //needed?
 
-	bool a = this->zip_file == path.zip_file;
+	bool a = this->zip_file == path.zip_file; //compare with zip_file name?
 	bool b = this->path == path.path;
 
 	return a && b;
@@ -449,7 +455,7 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 
 bool Path::Find() {
 
-	if (this->is_zip)
+	if (this->zip_file != nullptr)
 		return this->NoCaseFind();
 
 	const char* cstr = this->c_str();

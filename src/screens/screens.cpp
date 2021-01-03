@@ -93,6 +93,9 @@ int Screen_First_Start() {
 	
 	PInput::SetVibration(Settings.vibration);
 
+	if (PInput::ControllerFound())
+		Input = &Settings.joystick;
+
 	// TODO set shader
 	/*if (Settings.isFiltered)
 		PRender::set_filter(PRender::FILTER_LINEAR);

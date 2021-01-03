@@ -268,6 +268,12 @@ void SetVibration(u16 vib) {
 
 }
 
+bool ControllerFound() {
+	
+	return Controller != nullptr;
+
+}
+
 int Vibrate(int length) {
 
 	if (SDL_GameControllerRumble(Controller, vibration, vibration, length) != 0)
@@ -383,22 +389,27 @@ int GetTouchPos(float& x, float& y) {
 
 float GetAxis(int axis) {
 
-	const float fac = 1.f/32768;
+	float fac = 1.f/32768;
 
 	if (axis == 0)
-		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_LEFTX);
-	if (axis == 1)
-		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_LEFTY);
-	if (axis == 2)
-		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_RIGHTX);
-	if (axis == 3)
-		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_RIGHTY);
-	if (axis == 4)
-		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT);
-	if (axis == 5)
-		return fac * SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
+		fac *= SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_LEFTX);
+	else if (axis == 1)
+		fac *= SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_LEFTY);
+	else if (axis == 2)
+		fac *= SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_RIGHTX);
+	else if (axis == 3)
+		fac *= SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_RIGHTY);
+	else if (axis == 4)
+		fac *= SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT);
+	else if (axis == 5)
+		fac *= SDL_GameControllerGetAxis(Controller, SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
+	else
+		return 0.f;
+	
+	if (abs(fac) < 0.15)
+		fac = 0.f;
 
-	return 0.f;
+	return fac;
 
 }
 

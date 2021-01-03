@@ -412,7 +412,8 @@ int Sprite_Movement(int i){
 
 		/* CROUCH */
 		sprite.crouched = false;
-		if ((PInput::Keydown(Input->down) || Gui_down || PInput::GetAxis(1) > 0.5) && !sprite.alas) {
+		bool axis_couch = (Input == &Settings.joystick) && (PInput::GetAxis(1) > 0.5);
+		if ((PInput::Keydown(Input->down) || Gui_down || axis_couch) && !sprite.alas) {
 			sprite.crouched = true;
 			sprite_yla += sprite_korkeus/1.5;
 		}
@@ -420,7 +421,8 @@ int Sprite_Movement(int i){
 		/* NAVIGATING*/
 		int navigation = 0;
 
-		navigation = PInput::GetAxis(0) * 100;
+		if (Input == &Settings.joystick)
+			navigation = PInput::GetAxis(0) * 100;
 
 		if (Gui_pad_button == 0 || Gui_pad_button == 1)
 			navigation = -100;
@@ -476,8 +478,10 @@ int Sprite_Movement(int i){
 					sprite.jump_timer = 55;
 			}
 
+			printf("%f %f\n", PInput::GetAxis(1), PInput::GetAxis(0));
 			/* dripping quietly down */
-			if ((PInput::Keydown(Input->jump) || Gui_up || PInput::GetAxis(1) < -0.5) && sprite.jump_timer >= 150/*90+20*/ &&
+			bool axis_up = (Input == &Settings.joystick) && (PInput::GetAxis(1) < -0.5);
+			if ((PInput::Keydown(Input->jump) || Gui_up || axis_up) && sprite.jump_timer >= 150/*90+20*/ &&
 				sprite.tyyppi->can_glide)
 				gliding = true;
 		}

@@ -75,19 +75,20 @@ void EndKeyboard();
 bool Is_Editing();
 void InjectText(const char* text);
 void InjectKey(int key);
-int ReadKeyboard(char* c);
+int  ReadKeyboard(char* c);
 
 void SetVibration(u16 vib);
-int Vibrate(int length);
+bool ControllerFound();
+int  Vibrate(int length);
 void SetMousePosition(int x, int y);
 
 std::vector<touch_t> GetTouch();
 int GetTouchPos(float& x, float& y);
 
 float GetAxis(int axis);
-void UpdateMouse(bool keyMove, bool relative);
-bool MouseLeft();
-bool MouseRight();
+void  UpdateMouse(bool keyMove, bool relative);
+bool  MouseLeft();
+bool  MouseRight();
 
 int init();
 int update();

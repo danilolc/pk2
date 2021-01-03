@@ -234,7 +234,7 @@ GLchar* load_source(const char* file) {
 		return NULL;
 	}
 
-	Uint8* ret = (Uint8*)malloc(size + 1);
+	GLchar* ret = (GLchar*)malloc(size + 1);
 	if (!ret) {
 		SDL_RWclose(rw);
 		return NULL;
@@ -244,7 +244,7 @@ GLchar* load_source(const char* file) {
 	ret[size] = '\0';
 
 	SDL_RWclose(rw);
-	return (GLchar*)ret;
+	return ret;
 
 }
 

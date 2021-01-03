@@ -296,16 +296,15 @@ int PrototypeClass::Animation_Uusi(int anim_i, u8 *sekvenssi, bool looppi){
 }
 
 void PrototypeClass::SetProto10(PrototypeClass10 &proto){
-	strcpy(kuvatiedosto,	proto.kuvatiedosto);
-	strcpy(nimi,			proto.nimi);
-	strcpy(muutos_sprite,	proto.muutos_sprite);
-	strcpy(bonus_sprite,	proto.bonus_sprite);
-	strcpy(ammus1_sprite,	proto.ammus1_sprite);
-	strcpy(ammus2_sprite,	proto.ammus2_sprite);
+	strncpy(kuvatiedosto,  proto.kuvatiedosto,   13);
+	strncpy(nimi,          proto.nimi,           30);
+	strncpy(muutos_sprite, proto.muutos_sprite,  13);
+	strncpy(bonus_sprite,  proto.bonus_sprite,   13);
+	strncpy(ammus1_sprite, proto.ammus1_sprite,  13);
+	strncpy(ammus2_sprite, proto.ammus2_sprite,  13);
 
-	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++)
-	{
-		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++) {
+		strncpy(aanitiedostot[aani], proto.aanitiedostot[aani], 13);
 		aanet[aani] = proto.aanet[aani];
 	}
 
@@ -334,12 +333,9 @@ void PrototypeClass::SetProto10(PrototypeClass10 &proto){
 	vihollinen			= proto.vihollinen;
 
 	for (int i=0;i<5;i++)
-	{
 		AI[i] = proto.AI[i];
-	}
 
-	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
-	{
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++) {
 		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
 
@@ -348,16 +344,15 @@ void PrototypeClass::SetProto10(PrototypeClass10 &proto){
 	}
 }
 void PrototypeClass::SetProto11(PrototypeClass11 &proto){
-	strcpy(kuvatiedosto,	proto.kuvatiedosto);
-	strcpy(nimi,			proto.nimi);
-	strcpy(muutos_sprite,	proto.muutos_sprite);
-	strcpy(bonus_sprite,	proto.bonus_sprite);
-	strcpy(ammus1_sprite,	proto.ammus1_sprite);
-	strcpy(ammus2_sprite,	proto.ammus2_sprite);
+	strncpy(kuvatiedosto,  proto.kuvatiedosto,   13);
+	strncpy(nimi,          proto.nimi,           30);
+	strncpy(muutos_sprite, proto.muutos_sprite,  13);
+	strncpy(bonus_sprite,  proto.bonus_sprite,   13);
+	strncpy(ammus1_sprite, proto.ammus1_sprite,  13);
+	strncpy(ammus2_sprite, proto.ammus2_sprite,  13);
 
-	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++)
-	{
-		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++) {
+		strncpy(aanitiedostot[aani], proto.aanitiedostot[aani], 13);
 		aanet[aani] = proto.aanet[aani];
 	}
 
@@ -392,12 +387,9 @@ void PrototypeClass::SetProto11(PrototypeClass11 &proto){
 	vihollinen			= proto.vihollinen;
 
 	for (int i=0;i<5;i++)
-	{
 		AI[i] = proto.AI[i];
-	}
 
-	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
-	{
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++) {
 		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
 
@@ -406,16 +398,15 @@ void PrototypeClass::SetProto11(PrototypeClass11 &proto){
 	}
 }
 void PrototypeClass::SetProto12(PrototypeClass12 &proto){
-	strcpy(kuvatiedosto,	proto.kuvatiedosto);
-	strcpy(nimi,			proto.nimi);
-	strcpy(muutos_sprite,	proto.muutos_sprite);
-	strcpy(bonus_sprite,	proto.bonus_sprite);
-	strcpy(ammus1_sprite,	proto.ammus1_sprite);
-	strcpy(ammus2_sprite,	proto.ammus2_sprite);
+	strncpy(kuvatiedosto,  proto.kuvatiedosto,  100);
+	strncpy(nimi,          proto.nimi,           30);
+	strncpy(muutos_sprite, proto.muutos_sprite, 100);
+	strncpy(bonus_sprite,  proto.bonus_sprite,  100);
+	strncpy(ammus1_sprite, proto.ammus1_sprite, 100);
+	strncpy(ammus2_sprite, proto.ammus2_sprite, 100);
 
-	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++)
-	{
-		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++) {
+		strncpy(aanitiedostot[aani], proto.aanitiedostot[aani], 13);
 		aanet[aani] = proto.aanet[aani];
 	}
 
@@ -457,12 +448,9 @@ void PrototypeClass::SetProto12(PrototypeClass12 &proto){
 	vihollinen			= proto.vihollinen;
 
 	for (int i=0;i<5;i++)
-	{
 		AI[i] = proto.AI[i];
-	}
 
-	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
-	{
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++) {
 		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
 
@@ -471,16 +459,16 @@ void PrototypeClass::SetProto12(PrototypeClass12 &proto){
 	}
 }
 void PrototypeClass::SetProto13(PrototypeClass13 &proto){
-	strcpy(kuvatiedosto,	proto.kuvatiedosto);
-	strcpy(nimi,			proto.nimi);
-	strcpy(muutos_sprite,	proto.muutos_sprite);
-	strcpy(bonus_sprite,	proto.bonus_sprite);
-	strcpy(ammus1_sprite,	proto.ammus1_sprite);
-	strcpy(ammus2_sprite,	proto.ammus2_sprite);
+	strncpy(kuvatiedosto,  proto.kuvatiedosto,  100);
+	strncpy(nimi,          proto.nimi,           30);
+	strncpy(muutos_sprite, proto.muutos_sprite, 100);
+	strncpy(bonus_sprite,  proto.bonus_sprite,  100);
+	strncpy(ammus1_sprite, proto.ammus1_sprite, 100);
+	strncpy(ammus2_sprite, proto.ammus2_sprite, 100);
 
 	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++)
 	{
-		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
+		strncpy(aanitiedostot[aani], proto.aanitiedostot[aani], 100);
 		aanet[aani] = proto.aanet[aani];
 	}
 
@@ -530,12 +518,9 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 	can_swim			= proto.can_swim;
 
 	for (int i=0;i<10;i++)
-	{
 		AI[i] = proto.AI[i];
-	}
 
-	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
-	{
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++) {
 		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
 
@@ -547,16 +532,15 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 PrototypeClass13 PrototypeClass::GetProto13(){
 	PrototypeClass13 proto;
 
-	strcpy(proto.kuvatiedosto,kuvatiedosto);
-	strcpy(proto.nimi, nimi);
-	strcpy(proto.muutos_sprite,muutos_sprite);
-	strcpy(proto.bonus_sprite,bonus_sprite);
-	strcpy(proto.ammus1_sprite,ammus1_sprite);
-	strcpy(proto.ammus2_sprite,ammus2_sprite);
+	strncpy(proto.kuvatiedosto,  kuvatiedosto,  100);
+	strncpy(proto.nimi,          nimi,           30);
+	strncpy(proto.muutos_sprite, muutos_sprite, 100);
+	strncpy(proto.bonus_sprite,  bonus_sprite,  100);
+	strncpy(proto.ammus1_sprite, ammus1_sprite, 100);
+	strncpy(proto.ammus2_sprite, ammus2_sprite, 100);
 
-	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++)
-	{
-		strcpy(proto.aanitiedostot[aani], aanitiedostot[aani]);
+	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++) {
+		strncpy(proto.aanitiedostot[aani], aanitiedostot[aani], 100);
 		proto.aanet[aani] = aanet[aani];
 	}
 
@@ -606,12 +590,9 @@ PrototypeClass13 PrototypeClass::GetProto13(){
 	proto.can_swim			= can_swim;
 
 	for (int i=0;i<10;i++)
-	{
 		proto.AI[i] = AI[i];
-	}
 
-	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
-	{
+	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++) {
 		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
 			proto.animaatiot[i].sekvenssi[j] = animaatiot[i].sekvenssi[j];
 
