@@ -103,25 +103,30 @@ void Path::Loc() {
 
 	const char* nosep = PE_NOSEP;
 	const char* sep = PE_SEP;
-	std::replace(this->begin(), this->end(), nosep[0], sep[0]);
+	std::replace(this->path.begin(), this->path.end(), nosep[0], sep[0]);
 
 }
 
 Path::Path(std::string path) {
 
 	path = path.substr(0, path.find_last_not_of(" ") + 1);
-    this->assign(path);
+    this->path = path;
 	this->Loc();
-    this->is_zip = false;
+	this->zip_file = nullptr;
 
 }
 
 Path::Path(Zip* zip_file, std::string path) {
 
+	if(zip_file == nullptr) {
+
+		PLog::Write(PLog::ERR, "PFile", "No zip file for %s\n", path.c_str());
+
+	}
+
 	path = path.substr(0, path.find_last_not_of(" ") + 1);
-    this->assign(path);
+    this->path = path;
 	this->Loc();
-	this->is_zip = true;
     this->zip_file = zip_file;
 
 }
@@ -130,13 +135,28 @@ Path::Path(Path path, std::string file) {
 
 	file = file.substr(0, file.find_last_not_of(" ") + 1);
 	*this = path;
-	*this += file;
+	this->path += file;
 	this->Loc();
 
 }
 
 Path::~Path() {
 
+}
+
+bool Path::operator==(Path path) {
+
+	bool a = this->zip_file == path.zip_file;
+	bool b = this->path == path.path;
+
+	return a && b;
+
+}
+
+const char* Path::c_str() {
+
+	return path.c_str();
+	
 }
 
 const char* Get_Extension(const char* string) {
@@ -295,7 +315,7 @@ bool Path::NoCaseFind() {
 		if(PUtils::NoCaseCompare(name.c_str(), filename.c_str())) {
 
 			this->SetFile(name);
-			PLog::Write(PLog::DEBUG, "PFile", "Found on %s", this->c_str());
+			PLog::Write(PLog::DEBUG, "PFile", "Found on %s", this->path.c_str());
 
 			return true;
 		}
@@ -303,7 +323,7 @@ bool Path::NoCaseFind() {
 	}
 
 	this->SetFile(filename);
-	PLog::Write(PLog::INFO, "PFile", "%s not found", this->c_str());
+	PLog::Write(PLog::INFO, "PFile", "%s not found", this->path.c_str());
 
 	return false;
 
@@ -513,7 +533,7 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 bool Path::Find() {
 
 	// Scan dir on ZIP
-	if (this->is_zip)
+	if (this->zip_file != nullptr)
 		return this->NoCaseFind();
 	
 	#ifdef __ANDROID__
@@ -524,7 +544,7 @@ bool Path::Find() {
 
 	#endif
 
-	const char* cstr = this->c_str();
+	const char* cstr = this->path.c_str();
 
 	PLog::Write(PLog::DEBUG, "PFile", "Find %s", cstr);
 
@@ -546,17 +566,17 @@ bool Path::Find() {
 
 bool Path::Is_Zip() {
 
-	return this->is_zip;
+	return this->zip_file != nullptr;
 
 }
 
 int Path::SetFile(std::string file) {
 
-	int dif = this->find_last_of(PE_SEP);
+	int dif = this->path.find_last_of(PE_SEP);
 
 	file = file.substr(0, file.find_last_not_of(" ") + 1);
 
-	this->assign(this->substr(0, dif + 1) + file);
+	this->path = this->path.substr(0, dif + 1) + file;
 
 	return 0;
 
@@ -564,23 +584,23 @@ int Path::SetFile(std::string file) {
 
 int Path::SetPath(std::string path) {
 
-	this->assign(path + this->GetFileName());
+	this->path = path + this->GetFileName();
 
 	return 0;
 
 }
 
-std::string Path::GetPath() {
+std::string Path::GetDirectory() {
 
-	int dif = this->find_last_of(PE_SEP);
-	return this->substr(0, dif);
+	int dif = this->path.find_last_of(PE_SEP);
+	return this->path.substr(0, dif);
 
 }
 
 std::string Path::GetFileName() {
 
-	int dif = this->find_last_of(PE_SEP);
-	return this->substr(dif + 1);
+	int dif = this->path.find_last_of(PE_SEP);
+	return this->path.substr(dif + 1);
 
 }
 
@@ -658,10 +678,10 @@ RW* Path::GetRW(const char* mode) {
 
 	SDL_RWops* ret;
 
-	const char* cstr = this->c_str();
+	const char* cstr = this->path.c_str();
 
 	//TODO - define a RWops type 0 for zip
-	if (this->is_zip) {
+	if (this->zip_file != nullptr) {
 
 		#ifdef PK2_USE_ZIP
 		
@@ -958,12 +978,12 @@ std::vector<std::string> Path::scandir(const char* type) {
     
 	std::vector<std::string> ret;
 
-	std::string dir = this->substr(0, this->find_last_of(PE_SEP));
+	std::string dir = this->path.substr(0, this->path.find_last_of(PE_SEP));
 	std::string cache_entry(dir + type);
 	
 	const char* cstr = dir.c_str();
 	
-	if (this->is_zip) {
+	if (this->zip_file != nullptr) {
 
     	#ifdef PK2_USE_ZIP
         

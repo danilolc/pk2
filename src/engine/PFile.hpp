@@ -51,7 +51,7 @@ struct RW {
 
 };
 
-class Path : public std::string {
+class Path {
 
     public: 
 
@@ -59,6 +59,9 @@ class Path : public std::string {
     Path(Zip* zip_file, std::string path);
     Path(Path path, std::string file);
     ~Path();
+
+    bool operator ==(Path path);
+    const char* c_str();
 
     //type:
     // ""  - all files and directories
@@ -75,14 +78,14 @@ class Path : public std::string {
     int SetPath(std::string path);
     void Loc();
 
-    std::string GetPath();
+    std::string GetDirectory();
     std::string GetFileName();
 
     RW* GetRW(const char* mode);
 
     private:
     
-    bool is_zip;
+    std::string path;
     Zip* zip_file;
 
 };

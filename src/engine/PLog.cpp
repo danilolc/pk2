@@ -42,7 +42,7 @@ void Init(u8 level, PFile::Path file, bool to_stdout) {
     
     log_file = NULL;
 
-    if (file.size() > 0)
+    if (file.GetFileName().size() > 0)
         log_file = file.GetRW("w");
     
     print_to_stdout = to_stdout;

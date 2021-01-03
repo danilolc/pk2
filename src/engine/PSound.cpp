@@ -34,7 +34,7 @@ static bool overlay_playing = false;
 
 static Mix_Music* music = NULL;
 static PFile::RW* music_rw = NULL;
-static std::string playingMusic = "";
+static PFile::Path playingMusic = PFile::Path("");
 
 static int find_channel() {
 	
@@ -304,6 +304,8 @@ int start_music(PFile::Path path) {
 		music_rw->close();
 	}
 
+	playingMusic = path;
+
 	music_rw = path.GetRW("r");
 	music = Mix_LoadMUS_RW((SDL_RWops*) music_rw, 0);
 	
@@ -332,7 +334,6 @@ int start_music(PFile::Path path) {
 	Mix_VolumeMusic(mus_volume_now * MIX_MAX_VOLUME / 100);
 	
 	PLog::Write(PLog::DEBUG, "PSound", "Loaded %s", path.c_str());
-	playingMusic = path;
 
 	return 0;
 	
