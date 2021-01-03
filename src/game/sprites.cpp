@@ -20,16 +20,11 @@ SpriteClass* Player_Sprite;
 int next_free_prototype = 0;
 
 //TODO - use std::vector
-//std::vector<PrototypeClass> Prototypes;
-//std::vector<SpriteClass> Sprites;
-//std::vector<int> bgSprites;
-//
-//or
-//
 //std::vector<PrototypeClass*> Prototypes;
 //std::vector<SpriteClass*> Sprites;
 //std::vector<SpriteClass*> bgSprites;
 
+// avoid using stack (this is cleaned after PDraw::imageList, causing a error)
 PrototypeClass Prototypes_List[MAX_PROTOTYYPPEJA];
 SpriteClass Sprites_List[MAX_SPRITEJA];
 
@@ -55,31 +50,31 @@ int Prototypes_get(const char* name) {
 	if(next_free_prototype >= MAX_PROTOTYYPPEJA)
 		return 2;
 
-	PrototypeClass& protot = Prototypes_List[next_free_prototype];
+	PrototypeClass* protot = &Prototypes_List[next_free_prototype];
 
 	PFile::Path path = Episode->Get_Dir(name);
 	FindAsset(&path, "sprites" PE_SEP);
 
 	//Check if it can be loaded
-	if (protot.Load(path) == 1)
+	if (protot->Load(path) == 1)
 		return 1;
 
-	protot.indeksi = next_free_prototype;
+	protot->indeksi = next_free_prototype;
 
 	//Load sounds
 	for (int i = 0; i < SPRITE_MAX_SOUNDS; i++) {
 
-		if (strcmp(protot.aanitiedostot[i],"") != 0) {
+		if (strcmp(protot->aanitiedostot[i],"") != 0) {
 
-			path = Episode->Get_Dir(protot.aanitiedostot[i]);
+			path = Episode->Get_Dir(protot->aanitiedostot[i]);
 
 			if (FindAsset(&path, "sprites" PE_SEP)) {
 
-				protot.aanet[i] = PSound::load_sfx(path);
+				protot->aanet[i] = PSound::load_sfx(path);
 
 			} else {
 
-				PLog::Write(PLog::ERR, "PK2", "Can't find sound %s", protot.aanitiedostot[i]);
+				PLog::Write(PLog::ERR, "PK2", "Can't find sound %s", protot->aanitiedostot[i]);
 
 			}
 		}
@@ -311,14 +306,14 @@ void Sprites_start_directions() {
 
 void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int emo, bool isbonus) {
 	
-	PrototypeClass& proto = Prototypes_List[protoype_id];
+	PrototypeClass* proto = &Prototypes_List[protoype_id];
 	bool added = false;
 	int i = 0;
 
 	while (!added && i < MAX_SPRITEJA){
 		if (Sprites_List[i].piilota && &Sprites_List[i] != Player_Sprite){
 			
-			Sprites_List[i] = SpriteClass(&proto,is_Player_Sprite,false,x,y);
+			Sprites_List[i] = SpriteClass(proto, is_Player_Sprite,false,x,y);
 
 			if (is_Player_Sprite) Player_Sprite = &Sprites_List[i];
 
@@ -341,7 +336,7 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 				
 			}
 
-			if (proto.tyyppi == TYPE_BACKGROUND)
+			if (proto->tyyppi == TYPE_BACKGROUND)
 				Sprites_add_bg(i);
 
 			if (emo != MAX_SPRITEJA)
@@ -358,19 +353,20 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 }
 
 void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y, int emo) {
-	PrototypeClass& proto = Prototypes_List[protoype_id];
+	PrototypeClass* proto = &Prototypes_List[protoype_id];
 	bool lisatty = false;
 	int i = 0;
 
 	while (!lisatty && i < MAX_SPRITEJA){
 		if (Sprites_List[i].piilota && &Sprites_List[i] != Player_Sprite){ //Don't replace player sprite
 
-			Sprites_List[i] = SpriteClass(&proto,is_Player_Sprite,false,x/*-proto.leveys/2*/,y);
+			//Sprites_List[i] = SpriteClass(proto, is_Player_Sprite,false,x-proto->leveys/2,y);
+			Sprites_List[i] = SpriteClass(proto, is_Player_Sprite,false,x,y);
 
 			//Sprites_List[i].x += Sprites_List[i].tyyppi->leveys;
 			//Sprites_List[i].y += Sprites_List[i].tyyppi->korkeus/2;
 
-			if (proto.Onko_AI(AI_HEITTOASE)){
+			if (proto->Onko_AI(AI_HEITTOASE)){
 				if ((int)Sprites_List[emo].a == 0){
 					// Jos "ampuja" on pelaaja tai ammuksen nopeus on nolla
 					if (Sprites_List[emo].pelaaja == 1 || Sprites_List[i].tyyppi->max_nopeus == 0){
@@ -399,7 +395,7 @@ void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y,
 				Sprites_List[i].jump_timer = 1;
 			}
 			else
-			if (proto.Onko_AI(AI_EGG)){
+			if (proto->Onko_AI(AI_EGG)){
 				Sprites_List[i].y = Sprites_List[emo].y+10;
 				Sprites_List[i].a = Sprites_List[emo].a / 1.5;
 			}
@@ -418,7 +414,7 @@ void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y,
 				Sprites_List[i].emosprite = i;
 			}
 
-			if (proto.tyyppi == TYPE_BACKGROUND)
+			if (proto->tyyppi == TYPE_BACKGROUND)
 				Sprites_add_bg(i);
 
 			lisatty = true;

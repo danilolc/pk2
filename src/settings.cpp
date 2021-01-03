@@ -95,7 +95,7 @@ void Settings_Init() {
 	Settings.joystick.walk_slow = PInput::JOY_Y;
 	Settings.joystick.attack1   = PInput::JOY_A;
 	Settings.joystick.attack2   = PInput::JOY_B;
-	Settings.joystick.open_gift = PInput::JOY_LEFT;
+	Settings.joystick.open_gift = PInput::JOY_LEFTSHOULDER;
 
 	Settings.music_max_volume = 50;
 	Settings.sfx_max_volume = 90;

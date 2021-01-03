@@ -177,7 +177,7 @@ PK2BLOCK Block_Get(u32 x, u32 y) {
 	PK2BLOCK block;
 
     // Outside the screen
-	if (x > PK2MAP_MAP_WIDTH || y > PK2MAP_MAP_HEIGHT) {
+	if (x >= PK2MAP_MAP_WIDTH || y >= PK2MAP_MAP_HEIGHT) {
 		
 		block.koodi  = 255;
 		block.tausta = true;

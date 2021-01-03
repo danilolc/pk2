@@ -1050,6 +1050,7 @@ void Draw_Menu_Controls() {
 
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
+		Settings_Save();
 	}
 
 	my += 20;

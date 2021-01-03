@@ -46,9 +46,10 @@ void CloseZip(Zip* zp) {
 	if (zp) {
 	
 		//zip_close(zp->zip);
+		zip_source_close(zp->src);
 		zip_discard(zp->zip);
 		
-		zip_source_close(zp->src);
+
 	
 		delete zp;
 		
@@ -525,9 +526,11 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 			
 		}
 
+	}
+
+	for( int i = 0; i < numb; i++ ) 
 		free(namelist[i]);
 
-	}
 	free(namelist);
 
 	PLog::Write(PLog::DEBUG, "PFile", "Scanned on \"%s\" for \"%s\". Found %i matches", dir, type, (int)result.size());

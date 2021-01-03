@@ -493,6 +493,9 @@ int image_delete(int& index) {
 
     if(index < 0)
         return -1;
+
+    if(uint(index) >= imageList.size())
+        return -1;
     
     if (imageList[index] == NULL)
         return -1;

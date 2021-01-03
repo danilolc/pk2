@@ -428,7 +428,7 @@ int terminate() {
 	music_rw = NULL;
 
 	if(overlay_music != NULL) {
-		Mix_FreeMusic(music);
+		Mix_FreeMusic(overlay_music);
 		overlay_rw->close();
 	}
 	overlay_music = NULL;

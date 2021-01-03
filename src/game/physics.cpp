@@ -478,7 +478,6 @@ int Sprite_Movement(int i){
 					sprite.jump_timer = 55;
 			}
 
-			printf("%f %f\n", PInput::GetAxis(1), PInput::GetAxis(0));
 			/* dripping quietly down */
 			bool axis_up = (Input == &Settings.joystick) && (PInput::GetAxis(1) < -0.5);
 			if ((PInput::Keydown(Input->jump) || Gui_up || axis_up) && sprite.jump_timer >= 150/*90+20*/ &&
@@ -700,7 +699,7 @@ int Sprite_Movement(int i){
 	double sprite2_yla; // kyykistymiseen liittyv�
 	PK2BLOCK spritepalikka;
 
-	SpriteClass *sprite2;
+	SpriteClass *sprite2 = nullptr;
 
 	//Compare this sprite with every sprite in the game
 	for (int sprite_index = 0; sprite_index < MAX_SPRITEJA; sprite_index++) {
