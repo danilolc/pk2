@@ -139,16 +139,26 @@ const char* KeyName(u8 key) {
 
 }
 
-u8 GetKey() {
+u8 GetKeyKeyboard() {
 	
-	int count = sizeof(keylist)/sizeof(int);
-
-	for(int key = 0; key < count; key++)
+	for(int key = 0; key < END_KEYBOARD; key++)
 		if (Keydown(key))
 			return key;
 	
 	return UNKNOWN;
 
+}
+
+u8 GetKeyController() {
+
+	int count = sizeof(keylist)/sizeof(int);
+
+	for(int key = END_KEYBOARD; key < count; key++)
+		if (Keydown(key))
+			return key;
+	
+	return UNKNOWN;
+	
 }
 
 bool Keydown(u32 key) {

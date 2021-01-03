@@ -683,32 +683,11 @@ void Draw_Menu_Graphics() {
 		if (Draw_BoolBox(100, my, Settings.isFullScreen, true)) {
 			Settings.isFullScreen = !Settings.isFullScreen;
 		}
-		my += 30;
+		my += 40;
 
 		//#endif //TODO - Fix touch position when screen fit
 
 		#endif
-
-		if (Settings.vibration > 0){
-			if (Draw_Menu_Text("controller vibration is on",180,my)){
-				Settings.vibration = 0;
-				PInput::SetVibration(Settings.vibration);
-			}
-		} else{
-			if (Draw_Menu_Text("controller vibration is off",180,my)){
-				Settings.vibration = 0xFFFF/2;
-				PInput::SetVibration(Settings.vibration);
-			}
-		}
-		if (Draw_BoolBox(100, my, Settings.vibration, true)) {
-			if (Settings.vibration == 0)
-				Settings.vibration = 0xFFFF/2;
-			else
-				Settings.vibration = 0;
-
-			PInput::SetVibration(Settings.vibration);
-		}
-		my += 40;
 
 		#ifndef PK2_NO_THREAD
 
@@ -996,14 +975,14 @@ void Draw_Menu_Controls() {
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_useitem),100,90+my);my+=20;
 
 	my = 40;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_left),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_right),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_jump),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_down),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_walk_slow),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_attack1),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_attack2),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Settings.control_open_gift),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->left),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->right),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->jump),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->down),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->walk_slow),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->attack1),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->attack2),380,90+my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->open_gift),380,90+my);my+=20;
 
 	/*
 	if (PInput::mouse_x > 310 && PInput::mouse_x < 580 && PInput::mouse_y > 130 && PInput::mouse_y < my-20){
@@ -1026,50 +1005,69 @@ void Draw_Menu_Controls() {
 
 	my += 30;
 
-	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.controls_kbdef),100,90+my)){
-		Settings.control_left      = PInput::LEFT;
-		Settings.control_right     = PInput::RIGHT;
-		Settings.control_jump      = PInput::UP;
-		Settings.control_down      = PInput::DOWN;
-		Settings.control_walk_slow = PInput::LALT;
-		Settings.control_attack1   = PInput::LCONTROL;
-		Settings.control_attack2   = PInput::LSHIFT;
-		Settings.control_open_gift = PInput::SPACE;
+	if (menu_lue_kontrollit == 0){
+		if (Input == &Settings.keyboard) {
+
+			if (Draw_Menu_Text("use game controller",100,90+my)) {
+				Input = &Settings.joystick;
+				menu_valittu_id = 0; //Set menu cursor to 0
+			}
+
+		} else {
+
+			if (Draw_Menu_Text("use keyboard",100,90+my)) {
+				Input = &Settings.keyboard;
+				menu_valittu_id = 0; //Set menu cursor to 0
+			}
+
+		}
+	}
+
+	my += 20;
+
+	if (Draw_Menu_Text("get default",100,90+my)) {
+
+		if (Input == &Settings.keyboard) {
+			Input->left      = PInput::LEFT;
+			Input->right     = PInput::RIGHT;
+			Input->jump      = PInput::UP;
+			Input->down      = PInput::DOWN;
+			Input->walk_slow = PInput::LALT;
+			Input->attack1   = PInput::LCONTROL;
+			Input->attack2   = PInput::LSHIFT;
+			Input->open_gift = PInput::SPACE;
+		}
+		else {
+			Input->left      = PInput::JOY_LEFT;
+			Input->right     = PInput::JOY_RIGHT;
+			Input->jump      = PInput::JOY_UP;
+			Input->down      = PInput::JOY_DOWN;
+			Input->walk_slow = PInput::JOY_Y;
+			Input->attack1   = PInput::JOY_A;
+			Input->attack2   = PInput::JOY_B;
+			Input->open_gift = PInput::JOY_LEFT;
+		}
+
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
 	}
 
 	my += 20;
 
-	/*if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.controls_gp4def),100,90+my)){
-		Settings.control_left      = PI_OHJAIN1_VASEMMALLE;
-		Settings.control_right     = PI_OHJAIN1_OIKEALLE;
-		Settings.control_jump      = PI_OHJAIN1_YLOS;//PI_OHJAIN1_NAPPI1;
-		Settings.control_down      = PI_OHJAIN1_ALAS;
-		Settings.control_walk_slow = PI_OHJAIN1_NAPPI2;
-		Settings.control_attack1   = PI_OHJAIN1_NAPPI1;
-		Settings.control_attack2   = PI_OHJAIN1_NAPPI4;
-		Settings.control_open_gift = PI_OHJAIN1_NAPPI6;
-		menu_lue_kontrollit = 0;
-		menu_valittu_id = 0;
+	// TODO - Change this
+	if (Settings.vibration > 0){
+		if (Draw_Menu_Text("turn on vibration",100,90+my)){
+			Settings.vibration = 0;
+			PInput::SetVibration(Settings.vibration);
+		}
+	} else{
+		if (Draw_Menu_Text("turn off vibration",100,90+my)){
+			Settings.vibration = 0xFFFF/2;
+			PInput::SetVibration(Settings.vibration);
+		}
 	}
+	my += 40;
 
-	my += 20;*/
-
-	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.controls_gp6def),100,90+my)){
-		Settings.control_left      = PInput::JOY_LEFT;
-		Settings.control_right     = PInput::JOY_RIGHT;
-		Settings.control_jump      = PInput::JOY_UP;
-		Settings.control_down      = PInput::JOY_DOWN;
-		Settings.control_walk_slow = PInput::JOY_Y;
-		Settings.control_attack1   = PInput::JOY_A;
-		Settings.control_attack2   = PInput::JOY_B;
-		Settings.control_open_gift = PInput::JOY_LEFT;
-		menu_lue_kontrollit = 0;
-		menu_valittu_id = 0;
-	}
-
-	my += 20;
 
 	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),180,400)){
 		menu_nyt = MENU_MAIN;
@@ -1080,28 +1078,42 @@ void Draw_Menu_Controls() {
 	u8 k = 0;
 
 	if (key_delay == 0 && menu_lue_kontrollit > 0){
-		k = PInput::GetKey();
+		
+		if (Input == &Settings.keyboard)
+			k = PInput::GetKeyKeyboard();
+		else
+			k = PInput::GetKeyController();
 
-		if (k != 0){
-			switch(menu_lue_kontrollit){
-				case 1 : Settings.control_left      = k; break;
-				case 2 : Settings.control_right     = k; break;
-				case 3 : Settings.control_jump      = k; break;
-				case 4 : Settings.control_down      = k; break;
-				case 5 : Settings.control_walk_slow = k; break;
-				case 6 : Settings.control_attack1   = k; break;
-				case 7 : Settings.control_attack2   = k; break;
-				case 8 : Settings.control_open_gift = k; break;
-				default: Play_MenuSFX(moo_sound,100); break;
+		if (k == PInput::ESCAPE || k == PInput::RETURN || k == PInput::JOY_START) {
+		
+			menu_lue_kontrollit = 0;
+			menu_valittu_id = 0;		
+			key_delay = 20;	
+		
+		} else {
+
+			if (k != 0) {
+				switch(menu_lue_kontrollit){
+					case 1 : Input->left      = k; break;
+					case 2 : Input->right     = k; break;
+					case 3 : Input->jump      = k; break;
+					case 4 : Input->down      = k; break;
+					case 5 : Input->walk_slow = k; break;
+					case 6 : Input->attack1   = k; break;
+					case 7 : Input->attack2   = k; break;
+					case 8 : Input->open_gift = k; break;
+					default: Play_MenuSFX(moo_sound,100); break;
+				}
+
+				key_delay = 20;
+				menu_lue_kontrollit++;
 			}
 
-			key_delay = 20;
-			menu_lue_kontrollit++;
-		}
+			if (menu_lue_kontrollit > 8) {
+				menu_lue_kontrollit = 0;
+				menu_valittu_id = 0;
+			}
 
-		if (menu_lue_kontrollit > 8) {
-			menu_lue_kontrollit = 0;
-			menu_valittu_id = 0;
 		}
 	}
 

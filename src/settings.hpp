@@ -25,6 +25,21 @@ enum {
 
 #define SETTINGS_VERSION "1.6"
 
+struct GAME_CONTROLS { 
+
+	u32 left;
+	u32 right;
+	u32 up;
+	u32 down;
+
+	u32 jump;
+	u32 walk_slow;
+	u32 attack1;
+	u32 attack2;
+	u32 open_gift;
+
+};
+
 struct PK2SETTINGS {
 	
 	u32  id;
@@ -43,24 +58,9 @@ struct PK2SETTINGS {
 	u8    shader_type;
 
 	// Controls
-	u32 control_left;
-	u32 control_right;
-	u32 control_jump;
-	u32 control_down;
-	u32 control_walk_slow;
-	u32 control_attack1;
-	u32 control_attack2;
-	u32 control_open_gift;
-
+	GAME_CONTROLS keyboard;
+	GAME_CONTROLS joystick;
 	u16 vibration;
-	u32 joy_left;
-	u32 joy_right;
-	u32 joy_jump;
-	u32 joy_down;
-	u32 joy_walk_slow;
-	u32 joy_attack1;
-	u32 joy_attack2;
-	u32 joy_open_gift;
 	
 	// Audio
 	u8  music_max_volume;
@@ -69,6 +69,7 @@ struct PK2SETTINGS {
 };
 
 extern PK2SETTINGS Settings;
+extern GAME_CONTROLS* Input;
 
 int Settings_GetId(PFile::Path path, u32& id);
 

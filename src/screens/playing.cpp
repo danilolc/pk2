@@ -734,8 +734,8 @@ int Screen_InGame(){
 		if (Game->exit_timer == 0)
 			Game->exit_timer = 700;//800;//2000;
 
-		if (PInput::Keydown(Settings.control_attack1) || PInput::Keydown(Settings.control_attack2) ||
-			PInput::Keydown(Settings.control_jump) || Clicked() ||
+		if (PInput::Keydown(Input->attack1) || PInput::Keydown(Input->attack2) ||
+			PInput::Keydown(Input->jump) || Clicked() ||
 			Gui_egg || Gui_doodle || Gui_gift || Gui_up || Gui_down || Gui_menu)
 			if (Game->exit_timer > 2 && Game->exit_timer < 500/*600*//*1900*/ && key_delay == 0)
 				Game->exit_timer = 2;
@@ -749,7 +749,7 @@ int Screen_InGame(){
 
 	if (key_delay == 0) {
 		if (!Game->game_over && !Game->level_clear) {
-			if (PInput::Keydown(Settings.control_open_gift) || Gui_gift) {
+			if (PInput::Keydown(Input->open_gift) || Gui_gift) {
 				Gifts_Use();
 				key_delay = 10;
 			}

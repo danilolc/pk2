@@ -20,6 +20,7 @@ using namespace std::chrono;
 #define SETTINGS_FILE "settings.ini"
 
 PK2SETTINGS Settings;
+GAME_CONTROLS* Input = &Settings.keyboard;
 
 int Settings_GetId(PFile::Path path, u32& id) {
 
@@ -75,24 +76,26 @@ void Settings_Init() {
 	Settings.double_speed = false;
 	Settings.shader_type = SETTINGS_SHADER_LINEAR;
 
-	Settings.control_left      = PInput::LEFT;
-	Settings.control_right     = PInput::RIGHT;
-	Settings.control_jump      = PInput::UP;
-	Settings.control_down      = PInput::DOWN;
-	Settings.control_walk_slow = PInput::LALT;
-	Settings.control_attack1   = PInput::LCONTROL;
-	Settings.control_attack2   = PInput::LSHIFT;
-	Settings.control_open_gift = PInput::SPACE;
+	Settings.keyboard.left      = PInput::LEFT;
+	Settings.keyboard.right     = PInput::RIGHT;
+	Settings.keyboard.up        = PInput::UP;
+	Settings.keyboard.down      = PInput::DOWN;
+	Settings.keyboard.jump      = PInput::UP;
+	Settings.keyboard.walk_slow = PInput::LALT;
+	Settings.keyboard.attack1   = PInput::LCONTROL;
+	Settings.keyboard.attack2   = PInput::LSHIFT;
+	Settings.keyboard.open_gift = PInput::SPACE;
 
-	Settings.vibration     = 0xFFFF/2;
-	Settings.joy_left      = PInput::JOY_LEFT;
-	Settings.joy_right     = PInput::JOY_RIGHT;
-	Settings.joy_jump      = PInput::JOY_UP;
-	Settings.joy_down      = PInput::JOY_DOWN;
-	Settings.joy_walk_slow = PInput::JOY_Y;
-	Settings.joy_attack1   = PInput::JOY_X;
-	Settings.joy_attack2   = PInput::JOY_A;
-	Settings.joy_open_gift = PInput::JOY_B;
+	Settings.vibration          = 0xFFFF/2;
+	Settings.joystick.left      = PInput::JOY_LEFT;
+	Settings.joystick.right     = PInput::JOY_RIGHT;
+	Settings.joystick.up        = PInput::JOY_UP;
+	Settings.joystick.down      = PInput::JOY_DOWN;
+	Settings.joystick.jump      = PInput::JOY_UP;
+	Settings.joystick.walk_slow = PInput::JOY_Y;
+	Settings.joystick.attack1   = PInput::JOY_A;
+	Settings.joystick.attack2   = PInput::JOY_B;
+	Settings.joystick.open_gift = PInput::JOY_LEFT;
 
 	Settings.music_max_volume = 50;
 	Settings.sfx_max_volume = 90;
@@ -137,24 +140,26 @@ int Settings_Open() {
 	file->read(Settings.double_speed);
 	file->read(Settings.shader_type);
 	
-	file->read(Settings.control_left);
-	file->read(Settings.control_right);
-	file->read(Settings.control_jump);
-	file->read(Settings.control_down);
-	file->read(Settings.control_walk_slow);
-	file->read(Settings.control_attack1);
-	file->read(Settings.control_attack2);
-	file->read(Settings.control_open_gift);
+	file->read(Settings.keyboard.left);
+	file->read(Settings.keyboard.right);
+	file->read(Settings.keyboard.up);
+	file->read(Settings.keyboard.down);
+	file->read(Settings.keyboard.jump);
+	file->read(Settings.keyboard.walk_slow);
+	file->read(Settings.keyboard.attack1);
+	file->read(Settings.keyboard.attack2);
+	file->read(Settings.keyboard.open_gift);
 
 	file->read(Settings.vibration);
-	file->read(Settings.joy_left);
-	file->read(Settings.joy_right);
-	file->read(Settings.joy_jump);
-	file->read(Settings.joy_down);
-	file->read(Settings.joy_walk_slow);
-	file->read(Settings.joy_attack1);
-	file->read(Settings.joy_attack2);
-	file->read(Settings.joy_open_gift);
+	file->read(Settings.joystick.left);
+	file->read(Settings.joystick.right);
+	file->read(Settings.joystick.up);
+	file->read(Settings.joystick.down);
+	file->read(Settings.joystick.jump);
+	file->read(Settings.joystick.walk_slow);
+	file->read(Settings.joystick.attack1);
+	file->read(Settings.joystick.attack2);
+	file->read(Settings.joystick.open_gift);
 
 	file->read(Settings.music_max_volume);
 	file->read(Settings.sfx_max_volume);
@@ -198,24 +203,26 @@ int Settings_Save() {
 	file->write(Settings.double_speed);
 	file->write(Settings.shader_type);
 	
-	file->write(Settings.control_left);
-	file->write(Settings.control_right);
-	file->write(Settings.control_jump);
-	file->write(Settings.control_down);
-	file->write(Settings.control_walk_slow);
-	file->write(Settings.control_attack1);
-	file->write(Settings.control_attack2);
-	file->write(Settings.control_open_gift);
+	file->write(Settings.keyboard.left);
+	file->write(Settings.keyboard.right);
+	file->write(Settings.keyboard.up);
+	file->write(Settings.keyboard.down);
+	file->write(Settings.keyboard.jump);
+	file->write(Settings.keyboard.walk_slow);
+	file->write(Settings.keyboard.attack1);
+	file->write(Settings.keyboard.attack2);
+	file->write(Settings.keyboard.open_gift);
 
 	file->write(Settings.vibration);
-	file->write(Settings.joy_left);
-	file->write(Settings.joy_right);
-	file->write(Settings.joy_jump);
-	file->write(Settings.joy_down);
-	file->write(Settings.joy_walk_slow);
-	file->write(Settings.joy_attack1);
-	file->write(Settings.joy_attack2);
-	file->write(Settings.joy_open_gift);
+	file->write(Settings.joystick.left);
+	file->write(Settings.joystick.right);
+	file->write(Settings.keyboard.up);
+	file->write(Settings.joystick.down);
+	file->write(Settings.joystick.jump);
+	file->write(Settings.joystick.walk_slow);
+	file->write(Settings.joystick.attack1);
+	file->write(Settings.joystick.attack2);
+	file->write(Settings.joystick.open_gift);
 
 	file->write(Settings.music_max_volume);
 	file->write(Settings.sfx_max_volume);

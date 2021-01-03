@@ -76,6 +76,7 @@ This example starts the level13.map on dev mode:
 ```
 
 # FIXMEs
+* Android import zip, delete zip, zip file on save (can't load save with no zip)
 * Music won't play twice if map music doesn't exist
 * Score menu blinking on pressing enter
 * New graphics and controllers menu

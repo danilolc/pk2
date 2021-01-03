@@ -399,20 +399,20 @@ int Sprite_Movement(int i){
 
 	if (sprite.pelaaja != 0 && sprite.energia > 0){
 		/* SLOW WALK */
-		if (PInput::Keydown(Settings.control_walk_slow)
+		if (PInput::Keydown(Input->walk_slow)
 		|| Gui_pad_button == 1 || Gui_pad_button == 3)
 			add_speed = false;
 
 		/* ATTACK 1 */
-		if ((PInput::Keydown(Settings.control_attack1) || Gui_egg) && sprite.charging_timer == 0 && sprite.ammus1 != -1)
+		if ((PInput::Keydown(Input->attack1) || Gui_egg) && sprite.charging_timer == 0 && sprite.ammus1 != -1)
 			sprite.attack1_timer = sprite.tyyppi->attack1_time;
 		/* ATTACK 2 */
-		else if ((PInput::Keydown(Settings.control_attack2) || Gui_doodle) && sprite.charging_timer == 0 && sprite.ammus2 != -1)
+		else if ((PInput::Keydown(Input->attack2) || Gui_doodle) && sprite.charging_timer == 0 && sprite.ammus2 != -1)
 				sprite.attack2_timer = sprite.tyyppi->attack2_time;
 
 		/* CROUCH */
 		sprite.crouched = false;
-		if ((PInput::Keydown(Settings.control_down) || Gui_down || PInput::GetAxis(1) > 0.5) && !sprite.alas) {
+		if ((PInput::Keydown(Input->down) || Gui_down || PInput::GetAxis(1) > 0.5) && !sprite.alas) {
 			sprite.crouched = true;
 			sprite_yla += sprite_korkeus/1.5;
 		}
@@ -427,10 +427,10 @@ int Sprite_Movement(int i){
 		else if (Gui_pad_button == 3 || Gui_pad_button == 4)
 			navigation = 100;
 
-		if (PInput::Keydown(Settings.control_right))
+		if (PInput::Keydown(Input->right))
 			navigation = 100;
 		
-		if (PInput::Keydown(Settings.control_left))
+		if (PInput::Keydown(Input->left))
 			navigation = -100;
 
 		double a_lisays = 0.04;//0.08;
@@ -462,7 +462,7 @@ int Sprite_Movement(int i){
 
 		/* JUMPING */
 		if (sprite.tyyppi->weight > 0 && !swimming) {
-			if (PInput::Keydown(Settings.control_jump) || Gui_up) {
+			if (PInput::Keydown(Input->jump) || Gui_up) {
 				if (!sprite.crouched) {
 					if (sprite.jump_timer == 0)
 						Play_GameSFX(jump_sound, 100, (int)sprite_x, (int)sprite_y,
@@ -477,7 +477,7 @@ int Sprite_Movement(int i){
 			}
 
 			/* dripping quietly down */
-			if ((PInput::Keydown(Settings.control_jump) || Gui_up || PInput::GetAxis(1) < -0.5) && sprite.jump_timer >= 150/*90+20*/ &&
+			if ((PInput::Keydown(Input->jump) || Gui_up || PInput::GetAxis(1) < -0.5) && sprite.jump_timer >= 150/*90+20*/ &&
 				sprite.tyyppi->can_glide)
 				gliding = true;
 		}
@@ -488,10 +488,10 @@ int Sprite_Movement(int i){
 			if (max_speed)
 				speed *= max_nopeus;
 
-			if (PInput::Keydown(Settings.control_jump) || Gui_up)
+			if (PInput::Keydown(Input->jump) || Gui_up)
 				sprite_b -= speed;
 
-			if (PInput::Keydown(Settings.control_down) || Gui_down)
+			if (PInput::Keydown(Input->down) || Gui_down)
 				sprite_b += speed;
 
 			sprite.jump_timer = 0;

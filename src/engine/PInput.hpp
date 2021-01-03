@@ -66,7 +66,8 @@ extern std::vector<touch_t> touchlist;
 extern float mouse_x, mouse_y;
 
 const char* KeyName(u8 key);
-u8 GetKey();
+u8 GetKeyKeyboard();
+u8 GetKeyController();
 bool Keydown(u32 key);
 
 void StartKeyboard();
