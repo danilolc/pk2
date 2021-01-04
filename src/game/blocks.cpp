@@ -8,6 +8,8 @@
 #include "game/mapclass.hpp"
 #include "system.hpp"
 
+#include <cstring>
+
 void Block_Set_Barriers(PK2BLOCK &block) {
 
 	block.tausta = false;
@@ -175,8 +177,9 @@ void Block_Set_Barriers(PK2BLOCK &block) {
 PK2BLOCK Block_Get(u32 x, u32 y) {
 
 	PK2BLOCK block;
+	//memset(&block, 0, sizeof(block));
 
-    // Outside the screen
+	// Outside the screen
 	if (x >= PK2MAP_MAP_WIDTH || y >= PK2MAP_MAP_HEIGHT) {
 		
 		block.koodi  = 255;
@@ -187,6 +190,12 @@ PK2BLOCK Block_Get(u32 x, u32 y) {
 		block.ala    = y*32 + 32;
 		block.water  = false;
 		block.border = true;
+
+		block.vasemmalle = 0;
+		block.oikealle = 0;
+		block.ylos = 0;
+		block.alas = 0;
+
 		return block;
 
 	}
@@ -206,9 +215,9 @@ PK2BLOCK Block_Get(u32 x, u32 y) {
 		block.koodi  = 255;
 		block.tausta = true;
 		block.vasen  = x*32;
-		block.oikea  = x*32+32;
+		block.oikea  = x*32 + 32;
 		block.yla    = y*32;
-		block.ala    = y*32+32;
+		block.ala    = y*32 + 32;
 		block.water  = false;
 
 		block.vasemmalle = 0;
