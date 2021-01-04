@@ -69,7 +69,13 @@ static void read_config() {
 	idx = conf.Search_Id("audio_buffer_size");
 	if (idx != -1) {
 		const char* txt = conf.Get_Text(idx);
-		PLog::Write(PLog::DEBUG, "PK2", "Render method set to %s", txt);
+		int val = atoi(txt);
+
+		if (val > 0) {
+			audio_buffer_size = val;
+			PLog::Write(PLog::DEBUG, "PK2", "Audio buffer size set to %i", val);
+
+		}
 	}
 
 
