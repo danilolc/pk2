@@ -277,8 +277,6 @@ void get_window_position(int* x, int* y) {
 
 int set_vsync(bool set) {
 
-	#ifndef PK2_NO_THREAD
-
 	if (set == vsync_set)
 		return 0;
 
@@ -296,12 +294,6 @@ int set_vsync(bool set) {
 	vsync_set = set;
 
 	return 0;
-
-	#else
-
-	return -1;
-
-	#endif
 
 }
 

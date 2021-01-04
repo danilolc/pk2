@@ -8,8 +8,6 @@
 
 #include <SDL.h>
 
-#include <chrono>
-#include <thread>
 #include <iostream>
 
 #define UPDATE_FPS 30 //Update FPS each 30 frames
@@ -26,28 +24,39 @@ static float avrg_fps = 0;
 static bool debug = false;
 static bool draw = true;
 
-#ifndef PK2_NO_THREAD
-
 static void wait_frame() {
 
-	using namespace std;
-	using namespace std::chrono;
+	static u64 last_time = SDL_GetPerformanceCounter();
 
-	static auto last_time = high_resolution_clock::now();
+	u64 c_frec = SDL_GetPerformanceFrequency();
 
-	auto delta_time = high_resolution_clock::now() - last_time;
-	auto frame_time = chrono::nanoseconds(1000000000ll / desired_fps);
-
-	auto sleep_time = frame_time - delta_time;
-
-	if (sleep_time.count() > 100000)
-		this_thread::sleep_for(sleep_time);
+	u64 one_frame = c_frec / desired_fps;
+	u64 exit_time = last_time + one_frame;
 	
-	last_time = high_resolution_clock::now();
+	u64 curr_time = SDL_GetPerformanceCounter();
+	
+	if (curr_time > exit_time) {
+		last_time = curr_time;
+		return;
+	}
+	
+	u64 wait_time = exit_time - curr_time;
+	u32 ms = wait_time * 1000 / c_frec;
+
+	SDL_Delay(ms);
+
+	while(1) {
+
+		u64 c = SDL_GetPerformanceCounter();
+		
+		if (c >= exit_time || c < last_time)
+			break;
+
+	}
+
+	last_time = exit_time;
 
 }
-
-#endif
 
 static void logic() {
 	
@@ -79,10 +88,8 @@ static void logic() {
 	// Clear PDraw buffer
 	PDraw::update();
 
-	#ifndef PK2_NO_THREAD
 	if (!PRender::is_vsync() && (desired_fps > 0) && draw)
 		wait_frame();
-	#endif
 
 	PInput::update();
 	PSound::update();

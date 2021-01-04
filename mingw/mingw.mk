@@ -13,11 +13,8 @@ CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main $(OPT) -std=gnu++17 -
 LDFLAGS += -s -static-libgcc -static-libstdc++ -L$(LIB_SRC) -lmingw32 -mwindows -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image
 
 #Remove these if you don't want or don't have zip
-#CXXFLAGS += -DPK2_USE_ZIP
-#LDFLAGS += -lzip
-
-#CXXFLAGS += -DPK2_NO_THREAD
-LDFLAGS += -Wl,-Bstatic -lstdc++ -lpthread
+CXXFLAGS += -DPK2_USE_ZIP
+LDFLAGS += -lzip
 
 CXXFLAGS += -fno-exceptions -fno-rtti
 

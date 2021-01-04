@@ -689,8 +689,6 @@ void Draw_Menu_Graphics() {
 
 		#endif
 
-		#ifndef PK2_NO_THREAD
-
 		mx = 100;
 		PDraw::font_write(fontti1, "vsync", mx, my);
 		mx += 15 + 51;
@@ -698,7 +696,7 @@ void Draw_Menu_Graphics() {
 		mx += 15 + 51;
 		PDraw::font_write(fontti1, "85fps", mx, my);
 		mx += 15 + 51;
-		PDraw::font_write(fontti1, "120 fps", mx, my);
+		PDraw::font_write(fontti1, "120fps", mx, my);
 		my += 10;
 
 		option = Draw_Radio(100, my, 4, Settings.fps);
@@ -707,8 +705,6 @@ void Draw_Menu_Graphics() {
 			Settings.fps = option;
 
 		my += 31 + 5;
-
-		#endif
 
 		mx = 100;
 		PDraw::font_write(fontti1, "nearest", mx, my);

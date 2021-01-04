@@ -96,12 +96,13 @@ int Screen_First_Start() {
 	if (PInput::ControllerFound())
 		Input = &Settings.joystick;
 
-	// TODO set shader
-	/*if (Settings.isFiltered)
-		PRender::set_filter(PRender::FILTER_LINEAR);
-	else
-		PRender::set_filter(PRender::FILTER_NEAREST);*/
-
+	int ret = PRender::set_mode(Settings.shader_type);
+	if (ret != 0) {
+		Settings.shader_type = SETTINGS_SHADER_LINEAR;
+		ret = PRender::set_mode(SETTINGS_SHADER_LINEAR);
+		Settings_Save();
+	}
+	
 	PRender::set_fullscreen(Settings.isFullScreen);
 
 	if (Settings.fps == SETTINGS_VSYNC)

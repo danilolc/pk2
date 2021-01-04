@@ -11,11 +11,11 @@
 #include "engine/PInput.hpp"
 #include "engine/PUtils.hpp"
 
+#include <ctime>
 #include <cstring>
 #include <string>
-#include <chrono>
 
-using namespace std::chrono;
+#include <SDL_timer.h>
 
 #define SETTINGS_FILE "settings.ini"
 
@@ -50,13 +50,14 @@ int Settings_GetId(PFile::Path path, u32& id) {
 
 void Settings_Init() {
 
-	auto clockk = high_resolution_clock::now();
-	uint ns = duration_cast<nanoseconds>(clockk.time_since_epoch()).count();
+	u64 counter = SDL_GetPerformanceCounter();
+	u32 counter32 = counter ^ (counter >> 32);
+	counter32 ^= counter32 << 10;
 
-	uint timer = time(NULL);
+	u32 timer = time(NULL);
 	timer ^= timer << 1;
 	
-	uint seed = ns ^ timer;
+	u32 seed = counter32 ^ timer;
 
 	srand(seed);
 	Settings.id = rand();
