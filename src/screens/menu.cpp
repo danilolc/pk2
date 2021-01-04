@@ -266,7 +266,7 @@ int  Draw_Radio(int x, int y, int num, int sel) {
 	const PDraw::RECT sel_src = {504,124,31,31};
 	const PDraw::RECT uns_src = {473,124,31,31};
 	
-	int val = 15;
+	int val = 35;
 
 	int randx = rand()%3 - rand()%3;
 	int randy = rand()%3 - rand()%3;
@@ -657,7 +657,7 @@ void Draw_Menu_Save() {
 
 void Draw_Menu_Graphics() {
 
-	int my = 150;
+	int mx = 0, my = 150, option;
 	static bool moreOptions = false;
 
 	Draw_BGSquare(40, 70, 640-40, 410, 224);
@@ -691,22 +691,48 @@ void Draw_Menu_Graphics() {
 
 		#ifndef PK2_NO_THREAD
 
-		int mx = 100;
+		mx = 100;
 		PDraw::font_write(fontti1, "vsync", mx, my);
-		mx += 15 + 31;
+		mx += 15 + 51;
 		PDraw::font_write(fontti1, "60fps", mx, my);
-		mx += 15 + 31;
+		mx += 15 + 51;
 		PDraw::font_write(fontti1, "85fps", mx, my);
-		mx += 15 + 31;
+		mx += 15 + 51;
 		PDraw::font_write(fontti1, "120 fps", mx, my);
 		my += 10;
 
-		int option = Draw_Radio(100, my, 4, Settings.fps);
+		option = Draw_Radio(100, my, 4, Settings.fps);
 
 		if (option != -1)
 			Settings.fps = option;
 
+		my += 31 + 5;
+
 		#endif
+
+		mx = 100;
+		PDraw::font_write(fontti1, "nearest", mx, my);
+		mx += 15 + 51;
+		PDraw::font_write(fontti1, "linear", mx, my);
+		mx += 15 + 51;
+		PDraw::font_write(fontti1, "crt", mx, my);
+		mx += 15 + 51;
+		PDraw::font_write(fontti1, "hqx", mx, my);
+		my += 10;
+
+		option = Draw_Radio(100, my, 4, Settings.shader_type);
+
+		if (option != -1) {
+			if (option != Settings.shader_type) {
+
+				int ret = PRender::set_mode(option);
+				if (ret == 0) {
+					Settings.shader_type = option;
+					Settings_Save();
+				}
+
+			}
+		}
 
 		//Add more options here
 

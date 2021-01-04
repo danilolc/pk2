@@ -71,7 +71,7 @@ void Settings_Init() {
 	Settings.draw_itembar = true;
 	Settings.bg_sprites = true;
 
-	Settings.fps = SETTINGS_VSYNC;
+	Settings.fps = SETTINGS_60FPS;//SETTINGS_VSYNC;
 	Settings.isFullScreen = true;
 	Settings.double_speed = false;
 	Settings.shader_type = SETTINGS_SHADER_LINEAR;

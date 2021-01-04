@@ -13,6 +13,8 @@
 
 namespace PRender {
 
+int current_mode = MODE_LINEAR;
+
 float cover_width, cover_height;
 
 struct GLRect {
@@ -52,20 +54,52 @@ static GLchar Log_message[1024];
 
 GLuint vao, vbo, ubo;
 
-// Screen shader
-static GLuint screen_vs;
-static GLuint screen_fs;
-static GLuint screen_program;
-
 static GLfloat shader_time = 0;
 const  GLfloat time_cycle = M_PI * 3 * 4 * 5;// * 7;
 
-static GLint  uniScreenTex;
-static GLint  uniScreenIdxRes;
-static GLint  uniScreenRes;
-static GLint  uniScreenTime;
+// HQX shader
+bool hqx_ok = false;
 
-static GLuint screen_texture;
+static GLuint hqx_vs;
+static GLuint hqx_fs;
+static GLuint hqx_program;
+
+static GLint  uniHqxTex;
+static GLint  uniHqxIdxRes;
+static GLint  uniHqxRes;
+static GLint  uniHqxTime;
+
+// CRT shader
+bool crt_ok = false;
+
+static GLuint crt_vs;
+static GLuint crt_fs;
+static GLuint crt_program;
+
+static GLint  uniCrtTex;
+static GLint  uniCrtIdxRes;
+static GLint  uniCrtRes;
+static GLint  uniCrtTime;
+
+// Basic shader
+static GLuint basic_vs;
+static GLuint basic_fs;
+static GLuint basic_program;
+
+static GLint  uniBasicTex;
+static GLint  uniBasicIdxRes;
+static GLint  uniBasicRes;
+static GLint  uniBasicTime;
+
+// Screen shader
+static GLuint* screen_vs      = &basic_vs;
+static GLuint* screen_fs      = &basic_fs;
+static GLuint* screen_program = &basic_program;
+
+static GLint*  uniScreenTex    = &uniBasicTex;
+static GLint*  uniScreenIdxRes = &uniBasicIdxRes;
+static GLint*  uniScreenRes    = &uniBasicRes;
+static GLint*  uniScreenTime   = &uniBasicTime;
 
 // Indexed shader
 static GLuint indexed_vs;
@@ -77,9 +111,11 @@ static GLint uniIndexTime;
 static GLint uniIndexPalette;
 static GLint uniIndexTex;
 
+
 static GLuint  indexed_texture;
 static GLfloat indexed_palette[256*3];
 
+static GLuint screen_texture;
 static GLuint indexed_buffer;
 static GLint  screen_buffer;
 
@@ -172,6 +208,59 @@ int set_filter(const char* filter) {
 	}
 
 	return 0;
+}
+
+int set_mode(int mode) {
+
+	if (mode == MODE_CRT && !crt_ok)
+		return 1;
+
+	if (mode == MODE_HQX && !hqx_ok)
+		return 1;
+
+	if (mode == MODE_NEAREST || mode == MODE_HQX) {
+		set_filter(FILTER_NEAREST);
+	} else {
+		set_filter(FILTER_LINEAR);
+	}
+
+	if (mode == MODE_NEAREST || mode == MODE_LINEAR) {
+
+		screen_vs      = &basic_vs;
+		screen_fs      = &basic_fs;
+		screen_program = &basic_program;
+
+		uniScreenTex    = &uniBasicTex;
+		uniScreenIdxRes = &uniBasicIdxRes;
+		uniScreenRes    = &uniBasicRes;
+		uniScreenTime   = &uniBasicTime;
+
+	} else if (mode == MODE_CRT) {
+
+		screen_vs      = &crt_vs;
+		screen_fs      = &crt_fs;
+		screen_program = &crt_program;
+
+		uniScreenTex    = &uniCrtTex;
+		uniScreenIdxRes = &uniCrtIdxRes;
+		uniScreenRes    = &uniCrtRes;
+		uniScreenTime   = &uniCrtTime;
+
+	} else if (mode == MODE_HQX) {
+
+		screen_vs      = &hqx_vs;
+		screen_fs      = &hqx_fs;
+		screen_program = &hqx_program;
+
+		uniScreenTex    = &uniHqxTex;
+		uniScreenIdxRes = &uniHqxIdxRes;
+		uniScreenRes    = &uniHqxRes;
+		uniScreenTime   = &uniHqxTime;
+
+	}
+
+	return 0;
+
 }
 
 void get_window_size(int* w, int* h) {
@@ -332,32 +421,76 @@ int create_program(const char* vs_file, const char* fs_file, GLuint* vs, GLuint*
 
 }
 
+int create_basic_program() {
 
-
-void create_screen_program() {
-
-	screen_program = create_program("shader/screen.vs", "shader/screen.fs", &screen_vs, &screen_fs);
-	if (!screen_program) {
-		PLog::Write(PLog::ERR, "PRender", "Can't create screen program");
-		return;
+	basic_program = create_program("shader/screen.vs", "shader/screen.fs", &basic_vs, &basic_fs);
+	if (!basic_program) {
+		PLog::Write(PLog::FATAL, "PRender", "Can't create basic program");
+		return 1;
 	}
 
-	glUseProgram(screen_program);
+	glUseProgram(basic_program);
 
-	uniScreenTex    = glGetUniformLocation(screen_program, "screen_tex");
-	uniScreenIdxRes = glGetUniformLocation(screen_program, "buffer_res");
-	uniScreenRes    = glGetUniformLocation(screen_program, "screen_res");
-	uniScreenTime   = glGetUniformLocation(screen_program, "time");
+	uniBasicTex    = glGetUniformLocation(basic_program, "screen_tex");
+	uniBasicIdxRes = glGetUniformLocation(basic_program, "buffer_res");
+	uniBasicRes    = glGetUniformLocation(basic_program, "screen_res");
+	uniBasicTime   = glGetUniformLocation(basic_program, "time");
 
-	glBindFragDataLocation(screen_program, 0, "color");
+	glBindFragDataLocation(basic_program, 0, "color");
+
+	return 0;
+
 }
 
-void create_indexed_program() {
+int create_hqx_program() {
+
+	hqx_program = create_program("shader/screen.vs", "shader/hqx.fs", &hqx_vs, &hqx_fs);
+	if (!hqx_program) {
+		PLog::Write(PLog::ERR, "PRender", "Can't create hqx program");
+		return 1;
+	}
+
+	hqx_ok = true;
+	glUseProgram(hqx_program);
+
+	uniHqxTex    = glGetUniformLocation(hqx_program, "screen_tex");
+	uniHqxIdxRes = glGetUniformLocation(hqx_program, "buffer_res");
+	uniHqxRes    = glGetUniformLocation(hqx_program, "screen_res");
+	uniHqxTime   = glGetUniformLocation(hqx_program, "time");
+
+	glBindFragDataLocation(hqx_program, 0, "color");
+
+	return 0;
+
+}
+
+int create_crt_program() {
+
+	crt_program = create_program("shader/screen.vs", "shader/crt.fs", &hqx_vs, &hqx_fs);
+	if (!crt_program) {
+		PLog::Write(PLog::ERR, "PRender", "Can't create screen program");
+		return 1;
+	}
+
+	crt_ok = true;
+	glUseProgram(crt_program);
+
+	uniCrtTex    = glGetUniformLocation(crt_program, "screen_tex");
+	uniCrtIdxRes = glGetUniformLocation(crt_program, "buffer_res");
+	uniCrtRes    = glGetUniformLocation(crt_program, "screen_res");
+	uniCrtTime   = glGetUniformLocation(crt_program, "time");
+
+	glBindFragDataLocation(crt_program, 0, "color");
+
+	return 0;
+}
+
+int create_indexed_program() {
 
 	indexed_program = create_program("shader/indexed.vs", "shader/indexed.fs", &indexed_vs, &indexed_fs);
 	if (!indexed_program) {
 		PLog::Write(PLog::ERR, "PRender", "Can't create indexed program");
-		return;
+		return 1;
 	}
 
 	glUseProgram(indexed_program);
@@ -368,6 +501,8 @@ void create_indexed_program() {
 	uniIndexTime    = glGetUniformLocation(indexed_program, "time");
 
 	glBindFragDataLocation(indexed_program, 0, "color");
+
+	return 0;
 
 }
 
@@ -465,8 +600,13 @@ int init(int width, int height, const char* name, const char* icon) {
 
 	load_buffers();
 
-	create_screen_program();
-	create_indexed_program();
+	if (create_basic_program() != 0)
+		return -1;
+	if (create_indexed_program() != 0)
+		return -1;
+
+	create_hqx_program();
+	create_crt_program();
 
 	adjust_screen();
 
@@ -485,8 +625,11 @@ void terminate() {
 	glDeleteBuffers(1, &vbo);
 	glDeleteBuffers(1, &ubo);
 
-	glDeleteProgram(screen_program);
+	glDeleteProgram(basic_program);
 	glDeleteProgram(indexed_program);
+	
+	if (crt_ok) glDeleteProgram(crt_program);
+	if (hqx_ok) glDeleteProgram(hqx_program);
 	
 	SDL_GL_DeleteContext(context);
 	free_lib();
@@ -495,6 +638,7 @@ void terminate() {
 
 void update(void* _buffer8, int alpha) {
 
+	//TODO - fps independent
 	shader_time += 1.f/60;
 	if (shader_time > time_cycle)
 		shader_time -= time_cycle;
@@ -528,13 +672,13 @@ void update(void* _buffer8, int alpha) {
 	SDL_GetWindowSize(window, &w, &h); //
 	glViewport(0, 0, w, h);
 	glBindFramebuffer(GL_FRAMEBUFFER, screen_buffer);
-	glUseProgram(screen_program);
+	glUseProgram(*screen_program);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, buffer8->w, buffer8->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); //
-	glUniform1i(uniScreenTex, 0); //
-	glUniform2f(uniScreenIdxRes, buffer8->w, buffer8->h); //
-	glUniform2f(uniScreenRes, cover_width, cover_height); //
-	glUniform1f(uniScreenTime, shader_time);
+	glUniform1i(*uniScreenTex, 0); //
+	glUniform2f(*uniScreenIdxRes, buffer8->w, buffer8->h); //
+	glUniform2f(*uniScreenRes, cover_width, cover_height); //
+	glUniform1f(*uniScreenTime, shader_time);
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glDrawArrays(GL_TRIANGLES, 0, 6);

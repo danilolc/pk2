@@ -6,10 +6,18 @@
 
 namespace PRender {
 
+enum {
+	MODE_NEAREST,
+	MODE_LINEAR,
+	MODE_CRT,
+	MODE_HQX
+};
+
 const char FILTER_NEAREST[] = "0";
 const char FILTER_LINEAR[] = "2";
 
 int  set_filter(const char* filter);
+int  set_mode(int mode);
 
 void adjust_screen();
 void set_fullscreen(bool set);
