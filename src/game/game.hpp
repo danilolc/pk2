@@ -35,7 +35,7 @@ class GameClass {
 		bool has_time = false;
 		u64 frame_count = 0; //flames elapsed
 
-		int button_moving = 0;
+		int button_vibration = 0;
 		int button1 = 0;
 		int button2 = 0;
 		int button3 = 0;

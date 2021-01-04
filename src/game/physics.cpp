@@ -273,21 +273,21 @@ void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
 					if (sprite.kytkinpaino >= 1) { // Sprite can press the buttons
 						if (palikka.koodi == BLOCK_KYTKIN1 && Game->button1 == 0) {
 							Game->button1 = SWITCH_INITIAL_VALUE;
-							Game->button_moving = 64;
+							Game->button_vibration = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 							PInput::Vibrate(1000);
 						}
 
 						if (palikka.koodi == BLOCK_KYTKIN2 && Game->button2 == 0) {
 							Game->button2 = SWITCH_INITIAL_VALUE;
-							Game->button_moving = 64;
+							Game->button_vibration = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 							PInput::Vibrate(1000);
 						}
 
 						if (palikka.koodi == BLOCK_KYTKIN3 && Game->button3 == 0) {
 							Game->button3 = SWITCH_INITIAL_VALUE;
-							Game->button_moving = 64;
+							Game->button_vibration = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 							PInput::Vibrate(1000);
 						}
@@ -1248,7 +1248,7 @@ int Sprite_Movement(int i){
 				case AI_TUHOUTUU_JOS_EMO_TUHOUTUU:	sprite.AI_Tuhoutuu_Jos_Emo_Tuhoutuu(Sprites_List);
 													break;
 
-				case AI_TIPPUU_TARINASTA:			sprite.AI_Tippuu_Tarinasta(Game->vibration + Game->button_moving);
+				case AI_TIPPUU_TARINASTA:			sprite.AI_Tippuu_Tarinasta(Game->vibration + Game->button_vibration);
 													break;
 				case AI_LIIKKUU_ALAS_JOS_KYTKIN1_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button1,0,1);
 													break;
@@ -1510,7 +1510,7 @@ int BonusSprite_Movement(int i){
 
 	// Hyppyyn liittyv�t seikat
 
-	if (Game->button_moving + Game->vibration > 0 && sprite.jump_timer == 0)
+	if (Game->button_vibration + Game->vibration > 0 && sprite.jump_timer == 0)
 		sprite.jump_timer = sprite.tyyppi->max_hyppy / 2;
 
 	if (sprite.jump_timer > 0 && sprite.jump_timer < sprite.tyyppi->max_hyppy)
@@ -1921,7 +1921,7 @@ int BonusSprite_Movement(int i){
 										sprite.AI_Muutos_Ajastin(Prototypes_List[sprite.tyyppi->muutos]);
 									break;
 
-		case AI_TIPPUU_TARINASTA:	sprite.AI_Tippuu_Tarinasta(Game->vibration + Game->button_moving);
+		case AI_TIPPUU_TARINASTA:	sprite.AI_Tippuu_Tarinasta(Game->vibration + Game->button_vibration);
 									break;
 
 		default:					break;

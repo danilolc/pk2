@@ -535,7 +535,7 @@ int Draw_InGame() {
 		}
 		if (speedrun_mode) {
 			sprintf(luku, "%li", long(Game->frame_count));
-			PDraw::font_write(fontti1, luku, 570, 58);
+			PDraw::font_write(fontti1, luku, 570, 38);
 		}
 	}
 
@@ -608,11 +608,11 @@ int Update_Camera(){
 		Game->vibration--;
 	}
 
-	if (Game->button_moving > 0) {
+	if (Game->button_vibration > 0) {
 		Game->dcamera_x += (rand()%9-rand()%9);//3
 		Game->dcamera_y += (rand()%9-rand()%9);
 
-		Game->button_moving--;
+		Game->button_vibration--;
 	}
 
 	if (Game->dcamera_x != Game->camera_x)

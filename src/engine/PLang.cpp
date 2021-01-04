@@ -7,16 +7,19 @@
 #include <SDL.h>
 #include <cstring>
 
-const int LUE_SKIP    = 0,
-          LUE_OTSIKKO = 1,
-          LUE_TEKSTI  = 2;
+enum {
+	READ_SKIP,
+	READ_TITLE,
+	READ_TEXT,
+	READ_SPACE
+};
 
 const char MARKER_1 = '*',
            MARKER_2 = ':';
 
 PLang::PLang() {
 
-	read = LUE_SKIP;
+	read = READ_SKIP;
 
 	tekstit.clear();
 	titles.clear();
@@ -25,7 +28,7 @@ PLang::PLang() {
 
 PLang::PLang(PFile::Path path) {
 
-	read = LUE_SKIP;
+	read = READ_SKIP;
 
 	Read_File(path);
 
@@ -44,62 +47,42 @@ bool PLang::Read_File(PFile::Path path){
 	titles.clear();
 
 	u8 marker;
-	int table_index = 0;
-	read = LUE_SKIP;
-
-	tekstit.push_back("");
-	titles.push_back("");
+	int table_index = -1;
+	read = READ_SKIP;
 
 	while(io->read(&marker, 1)) {
-		switch (marker) {
-			case MARKER_1:
-				if (read == LUE_SKIP) {
-					read = LUE_OTSIKKO;
-				} else {
-					read = LUE_SKIP;
 
+		if (marker == '\r' || marker == '\n') {
+			read = READ_SKIP;
+			continue;
+		}
+
+		switch (read) {
+			case READ_SKIP:
+				if (marker == MARKER_1) {
+					read = READ_TITLE;
 					tekstit.push_back("");
 					titles.push_back("");
 					table_index++;
-					
-				}
+				} 
 				break;
-
-			case MARKER_2:
-				if (read == LUE_OTSIKKO) {
-					read = LUE_TEKSTI;
+			
+			case READ_TITLE:
+				if (marker == MARKER_2)
+					read = READ_SPACE;
+				else
+					titles[table_index] += marker;
+				break;
+			
+			case READ_SPACE:
+				if (marker == ' ' || marker == '\t')
 					break;
-				}
-				if (read == LUE_TEKSTI) {
-					tekstit[table_index] += marker;
-				}
+				read = READ_TEXT;
+				
+			case READ_TEXT:
+				tekstit[table_index] += marker;
 				break;
 
-			case '\r':
-			case '\n':
-				if (read != LUE_SKIP){
-					read = LUE_SKIP;
-					
-					tekstit.push_back("");
-					titles.push_back("");
-					table_index++;
-					
-				}
-				break;
-
-			case '\t': break;
-			case '\v': break;
-
-			default:
-				if (read != LUE_SKIP){
-					if (read == LUE_OTSIKKO) {
-						titles[table_index] += marker;
-					}
-					if (read == LUE_TEKSTI) {
-						tekstit[table_index] += marker;
-					}
-				}
-				break;
 		}
 	}
 

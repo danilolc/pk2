@@ -28,7 +28,32 @@
 
 #include <SDL.h>
 
-void start_test(const char* arg) {
+static void read_config() {
+
+	PLang conf = PLang();
+	
+	bool ok = conf.Read_File(PFile::Path(data_path + "config.txt"));
+
+	if (!ok) return;
+
+	PLog::Write(PLog::DEBUG, "PK2", "Found config file");
+
+	int idx = conf.Search_Id("render_method");
+	if (idx != -1) {
+		const char* txt = conf.Get_Text(idx);
+		PLog::Write(PLog::DEBUG, "PK2", "Render method set to %s", txt);
+	}
+
+	idx = conf.Search_Id("audio_buffer_size");
+	if (idx != -1) {
+		const char* txt = conf.Get_Text(idx);
+		PLog::Write(PLog::DEBUG, "PK2", "Render method set to %s", txt);
+	}
+
+
+}
+
+static void start_test(const char* arg) {
 	
 	if (arg == NULL) return;
 
@@ -45,7 +70,7 @@ void start_test(const char* arg) {
 
 }
 
-void quit() {
+static void quit() {
 
 	Settings_Save();
 
@@ -263,7 +288,7 @@ int main(int argc, char *argv[]) {
 
 	Settings_Open();
 
-	// TODO - set screen_width
+	read_config();
 
 	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", audio_buffer_size);
 	if (!Piste::is_ready()) {
