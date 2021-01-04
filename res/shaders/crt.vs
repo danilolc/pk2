@@ -1,7 +1,7 @@
 #version 140
 
 in vec2 vbo_in;
-in vec2 uv_in; //x = 1, y = 0
+in vec2 uv_in;
 
 out vec2 UV;
 

@@ -76,11 +76,10 @@ This example starts the level13.map on dev mode:
 ```
 
 # FIXMEs
-* Memory increasing
+* Memory increasing?
 * Android import zip, delete zip, zip file on save (can't load save with no zip)
 * Score menu blinking on pressing enter
 * New graphics and controllers menu
-* Lua settings?
 * Android data path
 * Recover gui buttons, wide bg, OpenGL ES
 * Use app bundles to minimize apk size

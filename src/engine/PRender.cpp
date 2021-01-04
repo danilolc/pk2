@@ -24,22 +24,13 @@ struct GLRect {
 const GLint VBO_LOCATION = 0;
 const GLint UBO_LOCATION = 1;
 
-const GLfloat vbo_data[] = {
-	0.0f,  1.0f,
-	1.0f,  0.0f,
-	0.0f,  0.0f,
-	0.0f,  1.0f,
-	1.0f,  1.0f,
-	1.0f,  0.0f
-};
-
 const GLfloat ubo_data[] = {
-	0.0f,  1.0f,
-	1.0f,  0.0f,
 	0.0f,  0.0f,
-	0.0f,  1.0f,
 	1.0f,  1.0f,
-	1.0f,  0.0f
+	0.0f,  1.0f,
+	0.0f,  0.0f,
+	1.0f,  0.0f,
+	1.0f,  1.0f
 };
 
 static GLRect screen_dest = {0.f, 0.f, 1.f, 1.f};
@@ -539,7 +530,6 @@ void load_buffers() {
 
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vbo_data), vbo_data, GL_DYNAMIC_DRAW);
 	glVertexAttribPointer(VBO_LOCATION, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(VBO_LOCATION);
 
