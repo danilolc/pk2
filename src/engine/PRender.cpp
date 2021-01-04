@@ -7,7 +7,7 @@
 #include "engine/PDraw.hpp"
 #include "engine/PLog.hpp"
 #include "engine/types.hpp"
-#include "engine/PGl.hpp"
+#include "engine/render/PGl.hpp"
 
 #include <SDL.h>
 
@@ -415,7 +415,7 @@ int create_program(const char* vs_file, const char* fs_file, GLuint* vs, GLuint*
 
 int create_basic_program() {
 
-	basic_program = create_program("shader/screen.vs", "shader/screen.fs", &basic_vs, &basic_fs);
+	basic_program = create_program("shaders/basic.vs", "shaders/basic.fs", &basic_vs, &basic_fs);
 	if (!basic_program) {
 		PLog::Write(PLog::FATAL, "PRender", "Can't create basic program");
 		return 1;
@@ -436,7 +436,7 @@ int create_basic_program() {
 
 int create_hqx_program() {
 
-	hqx_program = create_program("shader/screen.vs", "shader/hqx.fs", &hqx_vs, &hqx_fs);
+	hqx_program = create_program("shaders/hqx.vs", "shaders/hqx.fs", &hqx_vs, &hqx_fs);
 	if (!hqx_program) {
 		PLog::Write(PLog::ERR, "PRender", "Can't create hqx program");
 		return 1;
@@ -458,7 +458,7 @@ int create_hqx_program() {
 
 int create_crt_program() {
 
-	crt_program = create_program("shader/screen.vs", "shader/crt.fs", &hqx_vs, &hqx_fs);
+	crt_program = create_program("shaders/crt.vs", "shaders/crt.fs", &hqx_vs, &hqx_fs);
 	if (!crt_program) {
 		PLog::Write(PLog::ERR, "PRender", "Can't create screen program");
 		return 1;
@@ -479,7 +479,7 @@ int create_crt_program() {
 
 int create_indexed_program() {
 
-	indexed_program = create_program("shader/indexed.vs", "shader/indexed.fs", &indexed_vs, &indexed_fs);
+	indexed_program = create_program("shaders/indexed.vs", "shaders/indexed.fs", &indexed_vs, &indexed_fs);
 	if (!indexed_program) {
 		PLog::Write(PLog::ERR, "PRender", "Can't create indexed program");
 		return 1;

@@ -9,24 +9,34 @@
 # INC_SRC (the include with SDL2 and Zip)
 # LIB_SRC (the libs with SDL2 and Zip)
 
-CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main $(OPT) -std=gnu++17 -Wall -DPK2_PORTABLE 
+CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main $(OPT) -std=gnu++11 -Wall
 LDFLAGS += -s -static-libgcc -static-libstdc++ -L$(LIB_SRC) -lmingw32 -mwindows -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image
 
 #Remove these if you don't want or don't have zip
 CXXFLAGS += -DPK2_USE_ZIP
 LDFLAGS += -lzip
 
+# Portable (data is stored with resorces):
+CXXFLAGS += -DPK2_PORTABLE
+
 CXXFLAGS += -fno-exceptions -fno-rtti
 
+# Commit hash
 CXXFLAGS += -DCOMMIT_HASH='"$(shell git rev-parse --short HEAD)"'
 
+# Directories:
 SRC_DIR = ../../src/
 RES_DIR = ../../res/
 BIN_DIR = PK2/
 LICENSES = $(BIN_DIR)licenses/
 BUILD_DIR = build/
 
-PK2_SRC  = $(wildcard $(SRC_DIR)*.cpp) $(wildcard $(SRC_DIR)*/*.cpp)
+# Source files:
+PK2_SRC  = *.cpp */*.cpp */*/*.cpp
+PK2_SRC := $(addprefix $(SRC_DIR), $(PK2_SRC))
+PK2_SRC := $(wildcard $(PK2_SRC))
+
+# Object files:
 PK2_OBJ := $(basename $(PK2_SRC))
 PK2_OBJ := $(subst $(SRC_DIR), ,$(PK2_OBJ))
 PK2_OBJ := $(addsuffix .o, $(PK2_OBJ))
@@ -91,7 +101,12 @@ copyfiles:
 	@cp $(BIN_SRC)SDL2_mixer.dll $(BIN_DIR)
 
 	@echo -Copying resources
-	@cp -r $(RES_DIR)/* $(BIN_DIR)
-
+	@cp -r $(RES_DIR)/episodes $(BIN_DIR)
+	@cp -r $(RES_DIR)/gfx      $(BIN_DIR)
+	@cp -r $(RES_DIR)/language $(BIN_DIR)
+	@cp -r $(RES_DIR)/music    $(BIN_DIR)
+	@cp -r $(RES_DIR)/sfx      $(BIN_DIR)
+	@cp -r $(RES_DIR)/shaders  $(BIN_DIR)
+	@cp -r $(RES_DIR)/sprites  $(BIN_DIR)
 
 .PHONY: pk2 clean copyfiles

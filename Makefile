@@ -38,7 +38,7 @@ BIN_DIR = bin/
 BUILD_DIR = build/
 
 # Source files:
-PK2_SRC  = *.cpp */*.cpp
+PK2_SRC  = *.cpp */*.cpp */*/*.cpp
 PK2_SRC := $(addprefix $(SRC_DIR), $(PK2_SRC))
 PK2_SRC := $(wildcard $(PK2_SRC))
 

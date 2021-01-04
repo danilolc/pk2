@@ -24,6 +24,5 @@ class PLang {
 	private:
 		std::vector<std::string> tekstit;
 		std::vector<std::string> titles;
-		int read;
 	
 };

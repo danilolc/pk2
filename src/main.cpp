@@ -28,13 +28,35 @@
 
 #include <SDL.h>
 
+const char default_config[] = 
+"-- Render Method"
+"\r\n-- Possible options: sdl sdl_multithread opengl opengles default"
+"\r\n---------------"
+"\r\n*render_method:        default"
+"\r\n"
+"\r\n"
+"\r\n-- Audio Buffer Size"
+"\r\n-- low value = low audio latency; high value = less cpu usage"
+"\r\n-- Default is 1024"
+"\r\n-- Prefer a power of 2: 512 1024 2048 4096 default"
+"\r\n---------------"
+"\r\n*audio_buffer_size:    default"
+"\r\n";
+
 static void read_config() {
 
 	PLang conf = PLang();
+	PFile::Path path = PFile::Path(data_path + "config.txt");
 	
-	bool ok = conf.Read_File(PFile::Path(data_path + "config.txt"));
+	bool ok = conf.Read_File(path);
+	if (!ok) {
+		
+		PFile::RW* rw = path.GetRW("w");
+		if (rw)
+			rw->write(default_config, sizeof(default_config) - 1);
 
-	if (!ok) return;
+		return;
+	}
 
 	PLog::Write(PLog::DEBUG, "PK2", "Found config file");
 
@@ -287,7 +309,6 @@ int main(int argc, char *argv[]) {
 	Prepare_DataPath();
 
 	Settings_Open();
-
 	read_config();
 
 	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", audio_buffer_size);

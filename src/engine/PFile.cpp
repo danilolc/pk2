@@ -405,12 +405,14 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
 	
 	std::vector<std::string> result;
     struct _finddata_t map_file;
+	bool searching_folder = false;
 
 	std::string buffer(dir);
 
 	if (type[0] == '/' || type[0] == '\\') {
 
         buffer += "\\*";
+		searching_folder = true;
 	
     } else if (type[0] == '\0') {
 
@@ -424,25 +426,21 @@ std::vector<std::string> scan_file(const char* dir, const char* type) {
     }
 
 	long hFile = _findfirst(buffer.c_str(), &map_file);
-	if (hFile == -1L) {
+	while (hFile != -1) {
 
-		PLog::Write(PLog::WARN, "PFile", "Couldn't scan on \"%s\"", dir);
-		return result;
+		if (map_file.name[0] != '.') {
 
-	} else {
+			bool is_folder = map_file.attrib & _A_SUBDIR;
+			if (is_folder == searching_folder) {
 
-		if (map_file.name[0] != '.') //No hidden files
-			result.push_back(map_file.name);
-	
-	}
+				result.push_back(map_file.name);
 
-	while (1) {
+			}
+
+		}
 
 		if( _findnext( hFile, &map_file ) != 0 )
 			break;
-
-		if (map_file.name[0] != '.')
-			result.push_back(map_file.name);
 
 	}
 

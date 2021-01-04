@@ -19,16 +19,9 @@ const char MARKER_1 = '*',
 
 PLang::PLang() {
 
-	read = READ_SKIP;
-
-	tekstit.clear();
-	titles.clear();
-
 }
 
 PLang::PLang(PFile::Path path) {
-
-	read = READ_SKIP;
 
 	Read_File(path);
 
@@ -48,7 +41,7 @@ bool PLang::Read_File(PFile::Path path){
 
 	u8 marker;
 	int table_index = -1;
-	read = READ_SKIP;
+	int read = READ_SKIP;
 
 	while(io->read(&marker, 1)) {
 
