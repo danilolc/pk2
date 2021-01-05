@@ -175,6 +175,10 @@ int main(int argc, char *argv[]) {
 			show_fps = true;
 			continue;
 		}
+		else if (strcmp(argv[i], "speedrun") == 0) {
+			speedrun_mode = true;
+			continue;
+		}
 		else if (strcmp(argv[i], "mobile") == 0) {
 			PUtils::Force_Mobile();
 		}

@@ -36,9 +36,6 @@ enum {
 
 };
 
-const char FILTER_NEAREST[] = "0";
-const char FILTER_LINEAR[] = "2";
-
 int  set_filter(const char* filter);
 int  set_mode(int mode);
 

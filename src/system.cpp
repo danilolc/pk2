@@ -55,7 +55,7 @@ bool test_level = false;
 bool dev_mode = false;
 
 bool show_fps = false;
-bool speedrun_mode = true;// false;
+bool speedrun_mode = false;
 
 bool PK2_error = false;
 const char* PK2_error_msg = nullptr;
