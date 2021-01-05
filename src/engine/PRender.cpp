@@ -23,7 +23,7 @@ enum {
 
 };
 
-static int current_mode = MODE_LINEAR;
+static int current_shader = SHADER_LINEAR;
 
 static float cover_width, cover_height;
 
@@ -89,17 +89,24 @@ void set_fullscreen(bool set) {
 
 }
 
-int set_mode(int mode) {
+int set_shader(int shader) {
 
-	if (mode == current_mode)
+	if (shader == current_shader)
 		return -1;
 
-	int ret = renderer->set_mode(mode);
+	int ret = renderer->set_shader(shader);
 
 	if (ret == 0)
-		current_mode = mode;
+		current_shader = shader;
 
 	return ret;
+
+}
+
+void set_window_size(int w, int h) {
+
+	SDL_SetWindowSize(window, w, h);
+	adjust_screen();
 
 }
 
@@ -147,7 +154,7 @@ int init(int width, int height, const char* name, const char* icon) {
 	PLog::Write(PLog::DEBUG, "PRender", "Initializing renderer");
 
 	window_name = name;
-	Uint32 window_flags = SDL_WINDOW_SHOWN | /*SDL_WINDOW_OPENGL |*/ SDL_WINDOW_RESIZABLE;
+	Uint32 window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
 	window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
@@ -169,8 +176,8 @@ int init(int width, int height, const char* name, const char* icon) {
 	
 	#endif
 
-	//renderer = new PGl(width, height, window);
-	renderer = new PSdl(width, height, window);
+	renderer = new PGl(width, height, window);
+	//renderer = new PSdl(width, height, window);
 
 	set_vsync(true);
 	adjust_screen();

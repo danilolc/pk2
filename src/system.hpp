@@ -77,3 +77,5 @@ void Move_DataPath(std::string new_path);
 void Prepare_DataPath();
 
 bool FindAsset(PFile::Path* path, const char* default_dir);
+
+int Set_Screen_Mode(int mode);

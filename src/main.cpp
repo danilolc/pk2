@@ -321,6 +321,11 @@ int main(int argc, char *argv[]) {
 	Settings_Open();
 	read_config();
 
+	if (Settings.shader_type == SETTINGS_MODE_CRT) {
+		screen_width = 640;
+		screen_height = 480;
+	}
+
 	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", audio_buffer_size);
 	if (!Piste::is_ready()) {
 

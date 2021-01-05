@@ -75,7 +75,7 @@ void Settings_Init() {
 	Settings.fps = SETTINGS_60FPS;//SETTINGS_VSYNC;
 	Settings.isFullScreen = true;
 	Settings.double_speed = false;
-	Settings.shader_type = SETTINGS_SHADER_LINEAR;
+	Settings.shader_type = SETTINGS_MODE_LINEAR;
 
 	Settings.keyboard.left      = PInput::LEFT;
 	Settings.keyboard.right     = PInput::RIGHT;

@@ -14,7 +14,7 @@ public:
 
     void clear_screen() override;
     void set_screen(PRender::FRECT screen_dst) override;
-    int  set_mode(int mode) override;
+    int  set_shader(int mode) override;
     int  set_vsync(bool set) override;
     void update(void* buffer8, int alpha) override;
 

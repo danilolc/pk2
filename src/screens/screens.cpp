@@ -88,18 +88,16 @@ int Screen_First_Start() {
 	langlist = PFile::Path("language" PE_SEP).scandir(".txt");
 	
 	Search_Episodes();
-
-	MapClass_Set_Screen_Size(screen_width, screen_height);
 	
 	PInput::SetVibration(Settings.vibration);
 
 	if (PInput::ControllerFound())
 		Input = &Settings.joystick;
 
-	int ret = PRender::set_mode(Settings.shader_type);
+	int ret = Set_Screen_Mode(Settings.shader_type);
 	if (ret != 0) {
-		Settings.shader_type = SETTINGS_SHADER_LINEAR;
-		ret = PRender::set_mode(SETTINGS_SHADER_LINEAR);
+		Settings.shader_type = SETTINGS_MODE_LINEAR;
+		ret = Set_Screen_Mode(SETTINGS_MODE_LINEAR);
 		Settings_Save();
 	}
 	

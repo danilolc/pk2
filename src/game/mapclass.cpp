@@ -27,9 +27,6 @@ int aste,
 	ajastin3,
 	avaimet;
 
-int ruudun_leveys_palikoina  = 21,
-	ruudun_korkeus_palikoina = 16;
-
 struct PK2KARTTA{ // Vanha versio 0.1
 	char		versio[8];
 	char		nimi[40];
@@ -48,13 +45,6 @@ void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool
 	ajastin3 = aika3;
 	avaimet  = keys;
 }
-
-void MapClass_Set_Screen_Size(u32 width, u32 height){
-	ruudun_leveys_palikoina  = width/32 + 1;
-	ruudun_korkeus_palikoina = height/32 + 1;
-}
-
-//char MapClass::pk2_hakemisto[256] = "";
 
 MapClass::MapClass(){
 
@@ -1422,10 +1412,13 @@ int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 	int kartta_x = kamera_x/32;
 	int kartta_y = kamera_y/32;
 
-	for (int x = 0; x < ruudun_leveys_palikoina; x++){
+	int tiles_w = screen_width/32 + 1;
+	int tiles_h = screen_height/32 + 1;
+
+	for (int x = 0; x < tiles_w; x++){
 		if (x + kartta_x < 0 || uint(x + kartta_x) > PK2MAP_MAP_WIDTH) continue;
 
-		for (int y = 0; y < ruudun_korkeus_palikoina; y++){
+		for (int y = 0; y < tiles_h; y++){
 			if (y + kartta_y < 0 || uint(y + kartta_y) > PK2MAP_MAP_HEIGHT) continue;
 
 			int i = x + kartta_x + (y + kartta_y) * PK2MAP_MAP_WIDTH;
@@ -1461,6 +1454,9 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 		ajastin2_y = 0,
 		ajastin3_x = 0;
 
+	int tiles_w = screen_width/32 + 1;
+	int tiles_h = screen_height/32 + 1;
+
 	if (ajastin1 > 0){
 		ajastin1_y = 64;
 
@@ -1492,10 +1488,10 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 	}
 
 
-	for (int x = -1; x < ruudun_leveys_palikoina + 1; x++) {
+	for (int x = -1; x < tiles_w + 1; x++) {
 		if (x + kartta_x < 0 || uint(x + kartta_x) > PK2MAP_MAP_WIDTH) continue;
 
-		for (int y = -1; y < ruudun_korkeus_palikoina + 1; y++) {
+		for (int y = -1; y < tiles_h + 1; y++) {
 			if (y + kartta_y < 0 || uint(y + kartta_y) > PK2MAP_MAP_HEIGHT) continue;
 
 			int i = x + kartta_x + (y + kartta_y) * PK2MAP_MAP_WIDTH;

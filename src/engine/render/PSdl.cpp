@@ -29,12 +29,12 @@ void PSdl::set_screen(PRender::FRECT screen_dst) {
 
 }
 
-int PSdl::set_mode(int mode) {
+int PSdl::set_shader(int mode) {
 
-    if (mode == PRender::MODE_NEAREST) {
+    if (mode == PRender::SHADER_NEAREST) {
         if (SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0") == SDL_TRUE)
             return 0;
-    } else if (mode == PRender::MODE_LINEAR) {
+    } else if (mode == PRender::SHADER_LINEAR) {
         if (SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2") == SDL_TRUE)
             return 0;
     }

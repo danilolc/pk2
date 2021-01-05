@@ -27,9 +27,6 @@ static std::vector<PFont*> fontList;
 
 /*static std::vector<Gui*> gui_textures;*/
 
-static int buffer_width;
-static int buffer_height;
-
 static bool ready = false;
 
 // Fade must be part of PK2, not PisteDraw
@@ -38,6 +35,10 @@ static int alpha = 100;
 
 static int x_offset = 0;
 static int y_offset = 0;
+
+static int offset_width = 0;
+static int offset_height = 0;
+
 
 Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
 /*
@@ -309,8 +310,8 @@ int image_clip(int index) {
     SDL_Rect dstrect;
     SDL_Surface* image = imageList[index];
 
-    dstrect.x = (buffer_width - image->w) / 2;
-    dstrect.y = (buffer_height - image->h) / 2;
+    dstrect.x = (frameBuffer8->w - image->w) / 2;
+    dstrect.y = (frameBuffer8->h - image->h) / 2;
     dstrect.w = image->w;
     dstrect.h = image->h;
     
@@ -400,7 +401,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     if (dst_x < 0) x_start -= dst_x;
 
     uint x_end = src_x + src_w;
-    int dx = dst_x + (src_w - buffer_width);
+    int dx = dst_x + (src_w - frameBuffer8->w);
     if (dx > int(x_end)) return -1;
     if (dx > 0) x_end -= dx;
 
@@ -411,7 +412,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     if (dst_y < 0) y_start -= dst_y;
 
     uint y_end = src_y + src_h;
-    int dy = dst_y + (src_h - buffer_height);
+    int dy = dst_y + (src_h - frameBuffer8->h);
     if (dy > int(y_end)) return -1;
     if (dy > 0) y_end -= dy;
 
@@ -725,10 +726,27 @@ int font_writealpha(int font_index, const char* text, int x, int y, int alpha) {
 
 }
 
+void set_buffer_size(int w, int h) {
+
+    if (frameBuffer8->w == w && frameBuffer8->h == h)
+        return;
+    
+    frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
+    SDL_FreeSurface(frameBuffer8);
+    
+    frameBuffer8 = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
+    frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
+    frameBuffer8->format->palette = game_palette;
+    SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
+
+    set_offset(offset_width, offset_height);
+    
+}
+
 void get_buffer_size(int* w, int* h) {
 
-    *w = buffer_width;
-    *h = buffer_height;
+    *w = frameBuffer8->w;
+    *h = frameBuffer8->h;
 
 }
 
@@ -741,9 +759,12 @@ void get_offset(int* x, int* y) {
 
 void set_offset(int width, int height) {
 
-    if (width < buffer_width) {
+    offset_width = width;
+    offset_height = height;
 
-        x_offset = (buffer_width - width) / 2;
+    if (width < frameBuffer8->w) {
+
+        x_offset = (frameBuffer8->w - width) / 2;
 
     } else {
 
@@ -751,9 +772,9 @@ void set_offset(int width, int height) {
 
     }
 
-    if (height < buffer_height) {
+    if (height < frameBuffer8->h) {
 
-        y_offset = (buffer_height - height) / 2;
+        y_offset = (frameBuffer8->h - height) / 2;
 
     } else {
 
@@ -782,9 +803,6 @@ int init(int width, int height) {
 
     SDL_SetClipRect(frameBuffer8, NULL);
     SDL_FillRect(frameBuffer8, NULL, 255);
-
-    buffer_width = width;
-    buffer_height = height;
 
     ready = true;
     return 0;

@@ -721,7 +721,7 @@ void Draw_Menu_Graphics() {
 		if (option != -1) {
 			if (option != Settings.shader_type) {
 
-				int ret = PRender::set_mode(option);
+				int ret = Set_Screen_Mode(option);
 				if (ret == 0) {
 					Settings.shader_type = option;
 					Settings_Save();

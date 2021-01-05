@@ -75,6 +75,7 @@ int   font_create(PFile::Path path);
 int   font_write(int font_index, const char* text, int x, int y);
 int   font_writealpha(int font_index, const char* text, int x, int y, int alpha);
 
+void  set_buffer_size(int w, int h);
 void  get_buffer_size(int* w, int* h);
 void  get_offset(int* x, int* y);
 void  set_offset(int width, int height);

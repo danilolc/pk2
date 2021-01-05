@@ -8,14 +8,15 @@
 #include "engine/PUtils.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PDraw.hpp"
+#include "engine/PRender.hpp"
 #include "settings.hpp"
 
 #define _USE_MATH_DEFINES
 #include <cmath>
 #include <string>
 
-int screen_width  = 640;//800;
-int screen_height = 480;//480;
+int screen_width  = 800;
+int screen_height = 480;
 
 int audio_buffer_size = 1024;
 int drawing_method = DRAW_OPENGL;
@@ -168,4 +169,42 @@ bool FindAsset(PFile::Path* path, const char* default_dir) {
 
 	return true;
 
+}
+
+int Set_Screen_Size(int w, int h) {
+
+	PDraw::set_buffer_size(w, h);
+	PRender::set_window_size(w, h);
+	screen_width = w;
+	screen_height = h;
+
+	return 0;
+
+}
+
+int Set_Screen_Mode(int mode) {
+
+	int err = -1;
+
+	if (mode == SETTINGS_MODE_NEAREST) {
+		err = PRender::set_shader(PRender::SHADER_NEAREST);
+	} else if (mode == SETTINGS_MODE_LINEAR) {
+		err = PRender::set_shader(PRender::SHADER_LINEAR);
+	} else if (mode == SETTINGS_MODE_CRT) {
+		err = PRender::set_shader(PRender::SHADER_CRT);
+	} else if (mode == SETTINGS_MODE_HQX) {
+		err = PRender::set_shader(PRender::SHADER_HQX);
+	}
+
+	if (err != 0)
+		return -1;
+
+	if (mode == SETTINGS_MODE_CRT) {
+		Set_Screen_Size(640, 480);
+	} else {
+		Set_Screen_Size(800, 480);
+	}
+
+	return 0;
+	
 }

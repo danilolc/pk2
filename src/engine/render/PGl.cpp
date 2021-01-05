@@ -40,25 +40,25 @@ void PGl::set_screen(PRender::FRECT screen_dst) {
 
 }
 
-int PGl::set_mode(int mode) {
+int PGl::set_shader(int mode) {
 
-	if (mode == PRender::MODE_CRT && !crt_ok)
+	if (mode == PRender::SHADER_CRT && !crt_ok)
 		return 1;
 
-	if (mode == PRender::MODE_HQX && !hqx_ok)
+	if (mode == PRender::SHADER_HQX && !hqx_ok)
 		return 1;
     
     glBindTexture(GL_TEXTURE_2D, screen_texture);
 
-	if (mode == PRender::MODE_NEAREST || mode == PRender::MODE_HQX) {
+	if (mode == PRender::SHADER_NEAREST || mode == PRender::SHADER_HQX) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	} else if (mode == PRender::MODE_LINEAR || mode == PRender::MODE_CRT) {
+	} else if (mode == PRender::SHADER_LINEAR || mode == PRender::SHADER_CRT) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	}
 
-	if (mode == PRender::MODE_NEAREST || mode == PRender::MODE_LINEAR) {
+	if (mode == PRender::SHADER_NEAREST || mode == PRender::SHADER_LINEAR) {
 
 		screen_vs      = &basic_vs;
 		screen_fs      = &basic_fs;
@@ -69,7 +69,7 @@ int PGl::set_mode(int mode) {
 		uniScreenRes    = &uniBasicRes;
 		uniScreenTime   = &uniBasicTime;
 
-	} else if (mode == PRender::MODE_CRT) {
+	} else if (mode == PRender::SHADER_CRT) {
 
 		screen_vs      = &crt_vs;
 		screen_fs      = &crt_fs;
@@ -80,7 +80,7 @@ int PGl::set_mode(int mode) {
 		uniScreenRes    = &uniCrtRes;
 		uniScreenTime   = &uniCrtTime;
 
-	} else if (mode == PRender::MODE_HQX) {
+	} else if (mode == PRender::SHADER_HQX) {
 
 		screen_vs      = &hqx_vs;
 		screen_fs      = &hqx_fs;
