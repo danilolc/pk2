@@ -58,48 +58,6 @@ static void wait_frame() {
 
 }
 
-static void logic() {
-	
-	SDL_Event event;
-
-	while( SDL_PollEvent(&event) ) {
-		
-		if(event.type == SDL_QUIT)
-			running = false;
-		else if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
-			PRender::adjust_screen();
-		else if(event.type == SDL_TEXTINPUT && PInput::Is_Editing())
-			PInput::InjectText(event.text.text);
-		else if(event.type == SDL_KEYDOWN && PInput::Is_Editing())
-			PInput::InjectKey(event.key.keysym.scancode);
-		
-	}
-
-	
-
-	// Pass PDraw informations do PRender
-	if (draw) {
-		void* buffer8;
-		int alpha;
-		PDraw::get_buffer_data(&buffer8, &alpha);
-		PRender::update(buffer8, alpha);
-	}
-
-	// Clear PDraw buffer
-	PDraw::update();
-
-	if (!PRender::is_vsync() && (desired_fps > 0) && draw)
-		wait_frame();
-
-	PInput::update();
-	PSound::update();
-	
-	if (debug) {
-		fflush(stdout);
-	}
-
-}
-
 static void sdl_show() {
 
 	SDL_version compiled;
@@ -153,26 +111,56 @@ void terminate() {
 void loop(int (*GameLogic)()) {
 	
 	static int frame_counter = 0;
-	static u32 last_time = 0;
-		
-	int error = 0;
+	static u64 last_time = 0;
 
 	running = true;
 
 	while(running) {
 		
-		error = GameLogic();
-		if (error) break;
+		if (GameLogic()) break;
 		
-		logic();
+		SDL_Event event;
+		while( SDL_PollEvent(&event) ) {
+			
+			if(event.type == SDL_QUIT)
+				running = false;
+			else if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
+				PRender::adjust_screen();
+			else if(event.type == SDL_TEXTINPUT && PInput::Is_Editing())
+				PInput::InjectText(event.text.text);
+			else if(event.type == SDL_KEYDOWN && PInput::Is_Editing())
+				PInput::InjectKey(event.key.keysym.scancode);
+			
+		}
+
+		// Pass PDraw informations do PRender
+		if (draw) {
+			void* buffer8;
+			int alpha;
+			PDraw::get_buffer_data(&buffer8, &alpha);
+			PRender::update(buffer8, alpha);
+		}
+
+		// Clear PDraw buffer
+		PDraw::update();
+
+		if (!PRender::is_vsync() && (desired_fps > 0) && draw)
+			wait_frame();
+
+		PInput::update();
+		PSound::update();
+		
+		if (debug) {
+			fflush(stdout);
+		}
 
 		frame_counter++;
 		if (frame_counter >= UPDATE_FPS) {
 
 			frame_counter = 0;
-			u32 elapsed_time = (SDL_GetTicks() - last_time);
+			u64 elapsed_time = (SDL_GetPerformanceCounter() - last_time);
 
-			avrg_fps = 1000.f * UPDATE_FPS / elapsed_time;	
+			avrg_fps = double(SDL_GetPerformanceFrequency() * UPDATE_FPS) / elapsed_time;	
 
 			last_time += elapsed_time;
 		

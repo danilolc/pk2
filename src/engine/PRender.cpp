@@ -154,7 +154,7 @@ int init(int width, int height, const char* name, const char* icon) {
 	PLog::Write(PLog::DEBUG, "PRender", "Initializing renderer");
 
 	window_name = name;
-	Uint32 window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+	Uint32 window_flags = SDL_WINDOW_SHOWN | /*SDL_WINDOW_OPENGL | */SDL_WINDOW_RESIZABLE;
 
 	window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
@@ -176,8 +176,8 @@ int init(int width, int height, const char* name, const char* icon) {
 	
 	#endif
 
-	renderer = new PGl(width, height, window);
-	//renderer = new PSdl(width, height, window);
+	//renderer = new PGl(width, height, window);
+	renderer = new PSdl(width, height, window);
 
 	set_vsync(true);
 	adjust_screen();
