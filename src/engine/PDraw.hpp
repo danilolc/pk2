@@ -50,7 +50,7 @@ int   image_cutclip(int index, int dstx, int dsty, int srcx, int srcy, int oikea
 int   image_cutclip(int index, RECT srcrect, RECT dstrect);
 int   image_cutcliptransparent(int index, RECT srcrect, RECT dstrect, int alpha, u8 colorsum);
 int   image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src_h,
-    int dst_x, int dst_y, int alpha, u8 colorsum);
+        int dst_x, int dst_y, int alpha, u8 colorsum);
 void  image_getsize(int index, int& w, int& h);
 int   image_fliphori(int index);
 int   image_snapshot(int index);

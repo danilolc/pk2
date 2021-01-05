@@ -483,7 +483,7 @@ int image_fliphori(int index) {
 }
 int image_snapshot(int index) {
 
-    //SDL_FillRect(imageList[index], NULL, 0);
+    //image_new(w, h)
 
     return SDL_BlitSurface(frameBuffer8, NULL, imageList[index], NULL);
 

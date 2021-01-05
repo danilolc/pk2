@@ -155,7 +155,7 @@ void Write(u8 level, const char* origin, const char* format, ...) {
 
 void Exit() {
 
-    Write(DEBUG, "PLog", "PisteLog exited");
+    Write(DEBUG, "PLog", "Terminated");
     
     if (log_file != NULL)
         log_file->close();

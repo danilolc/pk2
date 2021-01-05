@@ -119,7 +119,7 @@ static void quit() {
 		delete tekstit;
 
 	Piste::terminate();
-	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 terminated");
+	PLog::Write(PLog::DEBUG, "PK2", "Terminated");
 	PLog::Exit();
 
 }
