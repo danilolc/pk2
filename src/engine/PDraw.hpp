@@ -83,7 +83,7 @@ void  clear_fonts();
 
 void  get_buffer_data(void** _buffer8, int* _alpha);
 void  update();
-int   init(int width, int height);
+int   init(int width, int height, bool double_buff);
 int   terminate();
 
 }

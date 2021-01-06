@@ -196,7 +196,7 @@ int Set_Screen_Mode(int mode) {
 		err = PRender::set_shader(PRender::SHADER_HQX);
 	}
 
-	if (err != 0)
+	if (err == 1)
 		return -1;
 
 	if (mode == SETTINGS_MODE_CRT) {

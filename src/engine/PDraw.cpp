@@ -15,8 +15,11 @@
 namespace PDraw {
 
 // 8-bit indexed surface, it's the game frame buffer
-static SDL_Surface* frameBuffer8 = NULL;
+static SDL_Surface* frameBuffer = NULL;
+static SDL_Surface* frameBuffer2 = NULL;
 static SDL_Palette* game_palette = NULL;
+
+static bool double_buffer = false;
 
 // All images have its original palette on
 // 'userdata' and game_palette on 'palette'.
@@ -310,12 +313,12 @@ int image_clip(int index) {
     SDL_Rect dstrect;
     SDL_Surface* image = imageList[index];
 
-    dstrect.x = (frameBuffer8->w - image->w) / 2;
-    dstrect.y = (frameBuffer8->h - image->h) / 2;
+    dstrect.x = (frameBuffer->w - image->w) / 2;
+    dstrect.y = (frameBuffer->h - image->h) / 2;
     dstrect.w = image->w;
     dstrect.h = image->h;
     
-    SDL_BlitSurface(image, NULL, frameBuffer8, &dstrect);
+    SDL_BlitSurface(image, NULL, frameBuffer, &dstrect);
 
     return 0;
 }
@@ -329,7 +332,7 @@ int image_clip(int index, int x, int y) {
     dstrect.w = imageList[index]->w;
     dstrect.h = imageList[index]->h;
 
-    SDL_BlitSurface(imageList[index], NULL, frameBuffer8, &dstrect);
+    SDL_BlitSurface(imageList[index], NULL, frameBuffer, &dstrect);
 
     return 0;
 
@@ -365,7 +368,7 @@ int image_cutclip(int index, RECT srcrect, RECT dstrect) {
 
     dstrect.x += x_offset;
     dstrect.y += y_offset;
-    SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer8, (SDL_Rect*)&dstrect);
+    SDL_BlitSurface(imageList[index], (SDL_Rect*)&srcrect, frameBuffer, (SDL_Rect*)&dstrect);
 
     return 0;
 
@@ -401,7 +404,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     if (dst_x < 0) x_start -= dst_x;
 
     uint x_end = src_x + src_w;
-    int dx = dst_x + (src_w - frameBuffer8->w);
+    int dx = dst_x + (src_w - frameBuffer->w);
     if (dx > int(x_end)) return -1;
     if (dx > 0) x_end -= dx;
 
@@ -412,7 +415,7 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     if (dst_y < 0) y_start -= dst_y;
 
     uint y_end = src_y + src_h;
-    int dy = dst_y + (src_h - frameBuffer8->h);
+    int dy = dst_y + (src_h - frameBuffer->h);
     if (dy > int(y_end)) return -1;
     if (dy > 0) y_end -= dy;
 
@@ -486,7 +489,7 @@ int image_snapshot(int index) {
 
     //image_new(w, h)
 
-    return SDL_BlitSurface(frameBuffer8, NULL, imageList[index], NULL);
+    return SDL_BlitSurface(frameBuffer, NULL, imageList[index], NULL);
 
 }
 
@@ -527,42 +530,42 @@ int image_fill(int index, int posx, int posy, int oikea, int ala, u8 color) {
 
 int screen_fill(u8 color) {
 
-    return SDL_FillRect(frameBuffer8, NULL, color);
+    return SDL_FillRect(frameBuffer, NULL, color);
 
 }
 
 int screen_fill(int posx, int posy, int oikea, int ala, u8 color) {
 
     SDL_Rect r = {posx + x_offset, posy + y_offset, oikea-posx, ala-posy};
-    return SDL_FillRect(frameBuffer8, &r, color);
+    return SDL_FillRect(frameBuffer, &r, color);
 
 }
 
 void set_mask(int x, int y, int w, int h) {
 
     SDL_Rect r = {x + x_offset, y + y_offset, w, h};
-    SDL_SetClipRect(frameBuffer8, &r);
+    SDL_SetClipRect(frameBuffer, &r);
 
 }
 
 void reset_mask() {
 
-    SDL_SetClipRect(frameBuffer8, NULL);
+    SDL_SetClipRect(frameBuffer, NULL);
 
 }
 
 int drawscreen_start(u8* &pixels, u32 &pitch) {
 
-    pixels = (u8*)frameBuffer8->pixels;
-    pitch = frameBuffer8->pitch;
+    pixels = (u8*)frameBuffer->pixels;
+    pitch = frameBuffer->pitch;
 
-    return SDL_LockSurface(frameBuffer8);
+    return SDL_LockSurface(frameBuffer);
 
 }
 
 int drawscreen_end() {
 
-    SDL_UnlockSurface(frameBuffer8);
+    SDL_UnlockSurface(frameBuffer);
     return 0;
 
 }
@@ -728,16 +731,16 @@ int font_writealpha(int font_index, const char* text, int x, int y, int alpha) {
 
 void set_buffer_size(int w, int h) {
 
-    if (frameBuffer8->w == w && frameBuffer8->h == h)
+    if (frameBuffer->w == w && frameBuffer->h == h)
         return;
     
-    frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
-    SDL_FreeSurface(frameBuffer8);
+    frameBuffer->format->palette = (SDL_Palette *)frameBuffer->userdata;
+    SDL_FreeSurface(frameBuffer);
     
-    frameBuffer8 = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
-    frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
-    frameBuffer8->format->palette = game_palette;
-    SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
+    frameBuffer = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
+    frameBuffer->userdata = (void *)frameBuffer->format->palette;
+    frameBuffer->format->palette = game_palette;
+    SDL_SetColorKey(frameBuffer, SDL_TRUE, 255);
 
     set_offset(offset_width, offset_height);
     
@@ -745,8 +748,8 @@ void set_buffer_size(int w, int h) {
 
 void get_buffer_size(int* w, int* h) {
 
-    *w = frameBuffer8->w;
-    *h = frameBuffer8->h;
+    *w = frameBuffer->w;
+    *h = frameBuffer->h;
 
 }
 
@@ -762,9 +765,9 @@ void set_offset(int width, int height) {
     offset_width = width;
     offset_height = height;
 
-    if (width < frameBuffer8->w) {
+    if (width < frameBuffer->w) {
 
-        x_offset = (frameBuffer8->w - width) / 2;
+        x_offset = (frameBuffer->w - width) / 2;
 
     } else {
 
@@ -772,9 +775,9 @@ void set_offset(int width, int height) {
 
     }
 
-    if (height < frameBuffer8->h) {
+    if (height < frameBuffer->h) {
 
-        y_offset = (frameBuffer8->h - height) / 2;
+        y_offset = (frameBuffer->h - height) / 2;
 
     } else {
 
@@ -784,9 +787,11 @@ void set_offset(int width, int height) {
 
 }
 
-int init(int width, int height) {
+int init(int width, int height, bool double_buff) {
 
     if (ready) return -1;
+
+    double_buffer = double_buff;
 
     PLog::Write(PLog::DEBUG, "PDraw", "Initializing graphics");
     PLog::Write(PLog::DEBUG, "PDraw", "Video driver: %s", SDL_GetCurrentVideoDriver());
@@ -796,13 +801,25 @@ int init(int width, int height) {
     if (game_palette == NULL)
         game_palette = SDL_AllocPalette(256);
 
-    frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
-    frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
-    frameBuffer8->format->palette = game_palette;
-    SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
+    frameBuffer = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+    frameBuffer->userdata = (void *)frameBuffer->format->palette;
+    frameBuffer->format->palette = game_palette;
+    SDL_SetColorKey(frameBuffer, SDL_TRUE, 255);
 
-    SDL_SetClipRect(frameBuffer8, NULL);
-    SDL_FillRect(frameBuffer8, NULL, 255);
+    SDL_SetClipRect(frameBuffer, NULL);
+    SDL_FillRect(frameBuffer, NULL, 255);
+
+    if (double_buffer) {
+
+        frameBuffer2 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
+        frameBuffer2->userdata = (void *)frameBuffer2->format->palette;
+        frameBuffer2->format->palette = game_palette;
+        SDL_SetColorKey(frameBuffer2, SDL_TRUE, 255);
+
+        SDL_SetClipRect(frameBuffer2, NULL);
+        SDL_FillRect(frameBuffer2, NULL, 255);
+
+    }
 
     ready = true;
     return 0;
@@ -835,8 +852,15 @@ int terminate(){
 
     SDL_FreePalette(game_palette);
 
-    frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
-    SDL_FreeSurface(frameBuffer8);
+    frameBuffer->format->palette = (SDL_Palette *)frameBuffer->userdata;
+    SDL_FreeSurface(frameBuffer);
+
+    if (double_buffer) {
+
+        frameBuffer2->format->palette = (SDL_Palette *)frameBuffer2->userdata;
+        SDL_FreeSurface(frameBuffer2);
+    
+    }
 
     IMG_Quit();
 
@@ -847,8 +871,16 @@ int terminate(){
 
 void get_buffer_data(void** _buffer8, int* _alpha) {
 
-    *_buffer8 = frameBuffer8;
+    *_buffer8 = frameBuffer;
     *_alpha = alpha;
+
+    if (double_buffer) {
+
+        SDL_Surface* aux = frameBuffer;
+        frameBuffer = frameBuffer2;
+        frameBuffer2  = aux;
+
+    }
 
 }
 
@@ -862,7 +894,7 @@ void update() {
     
     }
 
-    SDL_FillRect(frameBuffer8, NULL, 0);
+    //SDL_FillRect(frameBuffer, NULL, 0);
 
 }
 

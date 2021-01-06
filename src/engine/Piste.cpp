@@ -86,7 +86,7 @@ void init(int width, int height, const char* name, const char* icon, int audio_b
 
 	sdl_show();
 	
-	PDraw::init(width, height);
+	PDraw::init(width, height, true);
 	PRender::init(width, height, name, icon);
 	PInput::init();
 	PSound::init(audio_buffer_size);
