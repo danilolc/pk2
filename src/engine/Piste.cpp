@@ -131,6 +131,8 @@ static int game_thread_func(void* func) {
 			SDL_CondWait(process_game, mutex);
 		SDL_UnlockMutex(mutex);
 
+		u64 t1 = SDL_GetPerformanceCounter();
+
 		if (!running) break;
 
 		int ret = GameLogic();
@@ -139,6 +141,8 @@ static int game_thread_func(void* func) {
 
 		if (ret) running = false;
 		game_process_done = true;
+
+		PLog::Write(PLog::INFO, "LOG", "Game time = %lu", SDL_GetPerformanceCounter() - t1);
 		
 		SDL_CondSignal(end_game_process);
 		SDL_UnlockMutex(mutex);
@@ -172,6 +176,8 @@ void loop(int (*GameLogic)()) {
 		SDL_CondSignal(process_game);
 		SDL_UnlockMutex(mutex);
 		
+		u64 t1 = SDL_GetPerformanceCounter();
+
 		if (will_draw) {
 			//PLog::Write(PLog::INFO, "LOG", "Render on %p", buffer8);
 			PRender::update(buffer8, alpha);
@@ -181,6 +187,7 @@ void loop(int (*GameLogic)()) {
 
 		//TODO wait game thread
 		SDL_LockMutex(mutex);
+		PLog::Write(PLog::INFO, "LOG", "Render ti = %lu", SDL_GetPerformanceCounter() - t1);
 		while (!game_process_done) {
 
 			SDL_CondWait(end_game_process, mutex);
