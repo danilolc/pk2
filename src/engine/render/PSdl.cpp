@@ -68,23 +68,41 @@ int PSdl::set_vsync(bool set) {
 
 void PSdl::update(void* _buffer8, int alpha) {
 
-    SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
     
-    SDL_Texture* texture;
-    u8 alpha2 = (u8)(alpha*255/100);
+    SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
+    float alpha2 = float(alpha) / 100;
 
-    texture = SDL_CreateTextureFromSurface(renderer, buffer8);
-    SDL_SetTextureColorMod(texture,alpha2,alpha2,alpha2);
+    for (int i = 0; i < 256; i++) {
+        palette->colors[i].r = buffer8->format->palette->colors[i].r * alpha / 100;
+        palette->colors[i].g = buffer8->format->palette->colors[i].g * alpha / 100;
+        palette->colors[i].b = buffer8->format->palette->colors[i].b * alpha / 100;
+    }
+    
+    SDL_LockSurface(buffer8);
+    SDL_Palette* tmp = buffer8->format->palette;
+    buffer8->format->palette = palette;
+    SDL_UnlockSurface(buffer8);
+    
+    SDL_Surface* s = SDL_ConvertSurface(buffer8, format, 0);
 
-    SDL_RenderClear(renderer);
-
+    SDL_LockSurface(buffer8);
+    buffer8->format->palette = tmp;
+    SDL_UnlockSurface(buffer8);
+    
+    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, s->w, s->h);
+    SDL_LockSurface(s);
+    SDL_UpdateTexture(texture, NULL, s->pixels, s->pitch);
+    SDL_UnlockSurface(s);
+    
+    //SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, &screen_dest);
-
+    
     //draw_gui();
 
     SDL_RenderPresent(renderer);
-
     SDL_DestroyTexture(texture);
+    SDL_FreeSurface(s);
+
 
 }
 
@@ -99,8 +117,12 @@ PSdl::PSdl(int width, int height, void* window) {
 
     }
 
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+    //texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STATIC, width, height);
+    //surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA8888);
+    format  = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+    palette = SDL_AllocPalette(256);
 
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
     SDL_RenderClear(renderer);
 
 }

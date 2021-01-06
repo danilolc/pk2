@@ -25,6 +25,10 @@ private:
 
     SDL_Window* curr_window;
     SDL_Renderer* renderer;
+    //SDL_Texture* texture;
+    //SDL_Surface* surface;
+    SDL_PixelFormat *format;
+    SDL_Palette* palette;
 
     SDL_Rect screen_dest;
 
