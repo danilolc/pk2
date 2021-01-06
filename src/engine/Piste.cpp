@@ -24,6 +24,7 @@ static float avrg_fps = 0;
 static bool debug = false;
 static bool draw = true;
 
+static bool multi_thread = false;
 static SDL_Thread* game_thread = NULL;
 static SDL_mutex* mutex = NULL;
 static SDL_cond* process_game = NULL;
@@ -90,13 +91,15 @@ void init(int width, int height, const char* name, const char* icon, int audio_b
 		
 	}
 
-	mutex = SDL_CreateMutex();
-	process_game = SDL_CreateCond();
-	end_game_process = SDL_CreateCond();
+	if (multi_thread) {
+		mutex = SDL_CreateMutex();
+		process_game = SDL_CreateCond();
+		end_game_process = SDL_CreateCond();
+	}
 
 	sdl_show();
 	
-	PDraw::init(width, height, true);
+	PDraw::init(width, height, multi_thread);
 	PRender::init(width, height, name, icon);
 	PInput::init();
 	PSound::init(audio_buffer_size);
@@ -127,13 +130,13 @@ static int game_thread_func(void* func) {
 		//PLog::Write(PLog::INFO, "LOG", "Waiting new frame");
 
 		SDL_LockMutex(mutex);
-		while(game_process_done)
+		while(game_process_done) {
+			if (!running) return 0;
 			SDL_CondWait(process_game, mutex);
+		}
 		SDL_UnlockMutex(mutex);
 
-		u64 t1 = SDL_GetPerformanceCounter();
-
-		if (!running) break;
+		//u64 t1 = SDL_GetPerformanceCounter();
 
 		int ret = GameLogic();
 		
@@ -142,12 +145,14 @@ static int game_thread_func(void* func) {
 		if (ret) running = false;
 		game_process_done = true;
 
-		PLog::Write(PLog::INFO, "LOG", "Game time = %lu", SDL_GetPerformanceCounter() - t1);
+		//PLog::Write(PLog::INFO, "LOG", "Game time = %lu", SDL_GetPerformanceCounter() - t1);
 		
 		SDL_CondSignal(end_game_process);
 		SDL_UnlockMutex(mutex);
 
 	}
+
+	return 0;
 
 }
 
@@ -169,31 +174,28 @@ void loop(int (*GameLogic)()) {
 
 		if (will_draw)
 			PDraw::get_buffer_data(&buffer8, &alpha);
-		
 
-		SDL_LockMutex(mutex);
-		game_process_done = false;
-		SDL_CondSignal(process_game);
-		SDL_UnlockMutex(mutex);
-		
-		u64 t1 = SDL_GetPerformanceCounter();
+		if (multi_thread) {
+			SDL_LockMutex(mutex);
+			game_process_done = false;
+			SDL_CondSignal(process_game);
+			SDL_UnlockMutex(mutex);
+		} else {
 
-		if (will_draw) {
-			//PLog::Write(PLog::INFO, "LOG", "Render on %p", buffer8);
+			int ret = GameLogic();
+			if (ret) running = false;
+
+		}
+
+		if (will_draw)
 			PRender::update(buffer8, alpha);
-
-		}
 		
-
-		//TODO wait game thread
-		SDL_LockMutex(mutex);
-		PLog::Write(PLog::INFO, "LOG", "Render ti = %lu", SDL_GetPerformanceCounter() - t1);
-		while (!game_process_done) {
-
-			SDL_CondWait(end_game_process, mutex);
-
+		if (multi_thread) {
+			SDL_LockMutex(mutex);
+			while (!game_process_done)
+				SDL_CondWait(end_game_process, mutex);
+			SDL_UnlockMutex(mutex);
 		}
-		SDL_UnlockMutex(mutex);
 
 		// Clear PDraw buffer
 		PDraw::update();

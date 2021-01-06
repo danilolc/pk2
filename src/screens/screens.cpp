@@ -153,6 +153,8 @@ int Screen_Change() {
 //Main Loop
 int Screen_Loop() {
 
+	PDraw::screen_fill(0);
+
 	if (next_screen != current_screen) Screen_Change();
 
 	if (PK2_error) return 1;
