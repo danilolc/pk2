@@ -4,6 +4,8 @@
 //#########################
 #include "engine/PLog.hpp"
 
+#include <SDL_mutex.h>
+
 #include <ctime>
 #include <cstdio>
 #include <cstring>
@@ -28,6 +30,8 @@
 #endif
 
 namespace PLog {
+
+static SDL_mutex* mutex;
 
 static PFile::RW* log_file = NULL;
 static u8 log_level = 0;
@@ -79,6 +83,8 @@ void Write(u8 level, const char* origin, const char* format, ...) {
 
     if (!(log_level & level))
         return;
+
+    SDL_LockMutex(mutex); // one at a time...
 
     /*time_t rawtime;
     time (&rawtime);
@@ -150,6 +156,8 @@ void Write(u8 level, const char* origin, const char* format, ...) {
     }
     
     va_end(args);
+
+    SDL_UnlockMutex(mutex);
 
 }
 

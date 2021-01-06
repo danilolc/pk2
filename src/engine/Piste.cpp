@@ -24,6 +24,12 @@ static float avrg_fps = 0;
 static bool debug = false;
 static bool draw = true;
 
+static SDL_Thread* game_thread = NULL;
+static SDL_mutex* mutex = NULL;
+static SDL_cond* process_game = NULL;
+static SDL_cond* end_game_process = NULL;
+static bool game_process_done = true;
+
 static void wait_frame() {
 
 	static u64 last_time = SDL_GetPerformanceCounter();
@@ -84,6 +90,10 @@ void init(int width, int height, const char* name, const char* icon, int audio_b
 		
 	}
 
+	mutex = SDL_CreateMutex();
+	process_game = SDL_CreateCond();
+	end_game_process = SDL_CreateCond();
+
 	sdl_show();
 	
 	PDraw::init(width, height, true);
@@ -108,17 +118,81 @@ void terminate() {
 
 }
 
+static int game_thread_func(void* func) {
+
+	int (*GameLogic)() = (int (*)())func;
+
+	while(1) {
+
+		//PLog::Write(PLog::INFO, "LOG", "Waiting new frame");
+
+		SDL_LockMutex(mutex);
+		while(game_process_done)
+			SDL_CondWait(process_game, mutex);
+		SDL_UnlockMutex(mutex);
+
+		if (!running) break;
+
+		int ret = GameLogic();
+		
+		SDL_LockMutex(mutex);
+
+		if (ret) running = false;
+		game_process_done = true;
+		
+		SDL_CondSignal(end_game_process);
+		SDL_UnlockMutex(mutex);
+
+	}
+
+}
+
 void loop(int (*GameLogic)()) {
 	
 	static int frame_counter = 0;
 	static u64 last_time = 0;
 
+	game_thread = SDL_CreateThread(game_thread_func, "Game Thread", (void*)GameLogic);
 	running = true;
 
 	while(running) {
+
+		//PLog::Write(PLog::INFO, "LOG", "New frame");
+
+		const bool will_draw = draw;
+		void* buffer8;
+		int alpha;
+
+		if (will_draw)
+			PDraw::get_buffer_data(&buffer8, &alpha);
 		
-		if (GameLogic()) break;
+
+		SDL_LockMutex(mutex);
+		game_process_done = false;
+		SDL_CondSignal(process_game);
+		SDL_UnlockMutex(mutex);
 		
+		if (will_draw) {
+			//PLog::Write(PLog::INFO, "LOG", "Render on %p", buffer8);
+			PRender::update(buffer8, alpha);
+
+		}
+		
+
+		//TODO wait game thread
+		SDL_LockMutex(mutex);
+		while (!game_process_done) {
+
+			SDL_CondWait(end_game_process, mutex);
+
+		}
+		SDL_UnlockMutex(mutex);
+
+		// Clear PDraw buffer
+		PDraw::update();
+		PInput::update();
+		PSound::update();
+
 		SDL_Event event;
 		while( SDL_PollEvent(&event) ) {
 			
@@ -133,23 +207,9 @@ void loop(int (*GameLogic)()) {
 			
 		}
 
-		// Pass PDraw informations do PRender
-		if (draw) {
-			void* buffer8;
-			int alpha;
-			PDraw::get_buffer_data(&buffer8, &alpha);
-			PRender::update(buffer8, alpha);
-		}
-
-		// Clear PDraw buffer
-		PDraw::update();
-
 		if (!PRender::is_vsync() && (desired_fps > 0) && draw)
 			wait_frame();
 
-		PInput::update();
-		PSound::update();
-		
 		if (debug) {
 			fflush(stdout);
 		}
