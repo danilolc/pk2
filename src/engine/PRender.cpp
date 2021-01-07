@@ -92,7 +92,7 @@ void set_fullscreen(bool set) {
 int set_shader(int shader) {
 
 	if (shader == current_shader)
-		return -1;
+		return 2;
 
 	int ret = renderer->set_shader(shader);
 
