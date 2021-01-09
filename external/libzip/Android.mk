@@ -116,7 +116,7 @@ SRC_NAMES :=  \
   zip_unchange_archive.c \
   zip_unchange_data.c \
   zip_utf-8.c \
-#${CMAKE_BINARY_DIR}/zip_err_str.c
+  zip_err_str.c #?
 
 LOCAL_SRC_FILES := $(addprefix "lib/", SRC_NAMES)
 
