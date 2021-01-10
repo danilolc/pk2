@@ -2,6 +2,7 @@
 #pragma once
 
 #include <GL/glcorearb.h>
+//#include <GLES2/gl2.h>
 
 namespace PGlFuncs {
 

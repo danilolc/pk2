@@ -685,9 +685,9 @@ void Draw_Menu_Graphics() {
 		}
 		my += 40;
 
-		//#endif //TODO - Fix touch position when screen fit
-
 		#endif
+
+		//TODO - Fix touch position when screen fit
 
 		mx = 100;
 		PDraw::font_write(fontti1, "vsync", mx, my);

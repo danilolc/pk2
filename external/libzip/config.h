@@ -54,7 +54,7 @@
 /* #undef HAVE_SYS_DIR_H */
 /* #undef HAVE_SYS_NDIR_H */
 /* #undef WORDS_BIGENDIAN */
-#define HAVE_SHARED
+/* #define HAVE_SHARED */
 /* END DEFINES */
 #define PACKAGE "libzip"
 #define VERSION "1.7.3"

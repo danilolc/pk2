@@ -59,7 +59,7 @@ static int pad_id = 0;
 static bool pad_grab = false;
 
 void Game_GUI(bool set){
-
+return;
 	gui_padbg->active = set;
 	gui_padbt->active = set;
 
@@ -75,7 +75,7 @@ void Game_GUI(bool set){
 }
 
 void GUI_Change(int ui_mode) {
-
+return;
 	UI_mode = ui_mode;
 
 	switch(ui_mode){
@@ -96,7 +96,7 @@ void GUI_Change(int ui_mode) {
 }
 
 void GUI_Load() {
-
+return;
 	int w = 230 * 0.8;
 	int h = 220 * 0.8;
 
@@ -139,7 +139,7 @@ void GUI_Load() {
 }
 
 static bool read_gui(PDraw::Gui* gui) {
-
+return false;
 	if (!gui)
 		return false; //error?
 
@@ -164,7 +164,7 @@ static bool read_gui(PDraw::Gui* gui) {
 
 // Hold pad on digital pad mode
 static float hold_pad(float pos_x, int* button) {
-
+return 0;
 	//pos_x varies from 0 to 1
 	//x varies from 0 to 3.2
 	float x = 3.2 * pos_x;
@@ -209,7 +209,7 @@ static float hold_pad(float pos_x, int* button) {
 
 
 static int get_pad() {
-
+return 0;
 	int button = 2;
 
 	if (!pad_grab) {
@@ -291,7 +291,7 @@ static int get_pad() {
 }
 
 void GUI_Update() {
-
+return;
 	if (UI_mode == UI_GAME_BUTTONS) {
 
 		gui_doodle->active = Player_Sprite->ammus2 != -1;
@@ -318,7 +318,7 @@ void GUI_Update() {
 }
 
 void GUI_Exit() {
-
+return;
 	PDraw::remove_gui(gui_touch);
 	PDraw::remove_gui(gui_tab);
 

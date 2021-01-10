@@ -4,7 +4,6 @@
 
 #include "engine/PLog.hpp"
 
-#include <GL/glcorearb.h>
 #include <SDL.h>
 
 #include <cstdio>

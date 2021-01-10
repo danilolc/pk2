@@ -8,7 +8,10 @@
 #include "engine/PLog.hpp"
 #include "engine/types.hpp"
 
+#ifndef __ANDROID__
 #include "engine/render/PGl.hpp"
+#endif
+
 #include "engine/render/PSdl.hpp"
 
 #include <SDL.h>
@@ -70,6 +73,11 @@ void adjust_screen() {
 }
 
 void set_fullscreen(bool set) {
+
+	#ifdef __ANDROID__
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		return;
+	#endif
 
 	renderer->clear_screen();
 
@@ -154,7 +162,26 @@ int init(int width, int height, const char* name, const char* icon) {
 	PLog::Write(PLog::DEBUG, "PRender", "Initializing renderer");
 
 	window_name = name;
-	Uint32 window_flags = SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+	Uint32 window_flags = SDL_WINDOW_SHOWN;
+
+	//window_flags |= SDL_WINDOW_OPENGL;
+	//window_flags |= SDL_WINDOW_RESIZABLE;
+
+    #ifdef __ANDROID__
+
+    window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+
+	SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+
+    window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
+	if (!window) {
+
+		PLog::Write(PLog::FATAL, "PRender", "Couldn't create window!");
+		return -2;
+
+	}
+
+    #else
 
 	window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
@@ -163,8 +190,6 @@ int init(int width, int height, const char* name, const char* icon) {
 		return -2;
 
 	}
-
-	#ifndef __ANDROID__
 
 	SDL_Surface* window_icon = SDL_LoadBMP(icon);
 	if (window_icon) {
@@ -176,8 +201,8 @@ int init(int width, int height, const char* name, const char* icon) {
 	
 	#endif
 
-	renderer = new PGl(width, height, window);
-	//renderer = new PSdl(width, height, window);
+	//renderer = new PGl(width, height, window);
+	renderer = new PSdl(width, height, window);
 
 	set_vsync(true);
 	adjust_screen();

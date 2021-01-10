@@ -116,15 +116,19 @@ SRC_NAMES :=  \
   zip_unchange_archive.c \
   zip_unchange_data.c \
   zip_utf-8.c \
-  zip_err_str.c #?
+  zip_mkstempm.c \
+  zip_source_file_stdio_named.c \
+  zip_random_unix.c
 
-LOCAL_SRC_FILES := $(addprefix "lib/", SRC_NAMES)
+LOCAL_SRC_FILES := $(addprefix lib/, $(SRC_NAMES))
+LOCAL_SRC_FILES += zip_err_str.c
 
 LOCAL_CFLAGS := 
-LOCAL_LDLIBS :=
+LOCAL_LDLIBS := -lz
 LOCAL_STATIC_LIBRARIES :=
 LOCAL_SHARED_LIBRARIES :=
 
-LOCAL_EXPORT_C_INCLUDES += $(LOCAL_PATH)
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/lib/ $(LOCAL_PATH)
+LOCAL_EXPORT_C_INCLUDES += $(LOCAL_PATH)/lib/ $(LOCAL_PATH)
 
 include $(BUILD_SHARED_LIBRARY)

@@ -41,6 +41,7 @@ static int offset_height = 0;
 
 
 Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
+return nullptr;
 /*
     SDL_Texture* tex = NULL;
 
@@ -81,6 +82,7 @@ Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
 }
 
 int remove_gui(Gui* gui) {
+return 0;
 /*
     if (!gui)
         return -1;
@@ -99,6 +101,7 @@ int remove_gui(Gui* gui) {
 }
 
 int draw_gui() {
+return 0;
 /*
 	int w, h;
 	SDL_GetRendererOutputSize(renderer, &w, &h);
