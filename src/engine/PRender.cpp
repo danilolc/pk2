@@ -168,7 +168,7 @@ int init(int width, int height, const char* name, const char* icon) {
 	window_name = name;
 	Uint32 window_flags = SDL_WINDOW_SHOWN;
 
-	//window_flags |= SDL_WINDOW_OPENGL;
+	window_flags |= SDL_WINDOW_OPENGL;
 	//window_flags |= SDL_WINDOW_RESIZABLE;
 
     #ifdef __ANDROID__
@@ -205,8 +205,8 @@ int init(int width, int height, const char* name, const char* icon) {
 	
 	#endif
 
-	//renderer = new PGl(width, height, window);
-	renderer = new PSdlSoft(width, height, window);
+	renderer = new PGl(width, height, window);
+	//renderer = new PSdlSoft(width, height, window);
 
 	adjust_screen();
 

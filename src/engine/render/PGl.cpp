@@ -374,6 +374,18 @@ void PGl::update(void* _buffer8) {
 		shader_time -= time_cycle;
 
 	SDL_LockSurface(buffer8);
+
+	static int last_palette_version = buffer8->format->palette->version;
+	bool update_palette = last_palette_version != buffer8->format->palette->version;
+	last_palette_version = buffer8->format->palette->version;
+
+	if (update_palette) {
+		for (int i = 0; i < 256; i++) {
+			indexed_palette[3*i] = float(buffer8->format->palette->colors[i].r) / 256;
+			indexed_palette[3*i + 1] = float(buffer8->format->palette->colors[i].g) / 256;
+			indexed_palette[3*i + 2] = float(buffer8->format->palette->colors[i].b) / 256;
+		}
+	}
 	
 	glViewport(0, 0, buffer8->w, buffer8->h);
 	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);
@@ -381,7 +393,8 @@ void PGl::update(void* _buffer8) {
 	glBindTexture(GL_TEXTURE_2D, indexed_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8UI, buffer8->w, buffer8->h, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, buffer8->pixels);
 	glUniform1i(uniIndexTex, 0); //
-	glUniform3fv(uniIndexPalette, 256, indexed_palette); //
+	if (update_palette)
+		glUniform3fv(uniIndexPalette, 256, indexed_palette); //
 	glUniform1f(uniIndexTime, shader_time);
 	glUniform2f(uniIndexRes, buffer8->w, buffer8->h); //
 	glDrawArrays(GL_TRIANGLES, 0, 6);
