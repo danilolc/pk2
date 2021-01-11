@@ -202,16 +202,15 @@ void set_debug(bool set) {
 
 }
 
-void set_fps(int fps) {
+int set_fps(int fps) {
 
 	desired_fps = fps;
 
 	// Vsync true
 	if (fps == -1)
-		PRender::set_vsync(true);
-	else
-		PRender::set_vsync(false);
+		return PRender::set_vsync(true);
 	
+	return PRender::set_vsync(false);
 
 }
 

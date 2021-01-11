@@ -742,15 +742,24 @@ void Draw_Menu_Graphics() {
 		}
 
 		if (Settings.fps != oldfps) {
+			int ret = -1;
 			save_settings = true;
 			if (Settings.fps == SETTINGS_VSYNC)
-				Piste::set_fps(-1);
+				ret = Piste::set_fps(-1);
 			else if (Settings.fps == SETTINGS_60FPS)
-				Piste::set_fps(60);
+				ret = Piste::set_fps(60);
 			else if (Settings.fps == SETTINGS_85FPS)
-				Piste::set_fps(85);
+				ret = Piste::set_fps(85);
 			else if (Settings.fps == SETTINGS_120FPS)
-				Piste::set_fps(120);
+				ret = Piste::set_fps(120);
+			
+			if (ret != 0) {
+				PLog::Write(PLog::ERR, "PK2", "FPS mode not supported, changing to 60fps");
+				Piste::set_fps(60);
+				Settings.fps = SETTINGS_60FPS;
+				if (oldfps == SETTINGS_60FPS)
+					save_settings = false;
+			}
 			
 		}
 

@@ -103,17 +103,26 @@ int Screen_First_Start() {
 	
 	PRender::set_fullscreen(Settings.isFullScreen);
 
+	ret = -1;
+
 	if (Settings.fps == SETTINGS_VSYNC)
-		Piste::set_fps(-1);
+		ret = Piste::set_fps(-1);
 	else if (Settings.fps == SETTINGS_30FPS)
-		Piste::set_fps(30);
+		ret = Piste::set_fps(30);
 	else if (Settings.fps == SETTINGS_60FPS)
-		Piste::set_fps(60);
+		ret = Piste::set_fps(60);
 	else if (Settings.fps == SETTINGS_85FPS)
-		Piste::set_fps(85);
+		ret = Piste::set_fps(85);
 	else if (Settings.fps == SETTINGS_120FPS)
-		Piste::set_fps(120);
-	
+		ret = Piste::set_fps(120);
+
+	if (ret != 0) {
+		PLog::Write(PLog::ERR, "PK2", "FPS mode not supported, changing to 60fps");
+		Piste::set_fps(60);
+		Settings.fps = SETTINGS_60FPS;
+		Settings_Save();
+	}
+
 	PDraw::image_load(game_assets, PFile::Path("gfx" PE_SEP "pk2stuff.bmp"), false);
 	PDraw::image_load(game_assets2, PFile::Path("gfx" PE_SEP "pk2stuff2.png"), false);
 
