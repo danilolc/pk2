@@ -223,9 +223,9 @@ void terminate() {
 
 }
 
-void update(void* _buffer8, int alpha) {
+void update(void* _buffer8) {
 
-	renderer->update(_buffer8, alpha);
+	renderer->update(_buffer8);
 
 }
 

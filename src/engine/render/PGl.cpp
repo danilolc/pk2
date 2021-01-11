@@ -364,7 +364,7 @@ void PGl::load_buffers() {
 
 }
 
-void PGl::update(void* _buffer8, int alpha) {
+void PGl::update(void* _buffer8) {
 	
 	SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
 
@@ -374,16 +374,6 @@ void PGl::update(void* _buffer8, int alpha) {
 		shader_time -= time_cycle;
 
 	SDL_LockSurface(buffer8);
-
-	float a = float(alpha) / 100;
-
-	// Set uniforms and size only if changed?
-
-	for (int i = 0; i < 256; i++) {
-		indexed_palette[3*i] = float(buffer8->format->palette->colors[i].r) * a / 256;
-		indexed_palette[3*i + 1] = float(buffer8->format->palette->colors[i].g) * a / 256;
-		indexed_palette[3*i + 2] = float(buffer8->format->palette->colors[i].b) * a / 256;
-	}
 	
 	glViewport(0, 0, buffer8->w, buffer8->h);
 	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);

@@ -81,8 +81,8 @@ static void logic() {
 	if (draw) {
 		void* buffer8;
 		int alpha;
-		PDraw::get_buffer_data(&buffer8, &alpha);
-		PRender::update(buffer8, alpha);
+		PDraw::get_buffer_data(&buffer8);
+		PRender::update(buffer8);
 	}
 
 	// Clear PDraw buffer

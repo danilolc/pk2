@@ -18,6 +18,8 @@ namespace PDraw {
 static SDL_Surface* frameBuffer8 = NULL;
 static SDL_Palette* game_palette = NULL;
 
+static SDL_Color game_colors[256];
+
 // All images have its original palette on
 // 'userdata' and game_palette on 'palette'.
 // The original palette is stored to properly
@@ -132,6 +134,25 @@ return 0;
 */
 }
 
+static int update_palette_alpha() {
+
+    if (alpha == 100)
+        return SDL_SetPaletteColors(game_palette, game_colors, 0, 256);
+
+    SDL_Color buff_colors[256];
+
+    for (int i = 0; i < 256; i++) {
+
+        buff_colors[i].r = int(game_colors[i].r) * alpha / 100;
+        buff_colors[i].g = int(game_colors[i].g) * alpha / 100;
+        buff_colors[i].b = int(game_colors[i].b) * alpha / 100;
+
+    }
+
+    return SDL_SetPaletteColors(game_palette, buff_colors, 0, 256);
+
+}
+
 int findfreeimage() {
     int size = imageList.size();
 
@@ -165,22 +186,25 @@ bool is_fading(){
 int  fade_out(int speed){
     alpha = 100;
     fade_speed = -speed;
+    update_palette_alpha();
     return 0;
 }
 int  fade_in(int speed){
     alpha = 0;
     fade_speed = speed;
+    update_palette_alpha();
     return 0;
 }
 void rotate_palette(u8 start, u8 end){
 
-    SDL_Color* game_colors = game_palette->colors;
     SDL_Color temp_color = game_colors[end];
 
     for (uint i = end; i > start; i--)
         game_colors[i] = game_colors[i-1];
 
     game_colors[start] = temp_color;
+
+    update_palette_alpha();
 
 }
 
@@ -240,7 +264,8 @@ int image_load(PFile::Path path, bool getPalette) {
     if(getPalette) {
 
         SDL_Palette* pal = imageList[index]->format->palette;
-        SDL_memcpy(game_palette->colors, pal->colors, sizeof(SDL_Color) * 256);
+        SDL_memcpy(game_colors, pal->colors, sizeof(SDL_Color) * 256);
+        update_palette_alpha();
     
     }
 
@@ -301,6 +326,7 @@ int image_cut(int ImgIndex, RECT area) {
     imageList[index]->userdata = (void*)imageList[index]->format->palette;
     imageList[index]->format->palette = game_palette;
 
+    // TODO - BlitScaled?
     SDL_BlitScaled(imageList[ImgIndex], (SDL_Rect*)&area, imageList[index], NULL);
 
     return index;
@@ -848,10 +874,9 @@ int terminate(){
 
 }
 
-void get_buffer_data(void** _buffer8, int* _alpha) {
+void get_buffer_data(void** _buffer8) {
 
     *_buffer8 = frameBuffer8;
-    *_alpha = alpha;
 
 }
 
@@ -862,6 +887,7 @@ void update() {
         alpha += fade_speed;
         if(alpha < 0) alpha = 0;
         if(alpha > 100) alpha = 100;
+        update_palette_alpha();
     
     }
 

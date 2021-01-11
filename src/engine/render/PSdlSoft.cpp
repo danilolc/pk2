@@ -44,7 +44,7 @@ int PSdlSoft::set_vsync(bool set) {
 
 }
 
-void PSdlSoft::update(void* _buffer8, int alpha) {
+void PSdlSoft::update(void* _buffer8) {
 
     SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
 

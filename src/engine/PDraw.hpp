@@ -81,7 +81,7 @@ void  get_offset(int* x, int* y);
 void  set_offset(int width, int height);
 void  clear_fonts();
 
-void  get_buffer_data(void** _buffer8, int* _alpha);
+void  get_buffer_data(void** _buffer8);
 void  update();
 int   init(int width, int height);
 int   terminate();

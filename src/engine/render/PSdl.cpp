@@ -66,15 +66,11 @@ int PSdl::set_vsync(bool set) {
 
 }
 
-void PSdl::update(void* _buffer8, int alpha) {
+void PSdl::update(void* _buffer8) {
 
     SDL_Surface* buffer8 = (SDL_Surface*)_buffer8;
     
-    SDL_Texture* texture;
-    u8 alpha2 = (u8)(alpha*255/100);
-
-    texture = SDL_CreateTextureFromSurface(renderer, buffer8);
-    SDL_SetTextureColorMod(texture,alpha2,alpha2,alpha2);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, buffer8);
 
     SDL_RenderClear(renderer);
 
