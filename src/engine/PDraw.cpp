@@ -16,14 +16,13 @@ namespace PDraw {
 
 // 8-bit indexed surface, it's the game frame buffer
 static SDL_Surface* frameBuffer8 = NULL;
-static SDL_Palette* game_palette = NULL;
 
+// All surfaces will have this palette
+// game_colors stores the original colors,
+// without alpha modification
+static SDL_Palette* game_palette = NULL;
 static SDL_Color game_colors[256];
 
-// All images have its original palette on
-// 'userdata' and game_palette on 'palette'.
-// The original palette is stored to properly
-// free the image on the end. 
 static std::vector<SDL_Surface*> imageList;
 static std::vector<PFont*> fontList;
 
@@ -40,7 +39,6 @@ static int y_offset = 0;
 
 static int offset_width = 0;
 static int offset_height = 0;
-
 
 Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
 return nullptr;
@@ -153,7 +151,7 @@ static int update_palette_alpha() {
 
 }
 
-int findfreeimage() {
+static int findfreeimage() {
     int size = imageList.size();
 
     for(int i = 0; i < size; i++)
@@ -163,7 +161,8 @@ int findfreeimage() {
     imageList.push_back(nullptr);
     return size;
 }
-int findfreefont(){
+
+static int findfreefont(){
     int size = fontList.size();
 
     for(int i = 0; i < size; i++)
@@ -213,13 +212,11 @@ int image_new(int w, int h){
     if (index == -1) return -1;
 
     imageList[index] = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
-
+    SDL_SetPixelFormatPalette(imageList[index]->format, game_palette);
     SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
+
     SDL_FillRect(imageList[index], NULL, 255);
-
-    imageList[index]->userdata = (void*)imageList[index]->format->palette;
-    imageList[index]->format->palette = game_palette;
-
+    
     return index;
 }
 int image_load(PFile::Path path, bool getPalette) {
@@ -259,8 +256,6 @@ int image_load(PFile::Path path, bool getPalette) {
     
     }
 
-    SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
-
     if(getPalette) {
 
         SDL_Palette* pal = imageList[index]->format->palette;
@@ -269,8 +264,8 @@ int image_load(PFile::Path path, bool getPalette) {
     
     }
 
-    imageList[index]->userdata = (void*)imageList[index]->format->palette; //Put allocated pallete in userdata
-    imageList[index]->format->palette = game_palette;
+    SDL_SetPixelFormatPalette(imageList[index]->format, game_palette);
+    SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
 
     return index;
 
@@ -320,11 +315,10 @@ int image_cut(int ImgIndex, RECT area) {
 
     imageList[index] = SDL_CreateRGBSurface(0, area.w, area.h, 8, 0, 0, 0, 0);
 
+    SDL_SetPixelFormatPalette(imageList[index]->format, game_palette);
     SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
-    SDL_FillRect(imageList[index], NULL, 255);
 
-    imageList[index]->userdata = (void*)imageList[index]->format->palette;
-    imageList[index]->format->palette = game_palette;
+    SDL_FillRect(imageList[index], NULL, 255);
 
     // TODO - BlitScaled?
     SDL_BlitScaled(imageList[ImgIndex], (SDL_Rect*)&area, imageList[index], NULL);
@@ -530,8 +524,6 @@ int image_delete(int& index) {
     if (imageList[index] == NULL)
         return -1;
     
-    imageList[index]->format->palette = (SDL_Palette*)imageList[index]->userdata; //Return to the original pallete
-    
     SDL_FreeSurface(imageList[index]);
 
     imageList[index] = NULL;
@@ -612,7 +604,7 @@ int drawimage_end(int index) {
 
 }
 
-u8 blend_colors(u8 color, u8 colBack, int alpha) {
+inline u8 blend_colors(u8 color, u8 colBack, int alpha) {
     
     if(alpha > 100) alpha = 100;
     if(alpha < 0) alpha = 0;
@@ -760,12 +752,10 @@ void set_buffer_size(int w, int h) {
     if (frameBuffer8->w == w && frameBuffer8->h == h)
         return;
     
-    frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
     SDL_FreeSurface(frameBuffer8);
     
     frameBuffer8 = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
-    frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
-    frameBuffer8->format->palette = game_palette;
+    SDL_SetPixelFormatPalette(frameBuffer8->format, game_palette);
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
 
     set_offset(offset_width, offset_height);
@@ -826,8 +816,7 @@ int init(int width, int height) {
         game_palette = SDL_AllocPalette(256);
 
     frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
-    frameBuffer8->userdata = (void *)frameBuffer8->format->palette;
-    frameBuffer8->format->palette = game_palette;
+    SDL_SetPixelFormatPalette(frameBuffer8->format, game_palette);
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
 
     SDL_SetClipRect(frameBuffer8, NULL);
@@ -862,10 +851,12 @@ int terminate(){
 
     clear_fonts();
 
-    SDL_FreePalette(game_palette);
-
-    frameBuffer8->format->palette = (SDL_Palette *)frameBuffer8->userdata;
     SDL_FreeSurface(frameBuffer8);
+
+    if (game_palette->refcount != 1)
+        PLog::Write(PLog::ERR, "PDraw", "Missing some palette reference");
+
+    SDL_FreePalette(game_palette);
 
     IMG_Quit();
 

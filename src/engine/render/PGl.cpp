@@ -375,7 +375,7 @@ void PGl::update(void* _buffer8) {
 
 	SDL_LockSurface(buffer8);
 
-	static int last_palette_version = buffer8->format->palette->version;
+	static Uint32 last_palette_version = -1;
 	bool update_palette = last_palette_version != buffer8->format->palette->version;
 	last_palette_version = buffer8->format->palette->version;
 
