@@ -15,3 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keep class org.libsdl.** { *; }
+-keep class org.pgnapps.pk2.** { *; }

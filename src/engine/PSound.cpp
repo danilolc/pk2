@@ -130,7 +130,7 @@ int set_channel(int channel, int panoramic, int volume) {
 }
 
 int play_sfx(int index, int volume, int panoramic, int freq) {
-	
+
 	if(index == -1) return 1;
 	if(chunks[index] == NULL) return 2;
 
@@ -364,7 +364,6 @@ void channelDone(int channel) {
 
 	u8* pointer = freq_chunks[channel];
 	freq_chunks[channel] = NULL;
-
     SDL_free(pointer);
 
 }
