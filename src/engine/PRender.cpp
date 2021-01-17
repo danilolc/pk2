@@ -10,10 +10,10 @@
 
 #ifndef __ANDROID__
 #include "engine/render/PGl.hpp"
+#include "engine/render/PSdlSoft.hpp"
 #endif
 
 #include "engine/render/PSdl.hpp"
-#include "engine/render/PSdlSoft.hpp"
 
 #include <SDL.h>
 
@@ -28,7 +28,7 @@ enum {
 
 };
 
-static int fullscreen_mode = SDL_WINDOW_FULLSCREEN; //SDL_WINDOW_FULLSCREEN;
+static int fullscreen_mode = SDL_WINDOW_FULLSCREEN_DESKTOP; //SDL_WINDOW_FULLSCREEN;
 
 static int current_shader = SHADER_LINEAR;
 
@@ -79,7 +79,7 @@ void adjust_screen() {
 void set_fullscreen(bool set) {
 
 	#ifdef __ANDROID__
-		SDL_SetWindowFullscreen(window, fullscreen_mode);
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 		return;
 	#endif
 
@@ -173,7 +173,7 @@ int init(int width, int height, const char* name, const char* icon) {
 
     #ifdef __ANDROID__
 
-    window_flags |= fullscreen_mode;
+    window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
 	SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
 
@@ -205,8 +205,17 @@ int init(int width, int height, const char* name, const char* icon) {
 	
 	#endif
 
+	#ifdef __ANDROID__
+
+	renderer = new PSdl(width, height, window);
+
+	#else
+	
 	//renderer = new PGl(width, height, window);
-	renderer = new PSdlSoft(width, height, window);
+	//renderer = new PSdlSoft(width, height, window);
+	renderer = new PSdl(width, height, window);
+
+	#endif
 
 	adjust_screen();
 

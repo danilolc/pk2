@@ -44,15 +44,11 @@ public class PK2Activity extends SDLActivity {
 
     }
 
-    //@Keep
-    private String getLocale() {
-
-        return Locale.getDefault().getLanguage();
-
-    }
-
     @Override
     protected String[] getArguments() {
+
+        if (BuildConfig.DEBUG)
+            return new String[] {"dev", "fps"};
 
         return new String[0];
 

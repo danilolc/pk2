@@ -22,6 +22,7 @@ static SDL_Surface* frameBuffer8 = NULL;
 // without alpha modification
 static SDL_Palette* game_palette = NULL;
 static SDL_Color game_colors[256];
+static SDL_Color buff_colors[256];
 
 static std::vector<SDL_Surface*> imageList;
 static std::vector<PFont*> fontList;
@@ -137,7 +138,8 @@ static int update_palette_alpha() {
     if (alpha == 100)
         return SDL_SetPaletteColors(game_palette, game_colors, 0, 256);
 
-    SDL_Color buff_colors[256];
+    // Why cant't it be defined here?
+    //SDL_Color buff_colors[256];
 
     for (int i = 0; i < 256; i++) {
 
