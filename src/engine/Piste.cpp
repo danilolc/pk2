@@ -80,7 +80,6 @@ static void logic() {
 	// Pass PDraw informations do PRender
 	if (draw) {
 		void* buffer8;
-		int alpha;
 		PDraw::get_buffer_data(&buffer8);
 		PRender::update(buffer8);
 	}

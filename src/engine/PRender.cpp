@@ -211,9 +211,9 @@ int init(int width, int height, const char* name, const char* icon) {
 
 	#else
 	
-	//renderer = new PGl(width, height, window);
+	renderer = new PGl(width, height, window);
 	//renderer = new PSdlSoft(width, height, window);
-	renderer = new PSdl(width, height, window);
+	//renderer = new PSdl(width, height, window);
 
 	#endif
 

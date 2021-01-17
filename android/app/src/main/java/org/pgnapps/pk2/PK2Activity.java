@@ -6,21 +6,36 @@ package org.pgnapps.pk2;
 
 import org.libsdl.app.SDLActivity;
 
-import android.Manifest;
-import android.content.res.AssetManager;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
-//import android.os.Environment;
-//import android.os.Build;
-//import android.content.pm.PackageManager;
-
-//import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
-import java.util.Locale;
 
 public class PK2Activity extends SDLActivity {
 
     private static final String TAG = "PJava";
+
+    private String loadZip() {
+
+        String file = "";
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        try{
+            startActivityForResult(intent, 2);
+//            file = intent.getDataString();
+        } catch (ActivityNotFoundException e) {
+            Log.i(TAG, "No file explorer clients installed.");
+        }
+
+        Log.i(TAG, "batatada");
+        Log.i(TAG, file);
+
+        return "batata";
+    }
 
     //@Keep
     private String[] listDir(String dir) {
@@ -56,18 +71,33 @@ public class PK2Activity extends SDLActivity {
 
     @Override
     protected String[] getLibraries() {
-        return new String[] {
+
+        if (Build.VERSION.SDK_INT < 18) {
+            return new String[] {
+                "c++_shared",
+                "zip",
                 "hidapi",
                 "SDL2",
                 "SDL2_image",
                 "mpg123",
                 "SDL2_mixer",
                 "PK2"};
+
+        }
+        return new String[] {
+                //"c++_shared",
+                //"zip",
+                //"hidapi",
+                //"SDL2",
+                //"SDL2_image",
+                //"mpg123",
+                //"SDL2_mixer",
+                "PK2"};
     }
 
     @Override
     protected void onStart() {
-        
+
         super.onStart();
         setWindowStyle(true);
 
