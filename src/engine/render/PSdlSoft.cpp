@@ -10,6 +10,21 @@
 
 #include <SDL.h>
 
+void* PSdlSoft::create_texture(void* surface) {
+
+    PLog::Write(PLog::ERR, "PSdlSoft", "Texture not implemented!");
+    return nullptr;
+
+}
+void PSdlSoft::remove_texture(void* texture) {
+
+
+}
+void PSdlSoft::render_texture(void* texture, float x, float y, float w, float h, float alpha) {
+
+
+}
+
 void PSdlSoft::clear_screen() {
 
     SDL_Surface* sur = SDL_GetWindowSurface(curr_window);

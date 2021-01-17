@@ -27,11 +27,8 @@ static SDL_Color buff_colors[256];
 static std::vector<SDL_Surface*> imageList;
 static std::vector<PFont*> fontList;
 
-/*static std::vector<Gui*> gui_textures;*/
-
 static bool ready = false;
 
-// Fade must be part of PK2, not PisteDraw
 static int fade_speed = 0;
 static int alpha = 100;
 
@@ -40,98 +37,6 @@ static int y_offset = 0;
 
 static int offset_width = 0;
 static int offset_height = 0;
-
-Gui* create_gui(PFile::Path path, int x, int y, int w, int h, int alpha) {
-return nullptr;
-/*
-    SDL_Texture* tex = NULL;
-
-    if (path.GetFileName().size() > 0) {
-
-        PFile::RW* rw = path.GetRW("r");
-        tex = IMG_LoadTexture_RW(renderer, (SDL_RWops*)rw, 0);
-        rw->close();
-
-        if (tex == NULL) {
-
-            PLog::Write(PLog::ERR, "PDraw", "Can't load gui texture %s", path.c_str());
-
-        }
-
-    }
-
-    Gui* gui = new Gui;
-
-    gui->texture = tex;
-    gui->x = x;
-    gui->y = y;
-    gui->w = w;
-    gui->h = h;
-    
-    if (alpha > 255)
-        gui->alpha = 255;
-    else
-        gui->alpha = alpha;
-    
-    gui->active = false;
-
-    SDL_SetTextureAlphaMod(tex, gui->alpha);
-
-    gui_textures.push_back(gui);
-    return gui;
-*/
-}
-
-int remove_gui(Gui* gui) {
-return 0;
-/*
-    if (!gui)
-        return -1;
-
-    auto rem = std::remove(gui_textures.begin(), gui_textures.end(), gui);
-    gui_textures.erase(rem, gui_textures.end());
-
-    if (gui->texture != NULL)
-        SDL_DestroyTexture((SDL_Texture*)gui->texture);
-
-    delete gui;
-    
-
-    return 0;
-*/
-}
-
-int draw_gui() {
-return 0;
-/*
-	int w, h;
-	SDL_GetRendererOutputSize(renderer, &w, &h);
-	
-	float prop_x = (float)w / 1920;
-	float prop_y = (float)h / 1080;
-
-	for(Gui* gui : gui_textures){
-
-		if(gui->active && gui->texture != NULL) {
-
-            SDL_Rect rect;
-            rect.x = gui->x * prop_x;
-            rect.y = gui->y * prop_y;
-            rect.w = gui->w * prop_x;
-            rect.h = gui->h * prop_y;
-
-            u8 mod = (alpha * 255) / 100;
-            //SDL_SetTextureAlphaMod((SDL_Texture*)gui->texture, mod);
-            SDL_SetTextureColorMod((SDL_Texture*)gui->texture, mod, mod, mod);
-            SDL_RenderCopy(renderer, (SDL_Texture*)gui->texture, NULL, &rect);
-            
-		}
-
-	}
-    
-    return 0;
-*/
-}
 
 static int update_palette_alpha() {
 
@@ -869,6 +774,7 @@ int terminate(){
 
 void get_buffer_data(void** _buffer8) {
 
+    frameBuffer8->userdata = &alpha;
     *_buffer8 = frameBuffer8;
 
 }

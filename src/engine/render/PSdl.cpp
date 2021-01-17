@@ -10,6 +10,37 @@
 
 #include <SDL.h>
 
+void* PSdl::create_texture(void* surface) {
+
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*)surface);
+    if (tex == NULL) {
+
+        PLog::Write(PLog::ERR, "PSdl", "Couldn't load texture!");
+
+    }
+
+    return tex;
+
+}
+void PSdl::remove_texture(void* texture) {
+
+    SDL_DestroyTexture((SDL_Texture*) texture);
+
+}
+void PSdl::render_texture(void* texture, float x, float y, float w, float h, float alpha) {
+
+    RenderOptions opt;
+    opt.texture = texture;
+    opt.x = x;
+    opt.y = y;
+    opt.w = w;
+    opt.h = h;
+    opt.alpha = alpha;
+
+    render_list.push_back(opt);
+
+}
+
 void PSdl::clear_screen() {
 
     SDL_RenderClear(renderer);
@@ -75,8 +106,40 @@ void PSdl::update(void* _buffer8) {
     SDL_RenderClear(renderer);
 
     SDL_RenderCopy(renderer, texture, NULL, &screen_dest);
+    
+    int w, h;
+    SDL_GetRendererOutputSize(renderer, &w, &h);
+    float prop_x = (float)w;
+    float prop_y = (float)h;
+    
+    for (auto opt : render_list) {
 
-    //draw_gui();
+        SDL_Texture* tex = (SDL_Texture*)opt.texture;
+        if (tex == NULL)
+            continue;
+
+        float screen_alpha = float(*(int*)buffer8->userdata) / 100;
+        
+        u8 mod = opt.alpha * 256 * screen_alpha;
+        if (mod == 0)
+            continue;
+
+        u8 a;
+        SDL_GetTextureAlphaMod(tex, &a);
+        if (a != mod)
+            SDL_SetTextureAlphaMod(tex, mod);
+        
+        SDL_Rect rect;
+        rect.x = opt.x * prop_x;
+        rect.y = opt.y * prop_y;
+        rect.w = opt.w * prop_x;
+        rect.h = opt.h * prop_y;
+
+        SDL_RenderCopy(renderer, tex, NULL, &rect);
+        
+    }
+
+    render_list.clear();
 
     SDL_RenderPresent(renderer);
 

@@ -16,17 +16,9 @@
 #include "engine/render/PSdl.hpp"
 
 #include <SDL.h>
+#include <SDL_image.h>
 
 namespace PRender {
-
-enum {
-
-	RENDERER_SDL,
-	RENDERER_OPENGL,
-	RENDERER_OPENGLES,
-	RENDERER_SDL_SOFTWARE,
-
-};
 
 static int fullscreen_mode = SDL_WINDOW_FULLSCREEN_DESKTOP; //SDL_WINDOW_FULLSCREEN;
 
@@ -40,7 +32,31 @@ static const char* window_name;
 static SDL_Window* window = NULL;
 static bool vsync_set = false;
 
-Renderer* renderer;
+static Renderer* renderer;
+
+void* load_texture(PFile::Path file) {
+
+	PFile::RW* rw = file.GetRW("r");
+	SDL_Surface* surface = IMG_Load_RW((SDL_RWops*)rw, 1);
+
+	void* texture = renderer->create_texture(surface);
+	SDL_FreeSurface(surface);
+
+	return texture;
+
+}
+
+void remove_texture(void* texture) {
+
+	renderer->remove_texture(texture);
+
+}
+
+void render_texture(void* texture, float x, float y, float w, float h, float alpha) {
+
+	renderer->render_texture(texture, x, y, w, h, alpha);
+
+}
 
 void adjust_screen() {
 
@@ -187,6 +203,8 @@ int init(int width, int height, const char* name, const char* icon) {
 
     #else
 
+	//window_flags |= SDL_WINDOW_OPENGL;
+
 	window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
 
@@ -211,9 +229,9 @@ int init(int width, int height, const char* name, const char* icon) {
 
 	#else
 	
-	renderer = new PGl(width, height, window);
+	//renderer = new PGl(width, height, window);
 	//renderer = new PSdlSoft(width, height, window);
-	//renderer = new PSdl(width, height, window);
+	renderer = new PSdl(width, height, window);
 
 	#endif
 

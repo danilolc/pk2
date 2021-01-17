@@ -8,7 +8,7 @@
 #include "game/gifts.hpp"
 #include "game/sprites.hpp"
 
-#include "engine/PDraw.hpp"
+#include "engine/PGui.hpp"
 #include "engine/PInput.hpp"
 
 #include <cmath>
@@ -30,18 +30,18 @@ bool Gui_touch = false;
 bool Gui_tab = false;
 
 
-static PDraw::Gui* gui_padbg  = nullptr;
-static PDraw::Gui* gui_padbt  = nullptr;
+static PGui::Gui* gui_padbg  = nullptr;
+static PGui::Gui* gui_padbt  = nullptr;
 
-static PDraw::Gui* gui_up     = nullptr;
-static PDraw::Gui* gui_down   = nullptr;
-static PDraw::Gui* gui_egg    = nullptr;
-static PDraw::Gui* gui_doodle = nullptr;
-static PDraw::Gui* gui_gift   = nullptr;
+static PGui::Gui* gui_up     = nullptr;
+static PGui::Gui* gui_down   = nullptr;
+static PGui::Gui* gui_egg    = nullptr;
+static PGui::Gui* gui_doodle = nullptr;
+static PGui::Gui* gui_gift   = nullptr;
 
-static PDraw::Gui* gui_menu   = nullptr;
-static PDraw::Gui* gui_touch  = nullptr;
-static PDraw::Gui* gui_tab    = nullptr;
+static PGui::Gui* gui_menu   = nullptr;
+static PGui::Gui* gui_touch  = nullptr;
+static PGui::Gui* gui_tab    = nullptr;
 
 
 const static int PadBt_x = 315;
@@ -59,7 +59,7 @@ static int pad_id = 0;
 static bool pad_grab = false;
 
 void Game_GUI(bool set){
-return;
+
 	gui_padbg->active = set;
 	gui_padbt->active = set;
 
@@ -75,7 +75,7 @@ return;
 }
 
 void GUI_Change(int ui_mode) {
-return;
+
 	UI_mode = ui_mode;
 
 	switch(ui_mode){
@@ -96,50 +96,50 @@ return;
 }
 
 void GUI_Load() {
-return;
+
 	int w = 230 * 0.8;
 	int h = 220 * 0.8;
 
 	PFile::Path path("mobile" PE_SEP);
 
-	gui_touch =  PDraw::create_gui(path, 0,  0,1920,1080, Alpha);
-	gui_tab =    PDraw::create_gui(path, 0,930, 530, 150, Alpha);
+	gui_touch =  PGui::create_gui(path, 0,  0,1920,1080, Alpha);
+	gui_tab =    PGui::create_gui(path, 0,930, 530, 150, Alpha);
 
 	path.SetFile("menu.png");
-	gui_menu =   PDraw::create_gui(path, 50,130,w,h,Alpha);
+	gui_menu =   PGui::create_gui(path, 50,130,w,h,Alpha);
 	
 	path.SetFile("padbg.png");
-	gui_padbg =  PDraw::create_gui(path, 90,620,641*0.9,362*0.9,Alpha);
+	gui_padbg =  PGui::create_gui(path, 90,620,641*0.9,362*0.9,Alpha);
 
 	path.SetFile("padbt.png");
-	gui_padbt =  PDraw::create_gui(path, PadBt_x, PadBt_y,169*0.9,173*0.9,Alpha);
+	gui_padbt =  PGui::create_gui(path, PadBt_x, PadBt_y,169*0.9,173*0.9,Alpha);
 
 	int y = 650;
 	const int dy = 200;
 
 	path.SetFile("up.png");
-	gui_up =     PDraw::create_gui(path, 1630, y,w,h,Alpha);
+	gui_up =     PGui::create_gui(path, 1630, y,w,h,Alpha);
 
 	y -= dy;
 	path.SetFile("doodle.png");
-	gui_doodle = PDraw::create_gui(path, 1630, y,w,h,Alpha);
+	gui_doodle = PGui::create_gui(path, 1630, y,w,h,Alpha);
 
 	y -= dy;
 	path.SetFile("gift.png");
-	gui_gift =   PDraw::create_gui(path, 1630, y,w,h,Alpha);
+	gui_gift =   PGui::create_gui(path, 1630, y,w,h,Alpha);
 
 	y = 720;
 	path.SetFile("down.png");
-	gui_down =   PDraw::create_gui(path, 1410, y,w,h,Alpha);
+	gui_down =   PGui::create_gui(path, 1410, y,w,h,Alpha);
 
 	y -= dy;
 	path.SetFile("egg.png");
-	gui_egg =    PDraw::create_gui(path, 1410, y,w,h,Alpha);
+	gui_egg =    PGui::create_gui(path, 1410, y,w,h,Alpha);
 
 }
 
-static bool read_gui(PDraw::Gui* gui) {
-return false;
+static bool read_gui(PGui::Gui* gui) {
+
 	if (!gui)
 		return false; //error?
 
@@ -164,7 +164,7 @@ return false;
 
 // Hold pad on digital pad mode
 static float hold_pad(float pos_x, int* button) {
-return 0;
+
 	//pos_x varies from 0 to 1
 	//x varies from 0 to 3.2
 	float x = 3.2 * pos_x;
@@ -209,7 +209,7 @@ return 0;
 
 
 static int get_pad() {
-return 0;
+
 	int button = 2;
 
 	if (!pad_grab) {
@@ -291,13 +291,52 @@ return 0;
 }
 
 void GUI_Update() {
-return;
+
+	const int DELTA = 5;
+
+	static int doodle_alpha = 0, egg_alpha = 0, gift_alpha = 0; 
+	static bool doodle_active = false, egg_active = false, gift_active = false;
+
 	if (UI_mode == UI_GAME_BUTTONS) {
 
-		gui_doodle->active = Player_Sprite->ammus2 != -1;
-		gui_egg->active = Player_Sprite->ammus1 != -1;
-		gui_gift->active = Gifts_Count() > 0;
-	
+		{
+			doodle_active = Player_Sprite->ammus2 != -1;
+			egg_active = Player_Sprite->ammus1 != -1;
+			gift_active = Gifts_Count() > 0;
+
+			if (doodle_active) {
+				doodle_alpha += DELTA;
+				if (doodle_alpha > Alpha) doodle_alpha = Alpha;
+			} else {
+				doodle_alpha -= DELTA;
+				if (doodle_alpha < 0) doodle_alpha = 0;
+			}
+
+			if (egg_active) {
+				egg_alpha += DELTA;
+				if (egg_alpha > Alpha) egg_alpha = Alpha;
+			} else {
+				egg_alpha -= DELTA;
+				if (egg_alpha < 0) egg_alpha = 0;
+			}
+
+			if (gift_active) {
+				gift_alpha += DELTA;
+				if (gift_alpha > Alpha) gift_alpha = Alpha;
+			} else {
+				gift_alpha -= DELTA;
+				if (gift_alpha < 0) gift_alpha = 0;
+			}
+
+			gui_doodle->alpha = doodle_alpha;
+			gui_egg->alpha = egg_alpha;
+			gui_gift->alpha = gift_alpha;
+
+			gui_doodle->active = doodle_alpha != 0;
+			gui_egg->active = egg_alpha != 0;
+			gui_gift->active = gift_alpha != 0;
+		}
+
 		Gui_pad_button = get_pad();
 
 		Gui_up = read_gui(gui_up);
@@ -318,17 +357,17 @@ return;
 }
 
 void GUI_Exit() {
-return;
-	PDraw::remove_gui(gui_touch);
-	PDraw::remove_gui(gui_tab);
 
-	PDraw::remove_gui(gui_menu);
-	PDraw::remove_gui(gui_padbg);
-	PDraw::remove_gui(gui_padbt);
-	PDraw::remove_gui(gui_up);
-	PDraw::remove_gui(gui_doodle);
-	PDraw::remove_gui(gui_gift);
-	PDraw::remove_gui(gui_down);
-	PDraw::remove_gui(gui_egg);
+	PGui::remove_gui(gui_touch);
+	PGui::remove_gui(gui_tab);
+
+	PGui::remove_gui(gui_menu);
+	PGui::remove_gui(gui_padbg);
+	PGui::remove_gui(gui_padbt);
+	PGui::remove_gui(gui_up);
+	PGui::remove_gui(gui_doodle);
+	PGui::remove_gui(gui_gift);
+	PGui::remove_gui(gui_down);
+	PGui::remove_gui(gui_egg);
 
 }

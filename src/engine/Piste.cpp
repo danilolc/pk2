@@ -75,10 +75,9 @@ static void logic() {
 		
 	}
 
-	
-
 	// Pass PDraw informations do PRender
 	if (draw) {
+		PGui::update();
 		void* buffer8;
 		PDraw::get_buffer_data(&buffer8);
 		PRender::update(buffer8);

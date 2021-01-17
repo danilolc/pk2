@@ -10,6 +10,19 @@
 
 #include <SDL.h>
 
+void* PGl::create_texture(void* surface) {
+
+    PLog::Write(PLog::ERR, "PGl", "Texture not implemented!");
+    return nullptr;
+
+}
+void PGl::remove_texture(void* texture) {
+
+}
+void PGl::render_texture(void* texture, float x, float y, float w, float h, float alpha) {
+
+}
+
 void PGl::clear_screen() {
 
 	glClearColor(0, 0, 0, 1);

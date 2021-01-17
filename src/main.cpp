@@ -60,6 +60,7 @@ static void read_config() {
 
 	PLog::Write(PLog::DEBUG, "PK2", "Found config file");
 
+	// TODO - set different render method
 	int idx = conf.Search_Id("render_method");
 	if (idx != -1) {
 		const char* txt = conf.Get_Text(idx);

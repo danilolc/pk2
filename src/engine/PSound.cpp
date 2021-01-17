@@ -24,7 +24,6 @@ static int def_freq = 22050;
 static int mus_volume = 100;
 static float mus_volume_now = 100;
 
-
 static Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
 static Uint8* freq_chunks[CHANNELS];  //The chunk allocated for each channel
 

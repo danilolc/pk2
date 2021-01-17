@@ -1292,7 +1292,7 @@ void Draw_Menu_Data() {
 	int my = 90;
 
 	PDraw::font_write(fontti2, "data location:", align_left, my);
-	if (Draw_Menu_Text("internal",align_right - 15*8, my)) /**/;
+	//if (Draw_Menu_Text("internal",align_right - 15*8, my)) /**/;
 
 	//Draw_Menu_Text("yes", align_right - 15*8, my);
 	//Draw_Menu_Text("no", align_right - 15*8 + 100, my);
