@@ -56,6 +56,7 @@ void remove_texture(void* texture);
 int  set_filter(const char* filter);
 int  set_shader(int mode);
 
+void set_screen_fill(bool set);
 void adjust_screen();
 void set_fullscreen(bool set);
 void set_window_size(int w, int h);

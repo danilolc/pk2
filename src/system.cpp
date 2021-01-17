@@ -105,9 +105,13 @@ int Clicked() {
 
 }
 
-void Draw_Cursor(int x, int y){
+void Draw_Cursor(int x, int y) {
+
+	#ifndef __ANDROID__
 
 	PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
+
+	#endif
 	
 }
 
@@ -201,8 +205,10 @@ int Set_Screen_Mode(int mode) {
 
 	if (mode == SETTINGS_MODE_CRT) {
 		Set_Screen_Size(640, 480);
+		PRender::set_screen_fill(false);
 	} else {
 		Set_Screen_Size(800, 480);
+		PRender::set_screen_fill(true);
 	}
 
 	return 0;

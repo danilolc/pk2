@@ -667,9 +667,6 @@ void Draw_Menu_Graphics() {
 	if(moreOptions){
 		bool wasFullScreen = Settings.isFullScreen;
 		int  oldfps = Settings.fps;
-		
-
-		#ifndef __ANDROID__
 
 		if (Settings.isFullScreen){
 			if (Draw_Menu_Text("fullscreen mode is on",180,my)){
@@ -684,8 +681,6 @@ void Draw_Menu_Graphics() {
 			Settings.isFullScreen = !Settings.isFullScreen;
 		}
 		my += 40;
-
-		#endif
 
 		//TODO - Fix touch position when screen fit
 

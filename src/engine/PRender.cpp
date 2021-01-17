@@ -26,6 +26,7 @@ static int current_shader = SHADER_LINEAR;
 
 static float cover_width, cover_height;
 
+static bool screen_fill = false;
 static FRECT screen_dest = {0.f, 0.f, 1.f, 1.f};
 
 static const char* window_name;
@@ -58,7 +59,26 @@ void render_texture(void* texture, float x, float y, float w, float h, float alp
 
 }
 
+void set_screen_fill(bool set) {
+
+	screen_fill = set;
+	adjust_screen();
+
+}
+
 void adjust_screen() {
+
+	if (screen_fill) {
+
+		screen_dest.w = 1.f;
+		screen_dest.h = 1.f;
+		screen_dest.x = 0.f;
+		screen_dest.y = 0.f;
+
+		renderer->set_screen(screen_dest);
+		return;
+
+	}
 
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
@@ -203,7 +223,7 @@ int init(int width, int height, const char* name, const char* icon) {
 
     #else
 
-	//window_flags |= SDL_WINDOW_OPENGL;
+	window_flags |= SDL_WINDOW_OPENGL;
 
 	window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
@@ -229,9 +249,9 @@ int init(int width, int height, const char* name, const char* icon) {
 
 	#else
 	
-	//renderer = new PGl(width, height, window);
+	renderer = new PGl(width, height, window);
 	//renderer = new PSdlSoft(width, height, window);
-	renderer = new PSdl(width, height, window);
+	//renderer = new PSdl(width, height, window);
 
 	#endif
 
