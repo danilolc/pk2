@@ -81,7 +81,6 @@ This example starts the level13.map on dev mode:
 * Score menu blinking on pressing enter
 * New graphics and controllers menu
 * Android data path
-* Recover gui buttons, wide bg, OpenGL ES
 * Use app bundles to minimize apk size
 * SDL_QUIT on Android
 * Autosave settings option, ask when overwriting save, select save on new game
@@ -98,3 +97,4 @@ This example starts the level13.map on dev mode:
 * Implement new layer on .map (regions)
 * Find image (load .bmp or .png)
 * Thunder on rainy levels?
+* OpenGL ES

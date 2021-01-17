@@ -72,8 +72,7 @@ public class PK2Activity extends SDLActivity {
     @Override
     protected String[] getLibraries() {
 
-        if (Build.VERSION.SDK_INT < 18) {
-            return new String[] {
+        return new String[] {
                 "c++_shared",
                 "zip",
                 "hidapi",
@@ -83,16 +82,6 @@ public class PK2Activity extends SDLActivity {
                 "SDL2_mixer",
                 "PK2"};
 
-        }
-        return new String[] {
-                //"c++_shared",
-                //"zip",
-                //"hidapi",
-                //"SDL2",
-                //"SDL2_image",
-                //"mpg123",
-                //"SDL2_mixer",
-                "PK2"};
     }
 
     @Override

@@ -893,10 +893,11 @@ void Draw_Menu_Graphics() {
 		}
 		my += 30;
 
-		if (Draw_Menu_Text("more",100,360)){
-			moreOptions = true;
-			menu_valittu_id = 0; //Set menu cursor to 0
-		}
+		if (!PUtils::Is_Mobile())
+			if (Draw_Menu_Text("more",100,360)){
+				moreOptions = true;
+				menu_valittu_id = 0; //Set menu cursor to 0
+			}
 
 	}
 
@@ -1286,18 +1287,16 @@ void Draw_Menu_Data() {
 	// TODO - data menu
 	int my = 90;
 
-	PDraw::font_write(fontti2, "data location:", align_left, my);
+	//PDraw::font_write(fontti2, "data location:", align_left, my);
 	//if (Draw_Menu_Text("internal",align_right - 15*8, my)) /**/;
 
 	//Draw_Menu_Text("yes", align_right - 15*8, my);
 	//Draw_Menu_Text("no", align_right - 15*8 + 100, my);
 
-	my += 30;
+	//my += 30;
 
-	//const char* path = "/home/pekka/files/apples/";
-	//int len = strlen(path);
-	PDraw::font_write(fontti1, data_path.c_str(), align_right - data_path.size()*8, my);
-	my += 10;
+	//PDraw::font_write(fontti1, data_path.c_str(), align_right - data_path.size()*8, my);
+	//my += 10;
 
 	//char code[8];
 	//Id_To_String(idd, code);

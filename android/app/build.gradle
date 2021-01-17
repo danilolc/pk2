@@ -4,19 +4,21 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 30
     defaultConfig {
+
         applicationId "org.pgnapps.pk2"
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 0x0400
         versionName "1.4.0"
+
+        //ndkVersion '22.0.7026061' //<- giving SIGILL on arm
+        ndkVersion '20.0.5594570'
         externalNativeBuild {
             ndkBuild {
                 arguments "APP_PLATFORM=android-16"
                 arguments "APP_STL=c++_shared"
                 arguments "APP_OPTIM=release"
                 abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-                //abiFilters 'x86'
-                
             }
         }
     }
