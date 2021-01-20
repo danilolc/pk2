@@ -448,6 +448,8 @@ int image_fill(int index, u8 color) {
 
 int image_fill(int index, int posx, int posy, int oikea, int ala, u8 color) {
 
+    if (index < 0)
+        return -1;
     SDL_Rect r = {posx, posy, oikea-posx, ala-posy};
     return SDL_FillRect(imageList[index], &r, color);
 

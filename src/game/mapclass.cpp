@@ -86,9 +86,6 @@ MapClass::MapClass(){
 	this->palikat_buffer = PDraw::image_new(PK2MAP_BLOCK_PALETTE_WIDTH,PK2MAP_BLOCK_PALETTE_HEIGHT);
 	this->palikat_vesi_buffer = PDraw::image_new(PK2MAP_BLOCK_PALETTE_WIDTH,32); //water
 
-	PDraw::image_fill(this->taustakuva_buffer,255);
-	PDraw::image_fill(this->palikat_buffer,255);
-	PDraw::image_fill(this->palikat_buffer,255);
 }
 
 MapClass::MapClass(const MapClass &kartta){
