@@ -159,7 +159,7 @@ int PK_Draw_Map() {
 					Game = new GameClass(i);
 					
 					going_to_game = true;
-					PDraw::fade_out(PDraw::FADE_SLOW);
+					Fade_out(FADE_SLOW);
 					PSound::set_musicvolume(0);
 					Play_MenuSFX(doodle_sound,90);
 				
@@ -304,7 +304,7 @@ int Screen_Map_Init() {
 
 	going_to_game = false;
 
-	PDraw::fade_in(PDraw::FADE_SLOW);
+	Fade_in(FADE_SLOW);
 
 	return 0;
 	
@@ -343,7 +343,7 @@ int Screen_Map() {
 
 	}
 
-	if (going_to_game && !PDraw::is_fading()) {
+	if (going_to_game && !Is_Fading()) {
 
 		next_screen = SCREEN_GAME;
 		
@@ -351,7 +351,7 @@ int Screen_Map() {
 		PDraw::set_offset(screen_width, screen_height);
 		PDraw::screen_fill(0);
 		PDraw::font_write(fontti2, tekstit->Get_Text(PK_txt.game_loading), screen_width / 2 - 82, screen_height / 2 - 9);
-		PDraw::fade_out(0);
+		Fade_out(0);
 
 	}
 

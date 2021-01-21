@@ -29,8 +29,7 @@ static std::vector<PFont*> fontList;
 
 static bool ready = false;
 
-static int fade_speed = 0;
-static int alpha = 100;
+static float color_r = 1, color_g = 1, color_b = 1;
 
 static int x_offset = 0;
 static int y_offset = 0;
@@ -38,9 +37,13 @@ static int y_offset = 0;
 static int offset_width = 0;
 static int offset_height = 0;
 
-static int update_palette_alpha() {
+#define IS_UNITY(X) ((X > 0.99) && (X < 1.01))
 
-    if (alpha == 100)
+static int update_palette_effect() {
+
+    printf("%f %f %f %i\n", color_r, color_g, color_b, rand());
+
+    if (IS_UNITY(color_r) || IS_UNITY(color_g) || IS_UNITY(color_b))
         return SDL_SetPaletteColors(game_palette, game_colors, 0, 256);
 
     // Why cant't it be defined here?
@@ -48,9 +51,20 @@ static int update_palette_alpha() {
 
     for (int i = 0; i < 256; i++) {
 
-        buff_colors[i].r = int(game_colors[i].r) * alpha / 100;
-        buff_colors[i].g = int(game_colors[i].g) * alpha / 100;
-        buff_colors[i].b = int(game_colors[i].b) * alpha / 100;
+        int r = game_colors[i].r * color_r;
+        int g = game_colors[i].g * color_g;
+        int b = game_colors[i].b * color_b;
+
+        if (r > 255) r = 255;
+        if (r < 0)   r = 0;
+        if (g > 255) g = 255;
+        if (g < 0)   g = 0;
+        if (b > 255) b = 255;
+        if (b < 0)   b = 0;
+
+        buff_colors[i].r = r;
+        buff_colors[i].g = g;
+        buff_colors[i].b = b;
 
     }
 
@@ -80,27 +94,6 @@ static int findfreefont(){
     return size;
 }
 
-bool is_fading(){
-  if (alpha > 0 && fade_speed < 0)
-    return true;
-
-  if (alpha < 100 && fade_speed > 0)
-    return true;
-
-  return false;
-}
-int  fade_out(int speed){
-    alpha = 100;
-    fade_speed = -speed;
-    update_palette_alpha();
-    return 0;
-}
-int  fade_in(int speed){
-    alpha = 0;
-    fade_speed = speed;
-    update_palette_alpha();
-    return 0;
-}
 void rotate_palette(u8 start, u8 end){
 
     SDL_Color temp_color = game_colors[end];
@@ -110,7 +103,7 @@ void rotate_palette(u8 start, u8 end){
 
     game_colors[start] = temp_color;
 
-    update_palette_alpha();
+    update_palette_effect();
 
 }
 
@@ -167,7 +160,7 @@ int image_load(PFile::Path path, bool getPalette) {
 
         SDL_Palette* pal = imageList[index]->format->palette;
         SDL_memcpy(game_colors, pal->colors, sizeof(SDL_Color) * 256);
-        update_palette_alpha();
+        update_palette_effect();
     
     }
 
@@ -712,6 +705,19 @@ void set_offset(int width, int height) {
 
 }
 
+void set_rgb(float r, float g, float b) {
+
+    if (color_r == r && color_g == g && color_b == b)
+        return;
+
+    color_r = r;
+    color_g = g;
+    color_b = b;
+
+    update_palette_effect();
+
+}
+
 int init(int width, int height) {
 
     if (ready) return -1;
@@ -776,21 +782,11 @@ int terminate(){
 
 void get_buffer_data(void** _buffer8) {
 
-    frameBuffer8->userdata = &alpha;
     *_buffer8 = frameBuffer8;
 
 }
 
 void update() {
-
-    if (is_fading()) {
-
-        alpha += fade_speed;
-        if(alpha < 0) alpha = 0;
-        if(alpha > 100) alpha = 100;
-        update_palette_alpha();
-    
-    }
 
     SDL_FillRect(frameBuffer8, NULL, 0);
 

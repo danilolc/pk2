@@ -100,7 +100,7 @@ int Screen_Intro_Init() {
 
 	intro_counter = 0;
 
-	PDraw::fade_in(PDraw::FADE_FAST);
+	Fade_in(FADE_FAST);
 
 	return 0;
 }
@@ -116,12 +116,12 @@ int Screen_Intro(){
 
 		if (Clicked() || Gui_touch || intro_counter >= 3500){
 			closing_intro = true;
-			PDraw::fade_out(PDraw::FADE_SLOW);
+			Fade_out(FADE_SLOW);
 		}
 
 	} else {
 
-		if (!PDraw::is_fading()){
+		if (!Is_Fading()){
 			next_screen = SCREEN_MENU;
 		}
 

@@ -64,6 +64,17 @@ extern bool speedrun_mode;
 extern bool PK2_error;
 extern const char* PK2_error_msg;
 
+#define FADE_FAST   0.05
+#define FADE_NORMAL 0.02
+#define FADE_SLOW   0.01
+
+void Fade_in(float speed);
+void Fade_out(float speed);
+bool Is_Fading();
+void Update_Colors();
+
+void Do_Thunder();
+
 void Id_To_String(u32 id, char* string);
 
 void Calculate_SinCos();

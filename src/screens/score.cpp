@@ -265,7 +265,7 @@ int Draw_ScoreCount() {
 
 		going_to_map = true;
 		PSound::set_musicvolume(0);
-		PDraw::fade_out(PDraw::FADE_SLOW);
+		Fade_out(FADE_SLOW);
 
 	}
 
@@ -333,7 +333,7 @@ int Screen_ScoreCount_Init() {
 	PSound::set_musicvolume(Settings.music_max_volume);
 
 	going_to_map = false;
-	PDraw::fade_in(PDraw::FADE_FAST);
+	Fade_in(FADE_FAST);
 
 	return 0;
 
@@ -420,7 +420,7 @@ int Screen_ScoreCount() {
 		if(counting_phase == COUNT_ENDED && !going_to_map) {
 
 			going_to_map = true;
-			PDraw::fade_out(PDraw::FADE_SLOW);
+			Fade_out(FADE_SLOW);
 			PSound::set_musicvolume(0);
 			key_delay = 20;
 
@@ -451,7 +451,7 @@ int Screen_ScoreCount() {
 
 	}
 
-	if (going_to_map && !PDraw::is_fading()){
+	if (going_to_map && !Is_Fading()){
 
 		if (Game->level_id == EPISODI_MAX_LEVELS - 1) {
 

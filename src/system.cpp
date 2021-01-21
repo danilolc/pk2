@@ -61,6 +61,71 @@ bool speedrun_mode = false;
 bool PK2_error = false;
 const char* PK2_error_msg = nullptr;
 
+static float alpha = 1;
+static float fade_speed = 0;
+
+static const float thunder_sheet[] = {
+	1.00,
+	2.00,
+	5.00,
+	6.00,
+	7.00,
+	4.00,
+	7.00,
+	4.00,
+	2.00,
+	1.00,
+	7.00,
+	5.00,
+	2.00,
+	1.00,
+};
+static const float thunder_size = sizeof(thunder_sheet) / sizeof(float);
+
+static int thunder_index = thunder_size;
+
+void Fade_out(float speed){
+    alpha = 1;
+    fade_speed = -speed;
+}
+void Fade_in(float speed){
+    alpha = 0;
+    fade_speed = speed;
+}
+void Do_Thunder() {
+	printf( "Thunder\n");
+	thunder_index = 0;
+}
+
+bool Is_Fading() {
+  if (alpha > 0 && fade_speed < 0)
+    return true;
+
+  if (alpha < 100 && fade_speed > 0)
+    return true;
+
+  return false;
+}
+
+void Update_Colors() {
+
+	if (Is_Fading()) {
+
+        alpha += fade_speed;
+        if(alpha < 0) alpha = 0;
+        if(alpha > 1) alpha = 1;
+    
+    }
+
+	if (thunder_index < thunder_size)
+		thunder_index++;
+
+	float thunder = (thunder_index == thunder_size) ? 1 : thunder_sheet[thunder_index];
+
+    PDraw::set_rgb(alpha * thunder, alpha * thunder, alpha * thunder);
+
+}
+
 int PK2_Error(const char* msg) {
 	
 	PK2_error = true;

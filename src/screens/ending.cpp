@@ -144,7 +144,7 @@ int Screen_Ending_Init() {
 	loppulaskuri = 0;
 	siirry_lopusta_menuun = false;
 
-	PDraw::fade_in(PDraw::FADE_FAST);
+	Fade_in(FADE_FAST);
 
 	return 0;
 
@@ -159,7 +159,7 @@ int Screen_Ending(){
 	loppulaskuri++;
 	//introlaskuri = loppulaskuri; // introtekstej� varten
 
-	if (siirry_lopusta_menuun && !PDraw::is_fading()) {
+	if (siirry_lopusta_menuun && !Is_Fading()) {
 		PSound::set_musicvolume_now(Settings.music_max_volume);
 		//next_screen = SCREEN_MENU;
 		next_screen = SCREEN_MAP;
@@ -169,7 +169,7 @@ int Screen_Ending(){
 		if (Clicked() || Gui_touch) {
 			siirry_lopusta_menuun = true;
 			PSound::set_musicvolume(0);
-			PDraw::fade_out(PDraw::FADE_SLOW);
+			Fade_out(FADE_SLOW);
 		}
 	}
 

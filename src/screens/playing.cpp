@@ -747,7 +747,7 @@ int Screen_InGame(){
 				Game->exit_timer = 2;
 
 		if (Game->exit_timer == 2) {
-			PDraw::fade_out(PDraw::FADE_NORMAL);
+			Fade_out(FADE_NORMAL);
 			//PSound::set_musicvolume(0);
 		
 		}
@@ -868,7 +868,7 @@ int Screen_InGame(){
 
 	}
 
-	if (Game->exit_timer == 1 && !PDraw::is_fading()) {
+	if (Game->exit_timer == 1 && !Is_Fading()) {
 		
 		if(test_level) {
 

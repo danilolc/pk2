@@ -1233,7 +1233,7 @@ int Sprite_Movement(int i){
 														Game->camera_y = (int)Player_Sprite->y;
 														Game->dcamera_x = Game->camera_x-screen_width/2;
 														Game->dcamera_y = Game->camera_y-screen_height/2;
-														PDraw::fade_in(PDraw::FADE_NORMAL);
+														Fade_in(FADE_NORMAL);
 														if (sprite.tyyppi->aanet[SOUND_ATTACK2] != -1)
 															Play_MenuSFX(sprite.tyyppi->aanet[SOUND_ATTACK2], 100);
 															//Play_GameSFX(, 100, Game->camera_x, Game->camera_y, SOUND_SAMPLERATE, false);

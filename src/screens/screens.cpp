@@ -28,7 +28,7 @@ static bool closing_game = false;
 
 void Fade_Quit() {
 
-	if(!closing_game) PDraw::fade_out(PDraw::FADE_FAST);
+	if(!closing_game) Fade_out(FADE_FAST);
 	closing_game = true;
 	PSound::set_musicvolume(0);
 	
@@ -132,7 +132,7 @@ int Screen_First_Start() {
 
 	Load_SaveFile();
 
-	PDraw::fade_in(PDraw::FADE_SLOW);
+	Fade_in(FADE_SLOW);
 	PSound::set_musicvolume_now(Settings.music_max_volume);
 	
 	return 0;
@@ -142,7 +142,7 @@ int Screen_First_Start() {
 //If the screen change
 int Screen_Change() {
 
-	PDraw::fade_in(PDraw::FADE_NORMAL);
+	Fade_in(FADE_NORMAL);
 
 	switch (next_screen) {
 		case SCREEN_INTRO   : Screen_Intro_Init();      break;
@@ -188,8 +188,11 @@ int Screen_Loop() {
 	if (key_delay > 0)
 		key_delay--;
 
-	if (closing_game && !PDraw::is_fading())
+	if (closing_game && !Is_Fading())
 		Piste::stop();
+
+	if ((rand() % 100) == 1) Do_Thunder();
+	Update_Colors();
 
 	return 0;
 

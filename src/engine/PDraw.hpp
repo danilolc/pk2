@@ -10,19 +10,12 @@
 
 namespace PDraw {
 
-const int FADE_FAST = 5;
-const int FADE_NORMAL = 2;
-const int FADE_SLOW = 1;
-
 struct RECT {
 
     s32 x, y, w, h;
 
 };
 
-bool  is_fading();
-int   fade_out(int speed);
-int   fade_in(int speed);
 void  rotate_palette(u8 start, u8 end);
 
 int   image_new(int w, int h);
@@ -68,6 +61,8 @@ void  get_buffer_size(int* w, int* h);
 void  get_offset(int* x, int* y);
 void  set_offset(int width, int height);
 void  clear_fonts();
+
+void  set_rgb(float r, float g, float b);
 
 void  get_buffer_data(void** _buffer8);
 void  update();
