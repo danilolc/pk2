@@ -41,8 +41,6 @@ static int offset_height = 0;
 
 static int update_palette_effect() {
 
-    printf("%f %f %f %i\n", color_r, color_g, color_b, rand());
-
     if (IS_UNITY(color_r) || IS_UNITY(color_g) || IS_UNITY(color_b))
         return SDL_SetPaletteColors(game_palette, game_colors, 0, 256);
 
@@ -112,7 +110,7 @@ int image_new(int w, int h){
     if (index == -1) return -1;
 
     imageList[index] = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
-    SDL_SetPixelFormatPalette(imageList[index]->format, game_palette);
+    SDL_SetSurfacePalette(imageList[index], game_palette);
     SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
 
     SDL_FillRect(imageList[index], NULL, 255);
@@ -164,7 +162,7 @@ int image_load(PFile::Path path, bool getPalette) {
     
     }
 
-    SDL_SetPixelFormatPalette(imageList[index]->format, game_palette);
+    SDL_SetSurfacePalette(imageList[index], game_palette);
     SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
 
     return index;
@@ -215,7 +213,7 @@ int image_cut(int ImgIndex, RECT area) {
 
     imageList[index] = SDL_CreateRGBSurface(0, area.w, area.h, 8, 0, 0, 0, 0);
 
-    SDL_SetPixelFormatPalette(imageList[index]->format, game_palette);
+    SDL_SetSurfacePalette(imageList[index], game_palette);
     SDL_SetColorKey(imageList[index], SDL_TRUE, 255);
 
     SDL_FillRect(imageList[index], NULL, 255);
@@ -657,7 +655,7 @@ void set_buffer_size(int w, int h) {
     SDL_FreeSurface(frameBuffer8);
     
     frameBuffer8 = SDL_CreateRGBSurface(0, w, h, 8, 0, 0, 0, 0);
-    SDL_SetPixelFormatPalette(frameBuffer8->format, game_palette);
+    SDL_SetSurfacePalette(frameBuffer8, game_palette);
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
 
     set_offset(offset_width, offset_height);
@@ -731,7 +729,7 @@ int init(int width, int height) {
         game_palette = SDL_AllocPalette(256);
 
     frameBuffer8 = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0);
-    SDL_SetPixelFormatPalette(frameBuffer8->format, game_palette);
+    SDL_SetSurfacePalette(frameBuffer8, game_palette);
     SDL_SetColorKey(frameBuffer8, SDL_TRUE, 255);
 
     SDL_SetClipRect(frameBuffer8, NULL);

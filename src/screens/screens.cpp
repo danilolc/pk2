@@ -191,7 +191,7 @@ int Screen_Loop() {
 	if (closing_game && !Is_Fading())
 		Piste::stop();
 
-	if ((rand() % 100) == 1) Do_Thunder();
+	// Fade and thunder
 	Update_Colors();
 
 	return 0;
