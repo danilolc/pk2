@@ -117,17 +117,12 @@ void PSdl::update(void* _buffer8) {
         SDL_Texture* tex = (SDL_Texture*)opt.texture;
         if (tex == NULL)
             continue;
-
-        float screen_alpha = float(*(int*)buffer8->userdata) / 100;
         
-        u8 mod = opt.alpha * 256 * screen_alpha;
+        u8 mod = opt.alpha * 256;
         if (mod == 0)
             continue;
-
-        u8 a;
-        SDL_GetTextureAlphaMod(tex, &a);
-        if (a != mod)
-            SDL_SetTextureAlphaMod(tex, mod);
+        
+        SDL_SetTextureAlphaMod(tex, mod);
         
         SDL_Rect rect;
         rect.x = opt.x * prop_x;

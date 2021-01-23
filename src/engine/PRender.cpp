@@ -223,7 +223,7 @@ int init(int width, int height, const char* name, const char* icon) {
 
     #else
 
-	window_flags |= SDL_WINDOW_OPENGL;
+	//window_flags |= SDL_WINDOW_OPENGL;
 
 	window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
@@ -249,9 +249,9 @@ int init(int width, int height, const char* name, const char* icon) {
 
 	#else
 	
-	renderer = new PGl(width, height, window);
+	//renderer = new PGl(width, height, window);
 	//renderer = new PSdlSoft(width, height, window);
-	//renderer = new PSdl(width, height, window);
+	renderer = new PSdl(width, height, window);
 
 	#endif
 

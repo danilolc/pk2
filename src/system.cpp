@@ -107,6 +107,12 @@ bool Is_Fading() {
   return false;
 }
 
+float Screen_Alpha() {
+
+	return alpha;
+
+}
+
 void Update_Colors() {
 
 	if (Is_Fading()) {

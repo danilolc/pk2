@@ -70,6 +70,7 @@ extern const char* PK2_error_msg;
 
 void Fade_in(float speed);
 void Fade_out(float speed);
+float Screen_Alpha();
 bool Is_Fading();
 void Update_Colors();
 

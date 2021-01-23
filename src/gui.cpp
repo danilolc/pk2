@@ -4,6 +4,7 @@
 //#########################
 #include "gui.hpp"
 
+#include "system.hpp"
 #include "settings.hpp"
 #include "game/gifts.hpp"
 #include "game/sprites.hpp"
@@ -299,6 +300,8 @@ void GUI_Update() {
 
 	if (UI_mode == UI_GAME_BUTTONS) {
 
+		float alpha = Screen_Alpha();
+
 		{
 			doodle_active = Player_Sprite->ammus2 != -1;
 			egg_active = Player_Sprite->ammus1 != -1;
@@ -328,14 +331,20 @@ void GUI_Update() {
 				if (gift_alpha < 0) gift_alpha = 0;
 			}
 
-			gui_doodle->alpha = doodle_alpha;
-			gui_egg->alpha = egg_alpha;
-			gui_gift->alpha = gift_alpha;
+			gui_doodle->alpha = doodle_alpha * alpha;
+			gui_egg->alpha = egg_alpha * alpha;
+			gui_gift->alpha = gift_alpha * alpha;
 
 			gui_doodle->active = doodle_alpha != 0;
 			gui_egg->active = egg_alpha != 0;
 			gui_gift->active = gift_alpha != 0;
 		}
+
+		gui_up->alpha = Alpha * alpha;
+		gui_down->alpha = Alpha * alpha;
+		gui_padbg->alpha = Alpha * alpha;
+		gui_padbt->alpha = Alpha * alpha;
+		gui_menu->alpha = Alpha * alpha;
 
 		Gui_pad_button = get_pad();
 
