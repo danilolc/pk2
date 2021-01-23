@@ -14,6 +14,8 @@
 #include <string>
 #endif
 
+#include <SDL_mutex.h>
+
 #define ANSI_COLOR_BLUE    "\x1b[34m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
 #define ANSI_COLOR_YELLOW  "\x1b[33m"
@@ -33,7 +35,11 @@ static PFile::RW* log_file = NULL;
 static u8 log_level = 0;
 static bool print_to_stdout = false;
 
+static SDL_mutex* mutex;
+
 void Init(u8 level, PFile::Path file, bool to_stdout) {
+
+    mutex = SDL_CreateMutex();
 
     log_level = level;
 
@@ -79,6 +85,8 @@ void Write(u8 level, const char* origin, const char* format, ...) {
 
     if (!(log_level & level))
         return;
+
+    SDL_LockMutex(mutex);
 
     /*time_t rawtime;
     time (&rawtime);
@@ -151,11 +159,16 @@ void Write(u8 level, const char* origin, const char* format, ...) {
     
     va_end(args);
 
+    SDL_UnlockMutex(mutex);
+
 }
 
 void Exit() {
 
     Write(DEBUG, "PLog", "Terminated");
+
+    SDL_DestroyMutex(mutex);
+    mutex = NULL;
     
     if (log_file != NULL)
         log_file->close();
