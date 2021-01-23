@@ -6,20 +6,20 @@
 
 #include "engine/platform.hpp"
 #include "engine/PFile.hpp"
+#include "engine/PRender.hpp"
 
 namespace PGui {
 
 struct Gui {
 
     bool active;
-    void* texture;
-    int x, y, w, h;
+    PRender::RECT src, dst;
     u8 alpha;
 
 };
 
-Gui* create_gui(PFile::Path path, int x, int y, int w, int h, u8 alpha);
-int remove_gui(Gui* gui);
+Gui* create_gui(PRender::RECT src, PRender::RECT dst, u8 alpha);
+int  remove_gui(Gui* gui);
 void update();
 
 }

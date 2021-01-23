@@ -10,31 +10,22 @@
 
 #include <SDL.h>
 
-void* PSdl::create_texture(void* surface) {
+void PSdl::load_ui_texture(void* surface) {
 
-    SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*)surface);
-    if (tex == NULL) {
+    ui_texture = SDL_CreateTextureFromSurface(renderer, (SDL_Surface*)surface);
+    if (ui_texture == NULL) {
 
         PLog::Write(PLog::ERR, "PSdl", "Couldn't load texture!");
 
     }
 
-    return tex;
-
 }
-void PSdl::remove_texture(void* texture) {
-
-    SDL_DestroyTexture((SDL_Texture*) texture);
-
-}
-void PSdl::render_texture(void* texture, float x, float y, float w, float h, float alpha) {
+void PSdl::render_ui(PRender::FRECT src, PRender::FRECT dst, float alpha) {
 
     RenderOptions opt;
-    opt.texture = texture;
-    opt.x = x;
-    opt.y = y;
-    opt.w = w;
-    opt.h = h;
+
+    opt.src = src;
+    opt.dst = dst;
     opt.alpha = alpha;
 
     render_list.push_back(opt);
@@ -113,24 +104,26 @@ void PSdl::update(void* _buffer8) {
     float prop_y = (float)h;
     
     for (auto opt : render_list) {
-
-        SDL_Texture* tex = (SDL_Texture*)opt.texture;
-        if (tex == NULL)
-            continue;
         
         u8 mod = opt.alpha * 256;
         if (mod == 0)
             continue;
         
-        SDL_SetTextureAlphaMod(tex, mod);
+        SDL_SetTextureAlphaMod(ui_texture, mod);
         
-        SDL_Rect rect;
-        rect.x = opt.x * prop_x;
-        rect.y = opt.y * prop_y;
-        rect.w = opt.w * prop_x;
-        rect.h = opt.h * prop_y;
+        SDL_Rect dst;
+        dst.x = opt.dst.x * prop_x;
+        dst.y = opt.dst.y * prop_y;
+        dst.w = opt.dst.w * prop_x;
+        dst.h = opt.dst.h * prop_y;
 
-        SDL_RenderCopy(renderer, tex, NULL, &rect);
+        SDL_Rect src;
+        src.x = opt.src.x * 1024;
+        src.y = opt.src.y * 1024;
+        src.w = opt.src.w * 1024;
+        src.h = opt.src.h * 1024;
+
+        SDL_RenderCopy(renderer, ui_texture, &src, &dst);
         
     }
 

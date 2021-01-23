@@ -14,13 +14,18 @@ struct FRECT {
 
 };
 
+struct RECT {
+	
+	int x, y, w, h;
+
+};
+
 class Renderer {
 
 	public:
 
-	virtual void* create_texture(void* surface) = 0;
-	virtual void remove_texture(void* texture) = 0;
-	virtual void render_texture(void* texture, float x, float y, float w, float h, float alpha) = 0;
+	virtual void load_ui_texture(void* surface) = 0;
+	virtual void render_ui(FRECT src, FRECT dst, float alpha) = 0;
 
 	virtual void clear_screen() = 0;
 	virtual void set_screen(FRECT screen_dst) = 0;
@@ -50,9 +55,8 @@ enum {
 
 };
 
-void* load_texture(PFile::Path file);
-void render_texture(void* texture, float x, float y, float w, float h, float alpha);
-void remove_texture(void* texture);
+void load_ui_texture(PFile::Path file);
+void render_ui(FRECT src, FRECT dst, float alpha);
 
 int  set_filter(const char* filter);
 int  set_shader(int mode);

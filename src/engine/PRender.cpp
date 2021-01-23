@@ -35,27 +35,19 @@ static bool vsync_set = false;
 
 static Renderer* renderer;
 
-void* load_texture(PFile::Path file) {
+void load_ui_texture(PFile::Path file) {
 
 	PFile::RW* rw = file.GetRW("r");
 	SDL_Surface* surface = IMG_Load_RW((SDL_RWops*)rw, 1);
 
-	void* texture = renderer->create_texture(surface);
+	renderer->load_ui_texture(surface);
 	SDL_FreeSurface(surface);
 
-	return texture;
-
 }
 
-void remove_texture(void* texture) {
+void render_ui(FRECT src, FRECT dst, float alpha) {
 
-	renderer->remove_texture(texture);
-
-}
-
-void render_texture(void* texture, float x, float y, float w, float h, float alpha) {
-
-	renderer->render_texture(texture, x, y, w, h, alpha);
+	renderer->render_ui(src, dst, alpha);
 
 }
 

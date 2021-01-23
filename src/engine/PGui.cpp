@@ -13,34 +13,18 @@ namespace PGui {
 
 static std::list<Gui*> gui_list;
 
-Gui* create_gui(PFile::Path path, int x, int y, int w, int h, u8 alpha) {
-
-    void* tex = NULL;
-
-    if (path.GetFileName().size() > 0) {
-
-        tex = PRender::load_texture(path);
-        if (tex == NULL) {
-
-            PLog::Write(PLog::ERR, "PGui", "Can't load gui texture %s", path.c_str());
-
-        }
-
-    }
+Gui* create_gui(PRender::RECT src, PRender::RECT dst, u8 alpha) {
 
     Gui* gui = new Gui;
 
     if (gui == nullptr) {
-        PLog::Write(PLog::FATAL, "PGui", "Couldn't alloc gui", path.c_str());
+        PLog::Write(PLog::FATAL, "PGui", "Couldn't alloc gui");
         return nullptr;
     }
 
-    gui->texture = tex;
-    gui->x = x;
-    gui->y = y;
-    gui->w = w;
-    gui->h = h;
-    
+    gui->src = src;
+    gui->dst = dst;
+
     if (alpha > 255)
         gui->alpha = 255;
     else
@@ -60,9 +44,6 @@ int remove_gui(Gui* gui) {
 
     gui_list.remove(gui);
 
-    if (gui->texture != NULL)
-        PRender::remove_texture(gui->texture);
-
     delete gui;
 
     return 0;
@@ -73,15 +54,26 @@ void update() {
 
     for(Gui* gui : gui_list){
 
-		if(gui->active && gui->texture != NULL)
-            PRender::render_texture(
-                gui->texture,
-                float(gui->x) / 1920,
-                float(gui->y) / 1080,
-                float(gui->w) / 1920,
-                float(gui->h) / 1080,
-                float(gui->alpha) / 255
-            );
+		if(gui->active) {
+
+            if (gui->src.w == 0 || gui->src.h == 0)
+                continue;
+
+            PRender::FRECT dst;
+            dst.x = float(gui->dst.x) / 1920;
+            dst.y = float(gui->dst.y) / 1080;
+            dst.w = float(gui->dst.w) / 1920;
+            dst.h = float(gui->dst.h) / 1080;
+
+            PRender::FRECT src;
+            src.x = float(gui->src.x) / 1024;
+            src.y = float(gui->src.y) / 1024;
+            src.w = float(gui->src.w) / 1024;
+            src.h = float(gui->src.h) / 1024;
+
+            PRender::render_ui(src, dst, float(gui->alpha) / 255);
+
+        }
 
 	}
 

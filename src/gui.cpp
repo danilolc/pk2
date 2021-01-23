@@ -9,6 +9,7 @@
 #include "game/gifts.hpp"
 #include "game/sprites.hpp"
 
+#include "engine/PRender.hpp"
 #include "engine/PGui.hpp"
 #include "engine/PInput.hpp"
 
@@ -98,44 +99,62 @@ void GUI_Change(int ui_mode) {
 
 void GUI_Load() {
 
-	int w = 230 * 0.8;
-	int h = 220 * 0.8;
+	int button_w = 230, button_h = 220;
 
-	PFile::Path path("mobile" PE_SEP);
+	int w = button_w * 0.8;
+	int h = button_h * 0.8;
 
-	gui_touch =  PGui::create_gui(path, 0,  0,1920,1080, Alpha);
-	gui_tab =    PGui::create_gui(path, 0,930, 530, 150, Alpha);
+	PFile::Path path("mobile" PE_SEP "all.png");
+	PRender::load_ui_texture(path);
+	PRender::RECT src, dst;
 
-	path.SetFile("menu.png");
-	gui_menu =   PGui::create_gui(path, 50,130,w,h,Alpha);
+	src.x = 0, src.y = 0, src.w = 0,    src.h = 0;
+	dst.x = 0, dst.y = 0, dst.w = 1920, dst.h = 1080;
+	gui_touch = PGui::create_gui(src, dst, Alpha);
+
+
+	src.x = 0, src.y = 0,   src.w = 0,   src.h = 0;
+	dst.x = 0, dst.y = 930, dst.w = 530, dst.h = 150;
+	gui_tab = PGui::create_gui(src, dst, Alpha);
+
+	src.x = button_w * 1, src.y = button_h * 1, src.w = button_w, src.h = button_h;
+	dst.x = 50, dst.y = 130, dst.w = w, dst.h = h;
+	gui_menu = PGui::create_gui(src, dst, Alpha);
 	
-	path.SetFile("padbg.png");
-	gui_padbg =  PGui::create_gui(path, 90,620,641*0.9,362*0.9,Alpha);
+	src.x = button_w * 0, src.y = button_h * 3, src.w = 640, src.h = 360;
+	dst.x = 90, dst.y = 610, dst.w = 577, dst.h = 353;
+	gui_padbg = PGui::create_gui(src, dst, Alpha);
 
-	path.SetFile("padbt.png");
-	gui_padbt =  PGui::create_gui(path, PadBt_x, PadBt_y,169*0.9,173*0.9,Alpha);
+	src.x = button_w * 0, src.y = button_h * 2, src.w = 175, src.h = 175;
+	dst.x = PadBt_x, dst.y = PadBt_y, dst.w = 152, dst.h = 156;
+	gui_padbt = PGui::create_gui(src, dst, Alpha);
 
 	int y = 650;
 	const int dy = 200;
 
-	path.SetFile("up.png");
-	gui_up =     PGui::create_gui(path, 1630, y,w,h,Alpha);
+	src.x = button_w * 2, src.y = button_h * 0, src.w = button_w, src.h = button_h;
+	dst.x = 1630, dst.y = y, dst.w = w, dst.h = h;
+	gui_up = PGui::create_gui(src, dst, Alpha);
 
 	y -= dy;
-	path.SetFile("doodle.png");
-	gui_doodle = PGui::create_gui(path, 1630, y,w,h,Alpha);
+	src.x = button_w * 0, src.y = button_h * 0, src.w = button_w, src.h = button_h;
+	dst.x = 1630, dst.y = y, dst.w = w, dst.h = h;
+	gui_doodle = PGui::create_gui(src, dst, Alpha);
 
 	y -= dy;
-	path.SetFile("gift.png");
-	gui_gift =   PGui::create_gui(path, 1630, y,w,h,Alpha);
+	src.x = button_w * 2, src.y = button_h * 1, src.w = button_w, src.h = button_h;
+	dst.x = 1630, dst.y = y, dst.w = w, dst.h = h;
+	gui_gift = PGui::create_gui(src, dst, Alpha);
 
 	y = 720;
-	path.SetFile("down.png");
-	gui_down =   PGui::create_gui(path, 1410, y,w,h,Alpha);
+	src.x = button_w * 1, src.y = button_h * 0, src.w = button_w, src.h = button_h;
+	dst.x = 1410, dst.y = y, dst.w = w, dst.h = h;
+	gui_down = PGui::create_gui(src, dst, Alpha);
 
 	y -= dy;
-	path.SetFile("egg.png");
-	gui_egg =    PGui::create_gui(path, 1410, y,w,h,Alpha);
+	src.x = button_w * 0, src.y = button_h * 1, src.w = button_w, src.h = button_h;
+	dst.x = 1410, dst.y = y, dst.w = w, dst.h = h;
+	gui_egg = PGui::create_gui(src, dst, Alpha);
 
 }
 
@@ -152,8 +171,8 @@ static bool read_gui(PGui::Gui* gui) {
 		float touch_x = touch.pos_x * 1920;
 		float touch_y = touch.pos_y * 1080;
 
-		if(touch_x > gui->x && touch_x < gui->x + gui->w)
-		if(touch_y > gui->y && touch_y < gui->y + gui->h)
+		if(touch_x > gui->dst.x && touch_x < gui->dst.x + gui->dst.w)
+		if(touch_y > gui->dst.y && touch_y < gui->dst.y + gui->dst.h)
 		if(!pad_grab || pad_id != touch.id)
 			return true;
 
@@ -219,8 +238,8 @@ static int get_pad() {
 			float touch_x = touch.pos_x * 1920;
 			float touch_y = touch.pos_y * 1080;
 
-			if(touch_x > gui_padbg->x && touch_x < gui_padbg->x + gui_padbg->w &&
-				touch_y > gui_padbg->y && touch_y < gui_padbg->y + gui_padbg->h) {
+			if(touch_x > gui_padbg->dst.x && touch_x < gui_padbg->dst.x + gui_padbg->dst.w &&
+				touch_y > gui_padbg->dst.y && touch_y < gui_padbg->dst.y + gui_padbg->dst.h) {
 
 				pad_grab = true;
 				pad_id = touch.id;
@@ -245,26 +264,26 @@ static int get_pad() {
 		if (!last_touch) {
 
 			pad_grab = false;
-			gui_padbt->x = PadBt_x;
-			gui_padbt->y = PadBt_y;
+			gui_padbt->dst.x = PadBt_x;
+			gui_padbt->dst.y = PadBt_y;
 
 		} else {
 
-			float touch = (last_touch->pos_x * 1920 - gui_padbg->x) / gui_padbg->w;
+			float touch = (last_touch->pos_x * 1920 - gui_padbg->dst.x) / gui_padbg->dst.w;
 			float hold_touch = hold_pad(touch, &button);
 
-			gui_padbt->x = gui_padbg->x + hold_touch * gui_padbg->w;
+			gui_padbt->dst.x = gui_padbg->dst.x + hold_touch * gui_padbg->dst.w;
 			
-			gui_padbt->x -= gui_padbt->w / 2;
+			gui_padbt->dst.x -= gui_padbt->dst.w / 2;
 
-			if (gui_padbt->x < gui_padbg->x)
-				gui_padbt->x = gui_padbg->x;
+			if (gui_padbt->dst.x < gui_padbg->dst.x)
+				gui_padbt->dst.x = gui_padbg->dst.x;
 
-			if (gui_padbt->x > gui_padbg->x + gui_padbg->w - gui_padbt->w)
-				gui_padbt->x = gui_padbg->x + gui_padbg->w - gui_padbt->w;
+			if (gui_padbt->dst.x > gui_padbg->dst.x + gui_padbg->dst.w - gui_padbt->dst.w)
+				gui_padbt->dst.x = gui_padbg->dst.x + gui_padbg->dst.w - gui_padbt->dst.w;
 			
-			int x = gui_padbt->x - PadBt_a;
-			gui_padbt->y = PadBt_b - sqrt(PadBt_r*PadBt_r - x*x);
+			int x = gui_padbt->dst.x - PadBt_a;
+			gui_padbt->dst.y = PadBt_b - sqrt(PadBt_r*PadBt_r - x*x);
 
 			/*if (button == 0) {
 				ret = 100;

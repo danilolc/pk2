@@ -10,17 +10,12 @@
 
 #include <SDL.h>
 
-void* PSdlSoft::create_texture(void* surface) {
+void PSdlSoft::load_ui_texture(void* surface) {
 
     PLog::Write(PLog::ERR, "PSdlSoft", "Texture not implemented!");
-    return nullptr;
 
 }
-void PSdlSoft::remove_texture(void* texture) {
-
-
-}
-void PSdlSoft::render_texture(void* texture, float x, float y, float w, float h, float alpha) {
+void PSdlSoft::render_ui(PRender::FRECT src, PRender::FRECT dst, float alpha) {
 
 
 }
