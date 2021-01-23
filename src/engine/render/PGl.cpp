@@ -328,6 +328,7 @@ int PGl::create_indexed_program() {
 void PGl::load_buffers() {
 	
 	// Indexed texture (recieve game buffer)
+	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &indexed_texture);
 	glBindTexture(GL_TEXTURE_2D, indexed_texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -335,6 +336,15 @@ void PGl::load_buffers() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE);
 
+	glActiveTexture(GL_TEXTURE1);
+	glGenTextures(1, &palette_texture);
+	glBindTexture(GL_TEXTURE_1D, palette_texture);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_MIRROR_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_MIRROR_CLAMP_TO_EDGE);
+
+	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1, &screen_texture);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 800, 480, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -391,23 +401,23 @@ void PGl::update(void* _buffer8) {
 	static Uint32 last_palette_version = -1;
 	bool update_palette = last_palette_version != buffer8->format->palette->version;
 	last_palette_version = buffer8->format->palette->version;
-
-	if (update_palette) {
-		for (int i = 0; i < 256; i++) {
-			indexed_palette[3*i] = float(buffer8->format->palette->colors[i].r) / 256;
-			indexed_palette[3*i + 1] = float(buffer8->format->palette->colors[i].g) / 256;
-			indexed_palette[3*i + 2] = float(buffer8->format->palette->colors[i].b) / 256;
-		}
-	}
+	SDL_Color* bufer8_colors = buffer8->format->palette->colors;
 	
 	glViewport(0, 0, buffer8->w, buffer8->h);
 	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);
 	glUseProgram(indexed_program);
+
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, indexed_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8UI, buffer8->w, buffer8->h, 0, GL_RED_INTEGER, GL_UNSIGNED_BYTE, buffer8->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, buffer8->w, buffer8->h, 0, GL_RED, GL_UNSIGNED_BYTE, buffer8->pixels);
 	glUniform1i(uniIndexTex, 0); //
-	if (update_palette)
-		glUniform3fv(uniIndexPalette, 256, indexed_palette); //
+	
+	if (update_palette) {
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_1D, palette_texture);
+		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, bufer8_colors);
+		glUniform1i(uniIndexPalette, 1); //
+	}
 	glUniform1f(uniIndexTime, shader_time);
 	glUniform2f(uniIndexRes, buffer8->w, buffer8->h); //
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -419,6 +429,7 @@ void PGl::update(void* _buffer8) {
 	glViewport(0, 0, w, h);
 	glBindFramebuffer(GL_FRAMEBUFFER, screen_buffer);
 	glUseProgram(*screen_program);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, buffer8->w, buffer8->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); //
 	glUniform1i(*uniScreenTex, 0); //
@@ -448,6 +459,9 @@ PGl::PGl(int width, int height, void* window) {
 	glDisable(GL_DITHER);
 	//glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
+	
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_1D);
 
 	load_buffers();
 
@@ -472,8 +486,9 @@ PGl::PGl(int width, int height, void* window) {
 
 PGl::~PGl() {
 
-	glDeleteTextures(1, &screen_texture);
 	glDeleteTextures(1, &indexed_texture);
+	glDeleteTextures(1, &palette_texture);
+	glDeleteTextures(1, &screen_texture);
 	glDeleteFramebuffers(1, &indexed_buffer);
 	glDeleteVertexArrays(1, &vao);
 	glDeleteBuffers(1, &vbo);

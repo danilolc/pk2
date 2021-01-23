@@ -3,15 +3,15 @@
 in vec2 UV;
 out vec3 color;
 
-uniform usampler2D indexed_tex;
-uniform vec3 palette[256];
+uniform sampler2D indexed_tex;
+uniform sampler1D palette;
 
 uniform vec2 indexed_res;
 uniform float time;
 
 void main(void) {
 
-	uint idx = texture(indexed_tex, UV).r;
-	color = palette[idx];
+	float index = texture(indexed_tex, UV).r;
+	color = texture(palette, index).rgb;
 
 }

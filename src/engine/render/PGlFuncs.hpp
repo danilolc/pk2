@@ -12,7 +12,7 @@ void free_lib();
 }
 
 // extern PFNGLACTIVESHADERPROGRAMPROC gl_ActiveShaderProgram;
-// extern PFNGLACTIVETEXTUREPROC gl_ActiveTexture;
+extern PFNGLACTIVETEXTUREPROC gl_ActiveTexture;
 extern PFNGLATTACHSHADERPROC gl_AttachShader;
 // extern PFNGLBEGINCONDITIONALRENDERPROC gl_BeginConditionalRender;
 // extern PFNGLBEGINQUERYPROC gl_BeginQuery;
@@ -173,7 +173,7 @@ extern PFNGLDRAWBUFFERSPROC gl_DrawBuffers;
 // extern PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC gl_DrawTransformFeedbackInstanced;
 // extern PFNGLDRAWTRANSFORMFEEDBACKSTREAMPROC gl_DrawTransformFeedbackStream;
 // extern PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC gl_DrawTransformFeedbackStreamInstanced;
-// extern PFNGLENABLEPROC gl_Enable;
+extern PFNGLENABLEPROC gl_Enable;
 // extern PFNGLENABLEVERTEXARRAYATTRIBPROC gl_EnableVertexArrayAttrib;
 extern PFNGLENABLEVERTEXATTRIBARRAYPROC gl_EnableVertexAttribArray;
 // extern PFNGLENABLEIPROC gl_Enablei;
@@ -514,7 +514,7 @@ extern PFNGLSHADERSOURCEPROC gl_ShaderSource;
 // extern PFNGLSTENCILOPSEPARATEPROC gl_StencilOpSeparate;
 // extern PFNGLTEXBUFFERPROC gl_TexBuffer;
 // extern PFNGLTEXBUFFERRANGEPROC gl_TexBufferRange;
-// extern PFNGLTEXIMAGE1DPROC gl_TexImage1D;
+extern PFNGLTEXIMAGE1DPROC gl_TexImage1D;
 extern PFNGLTEXIMAGE2DPROC gl_TexImage2D;
 // extern PFNGLTEXIMAGE2DMULTISAMPLEPROC gl_TexImage2DMultisample;
 // extern PFNGLTEXIMAGE3DPROC gl_TexImage3D;

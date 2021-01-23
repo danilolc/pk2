@@ -106,7 +106,7 @@ private:
 
 
     GLuint  indexed_texture;
-    GLfloat indexed_palette[256*3];
+    GLuint  palette_texture;
 
     GLuint screen_texture;
     GLuint indexed_buffer;

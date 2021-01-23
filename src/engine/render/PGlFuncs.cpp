@@ -45,7 +45,7 @@ static void* get_proc(const char* proc) {
 void load_funcs() {
 
 	// gl_ActiveShaderProgram = (PFNGLACTIVESHADERPROGRAMPROC) get_proc("glActiveShaderProgram");
-	// gl_ActiveTexture = (PFNGLACTIVETEXTUREPROC) get_proc("glActiveTexture");
+	gl_ActiveTexture = (PFNGLACTIVETEXTUREPROC) get_proc("glActiveTexture");
 	gl_AttachShader = (PFNGLATTACHSHADERPROC) get_proc("glAttachShader");
 	// gl_BeginConditionalRender = (PFNGLBEGINCONDITIONALRENDERPROC) get_proc("glBeginConditionalRender");
 	// gl_BeginQuery = (PFNGLBEGINQUERYPROC) get_proc("glBeginQuery");
@@ -206,7 +206,7 @@ void load_funcs() {
 	// gl_DrawTransformFeedbackInstanced = (PFNGLDRAWTRANSFORMFEEDBACKINSTANCEDPROC) get_proc("glDrawTransformFeedbackInstanced");
 	// gl_DrawTransformFeedbackStream = (PFNGLDRAWTRANSFORMFEEDBACKSTREAMPROC) get_proc("glDrawTransformFeedbackStream");
 	// gl_DrawTransformFeedbackStreamInstanced = (PFNGLDRAWTRANSFORMFEEDBACKSTREAMINSTANCEDPROC) get_proc("glDrawTransformFeedbackStreamInstanced");
-	// gl_Enable = (PFNGLENABLEPROC) get_proc("glEnable");
+	gl_Enable = (PFNGLENABLEPROC) get_proc("glEnable");
 	// gl_EnableVertexArrayAttrib = (PFNGLENABLEVERTEXARRAYATTRIBPROC) get_proc("glEnableVertexArrayAttrib");
 	gl_EnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC) get_proc("glEnableVertexAttribArray");
 	// gl_Enablei = (PFNGLENABLEIPROC) get_proc("glEnablei");
@@ -547,7 +547,7 @@ void load_funcs() {
 	// gl_StencilOpSeparate = (PFNGLSTENCILOPSEPARATEPROC) get_proc("glStencilOpSeparate");
 	// gl_TexBuffer = (PFNGLTEXBUFFERPROC) get_proc("glTexBuffer");
 	// gl_TexBufferRange = (PFNGLTEXBUFFERRANGEPROC) get_proc("glTexBufferRange");
-	// gl_TexImage1D = (PFNGLTEXIMAGE1DPROC) get_proc("glTexImage1D");
+	gl_TexImage1D = (PFNGLTEXIMAGE1DPROC) get_proc("glTexImage1D");
 	gl_TexImage2D = (PFNGLTEXIMAGE2DPROC) get_proc("glTexImage2D");
 	// gl_TexImage2DMultisample = (PFNGLTEXIMAGE2DMULTISAMPLEPROC) get_proc("glTexImage2DMultisample");
 	// gl_TexImage3D = (PFNGLTEXIMAGE3DPROC) get_proc("glTexImage3D");
