@@ -276,6 +276,15 @@ int init(int width, int height, const char* name, const char* icon, int render_m
 		
 	}
 
+	if (!renderer) {
+
+		PLog::Write(PLog::FATAL, "PRender", "Couldn't create renderer!");
+		SDL_DestroyWindow(window);
+		return -3;
+
+	}
+
+	renderer->set_vsync(vsync_set);
 	adjust_screen();
 
 	return 0;
