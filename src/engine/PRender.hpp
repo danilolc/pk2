@@ -42,6 +42,7 @@ enum {
 
 enum {
 
+	RENDERER_DEFAULT,
 	RENDERER_SDL,
 	RENDERER_OPENGL,
 	RENDERER_OPENGLES,
@@ -67,7 +68,7 @@ void get_window_position(int* x, int* y);
 int  set_vsync(bool set);
 bool is_vsync();
 
-int  init(int width, int height, const char* name, const char* icon);
+int  init(int width, int height, const char* name, const char* icon, int render_method);
 void terminate();
 void update(void* _buffer8);
 

@@ -197,14 +197,31 @@ bool is_vsync() {
 	
 }
 
-int init(int width, int height, const char* name, const char* icon) {
+int init(int width, int height, const char* name, const char* icon, int render_method) {
 
 	PLog::Write(PLog::DEBUG, "PRender", "Initializing renderer");
+
+	if (render_method == RENDERER_DEFAULT) {
+
+		// TODO choose renderer
+		#ifdef __ANDROID__
+
+		render_method = RENDERER_SDL;
+
+		#else
+
+		render_method = RENDERER_OPENGL;
+
+		#endif
+
+	}
 
 	window_name = name;
 	Uint32 window_flags = SDL_WINDOW_SHOWN;
 
-	//window_flags |= SDL_WINDOW_OPENGL;
+	if (render_method == RENDERER_OPENGL || render_method == RENDERER_OPENGLES)
+		window_flags |= SDL_WINDOW_OPENGL;
+	
 	//window_flags |= SDL_WINDOW_RESIZABLE;
 
     #ifdef __ANDROID__
@@ -223,7 +240,8 @@ int init(int width, int height, const char* name, const char* icon) {
 
     #else
 
-	//window_flags |= SDL_WINDOW_OPENGL;
+	if (render_method == RENDERER_SDL_SOFTWARE)
+		fullscreen_mode = SDL_WINDOW_FULLSCREEN;
 
 	window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
@@ -243,17 +261,20 @@ int init(int width, int height, const char* name, const char* icon) {
 	
 	#endif
 
-	#ifdef __ANDROID__
+	switch (render_method) {
 
-	renderer = new PSdl(width, height, window);
-
-	#else
-	
-	//renderer = new PGl(width, height, window);
-	//renderer = new PSdlSoft(width, height, window);
-	renderer = new PSdl(width, height, window);
-
-	#endif
+		case RENDERER_SDL:
+			renderer = new PSdl(width, height, window); break;
+		case RENDERER_SDL_SOFTWARE:
+			renderer = new PSdlSoft(width, height, window); break;
+		case RENDERER_OPENGL:
+			renderer = new PGl(width, height, window); break;
+		case RENDERER_OPENGLES:
+			//renderer = new PGles(width, height, window); break;
+		default:
+			renderer = new PSdl(width, height, window); break;
+		
+	}
 
 	adjust_screen();
 

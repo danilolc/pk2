@@ -10,17 +10,11 @@
 
 // settings text (shouldn't change during execution)
 
-enum {
-	DRAW_OPENGL,
-	DRAW_SDL2,
-	DRAW_SDL2_SOFTWARE
-};
-
 extern int screen_width;
 extern int screen_height;
 
 extern int audio_buffer_size;
-extern int drawing_method;
+extern int render_method;
 
 #ifdef __ANDROID__
 // Variables used on data menu

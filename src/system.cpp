@@ -19,7 +19,7 @@ int screen_width  = 800;
 int screen_height = 480;
 
 int audio_buffer_size = 1024;
-int drawing_method = DRAW_OPENGL;
+int render_method = PRender::RENDERER_DEFAULT;
 
 #ifdef __ANDROID__
 

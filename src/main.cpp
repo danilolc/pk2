@@ -30,7 +30,7 @@
 
 const char default_config[] = 
 "-- Render Method"
-"\r\n-- Possible options: sdl sdl_multithread opengl opengles default"
+"\r\n-- Possible options: sdl software opengl opengles default"
 "\r\n---------------"
 "\r\n*render_method:        default"
 "\r\n"
@@ -65,6 +65,18 @@ static void read_config() {
 	if (idx != -1) {
 		const char* txt = conf.Get_Text(idx);
 		PLog::Write(PLog::DEBUG, "PK2", "Render method set to %s", txt);
+
+		if (strcmp(txt, "default") == 0)
+			render_method = PRender::RENDERER_DEFAULT;
+		else if (strcmp(txt, "sdl") == 0)
+			render_method = PRender::RENDERER_SDL;
+		else if (strcmp(txt, "software") == 0)
+			render_method = PRender::RENDERER_SDL_SOFTWARE;
+		else if (strcmp(txt, "opengl") == 0)
+			render_method = PRender::RENDERER_OPENGL;
+		else if (strcmp(txt, "opengles") == 0)
+			render_method = PRender::RENDERER_OPENGLES;
+
 	}
 
 	idx = conf.Search_Id("audio_buffer_size");
@@ -327,7 +339,7 @@ int main(int argc, char *argv[]) {
 		screen_height = 480;
 	}
 
-	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", audio_buffer_size);
+	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", render_method, audio_buffer_size);
 	if (!Piste::is_ready()) {
 
 		PLog::Write(PLog::FATAL, "PK2", "Failed to init PisteEngine");
