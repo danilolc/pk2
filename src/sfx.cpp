@@ -155,9 +155,13 @@ void update_channel(int channel) {
 void Update_GameSFX() {
 
     for (int i = 0; i < PSound::CHANNELS; i++)
-        if (sfx_list[i].used)
-            update_channel(i);
-
+        if (sfx_list[i].used) {
+            if (!PSound::is_playing(i))
+                sfx_list[i].used = false;
+            else
+                update_channel(i);
+        }
+    
 }
 
 void Play_GameSFX(int sound, int volume, int x, int y, int freq, bool random_freq){

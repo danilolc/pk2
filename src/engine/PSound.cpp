@@ -84,6 +84,12 @@ static int change_frequency(int index, int channel, int freq) {
 
 }
 
+bool is_playing(int channel) {
+
+	return Mix_Playing(channel);
+
+}
+
 int load_sfx(PFile::Path path) {
 
 	for( int i = 0; i < MAX_SOUNDS; i++ )

@@ -15,6 +15,7 @@ int init(int buffer_size);
 int update();
 int terminate();
 
+bool is_playing(int channel);
 int  load_sfx(PFile::Path path);
 int  set_channel(int channel, int panoramic, int volume);
 int  play_sfx(int index, int volume, int panoramic, int freq);
