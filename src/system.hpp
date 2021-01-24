@@ -14,6 +14,7 @@ extern int screen_width;
 extern int screen_height;
 
 extern int audio_buffer_size;
+extern bool audio_multi_thread;
 extern int render_method;
 
 #ifdef __ANDROID__

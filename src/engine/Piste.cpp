@@ -115,7 +115,7 @@ static void sdl_show() {
 }
 
 
-void init(int width, int height, const char* name, const char* icon, int render_method, int audio_buffer_size) {
+void init(int width, int height, const char* name, const char* icon, int render_method, int audio_buffer_size, bool audio_multi_thread) {
 	
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 
@@ -129,7 +129,7 @@ void init(int width, int height, const char* name, const char* icon, int render_
 	PDraw::init(width, height);
 	PRender::init(width, height, name, icon, render_method);
 	PInput::init();
-	PSound::init(audio_buffer_size);
+	PSound::init(audio_buffer_size, audio_multi_thread);
 
 	ready = true;
 

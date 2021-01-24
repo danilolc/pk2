@@ -18,6 +18,7 @@
 int screen_width  = 800;
 int screen_height = 480;
 
+bool audio_multi_thread = true;
 int audio_buffer_size = 1024;
 int render_method = PRender::RENDERER_DEFAULT;
 
