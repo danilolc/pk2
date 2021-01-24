@@ -117,7 +117,10 @@ static void sdl_show() {
 
 void init(int width, int height, const char* name, const char* icon, int render_method, int audio_buffer_size, bool audio_multi_thread) {
 	
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+	u32 flags = SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS | \
+                SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER /*| SDL_INIT_SENSOR*/;
+	
+	if (SDL_Init(flags) < 0) {
 
 		PLog::Write(PLog::FATAL, "Piste", "Unable to init SDL: %s", SDL_GetError());
 		return;

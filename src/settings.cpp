@@ -98,8 +98,8 @@ void Settings_Init() {
 	Settings.joystick.attack2   = PInput::JOY_B;
 	Settings.joystick.open_gift = PInput::JOY_LEFTSHOULDER;
 
-	Settings.music_max_volume = 50;
-	Settings.sfx_max_volume = 90;
+	Settings.music_max_volume = 30;
+	Settings.sfx_max_volume = 95;
 
 	Id_To_String(Settings.id, id_code);
 
