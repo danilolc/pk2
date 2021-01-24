@@ -162,19 +162,13 @@ int Draw_ScoreCount() {
 
 	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_bonus_score), 100, my);
 	
-	if (counting_phase == COUNT_BONUS)
-		sprintf(luku, "%i", bonus_score + rand()%10);
-	else
-		sprintf(luku, "%i", bonus_score);
+	sprintf(luku, "%i", bonus_score);
 	ShadowedText_Draw(luku, 400, my);
 	my += 30;
 
 	ShadowedText_Draw(tekstit->Get_Text(PK_txt.score_screen_time_score), 100, my);
 	
-	if (counting_phase == COUNT_TIME)
-		sprintf(luku, "%i", time_score - (time_score%10) + rand()%10);
-	else
-		sprintf(luku, "%i", time_score);
+	sprintf(luku, "%i", time_score);
 	ShadowedText_Draw(luku, 400, my);
 	my += 30;
 
@@ -345,9 +339,8 @@ int Screen_ScoreCount() {
 
 	degree = 1 + degree % 360;
 
-	counting_phase = COUNT_NOTHING;
-
-	if (counting_delay == 0){
+	if (counting_delay == 0) {
+	
 		if (bonus_score < Game->score) {
 
 			counting_phase = COUNT_BONUS;

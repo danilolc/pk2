@@ -84,9 +84,7 @@ This example starts the level13.map on dev mode:
 * Use app bundles to minimize apk size
 * SDL_QUIT on Android
 * Autosave settings option, ask when overwriting save, select save on new game
-* Digital antroid controllers (<< < o > >>)
 * Remove repeated languages
-* Translate finnish language
 * Low volume sounds not played on low volume - music playing on volume 0
 * Better sound quality
 * Jump frames when fps is low
@@ -96,5 +94,5 @@ This example starts the level13.map on dev mode:
 * Better documentation
 * Implement new layer on .map (regions)
 * Find image (load .bmp or .png)
-* Thunder on rainy levels?
+* New weather
 * OpenGL ES
