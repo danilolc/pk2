@@ -28,6 +28,8 @@ static float mus_volume_now = 100;
 static Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
 static Uint8* freq_chunks[CHANNELS];  //The chunk allocated for each channel
 
+static bool channel_playing[CHANNELS];
+
 static Mix_Music* overlay_music = NULL;
 static PFile::RW* overlay_rw = NULL;
 static bool overlay_playing = false;
@@ -38,6 +40,7 @@ static PFile::Path playingMusic = PFile::Path("");
 
 struct audio_data_t {
 
+	//index = -1 -> clean channel
 	int index, channel, volume, panoramic, freq;
 
 };
@@ -45,13 +48,14 @@ struct audio_data_t {
 static SDL_Thread* queue_thread = NULL;
 static SDL_sem* semafore = NULL;
 static SDL_mutex* queue_mutex = NULL;
+static SDL_mutex* chunks_mutex = NULL;
 static SDL_atomic_t thread_done;
 static std::queue<audio_data_t> sound_queue;
 
 static int find_channel() {
 	
 	for( int channel = 0; channel < CHANNELS; channel++ )
-		if( !Mix_Playing(channel) )
+		if( !channel_playing[channel] )
 			return channel;
 
 	return -1;
@@ -89,7 +93,7 @@ static int change_frequency(int index, int channel, int freq) {
 		//Save the buffer to delete it after play
 		if(freq_chunks[channel] != NULL)
 			SDL_free( freq_chunks[channel] );
-		freq_chunks[channel] = cvt.buf; 
+		freq_chunks[channel] = cvt.buf;
 
 	}
 
@@ -99,11 +103,15 @@ static int change_frequency(int index, int channel, int freq) {
 
 bool is_playing(int channel) {
 
-	return Mix_Playing(channel);
+	return channel_playing[channel];
 
 }
 
 int load_sfx(PFile::Path path) {
+
+	int ret = -1;
+
+	SDL_LockMutex(chunks_mutex);
 
 	for( int i = 0; i < MAX_SOUNDS; i++ )
 		if (chunks[i] == NULL) {
@@ -112,18 +120,24 @@ int load_sfx(PFile::Path path) {
 			if (rw == nullptr) {
 
 				PLog::Write(PLog::ERR, "PSound", "Couldn't open %s", path.c_str());
-				return -1;
+				break;
+
+			} else {
+
+				chunks[i] = Mix_LoadWAV_RW((SDL_RWops*)rw, 0);
+				rw->close();
+			
+				ret = i;
 
 			}
 
-			chunks[i] = Mix_LoadWAV_RW((SDL_RWops*)rw, 0);
-			rw->close();
-			
-			return i;
+			break;
 
 		}
 	
-	return -1;
+	SDL_UnlockMutex(chunks_mutex);
+	
+	return ret;
 }
 
 //panoramic from -1000 to 1000
@@ -150,6 +164,8 @@ int set_channel(int channel, int panoramic, int volume) {
 
 int change_frequency_and_play(int index, int channel, int freq) {
 	
+	SDL_LockMutex(chunks_mutex);
+
 	//Save a backup of the parameter that will be ovewrited
 	Uint8* bkp_buf = chunks[index]->abuf;
 	Uint32 bkp_len = chunks[index]->alen;
@@ -162,6 +178,8 @@ int change_frequency_and_play(int index, int channel, int freq) {
 			PLog::Write(PLog::ERR, "PSound", "Can't change frequency");
 			chunks[index]->abuf = bkp_buf;
 			chunks[index]->alen = bkp_len;
+			SDL_UnlockMutex(chunks_mutex);
+
 			return -1;
 
 		}
@@ -173,6 +191,8 @@ int change_frequency_and_play(int index, int channel, int freq) {
 	int error = Mix_PlayChannel(channel, chunks[index], 0);
 	chunks[index]->abuf = bkp_buf;
 	chunks[index]->alen = bkp_len;
+
+	SDL_UnlockMutex(chunks_mutex);
 
 	return error;
 
@@ -200,7 +220,15 @@ static int queue_function(void* data) {
 
 			SDL_UnlockMutex(queue_mutex);
 
-			PLog::Write(PLog::INFO, "PSound", "Queue audio %i", audio_data.index);
+			if (audio_data.index == -1) {
+
+				u8* pointer = freq_chunks[audio_data.channel];
+				freq_chunks[audio_data.channel] = NULL;
+				SDL_free(pointer);
+				channel_playing[audio_data.channel] = false;
+				continue;
+
+			}
 
 			int error = change_frequency_and_play(audio_data.index, audio_data.channel, audio_data.freq);
 			if (error == -1) {
@@ -231,8 +259,6 @@ static void send_queue(int index, int channel, int volume, int panoramic, int fr
 	sound_queue.push(audio_data);
 	SDL_UnlockMutex(queue_mutex);
 
-	SDL_SemPost(semafore);
-
 }
 
 int play_sfx(int index, int volume, int panoramic, int freq) {
@@ -247,6 +273,8 @@ int play_sfx(int index, int volume, int panoramic, int freq) {
 		return -1;
 	
 	}
+	
+	channel_playing[channel] = true;
 
 	set_channel(channel, panoramic, volume);
 
@@ -272,12 +300,16 @@ int play_sfx(int index, int volume, int panoramic, int freq) {
 
 int free_sfx(int index) {
 
+	SDL_LockMutex(chunks_mutex);
+
 	if(chunks[index] != NULL) {
 		
 		Mix_FreeChunk(chunks[index]);
 		chunks[index] = NULL;
 	
 	}
+
+	SDL_UnlockMutex(chunks_mutex);
 
 	return 0;
 
@@ -453,9 +485,24 @@ void stop_music(){
 
 void channelDone(int channel) {
 
+	if (queue_thread) {
+
+		audio_data_t audio_data;
+		audio_data.index = -1;
+		audio_data.channel = channel;
+
+		SDL_LockMutex(queue_mutex);
+		sound_queue.push(audio_data);
+		SDL_UnlockMutex(queue_mutex);
+
+		return;
+
+	}
+
 	u8* pointer = freq_chunks[channel];
 	freq_chunks[channel] = NULL;
     SDL_free(pointer);
+	channel_playing[channel] = false;
 
 }
 
@@ -467,6 +514,11 @@ int init(int buffer_size, bool multi_thread) {
 		PLog::Write(PLog::FATAL, "PSound", "Unable to init Mixer: %s", Mix_GetError());
 		return -1;
 
+	}
+
+	for (int i = 0; i < CHANNELS; i++) {
+		freq_chunks[i] = NULL;
+		channel_playing[i] = false;
 	}
 
 	Mix_Init(MIX_INIT_MOD | MIX_INIT_MP3 | MIX_INIT_OGG);
@@ -489,6 +541,7 @@ int init(int buffer_size, bool multi_thread) {
 		SDL_AtomicSet(&thread_done, 0);
 		semafore = SDL_CreateSemaphore(0);
 		queue_mutex = SDL_CreateMutex();
+		chunks_mutex = SDL_CreateMutex();
 		queue_thread = SDL_CreateThread(queue_function, "Audio Thread", NULL);
 
 	}
@@ -510,6 +563,12 @@ int update() {
 	
 	if (overlay_playing && !Mix_PlayingMusic())
 		resume_music();
+
+	SDL_LockMutex(queue_mutex);
+	int size = sound_queue.size();
+	SDL_UnlockMutex(queue_mutex);
+	if (size > 0)
+		SDL_SemPost(semafore);
 
 	return 0;
 
@@ -541,6 +600,7 @@ int terminate() {
 		SDL_WaitThread(queue_thread, NULL);
 		SDL_DestroySemaphore(semafore);
 		SDL_DestroyMutex(queue_mutex);
+		SDL_DestroyMutex(chunks_mutex);
 
 	}
 

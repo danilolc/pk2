@@ -41,6 +41,13 @@ const char default_config[] =
 "\r\n-- Prefer a power of 2: 512 1024 2048 4096 default"
 "\r\n---------------"
 "\r\n*audio_buffer_size:    default"
+"\r\n"
+"\r\n"
+"\r\n-- Multi thread audio"
+"\r\n-- Change frequency in another thread"
+"\r\n-- Default is yes"
+"\r\n---------------"
+"\r\n*audio_multi_thread:    yes"
 "\r\n";
 
 static void read_config() {
@@ -52,8 +59,10 @@ static void read_config() {
 	if (!ok) {
 		
 		PFile::RW* rw = path.GetRW("w");
-		if (rw)
+		if (rw) {
 			rw->write(default_config, sizeof(default_config) - 1);
+			rw->close();
+		}
 
 		return;
 	}
@@ -86,11 +95,26 @@ static void read_config() {
 
 		if (val > 0) {
 			audio_buffer_size = val;
-			PLog::Write(PLog::DEBUG, "PK2", "Audio buffer size set to %i", val);
+			
 
 		}
 	}
+	PLog::Write(PLog::DEBUG, "PK2", "Audio buffer size set to %i", audio_buffer_size);
 
+	idx = conf.Search_Id("audio_multi_thread");
+	if (idx != -1) {
+		const char* txt = conf.Get_Text(idx);
+
+		if (strcmp(txt, "default") == 0)
+			audio_multi_thread = true;
+		else if (strcmp(txt, "yes") == 0)
+			audio_multi_thread = true;
+		else if (strcmp(txt, "no") == 0)
+			audio_multi_thread = false;
+
+		
+	}
+	PLog::Write(PLog::DEBUG, "PK2", "Audio multi thread is %s", audio_multi_thread? "ON" : "OFF");
 
 }
 
