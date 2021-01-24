@@ -9,22 +9,24 @@
 CXX = g++
 
 # Optimization:
-CXXFLAGS += -g
-#CXXFLAGS += -O2
+#CXXFLAGS += -g
+CXXFLAGS += -O2
+
+#CXXFLAGS += -march=native
 
 # Warnings:
 CXXFLAGS += -Wall
 
 # Standart:
-CXXFLAGS += --std=c++11
+CXXFLAGS += --std=c++11 
 
 # SDL2:
 CXXFLAGS += $(shell pkg-config sdl2 --cflags)
 LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
 
 # LibZip (read episodes on zip files):
-CXXFLAGS += -DPK2_USE_ZIP $(shell pkg-config libzip --cflags)
-LDFLAGS += $(shell pkg-config libzip --libs)
+#CXXFLAGS += -DPK2_USE_ZIP $(shell pkg-config libzip --cflags)
+#LDFLAGS += $(shell pkg-config libzip --libs)
 
 # Portable (data is stored with resorces):
 CXXFLAGS += -DPK2_PORTABLE
