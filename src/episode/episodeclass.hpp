@@ -71,6 +71,9 @@ class EpisodeClass {
 
 		u32 level = 1;
 		u32 level_count = 0;
+
+		bool glows = false;
+		bool hide_numbers = false;
 		
 		PK2LEVEL levels_list[EPISODI_MAX_LEVELS];
 		u8 level_status[EPISODI_MAX_LEVELS];

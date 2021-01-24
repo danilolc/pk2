@@ -245,6 +245,25 @@ void EpisodeClass::Load() {
 
 	delete temp;
 
+	// Read config
+	PLang* config = new PLang(PFile::Path(path, "config.txt"));
+	if (config) {
+
+		int id = config->Search_Id("glow_effect");
+		if (id != -1) {
+			PLog::Write(PLog::INFO, "PK2", "Episode glow is ON");
+			this->glows = true;
+		}
+
+		id = config->Search_Id("hide_numbers");
+		if (id != -1) {
+			PLog::Write(PLog::INFO, "PK2", "Episode hide numbers is ON");
+			this->hide_numbers = true;
+		}
+		
+		delete config;
+
+	}
 
 	// Order levels
 	PK2LEVEL temp2;

@@ -105,7 +105,8 @@ int Screen_Intro_Init() {
 	return 0;
 }
 
-int Screen_Intro(){
+int Screen_Intro() {
+	
 	Draw_Intro();
 
 	degree = 1 + degree % 360;

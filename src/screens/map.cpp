@@ -135,8 +135,14 @@ int PK_Draw_Map() {
 
 			icon = Episode->levels_list[i].icon;
 
+			int assets = game_assets;
+			if (icon >= 22) {
+				icon -= 22;
+				assets = game_assets2;
+			}
+
 			//PDraw::image_clip(game_assets,Episode->levels_list[i].x-4,Episode->levels_list[i].y-4-30,1+(icon*27),452,27+(icon*27),478);
-			PDraw::image_cutclip(game_assets,Episode->levels_list[i].x-9,Episode->levels_list[i].y-14,1+(icon*28),452,28+(icon*28),479);
+			PDraw::image_cutclip(assets,Episode->levels_list[i].x-9,Episode->levels_list[i].y-14,1+(icon*28),452,28+(icon*28),479);
 
 			if ( type == 1 ) {
 				sinx = (int)(sin_table[degree%360]/2);
@@ -170,8 +176,10 @@ int PK_Draw_Map() {
 				}
 			}
 
-			sprintf(luku, "%i", Episode->levels_list[i].order);
-			PDraw::font_write(fontti1,luku,Episode->levels_list[i].x-12+2,Episode->levels_list[i].y-29+2);
+			if (!Episode->hide_numbers) {
+				sprintf(luku, "%i", Episode->levels_list[i].order);
+				PDraw::font_write(fontti1,luku,Episode->levels_list[i].x-12+2,Episode->levels_list[i].y-29+2);
+			}
 
 			// if mouse hoover
 			if (paluu > 0) {
@@ -354,6 +362,10 @@ int Screen_Map() {
 		Fade_out(0);
 
 	}
+
+	if (Episode->glows)
+		if (degree % 4 == 0)
+			PDraw::rotate_palette(224,239);
 
 	return 0;
 }

@@ -471,6 +471,10 @@ int Screen_ScoreCount() {
 		Game = nullptr;
 	}
 
+	if (Episode->glows)
+		if (degree % 4 == 0)
+			PDraw::rotate_palette(224,239);
+
 	return 0;
 
 }
