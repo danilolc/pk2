@@ -94,9 +94,9 @@ class MapClass
 	char		protot [PK2MAP_MAP_MAX_PROTOTYPES][13]; // map prototype list .spr
 	bool		reunat [PK2MAP_MAP_SIZE]; // map edges - calculated during game
 
-	int			palikat_buffer;		// index of block palette
-	int			taustakuva_buffer;	// index of bg image
-	int			palikat_vesi_buffer; // index of water palette
+	int			tiles_buffer;		// index of block palette
+	int			background_buffer;	// index of bg image
+	int			water_buffer; // index of water palette
 
 	int	  x,y;						// map icon pos
 	int	  icon;					// map icon id
@@ -121,7 +121,7 @@ class MapClass
 	void LueTallennusAlue(u8 *lahde, MAP_RECT alue, int kohde);
 	int Piirra_Taustat(int kamera_x, int kamera_y, bool editor);
 	int Piirra_Seinat (int kamera_x, int kamera_y, bool editor);
-	void Kopioi(MapClass &kartta);
+	void Kopioi(const MapClass &kartta);
 
 	//PK2 functions
 	int Count_Keys();
@@ -140,7 +140,7 @@ class MapClass
 	int LoadVersion13(PFile::Path path);
 	
 	int Load_BG(PFile::Path path);
-	int Load_BlockPalette(PFile::Path path);
+	int Load_TilesImage(PFile::Path path);
 	int Load_BGSfx(PFile::Path path);
 
 	void Animoi_Tuli(void);

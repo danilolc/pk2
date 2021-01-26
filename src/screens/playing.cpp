@@ -250,7 +250,6 @@ int Draw_InGame_DevKeys() {
 	const char txts[][32] = {
 		"z: press buttons",
 		"x: release buttons",
-		"b: draw bounding box",
 		"l: open locks",
 		"k: open skull blocks",
 		"t: toggle speed",
@@ -292,37 +291,37 @@ int Draw_InGame_BG() {
 
 	if (Game->map->tausta == TAUSTA_STAATTINEN){
 	
-		PDraw::image_clip(Game->map->taustakuva_buffer,0,0);
-		PDraw::image_clip(Game->map->taustakuva_buffer,640,0);
+		PDraw::image_clip(Game->map->background_buffer,0,0);
+		PDraw::image_clip(Game->map->background_buffer,640,0);
 	
 	} else if (Game->map->tausta == TAUSTA_PALLARX_HORI){
 	
-		PDraw::image_clip(Game->map->taustakuva_buffer,0   - pallarx,0);
-		PDraw::image_clip(Game->map->taustakuva_buffer,640 - pallarx,0);
+		PDraw::image_clip(Game->map->background_buffer,0   - pallarx,0);
+		PDraw::image_clip(Game->map->background_buffer,640 - pallarx,0);
 
 		if (screen_width > 640)
-			PDraw::image_clip(Game->map->taustakuva_buffer,640*2 - pallarx,0);
+			PDraw::image_clip(Game->map->background_buffer,640*2 - pallarx,0);
 	
 	} else if (Game->map->tausta == TAUSTA_PALLARX_VERT){
 	
-		PDraw::image_clip(Game->map->taustakuva_buffer,0,0   - pallary);
-		PDraw::image_clip(Game->map->taustakuva_buffer,0,480 - pallary);
+		PDraw::image_clip(Game->map->background_buffer,0,0   - pallary);
+		PDraw::image_clip(Game->map->background_buffer,0,480 - pallary);
 
 		if (screen_width > 640){
-			PDraw::image_clip(Game->map->taustakuva_buffer,640,0   - pallary);
-			PDraw::image_clip(Game->map->taustakuva_buffer,640,480 - pallary);
+			PDraw::image_clip(Game->map->background_buffer,640,0   - pallary);
+			PDraw::image_clip(Game->map->background_buffer,640,480 - pallary);
 		}
 	
 	} else if (Game->map->tausta == TAUSTA_PALLARX_VERT_JA_HORI){
 	
-		PDraw::image_clip(Game->map->taustakuva_buffer,0   - pallarx, 0-pallary);
-		PDraw::image_clip(Game->map->taustakuva_buffer,640 - pallarx, 0-pallary);
-		PDraw::image_clip(Game->map->taustakuva_buffer,0   - pallarx, 480-pallary);
-		PDraw::image_clip(Game->map->taustakuva_buffer,640 - pallarx, 480-pallary);
+		PDraw::image_clip(Game->map->background_buffer,0   - pallarx, 0-pallary);
+		PDraw::image_clip(Game->map->background_buffer,640 - pallarx, 0-pallary);
+		PDraw::image_clip(Game->map->background_buffer,0   - pallarx, 480-pallary);
+		PDraw::image_clip(Game->map->background_buffer,640 - pallarx, 480-pallary);
 
 		if (screen_width > 640){
-			PDraw::image_clip(Game->map->taustakuva_buffer,640*2 - pallarx,0-pallary);
-			PDraw::image_clip(Game->map->taustakuva_buffer,640*2 - pallarx,480-pallary);
+			PDraw::image_clip(Game->map->background_buffer,640*2 - pallarx,0-pallary);
+			PDraw::image_clip(Game->map->background_buffer,640*2 - pallarx,480-pallary);
 		}
 	
 	}

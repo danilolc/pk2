@@ -1404,7 +1404,7 @@ int Sprite_Movement(int i){
 	u8 color;
 	u32 plk;
 
-	if (PInput::Keydown(PInput::B) && dev_mode) { // Draw bounding box
+	if (false) {//PInput::Keydown(PInput::B) && dev_mode) { // Draw bounding box
 		
 		if (i == 0/*pelaaja_index*/) {
 

@@ -25,11 +25,7 @@ Gui* create_gui(PRender::RECT src, PRender::RECT dst, u8 alpha) {
     gui->src = src;
     gui->dst = dst;
 
-    if (alpha > 255)
-        gui->alpha = 255;
-    else
-        gui->alpha = alpha;
-    
+    gui->alpha = alpha;
     gui->active = false;
 
     gui_list.push_back(gui);

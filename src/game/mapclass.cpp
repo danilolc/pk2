@@ -48,9 +48,9 @@ void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool
 
 MapClass::MapClass(){
 
-	this->palikat_buffer = -1;
-	this->taustakuva_buffer = -1;
-	this->palikat_vesi_buffer = -1;
+	this->tiles_buffer = -1;
+	this->background_buffer = -1;
+	this->water_buffer = -1;
 
 	strcpy(this->versio, PK2MAP_LAST_VERSION);
 	strcpy(this->palikka_bmp,"blox.bmp");
@@ -82,65 +82,22 @@ MapClass::MapClass(){
 	for (u32 i=0; i<PK2MAP_MAP_MAX_PROTOTYPES; i++)
 		strcpy(this->protot[i],"");
 
-	this->taustakuva_buffer = PDraw::image_new(640,480);
-	this->palikat_buffer = PDraw::image_new(PK2MAP_BLOCK_PALETTE_WIDTH,PK2MAP_BLOCK_PALETTE_HEIGHT);
-	this->palikat_vesi_buffer = PDraw::image_new(PK2MAP_BLOCK_PALETTE_WIDTH,32); //water
+	//this->background_buffer = PDraw::image_new(640,480);
+	//this->tiles_buffer = PDraw::image_new(PK2MAP_BLOCK_PALETTE_WIDTH,PK2MAP_BLOCK_PALETTE_HEIGHT);
+	//this->water_buffer = PDraw::image_new(PK2MAP_BLOCK_PALETTE_WIDTH,32); //water
 
 }
 
 MapClass::MapClass(const MapClass &kartta){
 
-	this->palikat_buffer = -1;
-	this->taustakuva_buffer = -1;
-	this->palikat_vesi_buffer = -1;
+	this->Kopioi(kartta);
 
-	strcpy(this->versio,		kartta.versio);
-	strcpy(this->palikka_bmp,	kartta.palikka_bmp);
-	strcpy(this->taustakuva,	kartta.taustakuva);
-	strcpy(this->musiikki,		kartta.musiikki);
-
-	strcpy(this->nimi,			kartta.nimi);
-	strcpy(this->tekija,		kartta.tekija);
-
-	this->jakso			= kartta.jakso;
-	this->ilma			= kartta.ilma;
-	this->kytkin1_aika	= kartta.kytkin1_aika;
-	this->kytkin2_aika	= kartta.kytkin2_aika;
-	this->kytkin3_aika	= kartta.kytkin3_aika;
-	this->pelaaja_sprite = kartta.pelaaja_sprite;
-	this->aika			= kartta.aika;
-	this->extra			= kartta.extra;
-	this->tausta		= kartta.tausta;
-
-	this->x				= kartta.x;
-	this->y				= kartta.y;
-	this->icon			= kartta.icon;
-
-	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-		this->taustat[i] = kartta.taustat[i];
-
-	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-		this->seinat[i] = kartta.seinat[i];
-
-	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-		this->spritet[i] = kartta.spritet[i];
-
-	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-		this->reunat[i] = kartta.reunat[i];
-
-	for (u32 i=0; i<PK2MAP_MAP_MAX_PROTOTYPES; i++)
-		strcpy(this->protot[i],kartta.protot[i]);
-
-
-	PDraw::image_copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
-	PDraw::image_copy(kartta.palikat_buffer,this->palikat_buffer);
-	PDraw::image_copy(kartta.palikat_vesi_buffer,this->palikat_vesi_buffer);
 }
 
 MapClass::~MapClass(){
-	PDraw::image_delete(this->palikat_buffer);
-	PDraw::image_delete(this->taustakuva_buffer);
-	PDraw::image_delete(this->palikat_vesi_buffer);
+	PDraw::image_delete(this->tiles_buffer);
+	PDraw::image_delete(this->background_buffer);
+	PDraw::image_delete(this->water_buffer);
 }
 
 MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
@@ -514,7 +471,7 @@ int MapClass::Load(PFile::Path path){
 	}
 	
 	path.SetFile(this->palikka_bmp);
-	Load_BlockPalette(path);
+	Load_TilesImage(path);
 
 	path.SetFile(this->taustakuva);
 	Load_BG(path);
@@ -619,7 +576,7 @@ int MapClass::LoadVersion10(PFile::Path path){
 		this->spritet[i] = kartta->spritet[i];
 
 
-	//Load_BlockPalette(kartta->palikka_bmp);
+	//Load_TilesImage(kartta->palikka_bmp);
 	//Load_BG(kartta->taustakuva);
 
 	//delete kartta;
@@ -666,7 +623,7 @@ int MapClass::LoadVersion11(PFile::Path path){
 		if (spritet[i] != 255)
 			spritet[i] -= 50;
 
-	//Load_BlockPalette(this->palikka_bmp);
+	//Load_TilesImage(this->palikka_bmp);
 	//Load_BG(this->taustakuva);
 
 	return (virhe);
@@ -730,7 +687,7 @@ int MapClass::LoadVersion12(PFile::Path path){
 
 	file->close();
 
-	//Load_BlockPalette(this->palikka_bmp);
+	//Load_TilesImage(this->palikka_bmp);
 	//Load_BG(this->taustakuva);
 
 	return 0;
@@ -885,37 +842,13 @@ void MapClass::Tyhjenna(){
 	for (u32 i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
 		strcpy(this->protot[i],"");
 
-	//PDraw::image_fill(this->palikat_buffer,255);
-	//PDraw::image_fill(this->taustakuva_buffer,255);
+	//PDraw::image_fill(this->tiles_buffer,255);
+	//PDraw::image_fill(this->background_buffer,255);
 }
 
 MapClass &MapClass::operator = (const MapClass &kartta){
-	if (this == &kartta) return *this;
 
-	strcpy(this->versio,		kartta.versio);
-	strcpy(this->palikka_bmp,	kartta.palikka_bmp);
-	strcpy(this->taustakuva,	kartta.taustakuva);
-	strcpy(this->musiikki,		kartta.musiikki);
-
-	strcpy(this->nimi,			kartta.nimi);
-	strcpy(this->tekija,		kartta.tekija);
-
-	this->aika		= kartta.aika;
-	this->extra		= kartta.extra;
-	this->tausta	= kartta.tausta;
-
-	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-		this->seinat[i] = kartta.seinat[i];
-
-	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-		this->taustat[i] = kartta.taustat[i];
-
-	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-		this->spritet[i] = kartta.spritet[i];
-
-	PDraw::image_copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
-	PDraw::image_copy(kartta.palikat_buffer,this->palikat_buffer);
-
+	this->Kopioi(kartta);
 	return *this;
 }
 
@@ -924,19 +857,17 @@ int MapClass::Load_BG(PFile::Path path){
 	if (!FindAsset(&path, "gfx" PE_SEP "scenery" PE_SEP))
 		return 1;
 
-	int i = PDraw::image_load(path, true);
-	if (i == -1)
-		return 2;
-	
-	PDraw::image_copy(i,this->taustakuva_buffer);
-	PDraw::image_delete(i);
+	PDraw::image_load(this->background_buffer, path, true);
+	if (this->background_buffer == -1)
+		return -2;
 
 	//strcpy(this->taustakuva, filename.c_str());
 
+	/*
 	u8 *buffer = NULL;
 	u32 leveys;
 
-	PDraw::drawimage_start(taustakuva_buffer, buffer, leveys);
+	PDraw::drawimage_start(background_buffer, buffer, leveys);
 
 	for ( int x = 0; x < 640; x++)
 		for ( int y = 0; y < 480; y++) {
@@ -946,23 +877,25 @@ int MapClass::Load_BG(PFile::Path path){
 			
 		}
 
-	PDraw::drawimage_end(taustakuva_buffer);
+	PDraw::drawimage_end(background_buffer);
+	*/
 
 	return 0;
 }
 
-int MapClass::Load_BlockPalette(PFile::Path path){
+int MapClass::Load_TilesImage(PFile::Path path){
 	
 	if (!FindAsset(&path, "gfx" PE_SEP "tiles" PE_SEP))
 		return 1;
 
-	int img = PDraw::image_load(path, false);
-	if(img == -1) return 2;
-	PDraw::image_copy(img,this->palikat_buffer);
-	PDraw::image_delete(img);
+	PDraw::image_load(this->tiles_buffer, path, false);
+	if (this->tiles_buffer == -1)
+		return 2;
 
-	PDraw::image_delete(this->palikat_vesi_buffer); //Delete last water buffer
-	this->palikat_vesi_buffer = PDraw::image_cut(this->palikat_buffer,0,416,320,32);
+	// TODO - find background
+
+	PDraw::image_delete(this->water_buffer); //Delete last water buffer
+	this->water_buffer = PDraw::image_cut(this->tiles_buffer,0,416,320,32);
 
 	//strcpy(this->palikka_bmp, filename.c_str());
 	return 0;
@@ -974,7 +907,7 @@ int MapClass::Load_BGSfx(PFile::Path path){
 	return 0;
 }
 
-void MapClass::Kopioi(MapClass &kartta){
+void MapClass::Kopioi(const MapClass &kartta){
 	if (this != &kartta){
 		strcpy(this->versio,		kartta.versio);
 		strcpy(this->palikka_bmp,	kartta.palikka_bmp);
@@ -1006,12 +939,10 @@ void MapClass::Kopioi(MapClass &kartta){
 		for (u32 i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
 			strcpy(this->protot[i],kartta.protot[i]);
 
-		PDraw::image_fill(palikat_buffer,255);
-		PDraw::image_fill(taustakuva_buffer,0);
-
-		PDraw::image_copy(kartta.taustakuva_buffer,this->taustakuva_buffer);
-		PDraw::image_copy(kartta.palikat_buffer,this->palikat_buffer);
-		PDraw::image_copy(kartta.palikat_vesi_buffer,this->palikat_vesi_buffer);
+		// TODO - create a copy!
+		PDraw::image_copy(kartta.background_buffer,this->background_buffer);
+		PDraw::image_copy(kartta.tiles_buffer,this->tiles_buffer);
+		PDraw::image_copy(kartta.water_buffer,this->water_buffer);
 	}
 }
 
@@ -1207,7 +1138,7 @@ void MapClass::Animoi_Tuli(void){
 	int x,y;
 	int color;
 
-	PDraw::drawimage_start(palikat_buffer, buffer, leveys);
+	PDraw::drawimage_start(tiles_buffer, buffer, leveys);
 
 	for (x=128;x<160;x++)
 		for (y=448;y<479;y++)
@@ -1242,7 +1173,7 @@ void MapClass::Animoi_Tuli(void){
 		for (x=128;x<160;x++)
 			buffer[x+479*leveys] = 255;
 
-	PDraw::drawimage_end(palikat_buffer);
+	PDraw::drawimage_end(tiles_buffer);
 }
 //Anim
 void MapClass::Animoi_Vesiputous(void){
@@ -1253,7 +1184,7 @@ void MapClass::Animoi_Vesiputous(void){
 
 	u8 temp[32*32];
 
-	PDraw::drawimage_start(palikat_buffer, buffer, leveys);
+	PDraw::drawimage_start(tiles_buffer, buffer, leveys);
 
 	for (x=32;x<64;x++)
 		for (y=416;y<448;y++)
@@ -1284,7 +1215,7 @@ void MapClass::Animoi_Vesiputous(void){
 		}
 	}
 
-	PDraw::drawimage_end(palikat_buffer);
+	PDraw::drawimage_end(tiles_buffer);
 }
 //Anim
 void MapClass::Animoi_Vedenpinta(void){
@@ -1294,7 +1225,7 @@ void MapClass::Animoi_Vedenpinta(void){
 
 	u8 temp[32];
 
-	PDraw::drawimage_start(palikat_buffer, buffer, leveys);
+	PDraw::drawimage_start(tiles_buffer, buffer, leveys);
 
 	for (y=416;y<448;y++)
 		temp[y-416] = buffer[y*leveys];
@@ -1310,7 +1241,7 @@ void MapClass::Animoi_Vedenpinta(void){
 	for (y=416;y<448;y++)
 		buffer[31+y*leveys] = temp[y-416];
 
-	PDraw::drawimage_end(palikat_buffer);
+	PDraw::drawimage_end(tiles_buffer);
 }
 //Anim water
 void MapClass::Animoi_Vesi(void){
@@ -1323,8 +1254,8 @@ void MapClass::Animoi_Vesi(void){
 	int i;
 
 
-	PDraw::drawimage_start(palikat_buffer, buffer_kohde, leveys_kohde);
-	PDraw::drawimage_start(palikat_vesi_buffer, buffer_lahde, leveys_lahde);
+	PDraw::drawimage_start(tiles_buffer, buffer_kohde, leveys_kohde);
+	PDraw::drawimage_start(water_buffer, buffer_lahde, leveys_lahde);
 
 	for (y=0;y<32;y++){
 		d2 = d1;
@@ -1374,8 +1305,8 @@ void MapClass::Animoi_Vesi(void){
 			}
 		}
 	}
-	PDraw::drawimage_end(palikat_buffer);
-	PDraw::drawimage_end(palikat_vesi_buffer);
+	PDraw::drawimage_end(tiles_buffer);
+	PDraw::drawimage_end(water_buffer);
 }
 
 void MapClass::Animoi_Virta_Ylos(void){
@@ -1385,7 +1316,7 @@ void MapClass::Animoi_Virta_Ylos(void){
 
 	u8 temp[32];
 
-	PDraw::drawimage_start(palikat_buffer, buffer, leveys);
+	PDraw::drawimage_start(tiles_buffer, buffer, leveys);
 
 	for (x=64;x<96;x++)
 		temp[x-64] = buffer[x+448*leveys];
@@ -1401,7 +1332,7 @@ void MapClass::Animoi_Virta_Ylos(void){
 	for (x=64;x<96;x++)
 		buffer[x+479*leveys] = temp[x-64];
 
-	PDraw::drawimage_end(palikat_buffer);
+	PDraw::drawimage_end(tiles_buffer);
 }
 
 int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
@@ -1430,7 +1361,7 @@ int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 				if (palikka == BLOCK_ANIM1 || palikka == BLOCK_ANIM2 || palikka == BLOCK_ANIM3 || palikka == BLOCK_ANIM4)
 					px += animaatio * 32;
 
-				PDraw::image_cutclip(palikat_buffer, x*32-(kamera_x%32), y*32-(kamera_y%32), px, py, px+32, py+32);
+				PDraw::image_cutclip(tiles_buffer, x*32-(kamera_x%32), y*32-(kamera_y%32), px, py, px+32, py+32);
 			}
 		}
 	}
@@ -1534,7 +1465,7 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 				if (palikka == BLOCK_ANIM1 || palikka == BLOCK_ANIM2 || palikka == BLOCK_ANIM3 || palikka == BLOCK_ANIM4)
 					px += animaatio * 32;
 
-				PDraw::image_cutclip(palikat_buffer, x*32-(kamera_x%32)+ax, y*32-(kamera_y%32)+ay, px, py, px+32, py+32);
+				PDraw::image_cutclip(tiles_buffer, x*32-(kamera_x%32)+ax, y*32-(kamera_y%32)+ay, px, py, px+32, py+32);
 			}
 		}
 	}

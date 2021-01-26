@@ -122,7 +122,7 @@ int GameClass::Calculete_TileMasks(){
 	int x, y;
 	u8 color;
 
-	PDraw::drawimage_start(map->palikat_buffer, buffer, leveys);
+	PDraw::drawimage_start(map->tiles_buffer, buffer, leveys);
 	for (int mask=0; mask<BLOCK_MAX_MASKS; mask++){
 		for (x=0; x<32; x++){
 			y=0;
@@ -140,7 +140,7 @@ int GameClass::Calculete_TileMasks(){
 			palikkamaskit[mask].ylos[x] = 31-y;
 		}
 	}
-	PDraw::drawimage_end(map->palikat_buffer);
+	PDraw::drawimage_end(map->tiles_buffer);
 
 	return 0;
 }
@@ -152,12 +152,12 @@ int GameClass::Clean_TileBuffer() {
 	u32 leveys;
 	int x,y;
 
-	PDraw::drawimage_start(map->palikat_buffer, buffer, leveys);
+	PDraw::drawimage_start(map->tiles_buffer, buffer, leveys);
 	for (y=0;y<480;y++)
 		for(x=0;x<320;x++)
 			if (buffer[x+y*leveys] == 254)
 				buffer[x+y*leveys] = 255;
-	PDraw::drawimage_end(map->palikat_buffer);
+	PDraw::drawimage_end(map->tiles_buffer);
 
 	return 0;
 }
