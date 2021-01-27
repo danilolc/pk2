@@ -24,30 +24,36 @@ const u8 PK2KARTTA_EXTRA_EI           = 0;
 
 const u32 PK2MAP_MAP_MAX_PROTOTYPES = 100;
 
-const u8 BLOCK_ESTO_ALAS		= 40;
-const u8 BLOCK_HISSI_HORI		= 41;
-const u8 BLOCK_HISSI_VERT		= 42;
-const u8 BLOCK_KYTKIN2_YLOS	= 43;
-const u8 BLOCK_KYTKIN2_ALAS	= 45;
-const u8 BLOCK_KYTKIN3_OIKEALLE = 44;
-const u8 BLOCK_KYTKIN3_VASEMMALLE = 46;
-const u8 BLOCK_LUKKO			= 47;
-const u8 BLOCK_KALLOSEINA		= 48;
-const u8 BLOCK_KALLOTAUSTA		= 49;
-const u8 BLOCK_ANIM1			= 60;
-const u8 BLOCK_ANIM2			= 65;
-const u8 BLOCK_ANIM3			= 70;
-const u8 BLOCK_ANIM4			= 75;
-const u8 BLOCK_VIRTA_VASEMMALLE= 140;
-const u8 BLOCK_VIRTA_OIKEALLE	= 141;
-const u8 BLOCK_VIRTA_YLOS		= 142;
-const u8 BLOCK_PIILO			= 143;
-const u8 BLOCK_TULI			= 144;
-const u8 BLOCK_KYTKIN1			= 145;
-const u8 BLOCK_KYTKIN2			= 146;
-const u8 BLOCK_KYTKIN3			= 147;
-const u8 BLOCK_ALOITUS			= 148;
-const u8 BLOCK_LOPETUS			= 149;
+enum {
+
+	BLOCK_ESTO_ALAS = 40,
+	BLOCK_HISSI_HORI,
+	BLOCK_HISSI_VERT,
+	BLOCK_KYTKIN2_YLOS,
+	BLOCK_KYTKIN3_OIKEALLE,
+	BLOCK_KYTKIN2_ALAS,
+	BLOCK_KYTKIN3_VASEMMALLE,
+	BLOCK_LUKKO,
+	BLOCK_KALLOSEINA,
+	BLOCK_KALLOTAUSTA,
+
+	BLOCK_ANIM1 = 60,
+	BLOCK_ANIM2 = 65,
+	BLOCK_ANIM3 = 70,
+	BLOCK_ANIM4 = 75,
+
+	BLOCK_VIRTA_VASEMMALLE = 140,
+	BLOCK_VIRTA_OIKEALLE,
+	BLOCK_VIRTA_YLOS,
+	BLOCK_PIILO,
+	BLOCK_TULI,
+	BLOCK_KYTKIN1,
+	BLOCK_KYTKIN2,
+	BLOCK_KYTKIN3,
+	BLOCK_ALOITUS,
+	BLOCK_LOPETUS,
+
+};
 
 const int SWITCH_INITIAL_VALUE  = 2000;
 
@@ -95,9 +101,10 @@ class MapClass
 	bool		reunat [PK2MAP_MAP_SIZE]; // map edges - calculated during game
 
 	int			tiles_buffer;		// index of block palette
-	int         bg_tiles_buffer;
+	int			bg_tiles_buffer;
 	int			background_buffer;	// index of bg image
 	int			water_buffer; // index of water palette
+	int			bg_water_buffer;
 
 	int	  x,y;						// map icon pos
 	int	  icon;					// map icon id
@@ -144,10 +151,10 @@ class MapClass
 	int Load_TilesImage(PFile::Path path);
 	int Load_BGSfx(PFile::Path path);
 
-	void Animate_Fire(void);
-	void Animate_Waterfall(void);
-	void Animate_RollUp(void);
-	void Animate_WaterSurface(void);
-	void Animate_Water(void);
+	void Animate_Fire(int tiles);
+	void Animate_Waterfall(int tiles);
+	void Animate_RollUp(int tiles);
+	void Animate_WaterSurface(int tiles);
+	void Animate_Water(int tiles, int water_tiles);
 	
 };

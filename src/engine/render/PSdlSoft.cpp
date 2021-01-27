@@ -32,7 +32,9 @@ void PSdlSoft::clear_screen() {
 
 void PSdlSoft::set_screen(PRender::FRECT screen_dst) {
 
-    // Does nothing
+    // Just clean the screen
+    SDL_Surface* sur = SDL_GetWindowSurface(curr_window);
+    SDL_FillRect(sur, NULL, 0);
 
 }
 

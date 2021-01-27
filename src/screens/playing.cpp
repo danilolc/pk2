@@ -569,8 +569,8 @@ int Draw_InGame() {
 	PDraw::screen_fill(0, 0, w, h, 0);
 	PDraw::image_clip(Game->map->tiles_buffer, 0, 0);
 
-	//PDraw::image_clip(Game->map->bg_tiles_buffer, w, 0);
-	PDraw::image_clip(Game->map->water_buffer, w, 0);*/
+	PDraw::image_clip(Game->map->bg_tiles_buffer, w, 0);
+	//PDraw::image_clip(Game->map->water_buffer, w, 0);*/
 
 	return 0;
 }

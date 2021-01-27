@@ -152,12 +152,28 @@ int GameClass::Clean_TileBuffer() {
 	u32 leveys;
 	int x,y;
 
+	int w, h;
+	PDraw::image_getsize(map->tiles_buffer, w, h);
+
 	PDraw::drawimage_start(map->tiles_buffer, buffer, leveys);
-	for (y=0;y<480;y++)
-		for(x=0;x<320;x++)
+	for (y = 0; y < h; y++)
+		for(x = 0; x < w; x++)
 			if (buffer[x+y*leveys] == 254)
 				buffer[x+y*leveys] = 255;
 	PDraw::drawimage_end(map->tiles_buffer);
+
+	if (map->bg_tiles_buffer < 0)
+			return 0;
+	
+	// Clan bg buffer
+	PDraw::image_getsize(map->bg_tiles_buffer, w, h);
+
+	PDraw::drawimage_start(map->bg_tiles_buffer, buffer, leveys);
+	for (y = 0; y < h; y++)
+		for(x = 0; x < w; x++)
+			if (buffer[x+y*leveys] == 254)
+				buffer[x+y*leveys] = 255;
+	PDraw::drawimage_end(map->bg_tiles_buffer);
 
 	return 0;
 }

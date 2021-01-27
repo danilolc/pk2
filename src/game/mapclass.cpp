@@ -52,6 +52,7 @@ MapClass::MapClass(){
 	this->bg_tiles_buffer = -1;
 	this->background_buffer = -1;
 	this->water_buffer = -1;
+	this->bg_water_buffer = -1;
 
 	strcpy(this->versio, PK2MAP_LAST_VERSION);
 	strcpy(this->palikka_bmp,"blox.bmp");
@@ -96,6 +97,7 @@ MapClass::~MapClass(){
 	PDraw::image_delete(this->bg_tiles_buffer);
 	PDraw::image_delete(this->background_buffer);
 	PDraw::image_delete(this->water_buffer);
+	PDraw::image_delete(this->bg_water_buffer);
 }
 
 MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
@@ -890,16 +892,22 @@ int MapClass::Load_TilesImage(PFile::Path path){
 	if (this->tiles_buffer == -1)
 		return 2;
 
-	// transform tiles01.bmp to tiles01_bg.bmp
-	std::string filename = path.GetFileName();
-	size_t i = filename.find_last_of('.');
-	filename = filename.substr(0, i) + "_bg" + filename.substr(i, std::string::npos);
-	path.SetFile(filename);
-	if (FindAsset(&path, "gfx" PE_SEP "tiles" PE_SEP))
-		PDraw::image_load(this->bg_tiles_buffer, path, false);
-
 	PDraw::image_delete(this->water_buffer); //Delete last water buffer
 	this->water_buffer = PDraw::image_cut(this->tiles_buffer,0,416,320,32);
+
+	// load bg buffer
+	{
+		// transform tiles01.bmp to tiles01_bg.bmp
+		std::string filename = path.GetFileName();
+		size_t i = filename.find_last_of('.');
+		filename = filename.substr(0, i) + "_bg" + filename.substr(i, std::string::npos);
+		path.SetFile(filename);
+		if (FindAsset(&path, "gfx" PE_SEP "tiles" PE_SEP)) {
+			PDraw::image_load(this->bg_tiles_buffer, path, false);
+			PDraw::image_delete(this->bg_water_buffer); //Delete last water buffer
+			this->bg_water_buffer = PDraw::image_cut(this->bg_tiles_buffer,0,416,320,32);
+		}
+	}
 
 	return 0;
 
@@ -945,10 +953,12 @@ void MapClass::Kopioi(const MapClass &kartta){
 		PDraw::image_delete(this->background_buffer);
 		PDraw::image_delete(this->tiles_buffer);
 		PDraw::image_delete(this->water_buffer);
+		PDraw::image_delete(this->bg_water_buffer);
 
 		this->background_buffer = PDraw::image_copy(kartta.background_buffer);
 		this->tiles_buffer = PDraw::image_copy(kartta.tiles_buffer);
 		this->water_buffer = PDraw::image_copy(kartta.water_buffer);
+		this->bg_water_buffer = PDraw::image_copy(kartta.bg_water_buffer);
 	}
 }
 
@@ -1138,13 +1148,13 @@ void MapClass::Calculate_Edges(){
 
 /* Kartanpiirtorutiineja ----------------------------------------------------------------*/
 
-void MapClass::Animate_Fire(void){
+void MapClass::Animate_Fire(int tiles){
 	u8 *buffer = NULL;
 	u32 leveys;
 	int x,y;
 	int color;
 
-	PDraw::drawimage_start(tiles_buffer, buffer, leveys);
+	PDraw::drawimage_start(tiles, buffer, leveys);
 
 	for (x=128;x<160;x++)
 		for (y=448;y<479;y++)
@@ -1179,10 +1189,10 @@ void MapClass::Animate_Fire(void){
 		for (x=128;x<160;x++)
 			buffer[x+479*leveys] = 255;
 
-	PDraw::drawimage_end(tiles_buffer);
+	PDraw::drawimage_end(tiles);
 }
 
-void MapClass::Animate_Waterfall(void){
+void MapClass::Animate_Waterfall(int tiles){
 	u8 *buffer = NULL;
 	u32 leveys;
 	int x,y,plus;
@@ -1190,7 +1200,7 @@ void MapClass::Animate_Waterfall(void){
 
 	u8 temp[32*32];
 
-	PDraw::drawimage_start(tiles_buffer, buffer, leveys);
+	PDraw::drawimage_start(tiles, buffer, leveys);
 
 	for (x=32;x<64;x++)
 		for (y=416;y<448;y++)
@@ -1221,17 +1231,17 @@ void MapClass::Animate_Waterfall(void){
 		}
 	}
 
-	PDraw::drawimage_end(tiles_buffer);
+	PDraw::drawimage_end(tiles);
 }
-//Anim
-void MapClass::Animate_WaterSurface(void){
+
+void MapClass::Animate_WaterSurface(int tiles){
 	u8 *buffer = NULL;
 	u32 leveys;
 	int x,y;
 
 	u8 temp[32];
 
-	PDraw::drawimage_start(tiles_buffer, buffer, leveys);
+	PDraw::drawimage_start(tiles, buffer, leveys);
 
 	for (y=416;y<448;y++)
 		temp[y-416] = buffer[y*leveys];
@@ -1247,10 +1257,10 @@ void MapClass::Animate_WaterSurface(void){
 	for (y=416;y<448;y++)
 		buffer[31+y*leveys] = temp[y-416];
 
-	PDraw::drawimage_end(tiles_buffer);
+	PDraw::drawimage_end(tiles);
 }
 
-void MapClass::Animate_Water(void){
+void MapClass::Animate_Water(int tiles, int water_tiles){
 	u8 *buffer_lahde = NULL, *buffer_kohde = NULL;
 	u32 leveys_lahde, leveys_kohde;
 	int x, y, color1, color2,
@@ -1260,8 +1270,8 @@ void MapClass::Animate_Water(void){
 	int i;
 
 
-	PDraw::drawimage_start(tiles_buffer, buffer_kohde, leveys_kohde);
-	PDraw::drawimage_start(water_buffer, buffer_lahde, leveys_lahde);
+	PDraw::drawimage_start(tiles, buffer_kohde, leveys_kohde);
+	PDraw::drawimage_start(water_tiles, buffer_lahde, leveys_lahde);
 
 	for (y=0;y<32;y++){
 		d2 = d1;
@@ -1311,34 +1321,27 @@ void MapClass::Animate_Water(void){
 			}
 		}
 	}
-	PDraw::drawimage_end(tiles_buffer);
-	PDraw::drawimage_end(water_buffer);
+	PDraw::drawimage_end(tiles);
+	PDraw::drawimage_end(water_tiles);
 }
 
-void MapClass::Animate_RollUp(void){
+void MapClass::Animate_RollUp(int tiles){
 	u8 *buffer = NULL;
 	u32 leveys;
-	int x,y;
+	int y;
 
 	u8 temp[32];
 
-	PDraw::drawimage_start(tiles_buffer, buffer, leveys);
+	PDraw::drawimage_start(tiles, buffer, leveys);
 
-	for (x=64;x<96;x++)
-		temp[x-64] = buffer[x+448*leveys];
+	memcpy(temp, 64 + buffer + 448*leveys, 32);
 
-	for (x=64;x<96;x++)
-	{
-		for (y=448;y<479;y++)
-		{
-			buffer[x+y*leveys] = buffer[x+(y+1)*leveys];
-		}
-	}
+	for (y=448; y<479; y++)
+		memcpy(buffer + 64 + y*leveys, buffer + 64 + (y+1)*leveys, 32);
 
-	for (x=64;x<96;x++)
-		buffer[x+479*leveys] = temp[x-64];
+	memcpy(buffer + 64 + 479*leveys, temp, 32);
 
-	PDraw::drawimage_end(tiles_buffer);
+	PDraw::drawimage_end(tiles);
 }
 
 int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
@@ -1482,15 +1485,25 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 
 	if (vesiaste%2 == 0)
 	{
-		Animate_Fire();
-		Animate_Waterfall();
-		Animate_RollUp();
-		Animate_WaterSurface();
+		Animate_Fire(this->tiles_buffer);
+		Animate_Waterfall(this->tiles_buffer);
+		Animate_RollUp(this->tiles_buffer);
+		Animate_WaterSurface(this->tiles_buffer);
+
+		if (this->bg_tiles_buffer >= 0) {
+			Animate_Fire(this->bg_tiles_buffer);
+			Animate_Waterfall(this->bg_tiles_buffer);
+			Animate_RollUp(this->bg_tiles_buffer);
+			Animate_WaterSurface(this->bg_tiles_buffer);
+		}
 	}
 
 	if (vesiaste%4 == 0)
 	{
-		Animate_Water();
+		Animate_Water(this->tiles_buffer, this->water_buffer);
+		if (this->bg_tiles_buffer >= 0)
+			Animate_Water(this->bg_tiles_buffer, this->bg_water_buffer);
+
 		PDraw::rotate_palette(224,239);
 	}
 
