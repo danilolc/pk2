@@ -885,6 +885,8 @@ int MapClass::Load_BG(PFile::Path path){
 
 int MapClass::Load_TilesImage(PFile::Path path){
 	
+	PFile::Path bkp = path;
+
 	if (!FindAsset(&path, "gfx" PE_SEP "tiles" PE_SEP))
 		return 1;
 
@@ -898,14 +900,17 @@ int MapClass::Load_TilesImage(PFile::Path path){
 	// load bg buffer
 	{
 		// transform tiles01.bmp to tiles01_bg.bmp
+		path = bkp;
 		std::string filename = path.GetFileName();
 		size_t i = filename.find_last_of('.');
 		filename = filename.substr(0, i) + "_bg" + filename.substr(i, std::string::npos);
 		path.SetFile(filename);
 		if (FindAsset(&path, "gfx" PE_SEP "tiles" PE_SEP)) {
 			PDraw::image_load(this->bg_tiles_buffer, path, false);
-			PDraw::image_delete(this->bg_water_buffer); //Delete last water buffer
-			this->bg_water_buffer = PDraw::image_cut(this->bg_tiles_buffer,0,416,320,32);
+			if (this->bg_tiles_buffer >= 0) {
+				PDraw::image_delete(this->bg_water_buffer); //Delete last water buffer
+				this->bg_water_buffer = PDraw::image_cut(this->bg_tiles_buffer,0,416,320,32);
+			}
 		}
 	}
 

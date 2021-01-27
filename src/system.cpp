@@ -237,6 +237,10 @@ bool FindAsset(PFile::Path* path, const char* default_dir) {
 
 				}
 
+			} else {
+
+				return false;
+
 			}
 		
 		}
