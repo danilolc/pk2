@@ -178,15 +178,19 @@ int image_load(int& index, PFile::Path path, bool getPalette) {
 
 }
 
-int image_copy(int src_i, int dst_i) {
+int image_copy(int image) {
 
-    if(src_i < 0 || dst_i < 0)
+    if(image < 0)
         return -1;
     
-    SDL_FillRect(imageList[dst_i], NULL, 255);
-    SDL_BlitSurface(imageList[src_i], NULL, imageList[dst_i], NULL);
+    SDL_Surface* im = imageList[image];
+
+    int i = image_new(im->w, im->h);
+    if(i < 0)
+        return -1;
     
-    return 0;
+    SDL_BlitSurface(im, NULL, imageList[i], NULL);
+    return i;
 
 }
 
@@ -242,6 +246,9 @@ int image_clip(int index) {
 }
 
 int image_clip(int index, int x, int y) {
+
+    if(index < 0)
+        return -1;
 
     SDL_Rect dstrect;
 

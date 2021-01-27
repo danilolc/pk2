@@ -21,7 +21,7 @@ void  rotate_palette(u8 start, u8 end);
 int   image_new(int w, int h);
 int   image_load(PFile::Path path, bool getPalette);
 int   image_load(int& index, PFile::Path path, bool getPalette);
-int   image_copy(int src_i, int dst_i);
+int   image_copy(int image);
 int   image_cut(int ImgIndex, int x, int y, int w, int h);
 int   image_cut(int ImgIndex, RECT area);
 int   image_clip(int index);

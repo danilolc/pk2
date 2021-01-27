@@ -49,6 +49,7 @@ void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool
 MapClass::MapClass(){
 
 	this->tiles_buffer = -1;
+	this->bg_tiles_buffer = -1;
 	this->background_buffer = -1;
 	this->water_buffer = -1;
 
@@ -82,10 +83,6 @@ MapClass::MapClass(){
 	for (u32 i=0; i<PK2MAP_MAP_MAX_PROTOTYPES; i++)
 		strcpy(this->protot[i],"");
 
-	//this->background_buffer = PDraw::image_new(640,480);
-	//this->tiles_buffer = PDraw::image_new(PK2MAP_BLOCK_PALETTE_WIDTH,PK2MAP_BLOCK_PALETTE_HEIGHT);
-	//this->water_buffer = PDraw::image_new(PK2MAP_BLOCK_PALETTE_WIDTH,32); //water
-
 }
 
 MapClass::MapClass(const MapClass &kartta){
@@ -96,6 +93,7 @@ MapClass::MapClass(const MapClass &kartta){
 
 MapClass::~MapClass(){
 	PDraw::image_delete(this->tiles_buffer);
+	PDraw::image_delete(this->bg_tiles_buffer);
 	PDraw::image_delete(this->background_buffer);
 	PDraw::image_delete(this->water_buffer);
 }
@@ -892,12 +890,17 @@ int MapClass::Load_TilesImage(PFile::Path path){
 	if (this->tiles_buffer == -1)
 		return 2;
 
-	// TODO - find background
+	// transform tiles01.bmp to tiles01_bg.bmp
+	std::string filename = path.GetFileName();
+	size_t i = filename.find_last_of('.');
+	filename = filename.substr(0, i) + "_bg" + filename.substr(i, std::string::npos);
+	path.SetFile(filename);
+	if (FindAsset(&path, "gfx" PE_SEP "tiles" PE_SEP))
+		PDraw::image_load(this->bg_tiles_buffer, path, false);
 
 	PDraw::image_delete(this->water_buffer); //Delete last water buffer
 	this->water_buffer = PDraw::image_cut(this->tiles_buffer,0,416,320,32);
 
-	//strcpy(this->palikka_bmp, filename.c_str());
 	return 0;
 
 }
@@ -939,10 +942,13 @@ void MapClass::Kopioi(const MapClass &kartta){
 		for (u32 i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
 			strcpy(this->protot[i],kartta.protot[i]);
 
-		// TODO - create a copy!
-		PDraw::image_copy(kartta.background_buffer,this->background_buffer);
-		PDraw::image_copy(kartta.tiles_buffer,this->tiles_buffer);
-		PDraw::image_copy(kartta.water_buffer,this->water_buffer);
+		PDraw::image_delete(this->background_buffer);
+		PDraw::image_delete(this->tiles_buffer);
+		PDraw::image_delete(this->water_buffer);
+
+		this->background_buffer = PDraw::image_copy(kartta.background_buffer);
+		this->tiles_buffer = PDraw::image_copy(kartta.tiles_buffer);
+		this->water_buffer = PDraw::image_copy(kartta.water_buffer);
 	}
 }
 
@@ -1131,8 +1137,8 @@ void MapClass::Calculate_Edges(){
 }
 
 /* Kartanpiirtorutiineja ----------------------------------------------------------------*/
-//Anim Fire
-void MapClass::Animoi_Tuli(void){
+
+void MapClass::Animate_Fire(void){
 	u8 *buffer = NULL;
 	u32 leveys;
 	int x,y;
@@ -1175,8 +1181,8 @@ void MapClass::Animoi_Tuli(void){
 
 	PDraw::drawimage_end(tiles_buffer);
 }
-//Anim
-void MapClass::Animoi_Vesiputous(void){
+
+void MapClass::Animate_Waterfall(void){
 	u8 *buffer = NULL;
 	u32 leveys;
 	int x,y,plus;
@@ -1218,7 +1224,7 @@ void MapClass::Animoi_Vesiputous(void){
 	PDraw::drawimage_end(tiles_buffer);
 }
 //Anim
-void MapClass::Animoi_Vedenpinta(void){
+void MapClass::Animate_WaterSurface(void){
 	u8 *buffer = NULL;
 	u32 leveys;
 	int x,y;
@@ -1243,8 +1249,8 @@ void MapClass::Animoi_Vedenpinta(void){
 
 	PDraw::drawimage_end(tiles_buffer);
 }
-//Anim water
-void MapClass::Animoi_Vesi(void){
+
+void MapClass::Animate_Water(void){
 	u8 *buffer_lahde = NULL, *buffer_kohde = NULL;
 	u32 leveys_lahde, leveys_kohde;
 	int x, y, color1, color2,
@@ -1309,7 +1315,7 @@ void MapClass::Animoi_Vesi(void){
 	PDraw::drawimage_end(water_buffer);
 }
 
-void MapClass::Animoi_Virta_Ylos(void){
+void MapClass::Animate_RollUp(void){
 	u8 *buffer = NULL;
 	u32 leveys;
 	int x,y;
@@ -1343,6 +1349,10 @@ int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 	int tiles_w = screen_width/32 + 1;
 	int tiles_h = screen_height/32 + 1;
 
+	int buffer = bg_tiles_buffer;
+	if (buffer < 0)
+		buffer = tiles_buffer;
+
 	for (int x = 0; x < tiles_w; x++){
 		if (x + kartta_x < 0 || uint(x + kartta_x) > PK2MAP_MAP_WIDTH) continue;
 
@@ -1361,7 +1371,7 @@ int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 				if (palikka == BLOCK_ANIM1 || palikka == BLOCK_ANIM2 || palikka == BLOCK_ANIM3 || palikka == BLOCK_ANIM4)
 					px += animaatio * 32;
 
-				PDraw::image_cutclip(tiles_buffer, x*32-(kamera_x%32), y*32-(kamera_y%32), px, py, px+32, py+32);
+				PDraw::image_cutclip(buffer, x*32-(kamera_x%32), y*32-(kamera_y%32), px, py, px+32, py+32);
 			}
 		}
 	}
@@ -1472,15 +1482,15 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 
 	if (vesiaste%2 == 0)
 	{
-		Animoi_Tuli();
-		Animoi_Vesiputous();
-		Animoi_Virta_Ylos();
-		Animoi_Vedenpinta();
+		Animate_Fire();
+		Animate_Waterfall();
+		Animate_RollUp();
+		Animate_WaterSurface();
 	}
 
 	if (vesiaste%4 == 0)
 	{
-		Animoi_Vesi();
+		Animate_Water();
 		PDraw::rotate_palette(224,239);
 	}
 

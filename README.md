@@ -76,17 +76,19 @@ This example starts the level13.map on dev mode:
 ```
 
 # FIXMEs
-* Memory increasing?
 * Android import zip, delete zip, zip file on save (can't load save with no zip)
-* New graphics and controllers menu
 * Android data path
 * Use app bundles to minimize apk size
+* Background animations
+* Memory increasing?
+
+* New graphics and controllers menu
 * SDL_QUIT on Android
 * Autosave settings option, ask when overwriting save, select save on new game
 * Remove repeated languages
 * Low volume sounds not played on low volume - music playing on volume 0
-* Better sound quality
 * Jump frames when fps is low
+* Better sound quality
 
 # PLANS
 * Speed-run mode (frame counter, ghost)

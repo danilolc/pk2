@@ -95,6 +95,7 @@ class MapClass
 	bool		reunat [PK2MAP_MAP_SIZE]; // map edges - calculated during game
 
 	int			tiles_buffer;		// index of block palette
+	int         bg_tiles_buffer;
 	int			background_buffer;	// index of bg image
 	int			water_buffer; // index of water palette
 
@@ -143,10 +144,10 @@ class MapClass
 	int Load_TilesImage(PFile::Path path);
 	int Load_BGSfx(PFile::Path path);
 
-	void Animoi_Tuli(void);
-	void Animoi_Vesiputous(void);
-	void Animoi_Virta_Ylos(void);
-	void Animoi_Vedenpinta(void);
-	void Animoi_Vesi(void);
+	void Animate_Fire(void);
+	void Animate_Waterfall(void);
+	void Animate_RollUp(void);
+	void Animate_WaterSurface(void);
+	void Animate_Water(void);
 	
 };

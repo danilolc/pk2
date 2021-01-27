@@ -257,12 +257,14 @@ int init(int width, int height, const char* name, const char* icon, int render_m
 
 		case RENDERER_SDL:
 			renderer = new PSdl(width, height, window); break;
+    #ifndef __ANDROID__
 		case RENDERER_SDL_SOFTWARE:
 			renderer = new PSdlSoft(width, height, window); break;
 		case RENDERER_OPENGL:
 			renderer = new PGl(width, height, window); break;
 		case RENDERER_OPENGLES:
 			//renderer = new PGles(width, height, window); break;
+    #endif
 		default:
 			renderer = new PSdl(width, height, window); break;
 		
