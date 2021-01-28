@@ -282,7 +282,6 @@ int main(int argc, char *argv[]) {
 
 	#else //__ANDROID__
 
-	//Must be free-ed at the end (but who cares?)
 	const char* ptr = SDL_AndroidGetExternalStoragePath();
 	if (ptr) {
 		External_Path = ptr;

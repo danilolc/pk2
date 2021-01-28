@@ -384,6 +384,15 @@ void Draw_Menu_Main() {
 	}
 	my += 20;
 
+	if (PUtils::Is_Mobile() && Game) {
+		if (Draw_Menu_Text("map",180,my)) {
+			next_screen = SCREEN_MAP;
+			delete Game;
+			Game = nullptr;
+		}
+		my += 20;
+	}
+
 	if (!PUtils::Is_Mobile()) {
 		if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_exit),180,my))
 			Fade_Quit();
@@ -511,7 +520,7 @@ void Draw_Menu_Name() {
 		PInput::EndKeyboard();
 		
 		menu_nyt = MENU_EPISODES;
-		menu_valittu_id = menu_valinta_id = 1;
+		//menu_valittu_id = menu_valinta_id = 1;
 
 	}
 
