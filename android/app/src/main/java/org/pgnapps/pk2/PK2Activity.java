@@ -7,8 +7,6 @@ package org.pgnapps.pk2;
 import org.libsdl.app.SDLActivity;
 
 import android.Manifest;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
