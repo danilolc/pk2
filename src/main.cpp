@@ -283,24 +283,39 @@ int main(int argc, char *argv[]) {
 	#else //__ANDROID__
 
 	//Must be free-ed at the end (but who cares?)
-	External_Path = SDL_AndroidGetExternalStoragePath();
-	Internal_Path = SDL_AndroidGetInternalStoragePath();
-
-	if (!External_Path)
+	const char* ptr = SDL_AndroidGetExternalStoragePath();
+	if (ptr) {
+		External_Path = ptr;
+		SDL_free((void*)ptr);
+	} else {
 		PLog::Write(PLog::ERR, "PK2", "Couldn't find External Path");
-	if (!Internal_Path)
-		PLog::Write(PLog::ERR, "PK2", "Couldn't find Internal Path");
+	}
 
-	PLog::Write(PLog::DEBUG, "PK2", "External %s", External_Path);
-	PLog::Write(PLog::DEBUG, "PK2", "Internal %s", Internal_Path);
+	ptr = SDL_AndroidGetInternalStoragePath();
+	if (ptr) {
+		Internal_Path = ptr;
+		SDL_free((void*)ptr);
+	} else {
+		PLog::Write(PLog::ERR, "PK2", "Couldn't find Internal Path");
+	}
+
+	External_Path += PE_SEP;
+	Internal_Path += PE_SEP;
+
+	PLog::Write(PLog::DEBUG, "PK2", "External %s", External_Path.c_str());
+	PLog::Write(PLog::DEBUG, "PK2", "Internal %s", Internal_Path.c_str());
+
+	PLog::Write(PLog::DEBUG, "PK2", "Allow %i", SDL_AndroidGetExternalStorageState);
+
 
 	// Choose between internal or external path on Android
-	if (SDL_AndroidGetExternalStorageState() | SDL_ANDROID_EXTERNAL_STORAGE_WRITE) {
+	if (PUtils::ExternalWriteable()) {
 
 		PLog::Write(PLog::DEBUG, "PK2", "External access allowed");
 
 		PFile::Path settings_f = PFile::Path("settings.ini");
 		settings_f.SetPath(Internal_Path);
+		PLog::Write(PLog::DEBUG, "PK2", "%s", settings_f.c_str());
 		if (!settings_f.Find()) {
 
 			PLog::Write(PLog::DEBUG, "PK2", "Settings not found on internal");
@@ -335,8 +350,6 @@ int main(int argc, char *argv[]) {
 		data_path = External_Path;
 	else
 		data_path = Internal_Path;
-
-	data_path += PE_SEP;
 
 	#endif //__ANDROID__
 

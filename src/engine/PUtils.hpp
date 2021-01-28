@@ -28,4 +28,8 @@ bool Is_Mobile();
 int Alphabetical_Compare(const char *a, const char *b);
 bool NoCaseCompare(const char* a, const char* b);
 
+#ifdef __ANDROID__
+    bool ExternalWriteable();
+#endif
+
 }

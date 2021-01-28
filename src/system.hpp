@@ -23,8 +23,8 @@ extern int render_method;
 extern bool external_dir;
 
 extern bool external_writable;
-extern const char* External_Path;
-extern const char* Internal_Path;
+extern std::string External_Path;
+extern std::string Internal_Path;
 
 extern bool save_on_external;
 extern bool save_on_internal;

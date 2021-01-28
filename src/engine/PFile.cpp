@@ -591,7 +591,13 @@ int Path::SetFile(std::string file) {
 
 int Path::SetPath(std::string path) {
 
+	int s = path.size();
+	if (s > 0)
+		if (path[s-1] != PE_SEP[0] && path[s-1] != PE_NOSEP[0])
+			path += PE_SEP;
+
 	this->path = path + this->GetFileName();
+	this->FixSep();
 
 	return 0;
 

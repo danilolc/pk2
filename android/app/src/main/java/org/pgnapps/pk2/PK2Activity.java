@@ -6,9 +6,11 @@ package org.pgnapps.pk2;
 
 import org.libsdl.app.SDLActivity;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.os.Build;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.io.IOException;
@@ -16,26 +18,6 @@ import java.io.IOException;
 public class PK2Activity extends SDLActivity {
 
     private static final String TAG = "PJava";
-
-    private String loadZip() {
-
-        String file = "";
-
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        try{
-            startActivityForResult(intent, 2);
-//            file = intent.getDataString();
-        } catch (ActivityNotFoundException e) {
-            Log.i(TAG, "No file explorer clients installed.");
-        }
-
-        Log.i(TAG, "batatada");
-        Log.i(TAG, file);
-
-        return "batata";
-    }
 
     //@Keep
     private String[] listDir(String dir) {
@@ -56,6 +38,15 @@ public class PK2Activity extends SDLActivity {
         }
 
         return ret;
+
+    }
+
+    //@Keep
+    private boolean externalPermitted() {
+        return
+                ContextCompat.checkSelfPermission(
+                        this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                        PackageManager.PERMISSION_GRANTED;
 
     }
 

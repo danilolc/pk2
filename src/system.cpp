@@ -27,8 +27,8 @@ int render_method = PRender::RENDERER_DEFAULT;
 bool external_dir;
 
 bool external_writable = false;
-const char* External_Path = nullptr;
-const char* Internal_Path = nullptr;
+std::string External_Path;
+std::string Internal_Path;
 
 bool save_on_external = false;
 bool save_on_internal = false;

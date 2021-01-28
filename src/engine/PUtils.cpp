@@ -200,4 +200,22 @@ bool Is_Mobile() {
 
 }
 
+#ifdef __ANDROID__
+bool ExternalWriteable() {
+
+	JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
+	jobject activity = (jobject)SDL_AndroidGetActivity();
+	jclass clazz(env->GetObjectClass(activity));
+	jmethodID method_id = env->GetMethodID(clazz, "externalPermitted", "()Z");
+
+	jboolean retval = env->CallBooleanMethod(activity, method_id);
+
+	env->DeleteLocalRef(activity);
+	env->DeleteLocalRef(clazz);
+
+    return (retval == JNI_TRUE);
+
+}
+#endif
+
 }
