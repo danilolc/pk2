@@ -77,10 +77,9 @@ This example starts the level13.map on dev mode:
 
 # FIXMEs
 * Android import zip, delete zip, zip file on save (can't load save with no zip)
-* Android data path
 * Use app bundles to minimize apk size
-* Background animations
 * Memory increasing?
+* Fix music loop
 
 * New graphics and controllers menu
 * SDL_QUIT on Android

@@ -1285,24 +1285,40 @@ void Draw_Menu_Data() {
 	Draw_BGSquare(-0, 30, 640+0, 480-30, 100);
 
 	// TODO - data menu
-	int my = 90;
+	int my = 80;
 
-	//PDraw::font_write(fontti2, "data location:", align_left, my);
-	//if (Draw_Menu_Text("internal",align_right - 15*8, my)) /**/;
-
-	//Draw_Menu_Text("yes", align_right - 15*8, my);
-	//Draw_Menu_Text("no", align_right - 15*8 + 100, my);
-
-	//my += 30;
-
-	//PDraw::font_write(fontti1, data_path.c_str(), align_right - data_path.size()*8, my);
-	//my += 10;
-
-	//char code[8];
-	//Id_To_String(idd, code);
-	
 	PDraw::font_write(fontti1, id_code, align_right - 7*8, my);
-	//PDraw::font_write(fontti1, Internal_Path, 90, 210);
+	my += 15;
+
+	PDraw::font_write(fontti2, "data location:", align_left, my);
+
+	if (external_dir) {
+		if (Draw_Menu_Text("external",align_right - 15*8, my)) {
+
+			Move_DataPath(Internal_Path);
+			external_dir = false;
+
+		}
+
+	} else {
+		if (Draw_Menu_Text("internal",align_right - 15*8, my)) {
+
+			if (PUtils::ExternalWriteable()) {
+				Move_DataPath((External_Path));
+				external_dir = true;
+			} else {
+				if (SDL_AndroidRequestPermission("android.permission.WRITE_EXTERNAL_STORAGE")) {
+					Move_DataPath((External_Path));
+					external_dir = true;
+				}
+			}
+
+		}
+
+	}
+
+	my += 25;
+	PDraw::font_write(fontti1, data_path.c_str(), align_right - data_path.size()*8, my);
 
 	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),align_left,425))
 		menu_nyt = MENU_MAIN;

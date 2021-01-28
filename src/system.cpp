@@ -197,9 +197,21 @@ void Prepare_DataPath() {
 
 void Move_DataPath(std::string new_path) {
 
-	new_path += PE_SEP;
-
 	PLog::Write(PLog::DEBUG, "PK2", "Renaming data from %s to %s", data_path.c_str(), new_path.c_str());
+
+	// There is a save on the destination
+	PFile::Path old_settings = PFile::Path(new_path, "settings.ini");
+	if (old_settings.Find()) {
+	    u32 id;
+		int ret = Settings_GetId(old_settings, id);
+		if (ret == 0) {
+            char ids[8];
+            Id_To_String(id, ids);
+            std::string bkp_dir = data_path + "backups" + PE_SEP;
+            PUtils::CreateDir(bkp_dir);
+            PUtils::RenameDir(new_path, bkp_dir + ids + PE_SEP);
+        }
+	}
 
 	PUtils::RemoveDir(new_path);
 	PUtils::RenameDir(data_path, new_path);
