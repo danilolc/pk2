@@ -1271,15 +1271,15 @@ void Draw_Menu_Language() {
 
 	}
 
-	my += 20;
-	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),130,my))
+	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),180,400))
 		menu_nyt = MENU_MAIN;
 
 }
 
 void Draw_Menu_Data() {
 
-#ifdef __ANDROID
+#ifdef __ANDROID__
+
 	int align_left = 80;
 	int align_right = 640 - 70;
 
@@ -1321,8 +1321,9 @@ void Draw_Menu_Data() {
 	my += 25;
 	PDraw::font_write(fontti1, data_path.c_str(), align_right - data_path.size()*8, my);
 
-	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),align_left,425))
+	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),180,400))
 		menu_nyt = MENU_MAIN;
+
 #endif
 
 }

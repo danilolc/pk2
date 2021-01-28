@@ -191,7 +191,8 @@ bool is_vsync() {
 
 int init(int width, int height, const char* name, const char* icon, int render_method) {
 
-	PLog::Write(PLog::DEBUG, "PRender", "Initializing renderer");
+	PLog::Write(PLog::DEBUG, "PRender", "Initializing graphics");
+	PLog::Write(PLog::DEBUG, "PRender", "Video driver: %s", SDL_GetCurrentVideoDriver());
 
 	if (render_method == RENDERER_DEFAULT) {
 

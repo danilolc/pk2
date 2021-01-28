@@ -727,8 +727,7 @@ int init(int width, int height) {
 
     if (ready) return -1;
 
-    PLog::Write(PLog::DEBUG, "PDraw", "Initializing graphics");
-    PLog::Write(PLog::DEBUG, "PDraw", "Video driver: %s", SDL_GetCurrentVideoDriver());
+    PLog::Write(PLog::DEBUG, "PDraw", "Initializing buffers");
     
     IMG_Init(IMG_INIT_PNG);
 
