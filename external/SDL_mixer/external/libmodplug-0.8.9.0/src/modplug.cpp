@@ -87,7 +87,7 @@ ModPlugFile* ModPlug_Load(const void* data, int size)
 	ModPlug::UpdateSettings(true);
 	if(result->mSoundFile.Create((const BYTE*)data, size))
 	{
-		result->mSoundFile.SetRepeatCount(ModPlug::gSettings.mLoopCount);
+		result->mSoundFile.SetRepeatCount(-1); //ModPlug::gSettings.mLoopCount);
 		return result;
 	}
 	else
