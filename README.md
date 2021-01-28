@@ -77,10 +77,6 @@ This example starts the level13.map on dev mode:
 
 # FIXMEs
 * Android import zip, delete zip, zip file on save (can't load save with no zip)
-* Use app bundles to minimize apk size
-* Memory increasing?
-* Fix music loop
-
 * New graphics and controllers menu
 * SDL_QUIT on Android
 * Autosave settings option, ask when overwriting save, select save on new game

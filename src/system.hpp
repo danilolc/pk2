@@ -22,15 +22,8 @@ extern int render_method;
 
 extern bool external_dir;
 
-extern bool external_writable;
 extern std::string External_Path;
 extern std::string Internal_Path;
-
-extern bool save_on_external;
-extern bool save_on_internal;
-
-extern char external_save_code[8];
-extern char internal_save_code[8];
 
 #endif
 

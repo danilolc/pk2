@@ -26,15 +26,8 @@ int render_method = PRender::RENDERER_DEFAULT;
 
 bool external_dir;
 
-bool external_writable = false;
 std::string External_Path;
 std::string Internal_Path;
-
-bool save_on_external = false;
-bool save_on_internal = false;
-
-char external_save_code[8] = "";
-char internal_save_code[8] = "";
 
 #endif
 

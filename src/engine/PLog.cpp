@@ -35,11 +35,12 @@ static PFile::RW* log_file = NULL;
 static u8 log_level = 0;
 static bool print_to_stdout = false;
 
-static SDL_mutex* mutex;
+static SDL_mutex* mutex = NULL;
 
 void Init(u8 level, PFile::Path file, bool to_stdout) {
 
-    mutex = SDL_CreateMutex();
+    if (mutex == NULL)
+        mutex = SDL_CreateMutex();
 
     log_level = level;
 
