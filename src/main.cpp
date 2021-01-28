@@ -309,6 +309,7 @@ int main(int argc, char *argv[]) {
 
 
 	// Choose between internal or external path on Android
+	// Prioritize internal
 	if (PUtils::ExternalWriteable()) {
 
 		PLog::Write(PLog::DEBUG, "PK2", "External access allowed");

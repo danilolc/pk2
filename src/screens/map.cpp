@@ -280,6 +280,9 @@ int Play_Music() {
 
 int Screen_Map_Init() {
 
+	// Provisory
+	Settings_Save();
+
 	if (!Episode) {
 		PK2_Error("Episode not started");
 		return 1;

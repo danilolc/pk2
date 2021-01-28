@@ -200,6 +200,22 @@ int init(int width, int height, const char* name, const char* icon, int render_m
 
 		render_method = RENDERER_SDL;
 
+		#elif _WIN32
+
+			OSVERSIONINFO osvi;
+			ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+			osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+			GetVersionEx(&osvi);
+			PLog::Write(PLog::DEBUG, "PRender", "Windows version %i", osvi.dwMajorVersion);
+
+			if (osvi.dwMajorVersion <= 5) // Win 2000 - Win XP
+				render_method = RENDERER_SDL_SOFTWARE;
+			else if (osvi.dwMajorVersion == 6) // Win Vista - Win 8
+				render_method = RENDERER_SDL;
+			else // Win 10
+				render_method = RENDERER_OPENGL;
+
 		#else
 
 		render_method = RENDERER_OPENGL;

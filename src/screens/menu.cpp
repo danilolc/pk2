@@ -1279,6 +1279,7 @@ void Draw_Menu_Language() {
 
 void Draw_Menu_Data() {
 
+#ifdef __ANDROID
 	int align_left = 80;
 	int align_right = 640 - 70;
 
@@ -1322,6 +1323,8 @@ void Draw_Menu_Data() {
 
 	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),align_left,425))
 		menu_nyt = MENU_MAIN;
+#endif
+
 }
 
 int Draw_Menu() {
