@@ -525,8 +525,17 @@ int init(int buffer_size, bool multi_thread) {
 	Mix_AllocateChannels(CHANNELS);
 	Mix_ChannelFinished(channelDone);
 
+	int s = SDL_GetNumAudioDrivers();
+	for (int i = 0; i < s; i++)
+		printf("-> %s\n", SDL_GetAudioDriver(i));
+
+	s = SDL_GetNumAudioDevices(0);
+	for (int i = 0; i < s; i++)
+		printf("-< %s\n", SDL_GetAudioDeviceName(i, 0));
+
 	PLog::Write(PLog::DEBUG, "PSound", "buffer size: %i", buffer_size);
 	PLog::Write(PLog::DEBUG, "PSound", "Desired %ihz 0x%x", PS_FREQ, PS_FORMAT);
+	PLog::Write(PLog::DEBUG, "PSound", "Audio driver: %s", SDL_GetCurrentAudioDriver());
 
 	int frequency;
 	u16 format;

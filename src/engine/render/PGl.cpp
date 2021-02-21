@@ -393,14 +393,16 @@ void PGl::update(void* _buffer8) {
 	if (shader_time > time_cycle)
 		shader_time -= time_cycle;
 
-	SDL_LockSurface(buffer8);
-
 	static Uint32 last_palette_version = -1;
+
+	SDL_LockSurface(buffer8);
+	int buffer_w = buffer8->w, buffer_h = buffer8->h;
+
 	bool update_palette = last_palette_version != buffer8->format->palette->version;
 	last_palette_version = buffer8->format->palette->version;
 	SDL_Color* bufer8_colors = buffer8->format->palette->colors;
 	
-	glViewport(0, 0, buffer8->w, buffer8->h);
+	glViewport(0, 0, buffer_w, buffer_h);
 	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);
 	glUseProgram(indexed_program);
 
@@ -415,8 +417,11 @@ void PGl::update(void* _buffer8) {
 		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, bufer8_colors);
 		glUniform1i(uniIndexPalette, 1); //
 	}
+
+	SDL_UnlockSurface(buffer8);
+
 	glUniform1f(uniIndexTime, shader_time);
-	glUniform2f(uniIndexRes, buffer8->w, buffer8->h); //
+	glUniform2f(uniIndexRes, buffer_w, buffer_h); //
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	int w, h;
@@ -428,16 +433,15 @@ void PGl::update(void* _buffer8) {
 	glUseProgram(*screen_program);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, buffer8->w, buffer8->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); //
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, buffer_w, buffer_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); //
 	glUniform1i(*uniScreenTex, 0); //
-	glUniform2f(*uniScreenIdxRes, buffer8->w, buffer8->h); //
+	glUniform2f(*uniScreenIdxRes, buffer_w, buffer_h); //
 	glUniform2f(*uniScreenRes, cw, ch); //
 	glUniform1f(*uniScreenTime, shader_time);
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
-	SDL_UnlockSurface(buffer8);
 	SDL_GL_SwapWindow(curr_window);
 
 }
@@ -452,9 +456,8 @@ PGl::PGl(int width, int height, void* window) {
 	PLog::Write(PLog::DEBUG, "PGl", "OpenGL version: %s", glGetString(GL_VERSION));
 	PLog::Write(PLog::DEBUG, "PGl", "GLSL version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-	//glDisable(GL_LIGHTING);
 	glDisable(GL_DITHER);
-	//glDisable(GL_BLEND);
+	glDisable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	
 	glEnable(GL_TEXTURE_2D);

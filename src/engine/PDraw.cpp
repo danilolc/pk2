@@ -314,6 +314,18 @@ int image_cutcliptransparent(int index, RECT src, RECT dst, int alpha, u8 colors
     
 }
 
+static u8 blend_colors(u8 color, u8 colBack, u8 alpha) {
+
+    int result = color % 32;
+    result = (result*alpha) / 256;
+    result += colBack % 32;
+    if(result > 31)
+        result = 31;
+
+    return (u8)result;
+
+}
+
 // TODO - REDO THIS FUNCTION
 int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src_h,
 						 int dst_x, int dst_y, int alpha, u8 colorsum) {
@@ -321,9 +333,12 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     dst_x += x_offset;
     dst_y += y_offset;
 
-    if (alpha > 100) alpha = 100;
-    if (alpha <= 0) alpha = 0;
+    alpha *= 256;
+    alpha /= 100;
 
+    if (alpha > 255) alpha = 255;
+    if (alpha <= 0) alpha = 0;
+    u8 alpha8 = alpha;
 
     uint x_start = src_x;
     if (dst_x < 0) x_start -= dst_x;
@@ -365,12 +380,12 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
                 
                 int fy = screen_x + screenPitch * screen_y;
 
-                int sum = colorsum;
+                u8 sum = colorsum;
                 if (sum == 255)
                     sum = color1 & 0b11100000;
 
                 u8 color2 = screenPix[fy];
-                screenPix[fy] = blend_colors(color1, color2, alpha) + sum;
+                screenPix[fy] = blend_colors(color1, color2, alpha8) + sum;
 
             }
 
@@ -508,20 +523,6 @@ int drawimage_end(int index) {
 
     SDL_UnlockSurface(imageList[index]);
     return 0;
-
-}
-
-inline u8 blend_colors(u8 color, u8 colBack, int alpha) {
-    
-    if(alpha > 100) alpha = 100;
-    if(alpha < 0) alpha = 0;
-
-    int result = color % 32;
-    result = (result*alpha) / 100;
-    result += colBack % 32;
-    if(result > 31) result = 31;
-
-    return (u8)result;
 
 }
 
