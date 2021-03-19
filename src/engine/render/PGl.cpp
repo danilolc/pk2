@@ -13,6 +13,7 @@
 void PGl::load_ui_texture(void* surface) {
 
     PLog::Write(PLog::ERR, "PGl", "Texture not implemented!");
+	SDL_FreeSurface((SDL_Surface*) surface);
 
 }
 

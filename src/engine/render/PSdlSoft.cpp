@@ -13,6 +13,7 @@
 void PSdlSoft::load_ui_texture(void* surface) {
 
     PLog::Write(PLog::ERR, "PSdlSoft", "Texture not implemented!");
+    SDL_FreeSurface((SDL_Surface*) surface);
 
 }
 void PSdlSoft::render_ui(PRender::FRECT src, PRender::FRECT dst, float alpha) {

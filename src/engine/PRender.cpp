@@ -45,7 +45,6 @@ void load_ui_texture(PFile::Path file) {
 	SDL_Surface* surface = IMG_Load_RW((SDL_RWops*)rw, 1);
 
 	renderer->load_ui_texture(surface);
-	SDL_FreeSurface(surface);
 
 }
 
