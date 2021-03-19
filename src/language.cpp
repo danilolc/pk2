@@ -67,13 +67,8 @@ const char* Language_Name() {
 	if(strcmp(loc, "id") == 0)
 		return "indonesian.txt";
 	
-	//"italiano1.txt"
-	//"italiano2.txt"
-	//"italiano3.txt"
-	//"italiano4.txt"
-	//"italiano5.txt"
 	if(strcmp(loc, "it") == 0)
-		return "italiano6.txt";
+		return "italiano.txt";
 	
 	if(strcmp(loc, "mk") == 0)
 		return "macedonian.txt";

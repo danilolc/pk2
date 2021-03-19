@@ -91,8 +91,14 @@ int Screen_First_Start() {
 	
 	PInput::SetVibration(Settings.vibration);
 
-	if (PInput::ControllerFound())
+	if (Settings.using_controller == SET_TRUE)
 		Input = &Settings.joystick;
+	else if (Settings.using_controller == SET_FALSE)
+		Input = &Settings.keyboard;
+	else if (PInput::ControllerFound())
+		Input = &Settings.joystick;
+	else
+		Input = &Settings.keyboard;
 
 	int ret = Set_Screen_Mode(Settings.shader_type);
 	if (ret != 0) {
@@ -105,16 +111,24 @@ int Screen_First_Start() {
 
 	ret = -1;
 
-	if (Settings.fps == SETTINGS_VSYNC)
+	if (PUtils::Is_Mobile()) {
+	
 		ret = Piste::set_fps(-1);
-	else if (Settings.fps == SETTINGS_30FPS)
-		ret = Piste::set_fps(30);
-	else if (Settings.fps == SETTINGS_60FPS)
-		ret = Piste::set_fps(60);
-	else if (Settings.fps == SETTINGS_85FPS)
-		ret = Piste::set_fps(85);
-	else if (Settings.fps == SETTINGS_120FPS)
-		ret = Piste::set_fps(120);
+	
+	} else {
+
+		if (Settings.fps == SETTINGS_VSYNC)
+			ret = Piste::set_fps(-1);
+		else if (Settings.fps == SETTINGS_30FPS)
+			ret = Piste::set_fps(30);
+		else if (Settings.fps == SETTINGS_60FPS)
+			ret = Piste::set_fps(60);
+		else if (Settings.fps == SETTINGS_85FPS)
+			ret = Piste::set_fps(85);
+		else if (Settings.fps == SETTINGS_120FPS)
+			ret = Piste::set_fps(120);
+
+	}
 
 	if (ret != 0) {
 		PLog::Write(PLog::ERR, "PK2", "FPS mode not supported, changing to 60fps");

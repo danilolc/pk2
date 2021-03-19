@@ -207,6 +207,8 @@ int set_fps(int fps) {
 
 	desired_fps = fps;
 
+	PLog::Write(PLog::DEBUG, "Piste", "FPS set to %i", fps);
+	
 	// Vsync true
 	if (fps == -1)
 		return PRender::set_vsync(true);

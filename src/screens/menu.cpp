@@ -1045,15 +1045,19 @@ void Draw_Menu_Controls() {
 		if (Input == &Settings.keyboard) {
 
 			if (Draw_Menu_Text("use game controller",100,90+my)) {
+				Settings.using_controller = SET_TRUE;
 				Input = &Settings.joystick;
 				menu_valittu_id = 0; //Set menu cursor to 0
+				Settings_Save();
 			}
 
 		} else {
 
 			if (Draw_Menu_Text("use keyboard",100,90+my)) {
+				Settings.using_controller = SET_FALSE;
 				Input = &Settings.keyboard;
 				menu_valittu_id = 0; //Set menu cursor to 0
+				Settings_Save();
 			}
 
 		}
@@ -1330,10 +1334,10 @@ void Draw_Menu_Data() {
 	my += 25;
 	PDraw::font_write(fontti1, data_path.c_str(), align_right - data_path.size()*8, my);
 
+#endif
+
 	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),180,400))
 		menu_nyt = MENU_MAIN;
-
-#endif
 
 }
 

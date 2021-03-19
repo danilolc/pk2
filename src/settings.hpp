@@ -23,7 +23,13 @@ enum {
 	SETTINGS_MODE_HQX
 };
 
-#define SETTINGS_VERSION "1.6"
+enum {
+	SET_FALSE,
+	SET_TRUE,
+	NOT_SET,
+};
+
+#define SETTINGS_VERSION "1.7"
 
 struct GAME_CONTROLS { 
 
@@ -60,6 +66,7 @@ struct PK2SETTINGS {
 	// Controls
 	GAME_CONTROLS keyboard;
 	GAME_CONTROLS joystick;
+	u8 using_controller;
 	u16 vibration;
 	
 	// Audio

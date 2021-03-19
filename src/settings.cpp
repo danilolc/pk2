@@ -20,7 +20,7 @@
 #define SETTINGS_FILE "settings.ini"
 
 PK2SETTINGS Settings;
-GAME_CONTROLS* Input = &Settings.keyboard;
+GAME_CONTROLS* Input;
 
 int Settings_GetId(PFile::Path path, u32& id) {
 
@@ -87,6 +87,7 @@ void Settings_Init() {
 	Settings.keyboard.attack2   = PInput::LSHIFT;
 	Settings.keyboard.open_gift = PInput::SPACE;
 
+	Settings.using_controller   = NOT_SET;
 	Settings.vibration          = 0xFFFF/2;
 	Settings.joystick.left      = PInput::JOY_LEFT;
 	Settings.joystick.right     = PInput::JOY_RIGHT;
@@ -151,6 +152,7 @@ int Settings_Open() {
 	file->read(Settings.keyboard.attack2);
 	file->read(Settings.keyboard.open_gift);
 
+	file->read(Settings.using_controller);
 	file->read(Settings.vibration);
 	file->read(Settings.joystick.left);
 	file->read(Settings.joystick.right);
@@ -214,6 +216,7 @@ int Settings_Save() {
 	file->write(Settings.keyboard.attack2);
 	file->write(Settings.keyboard.open_gift);
 
+	file->write(Settings.using_controller);
 	file->write(Settings.vibration);
 	file->write(Settings.joystick.left);
 	file->write(Settings.joystick.right);
