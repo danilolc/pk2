@@ -1,0 +1,175 @@
+Setup 
+------------------------------------------------------------------------------------
+*setup options:				Impostazioni:
+*setup video modes:			Risoluzione:
+*setup music & sounds:			Musica e Suoni:
+*setup music:				Musica
+*setup sounds:				Suoni
+*setup language:			Scegli lingua:
+*setup play:				Gioca
+*setup exit:				Esci
+
+Intro
+------------------------------------------------------------------------------------
+*intro presents:			anno 2003
+*intro a game by:			un gioco di:
+*intro original character design:	creatore del personaggio:
+*intro tested by:			testato da:
+*intro thanks to:			un ringraziamento a:
+*intro translation:			traduzione italiana:
+*intro translator:			rowland gardner
+
+Main Menu
+------------------------------------------------------------------------------------
+*main menu new game:			nuova partita
+*main menu continue:			continua
+*main menu load game:			carica partita
+*main menu save game:			salva partita
+*main menu controls:			controlli
+*main menu graphics:			grafica
+*main menu sounds:			suoni
+*main menu exit game:			esci
+
+*back to main menu:			torna al menu
+
+Load Game
+------------------------------------------------------------------------------------
+*load menu title:			carica
+*load menu info:			clicca il salvataggio da caricare
+*load menu episode:			episodio: 
+*load menu level:			livello: 
+
+Save Game
+------------------------------------------------------------------------------------
+*save menu title:			salva partita
+*save menu info:			clicca lo slot su cui salvare
+*save menu episode:			episodio: 
+*save menu level:			livello: 
+
+Game Controls
+------------------------------------------------------------------------------------
+*controls menu title:			controlli
+*controls menu move left:		sinistra
+*controls menu move right:		destra
+*controls menu jump:			salta
+*controls menu duck:			abbassati
+*controls menu walk slow:		cammina
+*controls menu egg attack:		lancia uovo
+*controls menu doodle attack:		usa megafono
+*controls menu use item:		usa regalo
+*controls menu edit:			edita
+*controls menu keyboard def:		tastiera
+*controls menu gamepad4:		gamepad 4 tasti
+*controls menu gamepad6:		gamepad 6 tasti
+
+Sounds
+------------------------------------------------------------------------------------
+*sounds menu title:			suoni e musica
+*sounds menu sfx volume:		volume dei suoni
+*sounds menu music volume:		volume della musica
+*sounds menu more:			piu
+*sounds menu less:			meno
+
+Graphics
+------------------------------------------------------------------------------------
+*graphics menu title:				grafica
+*graphics menu transparency fx on:		trasparenza on
+*graphics menu transparency fx off:		trasparenza off
+*graphics menu menus are transparent:		testo trasparente on
+*graphics menu menus are not transparent:	testo trasparente off
+*graphics menu item bar is visible:		inventario visibile
+*graphics menu item bar is not visible:		inventario invisibile
+*graphics menu weather fx on:			eventi meteo on
+*graphics menu weather fx off:			eventi meteo off
+*graphics menu bg sprites on:			oggetti di fondo on
+*graphics menu bg sprites off:			oggetti di fondo off
+*graphics menu game speed normal:		velocita normale
+*graphics menu game speed double:		velocita doppia
+
+Player's name
+------------------------------------------------------------------------------------
+*player screen type your name:		scrivi il nome
+*player screen continue:		fatto
+*player screen clear:			cancella
+*player default name:			pekka
+
+Episodes
+------------------------------------------------------------------------------------
+*episode menu choose episode:		scegli un episodio
+*episode menu get more episodes at: scarica altri episodi su http://pistegamez.cjb.net
+*episode menu no maps:			livelli non pervenuti!
+
+Map
+------------------------------------------------------------------------------------
+*map screen total score:		punteggio
+*map screen next level:			livello successivo:
+*episode best player:			campione in carica:
+*episode hiscore:			miglior punteggio:
+*level best player:			il migliore:
+*level hiscore:				punteggio:
+*level fastest player:			il piu veloce:
+*level best time:			tempo:
+
+Scores
+------------------------------------------------------------------------------------
+*score screen title:			punteggio totale:
+*score screen level score:		punteggio livello
+*score screen bonus score:		bonus punteggio
+*score screen time score:		bonus tempo
+*score screen energy score:		bonus piume
+*score screen item score:		bonus regali
+*score screen continue:			mappa
+*score screen total score:		punteggio totale
+*score screen new level hiscore:	hai stracciato il record!
+*score screen new level best time:	sei il giocatore piu veloce!
+*score screen new episode hiscore:	sei il campione del livello!
+
+Game
+------------------------------------------------------------------------------------
+*score:					punti:
+*game time:				tempo:
+*energy:				energia:
+*items:					inventario:
+*attack 1:				megafono:
+*attack 2:				uova:
+*keys:					chiavi:
+*level clear:				hai vinto!
+*time bonus:			
+*game paused:				pausa...
+*knocked out:				sei fuori gioco!
+*time out:				tempo scaduto!
+*try again:			  prova ancora!
+*locks open:				hai aperto tutti i lucchetti.
+*new doodle attack:			un nuovo megafono.
+*new egg attack:			uova fresche di giornata!
+*new item:				un piccolo regalo per te.
+
+*loading:				caricamento...
+
+The End
+------------------------------------------------------------------------------------
+*end congratulations:			congratulazioni!
+*end chickens saved:			hai salvato i tuoi amici!
+*end the end:				fine
+
+Info Signs
+------------------------------------------------------------------------------------
+*info01:			usa il megafono contro i nemici!
+*info02:			bombarda i nemici con le uova!
+*info03:			trova il segnale di uscita!
+*info04:			i lucchetti si apriranno quando avrai le chiavi.
+*info05:			aziona gli interruttori saltandoci sopra.
+*info06:			interruttori verdi muovono muri con frecce verdi.
+*info07:			interruttori blu muovono muri con frecce blu.
+*info08:			gli interruttori arancioni spengono gli incendi.
+*info09:			puoi usare i regali quando vuoi.
+*info10:			le piume restituiscono energia.
+*info11:			i teletrasporti sono ingannevoli, non perderli!
+*info12:			prendi i bonus e aumenta il tuo punteggio.
+*info13:			cerca sempre i bonus nascosti!
+*info14:			un lucchetto si apre se una chiave lo tocca.
+*info15:			fai attenzione alle trappole!
+*info16:			muoviti! il tempo vola!
+*info17:			attento agli animali ipnotizzati!
+*info18:			fai attenzione al vento forte!
+*info19:			salva le galline!

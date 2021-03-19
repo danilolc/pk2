@@ -149,7 +149,7 @@ Game
 The End
 ------------------------------------------------------------------------------------
 *end congratulations:			Parabéns!
-*end chickens saved:			Voce salvou as galinhas!
+*end chickens saved:			Você salvou as galinhas!
 *end the end:				Fim
 
 Info Signs
