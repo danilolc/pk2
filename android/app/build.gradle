@@ -8,8 +8,8 @@ android {
         applicationId "org.pgnapps.pk2"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 0x0400
-        versionName "1.4.0"
+        versionCode 0x0401
+        versionName "1.4.1"
 
         //ndkVersion '22.0.7026061' //<- giving SIGILL on arm
         ndkVersion '20.0.5594570'
