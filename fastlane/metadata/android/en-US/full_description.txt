@@ -1,0 +1,3 @@
+Pekka Kana 2 (Pekka the Rooster 2) is a jump 'n run game made in the spirit of old classic platformers such as Super Mario, Sonic the Hedgehog, Jazz Jackrabbit, Super Frog and so on.
+
+The simple goal in each level is to find the exit sign, which is usually not that simple as it sounds because of enemies, traps, and quirky puzzles.
