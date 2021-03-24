@@ -151,6 +151,8 @@ int Load_SaveFile() {
 
 int Save_Record(int i) {
 
+	if (!Episode) return -1;
+
 	//clean record
 	memset(&saves_list[i], 0, sizeof(PK2SAVE));
 

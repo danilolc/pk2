@@ -135,9 +135,17 @@ static void start_test(const char* arg) {
 
 }
 
+// Clean memory (needed?)
 static void quit() {
 
-	Settings_Save();
+	if(PK2_error) {
+
+		PLog::Write(PLog::ERR, "PK2", PK2_error_msg);
+		PUtils::Show_Error(PK2_error_msg);
+		
+	}
+
+	//Settings_Save();
 
 	PSound::stop_music();
 
@@ -147,10 +155,10 @@ static void quit() {
 	if (Game)
 		delete Game;
 	
-	if (Episode && !test_level) {
+	/*if (Episode && !test_level) {
 		Save_Record(10); //Save #10 is the backup
 		delete Episode;
-	}
+	}*/
 	
 	if(tekstit)
 		delete tekstit;
@@ -396,13 +404,6 @@ int main(int argc, char *argv[]) {
 	}
 
 	Piste::loop(Screen_Loop); //The game loop
-
-	if(PK2_error) {
-
-		PLog::Write(PLog::ERR, "PK2", PK2_error_msg);
-		PUtils::Show_Error(PK2_error_msg);
-		
-	}
 
 	quit();
 	return 0;

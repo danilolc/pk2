@@ -668,6 +668,7 @@ void Draw_Menu_Graphics() {
 
 	int mx = 0, my = 150, option;
 	static bool moreOptions = false;
+	bool save_settings = false;
 
 	Draw_BGSquare(40, 70, 640-40, 410, 224);
 
@@ -728,7 +729,7 @@ void Draw_Menu_Graphics() {
 				int ret = Set_Screen_Mode(option);
 				if (ret == 0) {
 					Settings.shader_type = option;
-					Settings_Save();
+					save_settings = true;
 				}
 
 			}
@@ -737,8 +738,6 @@ void Draw_Menu_Graphics() {
 		//Add more options here
 
 
-
-		bool save_settings = false;
 
 		if(wasFullScreen != Settings.isFullScreen) {// If fullscreen changes
 			save_settings = true;
@@ -818,87 +817,113 @@ void Draw_Menu_Graphics() {
 			menu_valittu_id = 0; //Set menu cursor to 0
 		}
 
-		if (save_settings)
-			Settings_Save();
-
-
 	}
 	else {
 
 		if (Settings.draw_transparent){
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_tfx_on),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_tfx_on),180,my)) {
 				Settings.draw_transparent = false;
+				save_settings = true;
+			}
 		} else{
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_tfx_off),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_tfx_off),180,my)) {
 				Settings.draw_transparent = true;
+				save_settings = true;
+			}
 		}
 		if (Draw_BoolBox(100, my, Settings.draw_transparent, true)) {
 			Settings.draw_transparent = !Settings.draw_transparent;
+			save_settings = true;
 		}
 		my += 30;
 
 
 		if (Settings.transparent_text){
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_tmenus_on),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_tmenus_on),180,my)) {
 				Settings.transparent_text = false;
+				save_settings = true;
+			}
 		} else{
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_tmenus_off),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_tmenus_off),180,my)) {
 				Settings.transparent_text = true;
+				save_settings = true;
+			}
 		}
 		if (Draw_BoolBox(100, my, Settings.transparent_text, true)) {
 			Settings.transparent_text = !Settings.transparent_text;
+			save_settings = true;
 		}
 		my += 30;
 
 
 		if (Settings.draw_itembar){
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_items_on),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_items_on),180,my)) {
 				Settings.draw_itembar = false;
+				save_settings = true;
+			}
 		} else{
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_items_off),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_items_off),180,my)) {
 				Settings.draw_itembar = true;
+				save_settings = true;
+			}
 		}
 		if (Draw_BoolBox(100, my, Settings.draw_itembar, true)) {
 			Settings.draw_itembar = !Settings.draw_itembar;
+			save_settings = true;
 		}
 		my += 30;
 
 
 		if (Settings.draw_weather){
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_weather_on),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_weather_on),180,my)) {
 				Settings.draw_weather = false;
+				save_settings = true;
+			}
 		} else{
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_weather_off),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_weather_off),180,my)) {
 				Settings.draw_weather = true;
+				save_settings = true;
+			}
 		}
 		if (Draw_BoolBox(100, my, Settings.draw_weather, true)) {
 			Settings.draw_weather = !Settings.draw_weather;
+			save_settings = true;
 		}
 		my += 30;
 
 
 		if (Settings.bg_sprites){
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_bgsprites_on),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_bgsprites_on),180,my)) {
 				Settings.bg_sprites = false;
+				save_settings = true;
+			}
 		} else{
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_bgsprites_off),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_bgsprites_off),180,my)) {
 				Settings.bg_sprites = true;
+				save_settings = true;
+			}
 		}
 		if (Draw_BoolBox(100, my, Settings.bg_sprites, true)) {
 			Settings.bg_sprites = !Settings.bg_sprites;
+			save_settings = true;
 		}
 		my += 30;
 
 
 		if (Settings.double_speed){
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_speed_double),180,my))
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_speed_double),180,my)) {
 				Settings.double_speed = false;
-		} else{
-			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_speed_normal),180,my))
+				save_settings = true;
+			}
+		} else {
+			if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.gfx_speed_normal),180,my)) {
 				Settings.double_speed = true;
+				save_settings = true;
+			}
 		}
 		if (Draw_BoolBox(100, my, Settings.double_speed, true)) {
 			Settings.double_speed = !Settings.double_speed;
+			save_settings = true;
 		}
 		my += 30;
 
@@ -914,6 +939,9 @@ void Draw_Menu_Graphics() {
 		menu_nyt = MENU_MAIN;
 		moreOptions = false;
 	}
+
+	if (save_settings)
+		Settings_Save();
 
 }
 
@@ -989,6 +1017,7 @@ void Draw_Menu_Sounds() {
 void Draw_Menu_Controls() {
 	
 	int my = 0;
+	bool save_settings = false;
 
 	Draw_BGSquare(40, 70, 640-40, 410, 224);
 
@@ -1048,7 +1077,7 @@ void Draw_Menu_Controls() {
 				Settings.using_controller = SET_TRUE;
 				Input = &Settings.joystick;
 				menu_valittu_id = 0; //Set menu cursor to 0
-				Settings_Save();
+				save_settings = true;
 			}
 
 		} else {
@@ -1057,7 +1086,7 @@ void Draw_Menu_Controls() {
 				Settings.using_controller = SET_FALSE;
 				Input = &Settings.keyboard;
 				menu_valittu_id = 0; //Set menu cursor to 0
-				Settings_Save();
+				save_settings = true;
 			}
 
 		}
@@ -1090,7 +1119,7 @@ void Draw_Menu_Controls() {
 
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
-		Settings_Save();
+		save_settings = true;
 	}
 
 	my += 20;
@@ -1131,7 +1160,7 @@ void Draw_Menu_Controls() {
 			menu_lue_kontrollit = 0;
 			menu_valittu_id = 0;		
 			key_delay = 20;
-			Settings_Save();
+			save_settings = true;
 		
 		} else {
 
@@ -1155,11 +1184,14 @@ void Draw_Menu_Controls() {
 			if (menu_lue_kontrollit > 8) {
 				menu_lue_kontrollit = 0;
 				menu_valittu_id = 0;
-				Settings_Save();
+				save_settings = true;
 			}
 
 		}
 	}
+
+	if (save_settings)
+		Settings_Save();
 
 	my += 20;
 
