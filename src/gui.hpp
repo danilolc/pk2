@@ -28,5 +28,6 @@ enum UI_MODE {
 void GUI_Change(int ui_mode);
 void GUI_Load();
 
+void GUI_Reset();
 void GUI_Update();
 void GUI_Exit();

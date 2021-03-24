@@ -10,6 +10,7 @@
 #include "gfx/particles.hpp"
 #include "episode/episodeclass.hpp"
 #include "settings.hpp"
+#include "gui.hpp"
 
 #include "engine/PLog.hpp"
 #include "engine/PSound.hpp"
@@ -79,6 +80,7 @@ int GameClass::Start() {
 	Sprites_clear(); //Reset sprites
 	Prototypes_ClearAll(); //Reset prototypes
 	Fadetext_Init(); //Reset fade text
+	GUI_Reset(); //Reset GUI
 
 	if (this->Open_Map() == 1)
 		PK2_Error("Can't load map");

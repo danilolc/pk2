@@ -310,12 +310,19 @@ static int get_pad() {
 
 }
 
+static int doodle_alpha = 0, egg_alpha = 0, gift_alpha = 0; 
+static bool doodle_active = false, egg_active = false, gift_active = false;
+
+void GUI_Reset() {
+
+	doodle_alpha = 0; egg_alpha = 0; gift_alpha = 0; 
+	doodle_active = false; egg_active = false; gift_active = false;
+
+}
+
 void GUI_Update() {
 
 	const int DELTA = 5;
-
-	static int doodle_alpha = 0, egg_alpha = 0, gift_alpha = 0; 
-	static bool doodle_active = false, egg_active = false, gift_active = false;
 
 	if (UI_mode == UI_GAME_BUTTONS) {
 
