@@ -95,10 +95,13 @@ int GameClass::Start() {
 
 int GameClass::Finnish() {
 
-	if (PSound::start_music(PFile::Path("music" PE_SEP "hiscore.xm")) == -1)
-		PK2_Error("Can't find hiscore.xm");
+	if (this->level_clear)
+		return -1;
 	
 	this->level_clear = true;
+
+	if (PSound::start_music(PFile::Path("music" PE_SEP "hiscore.xm")) == -1)
+		PK2_Error("Can't find hiscore.xm");	
 	
 	Episode->level_status[this->level_id] |= LEVEL_PASSED;
 	

@@ -582,8 +582,6 @@ void Draw_Menu_Load() {
 					Game = nullptr;
 				}
 				if (Episode) {
-					if (i != 10) //Don't save then load
-						Save_Record(10);
 					delete Episode;
 					Episode = nullptr;
 				}
@@ -1240,7 +1238,6 @@ void Draw_Menu_Episodes() {
 				Game = nullptr;
 			}
 			if (Episode) {
-				Save_Record(10);
 				delete Episode;
 				Episode = nullptr;
 			}
