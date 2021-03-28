@@ -15,6 +15,7 @@ struct Zip;
 
 struct RW {
 
+    size_t size();
     size_t to_buffer(void** buffer);
 
     int read(void* val, size_t size);

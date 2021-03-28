@@ -932,6 +932,13 @@ int RW::write(s64 val) {
 
 }
 
+size_t RW::size() {
+
+	SDL_RWops* rwops = (SDL_RWops*) this;
+
+	return SDL_RWsize(rwops);
+
+}
 
 size_t RW::to_buffer(void** buffer) {
 

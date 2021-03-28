@@ -15,6 +15,16 @@
 #define SAVES_FILE "saves.dat"
 #define VERSION "3"
 
+struct PK2SAVE_V1{
+	s32   jakso;
+	char  episodi[260]; //260, 256, 128?
+	char  nimi[20];
+	bool  kaytossa;
+	bool  jakso_lapaisty[100]; //100, 50?
+	bool  _[3]; // ?
+	s32   pisteet;
+};
+
 PK2SAVE saves_list[SAVES_COUNT];
 
 int Empty_Records() {
@@ -123,22 +133,92 @@ int Load_SaveFile() {
 	
 	} else if (strncmp(versio, "1", 2) == 0) {
 
-		PLog::Write(PLog::INFO, "PK2", "Can't read saves version 1");
-		file->close();
-		return 1;
+		PLog::Write(PLog::INFO, "PK2", "Loading save version 1");
 
-		/*struct PK2SAVE_V1{
-			s32   jakso;
-			char  episodi[260]; //260, 256, 128?
-			char  nimi[20];
-			bool  kaytossa;
-			bool  jakso_lapaisty[100]; //100, 50?
-			u32   pisteet;
-		};*/
+		file->read(count_c, sizeof(count_c));
+		count = atoi(count_c);
+		if (count > SAVES_COUNT)
+			count = SAVES_COUNT;
+
+		PK2SAVE_V1 save_v1;
+		int episodi_size = 0;
+		int jakso_lapaisty_size = 0;
+		int align_size = 0;
+
+		int s = file->size();
+		int save_size = (s - 10) / count;
+		int char_field = save_size - 8;
+		PLog::Write(PLog::INFO, "PK2", "Save char size = %i", char_field);
+
+		switch(char_field) {
+
+			case 384:
+				episodi_size = 260;
+				jakso_lapaisty_size = 100;
+				align_size = 3;
+				break;
+			
+			case 332:
+				episodi_size = 260;
+				jakso_lapaisty_size = 50;
+				align_size = 1;
+				break;
+
+			case 380:
+				episodi_size = 256;
+				jakso_lapaisty_size = 100;
+				align_size = 3;
+				break;
+			
+			case 328:
+				episodi_size = 256;
+				jakso_lapaisty_size = 50;
+				align_size = 1;
+				break;
+
+			case 252:
+				episodi_size = 128;
+				jakso_lapaisty_size = 100;
+				align_size = 3;
+				break;
+			
+			case 200:
+				episodi_size = 128;
+				jakso_lapaisty_size = 50;
+				align_size = 1;
+				break;
+
+			default: 
+				PLog::Write(PLog::ERR, "PK2", "Couldn't load save file");
+				file->close();
+				return 1;
+
+		}
+
+		for (int i = 0; i < count; i++) {
+
+			file->read(&save_v1.jakso, 4);
+			file->read(&save_v1.episodi, episodi_size);
+			file->read(&save_v1.nimi, 20);
+			file->read(&save_v1.kaytossa, 1);
+			file->read(&save_v1.jakso_lapaisty, jakso_lapaisty_size);
+			file->read(&save_v1._, align_size);
+			file->read(&save_v1.pisteet, 4);
+
+			saves_list[i].empty = !save_v1.kaytossa;
+			saves_list[i].level = save_v1.jakso;
+			strncpy(saves_list[i].episode, save_v1.episodi, 128);
+			strncpy(saves_list[i].name, save_v1.nimi, 20);
+			saves_list[i].score = save_v1.pisteet;
+			for (int j = 0; j < 99; j++)
+				saves_list[i].level_status[j] = save_v1.jakso_lapaisty[j+1]? LEVEL_PASSED : 0;
+
+		}
+		//Save_All_Records(); // Change to the current version
 
 	} else {
 
-		PLog::Write(PLog::INFO, "PK2", "Can't read this save version");
+		PLog::Write(PLog::ERR, "PK2", "Can't read this save version");
 		file->close();
 		return 1;
 
