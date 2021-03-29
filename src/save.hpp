@@ -8,9 +8,8 @@
 
 #include "engine/platform.hpp"
 
-const int SAVES_COUNT = 11;
+//const int SAVES_COUNT = 11;
 
-// Save struct is not the ideal way because of byte order
 struct PK2SAVE {
 
 	bool  empty;
@@ -22,7 +21,7 @@ struct PK2SAVE {
 	
 };
 
-extern PK2SAVE saves_list[SAVES_COUNT];
+extern std::vector<PK2SAVE> saves_list;
 
 int Load_SaveFile();
 int Save_Record(int i);

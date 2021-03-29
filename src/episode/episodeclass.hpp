@@ -72,6 +72,8 @@ class EpisodeClass {
 		u32 level = 1;
 		u32 level_count = 0;
 
+		u32 save_index = 0;
+
 		bool glows = false;
 		bool hide_numbers = false;
 		

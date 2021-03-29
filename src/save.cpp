@@ -15,6 +15,8 @@
 #define SAVES_FILE "saves.dat"
 #define VERSION "3"
 
+std::vector<PK2SAVE> saves_list;
+
 struct PK2SAVE_V1{
 	s32   jakso;
 	char  episodi[260]; //260, 256, 128?
@@ -25,26 +27,16 @@ struct PK2SAVE_V1{
 	s32   pisteet;
 };
 
-PK2SAVE saves_list[SAVES_COUNT];
-
-int Empty_Records() {
-
-	memset(saves_list, 0, sizeof(saves_list));
-
-	for (int i = 0; i < SAVES_COUNT; i++)
-		saves_list[i].empty = true;
-
-	return 0;
-	
-}
-
 int Save_All_Records() {
+
+	if (saves_list.empty())
+		return 0;
 
 	char versio[2] = VERSION;
 	char count_c[8];
 
 	memset(count_c, 0, sizeof(count_c));
-	snprintf(count_c, sizeof(count_c), "%i", SAVES_COUNT);
+	snprintf(count_c, sizeof(count_c), "%li", saves_list.size());
 
 	PFile::Path path(data_path, SAVES_FILE);
 	
@@ -56,11 +48,11 @@ int Save_All_Records() {
 
 	}
 
-	file->write(versio, sizeof(versio)); // Write version "2"
-	file->write(count_c, sizeof(count_c)); // Write count "11"
+	file->write(versio, sizeof(versio)); // Write version "3"
+	file->write(count_c, sizeof(count_c)); // Write count
 
 	// Write saves
-	for (int i = 0; i < SAVES_COUNT; i++) {
+	for (size_t i = 0; i < saves_list.size(); i++) {
 
 		file->write(saves_list[i].empty);
 		file->write(saves_list[i].level);
@@ -83,7 +75,7 @@ int Load_SaveFile() {
 	char count_c[8];
 	int count;
 
-	Empty_Records();
+	saves_list.clear();
 
 	PFile::Path path(data_path, SAVES_FILE);
 
@@ -105,17 +97,23 @@ int Load_SaveFile() {
 
 		file->read(count_c, sizeof(count_c));
 		count = atoi(count_c);
-		if (count > SAVES_COUNT)
-			count = SAVES_COUNT;
+		saves_list.reserve(count);
 
 		for (int i = 0; i < count; i++) {
-		
-			file->read(saves_list[i].empty);
-			file->read(saves_list[i].level);
-			file->read(saves_list[i].episode, PE_PATH_SIZE);
-			file->read(saves_list[i].name, 20);
-			file->read(saves_list[i].score);
-			file->read(saves_list[i].level_status, EPISODI_MAX_LEVELS);
+
+			PK2SAVE save;
+			
+			file->read(save.empty);
+			if (save.empty)
+				continue;
+
+			file->read(save.level);
+			file->read(save.episode, PE_PATH_SIZE);
+			file->read(save.name, 20);
+			file->read(save.score);
+			file->read(save.level_status, EPISODI_MAX_LEVELS);
+
+			saves_list.push_back(save);
 
 		}
 	
@@ -125,10 +123,16 @@ int Load_SaveFile() {
 
 		file->read(count_c, sizeof(count_c));
 		count = atoi(count_c);
-		if (count > SAVES_COUNT)
-			count = SAVES_COUNT;
+		saves_list.reserve(count);
 
-		file->read(saves_list, sizeof(PK2SAVE) * count);
+		PK2SAVE saves[count];
+
+		file->read(saves, sizeof(PK2SAVE) * count);
+
+		for (int i = 0; i < count; i++)
+			if (!saves[i].empty)
+				saves_list.push_back(saves[i]);
+
 		Save_All_Records(); // Change to the current version
 	
 	} else if (strncmp(versio, "1", 2) == 0) {
@@ -137,8 +141,7 @@ int Load_SaveFile() {
 
 		file->read(count_c, sizeof(count_c));
 		count = atoi(count_c);
-		if (count > SAVES_COUNT)
-			count = SAVES_COUNT;
+		saves_list.reserve(count);
 
 		PK2SAVE_V1 save_v1;
 		int episodi_size = 0;
@@ -197,6 +200,8 @@ int Load_SaveFile() {
 
 		for (int i = 0; i < count; i++) {
 
+			PK2SAVE save;
+
 			file->read(&save_v1.jakso, 4);
 			file->read(&save_v1.episodi, episodi_size);
 			file->read(&save_v1.nimi, 20);
@@ -205,13 +210,20 @@ int Load_SaveFile() {
 			file->read(&save_v1._, align_size);
 			file->read(&save_v1.pisteet, 4);
 
-			saves_list[i].empty = !save_v1.kaytossa;
-			saves_list[i].level = save_v1.jakso;
-			strncpy(saves_list[i].episode, save_v1.episodi, 128);
-			strncpy(saves_list[i].name, save_v1.nimi, 20);
-			saves_list[i].score = save_v1.pisteet;
+			save.empty = !save_v1.kaytossa;
+			if (save.empty)
+				continue;
+			
+			save.level = save_v1.jakso;
+			strncpy(save.episode, save_v1.episodi, 128);
+			strncpy(save.name, save_v1.nimi, 20);
+			save.score = save_v1.pisteet;
 			for (int j = 0; j < 99; j++)
-				saves_list[i].level_status[j] = save_v1.jakso_lapaisty[j+1]? LEVEL_PASSED : 0;
+				save.level_status[j] = save_v1.jakso_lapaisty[j+1]? LEVEL_PASSED : 0;
+
+			saves_list.push_back(save);
+
+			Save_All_Records(); // Change to the current version
 
 		}
 		//Save_All_Records(); // Change to the current version
@@ -232,6 +244,7 @@ int Load_SaveFile() {
 int Save_Record(int i) {
 
 	if (!Episode) return -1;
+	if (i >= saves_list.size()) return -1;
 
 	//clean record
 	memset(&saves_list[i], 0, sizeof(PK2SAVE));
