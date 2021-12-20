@@ -25,6 +25,15 @@ This game was tested on Windows, GNU/Linux and Android.
 There is a compiled binary with the version 1.3.5.
 https://files.fm/f/9q2np9y6h
 
+### Android
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/org.pgnapps.pk2/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=org.pgnapps.pk2)
+
 # Compiling
 
 ### Windows
