@@ -86,9 +86,11 @@ int PK_Draw_Map() {
 
 	}
 
-	vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_next_level),100,120);
-	sprintf(luku, "%i", Episode->level);
-	PDraw::font_write(fontti1,luku,100+vali+15,120);
+	if (Episode->level <= Episode->level_count) {
+		vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_next_level),100,120);
+		sprintf(luku, "%i", Episode->level);
+		PDraw::font_write(fontti1,luku,100+vali+15,120);
+	}
 
 	//PK_Particles_Draw();
 
