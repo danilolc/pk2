@@ -63,7 +63,7 @@ int Save_All_Records() {
 	for (int i = 0; i < SAVES_COUNT; i++) {
 
 		file->write(saves_list[i].empty);
-		file->write(saves_list[i].level);
+		file->write(saves_list[i].next_level);
 		file->write(saves_list[i].episode, PE_PATH_SIZE);
 		file->write(saves_list[i].name, 20);
 		file->write(saves_list[i].score);
@@ -111,7 +111,7 @@ int Load_SaveFile() {
 		for (int i = 0; i < count; i++) {
 		
 			file->read(saves_list[i].empty);
-			file->read(saves_list[i].level);
+			file->read(saves_list[i].next_level);
 			file->read(saves_list[i].episode, PE_PATH_SIZE);
 			file->read(saves_list[i].name, 20);
 			file->read(saves_list[i].score);
@@ -206,7 +206,7 @@ int Load_SaveFile() {
 			file->read(&save_v1.pisteet, 4);
 
 			saves_list[i].empty = !save_v1.kaytossa;
-			saves_list[i].level = save_v1.jakso;
+			saves_list[i].next_level = save_v1.jakso;
 			strncpy(saves_list[i].episode, save_v1.episodi, 128);
 			strncpy(saves_list[i].name, save_v1.nimi, 20);
 			saves_list[i].score = save_v1.pisteet;
@@ -239,7 +239,7 @@ int Save_Record(int i) {
 	saves_list[i].empty = false;
 	strcpy(saves_list[i].episode, Episode->entry.name.c_str()); //assert size 128
 	strcpy(saves_list[i].name, Episode->player_name);
-	saves_list[i].level = Episode->level;
+	saves_list[i].next_level = Episode->next_level;
 	saves_list[i].score = Episode->player_score;
 
 	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)

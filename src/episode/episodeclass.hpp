@@ -69,7 +69,7 @@ class EpisodeClass {
 		char player_name[20] = " ";
 		u32 player_score = 0;
 
-		u32 level = 1;
+		u32 next_level = 1;
 		u32 level_count = 0;
 
 		bool glows = false;

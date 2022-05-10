@@ -22,6 +22,7 @@
 #include "save.hpp"
 #include "system.hpp"
 
+int next_level = -1;
 bool going_to_game = false;
 
 int PK_Draw_Map_Button(int x, int y, int type){
@@ -64,32 +65,31 @@ int PK_Draw_Map_Button(int x, int y, int type){
 int PK_Draw_Map() {
 
 	char luku[20];
-	int vali = 20;
 
 	PDraw::image_clip(bg_screen, 0, 0);
 
-	ShadowedText_Draw(Episode->entry.name.c_str(),100,72);
+	ShadowedText_Draw(Episode->entry.name.c_str(), 100, 72);
 
-	vali = ShadowedText_Draw(tekstit->Get_Text(PK_txt.map_total_score), 100, 92);
+	int ysize = ShadowedText_Draw(tekstit->Get_Text(PK_txt.map_total_score), 100, 92);
 	
 	sprintf(luku, "%i", Episode->player_score);
-	ShadowedText_Draw(luku, 100 + vali + 15, 92);
+	ShadowedText_Draw(luku, 100 + ysize + 15, 92);
 
 	if (Episode->scores.episode_top_score > 0) {
 
-		vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_best_player),360,72);
-		PDraw::font_write(fontti1,Episode->scores.episode_top_player,360+vali+10,72);
+		ysize = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_best_player),360,72);
+		PDraw::font_write(fontti1,Episode->scores.episode_top_player,360+ysize+10,72);
 		
-		vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_hiscore),360,92);
+		ysize = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_hiscore),360,92);
 		sprintf(luku, "%i", Episode->scores.episode_top_score);
-		PDraw::font_write(fontti2,luku,360+vali+15,92);
+		PDraw::font_write(fontti2,luku,360+ysize+15,92);
 
 	}
 
-	if (Episode->level <= Episode->level_count) {
-		vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_next_level),100,120);
-		sprintf(luku, "%i", Episode->level);
-		PDraw::font_write(fontti1,luku,100+vali+15,120);
+	if (Episode->next_level <= Episode->level_count) {
+		ysize = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_next_level),100,120);
+		sprintf(luku, "%i", Episode->next_level);
+		PDraw::font_write(fontti1,luku,100+ysize+15,120);
 	}
 
 	//PK_Particles_Draw();
@@ -110,21 +110,13 @@ int PK_Draw_Map() {
 	int sinx = 0, cosy = 0;
 	int pekkaframe = 0;
 
-	u32 njakso = Episode->level_count;
-	for (u32 i = 0; i < Episode->level_count; i++)
-		if (!Episode->level_status[i] && Episode->levels_list[i].order < njakso)
-			njakso = Episode->levels_list[i].order; // Find the first unclear level
-	
-	if(Episode->level < njakso)
-		Episode->level = njakso;
-
 	for (u32 i = 0; i < Episode->level_count; i++) {
 		if (strcmp(Episode->levels_list[i].nimi,"")!=0 && Episode->levels_list[i].order > 0) {
 			
 			int type = -1;
-			if (Episode->levels_list[i].order == Episode->level)
+			if (Episode->levels_list[i].order == Episode->next_level)
 				type = 1;
-			if (Episode->levels_list[i].order > Episode->level)
+			if (Episode->levels_list[i].order > Episode->next_level)
 				type = 2;
 			if (Episode->level_status[i] != 0)
 				type = 0;
@@ -195,9 +187,9 @@ int PK_Draw_Map() {
 					
 					PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_player),info_x,info_y+50,75);
 					PDraw::font_write(fontti1,Episode->scores.top_player[i],info_x,info_y+62);
-					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_hiscore),info_x,info_y+74,75);
+					ysize = 8 + PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_hiscore),info_x,info_y+74,75);
 					sprintf(luku, "%i", Episode->scores.best_score[i]);
-					PDraw::font_write(fontti1,luku,info_x+vali,info_y+75);
+					PDraw::font_write(fontti1,luku,info_x+ysize,info_y+75);
 				
                 }
 
@@ -206,24 +198,24 @@ int PK_Draw_Map() {
 					PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_fastest_player),info_x,info_y+98,75);
 					PDraw::font_write(fontti1,Episode->scores.fastest_player[i],info_x,info_y+110);
 
-					vali = 8 + PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_time),info_x,info_y+122,75);
+					ysize = 8 + PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_time),info_x,info_y+122,75);
 
 					s32 time = Episode->scores.best_time[i] / 60;
 					if (time < 0) {
 						time = -time;
-						vali += PDraw::font_write(fontti1,"-",info_x+vali,info_y+122);
+						ysize += PDraw::font_write(fontti1,"-",info_x+ysize,info_y+122);
 					}
 
 					s32 min = time / 60;
 					s32 sek = time % 60;
 
 					sprintf(luku, "%i", min);
-					vali += PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);
-					vali += PDraw::font_write(fontti1,":",info_x+vali,info_y+122);
+					ysize += PDraw::font_write(fontti1,luku,info_x+ysize,info_y+122);
+					ysize += PDraw::font_write(fontti1,":",info_x+ysize,info_y+122);
                     if (sek < 10)
-                        vali += PDraw::font_write(fontti1,"0",info_x+vali,info_y+122);
+                        ysize += PDraw::font_write(fontti1,"0",info_x+ysize,info_y+122);
 					sprintf(luku, "%i", sek);
-					PDraw::font_write(fontti1,luku,info_x+vali,info_y+122);
+					PDraw::font_write(fontti1,luku,info_x+ysize,info_y+122);
 
 				}
 			}
@@ -273,6 +265,7 @@ int Play_Music() {
 	
 	found:
 
+	PSound::stop_music();
 	PSound::start_music(mapmus);
 	PSound::set_musicvolume_now(Settings.music_max_volume);
 
@@ -309,6 +302,13 @@ int Screen_Map_Init() {
 		PLog::Write(PLog::ERR, "PK2", "Can't load map bg");
 
 	}
+
+	Episode->next_level = -1; //inf
+	for (u32 i = 0; i < Episode->level_count; i++)
+		if (!Episode->level_status[i] && Episode->levels_list[i].order < Episode->next_level) {
+			Episode->next_level = Episode->levels_list[i].order; // Find the first unclear level
+			break;
+		}
 
 	Play_Music();
 

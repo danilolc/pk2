@@ -14,7 +14,7 @@ const int SAVES_COUNT = 11;
 struct PK2SAVE {
 
 	bool  empty;
-	u32   level;
+	u32   next_level;
 	char  episode[PE_PATH_SIZE];
 	char  name[20];
 	u32   score;
