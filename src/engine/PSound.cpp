@@ -480,6 +480,7 @@ void stop_music(){
 
 	Mix_HaltMusic();
 	overlay_playing = false;
+	playingMusic = PFile::Path("");
 
 }
 

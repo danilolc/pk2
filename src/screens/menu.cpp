@@ -586,6 +586,7 @@ void Draw_Menu_Load() {
 					Episode = nullptr;
 				}
 
+				PSound::stop_music();
 				Episode = new EpisodeClass(i);
 				next_screen = SCREEN_MAP;
 			}
@@ -1242,6 +1243,7 @@ void Draw_Menu_Episodes() {
 				Episode = nullptr;
 			}
 
+			PSound::stop_music();
 			Episode = new EpisodeClass(menu_name, episodes[i]);
 			next_screen = SCREEN_MAP;
 		}

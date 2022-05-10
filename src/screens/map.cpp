@@ -270,7 +270,6 @@ int Play_Music() {
 	
 	found:
 
-	PSound::stop_music();
 	PSound::start_music(mapmus);
 	PSound::set_musicvolume_now(Settings.music_max_volume);
 
@@ -294,6 +293,7 @@ int Screen_Map_Init() {
 
 	degree = degree_temp;
 
+	// Load custom assets (should be done when creating Episode)
 	Episode->Load_Assets();
 
 	PFile::Path path = Episode->Get_Dir("map.bmp");
