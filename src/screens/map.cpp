@@ -22,7 +22,6 @@
 #include "save.hpp"
 #include "system.hpp"
 
-int next_level = -1;
 bool going_to_game = false;
 
 int PK_Draw_Map_Button(int x, int y, int type){
@@ -86,7 +85,7 @@ int PK_Draw_Map() {
 
 	}
 
-	if (Episode->next_level <= Episode->level_count) {
+	if (Episode->next_level < UINT32_MAX) {
 		ysize = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_next_level),100,120);
 		sprintf(luku, "%i", Episode->next_level);
 		PDraw::font_write(fontti1,luku,100+ysize+15,120);
@@ -105,11 +104,6 @@ int PK_Draw_Map() {
 		WavetextSlow_Draw(tekstit->Get_Text(PK_txt.mainmenu_return), fontti2, 100, 430);
 	}
 
-	int paluu;
-	int icon;
-	int sinx = 0, cosy = 0;
-	int pekkaframe = 0;
-
 	for (u32 i = 0; i < Episode->level_count; i++) {
 		if (strcmp(Episode->levels_list[i].nimi,"")!=0 && Episode->levels_list[i].order > 0) {
 			
@@ -121,13 +115,10 @@ int PK_Draw_Map() {
 			if (Episode->level_status[i] != 0)
 				type = 0;
 
-			if (Episode->levels_list[i].x == 0)
-				Episode->levels_list[i].x = 172+i*30;
+			int x = Episode->levels_list[i].x;
+			int y = Episode->levels_list[i].y;
 
-			if (Episode->levels_list[i].y == 0)
-				Episode->levels_list[i].y = 270;
-
-			icon = Episode->levels_list[i].icon;
+			int icon = Episode->levels_list[i].icon;
 
 			int assets = game_assets;
 			if (icon >= 22) {
@@ -135,22 +126,36 @@ int PK_Draw_Map() {
 				assets = game_assets2;
 			}
 
-			//PDraw::image_clip(game_assets,Episode->levels_list[i].x-4,Episode->levels_list[i].y-4-30,1+(icon*27),452,27+(icon*27),478);
-			PDraw::image_cutclip(assets,Episode->levels_list[i].x-9,Episode->levels_list[i].y-14,1+(icon*28),452,28+(icon*28),479);
+			//PDraw::image_clip(game_assets,x-4,y-4-30,1+(icon*27),452,27+(icon*27),478);
+			PDraw::image_cutclip(assets,x-9,y-14,1+(icon*28),452,28+(icon*28),479);
 
 			if ( type == 1 ) {
-				sinx = (int)(sin_table[degree%360]/2);
-				cosy = (int)(cos_table[degree%360]/2);
-				pekkaframe = 28*((degree%360)/120);
-				PDraw::image_cutclip(game_assets,Episode->levels_list[i].x+sinx-12,Episode->levels_list[i].y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
+				int sinx = (int)(sin_table[degree%360]/2);
+				int cosy = (int)(cos_table[degree%360]/2);
+				int pekkaframe = 28*((degree%360)/120);
+				PDraw::image_cutclip(game_assets,x+sinx-12,y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
 			}
 
-			paluu = PK_Draw_Map_Button(Episode->levels_list[i].x-5, Episode->levels_list[i].y-10, type);
+			int paluu = PK_Draw_Map_Button(x-5, y-10, type);
 
 			if (Episode->level_status[i] & LEVEL_ALLAPPLES)
 				PDraw::image_cutclip(game_assets2, 
-					Episode->levels_list[i].x - 10,
-					Episode->levels_list[i].y, 45, 379, 58, 394);
+					x - 10,
+					y, 45, 379, 58, 394);
+
+			if (Episode->next_level == UINT32_MAX) {
+
+				int dd = (degree / 3) % 60;
+				int order = Episode->levels_list[i].order;
+
+				int a = 0;
+				if (order < dd)
+					a = 100 - (dd - order) * 5;
+				
+				if (a > 0)
+					PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-9, y-14, a, COLOR_TURQUOISE);
+
+			}
 
 			// if clicked
 			if (paluu == 2) {
@@ -172,7 +177,7 @@ int PK_Draw_Map() {
 
 			if (!Episode->hide_numbers) {
 				sprintf(luku, "%i", Episode->levels_list[i].order);
-				PDraw::font_write(fontti1,luku,Episode->levels_list[i].x-12+2,Episode->levels_list[i].y-29+2);
+				PDraw::font_write(fontti1,luku,x-12+2,y-29+2);
 			}
 
 			// if mouse hoover
@@ -303,12 +308,25 @@ int Screen_Map_Init() {
 
 	}
 
-	Episode->next_level = -1; //inf
-	for (u32 i = 0; i < Episode->level_count; i++)
+	Episode->next_level = UINT32_MAX;
+	for (u32 i = 0; i < Episode->level_count; i++) {
+		
 		if (!Episode->level_status[i] && Episode->levels_list[i].order < Episode->next_level) {
 			Episode->next_level = Episode->levels_list[i].order; // Find the first unclear level
 			break;
 		}
+
+	}
+
+	for (u32 i = 0; i < Episode->level_count; i++) {
+
+		if (Episode->levels_list[i].x == 0)
+			Episode->levels_list[i].x = 172+i*30;
+
+		if (Episode->levels_list[i].y == 0)
+			Episode->levels_list[i].y = 270;
+		
+	}
 
 	Play_Music();
 
