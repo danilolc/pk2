@@ -135,7 +135,8 @@ int Draw_InGame_Sprites() {
 					PDraw::image_cutclip(game_assets,hit_x-Game->camera_x-28+8, hit_y-Game->camera_y-27+8,1+framex,83,1+57+framex,83+55);
 				}
 
-				sprite->Piirra(Game->camera_x,Game->camera_y);
+				if (!(sprite->pelaaja && dev_mode && PInput::Keydown(PInput::Y) && degree % 2 == 0))
+					sprite->Piirra(Game->camera_x,Game->camera_y);
 
 				// Draw stars on dead sprite
 				if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYPE_PROJECTILE){
@@ -257,6 +258,7 @@ int Draw_InGame_DevKeys() {
 		"w: toggle window mode",
 		"i: toggle debug info",
 		"u: go up",
+		"y: ghost mode",
 		"r: back to start",
 		"v: set invisible",
 		"s: set super mode",
