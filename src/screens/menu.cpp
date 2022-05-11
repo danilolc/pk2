@@ -595,13 +595,17 @@ void Draw_Menu_Load() {
 		if (!saves_list[i].empty) {
 
 			vali = 0;
-			vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.loadgame_episode),400,150+my);
+			vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.loadgame_episode),400,150+my);
 			vali += PDraw::font_write(fontti1,saves_list[i].episode,400+vali,150+my);
+			
 			vali = 0;
-			vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.loadgame_level),400+vali,160+my);
-			sprintf(jaksoc, "%i", saves_list[i].next_level);
-			vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
-		
+			if (saves_list[i].next_level != UINT32_MAX) {
+				vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.loadgame_level),400+vali,160+my);
+				sprintf(jaksoc, "%u", saves_list[i].next_level);
+				vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
+			} else {
+				vali += PDraw::font_write(fontti1,"completed",400+vali,160+my);
+			}
 		}
 
 		my += 22;
@@ -644,13 +648,17 @@ void Draw_Menu_Save() {
 		if (!saves_list[i].empty) {
 
 			vali = 0;
-			vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.savegame_episode),400,150+my);
+			vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.savegame_episode),400,150+my);
 			vali += PDraw::font_write(fontti1,saves_list[i].episode,400+vali,150+my);
+			
 			vali = 0;
-			vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.savegame_level),400+vali,160+my);
-			sprintf(jaksoc, "%i", saves_list[i].next_level);
-			vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
-
+			if (saves_list[i].next_level != UINT32_MAX) {
+				vali += PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.savegame_level),400+vali,160+my);
+				sprintf(jaksoc, "%u", saves_list[i].next_level);
+				vali += PDraw::font_write(fontti1,jaksoc,400+vali,160+my);
+			} else {
+				vali += PDraw::font_write(fontti1,"completed",400+vali,160+my);
+			}
 		}
 
 		my += 22;
