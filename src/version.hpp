@@ -8,7 +8,7 @@
 
 #define PK2_VER_MAJOR 1
 #define PK2_VER_MINOR 4
-#define PK2_VER_REVISION 2
+#define PK2_VER_REVISION 3
 
 #define TO_VERSION2(X, Y, Z) #X "." #Y "." #Z
 #define TO_VERSION(X, Y, Z) TO_VERSION2(X, Y, Z)
