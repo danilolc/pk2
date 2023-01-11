@@ -21,9 +21,7 @@ This game was tested on Windows, GNU/Linux and Android.
 
 # Binary distibution
 
-### Windows
-There is a compiled binary with the version 1.3.5.
-https://files.fm/f/9q2np9y6h
+See the game's page at [Itch.io](https://danilolc.itch.io/pekka-kana-2).
 
 # Compiling
 
