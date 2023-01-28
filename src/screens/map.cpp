@@ -138,7 +138,7 @@ int PK_Draw_Map() {
 
 			int paluu = PK_Draw_Map_Button(x-5, y-10, type);
 
-			if (Episode->level_status[i] & LEVEL_ALLAPPLES)
+			if (!Episode->ignore_collectable && (Episode->level_status[i] & LEVEL_ALLAPPLES))
 				PDraw::image_cutclip(game_assets2, 
 					x - 10,
 					y, 45, 379, 58, 394);

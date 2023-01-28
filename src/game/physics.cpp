@@ -1797,7 +1797,7 @@ int BonusSprite_Movement(int i){
 			if (sprite.tyyppi->pisteet != 0) {
 
 				char* name = sprite.tyyppi->nimi;
-				if (strncmp(name, "big apple", 9) == 0)
+				if (!Episode->ignore_collectable && strncmp(name, Episode->collectable_name.c_str(), Episode->collectable_name.size()) == 0)
 					Game->apples_got++;
 
 				Game->score_increment += sprite.tyyppi->pisteet;

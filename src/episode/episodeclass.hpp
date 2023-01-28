@@ -74,6 +74,8 @@ class EpisodeClass {
 
 		bool glows = false;
 		bool hide_numbers = false;
+		bool ignore_collectable = false;
+		std::string collectable_name = "big apple";
 		
 		PK2LEVEL levels_list[EPISODI_MAX_LEVELS];
 		u8 level_status[EPISODI_MAX_LEVELS];

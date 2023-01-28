@@ -260,6 +260,19 @@ void EpisodeClass::Load() {
 			PLog::Write(PLog::INFO, "PK2", "Episode hide numbers is ON");
 			this->hide_numbers = true;
 		}
+
+		id = config->Search_Id("ignore_collectable");
+		if (id != -1) {
+			PLog::Write(PLog::INFO, "PK2", "Episode ignore apples is ON");
+			this->ignore_collectable = true;
+		}
+
+		id = config->Search_Id("collectable_name");
+		if (id != -1) {
+			this->collectable_name = config->Get_Text(id);
+			PLog::Write(PLog::INFO, "PK2", "Collectable name:");
+			PLog::Write(PLog::INFO, "PK2", this->collectable_name.c_str());
+		}
 		
 		delete config;
 

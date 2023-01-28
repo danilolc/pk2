@@ -4,6 +4,7 @@
 //#########################
 #include "game/mapclass.hpp"
 
+#include "episode/episodeclass.hpp"
 #include "game/sprites.hpp"
 #include "game/game.hpp"
 #include "gfx/effect.hpp"
@@ -984,7 +985,7 @@ void MapClass::Place_Sprites() {
 			if (sprite != 255 && Prototypes_List[sprite].korkeus > 0) {
 
 				char* name = Prototypes_List[sprite].nimi;
-				if (strncmp(name, "big apple", 9) == 0)
+				if (!Episode->ignore_collectable && strncmp(name, Episode->collectable_name.c_str(), Episode->collectable_name.size()) == 0)
 					Game->apples_count++;
 
 				Sprites_add(sprite, 0, x*32, y*32 - Prototypes_List[sprite].korkeus+32, MAX_SPRITEJA, false);
