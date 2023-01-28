@@ -1,22 +1,22 @@
 Setup 
 ------------------------------------------------------------------------------------
-*setup options:				Impostazioni:
-*setup video modes:			Risoluzione:
-*setup music & sounds:			Musica e Suoni:
+*setup options:				Impostazioni
+*setup video modes:			Risoluzione
+*setup music & sounds:			Musica e Suoni
 *setup music:				Musica
 *setup sounds:				Suoni
-*setup language:			Scegli lingua:
+*setup language:			Lingua
 *setup play:				Gioca
 *setup exit:				Esci
 
 Intro
 ------------------------------------------------------------------------------------
 *intro presents:			anno 2003
-*intro a game by:			un gioco di:
-*intro original character design:	creatore del personaggio:
-*intro tested by:			testato da:
-*intro thanks to:			un ringraziamento a:
-*intro translation:			traduzione italiana:
+*intro a game by:			un gioco di
+*intro original character design:	creatore del personaggio
+*intro tested by:			testato da
+*intro thanks to:			un ringraziamento a
+*intro translation:			traduzione italiana
 *intro translator:			rowland gardner
 
 Main Menu
@@ -88,9 +88,9 @@ Graphics
 
 Player's name
 ------------------------------------------------------------------------------------
-*player screen type your name:		scrivi il nome
-*player screen continue:		fatto
-*player screen clear:			cancella
+*player screen type your name:		scrivi il tuo nome
+*player screen continue:		conferma
+*player screen clear:			elimina
 *player default name:			pekka
 
 Episodes
@@ -101,8 +101,8 @@ Episodes
 
 Map
 ------------------------------------------------------------------------------------
-*map screen total score:		punteggio
-*map screen next level:			livello successivo:
+*map screen total score:		quota
+*map screen next level:			prossimo livello:
 *episode best player:			campione in carica:
 *episode hiscore:			miglior punteggio:
 *level best player:			il migliore:
@@ -112,14 +112,14 @@ Map
 
 Scores
 ------------------------------------------------------------------------------------
-*score screen title:			punteggio totale:
+*score screen title:			calcolo del punteggio
 *score screen level score:		punteggio livello
-*score screen bonus score:		bonus punteggio
+*score screen bonus score:		bonus punti
 *score screen time score:		bonus tempo
 *score screen energy score:		bonus piume
 *score screen item score:		bonus regali
-*score screen continue:			mappa
-*score screen total score:		punteggio totale
+*score screen continue:			continua
+*score screen total score:		punteggio finale
 *score screen new level hiscore:	hai stracciato il record!
 *score screen new level best time:	sei il giocatore piu veloce!
 *score screen new episode hiscore:	sei il campione del livello!
@@ -139,10 +139,10 @@ Game
 *knocked out:				sei fuori gioco!
 *time out:				tempo scaduto!
 *try again:			  prova ancora!
-*locks open:				hai aperto tutti i lucchetti.
-*new doodle attack:			un nuovo megafono.
+*locks open:				hai aperto tutti i lucchetti!
+*new doodle attack:			un nuovo megafono!
 *new egg attack:			uova fresche di giornata!
-*new item:				un piccolo regalo per te.
+*new item:				un piccolo regalo per te!
 
 *loading:				caricamento...
 
@@ -164,7 +164,7 @@ Info Signs
 *info08:			gli interruttori arancioni spengono gli incendi.
 *info09:			puoi usare i regali quando vuoi.
 *info10:			le piume restituiscono energia.
-*info11:			i teletrasporti sono ingannevoli, non perderli!
+*info11:			i teletrasporti sono ingannevoli, non perderti!
 *info12:			prendi i bonus e aumenta il tuo punteggio.
 *info13:			cerca sempre i bonus nascosti!
 *info14:			un lucchetto si apre se una chiave lo tocca.
