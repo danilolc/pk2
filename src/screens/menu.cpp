@@ -685,19 +685,21 @@ void Draw_Menu_Graphics() {
 		bool wasFullScreen = Settings.isFullScreen;
 		int  oldfps = Settings.fps;
 
-		if (Settings.isFullScreen){
-			if (Draw_Menu_Text("fullscreen mode is on",180,my)){
-				Settings.isFullScreen = false;
+		if (!PUtils::Is_Mobile()) {
+			if (Settings.isFullScreen){
+				if (Draw_Menu_Text("fullscreen mode is on",180,my)){
+					Settings.isFullScreen = false;
+				}
+			} else{
+				if (Draw_Menu_Text("fullscreen mode is off",180,my)){
+					Settings.isFullScreen = true;
+				}
 			}
-		} else{
-			if (Draw_Menu_Text("fullscreen mode is off",180,my)){
-				Settings.isFullScreen = true;
+			if (Draw_BoolBox(100, my, Settings.isFullScreen, true)) {
+				Settings.isFullScreen = !Settings.isFullScreen;
 			}
+			my += 40;
 		}
-		if (Draw_BoolBox(100, my, Settings.isFullScreen, true)) {
-			Settings.isFullScreen = !Settings.isFullScreen;
-		}
-		my += 40;
 
 		//TODO - Fix touch position when screen fit
 
@@ -718,27 +720,29 @@ void Draw_Menu_Graphics() {
 
 		my += 31 + 5;
 
-		mx = 100;
-		PDraw::font_write(fontti1, "nearest", mx, my);
-		mx += 15 + 51;
-		PDraw::font_write(fontti1, "linear", mx, my);
-		mx += 15 + 51;
-		PDraw::font_write(fontti1, "crt", mx, my);
-		mx += 15 + 51;
-		PDraw::font_write(fontti1, "hqx", mx, my);
-		my += 10;
+		if (!PUtils::Is_Mobile()) {
+			mx = 100;
+			PDraw::font_write(fontti1, "nearest", mx, my);
+			mx += 15 + 51;
+			PDraw::font_write(fontti1, "linear", mx, my);
+			mx += 15 + 51;
+			PDraw::font_write(fontti1, "crt", mx, my);
+			mx += 15 + 51;
+			PDraw::font_write(fontti1, "hqx", mx, my);
+			my += 10;
 
-		option = Draw_Radio(100, my, 4, Settings.shader_type);
+			option = Draw_Radio(100, my, 4, Settings.shader_type);
 
-		if (option != -1) {
-			if (option != Settings.shader_type) {
+			if (option != -1) {
+				if (option != Settings.shader_type) {
 
-				int ret = Set_Screen_Mode(option);
-				if (ret == 0) {
-					Settings.shader_type = option;
-					save_settings = true;
+					int ret = Set_Screen_Mode(option);
+					if (ret == 0) {
+						Settings.shader_type = option;
+						save_settings = true;
+					}
+
 				}
-
 			}
 		}
 
@@ -934,7 +938,7 @@ void Draw_Menu_Graphics() {
 		}
 		my += 30;
 
-		if (!PUtils::Is_Mobile())
+		//if (!PUtils::Is_Mobile())
 			if (Draw_Menu_Text("more",100,360)){
 				moreOptions = true;
 				menu_valittu_id = 0; //Set menu cursor to 0
