@@ -60,7 +60,7 @@ class GameClass {
 		int keys = 0;
 
 		int info_timer = 0;
-		char info[80] = " ";
+		std::string info_text;
 
 		int item_pannel_x = -215;
 

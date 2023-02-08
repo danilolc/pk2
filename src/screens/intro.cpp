@@ -16,8 +16,8 @@
 #include "engine/PSound.hpp"
 #include "engine/PUtils.hpp"
 
-uint intro_counter = 0;
-bool closing_intro = false;
+static uint intro_counter = 0;
+static bool closing_intro = false;
 
 int Draw_Intro(){
 
@@ -77,7 +77,7 @@ int Draw_Intro(){
 
 	if (intro_counter > sdl_alku) {
 		CreditsText_Draw("powered by", fontti1, 120, 230, sdl_alku, sdl_loppu, intro_counter);
-		CreditsText_Draw("SDL 2.0",  fontti1, 120, 250, sdl_alku+20, sdl_loppu+20, intro_counter);
+		CreditsText_Draw("SDL 2",  fontti1, 120, 250, sdl_alku+20, sdl_loppu+20, intro_counter);
 	}
 
 	return 0;

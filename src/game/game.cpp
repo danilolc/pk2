@@ -397,9 +397,9 @@ int GameClass::Open_Map() {
 
 void GameClass::Show_Info(const char *text) {
 
-	if (strcmp(text, info) != 0 || info_timer == 0) {
+	if (info_text.compare(text) != 0 || info_timer == 0) {
 
-		strcpy(info, text);
+		info_text = text;
 		info_timer = INFO_TIME;
 	
 	}

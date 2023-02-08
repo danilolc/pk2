@@ -20,8 +20,8 @@
 
 #include "engine/types.hpp"
 
-u32 loppulaskuri = 0;
-bool siirry_lopusta_menuun = false;
+static u32 loppulaskuri = 0;
+static bool siirry_lopusta_menuun = false;
 
 int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 	int frm = 0;

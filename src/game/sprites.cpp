@@ -470,6 +470,20 @@ int Update_Sprites() {
 		}
 	}
 
+	/*int count = 0;
+	for (int i = 0; i < MAX_SPRITEJA; i++) {
+		sprite = &Sprites_List[i];
+		if (!sprite->piilota && sprite->energia > 0) {
+			if (sprite->tyyppi->tyyppi == TYPE_BONUS)
+				count++;
+			if (sprite->tyyppi->bonus > -1 && sprite->tyyppi->bonusten_lkm > 0)
+				count += sprite->tyyppi->bonusten_lkm;
+
+		}
+	}
+
+	PLog::Write(PLog::DEBUG, "PK2", "%i", count);
+	*/
 	return active_sprites;
 }
 

@@ -84,6 +84,8 @@ This example starts the level13.map on dev mode:
 * Better sound quality
 
 # PLANS
+* Loading languages from zip files and `all.txt`
+* Mult line info sign
 * Speed-run mode (frame counter, ghost)
 * Better documentation
 * Implement new layer on .map (regions)

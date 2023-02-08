@@ -458,7 +458,7 @@ int Draw_InGame_UI(){
 	// Draw Info
 	/////////////////
 	if (Game->info_timer > 0){
-		int box_size = strlen(Game->info) * 8 + 8; // 300
+		int box_size = Game->info_text.size() * 8 + 8; // 300
 
 		MAP_RECT alue = {screen_width/2-(box_size/2),60,screen_width/2+(box_size/2),60+20};
 
@@ -476,9 +476,9 @@ int Draw_InGame_UI(){
 		PDraw::screen_fill(alue.left,alue.top,alue.right,alue.bottom,38);
 
 		if (Game->info_timer-11 >= 100)
-			PDraw::font_write(fontti1,Game->info,alue.left+4,alue.top+4);
+			PDraw::font_write(fontti1,Game->info_text.c_str(),alue.left+4,alue.top+4);
 		else
-			PDraw::font_writealpha(fontti1,Game->info,alue.left+4,alue.top+4,Game->info_timer-11);
+			PDraw::font_writealpha(fontti1,Game->info_text.c_str(),alue.left+4,alue.top+4,Game->info_timer-11);
 	}
 
 	return 0;
