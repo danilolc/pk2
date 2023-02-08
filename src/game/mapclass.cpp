@@ -83,7 +83,7 @@ MapClass::MapClass(){
 	memset(this->reunat,  0,   sizeof(reunat));
 
 	for (u32 i=0; i<PK2MAP_MAP_MAX_PROTOTYPES; i++)
-		strcpy(this->protot[i],"");
+		strcpy(this->protot[i], "");
 
 }
 

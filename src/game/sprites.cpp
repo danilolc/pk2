@@ -14,10 +14,11 @@
 #include "system.hpp"
 
 #include <cstring>
+#include <vector>
 
 SpriteClass* Player_Sprite;
 
-int next_free_prototype = 0;
+//int next_free_prototype = 0;
 
 //TODO - use std::vector
 //std::vector<PrototypeClass*> Prototypes;
@@ -25,13 +26,16 @@ int next_free_prototype = 0;
 //std::vector<SpriteClass*> bgSprites;
 
 // avoid using stack (this is cleaned after PDraw::imageList, causing a error)
-PrototypeClass Prototypes_List[MAX_PROTOTYYPPEJA];
+std::vector<PrototypeClass> Prototypes_List;
 SpriteClass Sprites_List[MAX_SPRITEJA];
 
 int bgSprites_List[MAX_SPRITEJA];
 
 void Prototypes_ClearAll() {
-	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
+
+	Prototypes_List.clear();
+
+	/*for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
 
 		for (int j = 0; j < SPRITE_MAX_SOUNDS; j++)
 			if (Prototypes_List[i].aanet[j] > -1)
@@ -39,50 +43,30 @@ void Prototypes_ClearAll() {
 		//Prototypes_List[i].Uusi();
 		strcpy(Game->map->protot[i], "");
 
-	}
-
-	next_free_prototype = 0;
+	}*/
 }
 
 int Prototypes_get(const char* name) {
 	
 	//Check if have space
-	if(next_free_prototype >= MAX_PROTOTYYPPEJA)
-		return 2;
-
-	PrototypeClass* protot = &Prototypes_List[next_free_prototype];
+	//if(next_free_prototype >= MAX_PROTOTYYPPEJA)
+	//	return 2;
+	Prototypes_List.emplace_back();
+	PrototypeClass& protot = Prototypes_List.back();
 
 	PFile::Path path = Episode->Get_Dir(name);
 	FindAsset(&path, "sprites" PE_SEP);
 
 	//Check if it can be loaded
-	if (protot->Load(path) == 1)
-		return 1;
-
-	protot->indeksi = next_free_prototype;
-
-	//Load sounds
-	for (int i = 0; i < SPRITE_MAX_SOUNDS; i++) {
-
-		if (strcmp(protot->aanitiedostot[i],"") != 0) {
-
-			path = Episode->Get_Dir(protot->aanitiedostot[i]);
-
-			if (FindAsset(&path, "sprites" PE_SEP)) {
-
-				protot->aanet[i] = PSound::load_sfx(path);
-
-			} else {
-
-				PLog::Write(PLog::ERR, "PK2", "Can't find sound %s", protot->aanitiedostot[i]);
-
-			}
-		}
+	if (protot.Load(path) != 0) {
+		//Prototypes_List.pop_back();
+		PLog::Write(PLog::ERR, "PK2", "Couldn't load %s", name);
+		return -1;
 	}
 
-	next_free_prototype++;
+	protot.indeksi = Prototypes_List.size() - 1;
 
-	return 0;
+	return protot.indeksi;
 }
 
 void Prototypes_get_transformation(int i) {
@@ -90,7 +74,7 @@ void Prototypes_get_transformation(int i) {
 	int j = 0;
 	bool loaded = false;
 
-	if (strcmp(Prototypes_List[i].muutos_sprite,"") != 0) {
+	if (strcmp(Prototypes_List[i].muutos_sprite, "") != 0) {
 
 		// verify if the transformation is already loaded
 		while (j < MAX_PROTOTYYPPEJA && !loaded) {
@@ -105,8 +89,8 @@ void Prototypes_get_transformation(int i) {
 
 		if (!loaded) {
 
-			if (Prototypes_get(Prototypes_List[i].muutos_sprite) == 0)
-				Prototypes_List[i].muutos = next_free_prototype - 1;
+			int index = Prototypes_get(Prototypes_List[i].muutos_sprite);
+			Prototypes_List[i].muutos = index;
 			
 		}
 	}
@@ -131,8 +115,8 @@ void Prototypes_get_bonus(int i) {
 
 		if (!loaded){
 
-			if (Prototypes_get(Prototypes_List[i].bonus_sprite) == 0)
-				Prototypes_List[i].bonus = next_free_prototype - 1;
+			int index = Prototypes_get(Prototypes_List[i].bonus_sprite);
+			Prototypes_List[i].bonus = index;
 			
 		}
 	}
@@ -157,8 +141,8 @@ void Prototypes_get_ammo1(int i) {
 
 		if (!loaded){
 
-			if (Prototypes_get(Prototypes_List[i].ammus1_sprite) == 0)
-				Prototypes_List[i].ammus1 = next_free_prototype - 1;
+			int index = Prototypes_get(Prototypes_List[i].ammus1_sprite);
+			Prototypes_List[i].ammus1 = index;
 
 		}
 	}
@@ -183,8 +167,8 @@ void Prototypes_get_ammo2(int i) {
 
 		if (!loaded) {
 
-			if (Prototypes_get(Prototypes_List[i].ammus2_sprite) == 0)
-				Prototypes_List[i].ammus2 = next_free_prototype - 1;
+			int index = Prototypes_get(Prototypes_List[i].ammus2_sprite);
+			Prototypes_List[i].ammus2 = index;
 
 		}
 	}
@@ -192,30 +176,20 @@ void Prototypes_get_ammo2(int i) {
 
 int Prototypes_GetAll() {
 
-	int last_prototype = -1;
-
 	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
 		if (strcmp(Game->map->protot[i], "") != 0) {
-
-			last_prototype = i;
-
+			
 			PFile::Path path = Episode->Get_Dir(Game->map->protot[i]);
 
-			if (Prototypes_get(Game->map->protot[i]) != 0) {
+			if (Prototypes_get(Game->map->protot[i]) == -1) {
+				Prototypes_List[i].indeksi = i;
 
 				PLog::Write(PLog::WARN, "PK2", "Can't load sprite %s. It will not appear", Game->map->protot[i]);
-				next_free_prototype++;
 
 			}
 
-		} else {
-
-			next_free_prototype++;
-
 		}
 	}
-
-	next_free_prototype = last_prototype + 1;
 
 	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
 

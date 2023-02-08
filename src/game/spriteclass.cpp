@@ -7,6 +7,7 @@
 #include "system.hpp"
 
 #include "engine/PDraw.hpp"
+#include "engine/PSound.hpp"
 #include "engine/PLog.hpp"
 #include "engine/platform.hpp"
 
@@ -27,14 +28,6 @@ PrototypeClass::PrototypeClass(){
 	}
 
 	for (int i = 0; i < SPRITE_MAX_FRAMEJA; i++){
-		if (framet[i] != 0)
-			PDraw::image_delete(this->framet[i]);
-
-		if (this->framet_peilikuva[i] != 0)
-			PDraw::image_delete(this->framet_peilikuva[i]);
-	}
-
-	for (int i = 0; i < SPRITE_MAX_FRAMEJA; i++){
 		framet[i] = 0;
 		framet_peilikuva[i] = 0;
 	}
@@ -49,9 +42,17 @@ PrototypeClass::PrototypeClass(){
 
 }
 PrototypeClass::~PrototypeClass(){
-	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
+	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++) {
 		if (framet[i] > 0)
 			PDraw::image_delete(this->framet[i]);
+		if (this->framet_peilikuva[i] != 0)
+			PDraw::image_delete(this->framet_peilikuva[i]);
+	}
+
+	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
+		for (int j = 0; j < SPRITE_MAX_SOUNDS; j++)
+			PSound::free_sfx(aanet[j]);
+	}
 }
 
 void PrototypeClass::SetProto10(PrototypeClass10 &proto){
@@ -289,53 +290,44 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 }
 
 int PrototypeClass::Load(PFile::Path path){
-	//this->Uusi();
 
 	std::string filename = path.GetFileName();
 
 	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr) {
-
-		PLog::Write(PLog::ERR, "PK2", "failed to open %s", path.c_str());
-		return 1;
-	
+		PLog::Write(PLog::ERR, "PK2", "Failed to open %s", path.c_str());
+		return -1;
 	}
 
 	char versio[4];
 	file->read(versio, 4);
 
 	if (strcmp(versio,"1.0") == 0){
-		//this->Uusi();
 		PrototypeClass10 proto;
 		file->read(&proto, sizeof(proto));
 		this->SetProto10(proto);
-		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, filename.c_str());
 	}
-	if (strcmp(versio,"1.1") == 0){
-		//this->Uusi();
+	else if (strcmp(versio,"1.1") == 0){
 		PrototypeClass11 proto;
 		file->read(&proto, sizeof(proto));
 		this->SetProto11(proto);
-		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, filename.c_str());
 	}
-	if (strcmp(versio,"1.2") == 0){
-		//this->Uusi();
+	else if (strcmp(versio,"1.2") == 0){
 		PrototypeClass12 proto;
 		file->read(&proto, sizeof(proto));
 		this->SetProto12(proto);
-		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, filename.c_str());
 	}
-	if (strcmp(versio,"1.3") == 0){
-		//this->Uusi();
+	else if (strcmp(versio,"1.3") == 0){
 		PrototypeClass13 proto;
 		file->read(&proto, sizeof(proto));
 		this->SetProto13(proto);
-		strcpy(this->versio,versio);
-		strcpy(this->tiedosto, filename.c_str());
 	}
+	else {
+		PLog::Write(PLog::ERR, "PK2", "Can't support sprite version %s", versio);
+		return -1;
+	}
+	strcpy(this->versio, versio);
+	strcpy(this->tiedosto, filename.c_str());
 
 	file->close();
 
@@ -343,14 +335,18 @@ int PrototypeClass::Load(PFile::Path path){
 	path.SetFile(this->kuvatiedosto);
 	if (!FindAsset(&path, "sprites" PE_SEP)) {
 
-		PLog::Write(PLog::ERR, "PK2", "Can't load sprite image %s", this->kuvatiedosto);
+		PLog::Write(PLog::ERR, "PK2", "Couldn't find sprite image %s", this->kuvatiedosto);
 		return -1;
 
 	}
 
 	int bufferi = PDraw::image_load(path, false);
-	if (bufferi == -1)
-		return 1;
+	if (bufferi == -1) {
+
+		PLog::Write(PLog::ERR, "PK2", "Couldn't load sprite image %s", this->kuvatiedosto);
+		return -1;
+
+	}
 
 	//Change sprite colors
 	if (this->vari != COLOR_NORMAL){ 
@@ -394,6 +390,27 @@ int PrototypeClass::Load(PFile::Path path){
 	}
 
 	PDraw::image_delete(bufferi);
+
+	//Load sounds
+	for (int i = 0; i < SPRITE_MAX_SOUNDS; i++) {
+
+		if (strcmp(aanitiedostot[i], "") != 0) {
+
+			path.SetFile(aanitiedostot[i]);
+
+			if (FindAsset(&path, "sprites" PE_SEP)) {
+
+				aanet[i] = PSound::load_sfx(path);
+
+			} else {
+
+				PLog::Write(PLog::ERR, "PK2", "Can't find sound %s", aanitiedostot[i]);
+				return -1;
+
+			}
+		}
+	}
+
 	return 0;
 }
 
