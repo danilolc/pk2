@@ -17,245 +17,16 @@
 
 PrototypeClass::PrototypeClass(){
 
-	strcpy(versio,PK2SPRITE_CURRENT_VERSION);
-	strcpy(tiedosto,"");
-	strcpy(kuvatiedosto,"");
-	strcpy(nimi, "");
-	strcpy(this->muutos_sprite,"");
-	strcpy(this->bonus_sprite,"");
-	strcpy(this->ammus1_sprite,"");
-	strcpy(this->ammus2_sprite,"");
-
 	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++){
 		strcpy(aanitiedostot[aani], "");
 		aanet[aani] = -1;
 	}
 
-	aani_frq		= 22050;
-	ammus1			= -1;
-	ammus2			= -1;
-	animaatioita	= 0;
-	avain			= false;
-	bonus			= -1;
-	bonusten_lkm    = 1;
-	energia			= 0;
-	este			= false;
-	este_ylos		= true;
-	este_alas		= true;
-	este_oikealle	= true;
-	este_vasemmalle	= true;
-	frameja			= 0;
-	frame_rate		= 0;
-	attack1_time  = 60;
-	attack2_time  = 60;
-	indeksi			= 0;
-	kuva_x			= 0;
-	kuva_y			= 0;
-	kuva_frame_leveys  = 0;
-	kuva_frame_korkeus = 0;
-	korkeus			= 0;
-	charge_time		= 0;
-	leveys			= 0;
-	max_hyppy		= 0;
-	max_nopeus		= 3;
-	muutos			= -1;
-	weight			= 0;
-	pallarx_kerroin = 0;
-	pisteet			= 0;
-	random_frq		= true;
-	suojaus			= DAMAGE_NONE;
-	vibrate         = false;
-	tiletarkistus	= true;
-	tuhoutuminen	= FX_DESTRUCT_ANIMAATIO;
-	tyyppi			= TYPE_NOTHING;
-	vahinko			= 0;
-	vahinko_tyyppi  = DAMAGE_IMPACT;
-	vari			= COLOR_NORMAL;
-	vihollinen		= false;
-
-	lapinakyvyys	= false;
-	hehkuu			= false;
-	tulitauko		= 0;
-	can_glide		= false;
-	boss			= false;
-	bonus_always		= false;
-	can_swim		= false;
-
-	for (int i=0;i<SPRITE_MAX_AI;i++){
+	for (int i=0; i < SPRITE_MAX_AI; i++){
 		AI[i] = AI_NONE;
 	}
 
-	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
-		framet[i] = 0;
-
-	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++){
-		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
-			animaatiot[i].sekvenssi[j] = 0;
-
-		animaatiot[i].looppi  = false;
-		animaatiot[i].frameja = 0;
-	}
-}
-PrototypeClass::~PrototypeClass(){
-	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
-		if (framet[i] > 0)
-			PDraw::image_delete(this->framet[i]);
-}
-
-void PrototypeClass::Kopioi(const PrototypeClass &proto){
-	strcpy(versio,proto.versio);
-	strcpy(tiedosto,proto.tiedosto);
-	strcpy(kuvatiedosto,proto.kuvatiedosto);
-	strcpy(nimi, proto.nimi);
-	strcpy(this->muutos_sprite,proto.muutos_sprite);
-	strcpy(this->bonus_sprite,proto.bonus_sprite);
-	strcpy(this->ammus1_sprite,proto.ammus1_sprite);
-	strcpy(this->ammus2_sprite,proto.ammus2_sprite);
-
-	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++){
-		strcpy(aanitiedostot[aani], proto.aanitiedostot[aani]);
-		aanet[aani] = proto.aanet[aani];
-	}
-
-	aani_frq        = proto.aani_frq;
-	ammus1			= proto.ammus1;
-	ammus2			= proto.ammus2;
-	animaatioita	= proto.animaatioita;
-	avain			= proto.avain;
-	bonus			= proto.bonus;
-	bonusten_lkm    = proto.bonusten_lkm;
-	energia			= proto.energia;
-	este			= proto.este;
-	este_ylos		= proto.este_ylos;
-	este_alas		= proto.este_alas;
-	este_oikealle	= proto.este_oikealle;
-	este_vasemmalle	= proto.este_vasemmalle;
-	frameja			= proto.frameja;
-	frame_rate		= proto.frame_rate;
-	attack1_time  = proto.attack1_time;
-	attack2_time  = proto.attack2_time;
-	indeksi			= proto.indeksi;
-	kuva_x			= proto.kuva_x;
-	kuva_y			= proto.kuva_y;
-	kuva_frame_leveys  = proto.kuva_frame_leveys;
-	kuva_frame_korkeus = proto.kuva_frame_korkeus;
-	korkeus			= proto.korkeus;
-	charge_time		= proto.charge_time;
-	leveys			= proto.leveys;
-	max_hyppy		= proto.max_hyppy;
-	max_nopeus		= proto.max_nopeus;
-	muutos			= proto.muutos;
-	weight			= proto.weight;
-	pallarx_kerroin = proto.pallarx_kerroin;
-	pisteet			= proto.pisteet;
-	random_frq		= proto.random_frq;
-	suojaus			= proto.suojaus;
-	vibrate         = proto.vibrate;
-	tiletarkistus	= proto.tiletarkistus;
-	tuhoutuminen	= proto.tuhoutuminen;
-	tyyppi			= proto.tyyppi;
-	vahinko			= proto.vahinko;
-	vahinko_tyyppi	= proto.vahinko_tyyppi;
-	vari			= proto.vari;
-	vihollinen		= proto.vihollinen;
-
-	lapinakyvyys	= proto.lapinakyvyys;
-	hehkuu			= proto.hehkuu;
-	tulitauko		= proto.tulitauko;
-	can_glide		= proto.can_glide;
-	boss			= proto.boss;
-	bonus_always		= proto.bonus_always;
-	can_swim		= proto.can_swim;
-
-	for (int i=0;i<SPRITE_MAX_AI;i++)
-	{
-		AI[i] = proto.AI[i];
-	}
-
-	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
-		framet[i] = proto.framet[i];
-
-	for (int i=0;i<SPRITE_MAX_ANIMAATIOITA;i++)
-	{
-		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
-			animaatiot[i].sekvenssi[j] = proto.animaatiot[i].sekvenssi[j];
-
-		animaatiot[i].looppi  = proto.animaatiot[i].looppi;
-		animaatiot[i].frameja = proto.animaatiot[i].frameja;
-	}
-}
-void PrototypeClass::Uusi(){
-	strcpy(versio,PK2SPRITE_CURRENT_VERSION);
-	strcpy(tiedosto,"");
-	strcpy(kuvatiedosto,"");
-	strcpy(nimi, "");
-	strcpy(muutos_sprite,"");
-	strcpy(bonus_sprite,"");
-	strcpy(ammus1_sprite,"");
-	strcpy(ammus2_sprite,"");
-
-	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++){
-		strcpy(aanitiedostot[aani], "");
-		aanet[aani] = -1;
-	}
-
-	aani_frq		= 22050;
-	ammus1			= -1;
-	ammus2			= -1;
-	animaatioita	= 0;
-	avain			= false;
-	bonus			= -1;
-	bonusten_lkm    = 1;
-	energia			= 0;
-	este			= false;
-	este_ylos		= true;
-	este_alas		= true;
-	este_oikealle	= true;
-	este_vasemmalle	= true;
-	frameja			= 0;
-	frame_rate		= 0;
-	attack1_time  = 60;
-	attack2_time  = 60;
-	indeksi			= 0;
-	kuva_x			= 0;
-	kuva_y			= 0;
-	kuva_frame_leveys  = 0;
-	kuva_frame_korkeus = 0;
-	korkeus			= 0;
-	charge_time		= 0;
-	leveys			= 0;
-	max_hyppy		= 0;
-	max_nopeus		= 3;
-	muutos			= -1;
-	weight			= 0;
-	pallarx_kerroin = 0;
-	pisteet			= 0;
-	random_frq		= true;
-	suojaus			= DAMAGE_NONE;
-	vibrate         = false;
-	tiletarkistus	= true;
-	tuhoutuminen	= FX_DESTRUCT_ANIMAATIO;
-	tyyppi			= TYPE_NOTHING;
-	vahinko			= 0;
-	vahinko_tyyppi	= DAMAGE_IMPACT;
-	vari			= COLOR_NORMAL;
-	vihollinen		= false;
-
-	lapinakyvyys	= false;
-	hehkuu			= false;
-	tulitauko		= 0;
-	can_glide		= false;
-	boss			= false;
-	bonus_always		= false;
-	can_swim		= false;
-
-	int i=0;
-
-	for (i=0;i<SPRITE_MAX_AI;i++){
-		AI[i] = AI_NONE;
-	}
-
-	for (i=0;i<SPRITE_MAX_FRAMEJA;i++){
+	for (int i = 0; i < SPRITE_MAX_FRAMEJA; i++){
 		if (framet[i] != 0)
 			PDraw::image_delete(this->framet[i]);
 
@@ -263,36 +34,24 @@ void PrototypeClass::Uusi(){
 			PDraw::image_delete(this->framet_peilikuva[i]);
 	}
 
-	for (i=0;i<SPRITE_MAX_FRAMEJA;i++){
+	for (int i = 0; i < SPRITE_MAX_FRAMEJA; i++){
 		framet[i] = 0;
 		framet_peilikuva[i] = 0;
 	}
 
-	for (i=0;i<SPRITE_MAX_ANIMAATIOITA;i++){
-		for (int j=0;j<ANIMATION_SEQUENCE_SIZE;j++)
+	for (int i = 0; i < SPRITE_MAX_ANIMAATIOITA; i++){
+		for (int j = 0; j < ANIMATION_SEQUENCE_SIZE; j++)
 			animaatiot[i].sekvenssi[j] = 0;
 
 		animaatiot[i].looppi  = false;
 		animaatiot[i].frameja = 0;
 	}
+
 }
-int PrototypeClass::Animation_Uusi(int anim_i, u8 *sekvenssi, bool looppi){
-	u8 frame_i = 0;
-
-	if (anim_i < SPRITE_MAX_ANIMAATIOITA)
-	{
-		animaatiot[anim_i].frameja = 0;
-
-		while (frame_i < ANIMATION_SEQUENCE_SIZE && sekvenssi[frame_i] != 0)
-		{
-			animaatiot[anim_i].sekvenssi[frame_i] = sekvenssi[frame_i];
-			animaatiot[anim_i].frameja++;
-			frame_i++;
-		}
-
-		animaatiot[anim_i].looppi = looppi;
-	}
-	return 0;
+PrototypeClass::~PrototypeClass(){
+	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++)
+		if (framet[i] > 0)
+			PDraw::image_delete(this->framet[i]);
 }
 
 void PrototypeClass::SetProto10(PrototypeClass10 &proto){
@@ -604,7 +363,7 @@ PrototypeClass13 PrototypeClass::GetProto13(){
 }
 
 int PrototypeClass::Load(PFile::Path path){
-	this->Uusi();
+	//this->Uusi();
 
 	std::string filename = path.GetFileName();
 
@@ -620,7 +379,7 @@ int PrototypeClass::Load(PFile::Path path){
 	file->read(versio, 4);
 
 	if (strcmp(versio,"1.0") == 0){
-		this->Uusi();
+		//this->Uusi();
 		PrototypeClass10 proto;
 		file->read(&proto, sizeof(proto));
 		this->SetProto10(proto);
@@ -628,7 +387,7 @@ int PrototypeClass::Load(PFile::Path path){
 		strcpy(this->tiedosto, filename.c_str());
 	}
 	if (strcmp(versio,"1.1") == 0){
-		this->Uusi();
+		//this->Uusi();
 		PrototypeClass11 proto;
 		file->read(&proto, sizeof(proto));
 		this->SetProto11(proto);
@@ -636,7 +395,7 @@ int PrototypeClass::Load(PFile::Path path){
 		strcpy(this->tiedosto, filename.c_str());
 	}
 	if (strcmp(versio,"1.2") == 0){
-		this->Uusi();
+		//this->Uusi();
 		PrototypeClass12 proto;
 		file->read(&proto, sizeof(proto));
 		this->SetProto12(proto);
@@ -644,7 +403,7 @@ int PrototypeClass::Load(PFile::Path path){
 		strcpy(this->tiedosto, filename.c_str());
 	}
 	if (strcmp(versio,"1.3") == 0){
-		this->Uusi();
+		//this->Uusi();
 		PrototypeClass13 proto;
 		file->read(&proto, sizeof(proto));
 		this->SetProto13(proto);
@@ -710,22 +469,6 @@ int PrototypeClass::Load(PFile::Path path){
 
 	PDraw::image_delete(bufferi);
 	return 0;
-}
-
-//Save
-void PrototypeClass::Tallenna(const char* filename) {
-
-	PFile::Path path(filename);
-	path.SetPath(this->tiedosto);
-	PFile::RW* file = path.GetRW("w");
-
-	PrototypeClass13 proto = GetProto13();
-
-	file->write(PK2SPRITE_CURRENT_VERSION, 4);
-	file->write(&proto, sizeof(proto));
-
-	file->close();
-
 }
 
 int PrototypeClass::Piirra(int x, int y, int frame){

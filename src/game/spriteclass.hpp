@@ -587,106 +587,101 @@ struct PrototypeClass13{
 class PrototypeClass{
     public:
 
-    //Version
-    char		versio[4];
-    //.spr filename
-    char		tiedosto[255];
-    //Prototype index
-    int			indeksi;
-    //Sprite type
-    int			tyyppi;
+    char    versio[4] = PK2SPRITE_CURRENT_VERSION; //Version
+    char    tiedosto[255] = ""; //.spr filename
+    
+    int     indeksi = 0; //Prototype index
+    
+    int     tyyppi = TYPE_NOTHING; //Sprite type
 
-    //.bmp filename
-    char		kuvatiedosto[100];								// .BMP jossa ovat spriten grafiikat
+    
+    char    kuvatiedosto[100] = ""; //.bmp filename
 
     // Spriteen liittyv�t ��nitehosteet
 
-    char		aanitiedostot[SPRITE_MAX_SOUNDS][100];					// ��nitehostetiedostot
-    int			aanet[SPRITE_MAX_SOUNDS];								// ��nitehosteet (indeksit buffereihin)
+    char    aanitiedostot[SPRITE_MAX_SOUNDS][100];                    // ��nitehostetiedostot
+    int     aanet[SPRITE_MAX_SOUNDS];                                // ��nitehosteet (indeksit buffereihin)
 
     // Spriten kuva- ja animaatio-ominaisuudet
-    int			framet[SPRITE_MAX_FRAMEJA];						// spriten framet (bitm�pit)
-    int			framet_peilikuva[SPRITE_MAX_FRAMEJA];			// spriten framet peilikuvina
-    u8		frameja;										// framejen m��r�
-    PK2SPRITE_ANIMAATIO animaatiot[SPRITE_MAX_ANIMAATIOITA];	// animaatio sekvenssit
-    u8		animaatioita;									// animaatioiden m��r�
-    u8		frame_rate;										// yhden framen kesto
-    int			kuva_x;											// miss� kohtaa kuvaa sprite on
-    int			kuva_y;											// miss� kohtaa kuvaa sprite on
-    int			kuva_frame_leveys;								// yhden framen leveys
-    int			kuva_frame_korkeus;								// yhden framen korkeus
-    int			kuva_frame_vali;								// kahden framen vali
+    int     framet[SPRITE_MAX_FRAMEJA];                        // spriten framet (bitm�pit)
+    int     framet_peilikuva[SPRITE_MAX_FRAMEJA];            // spriten framet peilikuvina
+    u8      frameja = 0;                                        // framejen m��r�
+    PK2SPRITE_ANIMAATIO animaatiot[SPRITE_MAX_ANIMAATIOITA];    // animaatio sekvenssit
+    u8      animaatioita = 0;                                    // animaatioiden m��r�
+    u8      frame_rate = 0;                                        // yhden framen kesto
+    int     kuva_x = 0;                                            // miss� kohtaa kuvaa sprite on
+    int     kuva_y = 0;                                            // miss� kohtaa kuvaa sprite on
+    int     kuva_frame_leveys = 0;                                // yhden framen leveys
+    int     kuva_frame_korkeus = 0;                                // yhden framen korkeus
+    int     kuva_frame_vali;                                // kahden framen vali (unused)
 
     // Spriten ominaisuudet
-    char		nimi[100];										// spriten nimi (n�kyy editorissa)
-    int			leveys;											// spriten leveys
-    int			korkeus;										// spriten korkeus
-    double		weight;											// sprite weight (vaikuttaa hyppyyn ja kytkimiin)
+    char    nimi[100] = "";                                        // spriten nimi (n�kyy editorissa)
+    int     leveys = 0;                                            // spriten leveys
+    int     korkeus = 0;                                        // spriten korkeus
+    double  weight = 0;                                            // sprite weight (vaikuttaa hyppyyn ja kytkimiin)
 
-    bool		vihollinen;										// onko sprite vihollinen
-    int			energia;										// monta iskua kest��
-    int			vahinko;										// paljon vahinkoa tekee jos osuu
-    u8       vahinko_tyyppi;									// mink� tyyppist� vahinkoa tekee (1.1)
-    u8		suojaus;										// mink� tyyppiselt� vahingolta on suojattu (1.1)
-    int			pisteet;										// paljonko siit� saa pisteit�
+    bool    vihollinen = false;                                        // onko sprite vihollinen
+    int     energia = 0;                                        // monta iskua kest��
+    int     vahinko = 0;                                        // paljon vahinkoa tekee jos osuu
+    u8      vahinko_tyyppi = DAMAGE_IMPACT;                                    // mink� tyyppist� vahinkoa tekee (1.1)
+    u8      suojaus = DAMAGE_NONE;                                        // mink� tyyppiselt� vahingolta on suojattu (1.1)
+    int     pisteet = 0;                                        // paljonko siit� saa pisteit�
 
-    int			AI[SPRITE_MAX_AI];								// mit� teko�lyj� k�ytet��n
+    int     AI[SPRITE_MAX_AI];                                // mit� teko�lyj� k�ytet��n
 
-    u8		max_hyppy;										// hypyn maksimikesto
-    double		max_nopeus;										// maksiminopeus
-    int			charge_time;										// time increment (in (dec)conds)
-    u8		vari;											// tehd��nk� spritest� jonkin tietyn v�rinen
-    bool		este;											// k�ytt�ytyyk� sprite kuin sein�
-    int			tuhoutuminen;									// miten sprite tuhoutuu
-    bool		avain;											// Voiko sprite avata lukkoja
-    bool		vibrate;										// T�riseek� sprite satunnaisesti
-    u8       bonusten_lkm;									// Bonusten lukum��r�
-    int         attack1_time;									// Hy�kk�ysanimaation 1 kesto (frameja)
-    int         attack2_time;									// Hy�kk�ysanimaation 2 kesto (frameja)
+    u8      max_hyppy = 0;                                        // hypyn maksimikesto
+    double  max_nopeus = 3;                                        // maksiminopeus
+    int     charge_time = 0;                                        // time increment (in (dec)conds)
+    u8      vari = COLOR_NORMAL;                                            // tehd��nk� spritest� jonkin tietyn v�rinen
+    bool    este = false;                                            // k�ytt�ytyyk� sprite kuin sein�
+    int     tuhoutuminen = FX_DESTRUCT_ANIMAATIO;                                    // miten sprite tuhoutuu
+    bool    avain = false;                                            // Voiko sprite avata lukkoja
+    bool    vibrate = false;                                        // T�riseek� sprite satunnaisesti
+    u8      bonusten_lkm = 1;                                    // Bonusten lukum��r�
+    int     attack1_time = 60;                                    // Hy�kk�ysanimaation 1 kesto (frameja)
+    int     attack2_time = 60;                                    // Hy�kk�ysanimaation 2 kesto (frameja)
 
-    int			pallarx_kerroin;								// Vain TYPE_BACKGROUND. Suhde taustakuvaan.
+    int     pallarx_kerroin = 0;                                // Vain TYPE_BACKGROUND. Suhde taustakuvaan.
 
     // Yhteys toisiin spriteihin
 
-    char		muutos_sprite[100];								// Toinen sprite joksi t�m� sprite voi muuttua
-    char		bonus_sprite[100];								// Spriten bonuksena j�tt�m� k�ytt�m� sprite
-    char		ammus1_sprite[100];								// Spriten ammuksena 1 k�ytt�m� sprite
-    char		ammus2_sprite[100];								// Spriten ammuksena 2 k�ytt�m� sprite
-    int			muutos;											// Muutosspriten prototyypin indeksi. -1 jos ei ole
-    int			bonus;											// Bonusspriten prototyypin indeksi. -1 jos ei ole
-    int			ammus1;											// Ammussprite1 prototyypin indeksi. -1 jos ei ole
-    int			ammus2;											// Ammussprite1 prototyypin indeksi. -1 jos ei ole
+    char    muutos_sprite[100] = "";                                // Toinen sprite joksi t�m� sprite voi muuttua
+    char    bonus_sprite[100] = "";                                // Spriten bonuksena j�tt�m� k�ytt�m� sprite
+    char    ammus1_sprite[100] = "";                                // Spriten ammuksena 1 k�ytt�m� sprite
+    char    ammus2_sprite[100] = "";                                // Spriten ammuksena 2 k�ytt�m� sprite
+    int     muutos = -1;                                            // Muutosspriten prototyypin indeksi. -1 jos ei ole
+    int     bonus = -1;                                            // Bonusspriten prototyypin indeksi. -1 jos ei ole
+    int     ammus1 = -1;                                            // Ammussprite1 prototyypin indeksi. -1 jos ei ole
+    int     ammus2 = -1;                                            // Ammussprite1 prototyypin indeksi. -1 jos ei ole
 
     // Lis�ykset 1.2 versiossa
-    bool		tiletarkistus;									// t�rm�ileek� tileihin
-    u32		aani_frq;										// ��nien perussoittotaajuus (esim. 22050)
-    bool		random_frq;										// satunnaisuutta taajuuteen?
+    bool    tiletarkistus = true;                                    // t�rm�ileek� tileihin
+    u32     aani_frq = 22050;                                        // ��nien perussoittotaajuus (esim. 22050)
+    bool    random_frq = true;                                        // satunnaisuutta taajuuteen?
 
     // Jos sprite on este
-    bool		este_ylos;
-    bool		este_alas;
-    bool		este_oikealle;
-    bool		este_vasemmalle;
+    bool    este_ylos = true;
+    bool    este_alas = true;
+    bool    este_oikealle = true;
+    bool    este_vasemmalle = true;
 
     // Lis�ykset 1.3 versiossa
-    u8		lapinakyvyys;									// 0 = ei n�y - 100 = ei l�pin�kyv�
-    bool		hehkuu;											// 0 = ei hehku (t�ytyy olla l�pin�kyv�)
-    int			tulitauko;										// ammuspriten ampujalle aiheuttama charge_time
-    bool		can_glide;										// voiko tippua hiljaa alas?
-    bool		boss;											// onko johtaja
-    bool		bonus_always;										// j�tt�� aina bonuksen tuhoutuessa
-    bool		can_swim;										// vaikuttaako painovoima vedess�?
+    u8      lapinakyvyys = false;                                    // 0 = ei n�y - 100 = ei l�pin�kyv�
+    bool    hehkuu = false;                                            // 0 = ei hehku (t�ytyy olla l�pin�kyv�)
+    int     tulitauko = 0;                                        // ammuspriten ampujalle aiheuttama charge_time
+    bool    can_glide = false;                                        // voiko tippua hiljaa alas?
+    bool    boss = false;                                            // onko johtaja
+    bool    bonus_always = false;                                        // j�tt�� aina bonuksen tuhoutuessa
+    bool    can_swim = false;                                        // vaikuttaako painovoima vedess�?
 
     // Muodostimet
     PrototypeClass();
     ~PrototypeClass();
 
     // Methods
-    void Uusi();
     void Kopioi(const PrototypeClass &proto);
-    int  Animation_Uusi(int anim_i, u8 *sekvenssi, bool looppi);
     int  Load(PFile::Path path);
-    void Tallenna(const char* filename);
     int  Piirra(int x, int y, int frame);
     bool Onko_AI(int AI);
 

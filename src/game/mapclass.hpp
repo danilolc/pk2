@@ -122,7 +122,6 @@ class MapClass
 	int Load(PFile::Path path);		// Load kartta
 	int Load_Plain_Data(PFile::Path path);	// Load kartta ilman grafiikoita
 
-	int Tallenna(char *filename);	// Save map
 	void Tyhjenna();				// clean map
 	MAP_RECT LaskeTallennusAlue(u8 *lahde, u8 *&kohde);
 	MAP_RECT LaskeTallennusAlue(u8 *alue);

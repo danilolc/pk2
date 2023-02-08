@@ -36,8 +36,8 @@ void Prototypes_ClearAll() {
 		for (int j = 0; j < SPRITE_MAX_SOUNDS; j++)
 			if (Prototypes_List[i].aanet[j] > -1)
 				PSound::free_sfx(Prototypes_List[i].aanet[j]);
-		Prototypes_List[i].Uusi();
-		strcpy(Game->map->protot[i],"");
+		//Prototypes_List[i].Uusi();
+		strcpy(Game->map->protot[i], "");
 
 	}
 
