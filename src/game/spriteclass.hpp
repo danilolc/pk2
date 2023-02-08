@@ -680,7 +680,6 @@ class PrototypeClass{
     ~PrototypeClass();
 
     // Methods
-    void Kopioi(const PrototypeClass &proto);
     int  Load(PFile::Path path);
     int  Piirra(int x, int y, int frame);
     bool Onko_AI(int AI);
@@ -689,7 +688,6 @@ class PrototypeClass{
     void SetProto11(PrototypeClass11 &proto);
     void SetProto12(PrototypeClass12 &proto);
     void SetProto13(PrototypeClass13 &proto);
-    PrototypeClass13 GetProto13();
 };
 class SpriteClass{
     public:
