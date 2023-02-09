@@ -8,7 +8,7 @@
 
 extern SpriteClass* Player_Sprite;
 
-extern std::vector<PrototypeClass> Prototypes_List;
+extern PrototypeClass* Prototypes_List[MAX_PROTOTYYPPEJA];
 extern SpriteClass Sprites_List[MAX_SPRITEJA];
 
 extern int bgSprites_List[MAX_SPRITEJA];

@@ -26,73 +26,77 @@ SpriteClass* Player_Sprite;
 //std::vector<SpriteClass*> bgSprites;
 
 // avoid using stack (this is cleaned after PDraw::imageList, causing a error)
-std::vector<PrototypeClass> Prototypes_List;
+PrototypeClass* Prototypes_List[MAX_PROTOTYYPPEJA];
 SpriteClass Sprites_List[MAX_SPRITEJA];
 
 int bgSprites_List[MAX_SPRITEJA];
 
 void Prototypes_ClearAll() {
 
-	Prototypes_List.clear();
+	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
+		if (Prototypes_List[i] != nullptr) {
+			delete Prototypes_List[i];
+			Prototypes_List[i] = nullptr;
+		}
 
-	/*for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
+	}
 
-		for (int j = 0; j < SPRITE_MAX_SOUNDS; j++)
-			if (Prototypes_List[i].aanet[j] > -1)
-				PSound::free_sfx(Prototypes_List[i].aanet[j]);
-		//Prototypes_List[i].Uusi();
-		strcpy(Game->map->protot[i], "");
-
-	}*/
 }
 
-int Prototypes_get(const char* name) {
-	
-	//Check if have space
-	//if(next_free_prototype >= MAX_PROTOTYYPPEJA)
-	//	return 2;
-	Prototypes_List.emplace_back();
-	PrototypeClass& protot = Prototypes_List.back();
+int Prototypes_get(const char* name, int id = -1) {
 
 	PFile::Path path = Episode->Get_Dir(name);
-	FindAsset(&path, "sprites" PE_SEP);
-
-	//Check if it can be loaded
-	if (protot.Load(path) != 0) {
-		//Prototypes_List.pop_back();
-		PLog::Write(PLog::ERR, "PK2", "Couldn't load %s", name);
+	if (!FindAsset(&path, "sprites" PE_SEP)) {
+		PLog::Write(PLog::ERR, "PK2", "Couldn't find %s", name);
 		return -1;
 	}
 
-	protot.indeksi = Prototypes_List.size() - 1;
+	if (id != -1 && Prototypes_List[id] != nullptr) {
+		delete Prototypes_List[id];
+		Prototypes_List[id] = nullptr;
+	}
 
-	return protot.indeksi;
+	if (id == -1)
+		for (int i = 0; i < MAX_PROTOTYYPPEJA; i++)
+			if (Prototypes_List[i] == nullptr)
+				id = i;
+
+	PrototypeClass* protot = new PrototypeClass;
+
+	//Check if it can be loaded
+	if (protot->Load(path) != 0) {
+		PLog::Write(PLog::ERR, "PK2", "Couldn't load %s", name);
+		delete protot;
+		return -1;
+	}
+
+	protot->indeksi = id;
+	Prototypes_List[id] = protot;
+
+	return id;
+
 }
 
 void Prototypes_get_transformation(int i) {
 
-	int j = 0;
-	bool loaded = false;
+	if (Prototypes_List[i] == nullptr)
+		return;
 
-	if (strcmp(Prototypes_List[i].muutos_sprite, "") != 0) {
+	if (strcmp(Prototypes_List[i]->muutos_sprite, "") != 0) {
 
 		// verify if the transformation is already loaded
-		while (j < MAX_PROTOTYYPPEJA && !loaded) {
-			if (j!=i) {
-				if (strcmp(Prototypes_List[i].muutos_sprite,Prototypes_List[j].tiedosto)==0) {
-					Prototypes_List[i].muutos = j;
-					loaded = true;
+		for (int j = 0; j < MAX_PROTOTYYPPEJA; j++) {
+			if (Prototypes_List[j]->tiedosto != nullptr) {
+				if (strcmp(Prototypes_List[i]->muutos_sprite, Prototypes_List[j]->tiedosto) == 0) {
+					Prototypes_List[i]->muutos = j;
+					return;
 				}
 			}
-			j++;
 		}
 
-		if (!loaded) {
+		int index = Prototypes_get(Prototypes_List[i]->muutos_sprite);
+		Prototypes_List[i]->muutos = index;
 
-			int index = Prototypes_get(Prototypes_List[i].muutos_sprite);
-			Prototypes_List[i].muutos = index;
-			
-		}
 	}
 }
 

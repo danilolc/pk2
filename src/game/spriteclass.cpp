@@ -49,10 +49,8 @@ PrototypeClass::~PrototypeClass(){
 			PDraw::image_delete(this->framet_peilikuva[i]);
 	}
 
-	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
-		for (int j = 0; j < SPRITE_MAX_SOUNDS; j++)
-			PSound::free_sfx(aanet[j]);
-	}
+	for (int j = 0; j < SPRITE_MAX_SOUNDS; j++)
+		PSound::free_sfx(aanet[j]);
 }
 
 void PrototypeClass::SetProto10(PrototypeClass10 &proto){
