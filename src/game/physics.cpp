@@ -774,7 +774,7 @@ int Sprite_Movement(int i){
 				sprite_y/*ala*/ >= sprite2->y - sprite2->tyyppi->korkeus/2 + sprite2_yla)
 			{
 				// sprites with same index change directions when touch
-				if (sprite.tyyppi->indeksi == sprite2->tyyppi->indeksi &&
+				if (sprite.tyyppi == sprite2->tyyppi &&
 					sprite2->energia > 0/* && sprite.pelaaja == 0*/)
 				{
 					if (sprite.x < sprite2->x)
@@ -966,7 +966,7 @@ int Sprite_Movement(int i){
 
 				if (sprite.Onko_AI(AI_UUSI_JOS_TUHOUTUU)) {
 					Sprites_add(sprite.tyyppi->indeksi,0,sprite.alku_x-sprite.tyyppi->leveys, sprite.alku_y-sprite.tyyppi->korkeus,i, false);
-				} //TODO - does sprite.tyyppi->indeksi work
+				}
 
 				if (sprite.tyyppi->tyyppi == TYPE_GAME_CHARACTER && sprite.tyyppi->pisteet != 0){
 					char luku[10];
@@ -1614,7 +1614,7 @@ int BonusSprite_Movement(int i){
 					sprite.kytkinpaino += sprite2->tyyppi->weight;
 
 					// samanmerkkiset spritet vaihtavat suuntaa t�rm�tess��n
-					if (sprite.tyyppi->indeksi == sprite2->tyyppi->indeksi &&
+					if (sprite.tyyppi == sprite2->tyyppi &&
 						sprite2->energia > 0)
 					{
 						if (sprite.x < sprite2->x) {

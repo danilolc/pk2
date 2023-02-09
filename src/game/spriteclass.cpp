@@ -1048,7 +1048,7 @@ int SpriteClass::AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(SpriteClass &pelaaja){
 }
 int SpriteClass::AI_Change_When_Energy_Under_2(PrototypeClass *muutos){
 	
-	if (energia < 2 && muutos->indeksi != tyyppi->indeksi) {
+	if (energia < 2 && muutos != tyyppi) {
 		tyyppi = muutos;
 		initial_weight = tyyppi->weight;
 		//ammus1 = tyyppi->ammus1;
@@ -1060,7 +1060,7 @@ int SpriteClass::AI_Change_When_Energy_Under_2(PrototypeClass *muutos){
 }
 int SpriteClass::AI_Change_When_Energy_Over_1(PrototypeClass *muutos){
 
-	if (energia > 1 && muutos->indeksi != tyyppi->indeksi) {
+	if (energia > 1 && muutos != tyyppi) {
 		tyyppi = muutos;
 		initial_weight = tyyppi->weight;
 		//ammus1 = tyyppi->ammus1;
@@ -1071,7 +1071,7 @@ int SpriteClass::AI_Change_When_Energy_Over_1(PrototypeClass *muutos){
 	return 0;
 }
 int SpriteClass::AI_Muutos_Ajastin(PrototypeClass *muutos){
-	if (energia > 0 && muutos->indeksi != tyyppi->indeksi)
+	if (energia > 0 && muutos != tyyppi)
 	{
 		if (mutation_timer/*charging_timer*/ == 0)
 			mutation_timer/*charging_timer*/ = tyyppi->charge_time;
@@ -1094,7 +1094,7 @@ int SpriteClass::AI_Muutos_Ajastin(PrototypeClass *muutos){
 	return 0;
 }
 int SpriteClass::AI_Muutos_Jos_Osuttu(PrototypeClass *muutos){
-	if (energia > 0 && muutos->indeksi != tyyppi->indeksi)
+	if (energia > 0 && muutos != tyyppi)
 	{
 		if (saatu_vahinko > 0)
 		{
@@ -1554,7 +1554,7 @@ int SpriteClass::AI_Teleportti(int oma_i, SpriteClass *spritet, int max, SpriteC
 			for (i=0;i<max;i++)
 				if (spritet[i].tyyppi != NULL)
 					if (spritet[i].tyyppi->tyyppi == TYPE_TELEPORT &&
-						tyyppi->indeksi == spritet[i].tyyppi->indeksi)
+						tyyppi == spritet[i].tyyppi)
 					{
 						portit[portti_index] = i;
 						portti_index++;
