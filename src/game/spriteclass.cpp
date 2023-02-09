@@ -16,31 +16,8 @@
 
 /* -------- SpriteClass Prototyyppi ------------------------------------------------------------------ */
 
-PrototypeClass::PrototypeClass(){
+PrototypeClass::PrototypeClass(){}
 
-	for (int aani=0;aani<SPRITE_MAX_SOUNDS;aani++){
-		strcpy(aanitiedostot[aani], "");
-		aanet[aani] = -1;
-	}
-
-	for (int i=0; i < SPRITE_MAX_AI; i++){
-		AI[i] = AI_NONE;
-	}
-
-	for (int i = 0; i < SPRITE_MAX_FRAMEJA; i++){
-		framet[i] = 0;
-		framet_peilikuva[i] = 0;
-	}
-
-	for (int i = 0; i < SPRITE_MAX_ANIMAATIOITA; i++){
-		for (int j = 0; j < ANIMATION_SEQUENCE_SIZE; j++)
-			animaatiot[i].sekvenssi[j] = 0;
-
-		animaatiot[i].looppi  = false;
-		animaatiot[i].frameja = 0;
-	}
-
-}
 PrototypeClass::~PrototypeClass(){
 	for (int i=0;i<SPRITE_MAX_FRAMEJA;i++) {
 		if (framet[i] > 0)
@@ -395,8 +372,6 @@ int PrototypeClass::Load(PFile::Path path){
 
 			PFile::Path sound = path;
 			sound.SetFile(aanitiedostot[i]);
-
-			PLog::Write(PLog::FATAL, "PK2", "%s", aanitiedostot[i]);
 
 			if (FindAsset(&sound, "sprites" PE_SEP)) {
 
