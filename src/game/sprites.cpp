@@ -62,9 +62,12 @@ int Prototypes_get(const char* name, int id = -1) {
 	}
 
 	if (id == -1) {
-		for (int i = 0; i < MAX_PROTOTYYPPEJA; i++)
-			if (Prototypes_List[i] == nullptr)
+		for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
+			if (Prototypes_List[i] == nullptr) {
 				id = i;
+				break;
+			}
+		}
 	}
 
 	if (id == -1) {
@@ -89,9 +92,6 @@ int Prototypes_get(const char* name, int id = -1) {
 
 void Prototypes_get_transformation(int i) {
 
-	if (Prototypes_List[i] == nullptr)
-		return;
-
 	if (strcmp(Prototypes_List[i]->muutos_sprite, "") != 0) {
 
 		// verify if the transformation is already loaded
@@ -111,9 +111,6 @@ void Prototypes_get_transformation(int i) {
 }
 
 void Prototypes_get_bonus(int i) {
-
-	if (Prototypes_List[i] == nullptr)
-		return;
 
 	if (strcmp(Prototypes_List[i]->bonus_sprite, "") != 0) {
 
@@ -135,9 +132,6 @@ void Prototypes_get_bonus(int i) {
 
 void Prototypes_get_ammo1(int i) {
 
-	if (Prototypes_List[i] == nullptr)
-		return;
-
 	if (strcmp(Prototypes_List[i]->ammus1_sprite, "") != 0) {
 
 		// verify if the transformation is already loaded
@@ -157,9 +151,6 @@ void Prototypes_get_ammo1(int i) {
 }
 
 void Prototypes_get_ammo2(int i) {
-
-	if (Prototypes_List[i] == nullptr)
-		return;
 
 	if (strcmp(Prototypes_List[i]->ammus2_sprite, "") != 0) {
 
@@ -196,12 +187,14 @@ int Prototypes_GetAll() {
 	}
 
 	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
+		if (Prototypes_List[i] != nullptr) {
 
-		Prototypes_get_transformation(i);
-		Prototypes_get_bonus(i);
-		Prototypes_get_ammo1(i);
-		Prototypes_get_ammo2(i);
+			Prototypes_get_transformation(i);
+			Prototypes_get_bonus(i);
+			Prototypes_get_ammo1(i);
+			Prototypes_get_ammo2(i);
 
+		}
 	}
 
 	return 0;
