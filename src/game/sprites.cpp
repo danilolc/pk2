@@ -26,7 +26,7 @@ SpriteClass* Player_Sprite;
 //std::vector<SpriteClass*> bgSprites;
 
 // avoid using stack (this is cleaned after PDraw::imageList, causing a error)
-PrototypeClass* Prototypes_List[MAX_PROTOTYYPPEJA];
+PrototypeClass* Prototypes_List[MAX_PROTOTYYPPEJA] = {nullptr};
 SpriteClass Sprites_List[MAX_SPRITEJA];
 
 int bgSprites_List[MAX_SPRITEJA];
@@ -51,17 +51,28 @@ int Prototypes_get(const char* name, int id = -1) {
 		return -1;
 	}
 
+	if (id >= MAX_PROTOTYYPPEJA) {
+		PLog::Write(PLog::ERR, "PK2", "Invalid prototype id");
+		return -1;
+	}
+
 	if (id != -1 && Prototypes_List[id] != nullptr) {
 		delete Prototypes_List[id];
 		Prototypes_List[id] = nullptr;
 	}
 
-	if (id == -1)
+	if (id == -1) {
 		for (int i = 0; i < MAX_PROTOTYYPPEJA; i++)
 			if (Prototypes_List[i] == nullptr)
 				id = i;
+	}
 
-	PrototypeClass* protot = new PrototypeClass;
+	if (id == -1) {
+		PLog::Write(PLog::ERR, "PK2", "Not enough space for prototypes");
+		return -1;
+	}
+
+	PrototypeClass* protot = new PrototypeClass();
 
 	//Check if it can be loaded
 	if (protot->Load(path) != 0) {
@@ -74,7 +85,6 @@ int Prototypes_get(const char* name, int id = -1) {
 	Prototypes_List[id] = protot;
 
 	return id;
-
 }
 
 void Prototypes_get_transformation(int i) {
@@ -86,7 +96,7 @@ void Prototypes_get_transformation(int i) {
 
 		// verify if the transformation is already loaded
 		for (int j = 0; j < MAX_PROTOTYYPPEJA; j++) {
-			if (Prototypes_List[j]->tiedosto != nullptr) {
+			if (Prototypes_List[j] != nullptr) {
 				if (strcmp(Prototypes_List[i]->muutos_sprite, Prototypes_List[j]->tiedosto) == 0) {
 					Prototypes_List[i]->muutos = j;
 					return;
@@ -102,92 +112,82 @@ void Prototypes_get_transformation(int i) {
 
 void Prototypes_get_bonus(int i) {
 
-	int j = 0;
-	bool loaded = false;
+	if (Prototypes_List[i] == nullptr)
+		return;
 
-	if (strcmp(Prototypes_List[i].bonus_sprite,"")!=0){
-		while (j<MAX_PROTOTYYPPEJA && !loaded){
-			if (j!=i){
-				if (strcmp(Prototypes_List[i].bonus_sprite,Prototypes_List[j].tiedosto)==0){
-					Prototypes_List[i].bonus = j;
-					loaded = true;
+	if (strcmp(Prototypes_List[i]->bonus_sprite, "") != 0) {
+
+		// verify if the transformation is already loaded
+		for (int j = 0; j < MAX_PROTOTYYPPEJA; j++) {
+			if (Prototypes_List[j] != nullptr) {
+				if (strcmp(Prototypes_List[i]->bonus_sprite, Prototypes_List[j]->tiedosto) == 0) {
+					Prototypes_List[i]->bonus = j;
+					return;
 				}
 			}
-
-			j++;
 		}
 
-		if (!loaded){
+		int index = Prototypes_get(Prototypes_List[i]->bonus_sprite);
+		Prototypes_List[i]->bonus = index;
 
-			int index = Prototypes_get(Prototypes_List[i].bonus_sprite);
-			Prototypes_List[i].bonus = index;
-			
-		}
 	}
 }
 
 void Prototypes_get_ammo1(int i) {
 
-	int j = 0;
-	bool loaded = false;
+	if (Prototypes_List[i] == nullptr)
+		return;
 
-	if (strcmp(Prototypes_List[i].ammus1_sprite,"")!=0){
-		while (j<MAX_PROTOTYYPPEJA && !loaded){
-			if (j!=i){
-				if (strcmp(Prototypes_List[i].ammus1_sprite,Prototypes_List[j].tiedosto)==0){
-					Prototypes_List[i].ammus1 = j;
-					loaded = true;
+	if (strcmp(Prototypes_List[i]->ammus1_sprite, "") != 0) {
+
+		// verify if the transformation is already loaded
+		for (int j = 0; j < MAX_PROTOTYYPPEJA; j++) {
+			if (Prototypes_List[j] != nullptr) {
+				if (strcmp(Prototypes_List[i]->ammus1_sprite, Prototypes_List[j]->tiedosto) == 0) {
+					Prototypes_List[i]->ammus1 = j;
+					return;
 				}
 			}
-
-			j++;
 		}
 
-		if (!loaded){
+		int index = Prototypes_get(Prototypes_List[i]->ammus1_sprite);
+		Prototypes_List[i]->ammus1 = index;
 
-			int index = Prototypes_get(Prototypes_List[i].ammus1_sprite);
-			Prototypes_List[i].ammus1 = index;
-
-		}
 	}
 }
 
 void Prototypes_get_ammo2(int i) {
 
-	int j = 0;
-	bool loaded = false;
+	if (Prototypes_List[i] == nullptr)
+		return;
 
-	if (strcmp(Prototypes_List[i].ammus2_sprite,"")!=0){
-		while (j<MAX_PROTOTYYPPEJA && !loaded){
-			if (j!=i){
-				if (strcmp(Prototypes_List[i].ammus2_sprite,Prototypes_List[j].tiedosto)==0){
-					Prototypes_List[i].ammus2 = j;
-					loaded = true; //Prototype has already loaded
+	if (strcmp(Prototypes_List[i]->ammus2_sprite, "") != 0) {
+
+		// verify if the transformation is already loaded
+		for (int j = 0; j < MAX_PROTOTYYPPEJA; j++) {
+			if (Prototypes_List[j] != nullptr) {
+				if (strcmp(Prototypes_List[i]->ammus2_sprite, Prototypes_List[j]->tiedosto) == 0) {
+					Prototypes_List[i]->ammus2 = j;
+					return;
 				}
 			}
-
-			j++;
 		}
 
-		if (!loaded) {
+		int index = Prototypes_get(Prototypes_List[i]->ammus2_sprite);
+		Prototypes_List[i]->ammus2 = index;
 
-			int index = Prototypes_get(Prototypes_List[i].ammus2_sprite);
-			Prototypes_List[i].ammus2 = index;
-
-		}
 	}
 }
 
 int Prototypes_GetAll() {
 
-	for (int i = 0; i < MAX_PROTOTYYPPEJA; i++) {
+	for (u32 i = 0; i < PK2MAP_MAP_MAX_PROTOTYPES; i++) {
 		if (strcmp(Game->map->protot[i], "") != 0) {
-			
+
 			PFile::Path path = Episode->Get_Dir(Game->map->protot[i]);
 
-			if (Prototypes_get(Game->map->protot[i]) == -1) {
-				Prototypes_List[i].indeksi = i;
-
+			if (Prototypes_get(Game->map->protot[i], i) == -1) {
+				
 				PLog::Write(PLog::WARN, "PK2", "Can't load sprite %s. It will not appear", Game->map->protot[i]);
 
 			}
@@ -284,14 +284,14 @@ void Sprites_start_directions() {
 
 void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int emo, bool isbonus) {
 	
-	PrototypeClass* proto = &Prototypes_List[protoype_id];
+	PrototypeClass* proto = Prototypes_List[protoype_id];
 	bool added = false;
 	int i = 0;
 
 	while (!added && i < MAX_SPRITEJA){
 		if (Sprites_List[i].piilota && &Sprites_List[i] != Player_Sprite){
 			
-			Sprites_List[i] = SpriteClass(proto, is_Player_Sprite,false,x,y);
+			Sprites_List[i] = SpriteClass(proto, is_Player_Sprite, false, x, y);
 
 			if (is_Player_Sprite) Player_Sprite = &Sprites_List[i];
 
@@ -331,7 +331,7 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 }
 
 void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y, int emo) {
-	PrototypeClass* proto = &Prototypes_List[protoype_id];
+	PrototypeClass* proto = Prototypes_List[protoype_id];
 	bool lisatty = false;
 	int i = 0;
 

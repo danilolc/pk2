@@ -771,10 +771,10 @@ class SpriteClass{
     int AI_Seuraa_Pelaajaa_Vert_Hori(SpriteClass &pelaaja);
     int AI_Jahtaa_Pelaajaa(SpriteClass &pelaaja);
     int AI_Pakenee_Pelaajaa_Jos_Nakee(SpriteClass &pelaaja);
-    int AI_Change_When_Energy_Under_2(PrototypeClass &muutos);
-    int AI_Change_When_Energy_Over_1(PrototypeClass &muutos);
-    int AI_Muutos_Ajastin(PrototypeClass &muutos);
-    int AI_Muutos_Jos_Osuttu(PrototypeClass &muutos);
+    int AI_Change_When_Energy_Under_2(PrototypeClass *muutos);
+    int AI_Change_When_Energy_Over_1(PrototypeClass *muutos);
+    int AI_Muutos_Ajastin(PrototypeClass *muutos);
+    int AI_Muutos_Jos_Osuttu(PrototypeClass *muutos);
     int AI_Attack_1_Jos_Osuttu();
     int AI_Attack_2_Jos_Osuttu();
     int AI_Attack_1_Nonstop();

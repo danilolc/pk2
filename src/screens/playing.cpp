@@ -188,10 +188,14 @@ int Draw_InGame_DebugInfo() {
 	fy += 10;
 
 	for (int i = 0; i < 40; i++) {
-		sprintf(lukua, "%i", Prototypes_List[i].indeksi);
-		PDraw::font_write(fontti1,lukua,410,10+i*10);
-		PDraw::font_write(fontti1,Prototypes_List[i].tiedosto,430,10+i*10);
-		PDraw::font_write(fontti1,Prototypes_List[i].bonus_sprite,545,10+i*10);
+		if (Prototypes_List[i] == nullptr) {
+			PDraw::font_write(fontti1,"nullptr",410,10+i*10);
+		} else {
+			sprintf(lukua, "%i", Prototypes_List[i]->indeksi);
+			PDraw::font_write(fontti1,lukua,410,10+i*10);
+			PDraw::font_write(fontti1,Prototypes_List[i]->tiedosto,430,10+i*10);
+			PDraw::font_write(fontti1,Prototypes_List[i]->bonus_sprite,545,10+i*10);
+		}
 	}
 
 	for (uint i = 0; i < Episode->level_count; i++)
@@ -446,12 +450,12 @@ int Draw_InGame_UI(){
 	/////////////////
 	if (Player_Sprite->ammus2 != -1){
 		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_attack1), screen_width-170,my);
-		Prototypes_List[Player_Sprite->ammus2].Piirra(screen_width-170,my+10,0);
+		Prototypes_List[Player_Sprite->ammus2]->Piirra(screen_width-170,my+10,0);
 	}
 
 	if (Player_Sprite->ammus1 != -1){
 		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_attack2), screen_width-90,my+15);
-		Prototypes_List[Player_Sprite->ammus1].Piirra(screen_width-90,my+25,0);
+		Prototypes_List[Player_Sprite->ammus1]->Piirra(screen_width-90,my+25,0);
 	}
 
 	/////////////////
@@ -858,7 +862,7 @@ int Screen_InGame(){
 			}
 			if (PInput::Keydown(PInput::A)/* && key_delay == 0*/) {
 				//key_delay = 20;
-				*Player_Sprite = SpriteClass(&Prototypes_List[0], 1, false, Player_Sprite->x, Player_Sprite->y);
+				*Player_Sprite = SpriteClass(Prototypes_List[0], 1, false, Player_Sprite->x, Player_Sprite->y);
 				Effect_Stars(Player_Sprite->x, Player_Sprite->y, COLOR_VIOLET);
 			}
 		}

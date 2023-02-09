@@ -20,11 +20,11 @@ int Gifts_Get(int i) {
 }
 
 PrototypeClass* Gifts_GetProtot(int i) {
-	return &Prototypes_List[ gifts_list[i] ];
+	return Prototypes_List[ gifts_list[i] ];
 }
 
 void Gifts_Draw(int i, int x, int y) {
-	PrototypeClass* prot = &Prototypes_List[ gifts_list[i] ];
+	PrototypeClass* prot = Prototypes_List[ gifts_list[i] ];
 	prot->Piirra(x - prot->leveys / 2, y - prot->korkeus / 2, 0);
 }
 
@@ -67,7 +67,7 @@ int Gifts_Use() {
 	if (gifts_count > 0) {
 		Sprites_add(
 			gifts_list[0], 0,
-			Player_Sprite->x - Prototypes_List[gifts_list[0]].leveys,
+			Player_Sprite->x - Prototypes_List[gifts_list[0]]->leveys,
 			Player_Sprite->y,
 			MAX_SPRITEJA, false);
 

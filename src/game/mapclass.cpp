@@ -784,13 +784,13 @@ void MapClass::Place_Sprites() {
 
 			int sprite = this->spritet[x+y*PK2MAP_MAP_WIDTH];
 
-			if (sprite != 255 && Prototypes_List[sprite].korkeus > 0) {
+			if (sprite != 255 && Prototypes_List[sprite]->korkeus > 0) {
 
-				char* name = Prototypes_List[sprite].nimi;
+				char* name = Prototypes_List[sprite]->nimi;
 				if (!Episode->ignore_collectable && strncmp(name, Episode->collectable_name.c_str(), Episode->collectable_name.size()) == 0)
 					Game->apples_count++;
 
-				Sprites_add(sprite, 0, x*32, y*32 - Prototypes_List[sprite].korkeus+32, MAX_SPRITEJA, false);
+				Sprites_add(sprite, 0, x*32, y*32 - Prototypes_List[sprite]->korkeus+32, MAX_SPRITEJA, false);
 				
 			}
 		}
@@ -846,8 +846,8 @@ int MapClass::Count_Keys() {
 	for (x=0; x < PK2MAP_MAP_SIZE; x++){
 		sprite = this->spritet[x];
 		if (sprite != 255)
-			if (Prototypes_List[sprite].avain && 
-				Prototypes_List[sprite].tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
+			if (Prototypes_List[sprite]->avain && 
+				Prototypes_List[sprite]->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 
 				keys++;
 	}

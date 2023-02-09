@@ -1367,8 +1367,8 @@ int Sprite_Movement(int i){
 			// if you don't have your own charging time ...
 			if (sprite.ammus1 > -1 && sprite.tyyppi->charge_time == 0)
 			// ... and the projectile has, take charge_time from the projectile
-				if (Prototypes_List[sprite.ammus1].tulitauko > 0)
-					sprite.charging_timer = Prototypes_List[sprite.ammus1].tulitauko;
+				if (Prototypes_List[sprite.ammus1]->tulitauko > 0)
+					sprite.charging_timer = Prototypes_List[sprite.ammus1]->tulitauko;
 
 			// attack sound
 			Play_GameSFX(sprite.tyyppi->aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
@@ -1388,8 +1388,8 @@ int Sprite_Movement(int i){
 			sprite.charging_timer = sprite.tyyppi->charge_time;
 			if(sprite.charging_timer == 0) sprite.charging_timer = 5;
 			if (sprite.ammus2 > -1  && sprite.tyyppi->charge_time == 0)
-				if (Prototypes_List[sprite.ammus2].tulitauko > 0)
-					sprite.charging_timer = Prototypes_List[sprite.ammus2].tulitauko;
+				if (Prototypes_List[sprite.ammus2]->tulitauko > 0)
+					sprite.charging_timer = Prototypes_List[sprite.ammus2]->tulitauko;
 
 			Play_GameSFX(sprite.tyyppi->aanet[SOUND_ATTACK2],100,(int)sprite_x, (int)sprite_y,
 						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
@@ -1887,9 +1887,9 @@ int BonusSprite_Movement(int i){
 
 				if (sprite.tyyppi->muutos != -1)
 				{
-					if (Prototypes_List[sprite.tyyppi->muutos].AI[0] != AI_BONUS)
+					if (Prototypes_List[sprite.tyyppi->muutos]->AI[0] != AI_BONUS)
 					{
-						Player_Sprite->tyyppi = &Prototypes_List[sprite.tyyppi->muutos];
+						Player_Sprite->tyyppi = Prototypes_List[sprite.tyyppi->muutos];
 						Player_Sprite->ammus1 = Player_Sprite->tyyppi->ammus1;
 						Player_Sprite->ammus2 = Player_Sprite->tyyppi->ammus2;
 						Player_Sprite->initial_weight = Player_Sprite->tyyppi->weight;

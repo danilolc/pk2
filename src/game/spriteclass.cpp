@@ -289,8 +289,6 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 
 int PrototypeClass::Load(PFile::Path path){
 
-	std::string filename = path.GetFileName();
-
 	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr) {
 		PLog::Write(PLog::ERR, "PK2", "Failed to open %s", path.c_str());
@@ -325,20 +323,21 @@ int PrototypeClass::Load(PFile::Path path){
 		return -1;
 	}
 	strcpy(this->versio, versio);
-	strcpy(this->tiedosto, filename.c_str());
+	strcpy(this->tiedosto, path.GetFileName().c_str());
 
 	file->close();
 
 	// Get sprite bmp
-	path.SetFile(this->kuvatiedosto);
-	if (!FindAsset(&path, "sprites" PE_SEP)) {
+	PFile::Path image = path;
+	image.SetFile(this->kuvatiedosto);
+	if (!FindAsset(&image, "sprites" PE_SEP)) {
 
 		PLog::Write(PLog::ERR, "PK2", "Couldn't find sprite image %s", this->kuvatiedosto);
 		return -1;
 
 	}
 
-	int bufferi = PDraw::image_load(path, false);
+	int bufferi = PDraw::image_load(image, false);
 	if (bufferi == -1) {
 
 		PLog::Write(PLog::ERR, "PK2", "Couldn't load sprite image %s", this->kuvatiedosto);
@@ -394,16 +393,19 @@ int PrototypeClass::Load(PFile::Path path){
 
 		if (strcmp(aanitiedostot[i], "") != 0) {
 
-			path.SetFile(aanitiedostot[i]);
+			PFile::Path sound = path;
+			sound.SetFile(aanitiedostot[i]);
 
-			if (FindAsset(&path, "sprites" PE_SEP)) {
+			PLog::Write(PLog::FATAL, "PK2", "%s", aanitiedostot[i]);
 
-				aanet[i] = PSound::load_sfx(path);
+			if (FindAsset(&sound, "sprites" PE_SEP)) {
+
+				aanet[i] = PSound::load_sfx(sound);
 
 			} else {
 
 				PLog::Write(PLog::ERR, "PK2", "Can't find sound %s", aanitiedostot[i]);
-				return -1;
+				//return -1;
 
 			}
 		}
@@ -1069,10 +1071,10 @@ int SpriteClass::AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(SpriteClass &pelaaja){
 
 	return 0;
 }
-int SpriteClass::AI_Change_When_Energy_Under_2(PrototypeClass &muutos){
+int SpriteClass::AI_Change_When_Energy_Under_2(PrototypeClass *muutos){
 	
-	if (energia < 2 && muutos.indeksi != tyyppi->indeksi) {
-		tyyppi = &muutos;
+	if (energia < 2 && muutos->indeksi != tyyppi->indeksi) {
+		tyyppi = muutos;
 		initial_weight = tyyppi->weight;
 		//ammus1 = tyyppi->ammus1;
 		//ammus2 = tyyppi->ammus2;
@@ -1081,10 +1083,10 @@ int SpriteClass::AI_Change_When_Energy_Under_2(PrototypeClass &muutos){
 
 	return 0;
 }
-int SpriteClass::AI_Change_When_Energy_Over_1(PrototypeClass &muutos){
+int SpriteClass::AI_Change_When_Energy_Over_1(PrototypeClass *muutos){
 
-	if (energia > 1 && muutos.indeksi != tyyppi->indeksi) {
-		tyyppi = &muutos;
+	if (energia > 1 && muutos->indeksi != tyyppi->indeksi) {
+		tyyppi = muutos;
 		initial_weight = tyyppi->weight;
 		//ammus1 = tyyppi->ammus1;
 		//ammus2 = tyyppi->ammus2;
@@ -1093,15 +1095,15 @@ int SpriteClass::AI_Change_When_Energy_Over_1(PrototypeClass &muutos){
 
 	return 0;
 }
-int SpriteClass::AI_Muutos_Ajastin(PrototypeClass &muutos){
-	if (energia > 0 && muutos.indeksi != tyyppi->indeksi)
+int SpriteClass::AI_Muutos_Ajastin(PrototypeClass *muutos){
+	if (energia > 0 && muutos->indeksi != tyyppi->indeksi)
 	{
 		if (mutation_timer/*charging_timer*/ == 0)
 			mutation_timer/*charging_timer*/ = tyyppi->charge_time;
 
 		if (mutation_timer/*charging_timer*/ == 1)
 		{
-			tyyppi = &muutos;
+			tyyppi = muutos;
 			initial_weight = tyyppi->weight;
 
 			ammus1 = tyyppi->ammus1;
@@ -1116,12 +1118,12 @@ int SpriteClass::AI_Muutos_Ajastin(PrototypeClass &muutos){
 
 	return 0;
 }
-int SpriteClass::AI_Muutos_Jos_Osuttu(PrototypeClass &muutos){
-	if (energia > 0 && muutos.indeksi != tyyppi->indeksi)
+int SpriteClass::AI_Muutos_Jos_Osuttu(PrototypeClass *muutos){
+	if (energia > 0 && muutos->indeksi != tyyppi->indeksi)
 	{
 		if (saatu_vahinko > 0)
 		{
-			tyyppi = &muutos;
+			tyyppi = muutos;
 			initial_weight = tyyppi->weight;
 
 			ammus1 = tyyppi->ammus1;
