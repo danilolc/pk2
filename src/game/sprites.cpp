@@ -311,7 +311,7 @@ void Sprites_add_ammo(PrototypeClass* protot, double x, double y, SpriteClass* e
 			else
 				sprite->a = -sprite->tyyppi->max_nopeus + emo->a;
 
-			//sprite->a = Sprites_List[emo].a * 1.5;
+			//sprite->a = emo->a * 1.5;
 
 		}
 
@@ -344,20 +344,22 @@ void Sprites_add_ammo(PrototypeClass* protot, double x, double y, SpriteClass* e
 
 bool Sprite_Destructed (const SpriteClass* sprite) { 
 	
-	bool removed = sprite->piilota;
+	if (sprite->piilota && sprite != Player_Sprite) {
+		delete sprite;
+		return true;
+	}
 
-	if (removed) delete sprite;
-
-	return removed; 
+	return false;
 	
 }
 
 bool bgSprite_Destructed (const SpriteClass* sprite) { 
 	
-	bool removed = sprite->piilota;
+	if (sprite->piilota)
+		return true;
 
-	return removed; 
-	
+	return false;
+
 }
 
 int Update_Sprites() {
@@ -401,6 +403,7 @@ int Update_Sprites() {
 		}
 	}
 
+	// Clean destructed sprites
 	bgSprites_List.remove_if(bgSprite_Destructed);
 	Sprites_List.remove_if(Sprite_Destructed);
 
