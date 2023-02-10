@@ -13,7 +13,6 @@
 
 #include <cstring>
 
-
 /* -------- SpriteClass Prototyyppi ------------------------------------------------------------------ */
 
 PrototypeClass::PrototypeClass(){}
@@ -394,7 +393,7 @@ int PrototypeClass::Piirra(int x, int y, int frame){
 	return 0;
 }
 bool PrototypeClass::Onko_AI(int ai){
-	for (int i=0;i<SPRITE_MAX_AI;i++)
+	for (int i = 0; i < SPRITE_MAX_AI; i++)
 		if (AI[i] == ai)
 			return true;
 	return false;
@@ -402,103 +401,35 @@ bool PrototypeClass::Onko_AI(int ai){
 
 /* -------- SpriteClass  ------------------------------------------------------------------ */
 
-SpriteClass::SpriteClass(){
-	this->tyyppi		= NULL;
-	this->pelaaja		= 0;
-	this->piilota		= true;
-	this->x				= 0;
-	this->y				= 0;
-	this->alku_x		= 0;
-	this->alku_y		= 0;
-	this->a				= 0;
-	this->b				= 0;
-	this->jump_timer	= 0;
-	this->crouched		= false;
-	this->energia		= 0;
-	this->initial_weight		= 0;
-	this->weight			= 0;
-	this->kytkinpaino   = 0;
-	this->flip_x		= false;
-	this->flip_y		= false;
-	this->animation_index = ANIMATION_IDLE;
-	this->alas			= true;
-	this->ylos			= true;
-	this->oikealle		= true;
-	this->vasemmalle	= true;
-	this->reuna_oikealla	= false;
-	this->reuna_vasemmalla	= false;
-	this->frame_timer	= 0;
-	this->current_sequence = 0;
-	this->damage_timer			= 0;
-	this->invisible_timer     = 0;
-	this->super_mode_timer    = 0;
-	this->charging_timer		= 0;
-	this->attack1_timer		= 0;
-	this->attack2_timer		= 0;
-	this->vedessa		= false;
-	this->piilossa      = false;
-	this->saatu_vahinko = 0;
-	this->vihollinen	= false;
-	this->ammus1		= nullptr;
-	this->ammus2		= nullptr;
-	this->seen_player_x		= -1;
-	this->seen_player_y		= -1;
-	this->action_timer		= 0;
-	this->mutation_timer = 0;
-}
+SpriteClass::SpriteClass(){}
 SpriteClass::SpriteClass(PrototypeClass *tyyppi, int pelaaja, double x, double y){
-	if (tyyppi){
-		this->tyyppi		= tyyppi;
-		this->pelaaja		= pelaaja;
-		this->piilota		= false;
-		this->x				= x;
-		this->y				= y;
-		this->alku_x		= x;
-		this->alku_y		= y;
-		this->a				= 0;
-		this->b				= 0;
-		this->jump_timer	= 0;
-		this->energia		= tyyppi->energia;
-		this->initial_weight     = tyyppi->weight;
-		this->weight			= this->initial_weight;
-		this->kytkinpaino   = 0;
-		this->crouched		= false;
-		this->flip_x		= false;
-		this->flip_y		= false;
-		this->animation_index = ANIMATION_IDLE;
-		this->alas			= true;
-		this->ylos			= true;
-		this->oikealle		= true;
-		this->vasemmalle	= true;
-		this->reuna_oikealla	= false;
-		this->reuna_vasemmalla	= false;
-		this->frame_timer	= 0;
-		this->current_sequence = 0;
-		this->damage_timer			= 0;
-		this->invisible_timer     = 0;
-		this->super_mode_timer    = 0;
-		this->charging_timer		= 0;
-		this->attack1_timer		= 0;
-		this->attack2_timer		= 0;
-		this->vedessa		= false;
-		this->piilossa      = false;
-		this->saatu_vahinko = 0;
-		this->vihollinen    = tyyppi->vihollinen;
-		this->ammus1		= tyyppi->ammus1;
-		this->ammus2		= tyyppi->ammus2;
-		this->seen_player_x		= -1;
-		this->seen_player_y		= -1;
-		this->action_timer		= 0;
-		this->mutation_timer = 0;
+	if (tyyppi) {
+
+		this->tyyppi         = tyyppi;
+		this->pelaaja        = pelaaja;
+		this->piilota        = false;
+		this->x              = x;
+		this->y              = y;
+		this->alku_x         = x;
+		this->alku_y         = y;
+		
+		this->energia        = tyyppi->energia;
+		this->initial_weight = tyyppi->weight;
+		this->weight         = tyyppi->weight;
+		
+		this->vihollinen     = tyyppi->vihollinen;
+		this->ammus1         = tyyppi->ammus1;
+		this->ammus2         = tyyppi->ammus2;
+	
 	}
 }
+
 SpriteClass::~SpriteClass() {}
 
 bool SpriteClass::Onko_AI(int ai){
-	for (int i=0;i<SPRITE_MAX_AI;i++)
-		if (tyyppi->AI[i] == ai)
-			return true;
-	return false;
+	
+	return tyyppi->Onko_AI(ai);
+
 }
 int SpriteClass::Animaatio(int anim_i, bool reset){
 	if (anim_i != animation_index){
@@ -512,16 +443,16 @@ int SpriteClass::Animaatio(int anim_i, bool reset){
 }
 int SpriteClass::Animoi(){
 	
-	switch (tyyppi->AI[0]){
-		case AI_KANA:		Animation_Kana();break;
-		case AI_LITTLE_CHICKEN:	Animation_Kana();break;
-		case AI_BONUS:		Animation_Bonus();break;
-		case AI_EGG:		Animation_Egg();break;
-		case AI_AMMUS:		Animation_Ammus();break;
-		case AI_JUMPER:	Animation_Kana();break;
-		case AI_BASIC:		Animation_Perus();break;
-		case AI_TELEPORT:	Animation_Perus();break;
-		default:			break;
+	switch (tyyppi->AI[0]) {
+		case AI_KANA:           Animation_Kana();  break;
+		case AI_LITTLE_CHICKEN: Animation_Kana();  break;
+		case AI_BONUS:          Animation_Bonus(); break;
+		case AI_EGG:            Animation_Egg();   break;
+		case AI_AMMUS:          Animation_Ammus(); break;
+		case AI_JUMPER:         Animation_Kana();  break;
+		case AI_BASIC:          Animation_Perus(); break;
+		case AI_TELEPORT:       Animation_Perus(); break;
+		default:                break;
 	}
 
 	PK2SPRITE_ANIMAATIO &animaatio = tyyppi->animaatiot[animation_index];

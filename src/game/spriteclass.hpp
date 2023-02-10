@@ -679,55 +679,56 @@ class PrototypeClass{
 class SpriteClass{
     public:
 
-    bool    aktiivinen;           // if the sprite is acting
-    int     pelaaja;              // 0 = isn't player, 1 = is player
-    PrototypeClass *tyyppi;       // the sprite prototype
-    bool    piilota;              // the sprite was removed
-    double  alku_x;               // original x location
-    double  alku_y;               // original y location
-    double  x;                    // sprite x location
-    double  y;                    // sprite y location
-    double  a;                    // horizontal speed
-    double  b;                    // vertical speed
-    bool    flip_x;               // if it is flipped horizontally
-    bool    flip_y;               // if it is flipped vertically
-    int     jump_timer;           // jump times: = 0 not jumping; > 0 jumping; < 0 falling
-    bool    ylos;                 // can sprite move up now?
-    bool    alas;                 // can sprite move down now?
-    bool    oikealle;             // can sprite move right now?
-    bool    vasemmalle;           // can sprite move left now?
-    bool    reuna_vasemmalla;     // is there a pit on the left side of the sprite?
-    bool    reuna_oikealla;       // is there a pit on the right side of the sprite?
-    int     energia;              // the sprite energy
-    SpriteClass *emosprite;       // the sprite's parent
-    double  weight;               // sprite weight
-    double  kytkinpaino;          // sprite weight + weight above him (why it doesn't work?)
-    bool    crouched;             // if the sprite is crouched
-    int     damage_timer;         // damage timer
-    int     invisible_timer;      // invisibility timer
-    int     super_mode_timer;     // super mode timer
-    int     charging_timer;       // charging time for the attacks
-    int     attack1_timer;        // timer after attack 1
-    int     attack2_timer;        // timer after attack 2
-    bool    vedessa;              // if the sprite is inside water
-    bool    piilossa;             // if the sprite is hidden
-    double  initial_weight;       // sprite's original weight - the same as that of the prototype
-    int     saatu_vahinko;        // damage taken
-    u8      saatu_vahinko_tyyppi; // damage taken type (e.g. snow).
-    bool    vihollinen;           // if it is a enemy
-    PrototypeClass* ammus1;       // projectile 1
-    PrototypeClass* ammus2;       // projectile 2
+    bool    aktiivinen       = false;           // if the sprite is acting
+    int     pelaaja          = 0;               // 0 = isn't player, 1 = is player
+    PrototypeClass *tyyppi   = nullptr;         // the sprite prototype
+    bool    piilota          = true;            // the sprite was removed
+    double  alku_x           = 0;               // original x location
+    double  alku_y           = 0;               // original y location
+    double  x                = 0;               // sprite x location
+    double  y                = 0;               // sprite y location
+    double  a                = 0;               // horizontal speed
+    double  b                = 0;               // vertical speed
+    bool    flip_x           = false;           // if it is flipped horizontally
+    bool    flip_y           = false;           // if it is flipped vertically
+    int     jump_timer       = 0;               // jump times: = 0 not jumping; > 0 jumping; < 0 falling
+    bool    ylos             = true;            // can sprite move up now?
+    bool    alas             = true;            // can sprite move down now?
+    bool    oikealle         = true;            // can sprite move right now?
+    bool    vasemmalle       = true;            // can sprite move left now?
+    bool    reuna_vasemmalla = false;           // is there a pit on the left side of the sprite?
+    bool    reuna_oikealla   = false;           // is there a pit on the right side of the sprite?
+    int     energia          = 0;               // the sprite energy
+    SpriteClass *emosprite   = nullptr;         // the sprite's parent
+    double  weight           = 0;               // sprite weight
+    double  kytkinpaino      = 0;               // sprite weight + weight above him (why it doesn't work?)
+    bool    crouched         = false;           // if the sprite is crouched
+    int     damage_timer     = 0;               // damage timer
+    int     invisible_timer  = 0;               // invisibility timer
+    int     super_mode_timer = 0;               // super mode timer
+    int     charging_timer   = 0;               // charging time for the attacks
+    int     attack1_timer    = 0;               // timer after attack 1
+    int     attack2_timer    = 0;               // timer after attack 2
+    bool    vedessa          = false;           // if the sprite is inside water
+    bool    piilossa         = false;           // if the sprite is hidden
+    double  initial_weight   = 0;               // sprite's original weight - the same as that of the prototype
+    int     saatu_vahinko    = 0;               // damage taken
+    u8      saatu_vahinko_tyyppi = DAMAGE_NONE; // damage taken type (e.g. snow).
+    bool    vihollinen       = false;           // if it is a enemy
+    PrototypeClass* ammus1   = nullptr;         // projectile 1
+    PrototypeClass* ammus2   = nullptr;         // projectile 2
 
-    int     seen_player_x;        // where the player was last seen x
-    int     seen_player_y;        // where the player was last seen y
+    int     seen_player_x    = -1;              // where the player was last seen x
+    int     seen_player_y    = -1;              // where the player was last seen y
 
-    int     action_timer;         // timer for some AI actions. vary from 1 to 32000
+    int     action_timer     = 0;               // timer for some AI actions. vary from 1 to 32000
  
-    u8      animation_index;      // animation index
-    u8      current_sequence;     // current sequence
-    u8      frame_timer;          // frame times
-    int     mutation_timer;       // the mutation timer
+    u8      animation_index  = ANIMATION_IDLE;  // animation index
+    u8      current_sequence = 0;               // current sequence
+    u8      frame_timer      = 0;               // frame times
+    int     mutation_timer   = 0;               // the mutation timer
 
+    
     SpriteClass();
     SpriteClass(PrototypeClass *tyyppi, int pelaaja, double x, double y);
     ~SpriteClass();
