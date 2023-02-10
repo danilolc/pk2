@@ -446,11 +446,11 @@ SpriteClass::SpriteClass(){
 	this->action_timer		= 0;
 	this->mutation_timer = 0;
 }
-SpriteClass::SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, double x, double y){
+SpriteClass::SpriteClass(PrototypeClass *tyyppi, int pelaaja, double x, double y){
 	if (tyyppi){
 		this->tyyppi		= tyyppi;
 		this->pelaaja		= pelaaja;
-		this->piilota		= piilota;
+		this->piilota		= false;
 		this->x				= x;
 		this->y				= y;
 		this->alku_x		= x;
@@ -1114,7 +1114,7 @@ int SpriteClass::AI_Muutos_Jos_Osuttu(PrototypeClass *muutos){
 
 	return 0;
 }
-int SpriteClass::AI_Tuhoutuu_Jos_Emo_Tuhoutuu(SpriteClass *spritet){
+int SpriteClass::AI_Tuhoutuu_Jos_Emo_Tuhoutuu(){
 	if (emosprite != nullptr)
 	{
 		if (emosprite->energia < 1 && energia > 0)
@@ -1532,7 +1532,7 @@ int SpriteClass::AI_Pommi(){
 
 	return 0;
 }
-int SpriteClass::AI_Teleportti(SpriteClass *spritet, SpriteClass &player){
+int SpriteClass::AI_Teleportti(std::list<SpriteClass*> spritet, SpriteClass &player){
 	int siirto = 0;
 
 	if (energia > 0 && charging_timer == 0 && attack1_timer == 0)
@@ -1544,16 +1544,16 @@ int SpriteClass::AI_Teleportti(SpriteClass *spritet, SpriteClass &player){
 			std::vector<SpriteClass*> portit;
 
 			// search for teleports of the same type
-			for (int i = 0; i < MAX_SPRITEJA; i++)
-				if (tyyppi == spritet[i].tyyppi && &spritet[i] != this)
-						portit.push_back(&spritet[i]);
+			for (SpriteClass* sprite : spritet)
+				if (tyyppi == sprite->tyyppi && sprite != this)
+						portit.push_back(sprite);
 
 			// if it didn't find any, search for all teleports
 			if (portit.size() == 0) {
-				for (int i = 0; i < MAX_SPRITEJA; i++)
-					if (spritet[i].tyyppi != nullptr)
-						if (spritet[i].tyyppi->tyyppi == TYPE_TELEPORT && &spritet[i] != this)
-							portit.push_back(&spritet[i]);
+				for (SpriteClass* sprite : spritet)
+					if (sprite->tyyppi != nullptr)
+						if (sprite->tyyppi->tyyppi == TYPE_TELEPORT && sprite != this)
+							portit.push_back(sprite);
 			}
 
 			// if you don't have any teleports (excluding the teleport itself), return

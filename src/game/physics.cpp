@@ -697,8 +697,7 @@ int Sprite_Movement(SpriteClass& sprite){
 	PK2BLOCK spritepalikka;
 
 	//Compare this sprite with every sprite in the game
-	for (int sprite_index = 0; sprite_index < MAX_SPRITEJA; sprite_index++) {
-		SpriteClass *sprite2 = &Sprites_List[sprite_index];
+	for (SpriteClass* sprite2 : Sprites_List) {
 
 		if (sprite2 != &sprite && /*!sprite2->piilota*/sprite2->aktiivinen) {
 			if (sprite2->crouched)
@@ -1251,7 +1250,7 @@ int Sprite_Movement(SpriteClass& sprite){
 													break;
 				case AI_KIIPEILIJA2:				sprite.AI_Kiipeilija2();
 													break;
-				case AI_TUHOUTUU_JOS_EMO_TUHOUTUU:	sprite.AI_Tuhoutuu_Jos_Emo_Tuhoutuu(Sprites_List);
+				case AI_TUHOUTUU_JOS_EMO_TUHOUTUU:	sprite.AI_Tuhoutuu_Jos_Emo_Tuhoutuu();
 													break;
 
 				case AI_TIPPUU_TARINASTA:			sprite.AI_Tippuu_Tarinasta(Game->vibration + Game->button_vibration);
@@ -1503,9 +1502,7 @@ int BonusSprite_Movement(SpriteClass& sprite){
 
 		PK2BLOCK spritepalikka; 
 
-		for (int sprite_index = 0; sprite_index < MAX_SPRITEJA; sprite_index++) {
-
-			SpriteClass* sprite2 = &Sprites_List[sprite_index];
+		for (SpriteClass* sprite2 : Sprites_List) {
 			if (sprite2 != &sprite && !sprite2->piilota) {
 				if (sprite2->tyyppi->este && sprite.tyyppi->tiletarkistus) {
 					if (sprite_x-sprite_leveys/2 +sprite_a <= sprite2->x + sprite2->tyyppi->leveys /2 &&

@@ -32,8 +32,7 @@ int Draw_InGame_BGSprites() {
 	double xl, yl, alku_x, alku_y, yk;
 	int i = 0;
 
-	for (int in=0; in<MAX_SPRITEJA; in++) {
-		SpriteClass* sprite = &Sprites_List[bgSprites_List[in]];
+	for (SpriteClass* sprite : Sprites_List) {
 
 		if (sprite->tyyppi != nullptr && i != -1) {
 			if (!sprite->piilota && sprite->tyyppi->tyyppi == TYPE_BACKGROUND) {
@@ -118,9 +117,8 @@ int Draw_InGame_Sprites() {
 	int stars, sx;
 	double star_x, star_y;
 
-	for (int i=0;i<MAX_SPRITEJA;i++){
+	for (SpriteClass* sprite : Sprites_List){
 		// Onko sprite n�kyv�
-		SpriteClass* sprite = &Sprites_List[i];
 		if (!sprite->piilota && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
 			//Check whether the sprite is on the screen
 			if (sprite->x - sprite->tyyppi->kuva_frame_leveys/2  < Game->camera_x+screen_width &&
@@ -173,7 +171,8 @@ int Draw_InGame_DebugInfo() {
 	PDraw::set_offset(640, 480);
 
 	vali = PDraw::font_write(fontti1,"spriteja: ",10,fy);
-	sprintf(lukua, "%i", debug_sprites);
+	//sprintf(lukua, "%i", debug_sprites);
+	sprintf(lukua, "%li", Sprites_List.size());
 	PDraw::font_write(fontti1,lukua,10+vali,fy);
 	fy += 10;
 
@@ -870,7 +869,7 @@ int Screen_InGame(){
 			}
 			if (PInput::Keydown(PInput::A)/* && key_delay == 0*/) {
 				//key_delay = 20;
-				*Player_Sprite = SpriteClass(Prototypes_List[0], 1, false, Player_Sprite->x, Player_Sprite->y);
+				*Player_Sprite = SpriteClass(Prototypes_List[0], 1, Player_Sprite->x, Player_Sprite->y);
 				Effect_Stars(Player_Sprite->x, Player_Sprite->y, COLOR_VIOLET);
 			}
 		}

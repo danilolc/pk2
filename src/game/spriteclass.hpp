@@ -7,9 +7,10 @@
 #include "engine/PFile.hpp"
 #include "engine/types.hpp"
 
+#include <list>
+
 #define PK2SPRITE_CURRENT_VERSION "1.3"
 
-#define MAX_SPRITEJA       850
 #define MAX_PROTOTYYPPEJA  256
 
 #define SPRITE_MAX_FRAMEJA      50
@@ -681,7 +682,7 @@ class SpriteClass{
     bool    aktiivinen;           // if the sprite is acting
     int     pelaaja;              // 0 = isn't player, 1 = is player
     PrototypeClass *tyyppi;       // the sprite prototype
-    bool    piilota;              // true = ei toiminnassa, false = toiminnassa
+    bool    piilota;              // the sprite was removed
     double  alku_x;               // original x location
     double  alku_y;               // original y location
     double  x;                    // sprite x location
@@ -728,7 +729,7 @@ class SpriteClass{
     int     mutation_timer;       // the mutation timer
 
     SpriteClass();
-    SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, double x, double y);
+    SpriteClass(PrototypeClass *tyyppi, int pelaaja, double x, double y);
     ~SpriteClass();
 
     int  Piirra(int kamera_x, int kamera_y);   // animate and draw the sprite
@@ -784,11 +785,11 @@ class SpriteClass{
     int AI_Liikkuu_Y(double liike);
     int AI_Tippuu_Jos_Kytkin_Painettu(int kytkin);
     int AI_Liikkuu_Jos_Kytkin_Painettu(int kytkin, int ak, int bk);
-    int AI_Teleportti(SpriteClass *spritet, SpriteClass &pelaaja);
+    int AI_Teleportti(std::list<SpriteClass*> spritet, SpriteClass &pelaaja);
     int AI_Kiipeilija();
     int AI_Kiipeilija2();
     bool AI_Info(SpriteClass &pelaaja);
-    int AI_Tuhoutuu_Jos_Emo_Tuhoutuu(SpriteClass *spritet);
+    int AI_Tuhoutuu_Jos_Emo_Tuhoutuu();
 
     int Animation_Perus();
     int Animation_Kana();

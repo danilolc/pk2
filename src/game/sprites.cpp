@@ -13,23 +13,15 @@
 #include "physics.hpp"
 #include "system.hpp"
 
+#include <algorithm>
 #include <cstring>
 #include <vector>
 
-SpriteClass* Player_Sprite;
-
-//int next_free_prototype = 0;
-
-//TODO - use std::vector
-//std::vector<PrototypeClass*> Prototypes;
-//std::vector<SpriteClass*> Sprites;
-//std::vector<SpriteClass*> bgSprites;
-
-// avoid using stack (this is cleaned after PDraw::imageList, causing a error)
 PrototypeClass* Prototypes_List[MAX_PROTOTYYPPEJA] = {nullptr};
-SpriteClass Sprites_List[MAX_SPRITEJA];
 
-int bgSprites_List[MAX_SPRITEJA];
+std::list<SpriteClass*> Sprites_List;
+std::list<SpriteClass*> bgSprites_List;
+SpriteClass* Player_Sprite = nullptr;
 
 void Prototypes_ClearAll() {
 
@@ -196,198 +188,176 @@ int Prototypes_GetAll() {
 	return 0;
 }
 
-void Sprites_add_bg(int index) {
-	for (int i=0;i<MAX_SPRITEJA;i++){
-		if (bgSprites_List[i] == -1){
-			bgSprites_List[i] = index;
-			return;
-		}
-	}
+void Sprites_add_bg(SpriteClass* sprite) {
+
+	bgSprites_List.push_back(sprite);
+
+}
+
+bool Compare_bgSprites (SpriteClass* s1, SpriteClass* s2) {
+
+	return (s1->tyyppi->pallarx_kerroin > s2->tyyppi->pallarx_kerroin); 
+	
 }
 
 void Sprites_sort_bg() {
-	bool lopeta = false;
-	int l = 1;
-	int vali;
+	
+	bgSprites_List.sort(Compare_bgSprites);
 
-	while (l < MAX_SPRITEJA && lopeta == false)
-	{
-		lopeta = true;
-
-		for (int i=0;i<MAX_SPRITEJA-1;i++)
-		{
-			if (bgSprites_List[i] == -1 || bgSprites_List[i+1] == -1)
-				i = MAX_SPRITEJA;
-			else
-			{
-				if (Sprites_List[bgSprites_List[i]].tyyppi->pallarx_kerroin > Sprites_List[bgSprites_List[i+1]].tyyppi->pallarx_kerroin)
-				{
-					vali = bgSprites_List[i];
-					bgSprites_List[i]   = bgSprites_List[i+1];
-					bgSprites_List[i+1] = vali;
-					lopeta = false;
-				}
-			}
-		}
-		l++;
-	}
 }
 
 void Sprites_start_directions() {
-	for (int i = 0; i < MAX_SPRITEJA; i++){
-		if (/*pelaaja_index >= 0 && pelaaja_index < MAX_SPRITEJA && */!Sprites_List[i].piilota){
-			Sprites_List[i].a = 0;
+	for (SpriteClass* sprite : Sprites_List) {
+		if (!sprite->piilota){
+			sprite->a = 0;
 
-			if (Sprites_List[i].tyyppi->Onko_AI(AI_RANDOM_START_DIRECTION)){
-				while (Sprites_List[i].a == 0) {
-					Sprites_List[i].a = ((rand()%2 - rand()%2) * Sprites_List[i].tyyppi->max_nopeus) / 3.5;//2;
+			if (sprite->tyyppi->Onko_AI(AI_RANDOM_START_DIRECTION)){
+				while (sprite->a == 0) {
+					sprite->a = ((rand()%2 - rand()%2) * sprite->tyyppi->max_nopeus) / 3.5;//2;
 				}
 			}
 
-			if (Sprites_List[i].tyyppi->Onko_AI(AI_RANDOM_ALOITUSSUUNTA_VERT)){
-				while (Sprites_List[i].b == 0) {
-					Sprites_List[i].b = ((rand()%2 - rand()%2) * Sprites_List[i].tyyppi->max_nopeus) / 3.5;//2;
+			if (sprite->tyyppi->Onko_AI(AI_RANDOM_ALOITUSSUUNTA_VERT)){
+				while (sprite->b == 0) {
+					sprite->b = ((rand()%2 - rand()%2) * sprite->tyyppi->max_nopeus) / 3.5;//2;
 				}
 			}
 
-			if (Sprites_List[i].tyyppi->Onko_AI(AI_START_DIRECTIONS_TOWARDS_PLAYER)){
+			if (sprite->tyyppi->Onko_AI(AI_START_DIRECTIONS_TOWARDS_PLAYER)){
 
-				if (Sprites_List[i].x < Player_Sprite->x)
-					Sprites_List[i].a = Sprites_List[i].tyyppi->max_nopeus / 3.5;
+				if (sprite->x < Player_Sprite->x)
+					sprite->a = sprite->tyyppi->max_nopeus / 3.5;
 
-				if (Sprites_List[i].x > Player_Sprite->x)
-					Sprites_List[i].a = (Sprites_List[i].tyyppi->max_nopeus * -1) / 3.5;
+				if (sprite->x > Player_Sprite->x)
+					sprite->a = (sprite->tyyppi->max_nopeus * -1) / 3.5;
 			}
 
-			if (Sprites_List[i].tyyppi->Onko_AI(AI_START_DIRECTIONS_TOWARDS_PLAYER_VERT)){
+			if (sprite->tyyppi->Onko_AI(AI_START_DIRECTIONS_TOWARDS_PLAYER_VERT)){
 
-				if (Sprites_List[i].y < Player_Sprite->y)
-					Sprites_List[i].b = Sprites_List[i].tyyppi->max_nopeus / -3.5;
+				if (sprite->y < Player_Sprite->y)
+					sprite->b = sprite->tyyppi->max_nopeus / -3.5;
 
-				if (Sprites_List[i].y > Player_Sprite->y)
-					Sprites_List[i].b = Sprites_List[i].tyyppi->max_nopeus / 3.5;
+				if (sprite->y > Player_Sprite->y)
+					sprite->b = sprite->tyyppi->max_nopeus / 3.5;
 			}
 		}
 	}
 }
 
 void Sprites_add(PrototypeClass* protot, int is_Player_Sprite, double x, double y, SpriteClass* emo, bool isbonus) {
-	
-	bool added = false;
-	int i = 0;
 
-	while (!added && i < MAX_SPRITEJA){
-		if (Sprites_List[i].piilota && &Sprites_List[i] != Player_Sprite){
-			
-			Sprites_List[i] = SpriteClass(protot, is_Player_Sprite, false, x, y);
+	SpriteClass* sprite = new SpriteClass(protot, is_Player_Sprite, x, y);
+	Sprites_List.push_back(sprite);
 
-			if (is_Player_Sprite) Player_Sprite = &Sprites_List[i];
+	if (is_Player_Sprite) Player_Sprite = sprite;
 
-			if(isbonus) { //If it is a bonus dropped by enemy
+	if(isbonus) { //If it is a bonus dropped by enemy
 
-				Sprites_List[i].x += Sprites_List[i].tyyppi->leveys;
-				Sprites_List[i].y += Sprites_List[i].tyyppi->korkeus/2;
-				Sprites_List[i].alku_x = Sprites_List[i].x;
-				Sprites_List[i].alku_y = Sprites_List[i].y;
-				Sprites_List[i].jump_timer = 1;
-				Sprites_List[i].a = rand()%2 - rand()%4;
-				Sprites_List[i].damage_timer = 35;//25
+		sprite->x += sprite->tyyppi->leveys;
+		sprite->y += sprite->tyyppi->korkeus/2;
+		sprite->alku_x = sprite->x;
+		sprite->alku_y = sprite->y;
+		sprite->jump_timer = 1;
+		sprite->a = rand()%2 - rand()%4;
+		sprite->damage_timer = 35;//25
 
-			} else {
+	} else {
 
-				Sprites_List[i].x = x + 16 + 1;
-				Sprites_List[i].y += Sprites_List[i].tyyppi->korkeus/2;
-				Sprites_List[i].alku_x = Sprites_List[i].x;
-				Sprites_List[i].alku_y = Sprites_List[i].y;
-				
-			}
-
-			if (protot->tyyppi == TYPE_BACKGROUND)
-				Sprites_add_bg(i);
-
-			if (emo != nullptr)
-				Sprites_List[i].emosprite = emo;
-			else
-				Sprites_List[i].emosprite = &Sprites_List[i];
-
-			added = true;
-
-		}
-		else
-			i++;
+		sprite->x = x + 16 + 1;
+		sprite->y += sprite->tyyppi->korkeus/2;
+		sprite->alku_x = sprite->x;
+		sprite->alku_y = sprite->y;
+		
 	}
+
+	if (protot->tyyppi == TYPE_BACKGROUND)
+		Sprites_add_bg(sprite);
+
+	if (emo != nullptr)
+		sprite->emosprite = emo;
+	else
+		sprite->emosprite = sprite;
+	
 }
 
 void Sprites_add_ammo(PrototypeClass* protot, double x, double y, SpriteClass* emo) {
-	
-	bool lisatty = false;
-	int i = 0;
 
-	while (!lisatty && i < MAX_SPRITEJA){
-		if (Sprites_List[i].piilota && &Sprites_List[i] != Player_Sprite){ //Don't replace player sprite
+	//SpriteClass(proto, is_Player_Sprite,false,x-proto->leveys/2,y);
+	SpriteClass* sprite = new SpriteClass(protot, false, x, y);
+	Sprites_List.push_back(sprite);
 
-			//Sprites_List[i] = SpriteClass(proto, is_Player_Sprite,false,x-proto->leveys/2,y);
-			Sprites_List[i] = SpriteClass(protot, false, false, x, y);
+	//sprite->x += sprite->tyyppi->leveys;
+	//sprite->y += sprite->tyyppi->korkeus/2;
 
-			//Sprites_List[i].x += Sprites_List[i].tyyppi->leveys;
-			//Sprites_List[i].y += Sprites_List[i].tyyppi->korkeus/2;
-
-			if (protot->Onko_AI(AI_HEITTOASE)){
-				if ((int)emo->a == 0){
-					// Jos "ampuja" on pelaaja tai ammuksen nopeus on nolla
-					if (emo->pelaaja == 1 || Sprites_List[i].tyyppi->max_nopeus == 0){
-						if (!emo->flip_x)
-							Sprites_List[i].a = Sprites_List[i].tyyppi->max_nopeus;
-						else
-							Sprites_List[i].a = -Sprites_List[i].tyyppi->max_nopeus;
-					}
-					else{ // tai jos kyseess� on vihollinen
-						if (!emo->flip_x)
-							Sprites_List[i].a = 1 + rand()%(int)Sprites_List[i].tyyppi->max_nopeus;
-						else
-							Sprites_List[i].a = -1 - rand()%-(int)Sprites_List[i].tyyppi->max_nopeus;
-					}
-				}
-				else{
-					if (!emo->flip_x)
-						Sprites_List[i].a = Sprites_List[i].tyyppi->max_nopeus + emo->a;
-					else
-						Sprites_List[i].a = -Sprites_List[i].tyyppi->max_nopeus + emo->a;
-
-					//Sprites_List[i].a = Sprites_List[emo].a * 1.5;
-
-				}
-
-				Sprites_List[i].jump_timer = 1;
-			}
-			else
-			if (protot->Onko_AI(AI_EGG)){
-				Sprites_List[i].y = emo->y+10;
-				Sprites_List[i].a = emo->a / 1.5;
-			}
-			else{
+	if (protot->Onko_AI(AI_HEITTOASE)){
+		if ((int)emo->a == 0){
+			// If the "shooter" is a player or the speed of the projectile is zero
+			if (emo->pelaaja == 1 || sprite->tyyppi->max_nopeus == 0){
 				if (!emo->flip_x)
-					Sprites_List[i].a = Sprites_List[i].tyyppi->max_nopeus;
+					sprite->a = sprite->tyyppi->max_nopeus;
 				else
-					Sprites_List[i].a = -Sprites_List[i].tyyppi->max_nopeus;
+					sprite->a = -sprite->tyyppi->max_nopeus;
 			}
-
-			if (emo != nullptr){
-				Sprites_List[i].emosprite = emo;
-				Sprites_List[i].vihollinen = emo->vihollinen;
+			else { // or, in the case of an enemy
+				if (!emo->flip_x)
+					sprite->a = 1 + rand()%(int)sprite->tyyppi->max_nopeus;
+				else
+					sprite->a = -1 - rand()%-(int)sprite->tyyppi->max_nopeus;
 			}
-			else{
-				Sprites_List[i].emosprite = &Sprites_List[i];
-			}
-
-			if (protot->tyyppi == TYPE_BACKGROUND)
-				Sprites_add_bg(i);
-
-			lisatty = true;
 		}
-		else
-			i++;
+		else{
+			if (!emo->flip_x)
+				sprite->a = sprite->tyyppi->max_nopeus + emo->a;
+			else
+				sprite->a = -sprite->tyyppi->max_nopeus + emo->a;
+
+			//sprite->a = Sprites_List[emo].a * 1.5;
+
+		}
+
+		sprite->jump_timer = 1;
 	}
+	else
+	if (protot->Onko_AI(AI_EGG)){
+		sprite->y = emo->y+10;
+		sprite->a = emo->a / 1.5;
+	}
+	else{
+		if (!emo->flip_x)
+			sprite->a = sprite->tyyppi->max_nopeus;
+		else
+			sprite->a = -sprite->tyyppi->max_nopeus;
+	}
+
+	if (emo != nullptr){
+		sprite->emosprite = emo;
+		sprite->vihollinen = emo->vihollinen;
+	}
+	else{
+		sprite->emosprite = sprite;
+	}
+
+	if (protot->tyyppi == TYPE_BACKGROUND)
+		Sprites_add_bg(sprite);
+
+}
+
+bool Sprite_Destructed (const SpriteClass* sprite) { 
+	
+	bool removed = sprite->piilota;
+
+	if (removed) delete sprite;
+
+	return removed; 
+	
+}
+
+bool bgSprite_Destructed (const SpriteClass* sprite) { 
+	
+	bool removed = sprite->piilota;
+
+	return removed; 
+	
 }
 
 int Update_Sprites() {
@@ -396,11 +366,8 @@ int Update_Sprites() {
 	const int ACTIVE_BORDER_y = 240;
 
 	int active_sprites = 0;
-	SpriteClass* sprite;
 
-	for (int i = 0; i < MAX_SPRITEJA; i++){ //Activate sprite if it is on screen
-		
-		sprite = &Sprites_List[i];
+	for (SpriteClass* sprite : Sprites_List) {//Activate sprite if it is on screen
 		
 		if (sprite->x < Game->camera_x + 640 + ACTIVE_BORDER_X &&
 			sprite->x > Game->camera_x - ACTIVE_BORDER_X &&
@@ -416,8 +383,7 @@ int Update_Sprites() {
 	}
 
 	// Update bonus first to get energy change
-	for (int i = 0; i < MAX_SPRITEJA; i++) {
-		sprite = &Sprites_List[i];
+	for (SpriteClass* sprite : Sprites_List) {
 		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
 			if (sprite->tyyppi->tyyppi == TYPE_BONUS) {
 				BonusSprite_Movement(*sprite);
@@ -426,8 +392,7 @@ int Update_Sprites() {
 		}
 	}
 
-	for (int i = 0; i < MAX_SPRITEJA; i++) {
-		sprite = &Sprites_List[i];
+	for (SpriteClass* sprite : Sprites_List) {
 		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
 			if (sprite->tyyppi->tyyppi != TYPE_BONUS) {
 				Sprite_Movement(*sprite);
@@ -436,9 +401,11 @@ int Update_Sprites() {
 		}
 	}
 
+	bgSprites_List.remove_if(bgSprite_Destructed);
+	Sprites_List.remove_if(Sprite_Destructed);
+
 	/*int count = 0;
-	for (int i = 0; i < MAX_SPRITEJA; i++) {
-		sprite = &Sprites_List[i];
+	for (SpriteClass* sprite : Sprites_List) {
 		if (!sprite->piilota && sprite->energia > 0) {
 			if (sprite->tyyppi->tyyppi == TYPE_BONUS)
 				count++;
@@ -451,16 +418,16 @@ int Update_Sprites() {
 	PLog::Write(PLog::DEBUG, "PK2", "%i", count);
 	*/
 	return active_sprites;
+
 }
 
 void Sprites_clear() {
-	int i = 0;
 
-	while (i < MAX_SPRITEJA){
-		Sprites_List[i] = SpriteClass();
-		bgSprites_List[i] = -1;
-		i++;
+	for (SpriteClass* sprite : Sprites_List) {
+		delete sprite;
 	}
 
-	Player_Sprite = NULL;
+	Sprites_List.clear();
+	bgSprites_List.clear();
+	Player_Sprite = nullptr;
 }

@@ -6,12 +6,13 @@
 
 #include "game/spriteclass.hpp"
 
-extern SpriteClass* Player_Sprite;
+#include <list>
 
 extern PrototypeClass* Prototypes_List[MAX_PROTOTYYPPEJA];
-extern SpriteClass Sprites_List[MAX_SPRITEJA];
 
-extern int bgSprites_List[MAX_SPRITEJA];
+extern std::list<SpriteClass*> Sprites_List;
+extern std::list<SpriteClass*> bgSprites_List;
+extern SpriteClass* Player_Sprite;
 
 void Prototypes_ClearAll();
 int  Prototypes_GetAll();
