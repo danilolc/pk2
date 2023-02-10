@@ -378,7 +378,7 @@ int Sprite_Movement(int i){
 	if (sprite.charging_timer > 0)	// aika kahden ampumisen (munimisen) v�lill�
 		sprite.charging_timer --;
 
-	if (sprite.mutation_timer > 0)	// aika muutokseen
+	if (sprite.mutation_timer > 0)	// time of mutation
 		sprite.mutation_timer --;
 
 	/*****************************************************************************************/

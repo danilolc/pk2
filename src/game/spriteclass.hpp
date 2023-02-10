@@ -17,7 +17,7 @@
 #define SPRITE_MAX_AI           10
 #define ANIMATION_SEQUENCE_SIZE 10
 #define SPRITE_MAX_SOUNDS        7
-#define	DAMAGE_TIME             50
+#define DAMAGE_TIME             50
 
 //Spite file values
 
@@ -666,74 +666,75 @@ class PrototypeClass{
     PrototypeClass();
     ~PrototypeClass();
 
-    int  Load(PFile::Path path);
-    int  Piirra(int x, int y, int frame);
-    bool Onko_AI(int AI);
+    int     Load(PFile::Path path);
+    int     Piirra(int x, int y, int frame);
+    bool    Onko_AI(int AI);
 
-    void SetProto10(PrototypeClass10 &proto);
-    void SetProto11(PrototypeClass11 &proto);
-    void SetProto12(PrototypeClass12 &proto);
-    void SetProto13(PrototypeClass13 &proto);
+    void    SetProto10(PrototypeClass10 &proto);
+    void    SetProto11(PrototypeClass11 &proto);
+    void    SetProto12(PrototypeClass12 &proto);
+    void    SetProto13(PrototypeClass13 &proto);
 };
 class SpriteClass{
     public:
 
-    bool   aktiivinen;			// true / false
-    int    pelaaja;			// 0 = isn't player, 1 = is player
-    PrototypeClass *tyyppi;	// osoitin spriten prototyyppiin
-    bool   piilota;			// true = ei toiminnassa, false = toiminnassa
-    double alku_x;				// spriten alkuper�inen x sijainti
-    double alku_y;				// spriten alkuper�inen y sijainti
-    double x;					// x-kordinaatti pelikent�ll�
-    double y;					// y-kordinaatti pelikent�ll�
-    double a;					// horizontal speed
-    double b;					// vertical speed
-    bool   flip_x;				// true = peilikuva sivusuunnassa
-    bool   flip_y;				// true = peilikuva pystysuunnassa
-    int    jump_timer;		// hypyn kesto: 0 = ei hypyss�, > 0 = hypyss�, < 0 = tullut alas
-    bool   ylos;				// voiko sprite juuri nyt liikkua yl�s
-    bool   alas;				// voiko sprite juuri nyt liikkua ....
-    bool   oikealle;			// voiko sprite juuri nyt liikkua ....
-    bool   vasemmalle;			// voiko sprite juuri nyt liikkua ....
-    bool   reuna_vasemmalla;	// onko spriten vasemmalla puolella kuoppa?
-    bool   reuna_oikealla;		// onko spriten vasemmalla puolella kuoppa?
-    int    energia;			// monta osumaa sprite viel� kest��
-    int    emosprite;			// jos spriten on luonut jokin toinen sprite
-    double weight;				//  sprite weight
-    double kytkinpaino;		// sprite weight + weight above him (why it doesn't work?)
-    bool   crouched;				// onko sprite kyykyss�
-    int    damage_timer;				// damage timer
-    int    invisible_timer;           // invisibility timer
-    int    super_mode_timer;          // super mode timer
-    int    charging_timer;				// jos on ammuttu, odotetaan
-    int    attack1_timer;			// timer joka laskee hy�kk�ys 1:n j�lkeen
-    int    attack2_timer;			// timer joka laskee hy�kk�ys 2:n j�lkeen
-    bool   vedessa;			// onko sprite vedess�
-    bool   piilossa;			// onko sprite piilossa
-    double initial_weight;			// spriten alkuper�inen weight - sama kuin prototyypin
-    int    saatu_vahinko;		// v�hennet��n energiasta jos erisuuri kuin 0
-    u8     saatu_vahinko_tyyppi; // saadun vahingon tyyppi (esim. lumi).
-    bool   vihollinen;			// if it is a enemy
-    int    ammus1;				// projectile 1 index
-    int    ammus2;				// projectile 2 index
+    bool    aktiivinen;           // if the sprite is acting
+    int     pelaaja;              // 0 = isn't player, 1 = is player
+    PrototypeClass *tyyppi;       // the sprite prototype
+    bool    piilota;              // true = ei toiminnassa, false = toiminnassa
+    double  alku_x;               // original x location
+    double  alku_y;               // original y location
+    double  x;                    // sprite x location
+    double  y;                    // sprite y location
+    double  a;                    // horizontal speed
+    double  b;                    // vertical speed
+    bool    flip_x;               // if it is flipped horizontally
+    bool    flip_y;               // if it is flipped vertically
+    int     jump_timer;           // jump times: = 0 not jumping; > 0 jumping; < 0 falling
+    bool    ylos;                 // can sprite move up now?
+    bool    alas;                 // can sprite move down now?
+    bool    oikealle;             // can sprite move right now?
+    bool    vasemmalle;           // can sprite move left now?
+    bool    reuna_vasemmalla;     // is there a pit on the left side of the sprite?
+    bool    reuna_oikealla;       // is there a pit on the right side of the sprite?
+    int     energia;              // the sprite energy
+    int     emosprite;            // the index of sprite's parent
+    double  weight;               // sprite weight
+    double  kytkinpaino;          // sprite weight + weight above him (why it doesn't work?)
+    bool    crouched;             // if the sprite is crouched
+    int     damage_timer;         // damage timer
+    int     invisible_timer;      // invisibility timer
+    int     super_mode_timer;     // super mode timer
+    int     charging_timer;       // charging time for the attacks
+    int     attack1_timer;        // timer after attack 1
+    int     attack2_timer;        // timer after attack 2
+    bool    vedessa;              // if the sprite is inside water
+    bool    piilossa;             // if the sprite is hidden
+    double  initial_weight;       // sprite's original weight - the same as that of the prototype
+    int     saatu_vahinko;        // damage taken
+    u8      saatu_vahinko_tyyppi; // damage taken type (e.g. snow).
+    bool    vihollinen;           // if it is a enemy
+    int     ammus1;               // projectile 1 index
+    int     ammus2;               // projectile 2 index
 
-    int    seen_player_x;			// where the player was last seen
-    int    seen_player_y;
+    int     seen_player_x;        // where the player was last seen x
+    int     seen_player_y;        // where the player was last seen y
 
-    int    action_timer;			// timer jonka arvo py�rii v�lill� 1 - 32000 (timer)
+    int     action_timer;         // timer for some AI actions. vary from 1 to 32000
  
-    u8     animation_index;	// animation index
-    u8     current_sequence;	// current sequence
-    u8     frame_timer;			// frame times
-    int    mutation_timer;		// sprite muuttuu muutosspriteksi kun t�m� nollautuu
+    u8      animation_index;      // animation index
+    u8      current_sequence;     // current sequence
+    u8      frame_timer;          // frame times
+    int     mutation_timer;       // the mutation timer
 
     SpriteClass();
     SpriteClass(PrototypeClass *tyyppi, int pelaaja, bool piilota, double x, double y);
     ~SpriteClass();
-    int Piirra(int kamera_x, int kamera_y);		// Animoi ja piirt�� spriten
-    int Animaatio(int anim_i, bool nollaus);	// Vaihtaa spriten animaation
-    int Animoi();								// Animoi muttei piirr� sprite�
-    bool Onko_AI(int AI);						// Palauttaa true, jos spritell� on ko. AI
+
+    int  Piirra(int kamera_x, int kamera_y);   // animate and draw the sprite
+    int  Animaatio(int anim_i, bool nollaus);  // set sprite animation
+    int  Animoi();                             // animate the sprite
+    bool Onko_AI(int AI);                      // if the sprite has a AI
 
     //AI_Functions
     int AI_Kana();
