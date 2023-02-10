@@ -506,13 +506,13 @@ int Draw_InGame() {
 
 	Particles_DrawBG(Game->camera_x, Game->camera_y);
 
-	Game->map->Piirra_Taustat(Game->camera_x,Game->camera_y,false);
+	Game->map->Piirra_Taustat(Game->camera_x,Game->camera_y);
 
 	Draw_InGame_Sprites();
 
 	Particles_DrawFront(Game->camera_x, Game->camera_y);
 
-	Game->map->Piirra_Seinat(Game->camera_x,Game->camera_y, false);
+	Game->map->Piirra_Seinat(Game->camera_x,Game->camera_y);
 
 	if (Settings.draw_itembar)
 		Draw_InGame_Lower_Menu();

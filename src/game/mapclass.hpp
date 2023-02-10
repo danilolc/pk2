@@ -116,14 +116,11 @@ class MapClass {
     int Load(PFile::Path path);                             // Load kartta
     int Load_Plain_Data(PFile::Path path);                  // Load kartta ilman grafiikoita
 
-    MAP_RECT LaskeTallennusAlue(u8 *lahde, u8 *&kohde);
-    MAP_RECT LaskeTallennusAlue(u8 *alue);
-    void LueTallennusAlue(u8 *lahde, MAP_RECT alue, int kohde);
-    int Piirra_Taustat(int kamera_x, int kamera_y, bool editor);
-    int Piirra_Seinat (int kamera_x, int kamera_y, bool editor);
+    int Piirra_Taustat(int kamera_x, int kamera_y);
+    int Piirra_Seinat (int kamera_x, int kamera_y);
 
     //PK2 functions
-    int Count_Keys();
+    int  Count_Keys();
     void Change_SkullBlocks();
     void Open_Locks();
     void Calculate_Edges();

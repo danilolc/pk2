@@ -57,141 +57,6 @@ MapClass::~MapClass(){
 	PDraw::image_delete(this->bg_water_buffer);
 }
 
-MAP_RECT MapClass::LaskeTallennusAlue(u8 *lahde, u8 *&kohde){
-
-	u32 x, y;
-	u32 kartan_vasen = PK2MAP_MAP_WIDTH,//PK2MAP_MAP_WIDTH/2,
-		kartan_oikea = 0,
-		kartan_yla	 = PK2MAP_MAP_HEIGHT,//PK2MAP_MAP_HEIGHT/2,
-		kartan_ala	 = 0,
-		kartan_korkeus = 0,
-		kartan_leveys = 0;
-
-	MAP_RECT rajat = {0,0,0,0};
-
-	// tutkitaan kartan reunimmaiset tilet ja asetetaan reunat niiden mukaan
-	for (y=0; y<PK2MAP_MAP_HEIGHT; y++) {
-		for (x=0; x<PK2MAP_MAP_WIDTH; x++)	{
-			if (lahde[x+y*PK2MAP_MAP_WIDTH] != 255) {
-				if (x < kartan_vasen)
-					kartan_vasen = x;
-				if (y < kartan_yla)
-					kartan_yla = y;
-				if (x > kartan_oikea)
-					kartan_oikea = x;
-				if (y > kartan_ala)
-					kartan_ala = y;
-			}
-		}
-	}
-
-	kartan_leveys = kartan_oikea - kartan_vasen;
-	kartan_korkeus = kartan_ala - kartan_yla;
-
-	// onko kartta tyhja?
-	if (kartan_leveys < 0 || kartan_korkeus < 0) {
-		kartan_vasen = kartan_yla = 0;
-		kartan_ala = kartan_oikea = 1;
-		kartan_leveys = kartan_oikea - kartan_vasen;
-		kartan_korkeus = kartan_ala - kartan_yla;
-	}
-
-	kohde = new u8[kartan_leveys*kartan_korkeus];
-	u8 tile;
-
-	for (y=0; y<kartan_korkeus; y++){
-		for (x=0; x<kartan_leveys; x++){
-			tile = lahde[(x+kartan_vasen)+(y+kartan_yla)*PK2MAP_MAP_WIDTH];
-			kohde[x+y*kartan_leveys] = tile;
-			if (x==0 || y==0 || x==kartan_leveys-1 || y==kartan_korkeus-1)
-				lahde[(x+kartan_vasen)+(y+kartan_yla)*PK2MAP_MAP_WIDTH] = 104;
-		}
-	}
-
-	rajat.left = kartan_vasen;
-	rajat.top  = kartan_yla;
-	rajat.right = kartan_oikea;
-	rajat.bottom= kartan_ala;
-
-	return rajat;
-}
-
-MAP_RECT MapClass::LaskeTallennusAlue(u8 *alue){
-
-	u32 x,y;
-	u32 kartan_vasen		= PK2MAP_MAP_WIDTH,
-		  kartan_oikea		= 0,
-		  kartan_yla		= PK2MAP_MAP_HEIGHT,
-		  kartan_ala		= 0;
-
-	MAP_RECT rajat = {0,0,0,0};
-
-	// tutkitaan kartan reunimmaiset tilet ja asetetaan reunat niiden mukaan
-	for (y=0; y<PK2MAP_MAP_HEIGHT; y++) {
-		for (x=0; x<PK2MAP_MAP_WIDTH; x++)	{
-			if (alue[x+y*PK2MAP_MAP_WIDTH] != 255) {
-
-				if (x < kartan_vasen) {
-					kartan_vasen = x;
-					//alue[x+y*PK2MAP_MAP_WIDTH] = 101;
-				}
-				if (y < kartan_yla) {
-					kartan_yla = y;
-					//alue[x+y*PK2MAP_MAP_WIDTH] = 102;
-				}
-				if (x > kartan_oikea) {
-					kartan_oikea = x;
-					//alue[x+y*PK2MAP_MAP_WIDTH] = 103;
-				}
-				if (y > kartan_ala) {
-					kartan_ala = y;
-					//alue[x+y*PK2MAP_MAP_WIDTH] = 104;
-				}
-			}
-		}
-	}
-
-	// onko kartta tyhja?
-	if (kartan_oikea < kartan_vasen || kartan_ala < kartan_yla) {
-		kartan_vasen = 0;
-		kartan_yla	 = 0;
-		kartan_ala   = 1;
-		kartan_oikea = 1;
-	}
-
-	rajat.left = kartan_vasen;
-	rajat.top  = kartan_yla;
-	rajat.right = kartan_oikea;
-	rajat.bottom= kartan_ala;
-	return rajat;
-}
-
-void MapClass::LueTallennusAlue(u8 *lahde, MAP_RECT alue, int kohde){
-
-	int x,y;
-	int kartan_vasen   = alue.left,
-		kartan_oikea   = alue.right,
-		kartan_yla     = alue.top,
-		kartan_ala     = alue.bottom,
-		kartan_korkeus = kartan_oikea - kartan_vasen,
-		kartan_leveys  = kartan_ala - kartan_yla;
-
-	u8 tile;
-	if (lahde != NULL && kohde != 0)	{
-		for (y=0;y<kartan_korkeus;y++) {
-			for (x=0;x<kartan_leveys;x++) {
-				tile = lahde[x+y*kartan_leveys];
-				if (kohde == 1)
-					taustat[(x+kartan_vasen)+(y+kartan_yla)*PK2MAP_MAP_WIDTH] = tile;
-				if (kohde == 2)
-					seinat[(x+kartan_vasen)+(y+kartan_yla)*PK2MAP_MAP_WIDTH] = tile;
-				if (kohde == 3)
-					spritet[(x+kartan_vasen)+(y+kartan_yla)*PK2MAP_MAP_WIDTH] = tile;
-			}
-		}
-	}
-}
-
 int MapClass::Load(PFile::Path path){
 	
 	char versio[8];
@@ -674,29 +539,25 @@ void MapClass::Place_Sprites() {
 }
 
 void MapClass::Select_Start() {
-	double  pos_x = 320,
-			pos_y = 196;
-	uint starts_count = 0, alku = 0;
-	uint x, y;
 
-	for (x=0; x<PK2MAP_MAP_SIZE; x++)
-		if (this->seinat[x] == BLOCK_ALOITUS)
-			starts_count++;
+	double  pos_x = 320;
+	double  pos_y = 196;
 
-	if (starts_count > 0){
-		alku = rand()%starts_count + 1;
-		starts_count = 1;
+	std::vector<u32> starts;
 
-		for (x=0; x < PK2MAP_MAP_WIDTH; x++)
-			for (y=0; y < PK2MAP_MAP_HEIGHT; y++)
-				if (this->seinat[x+y*PK2MAP_MAP_WIDTH] == BLOCK_ALOITUS){
-					if (starts_count == alku){
-						pos_x = x*32;
-						pos_y = y*32;
-					}
+	for (u32 i = 0; i < PK2MAP_MAP_SIZE; i++)
+		if (this->seinat[i] == BLOCK_ALOITUS)
+			starts.push_back(i);
 
-					starts_count ++;
-				}
+	if (starts.size() > 0) {
+		u32 i = starts[rand() % starts.size()];
+
+		u32 x = i % PK2MAP_MAP_WIDTH;
+		u32 y = i / PK2MAP_MAP_WIDTH;
+
+		pos_x = x*32;
+		pos_y = y*32;
+
 	}
 
 	Player_Sprite->x = pos_x + Player_Sprite->tyyppi->leveys/2;
@@ -1025,7 +886,7 @@ void MapClass::Animate_RollUp(int tiles){
 	PDraw::drawimage_end(tiles);
 }
 
-int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
+int MapClass::Piirra_Taustat(int kamera_x, int kamera_y){
 	
 	int kartta_x = kamera_x/32;
 	int kartta_y = kamera_y/32;
@@ -1063,7 +924,7 @@ int MapClass::Piirra_Taustat(int kamera_x, int kamera_y, bool editor){
 	return 0;
 }
 
-int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
+int MapClass::Piirra_Seinat(int kamera_x, int kamera_y){
 	int palikka;
 	int px = 0,
 		py = 0,
@@ -1121,40 +982,38 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y, bool editor){
 
 			palikka = seinat[i];
 
-			if (palikka != 255 && !(!editor && palikka == BLOCK_ESTO_ALAS)){
+			if (palikka != 255 && palikka != BLOCK_ESTO_ALAS){
 				px = ((palikka%10)*32);
 				py = ((palikka/10)*32);
 				ay = 0;
 				ax = 0;
 
-				if (!editor){
-					if (palikka == BLOCK_HISSI_VERT)
-						ay = floor(sin_table[aste%360]);
+				if (palikka == BLOCK_HISSI_VERT)
+					ay = floor(sin_table[aste%360]);
 
-					if (palikka == BLOCK_HISSI_HORI)
-						ax = floor(cos_table[aste%360]);
+				if (palikka == BLOCK_HISSI_HORI)
+					ax = floor(cos_table[aste%360]);
 
-					if (palikka == BLOCK_KYTKIN1)
-						ay = ajastin1_y/2;
+				if (palikka == BLOCK_KYTKIN1)
+					ay = ajastin1_y/2;
 
-					if (palikka == BLOCK_KYTKIN2_YLOS)
-						ay = -ajastin2_y/2;
+				if (palikka == BLOCK_KYTKIN2_YLOS)
+					ay = -ajastin2_y/2;
 
-					if (palikka == BLOCK_KYTKIN2_ALAS)
-						ay = ajastin2_y/2;
+				if (palikka == BLOCK_KYTKIN2_ALAS)
+					ay = ajastin2_y/2;
 
-					if (palikka == BLOCK_KYTKIN2)
-						ay = ajastin2_y/2;
+				if (palikka == BLOCK_KYTKIN2)
+					ay = ajastin2_y/2;
 
-					if (palikka == BLOCK_KYTKIN3_OIKEALLE)
-						ax = ajastin3_x/2;
+				if (palikka == BLOCK_KYTKIN3_OIKEALLE)
+					ax = ajastin3_x/2;
 
-					if (palikka == BLOCK_KYTKIN3_VASEMMALLE)
-						ax = -ajastin3_x/2;
+				if (palikka == BLOCK_KYTKIN3_VASEMMALLE)
+					ax = -ajastin3_x/2;
 
-					if (palikka == BLOCK_KYTKIN3)
-						ay = ajastin3_x/2;
-				}
+				if (palikka == BLOCK_KYTKIN3)
+					ay = ajastin3_x/2;
 
 				if (palikka == BLOCK_ANIM1 || palikka == BLOCK_ANIM2 || palikka == BLOCK_ANIM3 || palikka == BLOCK_ANIM4)
 					px += animaatio * 32;
