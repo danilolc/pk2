@@ -47,51 +47,7 @@ void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool
 	avaimet  = keys;
 }
 
-MapClass::MapClass(){
-
-	this->tiles_buffer = -1;
-	this->bg_tiles_buffer = -1;
-	this->background_buffer = -1;
-	this->water_buffer = -1;
-	this->bg_water_buffer = -1;
-
-	strcpy(this->versio, PK2MAP_LAST_VERSION);
-	strcpy(this->palikka_bmp,"blox.bmp");
-	strcpy(this->taustakuva, "default.bmp");
-	strcpy(this->musiikki,   "default.xm");
-
-	strcpy(this->nimi,  "untitled");
-	strcpy(this->tekija,"unknown");
-
-	this->jakso		= 0;
-	this->ilma		= ILMA_NORMAALI;
-	this->kytkin1_aika = SWITCH_INITIAL_VALUE;
-	this->kytkin2_aika = SWITCH_INITIAL_VALUE;
-	this->kytkin3_aika = SWITCH_INITIAL_VALUE;
-	this->pelaaja_sprite = 0;
-	this->aika		= 0;
-	this->extra		= PK2KARTTA_EXTRA_EI;
-	this->tausta	= TAUSTA_STAATTINEN;
-
-	this->x = 0;
-	this->y = 0;
-	this->icon = 0;
-
-	memset(this->taustat, 255, sizeof(taustat));
-	memset(this->seinat , 255, sizeof(seinat));
-	memset(this->spritet, 255, sizeof(spritet));
-	memset(this->reunat,  0,   sizeof(reunat));
-
-	for (u32 i=0; i<PK2MAP_MAP_MAX_PROTOTYPES; i++)
-		strcpy(this->protot[i], "");
-
-}
-
-MapClass::MapClass(const MapClass &kartta){
-
-	this->Kopioi(kartta);
-
-}
+MapClass::MapClass(){}
 
 MapClass::~MapClass(){
 	PDraw::image_delete(this->tiles_buffer);
@@ -615,46 +571,6 @@ int MapClass::LoadVersion13(PFile::Path path){
 	return 0;
 }
 
-void MapClass::Tyhjenna(){
-	strcpy(this->versio, PK2MAP_LAST_VERSION);
-	strcpy(this->palikka_bmp,"blox.bmp");
-	strcpy(this->taustakuva, "default.bmp");
-	strcpy(this->musiikki,   "default.xm");
-
-	strcpy(this->nimi,  "untitled");
-	strcpy(this->tekija,"unknown");
-
-	this->jakso			= 0;
-	this->ilma			= ILMA_NORMAALI;
-	this->kytkin1_aika	= SWITCH_INITIAL_VALUE;
-	this->kytkin2_aika	= SWITCH_INITIAL_VALUE;
-	this->kytkin3_aika	= SWITCH_INITIAL_VALUE;
-	this->pelaaja_sprite = 0;
-	this->aika		= 0;
-	this->extra		= PK2KARTTA_EXTRA_EI;
-	this->tausta	= PK2KARTTA_TAUSTAKUVA_EI;
-
-	this->x = 0;
-	this->y = 0;
-	this->icon = 0;
-
-	memset(this->taustat, 255, sizeof(taustat));
-	memset(this->seinat,  255, sizeof(seinat));
-	memset(this->spritet, 255, sizeof(spritet));
-
-	for (u32 i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
-		strcpy(this->protot[i],"");
-
-	//PDraw::image_fill(this->tiles_buffer,255);
-	//PDraw::image_fill(this->background_buffer,255);
-}
-
-MapClass &MapClass::operator = (const MapClass &kartta){
-
-	this->Kopioi(kartta);
-	return *this;
-}
-
 int MapClass::Load_BG(PFile::Path path){
 	
 	if (!FindAsset(&path, "gfx" PE_SEP "scenery" PE_SEP))
@@ -724,50 +640,6 @@ int MapClass::Load_TilesImage(PFile::Path path){
 int MapClass::Load_BGSfx(PFile::Path path){
 
 	return 0;
-}
-
-void MapClass::Kopioi(const MapClass &kartta){
-	if (this != &kartta){
-		strcpy(this->versio,		kartta.versio);
-		strcpy(this->palikka_bmp,	kartta.palikka_bmp);
-		strcpy(this->taustakuva,	kartta.taustakuva);
-		strcpy(this->musiikki,		kartta.musiikki);
-
-		strcpy(this->nimi,			kartta.nimi);
-		strcpy(this->tekija,		kartta.tekija);
-
-		this->jakso			= kartta.jakso;
-		this->ilma			= kartta.ilma;
-		this->kytkin1_aika	= kartta.kytkin1_aika;
-		this->kytkin2_aika	= kartta.kytkin2_aika;
-		this->kytkin3_aika	= kartta.kytkin3_aika;
-		this->pelaaja_sprite = kartta.pelaaja_sprite;
-		this->aika		= kartta.aika;
-		this->extra		= kartta.extra;
-		this->tausta	= kartta.tausta;
-
-		for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-			this->seinat[i] = kartta.seinat[i];
-
-		for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-			this->taustat[i] = kartta.taustat[i];
-
-		for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-			this->spritet[i] = kartta.spritet[i];
-
-		for (u32 i=0;i<PK2MAP_MAP_MAX_PROTOTYPES;i++)
-			strcpy(this->protot[i],kartta.protot[i]);
-
-		PDraw::image_delete(this->background_buffer);
-		PDraw::image_delete(this->tiles_buffer);
-		PDraw::image_delete(this->water_buffer);
-		PDraw::image_delete(this->bg_water_buffer);
-
-		this->background_buffer = PDraw::image_copy(kartta.background_buffer);
-		this->tiles_buffer = PDraw::image_copy(kartta.tiles_buffer);
-		this->water_buffer = PDraw::image_copy(kartta.water_buffer);
-		this->bg_water_buffer = PDraw::image_copy(kartta.bg_water_buffer);
-	}
 }
 
 /* Pekka Kana 2 funcitons ---------------------------------------------------------------*/
