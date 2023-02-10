@@ -699,7 +699,7 @@ int Sprite_Movement(SpriteClass& sprite){
 	//Compare this sprite with every sprite in the game
 	for (SpriteClass* sprite2 : Sprites_List) {
 
-		if (sprite2 != &sprite && /*!sprite2->piilota*/sprite2->aktiivinen) {
+		if (sprite2 != &sprite && sprite2->aktiivinen) {
 			if (sprite2->crouched)
 				sprite2_yla = sprite2->tyyppi->korkeus / 3;//1.5;
 			else
@@ -780,22 +780,22 @@ int Sprite_Movement(SpriteClass& sprite){
 						ylos = false;
 				}
 
-				if (sprite.tyyppi->Onko_AI(AI_NUOLET_VAIKUTTAVAT)) {
+				if (sprite.Onko_AI(AI_NUOLET_VAIKUTTAVAT)) {
 
-					if (sprite2->tyyppi->Onko_AI(AI_NUOLI_OIKEALLE)) {
+					if (sprite2->Onko_AI(AI_NUOLI_OIKEALLE)) {
 						sprite_a = sprite.tyyppi->max_nopeus / 3.5;
 						sprite_b = 0;
 					}
-					else if (sprite2->tyyppi->Onko_AI(AI_NUOLI_VASEMMALLE)) {
+					else if (sprite2->Onko_AI(AI_NUOLI_VASEMMALLE)) {
 						sprite_a = sprite.tyyppi->max_nopeus / -3.5;
 						sprite_b = 0;
 					}
 
-					if (sprite2->tyyppi->Onko_AI(AI_NUOLI_YLOS)) {
+					if (sprite2->Onko_AI(AI_NUOLI_YLOS)) {
 						sprite_b = sprite.tyyppi->max_nopeus / -3.5;
 						sprite_a = 0;
 					}
-					else if (sprite2->tyyppi->Onko_AI(AI_NUOLI_ALAS)) {
+					else if (sprite2->Onko_AI(AI_NUOLI_ALAS)) {
 						sprite_b = sprite.tyyppi->max_nopeus / 3.5;
 						sprite_a = 0;
 					}
@@ -1332,8 +1332,7 @@ int Sprite_Movement(SpriteClass& sprite){
 
 		sprite.y = PK2MAP_MAP_HEIGHT*32 + sprite_korkeus;
 		sprite.energia = 0;
-		if (&sprite != Player_Sprite)
-			sprite.piilota = true;
+		sprite.piilota = true;
 
 		if (sprite.kytkinpaino >= 1)
 			Game->vibration = 50;

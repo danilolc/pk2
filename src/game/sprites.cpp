@@ -208,38 +208,36 @@ void Sprites_sort_bg() {
 
 void Sprites_start_directions() {
 	for (SpriteClass* sprite : Sprites_List) {
-		if (!sprite->piilota){
-			sprite->a = 0;
+		sprite->a = 0;
 
-			if (sprite->tyyppi->Onko_AI(AI_RANDOM_START_DIRECTION)){
-				while (sprite->a == 0) {
-					sprite->a = ((rand()%2 - rand()%2) * sprite->tyyppi->max_nopeus) / 3.5;//2;
-				}
+		if (sprite->Onko_AI(AI_RANDOM_START_DIRECTION)){
+			while (sprite->a == 0) {
+				sprite->a = ((rand()%2 - rand()%2) * sprite->tyyppi->max_nopeus) / 3.5;//2;
 			}
+		}
 
-			if (sprite->tyyppi->Onko_AI(AI_RANDOM_ALOITUSSUUNTA_VERT)){
-				while (sprite->b == 0) {
-					sprite->b = ((rand()%2 - rand()%2) * sprite->tyyppi->max_nopeus) / 3.5;//2;
-				}
+		if (sprite->Onko_AI(AI_RANDOM_ALOITUSSUUNTA_VERT)){
+			while (sprite->b == 0) {
+				sprite->b = ((rand()%2 - rand()%2) * sprite->tyyppi->max_nopeus) / 3.5;//2;
 			}
+		}
 
-			if (sprite->tyyppi->Onko_AI(AI_START_DIRECTIONS_TOWARDS_PLAYER)){
+		if (sprite->Onko_AI(AI_START_DIRECTIONS_TOWARDS_PLAYER)){
 
-				if (sprite->x < Player_Sprite->x)
-					sprite->a = sprite->tyyppi->max_nopeus / 3.5;
+			if (sprite->x < Player_Sprite->x)
+				sprite->a = sprite->tyyppi->max_nopeus / 3.5;
 
-				if (sprite->x > Player_Sprite->x)
-					sprite->a = (sprite->tyyppi->max_nopeus * -1) / 3.5;
-			}
+			if (sprite->x > Player_Sprite->x)
+				sprite->a = (sprite->tyyppi->max_nopeus * -1) / 3.5;
+		}
 
-			if (sprite->tyyppi->Onko_AI(AI_START_DIRECTIONS_TOWARDS_PLAYER_VERT)){
+		if (sprite->Onko_AI(AI_START_DIRECTIONS_TOWARDS_PLAYER_VERT)){
 
-				if (sprite->y < Player_Sprite->y)
-					sprite->b = sprite->tyyppi->max_nopeus / -3.5;
+			if (sprite->y < Player_Sprite->y)
+				sprite->b = sprite->tyyppi->max_nopeus / -3.5;
 
-				if (sprite->y > Player_Sprite->y)
-					sprite->b = sprite->tyyppi->max_nopeus / 3.5;
-			}
+			if (sprite->y > Player_Sprite->y)
+				sprite->b = sprite->tyyppi->max_nopeus / 3.5;
 		}
 	}
 }
@@ -369,7 +367,8 @@ int Update_Sprites() {
 
 	int active_sprites = 0;
 
-	for (SpriteClass* sprite : Sprites_List) {//Activate sprite if it is on screen
+	//Activate sprite if it is next to the screen
+	for (SpriteClass* sprite : Sprites_List) {
 		
 		if (sprite->x < Game->camera_x + 640 + ACTIVE_BORDER_X &&
 			sprite->x > Game->camera_x - ACTIVE_BORDER_X &&
@@ -378,15 +377,12 @@ int Update_Sprites() {
 			sprite->aktiivinen = true;
 		else
 			sprite->aktiivinen = false;
-
-		if (sprite->piilota == true)
-			sprite->aktiivinen = false;
 	
 	}
 
 	// Update bonus first to get energy change
 	for (SpriteClass* sprite : Sprites_List) {
-		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
+		if (sprite->aktiivinen && !sprite->piilota) {
 			if (sprite->tyyppi->tyyppi == TYPE_BONUS) {
 				BonusSprite_Movement(*sprite);
 				active_sprites++;
@@ -395,8 +391,8 @@ int Update_Sprites() {
 	}
 
 	for (SpriteClass* sprite : Sprites_List) {
-		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
-			if (sprite->tyyppi->tyyppi != TYPE_BONUS) {
+		if (sprite->aktiivinen && !sprite->piilota) {
+			if (sprite->tyyppi->tyyppi != TYPE_BONUS && sprite->tyyppi->tyyppi != TYPE_BACKGROUND) {
 				Sprite_Movement(*sprite);
 				active_sprites++;
 			}
@@ -409,7 +405,7 @@ int Update_Sprites() {
 
 	/*int count = 0;
 	for (SpriteClass* sprite : Sprites_List) {
-		if (!sprite->piilota && sprite->energia > 0) {
+		if (sprite->energia > 0) {
 			if (sprite->tyyppi->tyyppi == TYPE_BONUS)
 				count++;
 			if (sprite->tyyppi->bonus > -1 && sprite->tyyppi->bonusten_lkm > 0)

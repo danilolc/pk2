@@ -1482,9 +1482,8 @@ int SpriteClass::AI_Teleportti(std::list<SpriteClass*> spritet, SpriteClass &pla
 			// if it didn't find any, search for all teleports
 			if (portit.size() == 0) {
 				for (SpriteClass* sprite : spritet)
-					if (sprite->tyyppi != nullptr)
-						if (sprite->tyyppi->tyyppi == TYPE_TELEPORT && sprite != this)
-							portit.push_back(sprite);
+					if (sprite->tyyppi->tyyppi == TYPE_TELEPORT && sprite != this)
+						portit.push_back(sprite);
 			}
 
 			// if you don't have any teleports (excluding the teleport itself), return

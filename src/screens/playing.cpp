@@ -29,97 +29,64 @@ static int debug_drawn_sprites = 0;
 
 int Draw_InGame_BGSprites() {
 
-	double xl, yl, alku_x, alku_y, yk;
-	int i = 0;
-
 	for (SpriteClass* sprite : Sprites_List) {
 
-		if (sprite->tyyppi != nullptr && i != -1) {
-			if (!sprite->piilota && sprite->tyyppi->tyyppi == TYPE_BACKGROUND) {
-				//Tarkistetaanko onko sprite tai osa siit� kuvassa
+		if (sprite->tyyppi->tyyppi == TYPE_BACKGROUND) {
+			//Tarkistetaanko onko sprite tai osa siit� kuvassa
 
-				alku_x = sprite->alku_x;
-				alku_y = sprite->alku_y;
+			double alku_x = sprite->alku_x;
+			double alku_y = sprite->alku_y;
 
-				if (sprite->tyyppi->pallarx_kerroin != 0) {
-					xl =  alku_x - Game->camera_x-screen_width/2 - sprite->tyyppi->leveys/2;
-					xl /= sprite->tyyppi->pallarx_kerroin;
-					yl =  alku_y - Game->camera_y-screen_height/2 - sprite->tyyppi->korkeus/2;
-					yk = sprite->tyyppi->pallarx_kerroin;///1.5;
-					if (yk != 0)
-						yl /= yk;
+			double xl, yl, yk;
 
-
-				}
-				else
-					xl = yl = 0;
-
-				switch(sprite->tyyppi->AI[0]) {
-				case AI_TAUSTA_KUU					:	yl += screen_height/3+50; break;
-				/*case AI_TAUSTA_LIIKKUU_VASEMMALLE	:	if (sprite->a == 0)
-															sprite->a = rand()%3;
-														sprite->alku_x -= sprite->a;
-														if (sprite->piilossa && sprite->alku_x < Game->camera_x)
-														{
-													  		  sprite->alku_x = Game->camera_x+screen_width+sprite->tyyppi->leveys*2;
-															  sprite->a = rand()%3;
-														}
-														break;*/
-				case AI_LIIKKUU_X_COS:			sprite->AI_Liikkuu_X(cos_table[degree%360]);
-												alku_x = sprite->x;
-												alku_y = sprite->y;
-												break;
-				case AI_LIIKKUU_Y_COS:			sprite->AI_Liikkuu_Y(cos_table[degree%360]);
-												alku_x = sprite->x;
-												alku_y = sprite->y;
-												break;
-				case AI_LIIKKUU_X_SIN:			sprite->AI_Liikkuu_X(sin_table[degree%360]);
-												alku_x = sprite->x;
-												alku_y = sprite->y;
-												break;
-				case AI_LIIKKUU_Y_SIN:			sprite->AI_Liikkuu_Y(sin_table[degree%360]);
-												alku_x = sprite->x;
-												alku_y = sprite->y;
-												break;
-				default: break;
-				}
-
-				sprite->x = alku_x-xl;
-				sprite->y = alku_y-yl;
-				//Check whether the sprite is on the screen
-				if (sprite->x - sprite->tyyppi->kuva_frame_leveys/2  < Game->camera_x+screen_width &&
-					sprite->x + sprite->tyyppi->kuva_frame_leveys/2  > Game->camera_x &&
-					sprite->y - sprite->tyyppi->kuva_frame_korkeus/2 < Game->camera_y+screen_height &&
-					sprite->y + sprite->tyyppi->kuva_frame_korkeus/2 > Game->camera_y)
-				{
-
-					sprite->Piirra(Game->camera_x,Game->camera_y);
-
-					if (sprite->super_mode_timer && !Game->paused)
-						Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
-
-					sprite->piilossa = false;
-					debug_drawn_sprites++;
-				} else {
-					if (!Game->paused)
-						sprite->Animoi();
-					sprite->piilossa = true;
-				}
-
-				debug_sprites++;
+			if (sprite->tyyppi->pallarx_kerroin != 0) {
+				
+				xl =  alku_x - Game->camera_x-screen_width/2 - sprite->tyyppi->leveys/2;
+				xl /= sprite->tyyppi->pallarx_kerroin;
+				yl =  alku_y - Game->camera_y-screen_height/2 - sprite->tyyppi->korkeus/2;
+				yk = sprite->tyyppi->pallarx_kerroin;///1.5;
+				if (yk != 0)
+					yl /= yk;
 
 			}
-		}
-	}
-	return 0;
-}
-int Draw_InGame_Sprites() {
-	int stars, sx;
-	double star_x, star_y;
+			else {
 
-	for (SpriteClass* sprite : Sprites_List){
-		// Onko sprite n�kyv�
-		if (!sprite->piilota && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
+				xl = yl = 0;
+
+			}
+
+			switch(sprite->tyyppi->AI[0]) {
+			case AI_TAUSTA_KUU					:	yl += screen_height/3+50; break;
+			/*case AI_TAUSTA_LIIKKUU_VASEMMALLE	:	if (sprite->a == 0)
+														sprite->a = rand()%3;
+													sprite->alku_x -= sprite->a;
+													if (sprite->piilossa && sprite->alku_x < Game->camera_x)
+													{
+															sprite->alku_x = Game->camera_x+screen_width+sprite->tyyppi->leveys*2;
+															sprite->a = rand()%3;
+													}
+													break;*/
+			case AI_LIIKKUU_X_COS:			sprite->AI_Liikkuu_X(cos_table[degree%360]);
+											alku_x = sprite->x;
+											alku_y = sprite->y;
+											break;
+			case AI_LIIKKUU_Y_COS:			sprite->AI_Liikkuu_Y(cos_table[degree%360]);
+											alku_x = sprite->x;
+											alku_y = sprite->y;
+											break;
+			case AI_LIIKKUU_X_SIN:			sprite->AI_Liikkuu_X(sin_table[degree%360]);
+											alku_x = sprite->x;
+											alku_y = sprite->y;
+											break;
+			case AI_LIIKKUU_Y_SIN:			sprite->AI_Liikkuu_Y(sin_table[degree%360]);
+											alku_x = sprite->x;
+											alku_y = sprite->y;
+											break;
+			default: break;
+			}
+
+			sprite->x = alku_x-xl;
+			sprite->y = alku_y-yl;
 			//Check whether the sprite is on the screen
 			if (sprite->x - sprite->tyyppi->kuva_frame_leveys/2  < Game->camera_x+screen_width &&
 				sprite->x + sprite->tyyppi->kuva_frame_leveys/2  > Game->camera_x &&
@@ -127,41 +94,79 @@ int Draw_InGame_Sprites() {
 				sprite->y + sprite->tyyppi->kuva_frame_korkeus/2 > Game->camera_y)
 			{
 
-				if (sprite->damage_timer > 0 && sprite->tyyppi->tyyppi != TYPE_BONUS && sprite->energia < 1){
-					int framex = ((degree%12)/3) * 58;
-					u32 hit_x = sprite->x-8, hit_y = sprite->y-8;
-					PDraw::image_cutclip(game_assets,hit_x-Game->camera_x-28+8, hit_y-Game->camera_y-27+8,1+framex,83,1+57+framex,83+55);
-				}
-
-				if (!(sprite->pelaaja && dev_mode && PInput::Keydown(PInput::Y) && degree % 2 == 0))
-					sprite->Piirra(Game->camera_x,Game->camera_y);
-
-				// Draw stars on dead sprite
-				if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYPE_PROJECTILE){
-					sx = (int)sprite->x;
-					for (stars=0; stars<3; stars++){
-						star_x = sprite->x-8 + (sin_table[((stars*120+degree)*2)%359])/3;
-						star_y = sprite->y-18 + (cos_table[((stars*120+degree)*2+sx)%359])/8;
-						PDraw::image_cutclip(game_assets,star_x-Game->camera_x, star_y-Game->camera_y,1,1,11,11);
-					}
-				}
+				sprite->Piirra(Game->camera_x,Game->camera_y);
 
 				if (sprite->super_mode_timer && !Game->paused)
 					Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
 
+				sprite->piilossa = false;
 				debug_drawn_sprites++;
-			} else{
+			} else {
 				if (!Game->paused)
 					sprite->Animoi();
-
-				if (sprite->energia < 1)
-					sprite->piilota = true;
+				sprite->piilossa = true;
 			}
 
 			debug_sprites++;
 		}
 	}
 	return 0;
+}
+
+bool Is_Sprite_Visible(SpriteClass* sprite) {
+
+	return (sprite->x - sprite->tyyppi->kuva_frame_leveys/2  < Game->camera_x + screen_width &&
+			sprite->x + sprite->tyyppi->kuva_frame_leveys/2  > Game->camera_x &&
+			sprite->y - sprite->tyyppi->kuva_frame_korkeus/2 < Game->camera_y + screen_height &&
+			sprite->y + sprite->tyyppi->kuva_frame_korkeus/2 > Game->camera_y);
+	
+}
+
+void Draw_InGame_Sprites() {
+
+	for (SpriteClass* sprite : Sprites_List){
+		if (Is_Sprite_Visible(sprite) && sprite->tyyppi->tyyppi != TYPE_BACKGROUND) {
+
+			// Draw impact circle
+			if (sprite->damage_timer > 0 && sprite->tyyppi->tyyppi != TYPE_BONUS && sprite->energia < 1){
+				int framex = ((degree%12)/3) * 58;
+				u32 hit_x = sprite->x-8;
+				u32 hit_y = sprite->y-8;
+				PDraw::image_cutclip(game_assets,hit_x-Game->camera_x-28+8, hit_y-Game->camera_y-27+8,1+framex,83,1+57+framex,83+55);
+			}
+
+			if (!(sprite->pelaaja && dev_mode && PInput::Keydown(PInput::Y) && degree % 2 == 0))
+				sprite->Piirra(Game->camera_x,Game->camera_y);
+
+			// Draw stars on dead sprite
+			if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYPE_PROJECTILE){
+				int sx = (int)sprite->x;
+				for (int stars=0; stars<3; stars++){
+					double star_x = sprite->x-8 + (sin_table[((stars*120+degree)*2)%359])/3;
+					double star_y = sprite->y-18 + (cos_table[((stars*120+degree)*2+sx)%359])/8;
+					PDraw::image_cutclip(game_assets,star_x-Game->camera_x, star_y-Game->camera_y,1,1,11,11);
+				}
+			}
+
+			if (sprite->super_mode_timer && !Game->paused)
+				Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
+
+			debug_drawn_sprites++;
+
+		} else {
+
+			if (!Game->paused)
+				sprite->Animoi();
+
+			// Delete death body
+			if (sprite->energia < 1)
+				sprite->piilota = true;
+			
+		}
+
+		debug_sprites++;
+	}
+	
 }
 
 int Draw_InGame_DebugInfo() {
@@ -861,6 +866,7 @@ int Screen_InGame(){
 			if (PInput::Keydown(PInput::R)) {
 				Game->map->Select_Start();
 				Player_Sprite->energia = 10;
+				Player_Sprite->piilota = false;
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::END)) {
