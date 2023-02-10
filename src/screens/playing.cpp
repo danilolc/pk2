@@ -188,13 +188,21 @@ int Draw_InGame_DebugInfo() {
 	fy += 10;
 
 	for (int i = 0; i < 40; i++) {
+		sprintf(lukua, "%i", i);
+		PDraw::font_write(fontti1,lukua,410,10+i*10);
 		if (Prototypes_List[i] == nullptr) {
-			PDraw::font_write(fontti1,"nullptr",410,10+i*10);
+			PDraw::font_write(fontti1,"-",430,10+i*10);
 		} else {
-			sprintf(lukua, "%i", i);
-			PDraw::font_write(fontti1,lukua,410,10+i*10);
 			PDraw::font_write(fontti1,Prototypes_List[i]->tiedosto,430,10+i*10);
-			PDraw::font_write(fontti1,Prototypes_List[i]->bonus_sprite,545,10+i*10);
+
+			if (degree < 90)
+				PDraw::font_write(fontti1,Prototypes_List[i]->muutos_sprite,545,10+i*10);
+			else if (degree < 180)
+				PDraw::font_write(fontti1,Prototypes_List[i]->bonus_sprite,545,10+i*10);
+			else if (degree < 270)
+				PDraw::font_write(fontti1,Prototypes_List[i]->ammus1_sprite,545,10+i*10);
+			else
+				PDraw::font_write(fontti1,Prototypes_List[i]->ammus2_sprite,545,10+i*10);
 		}
 	}
 
