@@ -27,92 +27,6 @@ static bool draw_debug_info = false;
 static int debug_sprites = 0;
 static int debug_drawn_sprites = 0;
 
-int Draw_InGame_BGSprites() {
-
-	for (SpriteClass* sprite : Sprites_List) {
-
-		if (sprite->tyyppi->tyyppi == TYPE_BACKGROUND) {
-			//Tarkistetaanko onko sprite tai osa siit� kuvassa
-
-			double alku_x = sprite->alku_x;
-			double alku_y = sprite->alku_y;
-
-			double xl, yl, yk;
-
-			if (sprite->tyyppi->pallarx_kerroin != 0) {
-				
-				xl =  alku_x - Game->camera_x-screen_width/2 - sprite->tyyppi->leveys/2;
-				xl /= sprite->tyyppi->pallarx_kerroin;
-				yl =  alku_y - Game->camera_y-screen_height/2 - sprite->tyyppi->korkeus/2;
-				yk = sprite->tyyppi->pallarx_kerroin;///1.5;
-				if (yk != 0)
-					yl /= yk;
-
-			}
-			else {
-
-				xl = yl = 0;
-
-			}
-
-			switch(sprite->tyyppi->AI[0]) {
-			case AI_TAUSTA_KUU					:	yl += screen_height/3+50; break;
-			/*case AI_TAUSTA_LIIKKUU_VASEMMALLE	:	if (sprite->a == 0)
-														sprite->a = rand()%3;
-													sprite->alku_x -= sprite->a;
-													if (sprite->piilossa && sprite->alku_x < Game->camera_x)
-													{
-															sprite->alku_x = Game->camera_x+screen_width+sprite->tyyppi->leveys*2;
-															sprite->a = rand()%3;
-													}
-													break;*/
-			case AI_LIIKKUU_X_COS:			sprite->AI_Liikkuu_X(cos_table[degree%360]);
-											alku_x = sprite->x;
-											alku_y = sprite->y;
-											break;
-			case AI_LIIKKUU_Y_COS:			sprite->AI_Liikkuu_Y(cos_table[degree%360]);
-											alku_x = sprite->x;
-											alku_y = sprite->y;
-											break;
-			case AI_LIIKKUU_X_SIN:			sprite->AI_Liikkuu_X(sin_table[degree%360]);
-											alku_x = sprite->x;
-											alku_y = sprite->y;
-											break;
-			case AI_LIIKKUU_Y_SIN:			sprite->AI_Liikkuu_Y(sin_table[degree%360]);
-											alku_x = sprite->x;
-											alku_y = sprite->y;
-											break;
-			default: break;
-			}
-
-			sprite->x = alku_x-xl;
-			sprite->y = alku_y-yl;
-			//Check whether the sprite is on the screen
-			if (sprite->x - sprite->tyyppi->kuva_frame_leveys/2  < Game->camera_x+screen_width &&
-				sprite->x + sprite->tyyppi->kuva_frame_leveys/2  > Game->camera_x &&
-				sprite->y - sprite->tyyppi->kuva_frame_korkeus/2 < Game->camera_y+screen_height &&
-				sprite->y + sprite->tyyppi->kuva_frame_korkeus/2 > Game->camera_y)
-			{
-
-				sprite->Piirra(Game->camera_x,Game->camera_y);
-
-				if (sprite->super_mode_timer && !Game->paused)
-					Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
-
-				sprite->piilossa = false;
-				debug_drawn_sprites++;
-			} else {
-				if (!Game->paused)
-					sprite->Animoi();
-				sprite->piilossa = true;
-			}
-
-			debug_sprites++;
-		}
-	}
-	return 0;
-}
-
 bool Is_Sprite_Visible(SpriteClass* sprite) {
 
 	return (sprite->x - sprite->tyyppi->kuva_frame_leveys/2  < Game->camera_x + screen_width &&
@@ -120,6 +34,84 @@ bool Is_Sprite_Visible(SpriteClass* sprite) {
 			sprite->y - sprite->tyyppi->kuva_frame_korkeus/2 < Game->camera_y + screen_height &&
 			sprite->y + sprite->tyyppi->kuva_frame_korkeus/2 > Game->camera_y);
 	
+}
+
+int Draw_InGame_BGSprites() {
+
+	for (SpriteClass* sprite : bgSprites_List) {
+		// Check if a sprite or part of it is in the image
+
+		double alku_x = sprite->alku_x;
+		double alku_y = sprite->alku_y;
+
+		double xl, yl, yk;
+
+		if (sprite->tyyppi->pallarx_kerroin != 0) {
+			
+			xl =  alku_x - Game->camera_x-screen_width/2 - sprite->tyyppi->leveys/2;
+			xl /= sprite->tyyppi->pallarx_kerroin;
+			yl =  alku_y - Game->camera_y-screen_height/2 - sprite->tyyppi->korkeus/2;
+			yk = sprite->tyyppi->pallarx_kerroin;///1.5;
+			if (yk != 0)
+				yl /= yk;
+
+		}
+		else {
+
+			xl = yl = 0;
+
+		}
+
+		switch(sprite->tyyppi->AI[0]) {
+		case AI_TAUSTA_KUU					:	yl += screen_height/3+50; break;
+		/*case AI_TAUSTA_LIIKKUU_VASEMMALLE	:	if (sprite->a == 0)
+													sprite->a = rand()%3;
+												sprite->alku_x -= sprite->a;
+												if (sprite->piilossa && sprite->alku_x < Game->camera_x)
+												{
+														sprite->alku_x = Game->camera_x+screen_width+sprite->tyyppi->leveys*2;
+														sprite->a = rand()%3;
+												}
+												break;*/
+		case AI_LIIKKUU_X_COS:			sprite->AI_Liikkuu_X(cos_table[degree%360]);
+										alku_x = sprite->x;
+										alku_y = sprite->y;
+										break;
+		case AI_LIIKKUU_Y_COS:			sprite->AI_Liikkuu_Y(cos_table[degree%360]);
+										alku_x = sprite->x;
+										alku_y = sprite->y;
+										break;
+		case AI_LIIKKUU_X_SIN:			sprite->AI_Liikkuu_X(sin_table[degree%360]);
+										alku_x = sprite->x;
+										alku_y = sprite->y;
+										break;
+		case AI_LIIKKUU_Y_SIN:			sprite->AI_Liikkuu_Y(sin_table[degree%360]);
+										alku_x = sprite->x;
+										alku_y = sprite->y;
+										break;
+		default: break;
+		}
+
+		sprite->x = alku_x-xl;
+		sprite->y = alku_y-yl;
+		//Check whether the sprite is on the screen
+		if (Is_Sprite_Visible(sprite)) {
+			sprite->Piirra(Game->camera_x,Game->camera_y);
+
+			if (sprite->super_mode_timer && !Game->paused)
+				Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
+
+			sprite->piilossa = false;
+			debug_drawn_sprites++;
+		} else {
+			if (!Game->paused)
+				sprite->Animoi();
+			sprite->piilossa = true;
+		}
+
+		debug_sprites++;
+	}
+	return 0;
 }
 
 void Draw_InGame_Sprites() {

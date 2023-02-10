@@ -196,7 +196,7 @@ void Sprites_add_bg(SpriteClass* sprite) {
 
 bool Compare_bgSprites (SpriteClass* s1, SpriteClass* s2) {
 
-	return (s1->tyyppi->pallarx_kerroin > s2->tyyppi->pallarx_kerroin); 
+	return (s1->tyyppi->pallarx_kerroin < s2->tyyppi->pallarx_kerroin); 
 	
 }
 
