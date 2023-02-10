@@ -352,7 +352,7 @@ int Draw_InGame_Gifts() {
 	x = Game->item_pannel_x + 35;//40
 
 	for (int i=0;i<MAX_GIFTS;i++)
-		if (Gifts_Get(i) != -1){
+		if (Gifts_Get(i) != nullptr){
 			Gifts_Draw(i, x, y);
 			x += 38;
 		}
@@ -456,14 +456,14 @@ int Draw_InGame_UI(){
 	/////////////////
 	// Draw Ammunition
 	/////////////////
-	if (Player_Sprite->ammus2 != -1){
+	if (Player_Sprite->ammus2 != nullptr){
 		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_attack1), screen_width-170,my);
-		Prototypes_List[Player_Sprite->ammus2]->Piirra(screen_width-170,my+10,0);
+		Player_Sprite->ammus2->Piirra(screen_width-170,my+10,0);
 	}
 
-	if (Player_Sprite->ammus1 != -1){
+	if (Player_Sprite->ammus1 != nullptr){
 		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_attack2), screen_width-90,my+15);
-		Prototypes_List[Player_Sprite->ammus1]->Piirra(screen_width-90,my+25,0);
+		Player_Sprite->ammus1->Piirra(screen_width-90,my+25,0);
 	}
 
 	/////////////////

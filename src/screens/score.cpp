@@ -187,7 +187,7 @@ int Draw_ScoreCount() {
 	x = 110;
 	for (int i = 0; i < MAX_GIFTS; i++) {
 		
-		if (Gifts_Get(i) != -1)	{
+		if (Gifts_Get(i) != nullptr)	{
 			Gifts_Draw(i, x, my);
 			x += 38;
 		}
@@ -292,8 +292,8 @@ int Screen_ScoreCount_Init() {
 	temp_score += Game->timeout / 12; //(Game->timeout / 60) * 5;
 	temp_score += Player_Sprite->energia * 300;
 	for (int i = 0; i < MAX_GIFTS; i++)
-		if (Gifts_Get(i) != -1)
-			temp_score += Gifts_GetProtot(i)->pisteet + 500;
+		if (Gifts_Get(i) != nullptr)
+			temp_score += Gifts_Get(i)->pisteet + 500;
 
 	if (!Game->repeating)
 		Episode->player_score += temp_score;
@@ -382,7 +382,7 @@ int Screen_ScoreCount() {
 			
 			counting_phase = COUNT_GIFTS;
 			counting_delay = 30;
-			gifts_score += Gifts_GetProtot(0)->pisteet + 500;
+			gifts_score += Gifts_Get(0)->pisteet + 500;
 			Gifts_Remove(0); 
 			Play_MenuSFX(jump_sound, 100);
 
@@ -434,7 +434,7 @@ int Screen_ScoreCount() {
 			Player_Sprite->energia = 0;
 
 			for (int i = 0; i < Gifts_Count(); i++)
-				gifts_score += Gifts_GetProtot(i)->pisteet + 500;
+				gifts_score += Gifts_Get(i)->pisteet + 500;
 			
 			Gifts_Clean();
 

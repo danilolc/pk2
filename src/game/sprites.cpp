@@ -43,17 +43,17 @@ void Prototypes_ClearAll() {
 
 }
 
-int Prototypes_get(const char* name, int id = -1) {
+PrototypeClass* Prototypes_get(const char* name, int id = -1) {
 
 	PFile::Path path = Episode->Get_Dir(name);
 	if (!FindAsset(&path, "sprites" PE_SEP)) {
 		PLog::Write(PLog::ERR, "PK2", "Couldn't find %s", name);
-		return -1;
+		return nullptr;
 	}
 
 	if (id >= MAX_PROTOTYYPPEJA) {
 		PLog::Write(PLog::ERR, "PK2", "Invalid prototype id");
-		return -1;
+		return nullptr;
 	}
 
 	if (id != -1 && Prototypes_List[id] != nullptr) {
@@ -72,7 +72,7 @@ int Prototypes_get(const char* name, int id = -1) {
 
 	if (id == -1) {
 		PLog::Write(PLog::ERR, "PK2", "Not enough space for prototypes");
-		return -1;
+		return nullptr;
 	}
 
 	PrototypeClass* protot = new PrototypeClass();
@@ -81,13 +81,13 @@ int Prototypes_get(const char* name, int id = -1) {
 	if (protot->Load(path) != 0) {
 		PLog::Write(PLog::ERR, "PK2", "Couldn't load %s", name);
 		delete protot;
-		return -1;
+		return nullptr;
 	}
 
 	protot->indeksi = id;
 	Prototypes_List[id] = protot;
 
-	return id;
+	return protot;
 }
 
 void Prototypes_get_transformation(int i) {
@@ -98,14 +98,13 @@ void Prototypes_get_transformation(int i) {
 		for (int j = 0; j < MAX_PROTOTYYPPEJA; j++) {
 			if (Prototypes_List[j] != nullptr) {
 				if (strcmp(Prototypes_List[i]->muutos_sprite, Prototypes_List[j]->tiedosto) == 0) {
-					Prototypes_List[i]->muutos = j;
+					Prototypes_List[i]->muutos = Prototypes_List[j];
 					return;
 				}
 			}
 		}
 
-		int index = Prototypes_get(Prototypes_List[i]->muutos_sprite);
-		Prototypes_List[i]->muutos = index;
+		Prototypes_List[i]->muutos = Prototypes_get(Prototypes_List[i]->muutos_sprite);
 
 	}
 }
@@ -118,14 +117,13 @@ void Prototypes_get_bonus(int i) {
 		for (int j = 0; j < MAX_PROTOTYYPPEJA; j++) {
 			if (Prototypes_List[j] != nullptr) {
 				if (strcmp(Prototypes_List[i]->bonus_sprite, Prototypes_List[j]->tiedosto) == 0) {
-					Prototypes_List[i]->bonus = j;
+					Prototypes_List[i]->bonus = Prototypes_List[j];
 					return;
 				}
 			}
 		}
 
-		int index = Prototypes_get(Prototypes_List[i]->bonus_sprite);
-		Prototypes_List[i]->bonus = index;
+		Prototypes_List[i]->bonus = Prototypes_get(Prototypes_List[i]->bonus_sprite);
 
 	}
 }
@@ -138,14 +136,13 @@ void Prototypes_get_ammo1(int i) {
 		for (int j = 0; j < MAX_PROTOTYYPPEJA; j++) {
 			if (Prototypes_List[j] != nullptr) {
 				if (strcmp(Prototypes_List[i]->ammus1_sprite, Prototypes_List[j]->tiedosto) == 0) {
-					Prototypes_List[i]->ammus1 = j;
+					Prototypes_List[i]->ammus1 = Prototypes_List[j];
 					return;
 				}
 			}
 		}
 
-		int index = Prototypes_get(Prototypes_List[i]->ammus1_sprite);
-		Prototypes_List[i]->ammus1 = index;
+		Prototypes_List[i]->ammus1 = Prototypes_get(Prototypes_List[i]->ammus1_sprite);
 
 	}
 }
@@ -158,14 +155,13 @@ void Prototypes_get_ammo2(int i) {
 		for (int j = 0; j < MAX_PROTOTYYPPEJA; j++) {
 			if (Prototypes_List[j] != nullptr) {
 				if (strcmp(Prototypes_List[i]->ammus2_sprite, Prototypes_List[j]->tiedosto) == 0) {
-					Prototypes_List[i]->ammus2 = j;
+					Prototypes_List[i]->ammus2 = Prototypes_List[j];
 					return;
 				}
 			}
 		}
 
-		int index = Prototypes_get(Prototypes_List[i]->ammus2_sprite);
-		Prototypes_List[i]->ammus2 = index;
+		Prototypes_List[i]->ammus2 = Prototypes_get(Prototypes_List[i]->ammus2_sprite);
 
 	}
 }
@@ -177,7 +173,7 @@ int Prototypes_GetAll() {
 
 			PFile::Path path = Episode->Get_Dir(Game->map->protot[i]);
 
-			if (Prototypes_get(Game->map->protot[i], i) == -1) {
+			if (Prototypes_get(Game->map->protot[i], i) == nullptr) {
 				
 				PLog::Write(PLog::WARN, "PK2", "Can't load sprite %s. It will not appear", Game->map->protot[i]);
 
@@ -275,16 +271,15 @@ void Sprites_start_directions() {
 	}
 }
 
-void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int emo, bool isbonus) {
+void Sprites_add(PrototypeClass* protot, int is_Player_Sprite, double x, double y, SpriteClass* emo, bool isbonus) {
 	
-	PrototypeClass* proto = Prototypes_List[protoype_id];
 	bool added = false;
 	int i = 0;
 
 	while (!added && i < MAX_SPRITEJA){
 		if (Sprites_List[i].piilota && &Sprites_List[i] != Player_Sprite){
 			
-			Sprites_List[i] = SpriteClass(proto, is_Player_Sprite, false, x, y);
+			Sprites_List[i] = SpriteClass(protot, is_Player_Sprite, false, x, y);
 
 			if (is_Player_Sprite) Player_Sprite = &Sprites_List[i];
 
@@ -307,13 +302,13 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 				
 			}
 
-			if (proto->tyyppi == TYPE_BACKGROUND)
+			if (protot->tyyppi == TYPE_BACKGROUND)
 				Sprites_add_bg(i);
 
-			if (emo != MAX_SPRITEJA)
+			if (emo != nullptr)
 				Sprites_List[i].emosprite = emo;
 			else
-				Sprites_List[i].emosprite = i;
+				Sprites_List[i].emosprite = &Sprites_List[i];
 
 			added = true;
 
@@ -323,8 +318,8 @@ void Sprites_add(int protoype_id, int is_Player_Sprite, double x, double y, int 
 	}
 }
 
-void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y, int emo) {
-	PrototypeClass* proto = Prototypes_List[protoype_id];
+void Sprites_add_ammo(PrototypeClass* protot, double x, double y, SpriteClass* emo) {
+	
 	bool lisatty = false;
 	int i = 0;
 
@@ -332,32 +327,32 @@ void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y,
 		if (Sprites_List[i].piilota && &Sprites_List[i] != Player_Sprite){ //Don't replace player sprite
 
 			//Sprites_List[i] = SpriteClass(proto, is_Player_Sprite,false,x-proto->leveys/2,y);
-			Sprites_List[i] = SpriteClass(proto, is_Player_Sprite,false,x,y);
+			Sprites_List[i] = SpriteClass(protot, false, false, x, y);
 
 			//Sprites_List[i].x += Sprites_List[i].tyyppi->leveys;
 			//Sprites_List[i].y += Sprites_List[i].tyyppi->korkeus/2;
 
-			if (proto->Onko_AI(AI_HEITTOASE)){
-				if ((int)Sprites_List[emo].a == 0){
+			if (protot->Onko_AI(AI_HEITTOASE)){
+				if ((int)emo->a == 0){
 					// Jos "ampuja" on pelaaja tai ammuksen nopeus on nolla
-					if (Sprites_List[emo].pelaaja == 1 || Sprites_List[i].tyyppi->max_nopeus == 0){
-						if (!Sprites_List[emo].flip_x)
+					if (emo->pelaaja == 1 || Sprites_List[i].tyyppi->max_nopeus == 0){
+						if (!emo->flip_x)
 							Sprites_List[i].a = Sprites_List[i].tyyppi->max_nopeus;
 						else
 							Sprites_List[i].a = -Sprites_List[i].tyyppi->max_nopeus;
 					}
 					else{ // tai jos kyseess� on vihollinen
-						if (!Sprites_List[emo].flip_x)
+						if (!emo->flip_x)
 							Sprites_List[i].a = 1 + rand()%(int)Sprites_List[i].tyyppi->max_nopeus;
 						else
 							Sprites_List[i].a = -1 - rand()%-(int)Sprites_List[i].tyyppi->max_nopeus;
 					}
 				}
 				else{
-					if (!Sprites_List[emo].flip_x)
-						Sprites_List[i].a = Sprites_List[i].tyyppi->max_nopeus + Sprites_List[emo].a;
+					if (!emo->flip_x)
+						Sprites_List[i].a = Sprites_List[i].tyyppi->max_nopeus + emo->a;
 					else
-						Sprites_List[i].a = -Sprites_List[i].tyyppi->max_nopeus + Sprites_List[emo].a;
+						Sprites_List[i].a = -Sprites_List[i].tyyppi->max_nopeus + emo->a;
 
 					//Sprites_List[i].a = Sprites_List[emo].a * 1.5;
 
@@ -366,26 +361,26 @@ void Sprites_add_ammo(int protoype_id, int is_Player_Sprite, double x, double y,
 				Sprites_List[i].jump_timer = 1;
 			}
 			else
-			if (proto->Onko_AI(AI_EGG)){
-				Sprites_List[i].y = Sprites_List[emo].y+10;
-				Sprites_List[i].a = Sprites_List[emo].a / 1.5;
+			if (protot->Onko_AI(AI_EGG)){
+				Sprites_List[i].y = emo->y+10;
+				Sprites_List[i].a = emo->a / 1.5;
 			}
 			else{
-				if (!Sprites_List[emo].flip_x)
+				if (!emo->flip_x)
 					Sprites_List[i].a = Sprites_List[i].tyyppi->max_nopeus;
 				else
 					Sprites_List[i].a = -Sprites_List[i].tyyppi->max_nopeus;
 			}
 
-			if (emo != MAX_SPRITEJA){
+			if (emo != nullptr){
 				Sprites_List[i].emosprite = emo;
-				Sprites_List[i].vihollinen = Sprites_List[emo].vihollinen;
+				Sprites_List[i].vihollinen = emo->vihollinen;
 			}
 			else{
-				Sprites_List[i].emosprite = i;
+				Sprites_List[i].emosprite = &Sprites_List[i];
 			}
 
-			if (proto->tyyppi == TYPE_BACKGROUND)
+			if (protot->tyyppi == TYPE_BACKGROUND)
 				Sprites_add_bg(i);
 
 			lisatty = true;
@@ -425,7 +420,7 @@ int Update_Sprites() {
 		sprite = &Sprites_List[i];
 		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
 			if (sprite->tyyppi->tyyppi == TYPE_BONUS) {
-				BonusSprite_Movement(i);
+				BonusSprite_Movement(*sprite);
 				active_sprites++;
 			}
 		}
@@ -435,7 +430,7 @@ int Update_Sprites() {
 		sprite = &Sprites_List[i];
 		if (sprite->aktiivinen && sprite->tyyppi->tyyppi != TYPE_BACKGROUND){
 			if (sprite->tyyppi->tyyppi != TYPE_BONUS) {
-				Sprite_Movement(i);
+				Sprite_Movement(*sprite);
 				active_sprites++;
 			}
 		}

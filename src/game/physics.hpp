@@ -4,5 +4,7 @@
 //#########################
 #pragma once
 
-int Sprite_Movement(int i);
-int BonusSprite_Movement(int i);
+#include "game/spriteclass.hpp"
+
+int Sprite_Movement(SpriteClass& sprite);
+int BonusSprite_Movement(SpriteClass& sprite);

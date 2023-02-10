@@ -641,10 +641,10 @@ class PrototypeClass{
     char    bonus_sprite[100]  = "";
     char    ammus1_sprite[100] = "";
     char    ammus2_sprite[100] = "";
-    int     muutos = -1;
-    int     bonus  = -1;
-    int     ammus1 = -1;
-    int     ammus2 = -1;
+    PrototypeClass* muutos     = nullptr;
+    PrototypeClass* bonus      = nullptr;
+    PrototypeClass* ammus1     = nullptr;
+    PrototypeClass* ammus2     = nullptr;
 
     bool    tiletarkistus = true;
     u32     aani_frq      = 22050;
@@ -698,7 +698,7 @@ class SpriteClass{
     bool    reuna_vasemmalla;     // is there a pit on the left side of the sprite?
     bool    reuna_oikealla;       // is there a pit on the right side of the sprite?
     int     energia;              // the sprite energy
-    int     emosprite;            // the index of sprite's parent
+    SpriteClass *emosprite;       // the sprite's parent
     double  weight;               // sprite weight
     double  kytkinpaino;          // sprite weight + weight above him (why it doesn't work?)
     bool    crouched;             // if the sprite is crouched
@@ -714,8 +714,8 @@ class SpriteClass{
     int     saatu_vahinko;        // damage taken
     u8      saatu_vahinko_tyyppi; // damage taken type (e.g. snow).
     bool    vihollinen;           // if it is a enemy
-    int     ammus1;               // projectile 1 index
-    int     ammus2;               // projectile 2 index
+    PrototypeClass* ammus1;       // projectile 1
+    PrototypeClass* ammus2;       // projectile 2
 
     int     seen_player_x;        // where the player was last seen x
     int     seen_player_y;        // where the player was last seen y
@@ -784,7 +784,7 @@ class SpriteClass{
     int AI_Liikkuu_Y(double liike);
     int AI_Tippuu_Jos_Kytkin_Painettu(int kytkin);
     int AI_Liikkuu_Jos_Kytkin_Painettu(int kytkin, int ak, int bk);
-    int AI_Teleportti(int i, SpriteClass *spritet, int max, SpriteClass &pelaaja);
+    int AI_Teleportti(SpriteClass *spritet, SpriteClass &pelaaja);
     int AI_Kiipeilija();
     int AI_Kiipeilija2();
     bool AI_Info(SpriteClass &pelaaja);

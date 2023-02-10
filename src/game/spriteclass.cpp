@@ -439,8 +439,8 @@ SpriteClass::SpriteClass(){
 	this->piilossa      = false;
 	this->saatu_vahinko = 0;
 	this->vihollinen	= false;
-	this->ammus1		= -1;
-	this->ammus2		= -1;
+	this->ammus1		= nullptr;
+	this->ammus2		= nullptr;
 	this->seen_player_x		= -1;
 	this->seen_player_y		= -1;
 	this->action_timer		= 0;
@@ -1115,12 +1115,12 @@ int SpriteClass::AI_Muutos_Jos_Osuttu(PrototypeClass *muutos){
 	return 0;
 }
 int SpriteClass::AI_Tuhoutuu_Jos_Emo_Tuhoutuu(SpriteClass *spritet){
-	if (emosprite > -1)
+	if (emosprite != nullptr)
 	{
-		if (spritet[emosprite].energia < 1 && energia > 0)
+		if (emosprite->energia < 1 && energia > 0)
 		{
 			saatu_vahinko = energia;
-			this->saatu_vahinko_tyyppi = DAMAGE_ALL;
+			saatu_vahinko_tyyppi = DAMAGE_ALL;
 
 			return 1;
 		}
@@ -1532,77 +1532,47 @@ int SpriteClass::AI_Pommi(){
 
 	return 0;
 }
-int SpriteClass::AI_Teleportti(int oma_i, SpriteClass *spritet, int max, SpriteClass &sprite){
+int SpriteClass::AI_Teleportti(SpriteClass *spritet, SpriteClass &player){
 	int siirto = 0;
 
 	if (energia > 0 && charging_timer == 0 && attack1_timer == 0)
 	{
-		if (sprite.x <= x + tyyppi->leveys /2 && sprite.x >= x - tyyppi->leveys /2 &&
-			sprite.y <= y + tyyppi->korkeus/2 && sprite.y >= y - tyyppi->korkeus/2 )
+		if (player.x <= x + tyyppi->leveys /2 && player.x >= x - tyyppi->leveys /2 &&
+			player.y <= y + tyyppi->korkeus/2 && player.y >= y - tyyppi->korkeus/2 )
 		{
 
-			int portit[1200];
-			int portti_index = 0;
-			int porttien_maara = 0;
-			int i = 0;
+			std::vector<SpriteClass*> portit;
 
-			// alustetaan portit-taulukko, johon kerataan kaikkien teleportti spritejen indeksit
-			for (i=0;i<max;i++)
-				portit[i] = -1;
+			// search for teleports of the same type
+			for (int i = 0; i < MAX_SPRITEJA; i++)
+				if (tyyppi == spritet[i].tyyppi && &spritet[i] != this)
+						portit.push_back(&spritet[i]);
 
-			// etsitaan SAMANTYYPPISET teleportit
-			for (i=0;i<max;i++)
-				if (spritet[i].tyyppi != NULL)
-					if (spritet[i].tyyppi->tyyppi == TYPE_TELEPORT &&
-						tyyppi == spritet[i].tyyppi)
-					{
-						portit[portti_index] = i;
-						portti_index++;
-						porttien_maara++;
-					}
-
-			// jos yhtaan samantyyppista ei laydy...
-			if (porttien_maara == 0)
-			{
-				// ...etsitaan KAIKKI teleportit
-				portti_index = 0;
-				porttien_maara = 0;
-
-				for (i=0;i<max;i++)
-					if (spritet[i].tyyppi != NULL)
-						if (spritet[i].tyyppi->tyyppi == TYPE_TELEPORT)
-						{
-							portit[portti_index] = i;
-							portti_index++;
-							porttien_maara++;
-						}
+			// if it didn't find any, search for all teleports
+			if (portit.size() == 0) {
+				for (int i = 0; i < MAX_SPRITEJA; i++)
+					if (spritet[i].tyyppi != nullptr)
+						if (spritet[i].tyyppi->tyyppi == TYPE_TELEPORT && &spritet[i] != this)
+							portit.push_back(&spritet[i]);
 			}
 
-			// jos vielakaan ei laydy yhtaan teleporttia (poislukien teleportti itse), poistutaan.
-			if (porttien_maara <= 1)
+			// if you don't have any teleports (excluding the teleport itself), return
+			if (portit.size() == 0)
 				return 0;
 
-			if (porttien_maara > 1119/*599*/)
-				porttien_maara = 1119/*599*/;
-
 			// arvotaan kohdeportti
-			i = portit[rand()%porttien_maara];
+			SpriteClass* dst = portit[rand()%portit.size()];
+			
+			player.x = dst->x;
+			player.y = dst->y;
+			//charging_timer    = tyyppi->charge_time;
+			//attack1_timer = tyyppi->attack1_time;
+			//spritet[i].charging_timer    = spritet[i].tyyppi->charge_time;
+			dst->attack1_timer = dst->tyyppi->attack1_time;
+			dst->charging_timer = 0;
+			this->charging_timer = 0;
 
-			while(i == oma_i || i == -1)
-				i = portit[rand()%porttien_maara];
-
-			if (spritet[i].tyyppi != NULL)
-			{
-				sprite.x = spritet[i].x;
-				sprite.y = spritet[i].y;
-				//charging_timer    = tyyppi->charge_time;
-				//attack1_timer = tyyppi->attack1_time;
-				//spritet[i].charging_timer    = spritet[i].tyyppi->charge_time;
-				spritet[i].attack1_timer = spritet[i].tyyppi->attack1_time;
-				charging_timer = 0;
-				spritet[i].charging_timer = 0;
-				siirto = 1;
-			}
+			siirto = 1;
 		}
 	}
 

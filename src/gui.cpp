@@ -329,8 +329,8 @@ void GUI_Update() {
 		float alpha = Screen_Alpha();
 
 		{
-			doodle_active = Player_Sprite->ammus2 != -1;
-			egg_active = Player_Sprite->ammus1 != -1;
+			doodle_active = Player_Sprite->ammus2 != nullptr;
+			egg_active = Player_Sprite->ammus1 != nullptr;
 			gift_active = Gifts_Count() > 0;
 
 			if (doodle_active) {

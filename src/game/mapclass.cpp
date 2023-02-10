@@ -777,20 +777,21 @@ void MapClass::Kopioi(const MapClass &kartta){
 void MapClass::Place_Sprites() {
 
 	Sprites_clear();
-	Sprites_add(this->pelaaja_sprite, 1, 0, 0, MAX_SPRITEJA, false);
+	Sprites_add(Prototypes_List[pelaaja_sprite], 1, 0, 0, nullptr, false);
 
 	for (u32 x = 0; x < PK2MAP_MAP_WIDTH; x++) {
 		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT; y++) {
 
 			int sprite = this->spritet[x+y*PK2MAP_MAP_WIDTH];
+			PrototypeClass* protot = Prototypes_List[sprite];
 
-			if (sprite != 255 && Prototypes_List[sprite]->korkeus > 0) {
+			if (sprite != 255 && protot->korkeus > 0) {
 
-				char* name = Prototypes_List[sprite]->nimi;
+				char* name = protot->nimi;
 				if (!Episode->ignore_collectable && strncmp(name, Episode->collectable_name.c_str(), Episode->collectable_name.size()) == 0)
 					Game->apples_count++;
 
-				Sprites_add(sprite, 0, x*32, y*32 - Prototypes_List[sprite]->korkeus+32, MAX_SPRITEJA, false);
+				Sprites_add(protot, 0, x*32, y*32 - protot->korkeus+32, nullptr, false);
 				
 			}
 		}
