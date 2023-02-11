@@ -138,10 +138,15 @@ int PK_Draw_Map() {
 
 			int paluu = PK_Draw_Map_Button(x-5, y-10, type);
 
-			if (!Episode->ignore_collectable && (Episode->level_status[i] & LEVEL_ALLAPPLES))
-				PDraw::image_cutclip(game_assets2, 
-					x - 10,
-					y, 45, 379, 58, 394);
+			if (!Episode->ignore_collectable) {
+				if (Episode->level_status[i] & LEVEL_ALLAPPLES)
+					PDraw::image_cutclip(game_assets2, 
+						x - 10,
+						y, 45, 379, 58, 394);
+				//else //TODO - draw transparent apples
+				//	PDraw::image_cutcliptransparent(game_assets2, 
+				//		45, 379, 58-45, 394-379, x - 10, y, sin_table[degree%360]*3 - 10, COLOR_GRAY);
+			}
 
 			if (Episode->next_level == UINT32_MAX) {
 

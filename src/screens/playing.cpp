@@ -371,7 +371,7 @@ int Draw_InGame_Lower_Menu() {
 		int min = int(shown_time/60);
 		int sek = int(shown_time)%60;
 
-		x = screen_width / 2 - 546 / 2 + 342;
+		x = screen_width / 2 + 69;
 		y = screen_height-39;
 		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_time),x,y-20);
 
@@ -392,8 +392,8 @@ int Draw_InGame_Lower_Menu() {
 	// Draw keys
 	/////////////////
 	if (Game->keys > 0){
-		x = screen_width / 2 - 546 / 2 + 483;
-		y = screen_height-39;
+		x = screen_width / 2 + 210;
+		y = screen_height - 39;
 		PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_keys),x,y-20);
 
 		sprintf(luku, "%i", Game->keys);
@@ -423,23 +423,39 @@ int Draw_InGame_Lower_Menu() {
 int Draw_InGame_UI(){
 	char luku[16];
 	int vali = 20;
-	int my = 8;
+	int my = 14;
 
 	/////////////////
 	// Draw Energy
 	/////////////////
-	vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_energy),40,my);
+	vali = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.game_energy),60,my);
 	sprintf(luku, "%i", Player_Sprite->energia);	
-	ShadowedText_Draw(luku, 40 + vali, my);
+	ShadowedText_Draw(luku, 60 + vali, my);
 
 	/////////////////
 	// Draw Invisible
 	/////////////////
 	if(Player_Sprite->invisible_timer > 0){
-		vali = PDraw::font_write(fontti1,"invisible:",40,my+27);
+		vali = PDraw::font_write(fontti1,"invisible:",60,my+27);
 		sprintf(luku, "%i", Player_Sprite->invisible_timer/60);	
-		PDraw::font_write(fontti2,luku,40+vali+1,my+27+1);
-		PDraw::font_write(fontti2,luku,40+vali,my+27);
+		PDraw::font_write(fontti2,luku,60+vali+1,my+27+1);
+		PDraw::font_write(fontti2,luku,60+vali,my+27);
+	}
+
+	/////////////////
+	// Draw Mini Apple
+	/////////////////
+	if (Game->apples_count > 0) {
+		if (Game->apples_got == Game->apples_count)
+			PDraw::image_cutcliptransparent(game_assets2, 
+				45, 379, 13, 15, 
+				my, my, 
+				sin_table[degree%360]*1.5+60, COLOR_RED);
+		else
+			PDraw::image_cutcliptransparent(game_assets2, 
+				45, 379, 13, 15, 
+				my, my, 
+				0, COLOR_GRAY);
 	}
 
 	/////////////////
