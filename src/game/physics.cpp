@@ -38,11 +38,6 @@ static double sprite_ala;
 static int sprite_leveys;
 static int sprite_korkeus;
 
-static int map_vasen;
-static int map_yla;
-static int x = 0;
-static int y = 0;
-
 static bool oikealle;
 static bool vasemmalle;
 static bool ylos;
@@ -52,7 +47,7 @@ static bool vedessa;
 
 static double max_nopeus;
 
-void Check_Blocks2(SpriteClass &sprite, PK2BLOCK &palikka) {
+static void Check_SpriteBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 
 	//left and right
 	if (sprite_yla < palikka.ala && sprite_ala-1 > palikka.yla){
@@ -112,7 +107,7 @@ void Check_Blocks2(SpriteClass &sprite, PK2BLOCK &palikka) {
 	}
 }
 
-void Check_Blocks(SpriteClass &sprite, PK2BLOCK &palikka) {
+static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 	int mask_index;
 
 	//If sprite is in the block
@@ -333,25 +328,19 @@ int Sprite_Movement(SpriteClass& sprite){
 	sprite_leveys  = sprite.tyyppi->leveys;
 	sprite_korkeus = sprite.tyyppi->korkeus;
 
-	sprite_vasen = sprite_x-sprite_leveys/2;
-	sprite_oikea = sprite_x+sprite_leveys/2;
-	sprite_yla	 = sprite_y-sprite_korkeus/2;
-	sprite_ala	 = sprite_y+sprite_korkeus/2;
+	sprite_vasen = sprite_x - sprite_leveys  / 2;
+	sprite_oikea = sprite_x + sprite_leveys  / 2;
+	sprite_yla   = sprite_y - sprite_korkeus / 2;
+	sprite_ala   = sprite_y + sprite_korkeus / 2;
 
 	max_nopeus = sprite.tyyppi->max_nopeus;
 
 	vedessa = sprite.vedessa;
 
-	x = 0;
-	y = 0;
-
 	oikealle	 = true,
 	vasemmalle	 = true,
 	ylos		 = true,
 	alas		 = true;
-
-	map_vasen = 0;
-	map_yla   = 0;
 
 	sprite.crouched = false;
 
@@ -623,21 +612,16 @@ int Sprite_Movement(SpriteClass& sprite){
 	/* Blocks colision -                                                                     */
 	/*****************************************************************************************/
 
-	int palikat_x_lkm = -1,
-	    palikat_y_lkm = -1;
-	    //palikat_lkm;
-	u32 p;
-
 	if (sprite.tyyppi->tiletarkistus){ //Find the tiles that the sprite occupies
 
-		palikat_x_lkm = (int)((sprite_leveys) /32)+4; //Number of blocks
-		palikat_y_lkm = (int)((sprite_korkeus)/32)+4;
+		int palikat_x_lkm = (int)((sprite_leveys) /32)+4; //Number of blocks
+		int palikat_y_lkm = (int)((sprite_korkeus)/32)+4;
 
-		map_vasen = (int)(sprite_vasen)/32;	//Position in tile map
-		map_yla	 = (int)(sprite_yla)/32;
+		int map_vasen = (int)(sprite_vasen) / 32; //Position in tile map
+		int map_yla   = (int)(sprite_yla)   / 32;
 
-		for ( y = 0; y < palikat_y_lkm; y++)
-			for ( x = 0; x < palikat_x_lkm; x++) //For each block, create a array of blocks around the sprite
+		for (int y = 0; y < palikat_y_lkm; y++)
+			for (int x = 0; x < palikat_x_lkm; x++) //For each block, create a array of blocks around the sprite
 				Game->palikat[x+(y*palikat_x_lkm)] = Block_Get(map_vasen+x-1,map_yla+y-1); //x = 0, y = 0
 
 		/*****************************************************************************************/
@@ -645,12 +629,12 @@ int Sprite_Movement(SpriteClass& sprite){
 		/*****************************************************************************************/
 
 		//palikat_lkm = palikat_y_lkm*palikat_x_lkm;
-		for (y = 0; y < palikat_y_lkm; y++){
-			for (x = 0; x < palikat_x_lkm; x++) {
-				p = x + y*palikat_x_lkm;
+		for (int y = 0; y < palikat_y_lkm; y++){
+			for (int x = 0; x < palikat_x_lkm; x++) {
+				int p = x + y*palikat_x_lkm;
 				if ( p < 300 )
 					if (!(&sprite == Player_Sprite && dev_mode && PInput::Keydown(PInput::Y)))
-						Check_Blocks(sprite, Game->palikat[p]);
+						Check_MapBlock(sprite, Game->palikat[p]);
 			}
 		}
 	}
@@ -757,7 +741,7 @@ int Sprite_Movement(SpriteClass& sprite){
 						spritepalikka.koodi = BLOCK_HISSI_VERT;
 
 					if (!(&sprite == Player_Sprite && dev_mode && PInput::Keydown(PInput::Y)))
-						Check_Blocks2(sprite, spritepalikka); //Colision sprite and sprite block
+						Check_SpriteBlock(sprite, spritepalikka); //Colision sprite and sprite block
 				}
 			}
 
@@ -1407,21 +1391,6 @@ int Sprite_Movement(SpriteClass& sprite){
 }
 
 int BonusSprite_Movement(SpriteClass& sprite){
-	sprite_x = 0;
-	sprite_y = 0;
-	sprite_a = 0;
-	sprite_b = 0;
-
-	sprite_vasen = 0;
-	sprite_oikea = 0;
-	sprite_yla = 0;
-	sprite_ala = 0;
-
-	sprite_leveys  = 0;
-	sprite_korkeus = 0;
-
-	map_vasen = 0;
-	map_yla   = 0;
 
 	sprite_x = sprite.x;
 	sprite_y = sprite.y;
@@ -1431,8 +1400,11 @@ int BonusSprite_Movement(SpriteClass& sprite){
 	sprite_leveys  = sprite.tyyppi->leveys;
 	sprite_korkeus = sprite.tyyppi->korkeus;
 
-	x = 0;
-	y = 0;
+	sprite_vasen = sprite_x - sprite_leveys  / 2;
+	sprite_oikea = sprite_x + sprite_leveys  / 2;
+	sprite_yla   = sprite_y - sprite_korkeus / 2;
+	sprite_ala   = sprite_y + sprite_korkeus / 2;
+
 	oikealle	= true,
 	vasemmalle	= true,
 	ylos		= true,
@@ -1441,14 +1413,6 @@ int BonusSprite_Movement(SpriteClass& sprite){
 	vedessa = sprite.vedessa;
 
 	max_nopeus = sprite.tyyppi->max_nopeus;
-
-	// Siirret��n varsinaiset muuttujat apumuuttujiin.
-
-	sprite_vasen = sprite_x-sprite_leveys/2;
-	sprite_oikea = sprite_x+sprite_leveys/2;
-	sprite_yla	 = sprite_y-sprite_korkeus/2;
-	sprite_ala	 = sprite_y+sprite_korkeus/2;
-
 
 	if (sprite.damage_timer > 0)
 		sprite.damage_timer--;
@@ -1533,7 +1497,7 @@ int BonusSprite_Movement(SpriteClass& sprite){
 						spritepalikka.water  = false;
 
 						Block_Set_Barriers(spritepalikka);
-						Check_Blocks2(sprite, spritepalikka); //Colision bonus and sprite block
+						Check_SpriteBlock(sprite, spritepalikka); //Colision bonus and sprite block
 					}
 				}
 
@@ -1589,48 +1553,24 @@ int BonusSprite_Movement(SpriteClass& sprite){
 
 		// Lasketaan
 
-		int palikat_x_lkm = 0,
-			palikat_y_lkm = 0;
-
 		if (sprite.tyyppi->tiletarkistus)
 		{
 
-			palikat_x_lkm = (int)((sprite_leveys) /32)+4;
-			palikat_y_lkm = (int)((sprite_korkeus)/32)+4;
+			int palikat_x_lkm = (int)((sprite_leveys) /32)+4;
+			int palikat_y_lkm = (int)((sprite_korkeus)/32)+4;
 
-			map_vasen = (int)(sprite_vasen)/32;
-			map_yla	 = (int)(sprite_yla)/32;
+			int map_vasen = (int)(sprite_vasen)/32;
+			int map_yla   = (int)(sprite_yla)/32;
 
-			for (y=0;y<palikat_y_lkm;y++)
-				for (x=0;x<palikat_x_lkm;x++)
-				{
+			for (int y = 0; y < palikat_y_lkm; y++)
+				for (int x = 0; x < palikat_x_lkm; x++)
 					Game->palikat[x+y*palikat_x_lkm] = Block_Get(map_vasen+x-1,map_yla+y-1);
-				}
 
 			// Tutkitaan t�rm��k� palikkaan
 
-			for (y=0;y<palikat_y_lkm;y++)
-				for (x=0;x<palikat_x_lkm;x++)
-					Check_Blocks(sprite, Game->palikat[x+y*palikat_x_lkm]);
-			/*
-			Check_Blocks_Debug(sprite, palikat[x+y*palikat_x_lkm],
-					sprite_x,
-					sprite_y,
-					sprite_a,
-					sprite_b,
-					sprite_vasen,
-					sprite_oikea,
-					sprite_yla,
-					sprite_ala,
-					sprite_leveys,
-					sprite_korkeus,
-					map_vasen,
-					map_yla,
-					oikealle,
-					vasemmalle,
-					ylos,
-					alas);*/
-
+			for (int y = 0; y < palikat_y_lkm; y++)
+				for (int x = 0; x < palikat_x_lkm; x++)
+					Check_MapBlock(sprite, Game->palikat[x+y*palikat_x_lkm]);
 
 		}
 
