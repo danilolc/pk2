@@ -20,14 +20,6 @@
 #include <cstring>
 #include <cmath>
 
-int aste,
-	vesiaste = 0,
-	animaatio,
-	ajastin1,
-	ajastin2,
-	ajastin3,
-	avaimet;
-
 struct PK2KARTTA{ // Vanha versio 0.1
 	char		versio[8];
 	char		nimi[40];
@@ -38,13 +30,14 @@ struct PK2KARTTA{ // Vanha versio 0.1
 	u8		extrat [640*480];
 };
 
-void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys){
+void MapClass::Animoi(int degree, int anim, int aika1, int aika2, int aika3) {
+
 	aste = degree;
 	animaatio = anim;
 	ajastin1 = aika1;
 	ajastin2 = aika2;
 	ajastin3 = aika3;
-	avaimet  = keys;
+
 }
 
 MapClass::MapClass(){}
@@ -570,15 +563,12 @@ void MapClass::Select_Start() {
 
 }
 
-
 int MapClass::Count_Keys() {
-	u8 sprite;
-	u32 x;
 
 	int keys = 0;
 
-	for (x=0; x < PK2MAP_MAP_SIZE; x++){
-		sprite = this->spritet[x];
+	for (u32 x=0; x < PK2MAP_MAP_SIZE; x++){
+		u8 sprite = this->spritet[x];
 		if (sprite != 255)
 			if (Prototypes_List[sprite]->avain && 
 				Prototypes_List[sprite]->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
@@ -590,13 +580,12 @@ int MapClass::Count_Keys() {
 }
 
 void MapClass::Change_SkullBlocks() {
-	u8 front, back;
-	u32 x,y;
 
-	for (x=0; x<PK2MAP_MAP_WIDTH; x++)
-		for (y=0; y<PK2MAP_MAP_HEIGHT; y++){
-			front = this->seinat[x+y*PK2MAP_MAP_WIDTH];
-			back  = this->taustat[x+y*PK2MAP_MAP_WIDTH];
+	for (u32 x = 0; x < PK2MAP_MAP_WIDTH; x++)
+		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT; y++){
+			
+			u8 front = this->seinat[x+y*PK2MAP_MAP_WIDTH];
+			u8 back  = this->taustat[x+y*PK2MAP_MAP_WIDTH];
 
 			if (front == BLOCK_KALLOSEINA){
 				this->seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
@@ -619,12 +608,12 @@ void MapClass::Change_SkullBlocks() {
 }
 
 void MapClass::Open_Locks() {
-	u8 palikka;
-	u32 x,y;
 
-	for (x=0; x < PK2MAP_MAP_WIDTH; x++)
-		for (y=0; y < PK2MAP_MAP_HEIGHT; y++){
-			palikka = this->seinat[x+y*PK2MAP_MAP_WIDTH];
+	for (u32 x = 0; x < PK2MAP_MAP_WIDTH; x++)
+		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT; y++){
+			
+			u8 palikka = this->seinat[x+y*PK2MAP_MAP_WIDTH];
+			
 			if (palikka == BLOCK_LUKKO){
 				this->seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
 				Effect_SmokeClouds(x*32+6,y*32+6);
@@ -642,14 +631,14 @@ void MapClass::Open_Locks() {
 }
 
 void MapClass::Calculate_Edges(){
+
 	u8 tile1, tile2, tile3;
-	bool edge = false;
 
 	memset(this->reunat, false, sizeof(this->reunat));
 
-	for (u32 x=1; x<PK2MAP_MAP_WIDTH-1; x++)
-		for (u32 y=0; y<PK2MAP_MAP_HEIGHT-1; y++){
-			edge = false;
+	for (u32 x = 1; x < PK2MAP_MAP_WIDTH - 1; x++)
+		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT - 1; y++){
+			bool edge = false;
 
 			tile1 = this->seinat[x+y*PK2MAP_MAP_WIDTH];
 
@@ -805,8 +794,8 @@ void MapClass::Animate_WaterSurface(int tiles){
 void MapClass::Animate_Water(int tiles, int water_tiles){
 	u8 *buffer_lahde = NULL, *buffer_kohde = NULL;
 	u32 leveys_lahde, leveys_kohde;
-	int x, y, color1, color2,
-		d1 = vesiaste / 2, d2;
+	int x, y, color1, color2;
+	int d1 = vesiaste / 2, d2;
 	int sini, cosi;
 	int vx,vy;
 	int i;

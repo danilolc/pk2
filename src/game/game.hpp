@@ -31,9 +31,11 @@ class GameClass {
 
 		u32 exit_timer = 0;
 
-		int timeout = 0; //timeout in frames
+		int  timeout = 0; //timeout in frames
 		bool has_time = false;
-		u64 frame_count = 0; //flames elapsed
+		u64  frame_count = 0; //flames elapsed
+
+		int palikka_animaatio = 0;
 
 		int button_vibration = 0;
 		int button1 = 0;

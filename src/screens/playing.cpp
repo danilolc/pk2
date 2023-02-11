@@ -673,11 +673,9 @@ int Update_Camera(){
 
 int Screen_InGame(){
 
-	static int palikka_animaatio = 0;
-
 	if (!Game->level_clear && (!Game->has_time || Game->timeout > 0)) {
-		MapClass_Animoi(degree, palikka_animaatio/7, Game->button1, Game->button2, Game->button3, false);
-		palikka_animaatio = 1 + palikka_animaatio % 34;
+		Game->map->Animoi(degree, Game->palikka_animaatio/7, Game->button1, Game->button2, Game->button3);
+		Game->palikka_animaatio = 1 + Game->palikka_animaatio % 34;
 	}
 
 	Update_Camera();

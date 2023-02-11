@@ -67,9 +67,16 @@ const u8 TAUSTA_PALLARX_VERT          = 1;
 const u8 TAUSTA_PALLARX_HORI          = 2;
 const u8 TAUSTA_PALLARX_VERT_JA_HORI  = 3;
 
-void MapClass_Animoi(int degree, int anim, int aika1, int aika2, int aika3, bool keys);
-
 class MapClass {
+	private:
+
+	int aste      = 0;  // degree of movable blocks
+	int vesiaste  = 0;  // timer for water animation
+	int animaatio = 0;  // block animations frame
+	int ajastin1  = 0;  // button 1 timer
+	int ajastin2  = 0;  // button 2 timer
+	int ajastin3  = 0;  // button 3 timer
+
     public:
 
     /* Atributs ------------------------*/
@@ -96,7 +103,7 @@ class MapClass {
     u8       seinat [PK2MAP_MAP_SIZE] = {255};              // map fg tiles 256*224
     u8       spritet[PK2MAP_MAP_SIZE] = {255};              // map sprites 256*224
     char     protot [PK2MAP_MAP_MAX_PROTOTYPES][13] = {""}; // map prototype list .spr
-    bool     reunat [PK2MAP_MAP_SIZE] = {0};                // map edges - calculated during game
+    bool     reunat [PK2MAP_MAP_SIZE] = {false};            // map edges - calculated during game
 
     int      tiles_buffer      = -1;                        // index of block palette
     int      bg_tiles_buffer   = -1;
@@ -118,6 +125,8 @@ class MapClass {
 
     int Piirra_Taustat(int kamera_x, int kamera_y);
     int Piirra_Seinat (int kamera_x, int kamera_y);
+
+    void Animoi(int degree, int anim, int aika1, int aika2, int aika3);
 
     //PK2 functions
     int  Count_Keys();
