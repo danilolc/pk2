@@ -53,6 +53,7 @@ enum {
     EFFECT_NONE,
     EFFECT_STARS,
     EFFECT_SMOKE,
+    EFFECT_THUNDER,
 
 };
 

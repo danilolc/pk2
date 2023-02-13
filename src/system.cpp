@@ -87,7 +87,6 @@ void Fade_in(float speed){
     fade_speed = speed;
 }
 void Do_Thunder() {
-	printf( "Thunder\n");
 	thunder_index = 0;
 }
 

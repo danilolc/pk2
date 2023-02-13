@@ -108,7 +108,6 @@ static void Check_SpriteBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 }
 
 static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
-	int mask_index;
 
 	//If sprite is in the block
 	if (sprite_x <= palikka.oikea && sprite_x >= palikka.vasen && sprite_y <= palikka.ala && sprite_y >= palikka.yla){
@@ -159,7 +158,7 @@ static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 
 	//Examine if there is a block on bottom
 	if ((palikka.koodi<80 || palikka.koodi>139) && palikka.koodi != BLOCK_ESTO_ALAS && palikka.koodi < 150){
-		mask_index = (int)(sprite_x+sprite_a) - palikka.vasen;
+		int mask_index = (int)(sprite_x+sprite_a) - palikka.vasen;
 
 		if (mask_index < 0)
 			mask_index = 0;

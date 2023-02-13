@@ -527,7 +527,10 @@ void SpriteClass::HandleEffects() {
 		Effect_Super(x, y, tyyppi->leveys, tyyppi->korkeus);
 		
 	if (tyyppi->effect == EFFECT_SMOKE)
-		Effect_Points(x - 1, y - 1, tyyppi->leveys, tyyppi->korkeus, tyyppi->vari);
+		Effect_Points(x - 5, y - 5, tyyppi->leveys, tyyppi->korkeus, tyyppi->vari);
+
+	if (tyyppi->effect == EFFECT_THUNDER && tyyppi->charge_time > 0)
+		if (rand() % tyyppi->charge_time == 0) Do_Thunder();
 
 }
 
