@@ -49,6 +49,14 @@ enum {
 };
 
 enum {
+
+    EFFECT_NONE,
+    EFFECT_STARS,
+    EFFECT_SMOKE,
+
+};
+
+enum {
 /*
 
 RANDOM_HORIZONTAL_CHANGE_OF_DIRECTION
@@ -572,7 +580,7 @@ struct PrototypeClass13{
     bool    este_vasemmalle;                    // if is wall at left
 
 
-    u8      lapinakyvyys;                       // transparency //unused
+    u8      effect;                             // sprite effect
     bool    hehkuu;                             // if it is transparent //unused
     u32     tulitauko;                          //?charge_time inflicted by projectile sprites on the shooter
     bool    can_glide;                          // can drip quietly down?
@@ -656,7 +664,7 @@ class PrototypeClass{
     bool    este_oikealle   = true;
     bool    este_vasemmalle = true;
 
-    u8      lapinakyvyys = false;
+    u8      effect       = EFFECT_NONE;
     bool    hehkuu       = false;
     int     tulitauko    = 0;
     bool    can_glide    = false;
@@ -736,6 +744,7 @@ class SpriteClass{
     int  Piirra(int kamera_x, int kamera_y);   // animate and draw the sprite
     int  Animaatio(int anim_i, bool nollaus);  // set sprite animation
     int  Animoi();                             // animate the sprite
+    void HandleEffects();                      // create sprite effects
     bool Onko_AI(int AI);                      // if the sprite has a AI
 
     //AI_Functions

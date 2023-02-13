@@ -39,7 +39,6 @@ bool Is_Sprite_Visible(SpriteClass* sprite) {
 int Draw_InGame_BGSprites() {
 
 	for (SpriteClass* sprite : bgSprites_List) {
-		// Check if a sprite or part of it is in the image
 
 		double alku_x = sprite->alku_x;
 		double alku_y = sprite->alku_y;
@@ -98,8 +97,8 @@ int Draw_InGame_BGSprites() {
 		if (Is_Sprite_Visible(sprite)) {
 			sprite->Piirra(Game->camera_x,Game->camera_y);
 
-			if (sprite->super_mode_timer && !Game->paused)
-				Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
+			if (!Game->paused)
+				sprite->HandleEffects();
 
 			sprite->piilossa = false;
 			debug_drawn_sprites++;
@@ -140,8 +139,8 @@ void Draw_InGame_Sprites() {
 				}
 			}
 
-			if (sprite->super_mode_timer && !Game->paused)
-				Effect_Super(sprite->x, sprite->y, sprite->tyyppi->leveys, sprite->tyyppi->korkeus);
+			if (!Game->paused)
+				sprite->HandleEffects();
 
 			debug_drawn_sprites++;
 

@@ -17,5 +17,3 @@ typedef int32_t s32;
 typedef int64_t s64;
 
 typedef unsigned int uint;
-
-typedef const char cchar;

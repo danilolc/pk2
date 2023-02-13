@@ -393,15 +393,15 @@ void PGl::update(void* _buffer8) {
 	shader_time += 1.f/60;
 	if (shader_time > time_cycle)
 		shader_time -= time_cycle;
-
-	static Uint32 last_palette_version = -1;
+	
+	///////////////////////////////////////////
+	// Send game indexed buffer to texture
+	///////////////////////////////////////////
 
 	SDL_LockSurface(buffer8);
-	int buffer_w = buffer8->w, buffer_h = buffer8->h;
 
-	bool update_palette = last_palette_version != buffer8->format->palette->version;
-	last_palette_version = buffer8->format->palette->version;
-	SDL_Color* bufer8_colors = buffer8->format->palette->colors;
+	int buffer_w = buffer8->w;
+	int buffer_h = buffer8->h;
 	
 	glViewport(0, 0, buffer_w, buffer_h);
 	glBindFramebuffer(GL_FRAMEBUFFER, indexed_buffer);
@@ -411,12 +411,20 @@ void PGl::update(void* _buffer8) {
 	glBindTexture(GL_TEXTURE_2D, indexed_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, buffer8->w, buffer8->h, 0, GL_RED, GL_UNSIGNED_BYTE, buffer8->pixels);
 	glUniform1i(uniIndexTex, 0); //
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_1D, palette_texture);
+	glUniform1i(uniIndexPalette, 1); //
+
+	Uint32 current_palette_version = buffer8->format->palette->version;
 	
-	if (update_palette) {
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_1D, palette_texture);
+	if (current_palette_version != last_palette_version) {
+
+		// Update palette
+		SDL_Color* bufer8_colors = buffer8->format->palette->colors;
 		glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, 256, 0, GL_RGBA, GL_UNSIGNED_BYTE, bufer8_colors);
-		glUniform1i(uniIndexPalette, 1); //
+		last_palette_version = current_palette_version;
+	
 	}
 
 	SDL_UnlockSurface(buffer8);
@@ -425,23 +433,36 @@ void PGl::update(void* _buffer8) {
 	glUniform2f(uniIndexRes, buffer_w, buffer_h); //
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
+	///////////////////////////////////////////
+	// Draw the RGB texture to the screen
+	///////////////////////////////////////////
+
 	int w, h;
 	PRender::get_window_size(&w, &h); //
+
 	int cw, ch;
 	PRender::get_cover_size(&cw, &ch); //
+	
 	glViewport(0, 0, w, h);
 	glBindFramebuffer(GL_FRAMEBUFFER, screen_buffer);
 	glUseProgram(*screen_program);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, screen_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, buffer_w, buffer_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); //
 	glUniform1i(*uniScreenTex, 0); //
+	
 	glUniform2f(*uniScreenIdxRes, buffer_w, buffer_h); //
 	glUniform2f(*uniScreenRes, cw, ch); //
 	glUniform1f(*uniScreenTime, shader_time);
+	
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	///////////////////////////////////////////
+	// Swap window
+	///////////////////////////////////////////
 
 	SDL_GL_SwapWindow(curr_window);
 

@@ -42,6 +42,8 @@ private:
     SDL_Window* curr_window;
     SDL_GLContext context;
 
+    Uint32 last_palette_version = -1;
+
     GLchar Log_message[1024];
 
     GLuint vao, vbo, ubo;

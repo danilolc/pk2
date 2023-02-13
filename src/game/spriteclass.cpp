@@ -5,6 +5,7 @@
 #include "game/spriteclass.hpp"
 
 #include "system.hpp"
+#include "gfx/effect.hpp"
 
 #include "engine/PDraw.hpp"
 #include "engine/PSound.hpp"
@@ -243,7 +244,7 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 	vari				= proto.vari;
 	vihollinen			= proto.vihollinen;
 
-	lapinakyvyys		= proto.lapinakyvyys;
+	effect		= proto.effect;
 	hehkuu				= proto.hehkuu;
 	tulitauko			= proto.tulitauko;
 	can_glide			= proto.can_glide;
@@ -518,6 +519,16 @@ int SpriteClass::Piirra(int kamera_x, int kamera_y){
 	}
 
 	return 0;
+}
+
+void SpriteClass::HandleEffects() {
+
+	if (super_mode_timer || tyyppi->effect == EFFECT_STARS)
+		Effect_Super(x, y, tyyppi->leveys, tyyppi->korkeus);
+		
+	if (tyyppi->effect == EFFECT_SMOKE)
+		Effect_Points(x - 1, y - 1, tyyppi->leveys, tyyppi->korkeus, tyyppi->vari);
+
 }
 
 int SpriteClass::AI_Basic(){

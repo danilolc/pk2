@@ -11,7 +11,10 @@
 #include <cstdlib>
 
 void Effect_Circle_Star(double x, double y, u8 color) {
-	
+
+	if (color == COLOR_NORMAL)
+		color = COLOR_GRAY;
+		
 	float weight = 0.01;
 	int time = 50;
 
@@ -41,6 +44,34 @@ void Effect_Super(double x, double y, int w, int h) {
 		int color = colors[rand()%5];
 
 		Particles_New(PARTICLE_STAR, px, py, sin_table[angle]/d, cos_table[angle]/d, time, weight, color);
+	}
+}
+
+void Effect_Points(double x, double y, int w, int h, u8 color) {
+
+	if (color == COLOR_NORMAL)
+		color = COLOR_GRAY;
+
+	float weight = 0.01;
+	int time = 25;
+
+	int points = 1 + (w * h) / 500;
+
+	for (int i = 0; i < points; i++) {
+		int angle = rand() % 180;
+		int px = x + rand()%w - w / 2;
+		int py = y + rand()%h - h / 2;
+
+		int d = 30 + rand()%40;
+
+		int rnd = rand()%500;
+
+		int type = PARTICLE_POINT;
+		if (rnd > 200) type = PARTICLE_LIGHT;
+		else if (rnd > 50) type = PARTICLE_SPARK;
+
+		Particles_New(type, px, py, sin_table[angle]/d, cos_table[angle]/d, time, weight, color);
+		
 	}
 }
 
