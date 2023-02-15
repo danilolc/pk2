@@ -823,6 +823,8 @@ int Sprite_Movement(SpriteClass& sprite){
 								sprite.saatu_vahinko = (int)(sprite2->weight+sprite2->b/4);
 							sprite.saatu_vahinko_tyyppi = DAMAGE_DROP;
 							sprite2->jump_timer = 1;
+							if (sprite2->Onko_AI(AI_EGG2))
+								sprite2->saatu_vahinko = sprite2->tyyppi->energia;
 						}
 
 						// If there is another sprite damaging
@@ -1106,6 +1108,8 @@ int Sprite_Movement(SpriteClass& sprite){
 				case AI_BONUS:						sprite.AI_Bonus();
 													break;
 				case AI_EGG:						sprite.AI_Egg();
+													break;
+				case AI_EGG2:						sprite.AI_Egg2();
 													break;
 				case AI_AMMUS:						sprite.AI_Ammus();
 													break;

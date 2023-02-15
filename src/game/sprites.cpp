@@ -316,7 +316,7 @@ void Sprites_add_ammo(PrototypeClass* protot, double x, double y, SpriteClass* e
 		sprite->jump_timer = 1;
 	}
 	else
-	if (protot->Onko_AI(AI_EGG)){
+	if (protot->Onko_AI(AI_EGG) || protot->Onko_AI(AI_EGG2)){
 		sprite->y = emo->y+10;
 		sprite->a = emo->a / 1.5;
 	}

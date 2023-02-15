@@ -264,6 +264,8 @@ RANDOM_MOVE_VERTIC._AND_HORIZ.*/
     AI_SWIMMING,
     AI_MAX_SPEED_SWIMMING,
 
+    AI_EGG2 = 170,
+
     // AI_154 - AI_200
 
     // New AI
@@ -752,6 +754,7 @@ class SpriteClass{
     int AI_Kana();
     int AI_Bonus();
     int AI_Egg();
+    int AI_Egg2();
     int AI_Ammus();
     int AI_Jumper();
     int AI_Sammakko1();

@@ -452,6 +452,7 @@ int SpriteClass::Animoi(){
 		case AI_LITTLE_CHICKEN: Animation_Kana();  break;
 		case AI_BONUS:          Animation_Bonus(); break;
 		case AI_EGG:            Animation_Egg();   break;
+		case AI_EGG2:           Animation_Egg();   break;
 		case AI_AMMUS:          Animation_Ammus(); break;
 		case AI_JUMPER:         Animation_Kana();  break;
 		case AI_BASIC:          Animation_Perus(); break;
@@ -1434,6 +1435,30 @@ int SpriteClass::AI_Egg(){
 
 	if (this->charging_timer == 1)
 		this->piilota = true;
+
+	return 0;
+}
+int SpriteClass::AI_Egg2(){
+	if (x < 10)
+	{
+		x = 10;
+	}
+
+	if (y > 9920)
+	{
+		y = 9920;
+	}
+
+	if (!alas)
+		saatu_vahinko = tyyppi->energia;
+
+	//a /= 1.01;
+
+	if (energia == 0 && charging_timer == 0)
+		charging_timer = tyyppi->charge_time;
+
+	if (charging_timer == 1)
+		piilota = true;
 
 	return 0;
 }
