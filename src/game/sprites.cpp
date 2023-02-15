@@ -190,7 +190,7 @@ int Prototypes_GetAll() {
 
 void Sprites_add_bg(SpriteClass* sprite) {
 
-	bgSprites_List.push_back(sprite);
+	bgSprites_List.push_front(sprite);
 
 }
 
@@ -245,7 +245,7 @@ void Sprites_start_directions() {
 void Sprites_add(PrototypeClass* protot, int is_Player_Sprite, double x, double y, SpriteClass* emo, bool isbonus) {
 
 	SpriteClass* sprite = new SpriteClass(protot, is_Player_Sprite, x, y);
-	Sprites_List.push_back(sprite);
+	Sprites_List.push_front(sprite);
 
 	if (is_Player_Sprite) Player_Sprite = sprite;
 
@@ -282,7 +282,7 @@ void Sprites_add_ammo(PrototypeClass* protot, double x, double y, SpriteClass* e
 
 	//SpriteClass(proto, is_Player_Sprite,false,x-proto->leveys/2,y);
 	SpriteClass* sprite = new SpriteClass(protot, false, x, y);
-	Sprites_List.push_back(sprite);
+	Sprites_List.push_front(sprite);
 
 	//sprite->x += sprite->tyyppi->leveys;
 	//sprite->y += sprite->tyyppi->korkeus/2;
