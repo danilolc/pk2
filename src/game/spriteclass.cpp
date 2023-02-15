@@ -408,7 +408,10 @@ SpriteClass::SpriteClass(PrototypeClass *tyyppi, int pelaaja, double x, double y
 
 		this->tyyppi         = tyyppi;
 		this->pelaaja        = pelaaja;
+
+		this->aktiivinen     = true;
 		this->piilota        = false;
+
 		this->x              = x;
 		this->y              = y;
 		this->alku_x         = x;
