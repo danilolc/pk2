@@ -16,8 +16,6 @@ typedef struct {
 const u32 PK2MAP_MAP_WIDTH  = 256;
 const u32 PK2MAP_MAP_HEIGHT = 224;
 const u32 PK2MAP_MAP_SIZE   = PK2MAP_MAP_WIDTH * PK2MAP_MAP_HEIGHT;
-const u32 PK2MAP_BLOCK_PALETTE_WIDTH  = 320;
-const u32 PK2MAP_BLOCK_PALETTE_HEIGHT = 480;
 
 const u8 PK2KARTTA_EXTRA_EI           = 0;
 
@@ -73,9 +71,9 @@ class MapClass {
 	int aste      = 0;  // degree of movable blocks
 	int vesiaste  = 0;  // timer for water animation
 	int animaatio = 0;  // block animations frame
-	int ajastin1  = 0;  // button 1 timer
-	int ajastin2  = 0;  // button 2 timer
-	int ajastin3  = 0;  // button 3 timer
+	int button1_timer  = 0;  // button 1 timer
+	int button2_timer  = 0;  // button 2 timer
+	int button3_timer  = 0;  // button 3 timer
 
     public:
 

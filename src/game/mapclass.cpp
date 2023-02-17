@@ -34,9 +34,9 @@ void MapClass::Animoi(int degree, int anim, int aika1, int aika2, int aika3) {
 
 	aste = degree;
 	animaatio = anim;
-	ajastin1 = aika1;
-	ajastin2 = aika2;
-	ajastin3 = aika3;
+	button1_timer = aika1;
+	button2_timer = aika2;
+	button3_timer = aika3;
 
 }
 
@@ -161,7 +161,7 @@ int MapClass::LoadVersion01(PFile::Path path){
 }
 int MapClass::LoadVersion10(PFile::Path path){
 	
-	MapClass *kartta = new MapClass();
+	MapClass kartta;
 
 	PFile::RW* file = path.GetRW("r");
 	if (file == nullptr) {
@@ -171,34 +171,28 @@ int MapClass::LoadVersion10(PFile::Path path){
 	file->read(&kartta, sizeof(PK2KARTTA));
 	file->close();
 
-	strcpy(this->versio,		kartta->versio);
-	strcpy(this->palikka_bmp,	kartta->palikka_bmp);
-	strcpy(this->taustakuva,	kartta->taustakuva);
-	strcpy(this->musiikki,		kartta->musiikki);
+	strcpy(this->versio,		kartta.versio);
+	strcpy(this->palikka_bmp,	kartta.palikka_bmp);
+	strcpy(this->taustakuva,	kartta.taustakuva);
+	strcpy(this->musiikki,		kartta.musiikki);
 
-	strcpy(this->nimi,			kartta->nimi);
-	strcpy(this->tekija,		kartta->tekija);
+	strcpy(this->nimi,			kartta.nimi);
+	strcpy(this->tekija,		kartta.tekija);
 
-	this->aika			= kartta->aika;
-	this->extra			= kartta->extra;
-	this->tausta		= kartta->tausta;
+	this->aika			= kartta.aika;
+	this->extra			= kartta.extra;
+	this->tausta		= kartta.tausta;
 
 	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-		this->taustat[i] = kartta->taustat[i];
+		this->taustat[i] = kartta.taustat[i];
 
 	for (u32 i=0; i<PK2MAP_MAP_SIZE;i++)
-		this->seinat[i] = kartta->seinat[i];
+		this->seinat[i] = kartta.seinat[i];
 
 	for (u32 i=0; i<PK2MAP_MAP_SIZE; i++)
-		this->spritet[i] = kartta->spritet[i];
+		this->spritet[i] = kartta.spritet[i];
 
-
-	//Load_TilesImage(kartta->palikka_bmp);
-	//Load_BG(kartta->taustakuva);
-
-	//delete kartta;
-
-	return(0);
+	return 0;
 }
 int MapClass::LoadVersion11(PFile::Path path){
 	int virhe = 0;
@@ -239,9 +233,6 @@ int MapClass::LoadVersion11(PFile::Path path){
 	for (u32 i=0;i<PK2MAP_MAP_SIZE;i++)
 		if (spritet[i] != 255)
 			spritet[i] -= 50;
-
-	//Load_TilesImage(this->palikka_bmp);
-	//Load_BG(this->taustakuva);
 
 	return (virhe);
 }
@@ -303,9 +294,6 @@ int MapClass::LoadVersion12(PFile::Path path){
 	file->read(protot, sizeof(protot[0]) * PK2MAP_MAP_MAX_PROTOTYPES);
 
 	file->close();
-
-	//Load_TilesImage(this->palikka_bmp);
-	//Load_BG(this->taustakuva);
 
 	return 0;
 }
@@ -711,7 +699,7 @@ void MapClass::Animate_Fire(int tiles){
 			buffer[x+y*leveys] = color;
 		}
 
-	if (ajastin1 < 20)
+	if (button1_timer < 20)
 	{
 		for (x=128;x<160;x++)
 			buffer[x+479*leveys] = rand()%15+144;
@@ -914,49 +902,45 @@ int MapClass::Piirra_Taustat(int kamera_x, int kamera_y){
 }
 
 int MapClass::Piirra_Seinat(int kamera_x, int kamera_y){
-	int palikka;
-	int px = 0,
-		py = 0,
-		ay = 0,
-		ax = 0,
-		kartta_x = kamera_x/32,
-		kartta_y = kamera_y/32;
 
-	int ajastin1_y = 0,
-		ajastin2_y = 0,
-		ajastin3_x = 0;
+	int kartta_x = kamera_x / 32;
+	int kartta_y = kamera_y / 32;
 
-	int tiles_w = screen_width/32 + 1;
-	int tiles_h = screen_height/32 + 1;
+	int button1_timer_y = 0;
+	int button2_timer_y = 0;
+	int button3_timer_y = 0;
 
-	if (ajastin1 > 0){
-		ajastin1_y = 64;
+	int tiles_w = screen_width  / 32 + 1;
+	int tiles_h = screen_height / 32 + 1;
 
-		if (ajastin1 < 64)
-			ajastin1_y = ajastin1;
+	if (button1_timer > 0){
+		button1_timer_y = 64;
 
-		if (ajastin1 > SWITCH_INITIAL_VALUE-64)
-			ajastin1_y = SWITCH_INITIAL_VALUE - ajastin1;
+		if (button1_timer < 64)
+			button1_timer_y = button1_timer;
+
+		if (button1_timer > SWITCH_INITIAL_VALUE - 64)
+			button1_timer_y = SWITCH_INITIAL_VALUE - button1_timer;
 	}
 
-	if (ajastin2 > 0){
-		ajastin2_y = 64;
+	if (button2_timer > 0){
+		button2_timer_y = 64;
 
-		if (ajastin2 < 64)
-			ajastin2_y = ajastin2;
+		if (button2_timer < 64)
+			button2_timer_y = button2_timer;
 
-		if (ajastin2 > SWITCH_INITIAL_VALUE-64)
-			ajastin2_y = SWITCH_INITIAL_VALUE - ajastin2;
+		if (button2_timer > SWITCH_INITIAL_VALUE - 64)
+			button2_timer_y = SWITCH_INITIAL_VALUE - button2_timer;
 	}
 
-	if (ajastin3 > 0){
-		ajastin3_x = 64;
+	if (button3_timer > 0){
+		button3_timer_y = 64;
 
-		if (ajastin3 < 64)
-			ajastin3_x = ajastin3;
+		if (button3_timer < 64)
+			button3_timer_y = button3_timer;
 
-		if (ajastin3 > SWITCH_INITIAL_VALUE-64)
-			ajastin3_x = SWITCH_INITIAL_VALUE - ajastin3;
+		if (button3_timer > SWITCH_INITIAL_VALUE - 64)
+			button3_timer_y = SWITCH_INITIAL_VALUE - button3_timer;
 	}
 
 
@@ -969,13 +953,15 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y){
 			int i = x + kartta_x + (y + kartta_y) * PK2MAP_MAP_WIDTH;
 			if( i < 0 || i >= int(sizeof(seinat)) ) continue; //Dont access a not allowed address
 
-			palikka = seinat[i];
+			u8 palikka = seinat[i];
 
 			if (palikka != 255 && palikka != BLOCK_ESTO_ALAS){
-				px = ((palikka%10)*32);
-				py = ((palikka/10)*32);
-				ay = 0;
-				ax = 0;
+				
+				int px = (palikka % 10) * 32;
+				int py = (palikka / 10) * 32;
+				
+				int ay = 0;
+				int ax = 0;
 
 				if (palikka == BLOCK_HISSI_VERT)
 					ay = floor(sin_table[aste%360]);
@@ -984,25 +970,25 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y){
 					ax = floor(cos_table[aste%360]);
 
 				if (palikka == BLOCK_KYTKIN1)
-					ay = ajastin1_y/2;
+					ay = button1_timer_y/2;
 
 				if (palikka == BLOCK_KYTKIN2_YLOS)
-					ay = -ajastin2_y/2;
+					ay = -button2_timer_y/2;
 
 				if (palikka == BLOCK_KYTKIN2_ALAS)
-					ay = ajastin2_y/2;
+					ay = button2_timer_y/2;
 
 				if (palikka == BLOCK_KYTKIN2)
-					ay = ajastin2_y/2;
+					ay = button2_timer_y/2;
 
 				if (palikka == BLOCK_KYTKIN3_OIKEALLE)
-					ax = ajastin3_x/2;
+					ax = button3_timer_y/2;
 
 				if (palikka == BLOCK_KYTKIN3_VASEMMALLE)
-					ax = -ajastin3_x/2;
+					ax = -button3_timer_y/2;
 
 				if (palikka == BLOCK_KYTKIN3)
-					ay = ajastin3_x/2;
+					ay = button3_timer_y/2;
 
 				if (palikka == BLOCK_ANIM1 || palikka == BLOCK_ANIM2 || palikka == BLOCK_ANIM3 || palikka == BLOCK_ANIM4)
 					px += animaatio * 32;

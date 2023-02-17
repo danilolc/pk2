@@ -823,7 +823,7 @@ int Sprite_Movement(SpriteClass& sprite){
 								sprite.saatu_vahinko = (int)(sprite2->weight+sprite2->b/4);
 							sprite.saatu_vahinko_tyyppi = DAMAGE_DROP;
 							sprite2->jump_timer = 1;
-							if (sprite2->Onko_AI(AI_EGG2))
+							if (sprite2->Onko_AI(AI_EGG2)) // Egg bounced, then crack
 								sprite2->saatu_vahinko = sprite2->tyyppi->energia;
 						}
 
