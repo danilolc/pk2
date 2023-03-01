@@ -186,11 +186,11 @@ int GameClass::Clean_TileBuffer() {
 // This moves the collisions of the blocks palette
 int GameClass::Move_Blocks() {
 
-	this->lasketut_palikat[BLOCK_HISSI_HORI].vasen = (int)cos_table[degree%360];
-	this->lasketut_palikat[BLOCK_HISSI_HORI].oikea = (int)cos_table[degree%360];
+	this->lasketut_palikat[BLOCK_LIFT_HORI].vasen = (int)cos_table[degree%360];
+	this->lasketut_palikat[BLOCK_LIFT_HORI].oikea = (int)cos_table[degree%360];
 
-	this->lasketut_palikat[BLOCK_HISSI_VERT].ala = (int)sin_table[degree%360];
-	this->lasketut_palikat[BLOCK_HISSI_VERT].yla = (int)sin_table[degree%360];
+	this->lasketut_palikat[BLOCK_LIFT_VERT].ala = (int)sin_table[degree%360];
+	this->lasketut_palikat[BLOCK_LIFT_VERT].yla = (int)sin_table[degree%360];
 
 	int kytkin1_y = 0,
 		kytkin2_y = 0,
@@ -230,28 +230,28 @@ int GameClass::Move_Blocks() {
 	kytkin2_y /= 2;
 	kytkin3_x /= 2;
 
-	this->lasketut_palikat[BLOCK_KYTKIN1].ala = kytkin1_y;
-	this->lasketut_palikat[BLOCK_KYTKIN1].yla = kytkin1_y;
+	this->lasketut_palikat[BLOCK_BUTTON1].ala = kytkin1_y;
+	this->lasketut_palikat[BLOCK_BUTTON1].yla = kytkin1_y;
 
-	this->lasketut_palikat[BLOCK_KYTKIN2_YLOS].ala = -kytkin2_y;
-	this->lasketut_palikat[BLOCK_KYTKIN2_YLOS].yla = -kytkin2_y;
+	this->lasketut_palikat[BLOCK_BUTTON2_UP].ala = -kytkin2_y;
+	this->lasketut_palikat[BLOCK_BUTTON2_UP].yla = -kytkin2_y;
 
-	this->lasketut_palikat[BLOCK_KYTKIN2_ALAS].ala = kytkin2_y;
-	this->lasketut_palikat[BLOCK_KYTKIN2_ALAS].yla = kytkin2_y;
+	this->lasketut_palikat[BLOCK_BUTTON2_DOWN].ala = kytkin2_y;
+	this->lasketut_palikat[BLOCK_BUTTON2_DOWN].yla = kytkin2_y;
 
-	this->lasketut_palikat[BLOCK_KYTKIN2].ala = kytkin2_y;
-	this->lasketut_palikat[BLOCK_KYTKIN2].yla = kytkin2_y;
+	this->lasketut_palikat[BLOCK_BUTTON2].ala = kytkin2_y;
+	this->lasketut_palikat[BLOCK_BUTTON2].yla = kytkin2_y;
 
-	this->lasketut_palikat[BLOCK_KYTKIN3_OIKEALLE].oikea = kytkin3_x;
-	this->lasketut_palikat[BLOCK_KYTKIN3_OIKEALLE].vasen = kytkin3_x;
-	this->lasketut_palikat[BLOCK_KYTKIN3_OIKEALLE].koodi = BLOCK_HISSI_HORI;
+	this->lasketut_palikat[BLOCK_BUTTON3_RIGHT].oikea = kytkin3_x;
+	this->lasketut_palikat[BLOCK_BUTTON3_RIGHT].vasen = kytkin3_x;
+	this->lasketut_palikat[BLOCK_BUTTON3_RIGHT].koodi = BLOCK_LIFT_HORI;
 
-	this->lasketut_palikat[BLOCK_KYTKIN3_VASEMMALLE].oikea = -kytkin3_x;
-	this->lasketut_palikat[BLOCK_KYTKIN3_VASEMMALLE].vasen = -kytkin3_x;
-	this->lasketut_palikat[BLOCK_KYTKIN3_VASEMMALLE].koodi = BLOCK_HISSI_HORI;
+	this->lasketut_palikat[BLOCK_BUTTON3_LEFT].oikea = -kytkin3_x;
+	this->lasketut_palikat[BLOCK_BUTTON3_LEFT].vasen = -kytkin3_x;
+	this->lasketut_palikat[BLOCK_BUTTON3_LEFT].koodi = BLOCK_LIFT_HORI;
 
-	this->lasketut_palikat[BLOCK_KYTKIN3].ala = kytkin3_x;
-	this->lasketut_palikat[BLOCK_KYTKIN3].yla = kytkin3_x;
+	this->lasketut_palikat[BLOCK_BUTTON3].ala = kytkin3_x;
+	this->lasketut_palikat[BLOCK_BUTTON3].yla = kytkin3_x;
 
 	return 0;
 
@@ -290,7 +290,7 @@ int GameClass::Calculate_Tiles() {
 
 			// L�pik�velt�v� lattia
 
-			if (i == BLOCK_ESTO_ALAS){
+			if (i == BLOCK_BARRIER_DOWN){
 				palikka.oikealle	= BLOCK_BACKGROUND;
 				palikka.ylos		= BLOCK_BACKGROUND;
 				palikka.alas		= BLOCK_WALL;
@@ -310,7 +310,7 @@ int GameClass::Calculate_Tiles() {
 
 			// Kytkimet
 
-			if (i >= BLOCK_KYTKIN1 && i <= BLOCK_KYTKIN3){
+			if (i >= BLOCK_BUTTON1 && i <= BLOCK_BUTTON3){
 				palikka.oikealle	= BLOCK_WALL;
 				palikka.ylos		= BLOCK_WALL;
 				palikka.alas		= BLOCK_WALL;

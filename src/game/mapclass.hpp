@@ -13,57 +13,93 @@ typedef struct {
 
 #define PK2MAP_LAST_VERSION "1.3"
 
-const u32 PK2MAP_MAP_WIDTH  = 256;
-const u32 PK2MAP_MAP_HEIGHT = 224;
-const u32 PK2MAP_MAP_SIZE   = PK2MAP_MAP_WIDTH * PK2MAP_MAP_HEIGHT;
+#define PK2MAP_MAP_WIDTH  256
+#define PK2MAP_MAP_HEIGHT 224
+#define PK2MAP_MAP_SIZE   PK2MAP_MAP_WIDTH * PK2MAP_MAP_HEIGHT
 
-const u8 PK2KARTTA_EXTRA_EI           = 0;
+#define PK2MAP_MAP_MAX_PROTOTYPES 100
 
-const u32 PK2MAP_MAP_MAX_PROTOTYPES = 100;
+#define SWITCH_INITIAL_VALUE 2000
+
+#define BLOCK_MAX_MASKS 150
 
 enum {
 
-    BLOCK_ESTO_ALAS = 40,
-    BLOCK_HISSI_HORI,
-    BLOCK_HISSI_VERT,
-    BLOCK_KYTKIN2_YLOS,
-    BLOCK_KYTKIN3_OIKEALLE,
-    BLOCK_KYTKIN2_ALAS,
-    BLOCK_KYTKIN3_VASEMMALLE,
-    BLOCK_LUKKO,
-    BLOCK_KALLOSEINA,
-    BLOCK_KALLOTAUSTA,
+    BLOCK_BARRIER_DOWN = 40,
+    BLOCK_LIFT_HORI,
+    BLOCK_LIFT_VERT,
+    BLOCK_BUTTON2_UP,
+    BLOCK_BUTTON3_RIGHT,
+    BLOCK_BUTTON2_DOWN,
+    BLOCK_BUTTON3_LEFT,
+    BLOCK_LOCK,
+    BLOCK_SKULL_FOREGROUND,
+    BLOCK_SKULL_BACKGROUND,
 
     BLOCK_ANIM1 = 60,
     BLOCK_ANIM2 = 65,
     BLOCK_ANIM3 = 70,
     BLOCK_ANIM4 = 75,
 
-    BLOCK_VIRTA_VASEMMALLE = 140,
-    BLOCK_VIRTA_OIKEALLE,
-    BLOCK_VIRTA_YLOS,
-    BLOCK_PIILO,
-    BLOCK_TULI,
-    BLOCK_KYTKIN1,
-    BLOCK_KYTKIN2,
-    BLOCK_KYTKIN3,
-    BLOCK_ALOITUS,
-    BLOCK_LOPETUS,
+    BLOCK_DRIFT_LEFT = 140,
+    BLOCK_DRIFT_RIGHT,
+    BLOCK_SCROLL_UP,
+    BLOCK_HIDEOUT,
+    BLOCK_FIRE,
+    BLOCK_BUTTON1,
+    BLOCK_BUTTON2,
+    BLOCK_BUTTON3,
+    BLOCK_START,
+    BLOCK_EXIT,
 
 };
 
-const int SWITCH_INITIAL_VALUE  = 2000;
+enum {
 
-const u8 ILMA_NORMAALI     = 0;
-const u8 ILMA_SADE         = 1;
-const u8 ILMA_METSA        = 2;
-const u8 ILMA_SADEMETSA    = 3;
-const u8 ILMA_LUMISADE     = 4;
+    WEATHER_NORMAL,
+    WEATHER_RAIN,
+    WEATHER_LEAVES,
+    WEATHER_RAIN_LEAVES,
+    WEATHER_SNOW
 
-const u8 TAUSTA_STAATTINEN            = 0;
-const u8 TAUSTA_PALLARX_VERT          = 1;
-const u8 TAUSTA_PALLARX_HORI          = 2;
-const u8 TAUSTA_PALLARX_VERT_JA_HORI  = 3;
+};
+
+enum {
+
+    BACKGROUND_STATIC,
+    BACKGROUND_PARALLAX_VERT,
+    BACKGROUND_PARALLAX_HORI,
+    BACKGROUND_PARALLAX_VERT_AND_HORI
+
+};
+
+enum BLOCKS {
+
+	BLOCK_BACKGROUND,
+	BLOCK_WALL
+
+};
+
+
+struct PK2BLOCK {
+
+	u8   koodi;
+	bool tausta;
+	u8   vasemmalle, oikealle, ylos, alas;
+	int  vasen, oikea, yla, ala;
+	bool water;
+	bool border;
+
+};
+
+struct PK2BLOCKMASK {
+
+	int ylos[32];
+	int alas[32];
+	int vasemmalle[32];
+	int oikealle[32];
+
+};
 
 class MapClass {
 	private:
@@ -88,10 +124,10 @@ class MapClass {
     char     tekija[40] = "unknown";                        // map author
 
     int      jakso          = 0;                            // level of the episode
-    int      ilma           = ILMA_NORMAALI;                // map climate
+    int      ilma           = WEATHER_NORMAL;                // map climate
     int      aika           = 0;                            // map time (in (dec)conds)
-    u8       extra          = PK2KARTTA_EXTRA_EI;           // extra config - not used
-    u8       tausta         = TAUSTA_STAATTINEN;            // bg movemant type
+    u8       extra          = 0;                            // extra config - not used
+    u8       tausta         = BACKGROUND_STATIC;            // bg movemant type
     u32      kytkin1_aika   = SWITCH_INITIAL_VALUE;         // button 1 time - not used
     u32      kytkin2_aika   = SWITCH_INITIAL_VALUE;         // button 2 time - not used
     u32      kytkin3_aika   = SWITCH_INITIAL_VALUE;         // button 3 time - not used

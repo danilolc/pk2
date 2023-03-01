@@ -71,15 +71,15 @@ void Particles_LoadBG(MapClass* map) {
 		
 	}
 
-	if (map->ilma == ILMA_SADE || map->ilma == ILMA_SADEMETSA)
+	if (map->ilma == WEATHER_RAIN || map->ilma == WEATHER_RAIN_LEAVES)
 		for( int i = 0; i < nof_bg_particles; i++)
 			BGParticles[i].set_type(BGPARTICLE_WATERDROP);
 
-	if (map->ilma == ILMA_METSA || map->ilma == ILMA_SADEMETSA)
+	if (map->ilma == WEATHER_LEAVES || map->ilma == WEATHER_RAIN_LEAVES)
 		for( int i = 0; i < nof_bg_particles / 8; i++)
 			BGParticles[i].set_type(BGPARTICLE_LEAF1 + rand()%4);
 
-	if (map->ilma == ILMA_LUMISADE){
+	if (map->ilma == WEATHER_SNOW){
 		for( int i = 0; i < nof_bg_particles / 2; i++)
 			BGParticles[i].set_type(BGPARTICLE_FLAKE4);
 		for( int i = 0; i < nof_bg_particles / 3; i++)

@@ -63,7 +63,7 @@ int Draw_InGame_BGSprites() {
 
 		switch(sprite->tyyppi->AI[0]) {
 		case AI_TAUSTA_KUU					:	yl += screen_height/3+50; break;
-		/*case AI_TAUSTA_LIIKKUU_VASEMMALLE	:	if (sprite->a == 0)
+		/*case AI_TAUSTA_LIIKKUU_LEFT	:	if (sprite->a == 0)
 													sprite->a = rand()%3;
 												sprite->alku_x -= sprite->a;
 												if (sprite->piilossa && sprite->alku_x < Game->camera_x)
@@ -298,12 +298,12 @@ int Draw_InGame_BG() {
 	int pallarx = ( Game->camera_x % (640*3) ) / 3;
 	int pallary = ( Game->camera_y % (480*3) ) / 3;
 
-	if (Game->map->tausta == TAUSTA_STAATTINEN){
+	if (Game->map->tausta == BACKGROUND_STATIC){
 	
 		PDraw::image_clip(Game->map->background_buffer,0,0);
 		PDraw::image_clip(Game->map->background_buffer,640,0);
 	
-	} else if (Game->map->tausta == TAUSTA_PALLARX_HORI){
+	} else if (Game->map->tausta == BACKGROUND_PARALLAX_HORI){
 	
 		PDraw::image_clip(Game->map->background_buffer,0   - pallarx,0);
 		PDraw::image_clip(Game->map->background_buffer,640 - pallarx,0);
@@ -311,7 +311,7 @@ int Draw_InGame_BG() {
 		if (screen_width > 640)
 			PDraw::image_clip(Game->map->background_buffer,640*2 - pallarx,0);
 	
-	} else if (Game->map->tausta == TAUSTA_PALLARX_VERT){
+	} else if (Game->map->tausta == BACKGROUND_PARALLAX_VERT){
 	
 		PDraw::image_clip(Game->map->background_buffer,0,0   - pallary);
 		PDraw::image_clip(Game->map->background_buffer,0,480 - pallary);
@@ -321,7 +321,7 @@ int Draw_InGame_BG() {
 			PDraw::image_clip(Game->map->background_buffer,640,480 - pallary);
 		}
 	
-	} else if (Game->map->tausta == TAUSTA_PALLARX_VERT_JA_HORI){
+	} else if (Game->map->tausta == BACKGROUND_PARALLAX_VERT_AND_HORI){
 	
 		PDraw::image_clip(Game->map->background_buffer,0   - pallarx, 0-pallary);
 		PDraw::image_clip(Game->map->background_buffer,640 - pallarx, 0-pallary);

@@ -8,7 +8,6 @@
 
 #include "game/mapclass.hpp"
 #include "game/sprites.hpp"
-#include "game/blocks.hpp"
 
 const int TIME_FPS = 100; //(dec)conds * TIME_FPS = FRAMES
 const int INFO_TIME = 700;

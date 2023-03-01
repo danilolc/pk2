@@ -527,7 +527,7 @@ void MapClass::Select_Start() {
 	std::vector<u32> starts;
 
 	for (u32 i = 0; i < PK2MAP_MAP_SIZE; i++)
-		if (this->seinat[i] == BLOCK_ALOITUS)
+		if (this->seinat[i] == BLOCK_START)
 			starts.push_back(i);
 
 	if (starts.size() > 0) {
@@ -575,15 +575,15 @@ void MapClass::Change_SkullBlocks() {
 			u8 front = this->seinat[x+y*PK2MAP_MAP_WIDTH];
 			u8 back  = this->taustat[x+y*PK2MAP_MAP_WIDTH];
 
-			if (front == BLOCK_KALLOSEINA){
+			if (front == BLOCK_SKULL_FOREGROUND){
 				this->seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
-				if (back != BLOCK_KALLOSEINA)
+				if (back != BLOCK_SKULL_FOREGROUND)
 					Effect_SmokeClouds(x*32+24,y*32+6);
 
 			}
 
-			if (back == BLOCK_KALLOTAUSTA && front == 255)
-				this->seinat[x+y*PK2MAP_MAP_WIDTH] = BLOCK_KALLOSEINA;
+			if (back == BLOCK_SKULL_BACKGROUND && front == 255)
+				this->seinat[x+y*PK2MAP_MAP_WIDTH] = BLOCK_SKULL_FOREGROUND;
 		}
 
 	//Put in game
@@ -602,7 +602,7 @@ void MapClass::Open_Locks() {
 			
 			u8 palikka = this->seinat[x+y*PK2MAP_MAP_WIDTH];
 			
-			if (palikka == BLOCK_LUKKO){
+			if (palikka == BLOCK_LOCK){
 				this->seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
 				Effect_SmokeClouds(x*32+6,y*32+6);
 			}
@@ -630,12 +630,12 @@ void MapClass::Calculate_Edges(){
 
 			tile1 = this->seinat[x+y*PK2MAP_MAP_WIDTH];
 
-			if (tile1 > BLOCK_LOPETUS)
+			if (tile1 > BLOCK_EXIT)
 				this->seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
 
 			tile2 = this->seinat[x+(y+1)*PK2MAP_MAP_WIDTH];
 
-			if (tile1 > 79 || tile1 == BLOCK_ESTO_ALAS) tile1 = 1; else tile1 = 0;
+			if (tile1 > 79 || tile1 == BLOCK_BARRIER_DOWN) tile1 = 1; else tile1 = 0;
 			if (tile2 > 79) tile2 = 1; else tile2 = 0;
 
 			if (tile1 == 1 && tile2 == 1){
@@ -647,13 +647,13 @@ void MapClass::Calculate_Edges(){
 
 				if (tile1 == 1){
 					tile3 = this->seinat[x+1+y*PK2MAP_MAP_WIDTH];
-					if (tile3 > 79 || (tile3 < 60 && tile3 > 49) || tile3 == BLOCK_ESTO_ALAS)
+					if (tile3 > 79 || (tile3 < 60 && tile3 > 49) || tile3 == BLOCK_BARRIER_DOWN)
 						edge = true;
 				}
 
 				if (tile2 == 1){
 					tile3 = this->seinat[x-1+y*PK2MAP_MAP_WIDTH];
-					if (tile3 > 79 || (tile3 < 60 && tile3 > 49) || tile3 == BLOCK_ESTO_ALAS)
+					if (tile3 > 79 || (tile3 < 60 && tile3 > 49) || tile3 == BLOCK_BARRIER_DOWN)
 						edge = true;
 				}
 
@@ -955,7 +955,7 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y){
 
 			u8 palikka = seinat[i];
 
-			if (palikka != 255 && palikka != BLOCK_ESTO_ALAS){
+			if (palikka != 255 && palikka != BLOCK_BARRIER_DOWN){
 				
 				int px = (palikka % 10) * 32;
 				int py = (palikka / 10) * 32;
@@ -963,31 +963,31 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y){
 				int ay = 0;
 				int ax = 0;
 
-				if (palikka == BLOCK_HISSI_VERT)
+				if (palikka == BLOCK_LIFT_VERT)
 					ay = floor(sin_table[aste%360]);
 
-				if (palikka == BLOCK_HISSI_HORI)
+				if (palikka == BLOCK_LIFT_HORI)
 					ax = floor(cos_table[aste%360]);
 
-				if (palikka == BLOCK_KYTKIN1)
+				if (palikka == BLOCK_BUTTON1)
 					ay = button1_timer_y/2;
 
-				if (palikka == BLOCK_KYTKIN2_YLOS)
+				if (palikka == BLOCK_BUTTON2_UP)
 					ay = -button2_timer_y/2;
 
-				if (palikka == BLOCK_KYTKIN2_ALAS)
+				if (palikka == BLOCK_BUTTON2_DOWN)
 					ay = button2_timer_y/2;
 
-				if (palikka == BLOCK_KYTKIN2)
+				if (palikka == BLOCK_BUTTON2)
 					ay = button2_timer_y/2;
 
-				if (palikka == BLOCK_KYTKIN3_OIKEALLE)
+				if (palikka == BLOCK_BUTTON3_RIGHT)
 					ax = button3_timer_y/2;
 
-				if (palikka == BLOCK_KYTKIN3_VASEMMALLE)
+				if (palikka == BLOCK_BUTTON3_LEFT)
 					ax = -button3_timer_y/2;
 
-				if (palikka == BLOCK_KYTKIN3)
+				if (palikka == BLOCK_BUTTON3)
 					ay = button3_timer_y/2;
 
 				if (palikka == BLOCK_ANIM1 || palikka == BLOCK_ANIM2 || palikka == BLOCK_ANIM3 || palikka == BLOCK_ANIM4)
