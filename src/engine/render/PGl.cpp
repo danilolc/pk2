@@ -473,10 +473,6 @@ PGl::PGl(int width, int height, void* window) {
     curr_window = (SDL_Window*)window;
 
 	context = SDL_GL_CreateContext(curr_window);
-	PGlFuncs::load_lib();
-	
-	PLog::Write(PLog::DEBUG, "PGl", "OpenGL version: %s", glGetString(GL_VERSION));
-	PLog::Write(PLog::DEBUG, "PGl", "GLSL version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	glDisable(GL_DITHER);
 	glDisable(GL_BLEND);

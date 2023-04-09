@@ -194,9 +194,13 @@ bool is_vsync() {
 
 int init(int width, int height, const char* name, const char* icon, int render_method) {
 
+	window_name = name;
+	Uint32 window_flags = SDL_WINDOW_SHOWN;
+
 	PLog::Write(PLog::DEBUG, "PRender", "Initializing graphics");
 	PLog::Write(PLog::DEBUG, "PRender", "Video driver: %s", SDL_GetCurrentVideoDriver());
 
+	// set the render method if default
 	if (render_method == RENDERER_DEFAULT) {
 
 		// TODO choose renderer
@@ -206,16 +210,13 @@ int init(int width, int height, const char* name, const char* icon, int render_m
 
 		#elif _WIN32
 
-			if (IsWindows8OrGreater()) {
-				render_method = RENDERER_OPENGL;
-				PLog::Write(PLog::DEBUG, "PRender", "Windows 8");
-			} else if (IsWindowsVistaOrGreater()) {
-				render_method = RENDERER_SDL;
-				PLog::Write(PLog::DEBUG, "PRender", "Windows Vista");
-			} else {
-				render_method = RENDERER_SDL_SOFTWARE;
-				PLog::Write(PLog::DEBUG, "PRender", "Windows XP");
-			}
+		if (IsWindowsVistaOrGreater()) {
+			render_method = RENDERER_OPENGL;
+			PLog::Write(PLog::DEBUG, "PRender", "Isn't Windows XP");
+		} else {
+			render_method = RENDERER_SDL_SOFTWARE;
+			PLog::Write(PLog::DEBUG, "PRender", "Is Windows XP");
+		}
 
 		#else
 
@@ -224,14 +225,6 @@ int init(int width, int height, const char* name, const char* icon, int render_m
 		#endif
 
 	}
-
-	window_name = name;
-	Uint32 window_flags = SDL_WINDOW_SHOWN;
-
-	if (render_method == RENDERER_OPENGL || render_method == RENDERER_OPENGLES)
-		window_flags |= SDL_WINDOW_OPENGL;
-	
-	//window_flags |= SDL_WINDOW_RESIZABLE;
 
     #ifdef __ANDROID__
 
@@ -248,6 +241,57 @@ int init(int width, int height, const char* name, const char* icon, int render_m
 	}
 
     #else
+
+	// create a temporary window to check if GLSL 1.4 is supported
+	if (render_method == RENDERER_OPENGL) {
+
+		SDL_Window* temp_window = SDL_CreateWindow("", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+		if (!temp_window) {
+
+			PLog::Write(PLog::FATAL, "PRender", "Couldn't create temporary window!");
+			render_method = RENDERER_SDL;
+			goto done;
+
+		}
+
+		SDL_GLContext context = SDL_GL_CreateContext(temp_window);
+		if (!context) {
+
+			SDL_DestroyWindow(temp_window);
+			PLog::Write(PLog::FATAL, "PRender", "Couldn't create OpenGL context!");
+			render_method = RENDERER_SDL;
+			goto done;
+
+		}
+
+		PLog::Write(PLog::DEBUG, "PRender", "Loading OpenGL functions");
+		PGlFuncs::load_lib();
+
+		const char* opengl_version = (const char*)glGetString(GL_VERSION);
+		const char* glsl_version = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+
+		PLog::Write(PLog::DEBUG, "PRender", "OpenGL version: %s", glsl_version);
+		PLog::Write(PLog::DEBUG, "PRender", "GLSL version: %s", opengl_version);
+
+		int major, minor;
+		sscanf(glsl_version, "%d.%d", &major, &minor);
+
+		SDL_GL_DeleteContext(context);
+		SDL_DestroyWindow(temp_window);
+
+		if (major < 1 || (major == 1 && minor < 4)) {
+
+			PLog::Write(PLog::ERR, "PRender", "GLSL version %s is not supported!", glsl_version);
+			render_method = RENDERER_SDL;
+			goto done;
+
+		}
+
+		window_flags |= SDL_WINDOW_OPENGL;
+
+	}
+
+	done:
 
 	if (render_method == RENDERER_SDL_SOFTWARE)
 		fullscreen_mode = SDL_WINDOW_FULLSCREEN;
