@@ -20,7 +20,6 @@
 #include "engine/types.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
-#include "engine/PDraw.hpp"
 
 #include <cstring>
 
@@ -72,7 +71,7 @@ static PK2BLOCK Block_Get(u32 x, u32 y) {
 
 	}
 
-	u8 i = Game->map->seinat[x+y*PK2MAP_MAP_WIDTH];
+	u8 i = Game->map.seinat[x+y*PK2MAP_MAP_WIDTH];
 
 	if (i<150) { //If it is ground
 
@@ -99,12 +98,12 @@ static PK2BLOCK Block_Get(u32 x, u32 y) {
 	
 	}
 
-	i = Game->map->taustat[x+y*PK2MAP_MAP_WIDTH];
+	i = Game->map.taustat[x+y*PK2MAP_MAP_WIDTH];
 
 	if (i > 131 && i < 140)
 		block.water = true;
 
-	block.border = Game->map->reunat[x+y*PK2MAP_MAP_WIDTH];
+	block.border = Game->map.reunat[x+y*PK2MAP_MAP_WIDTH];
 
 	return block;
 }
@@ -242,15 +241,15 @@ static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/* Examine if it is a key and touches lock wall                       */
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_LOCK && sprite.tyyppi->avain){
-			Game->map->seinat[palikka.vasen/32+(palikka.yla/32)*PK2MAP_MAP_WIDTH] = 255;
-			Game->map->Calculate_Edges();
+			Game->map.seinat[palikka.vasen/32+(palikka.yla/32)*PK2MAP_MAP_WIDTH] = 255;
+			Game->map.Calculate_Edges();
 
 			sprite.piilota = true;
 
 			if (sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU) {
 				Game->keys--;
 				if (Game->keys < 1)
-					Game->map->Open_Locks();
+					Game->map.Open_Locks();
 			}
 
 			Effect_Explosion(palikka.vasen+16, palikka.yla+10, 0);
@@ -579,7 +578,7 @@ int Sprite_Movement(SpriteClass& sprite){
 			}
 
 		/* It is not acceptable that a player is anything other than the game character */
-		if (sprite.tyyppi->tyyppi != TYPE_GAME_CHARACTER)
+		if (sprite.tyyppi->type != TYPE_GAME_CHARACTER)
 			sprite.energia = 0;
 	}
 
@@ -678,12 +677,14 @@ int Sprite_Movement(SpriteClass& sprite){
 		int palikat_x_lkm = (int)((sprite_leveys) /32)+4; //Number of blocks
 		int palikat_y_lkm = (int)((sprite_korkeus)/32)+4;
 
+		PK2BLOCK near_blocks[palikat_x_lkm * palikat_y_lkm];
+
 		int map_vasen = (int)(sprite_vasen) / 32; //Position in tile map
 		int map_yla   = (int)(sprite_yla)   / 32;
 
 		for (int y = 0; y < palikat_y_lkm; y++)
 			for (int x = 0; x < palikat_x_lkm; x++) //For each block, create a array of blocks around the sprite
-				Game->palikat[x+(y*palikat_x_lkm)] = Block_Get(map_vasen+x-1,map_yla+y-1); //x = 0, y = 0
+				near_blocks[x+(y*palikat_x_lkm)] = Block_Get(map_vasen+x-1,map_yla+y-1); //x = 0, y = 0
 
 		/*****************************************************************************************/
 		/* Going through the blocks around the sprite.                                           */
@@ -695,7 +696,7 @@ int Sprite_Movement(SpriteClass& sprite){
 				int p = x + y*palikat_x_lkm;
 				if ( p < 300 )
 					if (!(&sprite == Player_Sprite && dev_mode && PInput::Keydown(PInput::Y)))
-						Check_MapBlock(sprite, Game->palikat[p]);
+						Check_MapBlock(sprite, near_blocks[p]);
 			}
 		}
 	}
@@ -843,9 +844,9 @@ int Sprite_Movement(SpriteClass& sprite){
 
 				// If two sprites from different teams touch each other
 				if (sprite.vihollinen != sprite2->vihollinen && sprite.emosprite != sprite2) {
-					if (sprite2->tyyppi->tyyppi != TYPE_BACKGROUND &&
-						sprite.tyyppi->tyyppi   != TYPE_BACKGROUND &&
-						sprite2->tyyppi->tyyppi != TYPE_TELEPORT &&
+					if (sprite2->tyyppi->type != TYPE_BACKGROUND &&
+						sprite.tyyppi->type   != TYPE_BACKGROUND &&
+						sprite2->tyyppi->type != TYPE_TELEPORT &&
 						sprite2->damage_timer == 0 &&
 						sprite.damage_timer == 0 &&
 						sprite2->energia > 0 &&
@@ -878,7 +879,7 @@ int Sprite_Movement(SpriteClass& sprite){
 						}
 
 						// If there is another sprite damaging
-						if (sprite.tyyppi->vahinko > 0 && sprite2->tyyppi->tyyppi != TYPE_BONUS) {
+						if (sprite.tyyppi->vahinko > 0 && sprite2->tyyppi->type != TYPE_BONUS) {
 							
 							sprite2->saatu_vahinko        = sprite.tyyppi->vahinko;
 							sprite2->saatu_vahinko_tyyppi = sprite.tyyppi->vahinko_tyyppi;
@@ -887,12 +888,12 @@ int Sprite_Movement(SpriteClass& sprite){
 								sprite.attack1_timer = sprite.tyyppi->attack1_time; //Then sprite attack??
 
 							// The projectiles are shattered by shock
-							if (sprite2->tyyppi->tyyppi == TYPE_PROJECTILE) {
+							if (sprite2->tyyppi->type == TYPE_PROJECTILE) {
 								sprite.saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
 								sprite.saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
 							}
 
-							if (sprite.tyyppi->tyyppi == TYPE_PROJECTILE) {
+							if (sprite.tyyppi->type == TYPE_PROJECTILE) {
 								sprite.saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
 								sprite.saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
 							}
@@ -941,14 +942,14 @@ int Sprite_Movement(SpriteClass& sprite){
 			if (sprite.tyyppi->tuhoutuminen%100 == FX_DESTRUCT_HOYHENET)
 				Effect_Destruction(FX_DESTRUCT_HOYHENET, (u32)sprite.x, (u32)sprite.y);
 
-			if (sprite.tyyppi->tyyppi != TYPE_PROJECTILE){
+			if (sprite.tyyppi->type != TYPE_PROJECTILE){
 				Particles_New(PARTICLE_STAR,sprite_x,sprite_y,-1,-1,60,0.01,128);
 				Particles_New(PARTICLE_STAR,sprite_x,sprite_y, 0,-1,60,0.01,128);
 				Particles_New(PARTICLE_STAR,sprite_x,sprite_y, 1,-1,60,0.01,128);
 			}
 
 			if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
-				Game->map->Change_SkullBlocks();
+				Game->map.Change_SkullBlocks();
 
 			if (sprite.Onko_AI(AI_ATTACK_1_JOS_OSUTTU)){
 				sprite.attack1_timer = sprite.tyyppi->attack1_time;
@@ -981,7 +982,7 @@ int Sprite_Movement(SpriteClass& sprite){
 											  sprite_ala-16-(10+rand()%20), &sprite, true);
 
 				if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_TYRMATTY) && !sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
-					Game->map->Change_SkullBlocks();
+					Game->map.Change_SkullBlocks();
 
 				if (tuhoutuminen >= FX_DESTRUCT_ANIMAATIO)
 					tuhoutuminen -= FX_DESTRUCT_ANIMAATIO;
@@ -996,7 +997,7 @@ int Sprite_Movement(SpriteClass& sprite){
 					Sprites_add(sprite.tyyppi,0,sprite.alku_x-sprite.tyyppi->leveys, sprite.alku_y-sprite.tyyppi->korkeus,&sprite, false);
 				}
 
-				if (sprite.tyyppi->tyyppi == TYPE_GAME_CHARACTER && sprite.tyyppi->pisteet != 0){
+				if (sprite.tyyppi->type == TYPE_GAME_CHARACTER && sprite.tyyppi->pisteet != 0){
 					char luku[10];
 					sprintf(luku, "%i", sprite.tyyppi->pisteet);
 					Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,80);
@@ -1101,10 +1102,10 @@ int Sprite_Movement(SpriteClass& sprite){
 	if (&sprite == Player_Sprite || sprite.energia < 1) {
 		double kitka = 1.04;
 
-		if (Game->map->ilma == WEATHER_RAIN || Game->map->ilma == WEATHER_RAIN_LEAVES)
+		if (Game->map.ilma == WEATHER_RAIN || Game->map.ilma == WEATHER_RAIN_LEAVES)
 			kitka = 1.03; // Slippery ground in the rain
 
-		if (Game->map->ilma == WEATHER_SNOW)
+		if (Game->map.ilma == WEATHER_SNOW)
 			kitka = 1.01; // And even more on snow
 
 		if (!alas)
@@ -1567,7 +1568,7 @@ int BonusSprite_Movement(SpriteClass& sprite){
 					sprite_y > sprite2->y - sprite2->tyyppi->korkeus/2 &&
 					sprite.damage_timer == 0)
 				{
-					if (sprite2->tyyppi->tyyppi != TYPE_BONUS &&
+					if (sprite2->tyyppi->type != TYPE_BONUS &&
 						!(sprite2 == Player_Sprite && sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU))
 						sprite_a += sprite2->a*(rand()%4);
 
@@ -1619,18 +1620,20 @@ int BonusSprite_Movement(SpriteClass& sprite){
 			int palikat_x_lkm = (int)((sprite_leveys) /32)+4;
 			int palikat_y_lkm = (int)((sprite_korkeus)/32)+4;
 
+			PK2BLOCK near_blocks[palikat_x_lkm * palikat_y_lkm];
+
 			int map_vasen = (int)(sprite_vasen)/32;
 			int map_yla   = (int)(sprite_yla)/32;
 
 			for (int y = 0; y < palikat_y_lkm; y++)
 				for (int x = 0; x < palikat_x_lkm; x++)
-					Game->palikat[x+y*palikat_x_lkm] = Block_Get(map_vasen+x-1,map_yla+y-1);
+					near_blocks[x+y*palikat_x_lkm] = Block_Get(map_vasen+x-1,map_yla+y-1);
 
 			// Tutkitaan t�rm��k� palikkaan
 
 			for (int y = 0; y < palikat_y_lkm; y++)
 				for (int x = 0; x < palikat_x_lkm; x++)
-					Check_MapBlock(sprite, Game->palikat[x+y*palikat_x_lkm]);
+					Check_MapBlock(sprite, near_blocks[x+y*palikat_x_lkm]);
 
 		}
 
@@ -1784,7 +1787,7 @@ int BonusSprite_Movement(SpriteClass& sprite){
 				PSound::play_overlay_music();
 			}
 
-			//Game->map->spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2MAP_MAP_WIDTH] = 255;
+			//Game->map.spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2MAP_MAP_WIDTH] = 255;
 
 			if (sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 				Player_Sprite->energia -= sprite.tyyppi->vahinko;
@@ -1802,7 +1805,7 @@ int BonusSprite_Movement(SpriteClass& sprite){
 						Game->keys--;
 
 						if (Game->keys < 1)
-							Game->map->Open_Locks();
+							Game->map.Open_Locks();
 					}
 
 					sprite.piilota = true;

@@ -116,10 +116,10 @@ int Draw_InGame_BGSprites() {
 void Draw_InGame_Sprites() {
 
 	for (SpriteClass* sprite : Sprites_List){
-		if (Is_Sprite_Visible(sprite) && sprite->tyyppi->tyyppi != TYPE_BACKGROUND) {
+		if (Is_Sprite_Visible(sprite) && sprite->tyyppi->type != TYPE_BACKGROUND) {
 
 			// Draw impact circle
-			if (sprite->damage_timer > 0 && sprite->tyyppi->tyyppi != TYPE_BONUS && sprite->energia < 1){
+			if (sprite->damage_timer > 0 && sprite->tyyppi->type != TYPE_BONUS && sprite->energia < 1){
 				int framex = ((degree%12)/3) * 58;
 				u32 hit_x = sprite->x-8;
 				u32 hit_y = sprite->y-8;
@@ -130,7 +130,7 @@ void Draw_InGame_Sprites() {
 				sprite->Piirra(Game->camera_x,Game->camera_y);
 
 			// Draw stars on dead sprite
-			if (sprite->energia < 1 && sprite->tyyppi->tyyppi != TYPE_PROJECTILE){
+			if (sprite->energia < 1 && sprite->tyyppi->type != TYPE_PROJECTILE){
 				int sx = (int)sprite->x;
 				for (int stars=0; stars<3; stars++){
 					double star_x = sprite->x-8 + (sin_table[((stars*120+degree)*2)%359])/3;
@@ -298,39 +298,39 @@ int Draw_InGame_BG() {
 	int pallarx = ( Game->camera_x % (640*3) ) / 3;
 	int pallary = ( Game->camera_y % (480*3) ) / 3;
 
-	if (Game->map->tausta == BACKGROUND_STATIC){
+	if (Game->map.tausta == BACKGROUND_STATIC){
 	
-		PDraw::image_clip(Game->map->background_buffer,0,0);
-		PDraw::image_clip(Game->map->background_buffer,640,0);
+		PDraw::image_clip(Game->map.background_buffer,0,0);
+		PDraw::image_clip(Game->map.background_buffer,640,0);
 	
-	} else if (Game->map->tausta == BACKGROUND_PARALLAX_HORI){
+	} else if (Game->map.tausta == BACKGROUND_PARALLAX_HORI){
 	
-		PDraw::image_clip(Game->map->background_buffer,0   - pallarx,0);
-		PDraw::image_clip(Game->map->background_buffer,640 - pallarx,0);
+		PDraw::image_clip(Game->map.background_buffer,0   - pallarx,0);
+		PDraw::image_clip(Game->map.background_buffer,640 - pallarx,0);
 
 		if (screen_width > 640)
-			PDraw::image_clip(Game->map->background_buffer,640*2 - pallarx,0);
+			PDraw::image_clip(Game->map.background_buffer,640*2 - pallarx,0);
 	
-	} else if (Game->map->tausta == BACKGROUND_PARALLAX_VERT){
+	} else if (Game->map.tausta == BACKGROUND_PARALLAX_VERT){
 	
-		PDraw::image_clip(Game->map->background_buffer,0,0   - pallary);
-		PDraw::image_clip(Game->map->background_buffer,0,480 - pallary);
+		PDraw::image_clip(Game->map.background_buffer,0,0   - pallary);
+		PDraw::image_clip(Game->map.background_buffer,0,480 - pallary);
 
 		if (screen_width > 640){
-			PDraw::image_clip(Game->map->background_buffer,640,0   - pallary);
-			PDraw::image_clip(Game->map->background_buffer,640,480 - pallary);
+			PDraw::image_clip(Game->map.background_buffer,640,0   - pallary);
+			PDraw::image_clip(Game->map.background_buffer,640,480 - pallary);
 		}
 	
-	} else if (Game->map->tausta == BACKGROUND_PARALLAX_VERT_AND_HORI){
+	} else if (Game->map.tausta == BACKGROUND_PARALLAX_VERT_AND_HORI){
 	
-		PDraw::image_clip(Game->map->background_buffer,0   - pallarx, 0-pallary);
-		PDraw::image_clip(Game->map->background_buffer,640 - pallarx, 0-pallary);
-		PDraw::image_clip(Game->map->background_buffer,0   - pallarx, 480-pallary);
-		PDraw::image_clip(Game->map->background_buffer,640 - pallarx, 480-pallary);
+		PDraw::image_clip(Game->map.background_buffer,0   - pallarx, 0-pallary);
+		PDraw::image_clip(Game->map.background_buffer,640 - pallarx, 0-pallary);
+		PDraw::image_clip(Game->map.background_buffer,0   - pallarx, 480-pallary);
+		PDraw::image_clip(Game->map.background_buffer,640 - pallarx, 480-pallary);
 
 		if (screen_width > 640){
-			PDraw::image_clip(Game->map->background_buffer,640*2 - pallarx,0-pallary);
-			PDraw::image_clip(Game->map->background_buffer,640*2 - pallarx,480-pallary);
+			PDraw::image_clip(Game->map.background_buffer,640*2 - pallarx,0-pallary);
+			PDraw::image_clip(Game->map.background_buffer,640*2 - pallarx,480-pallary);
 		}
 	
 	}
@@ -521,13 +521,13 @@ int Draw_InGame() {
 
 	Particles_DrawBG(Game->camera_x, Game->camera_y);
 
-	Game->map->Piirra_Taustat(Game->camera_x,Game->camera_y);
+	Game->map.Piirra_Taustat(Game->camera_x,Game->camera_y);
 
 	Draw_InGame_Sprites();
 
 	Particles_DrawFront(Game->camera_x, Game->camera_y);
 
-	Game->map->Piirra_Seinat(Game->camera_x,Game->camera_y);
+	Game->map.Piirra_Seinat(Game->camera_x,Game->camera_y);
 
 	if (Settings.draw_itembar)
 		Draw_InGame_Lower_Menu();
@@ -681,7 +681,7 @@ int Update_Camera(){
 int Screen_InGame(){
 
 	if (!Game->level_clear && (!Game->has_time || Game->timeout > 0)) {
-		Game->map->Animoi(degree, Game->palikka_animaatio/7, Game->button1, Game->button2, Game->button3);
+		Game->map.Animoi(degree, Game->palikka_animaatio/7, Game->button1, Game->button2, Game->button3);
 		Game->palikka_animaatio = 1 + Game->palikka_animaatio % 34;
 	}
 
@@ -844,11 +844,11 @@ int Screen_InGame(){
 			}
 			if (PInput::Keydown(PInput::L)) {
 				Game->keys = 0;
-				Game->map->Open_Locks();
+				Game->map.Open_Locks();
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::K)) {
-				Game->map->Change_SkullBlocks();
+				Game->map.Change_SkullBlocks();
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::W)) {
@@ -861,7 +861,7 @@ int Screen_InGame(){
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::R)) {
-				Game->map->Select_Start();
+				Game->map.Select_Start();
 				Player_Sprite->energia = 10;
 				Player_Sprite->piilota = false;
 				key_delay = 20;

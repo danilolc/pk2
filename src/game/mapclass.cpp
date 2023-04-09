@@ -21,13 +21,13 @@
 #include <cmath>
 
 struct PK2KARTTA{ // Vanha versio 0.1
-	char		versio[8];
-	char		nimi[40];
-	u8		taustakuva;
-	u8		musiikki;
-	u8		kartta [640*224];
-	u8		palikat[320*256];
-	u8		extrat [640*480];
+	char versio[8];
+	char nimi[40];
+	u8   taustakuva;
+	u8   musiikki;
+	u8   kartta [640*224];
+	u8   palikat[320*256];
+	u8   extrat [640*480];
 };
 
 void MapClass::Animoi(int degree, int anim, int aika1, int aika2, int aika3) {

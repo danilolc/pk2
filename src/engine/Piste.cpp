@@ -98,7 +98,7 @@ static void logic() {
 
 }
 
-static void sdl_show() {
+static void sdl_show_version() {
 
 	SDL_version compiled;
 	SDL_version linked;
@@ -127,7 +127,7 @@ void init(int width, int height, const char* name, const char* icon, int render_
 		
 	}
 
-	sdl_show();
+	sdl_show_version();
 	
 	PDraw::init(width, height);
 	PRender::init(width, height, name, icon, render_method);

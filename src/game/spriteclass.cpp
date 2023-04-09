@@ -62,7 +62,7 @@ void PrototypeClass::SetProto10(PrototypeClass10 &proto){
 	pisteet				= proto.pisteet;
 	suojaus				= (u8) proto.suojaus;
 	tuhoutuminen		= proto.tuhoutuminen;
-	tyyppi				= proto.tyyppi;
+	type				= proto.tyyppi;
 	vahinko				= proto.vahinko;
 	vari				= proto.vari;
 	vihollinen			= proto.vihollinen;
@@ -115,7 +115,7 @@ void PrototypeClass::SetProto11(PrototypeClass11 &proto){
 	suojaus				= proto.suojaus;
 	vibrate				= proto.vibrate;
 	tuhoutuminen		= proto.tuhoutuminen;
-	tyyppi				= proto.tyyppi;
+	type				= proto.tyyppi;
 	vahinko				= proto.vahinko;
 	vahinko_tyyppi		= proto.vahinko_tyyppi;
 	vari				= proto.vari;
@@ -176,7 +176,7 @@ void PrototypeClass::SetProto12(PrototypeClass12 &proto){
 	vibrate				= proto.vibrate;
 	tiletarkistus		= proto.tiletarkistus;
 	tuhoutuminen		= proto.tuhoutuminen;
-	tyyppi				= proto.tyyppi;
+	type				= proto.tyyppi;
 	vahinko				= proto.vahinko;
 	vahinko_tyyppi		= proto.vahinko_tyyppi;
 	vari				= proto.vari;
@@ -238,7 +238,7 @@ void PrototypeClass::SetProto13(PrototypeClass13 &proto){
 	vibrate				= proto.vibrate;
 	tiletarkistus		= proto.tiletarkistus;
 	tuhoutuminen		= proto.tuhoutuminen;
-	tyyppi				= proto.tyyppi;
+	type				= proto.tyyppi;
 	vahinko				= proto.vahinko;
 	vahinko_tyyppi		= proto.vahinko_tyyppi;
 	vari				= proto.vari;
@@ -1524,7 +1524,7 @@ int SpriteClass::AI_Teleportti(std::list<SpriteClass*> spritet, SpriteClass &pla
 			// if it didn't find any, search for all teleports
 			if (portit.size() == 0) {
 				for (SpriteClass* sprite : spritet)
-					if (sprite->tyyppi->tyyppi == TYPE_TELEPORT && sprite != this)
+					if (sprite->tyyppi->type == TYPE_TELEPORT && sprite != this)
 						portit.push_back(sprite);
 			}
 

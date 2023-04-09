@@ -7,7 +7,6 @@
 #include "engine/types.hpp"
 
 #include "game/mapclass.hpp"
-#include "game/sprites.hpp"
 
 const int TIME_FPS = 100; //(dec)conds * TIME_FPS = FRAMES
 const int INFO_TIME = 700;
@@ -17,10 +16,9 @@ class GameClass {
 	public:
 
 		u32 level_id = -1;
-		MapClass* map = nullptr;
+		MapClass map;
 		std::string map_file;
 
-		PK2BLOCK     palikat[300];
 		PK2BLOCK     lasketut_palikat[150];//150
 		PK2BLOCKMASK palikkamaskit[BLOCK_MAX_MASKS];
 
@@ -80,7 +78,6 @@ class GameClass {
 	private:
 		
 		bool started = false;
-		bool from_index;
 		
 		int Calculete_TileMasks();
 		int Clean_TileBuffer();

@@ -13,6 +13,7 @@
 #include <cstring>
 
 #include "game/game.hpp"
+#include "game/spriteclass.hpp"
 #include "settings.hpp"
 #include "gfx/text.hpp"
 #include "language.hpp"

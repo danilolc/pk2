@@ -23,17 +23,18 @@ GameClass* Game = nullptr;
 GameClass::GameClass(int idx) {
 
 	this->level_id = idx;
-	this->from_index = true;
+	this->map_file = Episode->levels_list[idx].tiedosto;
+
+	if (Episode->level_status[idx] & LEVEL_PASSED)
+		this->repeating = true;
 
 }
 
 GameClass::GameClass(std::string map_file) {
 
 	this->map_file = map_file;
-	this->from_index = false;
 
 	bool found = false;
-
 	for (uint i = 0; i < Episode->level_count; i++) {
 		if (map_file == Episode->levels_list[i].tiedosto) {
 			this->level_id = i;
@@ -48,31 +49,12 @@ GameClass::GameClass(std::string map_file) {
 
 }
 
-GameClass::~GameClass() {
-
-	if (map)
-		delete map;
-
-}
+GameClass::~GameClass() {}
 
 int GameClass::Start() {
 
 	if (this->started)
 		return 1;
-	
-	this->map = new MapClass();
-
-	if(this->from_index) {
-
-		int index = this->level_id;
-
-		this->map_file = Episode->levels_list[index].tiedosto;
-		if (Episode->level_status[index] & LEVEL_PASSED)
-			this->repeating = true;
-		else
-			this->repeating = false;
-		
-	}
 
 	this->level_clear = false;
 
@@ -127,7 +109,7 @@ int GameClass::Calculete_TileMasks(){
 	int x, y;
 	u8 color;
 
-	PDraw::drawimage_start(map->tiles_buffer, buffer, leveys);
+	PDraw::drawimage_start(map.tiles_buffer, buffer, leveys);
 	for (int mask=0; mask<BLOCK_MAX_MASKS; mask++){
 		for (x=0; x<32; x++){
 			y=0;
@@ -145,7 +127,7 @@ int GameClass::Calculete_TileMasks(){
 			palikkamaskit[mask].ylos[x] = 31-y;
 		}
 	}
-	PDraw::drawimage_end(map->tiles_buffer);
+	PDraw::drawimage_end(map.tiles_buffer);
 
 	return 0;
 }
@@ -158,27 +140,27 @@ int GameClass::Clean_TileBuffer() {
 	int x,y;
 
 	int w, h;
-	PDraw::image_getsize(map->tiles_buffer, w, h);
+	PDraw::image_getsize(map.tiles_buffer, w, h);
 
-	PDraw::drawimage_start(map->tiles_buffer, buffer, leveys);
+	PDraw::drawimage_start(map.tiles_buffer, buffer, leveys);
 	for (y = 0; y < h; y++)
 		for(x = 0; x < w; x++)
 			if (buffer[x+y*leveys] == 254)
 				buffer[x+y*leveys] = 255;
-	PDraw::drawimage_end(map->tiles_buffer);
+	PDraw::drawimage_end(map.tiles_buffer);
 
-	if (map->bg_tiles_buffer < 0)
+	if (map.bg_tiles_buffer < 0)
 			return 0;
 	
 	// Clan bg buffer
-	PDraw::image_getsize(map->bg_tiles_buffer, w, h);
+	PDraw::image_getsize(map.bg_tiles_buffer, w, h);
 
-	PDraw::drawimage_start(map->bg_tiles_buffer, buffer, leveys);
+	PDraw::drawimage_start(map.bg_tiles_buffer, buffer, leveys);
 	for (y = 0; y < h; y++)
 		for(x = 0; x < w; x++)
 			if (buffer[x+y*leveys] == 254)
 				buffer[x+y*leveys] = 255;
-	PDraw::drawimage_end(map->bg_tiles_buffer);
+	PDraw::drawimage_end(map.bg_tiles_buffer);
 
 	return 0;
 }
@@ -343,21 +325,21 @@ int GameClass::Open_Map() {
 	
 	PFile::Path path = Episode->Get_Dir(map_file);
 	
-	if (map->Load(path) == 1) {
+	if (map.Load(path) == 1) {
 
 		PLog::Write(PLog::ERR, "PK2", "Can't load map \"%s\" at \"%s\"", map_file.c_str(), path.c_str());
 		return 1;
 	
 	}
 
-	timeout = map->aika * TIME_FPS;
+	timeout = map.aika * TIME_FPS;
 
 	if (timeout > 0)
 		has_time = true;
 	else
 		has_time = false;
 
-	if (strcmp(map->versio,"1.2") == 0 || strcmp(map->versio,"1.3") == 0)
+	if (strcmp(map.versio,"1.2") == 0 || strcmp(map.versio,"1.3") == 0)
 		if (Prototypes_GetAll() == 1)
 			return 1;
 
@@ -366,20 +348,20 @@ int GameClass::Open_Map() {
 	if (Clean_TileBuffer() == 1)
 		return 1;
 
-	map->Place_Sprites();
-	map->Select_Start();
-	map->Calculate_Edges();
+	map.Place_Sprites();
+	map.Select_Start();
+	map.Calculate_Edges();
 
-	keys = map->Count_Keys();
+	keys = map.Count_Keys();
 	
 	Sprites_start_directions();
 
 	Particles_Clear();
-	Particles_LoadBG(map);
+	Particles_LoadBG(&map);
 
-	if ( strcmp(map->musiikki, "") != 0 ) {
+	if ( strcmp(map.musiikki, "") != 0 ) {
 
-		PFile::Path music_path = Episode->Get_Dir(map->musiikki);
+		PFile::Path music_path = Episode->Get_Dir(map.musiikki);
 
 		if (!FindAsset(&music_path, "music" PE_SEP)) {
 

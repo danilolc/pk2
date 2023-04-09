@@ -76,7 +76,6 @@ PrototypeClass* Prototypes_get(const char* name, int id = -1) {
 		return nullptr;
 	}
 
-	protot->indeksi = id;
 	Prototypes_List[id] = protot;
 
 	return protot;
@@ -161,13 +160,13 @@ void Prototypes_get_ammo2(int i) {
 int Prototypes_GetAll() {
 
 	for (u32 i = 0; i < PK2MAP_MAP_MAX_PROTOTYPES; i++) {
-		if (strcmp(Game->map->protot[i], "") != 0) {
+		if (strcmp(Game->map.protot[i], "") != 0) {
 
-			PFile::Path path = Episode->Get_Dir(Game->map->protot[i]);
+			PFile::Path path = Episode->Get_Dir(Game->map.protot[i]);
 
-			if (Prototypes_get(Game->map->protot[i], i) == nullptr) {
+			if (Prototypes_get(Game->map.protot[i], i) == nullptr) {
 				
-				PLog::Write(PLog::WARN, "PK2", "Can't load sprite %s. It will not appear", Game->map->protot[i]);
+				PLog::Write(PLog::WARN, "PK2", "Can't load sprite %s. It will not appear", Game->map.protot[i]);
 
 			}
 
@@ -268,7 +267,7 @@ void Sprites_add(PrototypeClass* protot, int is_Player_Sprite, double x, double 
 		
 	}
 
-	if (protot->tyyppi == TYPE_BACKGROUND)
+	if (protot->type == TYPE_BACKGROUND)
 		Sprites_add_bg(sprite);
 
 	if (emo != nullptr)
@@ -335,7 +334,7 @@ void Sprites_add_ammo(PrototypeClass* protot, double x, double y, SpriteClass* e
 		sprite->emosprite = sprite;
 	}
 
-	if (protot->tyyppi == TYPE_BACKGROUND)
+	if (protot->type == TYPE_BACKGROUND)
 		Sprites_add_bg(sprite);
 
 }
@@ -383,7 +382,7 @@ int Update_Sprites() {
 	// Update bonus first to get energy change
 	for (SpriteClass* sprite : Sprites_List) {
 		if (sprite->aktiivinen && !sprite->piilota) {
-			if (sprite->tyyppi->tyyppi == TYPE_BONUS) {
+			if (sprite->tyyppi->type == TYPE_BONUS) {
 				BonusSprite_Movement(*sprite);
 				active_sprites++;
 			}
@@ -392,7 +391,7 @@ int Update_Sprites() {
 
 	for (SpriteClass* sprite : Sprites_List) {
 		if (sprite->aktiivinen && !sprite->piilota) {
-			if (sprite->tyyppi->tyyppi != TYPE_BONUS && sprite->tyyppi->tyyppi != TYPE_BACKGROUND) {
+			if (sprite->tyyppi->type != TYPE_BONUS && sprite->tyyppi->type != TYPE_BACKGROUND) {
 				Sprite_Movement(*sprite);
 				active_sprites++;
 			}
@@ -406,7 +405,7 @@ int Update_Sprites() {
 	/*int count = 0;
 	for (SpriteClass* sprite : Sprites_List) {
 		if (sprite->energia > 0) {
-			if (sprite->tyyppi->tyyppi == TYPE_BONUS)
+			if (sprite->tyyppi->type == TYPE_BONUS)
 				count++;
 			if (sprite->tyyppi->bonus > -1 && sprite->tyyppi->bonusten_lkm > 0)
 				count += sprite->tyyppi->bonusten_lkm;

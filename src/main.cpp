@@ -179,11 +179,11 @@ int main(int argc, char *argv[]) {
 		print_logs = false;
 	#endif
 
-	// Read args
+	// Read args -- TODO - use getopt
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "version") == 0) {
 			printf(PK2_VERSION_STR "\n");
-			exit(0);
+			exit(0); // why isn't this a return?
 		}
 		if (strcmp(argv[i], "dev") == 0) {
 			dev_mode = true;
@@ -264,7 +264,7 @@ int main(int argc, char *argv[]) {
 
 	#endif //PK2_PORTABLE
 
-	// Read redirect file to change data directory
+	// Read redirect file to change data directory -- TODO - move to a function
 	PFile::Path redirect = PFile::Path(data_path, "redirect.txt");
 	if (redirect.Find()) {
 

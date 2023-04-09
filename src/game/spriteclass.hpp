@@ -597,14 +597,11 @@ struct PrototypeClass13{
 class PrototypeClass{
     public:
 
-    char    versio[4]     = PK2SPRITE_CURRENT_VERSION;
-    char    tiedosto[255] = "";
-    
-    int     indeksi = 0; 
-    
-    int     tyyppi  = TYPE_NOTHING;
-    
+    char    versio[4]         = PK2SPRITE_CURRENT_VERSION;
+    char    tiedosto[255]     = "";
     char    kuvatiedosto[100] = "";
+    
+    int     type = TYPE_NOTHING;
 
     char    aanitiedostot[SPRITE_MAX_SOUNDS][100] = {""};
     int     aanet[SPRITE_MAX_SOUNDS] = {-1};
