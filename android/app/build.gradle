@@ -9,7 +9,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 0x0403
-        versionName "1.4.3"
+        versionName "1.4.4"
 
         //ndkVersion '22.0.7026061' //<- giving SIGILL on arm
         ndkVersion '20.0.5594570'
