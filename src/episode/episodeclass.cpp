@@ -15,6 +15,7 @@
 #include "engine/PFile.hpp"
 #include "engine/PDraw.hpp"
 
+#include <algorithm>
 #include <cstring>
 #include <string>
 
@@ -224,83 +225,83 @@ void EpisodeClass::Load() {
 	std::vector<std::string> list = path.scandir(".map");
 	this->level_count = list.size();
 
-	MapClass *temp = new MapClass();
-
+	// Read levels plain data
 	for (u32 i = 0; i < this->level_count; i++) {
 
+		MapClass temp;
 		char* mapname = this->levels_list[i].tiedosto;
 		strcpy(mapname, list[i].c_str());
 
-		if (temp->Load_Plain_Data(PFile::Path(path, mapname)) == 0) {
+		if (temp.Load_Plain_Data(PFile::Path(path, mapname)) == 0) {
 
-			strcpy(this->levels_list[i].nimi, temp->nimi);
-			this->levels_list[i].x = temp->x;//   142 + i*35;
-			this->levels_list[i].y = temp->y;// 270;
-			this->levels_list[i].order = temp->jakso;
-			this->levels_list[i].icon = temp->icon;
+			strcpy(this->levels_list[i].nimi, temp.nimi);
+			this->levels_list[i].x = temp.x;// 142 + i*35;
+			this->levels_list[i].y = temp.y;// 270;
+			this->levels_list[i].order = temp.jakso;
+			this->levels_list[i].icon = temp.icon;
 
 		}
 
 	}
 
-	delete temp;
-
 	// Read config
-	PLang* config = new PLang(PFile::Path(path, "config.txt"));
-	if (config) {
+	PLang config(PFile::Path(path, "config.txt"));
+	if (config.loaded) {
 
-		int id = config->Search_Id("glow_effect");
+		int id = config.Search_Id("glow_effect");
 		if (id != -1) {
 			PLog::Write(PLog::INFO, "PK2", "Episode glow is ON");
 			this->glows = true;
 		}
 
-		id = config->Search_Id("hide_numbers");
+		id = config.Search_Id("hide_numbers");
 		if (id != -1) {
 			PLog::Write(PLog::INFO, "PK2", "Episode hide numbers is ON");
 			this->hide_numbers = true;
 		}
 
-		id = config->Search_Id("ignore_collectable");
+		id = config.Search_Id("ignore_collectable");
 		if (id != -1) {
 			PLog::Write(PLog::INFO, "PK2", "Episode ignore apples is ON");
 			this->ignore_collectable = true;
 		}
 
-		id = config->Search_Id("collectable_name");
+		id = config.Search_Id("collectable_name");
 		if (id != -1) {
-			this->collectable_name = config->Get_Text(id);
+			this->collectable_name = config.Get_Text(id);
 			PLog::Write(PLog::INFO, "PK2", "Collectable name:");
 			PLog::Write(PLog::INFO, "PK2", this->collectable_name.c_str());
 		}
-		
-		delete config;
 
-	}
-
-	// Order levels
-	PK2LEVEL temp2;
-	bool stop = false;
-
-	while (!stop){
-		stop = true;
-
-		for (u32 i = 0; i < this->level_count - 1; i++) {
-
-			if (this->levels_list[i].order > this->levels_list[i+1].order) {
-
-				temp2 = this->levels_list[i];
-				this->levels_list[i] = this->levels_list[i+1];
-				this->levels_list[i+1] = temp2;
-				stop = false;
-
-			}
-
+		id = config.Search_Id("require_all_levels");
+		if (id != -1) {
+			PLog::Write(PLog::INFO, "PK2", "Episode require all levels is ON");
+			this->require_all_levels = true;
 		}
+
 	}
+
+	// Sort levels
+	std::stable_sort(this->levels_list, this->levels_list + this->level_count,
+	[](const PK2LEVEL& a, const PK2LEVEL& b) {
+		return a.order < b.order;
+	});
+
+	// Set positions
+	for (u32 i = 0; i < this->level_count; i++) {	
 	
+		if (levels_list[i].x == 0)
+			levels_list[i].x = 172 + i*30;
+
+		if (levels_list[i].y == 0)
+			levels_list[i].y = 270;
+	
+	}
+
 	this->Open_Scores();
 	this->Load_Info();
+
+	this->Update_NextLevel();
 
 }
 
@@ -364,5 +365,46 @@ PFile::Path EpisodeClass::Get_Dir(std::string file) {
 		return PFile::Path(this->source_zip, path);
 	
 	return PFile::Path(path);
+
+}
+
+void EpisodeClass::Update_NextLevel() {
+
+	if (require_all_levels) {
+
+		next_level = UINT32_MAX;
+		for (u32 i = 0; i < level_count; i++)
+			if (!(level_status[i] & LEVEL_PASSED) && levels_list[i].order < next_level) {
+				next_level = levels_list[i].order;
+				break;
+			}
+
+	} else {
+
+		next_level = 1;
+		for (u32 i = 0; i < level_count; i++) {
+			
+			if (levels_list[i].order > next_level)
+				break;
+
+			if (level_status[i] & LEVEL_PASSED)
+				next_level = levels_list[i].order + 1;
+		}
+		
+		// Clear levels before next level
+		bool ended = true;
+		for (u32 i = 0; i < level_count; i++) {
+			if (levels_list[i].order < next_level) {
+				level_status[i] |= LEVEL_PASSED;
+			}
+			if (!(level_status[i] & LEVEL_PASSED))
+				ended = false;
+		}
+
+		if (ended)
+			next_level = UINT32_MAX;
+		
+	}
+
 
 }

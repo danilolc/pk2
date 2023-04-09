@@ -446,14 +446,10 @@ int Screen_ScoreCount() {
 
 	if (going_to_map && !Is_Fading()){
 
-		if (Game->level_id == EPISODI_MAX_LEVELS - 1) {
+		if (Episode->next_level == UINT32_MAX && !Game->repeating) {
 
 			next_screen = SCREEN_END;
-		
-		} else if (Game->level_id == Episode->level_count - 1) {
 
-			next_screen = SCREEN_END;
-		
 		} else {
 
 			next_screen = SCREEN_MAP;

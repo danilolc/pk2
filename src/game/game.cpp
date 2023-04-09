@@ -93,8 +93,7 @@ int GameClass::Finnish() {
 		if (this->apples_got >= this->apples_count)
 			Episode->level_status[this->level_id] |= LEVEL_ALLAPPLES;
 
-	if (Episode->levels_list[this->level_id].order == Episode->next_level)
-		Episode->next_level++;
+	Episode->Update_NextLevel();
 	
 	PSound::set_musicvolume_now(Settings.music_max_volume);
 

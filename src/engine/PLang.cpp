@@ -23,7 +23,7 @@ PLang::PLang() {
 
 PLang::PLang(PFile::Path path) {
 
-	Read_File(path);
+	this->loaded = Read_File(path);
 
 }
 

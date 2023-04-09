@@ -13,6 +13,9 @@
 class PLang {
 
 	public:
+
+		bool loaded = false;
+
 		PLang();
 		PLang(PFile::Path path);
 		~PLang();
@@ -22,6 +25,7 @@ class PLang {
 		int Set_Text(const char* title, const char* text);
 
 	private:
+	
 		std::vector<std::string> tekstit;
 		std::vector<std::string> titles;
 	

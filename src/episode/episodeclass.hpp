@@ -75,6 +75,7 @@ class EpisodeClass {
 		bool glows = false;
 		bool hide_numbers = false;
 		bool ignore_collectable = false;
+		bool require_all_levels = false;
 		std::string collectable_name = "big apple";
 		
 		PK2LEVEL levels_list[EPISODI_MAX_LEVELS];
@@ -95,6 +96,8 @@ class EpisodeClass {
 
 		int  Open_Scores();
 		int  Save_Scores();
+
+		void Update_NextLevel();
 
 	private:
 		

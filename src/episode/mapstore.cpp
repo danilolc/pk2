@@ -15,12 +15,6 @@
 
 std::vector<episode_entry> episodes;
 
-static bool Alphabetical(episode_entry a, episode_entry b) {
-
-    return PUtils::Alphabetical_Compare(a.name.c_str(), b.name.c_str()) == 1;
-
-}
-
 void Search_Episodes() {
 
 	std::vector<std::string> list;
@@ -69,8 +63,11 @@ void Search_Episodes() {
 	#endif
 
 	if (episodes.size() > 1)
-		std::sort(episodes.begin(), episodes.end(), Alphabetical);
-
+		std::stable_sort(episodes.begin(), episodes.end(),
+		[](const episode_entry& a, const episode_entry& b) {
+			return PUtils::Alphabetical_Compare(a.name.c_str(), b.name.c_str()) == 1;
+		});
+	
 	PLog::Write(PLog::DEBUG, "PK2", "Found %i episodes", (int)episodes.size());
 
 }

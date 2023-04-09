@@ -314,26 +314,6 @@ int Screen_Map_Init() {
 
 	}
 
-	Episode->next_level = UINT32_MAX;
-	for (u32 i = 0; i < Episode->level_count; i++) {
-		
-		if (!Episode->level_status[i] && Episode->levels_list[i].order < Episode->next_level) {
-			Episode->next_level = Episode->levels_list[i].order; // Find the first unclear level
-			break;
-		}
-
-	}
-
-	for (u32 i = 0; i < Episode->level_count; i++) {
-
-		if (Episode->levels_list[i].x == 0)
-			Episode->levels_list[i].x = 172+i*30;
-
-		if (Episode->levels_list[i].y == 0)
-			Episode->levels_list[i].y = 270;
-		
-	}
-
 	Play_Music();
 
 	going_to_game = false;
