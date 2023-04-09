@@ -23,7 +23,7 @@ PLang::PLang() {
 
 PLang::PLang(PFile::Path path) {
 
-	this->loaded = Read_File(path);
+	Read_File(path);
 
 }
 
@@ -80,6 +80,8 @@ bool PLang::Read_File(PFile::Path path){
 	}
 
     io->close();
+
+	loaded = true;
 	return true;
 }
 

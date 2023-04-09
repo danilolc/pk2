@@ -41,40 +41,34 @@ int PFont::load(PFile::Path path) {
 	if (!path.Find()) 
 		return -1;
 
-	PLang* param_file = new PLang();
+	PLang param_file = PLang();
 
-	if (!param_file->Read_File(path)){
-	
-		delete param_file;
+	if (!param_file.Read_File(path))
 		return -1;
-	
-	}
 
-	//i = param_file->Search_Id("image width");
-	//int buf_width = atoi(param_file->Get_Text(i));
+	//i = param_file.Search_Id("image width");
+	//int buf_width = atoi(param_file.Get_Text(i));
 
-	i = param_file->Search_Id("image x");
-	int buf_x = atoi(param_file->Get_Text(i));
+	i = param_file.Search_Id("image x");
+	int buf_x = atoi(param_file.Get_Text(i));
 
-	i = param_file->Search_Id("image y");
-	int buf_y = atoi(param_file->Get_Text(i));
+	i = param_file.Search_Id("image y");
+	int buf_y = atoi(param_file.Get_Text(i));
 
-	i = param_file->Search_Id("letters");
-	this->char_count = strlen(param_file->Get_Text(i));
+	i = param_file.Search_Id("letters");
+	this->char_count = strlen(param_file.Get_Text(i));
 
-	i = param_file->Search_Id("letter width");
-	this->char_w = atoi(param_file->Get_Text(i));
+	i = param_file.Search_Id("letter width");
+	this->char_w = atoi(param_file.Get_Text(i));
 
-	i = param_file->Search_Id("letter height");
-	this->char_h = atoi(param_file->Get_Text(i));
+	i = param_file.Search_Id("letter height");
+	this->char_h = atoi(param_file.Get_Text(i));
 
-	i = param_file->Search_Id("letters");
-	strcpy(chars, param_file->Get_Text(i));
+	i = param_file.Search_Id("letters");
+	strcpy(chars, param_file.Get_Text(i));
 
-	i = param_file->Search_Id("image");
-	path.SetFile(param_file->Get_Text(i));
-
-	delete param_file;
+	i = param_file.Search_Id("image");
+	path.SetFile(param_file.Get_Text(i));
 
 	if (!path.Find())
 		return -1;
@@ -85,7 +79,7 @@ int PFont::load(PFile::Path path) {
 	this->get_image(buf_x, buf_y, temp_image);
 	PDraw::image_delete(temp_image);
 
-	// TODO 
+	// TODO
 	for ( uint i = 0; i < 256; i++ )
 		charlist[i] = -1;
 	

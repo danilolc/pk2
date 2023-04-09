@@ -155,10 +155,10 @@ static void quit() {
 	if (Game)
 		delete Game;
 	
-	/*if (Episode && !test_level) {
-		Save_Record(10); //Save #10 is the backup
+	if (Episode && !test_level) {
+		//Save_Record(10); //Save #10 is the backup
 		delete Episode;
-	}*/
+	}
 	
 	if(tekstit)
 		delete tekstit;
