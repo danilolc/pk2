@@ -76,6 +76,7 @@ class EpisodeClass {
 		bool hide_numbers = false;
 		bool ignore_collectable = false;
 		bool require_all_levels = false;
+		bool no_ending = false;
 		std::string collectable_name = "big apple";
 		
 		PK2LEVEL levels_list[EPISODI_MAX_LEVELS];

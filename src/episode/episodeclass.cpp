@@ -278,6 +278,12 @@ void EpisodeClass::Load() {
 			this->require_all_levels = true;
 		}
 
+		id = config.Search_Id("no_ending");
+		if (id != -1) {
+			PLog::Write(PLog::INFO, "PK2", "Episode no ending is ON");
+			this->no_ending = true;
+		}
+
 	}
 
 	// Sort levels
