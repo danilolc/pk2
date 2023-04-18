@@ -115,8 +115,12 @@ int Draw_InGame_BGSprites() {
 
 void Draw_InGame_Sprites() {
 
-	for (SpriteClass* sprite : Sprites_List){
-		if (Is_Sprite_Visible(sprite) && sprite->tyyppi->type != TYPE_BACKGROUND) {
+	for (SpriteClass* sprite : Sprites_List) {
+
+		if (sprite->tyyppi->type == TYPE_BACKGROUND)
+			continue;
+
+		if (Is_Sprite_Visible(sprite)) {
 
 			// Draw impact circle
 			if (sprite->damage_timer > 0 && sprite->tyyppi->type != TYPE_BONUS && sprite->energia < 1){
