@@ -1336,7 +1336,16 @@ int Sprite_Movement(SpriteClass& sprite){
 					if (sprite.AI_Info(*Player_Sprite)) {
 
 						int info = sprite.tyyppi->AI[ai] - AI_INFOS_BEGIN + 1;
-						Game->Show_Info(tekstit->Get_Text(PK_txt.infos[info]));
+						
+						std::string sinfo = "info";
+						if (info < 10) sinfo += '0';
+						sinfo += std::to_string(info);
+
+						int index = Episode->infos.Search_Id(sinfo.c_str());
+						if (index != -1)
+							Game->Show_Info(Episode->infos.Get_Text(index));
+						else
+							Game->Show_Info(tekstit->Get_Text(PK_txt.infos[info]));
 
 					}
 			}
@@ -1834,20 +1843,32 @@ int BonusSprite_Movement(SpriteClass& sprite){
 						Player_Sprite->ammus2 = Player_Sprite->tyyppi->ammus2;
 						Player_Sprite->initial_weight = Player_Sprite->tyyppi->weight;
 						Player_Sprite->y -= Player_Sprite->tyyppi->korkeus/2;
+						
+						int infotext = Episode->infos.Search_Id("pekka transformed");
+						if (infotext != -1)
+							Game->Show_Info(Episode->infos.Get_Text(infotext));
 						//Game->Show_Info("pekka has been transformed!");
 					}
 				}
 
-				if (sprite.tyyppi->ammus1 != nullptr)
-				{
+				if (sprite.tyyppi->ammus1 != nullptr) {
 					Player_Sprite->ammus1 = sprite.tyyppi->ammus1;
-					Game->Show_Info(tekstit->Get_Text(PK_txt.game_newegg));
+
+					int infotext = Episode->infos.Search_Id("new egg attack");
+					if (infotext != -1)
+						Game->Show_Info(Episode->infos.Get_Text(infotext));
+					else
+						Game->Show_Info(tekstit->Get_Text(PK_txt.game_newegg));
 				}
 
-				if (sprite.tyyppi->ammus2 != nullptr)
-				{
+				if (sprite.tyyppi->ammus2 != nullptr) {
 					Player_Sprite->ammus2 = sprite.tyyppi->ammus2;
-					Game->Show_Info(tekstit->Get_Text(PK_txt.game_newdoodle));
+
+					int infotext = Episode->infos.Search_Id("new doodle attack");
+					if (infotext != -1)
+						Game->Show_Info(Episode->infos.Get_Text(infotext));
+					else
+						Game->Show_Info(tekstit->Get_Text(PK_txt.game_newdoodle));
 				}
 
 				Play_GameSFX(sprite.tyyppi->aanet[SOUND_DESTRUCTION],100, (int)sprite.x, (int)sprite.y,

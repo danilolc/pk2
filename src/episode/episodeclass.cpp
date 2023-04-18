@@ -157,34 +157,11 @@ int EpisodeClass::Save_Scores() {
 //TODO - Load info from different languages
 void EpisodeClass::Load_Info() {
 
-	// Clean extra infos
-	for (uint i = 20; i < MAX_INFOS; i++)
-		PK_txt.infos[i] = -1;
-
 	PFile::Path infofile = this->Get_Dir("infosign.txt");
 
-	if (infofile.Find()){
-
-		PLang temp = PLang();
-
-		if (temp.Read_File(infofile)) {
-
-			std::string infon;
-			for (uint i = 1; i < MAX_INFOS; i++) {
-				
-				infon = "info"; //info + number
-				if (i < 10) infon += '0';
-				infon += std::to_string(i);
-
-				int index = temp.Search_Id(infon.c_str());
-
-				if (index != -1)
-					PK_txt.infos[i] = tekstit->Set_Text(infon.c_str(), temp.Get_Text(index));
-				
-			}
-		}
-
-	}
+	if (infofile.Find())
+		if (this->infos.Read_File(infofile))
+			PLog::Write(PLog::DEBUG, "PK2", "%s loaded", infofile.c_str());
 
 }
 

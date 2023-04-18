@@ -8,6 +8,7 @@
 
 #include "engine/platform.hpp"
 #include "engine/PFile.hpp"
+#include "engine/PLang.hpp"
 
 const int EPISODI_MAX_LEVELS = 100; //50;
 
@@ -83,6 +84,8 @@ class EpisodeClass {
 		u8 level_status[EPISODI_MAX_LEVELS];
 
 		PK2EPISODESCORES scores;
+
+		PLang infos;
 
 		EpisodeClass(int save);
 		EpisodeClass(const char* player_name, episode_entry entry);

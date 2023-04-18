@@ -87,6 +87,9 @@ bool PLang::Read_File(PFile::Path path){
 
 int PLang::Search_Id(const char *text) {
 
+	if (!loaded)
+		return -1;
+
 	size_t i;
 	for (i = 0; i < titles.size(); i++)
 		if (titles[i] == text) break;
@@ -99,13 +102,20 @@ int PLang::Search_Id(const char *text) {
 }
 
 const char* PLang::Get_Text(size_t index) {
+
+	if (!loaded)
+		return ".....";
+
 	if (index < tekstit.size())
-		return tekstit[index].c_str(); //?
+		return tekstit[index].c_str();
 	else
 		return ".....";
 }
 
 int PLang::Set_Text(const char* title, const char* text) {
+
+	if (!loaded)
+		return -1;
 
 	int idx = this->Search_Id(title);
 	if (idx != -1) {
