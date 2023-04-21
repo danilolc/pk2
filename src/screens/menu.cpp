@@ -367,12 +367,12 @@ void Draw_Menu_Main() {
 		my += 20;
 	}
 
-	if (!PUtils::Is_Mobile()) {
+	//if (!PUtils::Is_Mobile()) {
 		if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_controls),180,my)){
 			menu_nyt = MENU_CONTROLS;
 		}
 		my += 20;
-	}
+	//}
 
 	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_graphics),180,my)){
 		menu_nyt = MENU_GRAPHICS;

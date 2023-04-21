@@ -276,10 +276,13 @@ bool ControllerFound() {
 
 int Vibrate(int length) {
 
-	if (SDL_GameControllerRumble(Controller, vibration, vibration, length) != 0)
-		return -1;
-	if (SDL_HapticRumblePlay(Haptic, 0.5, length) != 0)
-		return -1;
+	if (Controller != nullptr)
+		if (SDL_GameControllerRumble(Controller, vibration, vibration, length) != 0)
+			return -1;
+
+	if (Haptic != nullptr)
+		if (SDL_HapticRumblePlay(Haptic, 0.5, length) != 0)
+			return -1;
 	
 	return 0;
 
@@ -518,7 +521,7 @@ static int init_haptic() {
 	for (int i = 0; i < SDL_NumHaptics(); i++) {
 
 		Haptic = SDL_HapticOpen(i);
-		if (!Haptic)
+		if (Haptic == nullptr)
 			continue;
 		
 		if (SDL_HapticRumbleSupported(Haptic))
@@ -585,10 +588,10 @@ int update() {
 
 int terminate() {
 
-	if (Haptic != NULL)
+	if (Haptic != nullptr)
 		SDL_HapticClose(Haptic);
 
-	if (Controller != NULL)
+	if (Controller != nullptr)
 		SDL_GameControllerClose(Controller);
 
 	return 0;
