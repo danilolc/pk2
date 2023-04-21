@@ -958,10 +958,13 @@ void Draw_Menu_Graphics() {
 
 void Draw_Menu_Sounds() {
 
+	Draw_BGSquare(40, 70, 640-40, 410, 224);
+
 	int my = 0;
 	int kdelay = 5;
 
-	Draw_BGSquare(40, 70, 640-40, 410, 224);
+	u8 sfx_volume = Settings.sfx_max_volume;
+	u8 mus_volume = Settings.music_max_volume;
 
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.sound_title),50,90);
 	my += 20;
@@ -984,13 +987,7 @@ void Draw_Menu_Sounds() {
 			Settings.sfx_max_volume += 5;
 	}
 
-	if (Settings.sfx_max_volume < 0)
-		Settings.sfx_max_volume = 0;
-
-	if (Settings.sfx_max_volume > 100)
-		Settings.sfx_max_volume = 100;
-
-	my+=40;
+	my += 40;
 
 	PDraw::screen_fill(404,224+my,404+Settings.music_max_volume,244+my,0);
 	PDraw::screen_fill(400,220+my,400+Settings.music_max_volume,240+my,112);
@@ -1009,19 +1006,37 @@ void Draw_Menu_Sounds() {
 		if (Settings.music_max_volume < 100)
 			Settings.music_max_volume += 5;
 	}
+	
+	my += 20;
 
+	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),180,400))
+		menu_nyt = MENU_MAIN;
+	
+	
+	if (Settings.sfx_max_volume < 0)
+		Settings.sfx_max_volume = 0;
+
+	if (Settings.sfx_max_volume > 100)
+		Settings.sfx_max_volume = 100;
+	
 	if (Settings.music_max_volume < 0)
 		Settings.music_max_volume = 0;
 
 	if (Settings.music_max_volume > 100)
 		Settings.music_max_volume = 100;
 
-	PSound::set_musicvolume(Settings.music_max_volume);
+	if (mus_volume != Settings.music_max_volume) {
 
-	my += 20;
+		if (Game && !Game->music_stopped)
+			PSound::set_musicvolume(Settings.music_max_volume);
+		Settings_Save();
 
-	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),180,400))
-		menu_nyt = MENU_MAIN;
+	}
+	if (sfx_volume != Settings.sfx_max_volume) {
+		
+		Settings_Save();
+
+	}
 
 }
 

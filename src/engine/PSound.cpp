@@ -22,7 +22,7 @@ const int MAX_SOUNDS = 300;
 
 static int def_freq = 22050;
 
-static int mus_volume = 100;
+static u8 mus_volume = 100;
 static float mus_volume_now = 100;
 
 static Mix_Chunk* chunks[MAX_SOUNDS]; //The original chunks loaded
@@ -462,13 +462,13 @@ int start_music(PFile::Path path) {
 	
 }
 
-void set_musicvolume(int volume) {
+void set_musicvolume(u8 volume) {
 
 	mus_volume = volume;
 
 }
 
-void set_musicvolume_now(int volume) {
+void set_musicvolume_now(u8 volume) {
 
 	mus_volume = volume;
 	mus_volume_now = volume;

@@ -1327,7 +1327,11 @@ int Sprite_Movement(SpriteClass& sprite){
 													break;
 				case AI_KAANTYY_JOS_OSUTTU:			sprite.AI_Kaantyy_Jos_Osuttu();
 													break;
-				case AI_EVIL_ONE:					if (sprite.energia < 1) PSound::set_musicvolume(0);
+				case AI_EVIL_ONE:					if (sprite.energia < 1) 
+													{
+														PSound::set_musicvolume(0);
+														Game->music_stopped = true;
+													}
 													break;
 
 				default:

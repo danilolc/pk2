@@ -23,8 +23,8 @@ int  free_sfx(int index);
 void reset_sfx();
 
 int  start_music(PFile::Path path);
-void set_musicvolume(int volume);
-void set_musicvolume_now(int volume);
+void set_musicvolume(u8 volume);
+void set_musicvolume_now(u8 volume);
 void stop_music();
 
 int resume_music();

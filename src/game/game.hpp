@@ -55,6 +55,7 @@ class GameClass {
 		double dcamera_b;
 
 		bool paused = false;
+		bool music_stopped = false;
 
 		int keys = 0;
 
