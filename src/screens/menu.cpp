@@ -1027,7 +1027,7 @@ void Draw_Menu_Sounds() {
 
 	if (mus_volume != Settings.music_max_volume) {
 
-		if (Game && !Game->music_stopped)
+		if (!Game || !Game->music_stopped)
 			PSound::set_musicvolume(Settings.music_max_volume);
 		Settings_Save();
 
