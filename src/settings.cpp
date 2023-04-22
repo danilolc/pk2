@@ -102,6 +102,8 @@ void Settings_Init() {
 	Settings.music_max_volume = 30;
 	Settings.sfx_max_volume = 95;
 
+	Settings.gui = true;
+
 	Id_To_String(Settings.id, id_code);
 
 }
@@ -166,6 +168,8 @@ int Settings_Open() {
 
 	file->read(Settings.music_max_volume);
 	file->read(Settings.sfx_max_volume);
+
+	file->read(Settings.gui);
 	
 	file->close();
 
@@ -230,6 +234,8 @@ int Settings_Save() {
 
 	file->write(Settings.music_max_volume);
 	file->write(Settings.sfx_max_volume);
+
+	file->write(Settings.gui);
 	
 	file->close();
 	

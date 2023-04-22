@@ -29,7 +29,7 @@ enum {
 	NOT_SET,
 };
 
-#define SETTINGS_VERSION "1.7"
+#define SETTINGS_VERSION "1.8"
 
 struct GAME_CONTROLS { 
 
@@ -72,6 +72,9 @@ struct PK2SETTINGS {
 	// Audio
 	u8  music_max_volume;
 	u8  sfx_max_volume;
+
+	// GUI
+	bool gui;
 
 };
 

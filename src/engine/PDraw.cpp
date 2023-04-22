@@ -141,7 +141,7 @@ int image_load(PFile::Path path, bool getPalette) {
 
     if (imageList[index] == NULL) {
 
-        PLog::Write(PLog::ERR, "PDraw", "Couldn't load %s", path.c_str());
+        PLog::Write(PLog::ERR, "PDraw", "Couldn't load %s, %s", path.c_str(), SDL_GetError());
         return -1;
     
     }

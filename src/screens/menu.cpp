@@ -1042,38 +1042,36 @@ void Draw_Menu_Sounds() {
 
 void Draw_Menu_Controls() {
 	
-	int my = 0;
+	int my = 130;
 	bool save_settings = false;
 
 	Draw_BGSquare(40, 70, 640-40, 410, 224);
 
 	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_title),50,90);
 
-	my = 40;
-
 	if (menu_lue_kontrollit > 0){
-		PDraw::screen_fill(299,74+my+menu_lue_kontrollit*20,584,94+my+menu_lue_kontrollit*20,0);
-		PDraw::screen_fill(295,70+my+menu_lue_kontrollit*20,580,90+my+menu_lue_kontrollit*20,50);
+		PDraw::screen_fill(299,my-16+menu_lue_kontrollit*20,584,4+my+menu_lue_kontrollit*20,0);
+		PDraw::screen_fill(295,my-20+menu_lue_kontrollit*20,580,my+menu_lue_kontrollit*20,50);
 	}
 
-	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_moveleft),100,90+my);my+=20;
-	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_moveright),100,90+my);my+=20;
-	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_jump),100,90+my);my+=20;
-	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_duck),100,90+my);my+=20;
-	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_walkslow),100,90+my);my+=20;
-	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_eggattack),100,90+my);my+=20;
-	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_doodleattack),100,90+my);my+=20;
-	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_useitem),100,90+my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_moveleft),100,my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_moveright),100,my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_jump),100,my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_duck),100,my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_walkslow),100,my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_eggattack),100,my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_doodleattack),100,my);my+=20;
+	PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.controls_useitem),100,my);my+=20;
 
-	my = 40;
-	PDraw::font_write(fontti2,PInput::KeyName(Input->left),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Input->right),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Input->jump),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Input->down),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Input->walk_slow),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Input->attack1),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Input->attack2),380,90+my);my+=20;
-	PDraw::font_write(fontti2,PInput::KeyName(Input->open_gift),380,90+my);my+=20;
+	my = 130;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->left),380,my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->right),380,my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->jump),380,my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->down),380,my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->walk_slow),380,my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->attack1),380,my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->attack2),380,my);my+=20;
+	PDraw::font_write(fontti2,PInput::KeyName(Input->open_gift),380,my);my+=20;
 
 	/*
 	if (PInput::mouse_x > 310 && PInput::mouse_x < 580 && PInput::mouse_y > 130 && PInput::mouse_y < my-20){
@@ -1088,7 +1086,7 @@ void Draw_Menu_Controls() {
 	}*/
 
 	if (menu_lue_kontrollit == 0){
-		if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.controls_edit),100,90+my)) {
+		if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.controls_edit),100,my)) {
 			menu_lue_kontrollit = 1;
 			menu_valittu_id = 0; //Set menu cursor to 0
 		}
@@ -1099,7 +1097,7 @@ void Draw_Menu_Controls() {
 	if (menu_lue_kontrollit == 0){
 		if (Input == &Settings.keyboard) {
 
-			if (Draw_Menu_Text("use game controller",100,90+my)) {
+			if (Draw_Menu_Text("use game controller",100,my)) {
 				Settings.using_controller = SET_TRUE;
 				Input = &Settings.joystick;
 				menu_valittu_id = 0; //Set menu cursor to 0
@@ -1108,7 +1106,7 @@ void Draw_Menu_Controls() {
 
 		} else {
 
-			if (Draw_Menu_Text("use keyboard",100,90+my)) {
+			if (Draw_Menu_Text("use keyboard",100,my)) {
 				Settings.using_controller = SET_FALSE;
 				Input = &Settings.keyboard;
 				menu_valittu_id = 0; //Set menu cursor to 0
@@ -1120,7 +1118,7 @@ void Draw_Menu_Controls() {
 
 	my += 20;
 
-	if (Draw_Menu_Text("get default",100,90+my)) {
+	if (Draw_Menu_Text("get default",100,my)) {
 
 		if (Input == &Settings.keyboard) {
 			Input->left      = PInput::LEFT;
@@ -1152,20 +1150,41 @@ void Draw_Menu_Controls() {
 
 	// TODO - Change this
 	if (Settings.vibration > 0){
-		if (Draw_Menu_Text("turn on vibration",100,90+my)){
+		if (Draw_Menu_Text("turn on vibration",100,my)){
 			Settings.vibration = 0;
 			PInput::SetVibration(Settings.vibration);
+			save_settings = true;
 		}
-	} else{
-		if (Draw_Menu_Text("turn off vibration",100,90+my)){
+	} else {
+		if (Draw_Menu_Text("turn off vibration",100,my)){
 			Settings.vibration = 0xFFFF/2;
 			PInput::SetVibration(Settings.vibration);
+			save_settings = true;
 		}
 	}
-	my += 40;
+	my += 20;
 
+	if (PUtils::Is_Mobile()) {
 
-	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),180,400)){
+		if (Settings.gui) {
+			if (Draw_Menu_Text("turn off gui",100,my)) {
+			
+				Settings.gui = false;
+				save_settings = true;
+			}
+		} else { 
+			if (Draw_Menu_Text("turn on gui",100,my)) {
+		
+				Settings.gui = true;
+				save_settings = true;
+		
+			}
+		}
+		my += 20;
+	}
+
+	my += 20;
+	if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),180,my)){
 		menu_nyt = MENU_MAIN;
 		menu_lue_kontrollit = 0;
 		menu_valittu_id = 0;
@@ -1218,8 +1237,6 @@ void Draw_Menu_Controls() {
 
 	if (save_settings)
 		Settings_Save();
-
-	my += 20;
 
 }
 

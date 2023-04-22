@@ -37,7 +37,7 @@ void Fade_Quit() {
 int Screen_First_Start() {
 
 	if(test_level)
-		srand(time(NULL));
+		srand(0);
 	else
 		srand(Settings.id);
 	

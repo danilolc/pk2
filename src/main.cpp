@@ -290,7 +290,7 @@ int main(int argc, char *argv[]) {
 
 	#else //__ANDROID__
 
-	const char* ptr = SDL_AndroidGetExternalStoragePath();
+	const char* ptr = SDL_AndroidGetExternalStoragePath(); //TODO 1.5 - external path must be a writeable path
 	if (ptr) {
 		External_Path = ptr;
 		SDL_free((void*)ptr);

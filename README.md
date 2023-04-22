@@ -84,8 +84,10 @@ This example starts the level13.map on dev mode:
 * Better sound quality
 
 # PLANS
+* Make a 64bit release
+* Better error handling (remove PK2_Error)
 * Loading languages from zip files and `all.txt`
-* Mult line info sign
+* Multi line info sign
 * Speed-run mode (frame counter, ghost)
 * Better documentation
 * Implement new layer on .map (regions)

@@ -600,8 +600,12 @@ int Draw_InGame() {
 
 int Screen_InGame_Init(){
 
-	if(PUtils::Is_Mobile())
-		GUI_Change(UI_GAME_BUTTONS);
+	if(PUtils::Is_Mobile()) {
+		if (Settings.gui)
+			GUI_Change(UI_GAME_BUTTONS);
+		else 
+			GUI_Change(UI_TOUCH_TO_START);
+	}
 	
 	PDraw::set_offset(screen_width, screen_height);
 
@@ -802,7 +806,7 @@ int Screen_InGame(){
 			}
 
 			if (!skip_frame) {
-				if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_START) || Gui_menu) {
+				if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_START) || Gui_menu || Gui_touch) {
 					if(test_level)
 						Fade_Quit();
 					else {
