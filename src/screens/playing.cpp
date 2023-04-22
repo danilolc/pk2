@@ -40,6 +40,9 @@ int Draw_InGame_BGSprites() {
 
 	for (SpriteClass* sprite : bgSprites_List) {
 
+		if (sprite->piilota)
+			continue;
+
 		double alku_x = sprite->alku_x;
 		double alku_y = sprite->alku_y;
 
@@ -118,6 +121,9 @@ void Draw_InGame_Sprites() {
 	for (SpriteClass* sprite : Sprites_List) {
 
 		if (sprite->tyyppi->type == TYPE_BACKGROUND)
+			continue;
+		
+		if (sprite->piilota)
 			continue;
 
 		if (Is_Sprite_Visible(sprite)) {

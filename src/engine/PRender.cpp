@@ -243,6 +243,7 @@ int init(int width, int height, const char* name, const char* icon, int render_m
     #else
 
 	// create a temporary window to check if GLSL 1.4 is supported
+	// TODO 1.5 - Solve this and warn with SDL Info 
 	if (render_method == RENDERER_OPENGL) {
 
 		SDL_Window* temp_window = SDL_CreateWindow("", 0, 0, 1, 1, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
