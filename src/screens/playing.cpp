@@ -21,11 +21,10 @@
 #include "system.hpp"
 #include "settings.hpp"
 
-static int debug_active_sprites = 0;
-
 static bool draw_debug_info = false;
-static int debug_sprites = 0;
+
 static int debug_drawn_sprites = 0;
+static int debug_active_sprites = 0;
 
 bool Is_Sprite_Visible(SpriteClass* sprite) {
 
@@ -110,8 +109,6 @@ int Draw_InGame_BGSprites() {
 				sprite->Animoi();
 			sprite->piilossa = true;
 		}
-
-		debug_sprites++;
 	}
 	return 0;
 }
@@ -164,10 +161,7 @@ void Draw_InGame_Sprites() {
 				sprite->piilota = true;
 			
 		}
-
-		debug_sprites++;
 	}
-	
 }
 
 int Draw_InGame_DebugInfo() {
@@ -177,7 +171,6 @@ int Draw_InGame_DebugInfo() {
 	PDraw::set_offset(640, 480);
 
 	vali = PDraw::font_write(fontti1,"spriteja: ",10,fy);
-	//sprintf(lukua, "%i", debug_sprites);
 	sprintf(lukua, "%li", Sprites_List.size());
 	PDraw::font_write(fontti1,lukua,10+vali,fy);
 	fy += 10;
@@ -521,7 +514,6 @@ int Draw_InGame() {
 
 	char luku[16];
 
-	debug_sprites = 0;
 	debug_drawn_sprites = 0;
 
 	Draw_InGame_BG();

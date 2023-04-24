@@ -744,8 +744,7 @@ int Sprite_Movement(SpriteClass& sprite){
 
 	//Compare this sprite with every sprite in the game
 	for (SpriteClass* sprite2 : Sprites_List) {
-
-		if (sprite2 != &sprite && sprite2->aktiivinen) {
+		if (sprite2 != &sprite && sprite2->aktiivinen && !sprite2->piilota) {
 			if (sprite2->crouched)
 				sprite2_yla = sprite2->tyyppi->korkeus / 3;//1.5;
 			else
