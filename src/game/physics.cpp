@@ -108,7 +108,7 @@ static PK2BLOCK Block_Get(u32 x, u32 y) {
 	return block;
 }
 
-static void Check_SpriteBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
+static void Check_SpriteBlock(SpriteClass* sprite, PK2BLOCK &palikka) {
 
 	//left and right
 	if (sprite_yla < palikka.ala && sprite_ala-1 > palikka.yla){
@@ -161,14 +161,14 @@ static void Check_SpriteBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 
 					if (sprite_yla < palikka.ala)
 						if (palikka.koodi != BLOCK_LIFT_HORI)
-							sprite.crouched = true;
+							sprite->crouched = true;
 				}
 			}
 		}
 	}
 }
 
-static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
+static void Check_MapBlock(SpriteClass* sprite, PK2BLOCK &palikka) {
 
 	//If sprite is in the block
 	if (sprite_x <= palikka.oikea && sprite_x >= palikka.vasen && sprite_y <= palikka.ala && sprite_y >= palikka.yla){
@@ -177,31 +177,31 @@ static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/* Examine if block is water background                               */
 		/**********************************************************************/
 		if (palikka.water)
-			sprite.vedessa = true;
+			sprite->vedessa = true;
 		else
-			sprite.vedessa = false;
+			sprite->vedessa = false;
 
 		/**********************************************************************/
 		/* Examine if it touches the fire                                     */
 		/**********************************************************************/
-		if (palikka.koodi == BLOCK_FIRE && Game->button1 == 0 && sprite.damage_timer == 0){
-			sprite.saatu_vahinko = 2;
-			sprite.saatu_vahinko_tyyppi = DAMAGE_FIRE;
+		if (palikka.koodi == BLOCK_FIRE && Game->button1 == 0 && sprite->damage_timer == 0){
+			sprite->saatu_vahinko = 2;
+			sprite->saatu_vahinko_tyyppi = DAMAGE_FIRE;
 		}
 
 		/**********************************************************************/
 		/* Examine if bloc is hideway (unused)                               */
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_HIDEOUT)
-			sprite.piilossa = true;
+			sprite->piilossa = true;
 		else
-			sprite.piilossa = false;
+			sprite->piilossa = false;
 		
 
 		/**********************************************************************/
 		/* Examine if block is the exit                                       */
 		/**********************************************************************/
-		if (palikka.koodi == BLOCK_EXIT && sprite.pelaaja != 0)
+		if (palikka.koodi == BLOCK_EXIT && sprite->pelaaja != 0)
 			if (!Game->level_clear)
 				Game->Finnish();
 	}
@@ -211,9 +211,9 @@ static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		/* Examine if it touches the fire                                     */
 		/**********************************************************************/
-		if (palikka.koodi == BLOCK_FIRE && Game->button1 == 0 && sprite.damage_timer == 0){
-			sprite.saatu_vahinko = 2;
-			sprite.saatu_vahinko_tyyppi = DAMAGE_FIRE;
+		if (palikka.koodi == BLOCK_FIRE && Game->button1 == 0 && sprite->damage_timer == 0){
+			sprite->saatu_vahinko = 2;
+			sprite->saatu_vahinko_tyyppi = DAMAGE_FIRE;
 		}
 	}
 
@@ -240,13 +240,13 @@ static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		/* Examine if it is a key and touches lock wall                       */
 		/**********************************************************************/
-		if (palikka.koodi == BLOCK_LOCK && sprite.tyyppi->avain){
+		if (palikka.koodi == BLOCK_LOCK && sprite->tyyppi->avain){
 			Game->map.seinat[palikka.vasen/32+(palikka.yla/32)*PK2MAP_MAP_WIDTH] = 255;
 			Game->map.Calculate_Edges();
 
-			sprite.piilota = true;
+			sprite->piilota = true;
 
-			if (sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU) {
+			if (sprite->tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU) {
 				Game->keys--;
 				if (Game->keys < 1)
 					Game->map.Open_Locks();
@@ -268,13 +268,13 @@ static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 		/*********************************************************************/
 		/* Examine if sprite is on the border to fall                        */
 		/*********************************************************************/
-		if (palikka.border && sprite.jump_timer <= 0 && sprite_y < palikka.ala && sprite_y > palikka.yla){
+		if (palikka.border && sprite->jump_timer <= 0 && sprite_y < palikka.ala && sprite_y > palikka.yla){
 			/* && sprite_ala <= palikka.ala+2)*/ // onko sprite tullut borderlle
 			if (sprite_vasen > palikka.vasen)
-				sprite.reuna_vasemmalla = true;
+				sprite->reuna_vasemmalla = true;
 
 			if (sprite_oikea < palikka.oikea)
-				sprite.reuna_oikealla = true;
+				sprite->reuna_oikealla = true;
 		}
 	}
 
@@ -325,7 +325,7 @@ static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 						}
 					}
 
-					if (sprite.kytkinpaino >= 1) { // Sprite can press the buttons
+					if (sprite->kytkinpaino >= 1) { // Sprite can press the buttons
 						if (palikka.koodi == BLOCK_BUTTON1 && Game->button1 == 0) {
 							Game->button1 = SWITCH_INITIAL_VALUE;
 							Game->button_vibration = 64;
@@ -356,16 +356,16 @@ static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 					ylos = false;
 
 					if (sprite_yla < palikka.ala) {
-						if (palikka.koodi == BLOCK_LIFT_VERT && sprite.crouched) {
-							sprite.saatu_vahinko = 2;
-							sprite.saatu_vahinko_tyyppi = DAMAGE_IMPACT;
+						if (palikka.koodi == BLOCK_LIFT_VERT && sprite->crouched) {
+							sprite->saatu_vahinko = 2;
+							sprite->saatu_vahinko_tyyppi = DAMAGE_IMPACT;
 						}
 
 						if (palikka.koodi != BLOCK_LIFT_HORI) {
-							//if (sprite.crouched)
+							//if (sprite->crouched)
 							//	sprite_y = palikka.ala + sprite_korkeus /2;
 
-							sprite.crouched = true;
+							sprite->crouched = true;
 						}
 					}
 				}
@@ -374,57 +374,57 @@ static void Check_MapBlock(SpriteClass &sprite, PK2BLOCK &palikka) {
 	}
 }
 
-int Sprite_Movement(SpriteClass& sprite){
+int Sprite_Movement(SpriteClass* sprite){
 	
-	if (!sprite.tyyppi)
+	if (!sprite->tyyppi)
 		return -1;
 
 	// Save values
-	sprite_x = sprite.x;
-	sprite_y = sprite.y;
-	sprite_a = sprite.a;
-	sprite_b = sprite.b;
+	sprite_x = sprite->x;
+	sprite_y = sprite->y;
+	sprite_a = sprite->a;
+	sprite_b = sprite->b;
 
-	sprite_leveys  = sprite.tyyppi->leveys;
-	sprite_korkeus = sprite.tyyppi->korkeus;
+	sprite_leveys  = sprite->tyyppi->leveys;
+	sprite_korkeus = sprite->tyyppi->korkeus;
 
 	sprite_vasen = sprite_x - sprite_leveys  / 2;
 	sprite_oikea = sprite_x + sprite_leveys  / 2;
 	sprite_yla   = sprite_y - sprite_korkeus / 2;
 	sprite_ala   = sprite_y + sprite_korkeus / 2;
 
-	max_nopeus = sprite.tyyppi->max_nopeus;
+	max_nopeus = sprite->tyyppi->max_nopeus;
 
-	vedessa = sprite.vedessa;
+	vedessa = sprite->vedessa;
 
 	oikealle	 = true,
 	vasemmalle	 = true,
 	ylos		 = true,
 	alas		 = true;
 
-	sprite.crouched = false;
+	sprite->crouched = false;
 
-	sprite.reuna_vasemmalla = false;
-	sprite.reuna_oikealla = false;
+	sprite->reuna_vasemmalla = false;
+	sprite->reuna_oikealla = false;
 
 
 	/* Pistet��n vauhtia tainnutettuihin spriteihin */
-	if (sprite.energia < 1)
+	if (sprite->energia < 1)
 		max_nopeus = 3;
 
 	// Calculate the remainder of the sprite towards
 
-	if (sprite.attack1_timer > 0)
-		sprite.attack1_timer--;
+	if (sprite->attack1_timer > 0)
+		sprite->attack1_timer--;
 
-	if (sprite.attack2_timer > 0)
-		sprite.attack2_timer--;
+	if (sprite->attack2_timer > 0)
+		sprite->attack2_timer--;
 
-	if (sprite.charging_timer > 0)	// aika kahden ampumisen (munimisen) v�lill�
-		sprite.charging_timer --;
+	if (sprite->charging_timer > 0)	// aika kahden ampumisen (munimisen) v�lill�
+		sprite->charging_timer --;
 
-	if (sprite.mutation_timer > 0)	// time of mutation
-		sprite.mutation_timer --;
+	if (sprite->mutation_timer > 0)	// time of mutation
+		sprite->mutation_timer --;
 
 	/*****************************************************************************************/
 	/* Player-sprite and its controls                                                        */
@@ -433,33 +433,33 @@ int Sprite_Movement(SpriteClass& sprite){
 	bool add_speed = true;
 	bool gliding = false;
 
-	bool swimming = sprite.vedessa && (sprite.Onko_AI(AI_SWIMMING) || sprite.Onko_AI(AI_MAX_SPEED_SWIMMING));
-	bool max_speed = sprite.Onko_AI(AI_MAX_SPEED_PLAYER) ||
-		(swimming && sprite.Onko_AI(AI_MAX_SPEED_SWIMMING)) ||
-		(sprite.super_mode_timer > 0 && sprite.Onko_AI(AI_MAX_SPEED_PLAYER_ON_SUPER));
+	bool swimming = sprite->vedessa && (sprite->Onko_AI(AI_SWIMMING) || sprite->Onko_AI(AI_MAX_SPEED_SWIMMING));
+	bool max_speed = sprite->Onko_AI(AI_MAX_SPEED_PLAYER) ||
+		(swimming && sprite->Onko_AI(AI_MAX_SPEED_SWIMMING)) ||
+		(sprite->super_mode_timer > 0 && sprite->Onko_AI(AI_MAX_SPEED_PLAYER_ON_SUPER));
 	
-	/*swimming = sprite.vedessa;
-	max_speed = sprite.vedessa;
-	sprite.tyyppi->can_swim = true;*/
+	/*swimming = sprite->vedessa;
+	max_speed = sprite->vedessa;
+	sprite->tyyppi->can_swim = true;*/
 
-	if (sprite.pelaaja != 0 && sprite.energia > 0){
+	if (sprite->pelaaja != 0 && sprite->energia > 0){
 		/* SLOW WALK */
 		if (PInput::Keydown(Input->walk_slow)
 		|| Gui_pad_button == 1 || Gui_pad_button == 3)
 			add_speed = false;
 
 		/* ATTACK 1 */
-		if ((PInput::Keydown(Input->attack1) || Gui_egg) && sprite.charging_timer == 0 && sprite.ammus1 != nullptr)
-			sprite.attack1_timer = sprite.tyyppi->attack1_time;
+		if ((PInput::Keydown(Input->attack1) || Gui_egg) && sprite->charging_timer == 0 && sprite->ammus1 != nullptr)
+			sprite->attack1_timer = sprite->tyyppi->attack1_time;
 		/* ATTACK 2 */
-		else if ((PInput::Keydown(Input->attack2) || Gui_doodle) && sprite.charging_timer == 0 && sprite.ammus2 != nullptr)
-				sprite.attack2_timer = sprite.tyyppi->attack2_time;
+		else if ((PInput::Keydown(Input->attack2) || Gui_doodle) && sprite->charging_timer == 0 && sprite->ammus2 != nullptr)
+				sprite->attack2_timer = sprite->tyyppi->attack2_time;
 
 		/* CROUCH */
-		sprite.crouched = false;
+		sprite->crouched = false;
 		bool axis_couch = (Input == &Settings.joystick) && (PInput::GetAxis(1) > 0.5);
-		if ((PInput::Keydown(Input->down) || Gui_down || axis_couch) && !sprite.alas) {
-			sprite.crouched = true;
+		if ((PInput::Keydown(Input->down) || Gui_down || axis_couch) && !sprite->alas) {
+			sprite->crouched = true;
 			sprite_yla += sprite_korkeus/1.5;
 		}
 
@@ -483,13 +483,13 @@ int Sprite_Movement(SpriteClass& sprite){
 		double a_lisays = 0.04;//0.08;
 
 		if (add_speed) {
-			if (rand()%20 == 1 && sprite.animation_index == ANIMATION_WALKING) // Draw dust
+			if (rand()%20 == 1 && sprite->animation_index == ANIMATION_WALKING) // Draw dust
 				Particles_New(PARTICLE_DUST_CLOUDS,sprite_x-8,sprite_ala-8,0.25,-0.25,40,0,0);
 
 			a_lisays += 0.09;//0.05
 		}
 
-		if (sprite.alas)
+		if (sprite->alas)
 			a_lisays /= 1.5;//2.0
 
 		a_lisays *= double(navigation) / 100;
@@ -498,35 +498,35 @@ int Sprite_Movement(SpriteClass& sprite){
 			a_lisays *= max_nopeus;
 				
 		if (navigation > 0)
-			sprite.flip_x = false;
+			sprite->flip_x = false;
 		else if (navigation < 0)
-			sprite.flip_x = true;
+			sprite->flip_x = true;
 
-		if (sprite.crouched)	// Slow when couch
+		if (sprite->crouched)	// Slow when couch
 			a_lisays /= 10;
 
 		sprite_a += a_lisays;
 
 		/* JUMPING */
-		if (sprite.tyyppi->weight > 0 && !swimming) {
+		if (sprite->tyyppi->weight > 0 && !swimming) {
 			if (PInput::Keydown(Input->jump) || Gui_up) {
-				if (!sprite.crouched) {
-					if (sprite.jump_timer == 0)
+				if (!sprite->crouched) {
+					if (sprite->jump_timer == 0)
 						Play_GameSFX(jump_sound, 100, (int)sprite_x, (int)sprite_y,
-									  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+									  sprite->tyyppi->aani_frq, sprite->tyyppi->random_frq);
 
-					if (sprite.jump_timer <= 0)
-						sprite.jump_timer = 1; //10;
+					if (sprite->jump_timer <= 0)
+						sprite->jump_timer = 1; //10;
 				}
 			} else {
-				if (sprite.jump_timer > 0 && sprite.jump_timer < 45)
-					sprite.jump_timer = 55;
+				if (sprite->jump_timer > 0 && sprite->jump_timer < 45)
+					sprite->jump_timer = 55;
 			}
 
 			/* dripping quietly down */
 			bool axis_up = (Input == &Settings.joystick) && (PInput::GetAxis(1) < -0.5);
-			if ((PInput::Keydown(Input->jump) || Gui_up || axis_up) && sprite.jump_timer >= 150/*90+20*/ &&
-				sprite.tyyppi->can_glide)
+			if ((PInput::Keydown(Input->jump) || Gui_up || axis_up) && sprite->jump_timer >= 150/*90+20*/ &&
+				sprite->tyyppi->can_glide)
 				gliding = true;
 		}
 		/* MOVING UP AND DOWN */
@@ -542,100 +542,100 @@ int Sprite_Movement(SpriteClass& sprite){
 			if (PInput::Keydown(Input->down) || Gui_down)
 				sprite_b += speed;
 
-			sprite.jump_timer = 0;
+			sprite->jump_timer = 0;
 		}
 
 		/* AI */
 		for (int ai=0;ai < SPRITE_MAX_AI;ai++)
-			switch (sprite.tyyppi->AI[ai]){
+			switch (sprite->tyyppi->AI[ai]){
 			
 			case AI_CHANGE_WHEN_ENERGY_UNDER_2:
-				if (sprite.tyyppi->muutos != nullptr)
-					sprite.AI_Change_When_Energy_Under_2(sprite.tyyppi->muutos);
+				if (sprite->tyyppi->muutos != nullptr)
+					sprite->AI_Change_When_Energy_Under_2(sprite->tyyppi->muutos);
 			break;
 			
 			case AI_CHANGE_WHEN_ENERGY_OVER_1:
-			if (sprite.tyyppi->muutos != nullptr)
-				if (sprite.AI_Change_When_Energy_Over_1(sprite.tyyppi->muutos)==1)
-					Effect_Destruction(FX_DESTRUCT_SAVU_HARMAA, (u32)sprite.x, (u32)sprite.y);
+			if (sprite->tyyppi->muutos != nullptr)
+				if (sprite->AI_Change_When_Energy_Over_1(sprite->tyyppi->muutos)==1)
+					Effect_Destruction(FX_DESTRUCT_SAVU_HARMAA, (u32)sprite->x, (u32)sprite->y);
 			break;
 			
 			case AI_MUUTOS_AJASTIN:
-				if (sprite.tyyppi->muutos != nullptr)
-					sprite.AI_Muutos_Ajastin(sprite.tyyppi->muutos);
+				if (sprite->tyyppi->muutos != nullptr)
+					sprite->AI_Muutos_Ajastin(sprite->tyyppi->muutos);
 			break;
 			
 			case AI_DAMAGED_BY_WATER:
-				sprite.AI_Damaged_by_Water();
+				sprite->AI_Damaged_by_Water();
 			break;
 			
 			case AI_MUUTOS_JOS_OSUTTU:
-				if (sprite.tyyppi->muutos != nullptr)
-					sprite.AI_Muutos_Jos_Osuttu(sprite.tyyppi->muutos);
+				if (sprite->tyyppi->muutos != nullptr)
+					sprite->AI_Muutos_Jos_Osuttu(sprite->tyyppi->muutos);
 			break;
 
 			default: break;
 			}
 
 		/* It is not acceptable that a player is anything other than the game character */
-		if (sprite.tyyppi->type != TYPE_GAME_CHARACTER)
-			sprite.energia = 0;
+		if (sprite->tyyppi->type != TYPE_GAME_CHARACTER)
+			sprite->energia = 0;
 	}
 
 	/*****************************************************************************************/
 	/* Jump                                                                                  */
 	/*****************************************************************************************/
 
-	bool hyppy_maximissa = sprite.jump_timer >= 90;
+	bool hyppy_maximissa = sprite->jump_timer >= 90;
 
 	// Jos ollaan hyp�tty / ilmassa:
-	if (sprite.jump_timer > 0) {
-		if (sprite.jump_timer < 50-sprite.tyyppi->max_hyppy)
-			sprite.jump_timer = 50-sprite.tyyppi->max_hyppy;
+	if (sprite->jump_timer > 0) {
+		if (sprite->jump_timer < 50-sprite->tyyppi->max_hyppy)
+			sprite->jump_timer = 50-sprite->tyyppi->max_hyppy;
 
-		if (sprite.jump_timer < 10)
-			sprite.jump_timer = 10;
+		if (sprite->jump_timer < 10)
+			sprite->jump_timer = 10;
 
 		if (!hyppy_maximissa) {
-		// sprite_b = (sprite.tyyppi->max_hyppy/2 - sprite.jump_timer/2)/-2.0;//-4
-		   sprite_b = -sin_table[sprite.jump_timer]/8;//(sprite.tyyppi->max_hyppy/2 - sprite.jump_timer/2)/-2.5;
-			if (sprite_b > sprite.tyyppi->max_hyppy){
-				sprite_b = sprite.tyyppi->max_hyppy/10.0;
-				sprite.jump_timer = 90 - sprite.jump_timer;
+		// sprite_b = (sprite->tyyppi->max_hyppy/2 - sprite->jump_timer/2)/-2.0;//-4
+		   sprite_b = -sin_table[sprite->jump_timer]/8;//(sprite->tyyppi->max_hyppy/2 - sprite->jump_timer/2)/-2.5;
+			if (sprite_b > sprite->tyyppi->max_hyppy){
+				sprite_b = sprite->tyyppi->max_hyppy/10.0;
+				sprite->jump_timer = 90 - sprite->jump_timer;
 			}
 
 		}
 
-		if (sprite.jump_timer < 180)
-			sprite.jump_timer += 2;
+		if (sprite->jump_timer < 180)
+			sprite->jump_timer += 2;
 	}
 
-	if (sprite.jump_timer < 0)
-		sprite.jump_timer++;
+	if (sprite->jump_timer < 0)
+		sprite->jump_timer++;
 
 	if (sprite_b > 0 && !hyppy_maximissa)
-		sprite.jump_timer = 90;//sprite.tyyppi->max_hyppy*2;
+		sprite->jump_timer = 90;//sprite->tyyppi->max_hyppy*2;
 
 	/*****************************************************************************************/
 	/* Hit recovering                                                                        */
 	/*****************************************************************************************/
 
-	if (sprite.damage_timer > 0)
-		sprite.damage_timer--;
+	if (sprite->damage_timer > 0)
+		sprite->damage_timer--;
 
 	/*****************************************************************************************/
 	/* Timers                                                                                */
 	/*****************************************************************************************/
 
-	if (sprite.invisible_timer > 0) {
+	if (sprite->invisible_timer > 0) {
 	
-		sprite.invisible_timer--;
+		sprite->invisible_timer--;
 
 	}
 	
-	if (sprite.super_mode_timer > 0) {
+	if (sprite->super_mode_timer > 0) {
 
-		sprite.super_mode_timer--;
+		sprite->super_mode_timer--;
 		if (Player_Sprite->super_mode_timer == 0)
 			PSound::resume_music();
 	
@@ -645,8 +645,8 @@ int Sprite_Movement(SpriteClass& sprite){
 	/* Gravity effect                                                                        */
 	/*****************************************************************************************/
 	
-	if (sprite.weight != 0 && (sprite.jump_timer <= 0 || sprite.jump_timer >= 45) && !swimming)
-		sprite_b += sprite.weight/1.25;// + sprite_b/1.5;
+	if (sprite->weight != 0 && (sprite->jump_timer <= 0 || sprite->jump_timer >= 45) && !swimming)
+		sprite_b += sprite->weight/1.25;// + sprite_b/1.5;
 
 	if (gliding && sprite_b > 0) // If gliding
 		sprite_b /= 1.3;//1.5;//3
@@ -672,7 +672,7 @@ int Sprite_Movement(SpriteClass& sprite){
 	/* Blocks colision -                                                                     */
 	/*****************************************************************************************/
 
-	if (sprite.tyyppi->tiletarkistus){ //Find the tiles that the sprite occupies
+	if (sprite->tyyppi->tiletarkistus){ //Find the tiles that the sprite occupies
 
 		int palikat_x_lkm = (int)((sprite_leveys) /32)+4; //Number of blocks
 		int palikat_y_lkm = (int)((sprite_korkeus)/32)+4;
@@ -687,7 +687,7 @@ int Sprite_Movement(SpriteClass& sprite){
 				near_blocks[x+(y*palikat_x_lkm)] = Block_Get(map_vasen+x-1,map_yla+y-1); //x = 0, y = 0
 
 		/*****************************************************************************************/
-		/* Going through the blocks around the sprite.                                           */
+		/* Going through the blocks around the sprite->                                           */
 		/*****************************************************************************************/
 
 		//palikat_lkm = palikat_y_lkm*palikat_x_lkm;
@@ -695,7 +695,7 @@ int Sprite_Movement(SpriteClass& sprite){
 			for (int x = 0; x < palikat_x_lkm; x++) {
 				int p = x + y*palikat_x_lkm;
 				if ( p < 300 )
-					if (!(&sprite == Player_Sprite && dev_mode && PInput::Keydown(PInput::Y)))
+					if (!(sprite == Player_Sprite && dev_mode && PInput::Keydown(PInput::Y)))
 						Check_MapBlock(sprite, near_blocks[p]);
 			}
 		}
@@ -704,22 +704,22 @@ int Sprite_Movement(SpriteClass& sprite){
 	/* If the sprite is under water                                                          */
 	/*****************************************************************************************/
 
-	if (sprite.vedessa) {
+	if (sprite->vedessa) {
 
-		if (!sprite.tyyppi->can_swim || sprite.energia < 1) {
+		if (!sprite->tyyppi->can_swim || sprite->energia < 1) {
 
 			sprite_b /= 2.0;
 			sprite_a /= 1.05;
 
-			if (sprite.jump_timer > 0 && sprite.jump_timer < 90)
-				sprite.jump_timer--;
+			if (sprite->jump_timer > 0 && sprite->jump_timer < 90)
+				sprite->jump_timer--;
 		}
 
 		if (rand()%80 == 1)
 			Particles_New(PARTICLE_SPARK,sprite_x-4,sprite_y,0,-0.5-rand()%2,rand()%30+30,0,32);
 	}
 
-	if (vedessa != sprite.vedessa) { // Sprite comes in or out from water
+	if (vedessa != sprite->vedessa) { // Sprite comes in or out from water
 		Effect_Splash(sprite_x, sprite_y, 32);
 		Play_GameSFX(splash_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, true);
 	}
@@ -728,11 +728,11 @@ int Sprite_Movement(SpriteClass& sprite){
 	/* Sprite weight                                                                         */
 	/*****************************************************************************************/
 
-	sprite.weight = sprite.initial_weight;
-	sprite.kytkinpaino = sprite.weight;
+	sprite->weight = sprite->initial_weight;
+	sprite->kytkinpaino = sprite->weight;
 
-	if (sprite.energia < 1 && sprite.weight == 0) // Fall when is death
-		sprite.weight = 1;
+	if (sprite->energia < 1 && sprite->weight == 0) // Fall when is death
+		sprite->weight = 1;
 
 	/*****************************************************************************************/
 	/* Sprite collision with other sprites                                                   */
@@ -744,13 +744,13 @@ int Sprite_Movement(SpriteClass& sprite){
 
 	//Compare this sprite with every sprite in the game
 	for (SpriteClass* sprite2 : Sprites_List) {
-		if (sprite2 != &sprite && sprite2->aktiivinen && !sprite2->piilota) {
+		if (sprite2 != sprite && sprite2->aktiivinen && !sprite2->piilota) {
 			if (sprite2->crouched)
 				sprite2_yla = sprite2->tyyppi->korkeus / 3;//1.5;
 			else
 				sprite2_yla = 0;
 
-			if (sprite2->tyyppi->este && sprite.tyyppi->tiletarkistus) { //If there is a block sprite active
+			if (sprite2->tyyppi->este && sprite->tyyppi->tiletarkistus) { //If there is a block sprite active
 
 				if (sprite_x-sprite_leveys/2 +sprite_a  <= sprite2->x + sprite2->tyyppi->leveys /2 &&
 					sprite_x+sprite_leveys/2 +sprite_a  >= sprite2->x - sprite2->tyyppi->leveys /2 &&
@@ -772,7 +772,7 @@ int Sprite_Movement(SpriteClass& sprite){
 					spritepalikka.ylos       = BLOCK_WALL;
 					spritepalikka.alas       = BLOCK_WALL;
 
-					if (!sprite.tyyppi->este){
+					if (!sprite->tyyppi->este){
 						if (!sprite2->tyyppi->este_alas)
 							spritepalikka.alas = BLOCK_BACKGROUND;
 						if (!sprite2->tyyppi->este_ylos)
@@ -789,7 +789,7 @@ int Sprite_Movement(SpriteClass& sprite){
 					if (sprite2->b > 0)
 						spritepalikka.koodi = BLOCK_LIFT_VERT;
 
-					if (!(&sprite == Player_Sprite && dev_mode && PInput::Keydown(PInput::Y)))
+					if (!(sprite == Player_Sprite && dev_mode && PInput::Keydown(PInput::Y)))
 						Check_SpriteBlock(sprite, spritepalikka); //Colision sprite and sprite block
 				}
 			}
@@ -800,109 +800,109 @@ int Sprite_Movement(SpriteClass& sprite){
 				sprite_y/*ala*/ >= sprite2->y - sprite2->tyyppi->korkeus/2 + sprite2_yla)
 			{
 				// sprites with same index change directions when touch
-				if (sprite.tyyppi == sprite2->tyyppi &&
-					sprite2->energia > 0/* && sprite.pelaaja == 0*/)
+				if (sprite->tyyppi == sprite2->tyyppi &&
+					sprite2->energia > 0/* && sprite->pelaaja == 0*/)
 				{
-					if (sprite.x < sprite2->x)
+					if (sprite->x < sprite2->x)
 						oikealle = false;
-					if (sprite.x > sprite2->x)
+					if (sprite->x > sprite2->x)
 						vasemmalle = false;
-					if (sprite.y < sprite2->y)
+					if (sprite->y < sprite2->y)
 						alas = false;
-					if (sprite.y > sprite2->y)
+					if (sprite->y > sprite2->y)
 						ylos = false;
 				}
 
-				if (sprite.Onko_AI(AI_NUOLET_VAIKUTTAVAT)) {
+				if (sprite->Onko_AI(AI_NUOLET_VAIKUTTAVAT)) {
 
 					if (sprite2->Onko_AI(AI_NUOLI_RIGHT)) {
-						sprite_a = sprite.tyyppi->max_nopeus / 3.5;
+						sprite_a = sprite->tyyppi->max_nopeus / 3.5;
 						sprite_b = 0;
 					}
 					else if (sprite2->Onko_AI(AI_NUOLI_LEFT)) {
-						sprite_a = sprite.tyyppi->max_nopeus / -3.5;
+						sprite_a = sprite->tyyppi->max_nopeus / -3.5;
 						sprite_b = 0;
 					}
 
 					if (sprite2->Onko_AI(AI_NUOLI_UP)) {
-						sprite_b = sprite.tyyppi->max_nopeus / -3.5;
+						sprite_b = sprite->tyyppi->max_nopeus / -3.5;
 						sprite_a = 0;
 					}
 					else if (sprite2->Onko_AI(AI_NUOLI_DOWN)) {
-						sprite_b = sprite.tyyppi->max_nopeus / 3.5;
+						sprite_b = sprite->tyyppi->max_nopeus / 3.5;
 						sprite_a = 0;
 					}
 				}
 
 				/* sprites can exchange information about a player's whereabouts */ //TODO - test this sometime
-	/*			if (sprite.seen_player_x != -1 && sprite2->seen_player_x == -1)
+	/*			if (sprite->seen_player_x != -1 && sprite2->seen_player_x == -1)
 				{
-					sprite2->seen_player_x = sprite.seen_player_x + rand()%30 - rand()%30;
-					sprite.seen_player_x = -1;
+					sprite2->seen_player_x = sprite->seen_player_x + rand()%30 - rand()%30;
+					sprite->seen_player_x = -1;
 				} */
 
 				// If two sprites from different teams touch each other
-				if (sprite.vihollinen != sprite2->vihollinen && sprite.emosprite != sprite2) {
+				if (sprite->vihollinen != sprite2->vihollinen && sprite->emosprite != sprite2) {
 					if (sprite2->tyyppi->type != TYPE_BACKGROUND &&
-						sprite.tyyppi->type   != TYPE_BACKGROUND &&
+						sprite->tyyppi->type   != TYPE_BACKGROUND &&
 						sprite2->tyyppi->type != TYPE_TELEPORT &&
 						sprite2->damage_timer == 0 &&
-						sprite.damage_timer == 0 &&
+						sprite->damage_timer == 0 &&
 						sprite2->energia > 0 &&
-						sprite.energia > 0 &&
+						sprite->energia > 0 &&
 						sprite2->saatu_vahinko < 1)
 					{
 
-						if (sprite.super_mode_timer > 0 && sprite2->super_mode_timer == 0) {
+						if (sprite->super_mode_timer > 0 && sprite2->super_mode_timer == 0) {
 							sprite2->saatu_vahinko = 500;
 							sprite2->saatu_vahinko_tyyppi = DAMAGE_ALL;
 						}
-						if (sprite2->super_mode_timer > 0 && sprite.super_mode_timer == 0) {
-							sprite.saatu_vahinko = 500;
-							sprite.saatu_vahinko_tyyppi = DAMAGE_ALL;
+						if (sprite2->super_mode_timer > 0 && sprite->super_mode_timer == 0) {
+							sprite->saatu_vahinko = 500;
+							sprite->saatu_vahinko_tyyppi = DAMAGE_ALL;
 						}
 						
 						//Bounce on the sprite head
 						if (sprite2->b > 2 && sprite2->weight >= 0.5 &&
-							sprite2->y < sprite_y && !sprite.tyyppi->este &&
-							sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
+							sprite2->y < sprite_y && !sprite->tyyppi->este &&
+							sprite->tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 						{
 							if (sprite2->super_mode_timer)
-								sprite.saatu_vahinko = 500;
+								sprite->saatu_vahinko = 500;
 							else
-								sprite.saatu_vahinko = (int)(sprite2->weight+sprite2->b/4);
-							sprite.saatu_vahinko_tyyppi = DAMAGE_DROP;
+								sprite->saatu_vahinko = (int)(sprite2->weight+sprite2->b/4);
+							sprite->saatu_vahinko_tyyppi = DAMAGE_DROP;
 							sprite2->jump_timer = 1;
 							if (sprite2->Onko_AI(AI_EGG2)) // Egg bounced, then crack
 								sprite2->saatu_vahinko = sprite2->tyyppi->energia;
 						}
 
 						// If there is another sprite damaging
-						if (sprite.tyyppi->vahinko > 0 && sprite2->tyyppi->type != TYPE_BONUS) {
+						if (sprite->tyyppi->vahinko > 0 && sprite2->tyyppi->type != TYPE_BONUS) {
 							
-							sprite2->saatu_vahinko        = sprite.tyyppi->vahinko;
-							sprite2->saatu_vahinko_tyyppi = sprite.tyyppi->vahinko_tyyppi;
+							sprite2->saatu_vahinko        = sprite->tyyppi->vahinko;
+							sprite2->saatu_vahinko_tyyppi = sprite->tyyppi->vahinko_tyyppi;
 							
 							if ( !(sprite2->pelaaja && sprite2->invisible_timer) ) //If sprite2 isn't a invisible player
-								sprite.attack1_timer = sprite.tyyppi->attack1_time; //Then sprite attack??
+								sprite->attack1_timer = sprite->tyyppi->attack1_time; //Then sprite attack??
 
 							// The projectiles are shattered by shock
 							if (sprite2->tyyppi->type == TYPE_PROJECTILE) {
-								sprite.saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
-								sprite.saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
+								sprite->saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
+								sprite->saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
 							}
 
-							if (sprite.tyyppi->type == TYPE_PROJECTILE) {
-								sprite.saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
-								sprite.saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
+							if (sprite->tyyppi->type == TYPE_PROJECTILE) {
+								sprite->saatu_vahinko = 1;//sprite2->tyyppi->vahinko;
+								sprite->saatu_vahinko_tyyppi = sprite2->tyyppi->vahinko_tyyppi;
 							}
 						}
 					}
 				}
 
 				// lis�t��n spriten painoon sit� koskettavan toisen spriten weight
-				if (sprite.weight > 0)
-					sprite.kytkinpaino += sprite2->tyyppi->weight;
+				if (sprite->weight > 0)
+					sprite->kytkinpaino += sprite2->tyyppi->weight;
 
 			}
 		}
@@ -911,104 +911,107 @@ int Sprite_Movement(SpriteClass& sprite){
 	/*****************************************************************************************/
 	/* If the sprite has suffered damage                                                     */
 	/*****************************************************************************************/
-	if (sprite.saatu_vahinko != 0 && sprite.super_mode_timer != 0) {
-		sprite.saatu_vahinko = 0;
-		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
+	if (sprite->saatu_vahinko != 0 && sprite->super_mode_timer != 0) {
+		sprite->saatu_vahinko = 0;
+		sprite->saatu_vahinko_tyyppi = DAMAGE_NONE;
 	}
 
 	// If it is invisible, just these damages can injury it
-	if (sprite.saatu_vahinko != 0 && sprite.invisible_timer != 0 && 
-		sprite.saatu_vahinko_tyyppi != DAMAGE_FIRE &&
-		sprite.saatu_vahinko_tyyppi != DAMAGE_COMPRESSION &&
-		sprite.saatu_vahinko_tyyppi != DAMAGE_DROP &&
-		sprite.saatu_vahinko_tyyppi != DAMAGE_ALL) {
+	if (sprite->saatu_vahinko != 0 && sprite->invisible_timer != 0 && 
+		sprite->saatu_vahinko_tyyppi != DAMAGE_FIRE &&
+		sprite->saatu_vahinko_tyyppi != DAMAGE_COMPRESSION &&
+		sprite->saatu_vahinko_tyyppi != DAMAGE_DROP &&
+		sprite->saatu_vahinko_tyyppi != DAMAGE_ALL) {
 		
-		sprite.saatu_vahinko = 0;
-		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
+		sprite->saatu_vahinko = 0;
+		sprite->saatu_vahinko_tyyppi = DAMAGE_NONE;
 	}
 
-	if (sprite.saatu_vahinko != 0 && sprite.energia > 0 && sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU){
-		if (sprite.tyyppi->suojaus != sprite.saatu_vahinko_tyyppi || sprite.tyyppi->suojaus == DAMAGE_NONE){
-			sprite.energia -= sprite.saatu_vahinko;
-			sprite.damage_timer = DAMAGE_TIME;
+	if (sprite->saatu_vahinko != 0 && sprite->energia > 0 && sprite->tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU){
+		if (sprite->tyyppi->suojaus != sprite->saatu_vahinko_tyyppi || sprite->tyyppi->suojaus == DAMAGE_NONE){
+			sprite->energia -= sprite->saatu_vahinko;
+			sprite->damage_timer = DAMAGE_TIME;
 
-			if (sprite.saatu_vahinko_tyyppi == DAMAGE_ELECTRIC)
-				sprite.damage_timer *= 6;
+			if (sprite->saatu_vahinko_tyyppi == DAMAGE_ELECTRIC)
+				sprite->damage_timer *= 6;
 
-			Play_GameSFX(sprite.tyyppi->aanet[SOUND_DAMAGE], 100, (int)sprite.x, (int)sprite.y,
-						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+			Play_GameSFX(sprite->tyyppi->aanet[SOUND_DAMAGE], 100, (int)sprite->x, (int)sprite->y,
+						  sprite->tyyppi->aani_frq, sprite->tyyppi->random_frq);
 
-			if (sprite.tyyppi->tuhoutuminen%100 == FX_DESTRUCT_HOYHENET)
-				Effect_Destruction(FX_DESTRUCT_HOYHENET, (u32)sprite.x, (u32)sprite.y);
+			if (sprite->tyyppi->tuhoutuminen%100 == FX_DESTRUCT_HOYHENET)
+				Effect_Destruction(FX_DESTRUCT_HOYHENET, (u32)sprite->x, (u32)sprite->y);
 
-			if (sprite.tyyppi->type != TYPE_PROJECTILE){
+			if (sprite->tyyppi->type != TYPE_PROJECTILE){
 				Particles_New(PARTICLE_STAR,sprite_x,sprite_y,-1,-1,60,0.01,128);
 				Particles_New(PARTICLE_STAR,sprite_x,sprite_y, 0,-1,60,0.01,128);
 				Particles_New(PARTICLE_STAR,sprite_x,sprite_y, 1,-1,60,0.01,128);
 			}
 
-			if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
+			if (sprite->Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
 				Game->map.Change_SkullBlocks();
 
-			if (sprite.Onko_AI(AI_ATTACK_1_JOS_OSUTTU)){
-				sprite.attack1_timer = sprite.tyyppi->attack1_time;
-				sprite.charging_timer = 0;
+			if (sprite->Onko_AI(AI_ATTACK_1_JOS_OSUTTU)){
+				sprite->attack1_timer = sprite->tyyppi->attack1_time;
+				sprite->charging_timer = 0;
 			}
 
-			if (sprite.Onko_AI(AI_ATTACK_2_JOS_OSUTTU)){
-				sprite.attack2_timer = sprite.tyyppi->attack2_time;
-				sprite.charging_timer = 0;
+			if (sprite->Onko_AI(AI_ATTACK_2_JOS_OSUTTU)){
+				sprite->attack2_timer = sprite->tyyppi->attack2_time;
+				sprite->charging_timer = 0;
 			}
 
 		}
 
-		sprite.saatu_vahinko = 0;
-		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
+		sprite->saatu_vahinko = 0;
+		sprite->saatu_vahinko_tyyppi = DAMAGE_NONE;
 
 
 		/*****************************************************************************************/
 		/* If the sprite is destroyed                                                            */
 		/*****************************************************************************************/
 
-		if (sprite.energia < 1){
-			tuhoutuminen = sprite.tyyppi->tuhoutuminen;
+		if (sprite->energia < 1){
+			tuhoutuminen = sprite->tyyppi->tuhoutuminen;
 
 			if (tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU){
-				if (sprite.tyyppi->bonus != nullptr && sprite.tyyppi->bonusten_lkm > 0)
-					if (sprite.tyyppi->bonus_always || rand()%4 == 1)
-						for (int bi=0; bi<sprite.tyyppi->bonusten_lkm; bi++)
-							Sprites_add(sprite.tyyppi->bonus,0,sprite_x-11+(10-rand()%20),
-											  sprite_ala-16-(10+rand()%20), &sprite, true);
+				if (sprite->tyyppi->bonus != nullptr && sprite->tyyppi->bonusten_lkm > 0)
+					if (sprite->tyyppi->bonus_always || rand()%4 == 1)
+						for (int bi=0; bi<sprite->tyyppi->bonusten_lkm; bi++)
+							Sprites_add(sprite->tyyppi->bonus,0,sprite_x-11+(10-rand()%20),
+											  sprite_ala-16-(10+rand()%20), sprite, true);
 
-				if (sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_TYRMATTY) && !sprite.Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
+				if (sprite->Onko_AI(AI_VAIHDA_KALLOT_JOS_TYRMATTY) && !sprite->Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
 					Game->map.Change_SkullBlocks();
 
 				if (tuhoutuminen >= FX_DESTRUCT_ANIMAATIO)
 					tuhoutuminen -= FX_DESTRUCT_ANIMAATIO;
 				else
-					sprite.piilota = true;
+					sprite->piilota = true;
 
-				Effect_Destruction(tuhoutuminen, (u32)sprite.x, (u32)sprite.y);
-				Play_GameSFX(sprite.tyyppi->aanet[SOUND_DESTRUCTION],100, (int)sprite.x, (int)sprite.y,
-							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+				Effect_Destruction(tuhoutuminen, (u32)sprite->x, (u32)sprite->y);
+				Play_GameSFX(sprite->tyyppi->aanet[SOUND_DESTRUCTION],100, (int)sprite->x, (int)sprite->y,
+							  sprite->tyyppi->aani_frq, sprite->tyyppi->random_frq);
 
-				if (sprite.Onko_AI(AI_UUSI_JOS_TUHOUTUU)) {
-					Sprites_add(sprite.tyyppi,0,sprite.alku_x-sprite.tyyppi->leveys, sprite.alku_y-sprite.tyyppi->korkeus,&sprite, false);
+				if (sprite->Onko_AI(AI_UUSI_JOS_TUHOUTUU)) {
+					Sprites_add(sprite->tyyppi, 0, 
+						sprite->alku_x - sprite->tyyppi->leveys,
+						sprite->alku_y - sprite->tyyppi->korkeus,
+						sprite, false);
 				}
 
-				if (sprite.tyyppi->type == TYPE_GAME_CHARACTER && sprite.tyyppi->pisteet != 0){
+				if (sprite->tyyppi->type == TYPE_GAME_CHARACTER && sprite->tyyppi->pisteet != 0){
 					char luku[10];
-					sprintf(luku, "%i", sprite.tyyppi->pisteet);
-					Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,80);
-					Game->score_increment += sprite.tyyppi->pisteet;
+					sprintf(luku, "%i", sprite->tyyppi->pisteet);
+					Fadetext_New(fontti2,luku,(int)sprite->x-8,(int)sprite->y-8,80);
+					Game->score_increment += sprite->tyyppi->pisteet;
 				}
 			} else
-				sprite.energia = 1;
+				sprite->energia = 1;
 		}
 	}
 
-	if (sprite.damage_timer == 0)
-		sprite.saatu_vahinko_tyyppi = DAMAGE_NONE;
+	if (sprite->damage_timer == 0)
+		sprite->saatu_vahinko_tyyppi = DAMAGE_NONE;
 
 
 	/*****************************************************************************************/
@@ -1038,15 +1041,15 @@ int Sprite_Movement(SpriteClass& sprite){
 			sprite_b = 0;
 
 		if (!hyppy_maximissa)
-			sprite.jump_timer = 95;//sprite.tyyppi->max_hyppy * 2;
+			sprite->jump_timer = 95;//sprite->tyyppi->max_hyppy * 2;
 	}
 
 	if (!alas)
 		if (sprite_b >= 0){ //If sprite is falling
-			if (sprite.jump_timer > 0){
-				if (sprite.jump_timer >= 90+10){
+			if (sprite->jump_timer > 0){
+				if (sprite->jump_timer >= 90+10){
 					Play_GameSFX(pump_sound,30,(int)sprite_x, (int)sprite_y,
-				                  int(25050-sprite.weight*3000),true);
+				                  int(25050-sprite->weight*3000),true);
 
 					//Particles_New(	PARTICLE_DUST_CLOUDS,sprite_x+rand()%5-rand()%5-10,sprite_ala+rand()%3-rand()%3,
 					//			  0,-0.2,rand()%50+20,0,0);
@@ -1058,13 +1061,13 @@ int Sprite_Movement(SpriteClass& sprite){
 									  	   -0.3,-0.1,450,0,0);
 					}
 
-					if (sprite.weight > 1) {
-						Game->vibration = 34 + int(sprite.weight * 20);
+					if (sprite->weight > 1) {
+						Game->vibration = 34 + int(sprite->weight * 20);
 						PInput::Vibrate(500);
 					}
 				}
 
-				sprite.jump_timer = 0;
+				sprite->jump_timer = 0;
 			}
 
 			sprite_b = 0;
@@ -1087,18 +1090,18 @@ int Sprite_Movement(SpriteClass& sprite){
 	if (sprite_a < -max_nopeus)
 		sprite_a = -max_nopeus;
 
-	if (sprite.energia < 0)
-		sprite.energia = 0;
+	if (sprite->energia < 0)
+		sprite->energia = 0;
 
-	if (sprite.energia > sprite.tyyppi->energia)
-		sprite.energia = sprite.tyyppi->energia;
+	if (sprite->energia > sprite->tyyppi->energia)
+		sprite->energia = sprite->tyyppi->energia;
 
-	if (sprite.damage_timer == 0 || sprite.pelaaja == 1) {
+	if (sprite->damage_timer == 0 || sprite->pelaaja == 1) {
 		sprite_x += sprite_a;
 		sprite_y += sprite_b;
 	}
 
-	if (&sprite == Player_Sprite || sprite.energia < 1) {
+	if (sprite == Player_Sprite || sprite->energia < 1) {
 		double kitka = 1.04;
 
 		if (Game->map.ilma == WEATHER_RAIN || Game->map.ilma == WEATHER_RAIN_LEAVES)
@@ -1115,26 +1118,26 @@ int Sprite_Movement(SpriteClass& sprite){
 		sprite_b /= 1.25;
 	}
 
-	sprite.x = sprite_x;
-	sprite.y = sprite_y;
-	sprite.a = sprite_a;
-	sprite.b = sprite_b;
+	sprite->x = sprite_x;
+	sprite->y = sprite_y;
+	sprite->a = sprite_a;
+	sprite->b = sprite_b;
 
-	sprite.oikealle = oikealle;
-	sprite.vasemmalle = vasemmalle;
-	sprite.alas = alas;
-	sprite.ylos = ylos;
+	sprite->oikealle = oikealle;
+	sprite->vasemmalle = vasemmalle;
+	sprite->alas = alas;
+	sprite->ylos = ylos;
 
 	/*
-	sprite.weight = sprite.tyyppi->weight;
+	sprite->weight = sprite->tyyppi->weight;
 
-	if (sprite.energia < 1 && sprite.weight == 0)
-		sprite.weight = 1;*/
+	if (sprite->energia < 1 && sprite->weight == 0)
+		sprite->weight = 1;*/
 
-	if (sprite.jump_timer < 0)
-		sprite.alas = false;
+	if (sprite->jump_timer < 0)
+		sprite->alas = false;
 
-	//sprite.crouched   = false;
+	//sprite->crouched   = false;
 
 	/*****************************************************************************************/
 	/* AI                                                                                    */
@@ -1142,133 +1145,133 @@ int Sprite_Movement(SpriteClass& sprite){
 
 	//TODO run sprite lua script
 	
-	if (sprite.pelaaja == 0) {
+	if (sprite->pelaaja == 0) {
 		for (int ai=0;ai < SPRITE_MAX_AI; ai++) {
-			switch (sprite.tyyppi->AI[ai]) {
+			switch (sprite->tyyppi->AI[ai]) {
 				case AI_NONE:							ai = SPRITE_MAX_AI; // lopetetaan
 													break;
-				case AI_KANA:						sprite.AI_Kana();
+				case AI_KANA:						sprite->AI_Kana();
 													break;
-				case AI_LITTLE_CHICKEN:					sprite.AI_Kana();
+				case AI_LITTLE_CHICKEN:					sprite->AI_Kana();
 													break;
-				case AI_SAMMAKKO1:					sprite.AI_Sammakko1();
+				case AI_SAMMAKKO1:					sprite->AI_Sammakko1();
 													break;
-				case AI_SAMMAKKO2:					sprite.AI_Sammakko2();
+				case AI_SAMMAKKO2:					sprite->AI_Sammakko2();
 													break;
-				case AI_BONUS:						sprite.AI_Bonus();
+				case AI_BONUS:						sprite->AI_Bonus();
 													break;
-				case AI_EGG:						sprite.AI_Egg();
+				case AI_EGG:						sprite->AI_Egg();
 													break;
-				case AI_EGG2:						sprite.AI_Egg2();
+				case AI_EGG2:						sprite->AI_Egg2();
 													break;
-				case AI_AMMUS:						sprite.AI_Ammus();
+				case AI_AMMUS:						sprite->AI_Ammus();
 													break;
-				case AI_JUMPER:					sprite.AI_Jumper();
+				case AI_JUMPER:					sprite->AI_Jumper();
 													break;
-				case AI_BASIC:						sprite.AI_Basic();
+				case AI_BASIC:						sprite->AI_Basic();
 													break;
-				case AI_NONSTOP:					sprite.AI_NonStop();
+				case AI_NONSTOP:					sprite->AI_NonStop();
 													break;
-				case AI_TURNING_HORIZONTALLY:		sprite.AI_Kaantyy_Esteesta_Hori();
+				case AI_TURNING_HORIZONTALLY:		sprite->AI_Kaantyy_Esteesta_Hori();
 													break;
-				case AI_KAANTYY_ESTEESTA_VERT:		sprite.AI_Kaantyy_Esteesta_Vert();
+				case AI_KAANTYY_ESTEESTA_VERT:		sprite->AI_Kaantyy_Esteesta_Vert();
 													break;
-				case AI_LOOK_FOR_CLIFFS:				sprite.AI_Varoo_Kuoppaa();
+				case AI_LOOK_FOR_CLIFFS:				sprite->AI_Varoo_Kuoppaa();
 													break;
-				case AI_RANDOM_CHANGE_DIRECTION_H:	sprite.AI_Random_Suunnanvaihto_Hori();
+				case AI_RANDOM_CHANGE_DIRECTION_H:	sprite->AI_Random_Suunnanvaihto_Hori();
 													break;
-				case AI_RANDOM_KAANTYMINEN:			sprite.AI_Random_Kaantyminen();
+				case AI_RANDOM_KAANTYMINEN:			sprite->AI_Random_Kaantyminen();
 													break;
-				case AI_RANDOM_JUMP:				sprite.AI_Random_Hyppy();
+				case AI_RANDOM_JUMP:				sprite->AI_Random_Hyppy();
 													break;
 				case AI_FOLLOW_PLAYER:			if (Player_Sprite->invisible_timer == 0)
-														sprite.AI_Seuraa_Pelaajaa(*Player_Sprite);
+														sprite->AI_Seuraa_Pelaajaa(*Player_Sprite);
 													break;
 				case AI_FOLLOW_PLAYER_IF_IN_FRONT:	if (Player_Sprite->invisible_timer == 0)
-														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee(*Player_Sprite);
+														sprite->AI_Seuraa_Pelaajaa_Jos_Nakee(*Player_Sprite);
 													break;
 				case AI_FOLLOW_PLAYER_VERT_HORI:	if (Player_Sprite->invisible_timer == 0)
-														sprite.AI_Seuraa_Pelaajaa_Vert_Hori(*Player_Sprite);
+														sprite->AI_Seuraa_Pelaajaa_Vert_Hori(*Player_Sprite);
 													break;
 				case AI_FOLLOW_PLAYER_IF_IN_FRONT_VERT_HORI:
 													if (Player_Sprite->invisible_timer == 0)
-														sprite.AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(*Player_Sprite);
+														sprite->AI_Seuraa_Pelaajaa_Jos_Nakee_Vert_Hori(*Player_Sprite);
 													break;
 				case AI_PAKENEE_PELAAJAA_JOS_NAKEE:	if (Player_Sprite->invisible_timer == 0)
-														sprite.AI_Pakenee_Pelaajaa_Jos_Nakee(*Player_Sprite);
+														sprite->AI_Pakenee_Pelaajaa_Jos_Nakee(*Player_Sprite);
 													break;
-				case AI_POMMI:						sprite.AI_Pommi();
+				case AI_POMMI:						sprite->AI_Pommi();
 													break;
-				case AI_ATTACK_1_JOS_OSUTTU:		sprite.AI_Attack_1_Jos_Osuttu();
+				case AI_ATTACK_1_JOS_OSUTTU:		sprite->AI_Attack_1_Jos_Osuttu();
 													break;
-				case AI_ATTACK_2_JOS_OSUTTU:		sprite.AI_Attack_2_Jos_Osuttu();
+				case AI_ATTACK_2_JOS_OSUTTU:		sprite->AI_Attack_2_Jos_Osuttu();
 													break;
-				case AI_ATTACK_1_NONSTOP:			sprite.AI_Attack_1_Nonstop();
+				case AI_ATTACK_1_NONSTOP:			sprite->AI_Attack_1_Nonstop();
 													break;
-				case AI_ATTACK_2_NONSTOP:			sprite.AI_Attack_2_Nonstop();
+				case AI_ATTACK_2_NONSTOP:			sprite->AI_Attack_2_Nonstop();
 													break;
 				case AI_ATTACK_1_IF_PLAYER_IN_FRONT:
 													if (Player_Sprite->invisible_timer == 0)
-														sprite.AI_Attack_1_if_Player_in_Front(*Player_Sprite);
+														sprite->AI_Attack_1_if_Player_in_Front(*Player_Sprite);
 													break;
 				case AI_ATTACK_2_IF_PLAYER_IN_FRONT:
 													if (Player_Sprite->invisible_timer == 0)
-														sprite.AI_Attack_2_if_Player_in_Front(*Player_Sprite);
+														sprite->AI_Attack_2_if_Player_in_Front(*Player_Sprite);
 													break;
 				case AI_ATTACK_1_IF_PLAYER_BELLOW:
 													if (Player_Sprite->invisible_timer == 0)
-														sprite.AI_Attack_1_if_Player_Bellow(*Player_Sprite);
+														sprite->AI_Attack_1_if_Player_Bellow(*Player_Sprite);
 													break;
 				case AI_HYPPY_JOS_PELAAJA_YLAPUOLELLA:
 													if (Player_Sprite->invisible_timer == 0)
-														sprite.AI_Hyppy_Jos_Pelaaja_Ylapuolella(*Player_Sprite);
+														sprite->AI_Hyppy_Jos_Pelaaja_Ylapuolella(*Player_Sprite);
 													break;
-				case AI_DAMAGED_BY_WATER:		sprite.AI_Damaged_by_Water();
+				case AI_DAMAGED_BY_WATER:		sprite->AI_Damaged_by_Water();
 													break;
-				case AI_KILL_EVERYONE:				sprite.AI_Kill_Everyone();
+				case AI_KILL_EVERYONE:				sprite->AI_Kill_Everyone();
 													break;
-				case AI_KITKA_VAIKUTTAA:			sprite.AI_Kitka_Vaikuttaa();
+				case AI_KITKA_VAIKUTTAA:			sprite->AI_Kitka_Vaikuttaa();
 													break;
-				case AI_PIILOUTUU:					sprite.AI_Piiloutuu();
+				case AI_PIILOUTUU:					sprite->AI_Piiloutuu();
 													break;
-				case AI_PALAA_ALKUUN_X:				sprite.AI_Palaa_Alkuun_X();
+				case AI_PALAA_ALKUUN_X:				sprite->AI_Palaa_Alkuun_X();
 													break;
-				case AI_PALAA_ALKUUN_Y:				sprite.AI_Palaa_Alkuun_Y();
+				case AI_PALAA_ALKUUN_Y:				sprite->AI_Palaa_Alkuun_Y();
 													break;
-				case AI_LIIKKUU_X_COS:				sprite.AI_Liikkuu_X(cos_table[degree%360]);
+				case AI_LIIKKUU_X_COS:				sprite->AI_Liikkuu_X(cos_table[degree%360]);
 													break;
-				case AI_LIIKKUU_Y_COS:				sprite.AI_Liikkuu_Y(cos_table[degree%360]);
+				case AI_LIIKKUU_Y_COS:				sprite->AI_Liikkuu_Y(cos_table[degree%360]);
 													break;
-				case AI_LIIKKUU_X_SIN:				sprite.AI_Liikkuu_X(sin_table[degree%360]);
+				case AI_LIIKKUU_X_SIN:				sprite->AI_Liikkuu_X(sin_table[degree%360]);
 													break;
-				case AI_LIIKKUU_Y_SIN:				sprite.AI_Liikkuu_Y(sin_table[degree%360]);
+				case AI_LIIKKUU_Y_SIN:				sprite->AI_Liikkuu_Y(sin_table[degree%360]);
 													break;
-				case AI_LIIKKUU_X_COS_NOPEA:		sprite.AI_Liikkuu_X(cos_table[(degree*2)%360]);
+				case AI_LIIKKUU_X_COS_NOPEA:		sprite->AI_Liikkuu_X(cos_table[(degree*2)%360]);
 													break;
-				case AI_LIIKKUU_Y_SIN_NOPEA:		sprite.AI_Liikkuu_Y(sin_table[(degree*2)%360]);
+				case AI_LIIKKUU_Y_SIN_NOPEA:		sprite->AI_Liikkuu_Y(sin_table[(degree*2)%360]);
 													break;
-				case AI_LIIKKUU_X_COS_HIDAS:		sprite.AI_Liikkuu_X(cos_table[(degree/2)%360]);
+				case AI_LIIKKUU_X_COS_HIDAS:		sprite->AI_Liikkuu_X(cos_table[(degree/2)%360]);
 													break;
-				case AI_LIIKKUU_Y_SIN_HIDAS:		sprite.AI_Liikkuu_Y(sin_table[(degree/2)%360]);
+				case AI_LIIKKUU_Y_SIN_HIDAS:		sprite->AI_Liikkuu_Y(sin_table[(degree/2)%360]);
 													break;
-				case AI_LIIKKUU_Y_SIN_VAPAA:		sprite.AI_Liikkuu_Y(sin_table[(sprite.action_timer/2)%360]);
+				case AI_LIIKKUU_Y_SIN_VAPAA:		sprite->AI_Liikkuu_Y(sin_table[(sprite->action_timer/2)%360]);
 													break;
-				case AI_CHANGE_WHEN_ENERGY_UNDER_2:	if (sprite.tyyppi->muutos != nullptr)
-														sprite.AI_Change_When_Energy_Under_2(sprite.tyyppi->muutos);
+				case AI_CHANGE_WHEN_ENERGY_UNDER_2:	if (sprite->tyyppi->muutos != nullptr)
+														sprite->AI_Change_When_Energy_Under_2(sprite->tyyppi->muutos);
 													break;
-				case AI_CHANGE_WHEN_ENERGY_OVER_1:	if (sprite.tyyppi->muutos != nullptr)
-														if (sprite.AI_Change_When_Energy_Over_1(sprite.tyyppi->muutos)==1)
-															Effect_Destruction(FX_DESTRUCT_SAVU_HARMAA, (u32)sprite.x, (u32)sprite.y);
+				case AI_CHANGE_WHEN_ENERGY_OVER_1:	if (sprite->tyyppi->muutos != nullptr)
+														if (sprite->AI_Change_When_Energy_Over_1(sprite->tyyppi->muutos)==1)
+															Effect_Destruction(FX_DESTRUCT_SAVU_HARMAA, (u32)sprite->x, (u32)sprite->y);
 													break;
-				case AI_MUUTOS_AJASTIN:				if (sprite.tyyppi->muutos != nullptr) {
-														sprite.AI_Muutos_Ajastin(sprite.tyyppi->muutos);
+				case AI_MUUTOS_AJASTIN:				if (sprite->tyyppi->muutos != nullptr) {
+														sprite->AI_Muutos_Ajastin(sprite->tyyppi->muutos);
 													}
 													break;
-				case AI_MUUTOS_JOS_OSUTTU:			if (sprite.tyyppi->muutos != nullptr) {
-														sprite.AI_Muutos_Jos_Osuttu(sprite.tyyppi->muutos);
+				case AI_MUUTOS_JOS_OSUTTU:			if (sprite->tyyppi->muutos != nullptr) {
+														sprite->AI_Muutos_Jos_Osuttu(sprite->tyyppi->muutos);
 													}
 													break;
-				case AI_TELEPORT:					if (sprite.AI_Teleportti(Sprites_List, *Player_Sprite)==1)
+				case AI_TELEPORT:					if (sprite->AI_Teleportti(Sprites_List, *Player_Sprite)==1)
 													{
 
 														Game->camera_x = (int)Player_Sprite->x;
@@ -1276,57 +1279,57 @@ int Sprite_Movement(SpriteClass& sprite){
 														Game->dcamera_x = Game->camera_x-screen_width/2;
 														Game->dcamera_y = Game->camera_y-screen_height/2;
 														Fade_in(FADE_NORMAL);
-														if (sprite.tyyppi->aanet[SOUND_ATTACK2] != -1)
-															Play_MenuSFX(sprite.tyyppi->aanet[SOUND_ATTACK2], 100);
+														if (sprite->tyyppi->aanet[SOUND_ATTACK2] != -1)
+															Play_MenuSFX(sprite->tyyppi->aanet[SOUND_ATTACK2], 100);
 															//Play_GameSFX(, 100, Game->camera_x, Game->camera_y, SOUND_SAMPLERATE, false);
 
 
 													}
 													break;
-				case AI_KIIPEILIJA:					sprite.AI_Kiipeilija();
+				case AI_KIIPEILIJA:					sprite->AI_Kiipeilija();
 													break;
-				case AI_KIIPEILIJA2:				sprite.AI_Kiipeilija2();
+				case AI_KIIPEILIJA2:				sprite->AI_Kiipeilija2();
 													break;
-				case AI_TUHOUTUU_JOS_EMO_TUHOUTUU:	sprite.AI_Tuhoutuu_Jos_Emo_Tuhoutuu();
+				case AI_TUHOUTUU_JOS_EMO_TUHOUTUU:	sprite->AI_Tuhoutuu_Jos_Emo_Tuhoutuu();
 													break;
 
-				case AI_TIPPUU_TARINASTA:			sprite.AI_Tippuu_Tarinasta(Game->vibration + Game->button_vibration);
+				case AI_TIPPUU_TARINASTA:			sprite->AI_Tippuu_Tarinasta(Game->vibration + Game->button_vibration);
 													break;
-				case AI_LIIKKUU_DOWN_JOS_KYTKIN1_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button1,0,1);
+				case AI_LIIKKUU_DOWN_JOS_KYTKIN1_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button1,0,1);
 													break;
-				case AI_LIIKKUU_UP_JOS_KYTKIN1_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button1,0,-1);
+				case AI_LIIKKUU_UP_JOS_KYTKIN1_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button1,0,-1);
 													break;
-				case AI_LIIKKUU_LEFT_JOS_KYTKIN1_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button1,-1,0);
+				case AI_LIIKKUU_LEFT_JOS_KYTKIN1_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button1,-1,0);
 													break;
-				case AI_LIIKKUU_RIGHT_JOS_KYTKIN1_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button1,1,0);
+				case AI_LIIKKUU_RIGHT_JOS_KYTKIN1_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button1,1,0);
 													break;
-				case AI_LIIKKUU_DOWN_JOS_KYTKIN2_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button2,0,1);
+				case AI_LIIKKUU_DOWN_JOS_KYTKIN2_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button2,0,1);
 													break;
-				case AI_LIIKKUU_UP_JOS_KYTKIN2_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button2,0,-1);
+				case AI_LIIKKUU_UP_JOS_KYTKIN2_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button2,0,-1);
 													break;
-				case AI_LIIKKUU_LEFT_JOS_KYTKIN2_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button2,-1,0);
+				case AI_LIIKKUU_LEFT_JOS_KYTKIN2_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button2,-1,0);
 													break;
-				case AI_LIIKKUU_RIGHT_JOS_KYTKIN2_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button2,1,0);
+				case AI_LIIKKUU_RIGHT_JOS_KYTKIN2_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button2,1,0);
 													break;
-				case AI_LIIKKUU_DOWN_JOS_KYTKIN3_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button3,0,1);
+				case AI_LIIKKUU_DOWN_JOS_KYTKIN3_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button3,0,1);
 													break;
-				case AI_LIIKKUU_UP_JOS_KYTKIN3_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button3,0,-1);
+				case AI_LIIKKUU_UP_JOS_KYTKIN3_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button3,0,-1);
 													break;
-				case AI_LIIKKUU_LEFT_JOS_KYTKIN3_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button3,-1,0);
+				case AI_LIIKKUU_LEFT_JOS_KYTKIN3_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button3,-1,0);
 													break;
-				case AI_LIIKKUU_RIGHT_JOS_KYTKIN3_PAINETTU: sprite.AI_Liikkuu_Jos_Kytkin_Painettu(Game->button3,1,0);
+				case AI_LIIKKUU_RIGHT_JOS_KYTKIN3_PAINETTU: sprite->AI_Liikkuu_Jos_Kytkin_Painettu(Game->button3,1,0);
 													break;
-				case AI_TIPPUU_JOS_KYTKIN1_PAINETTU: sprite.AI_Tippuu_Jos_Kytkin_Painettu(Game->button1);
+				case AI_TIPPUU_JOS_KYTKIN1_PAINETTU: sprite->AI_Tippuu_Jos_Kytkin_Painettu(Game->button1);
 													break;
-				case AI_TIPPUU_JOS_KYTKIN2_PAINETTU: sprite.AI_Tippuu_Jos_Kytkin_Painettu(Game->button2);
+				case AI_TIPPUU_JOS_KYTKIN2_PAINETTU: sprite->AI_Tippuu_Jos_Kytkin_Painettu(Game->button2);
 													break;
-				case AI_TIPPUU_JOS_KYTKIN3_PAINETTU: sprite.AI_Tippuu_Jos_Kytkin_Painettu(Game->button3);
+				case AI_TIPPUU_JOS_KYTKIN3_PAINETTU: sprite->AI_Tippuu_Jos_Kytkin_Painettu(Game->button3);
 													break;
-				case AI_RANDOM_LIIKAHDUS_VERT_HORI:	sprite.AI_Random_Liikahdus_Vert_Hori();
+				case AI_RANDOM_LIIKAHDUS_VERT_HORI:	sprite->AI_Random_Liikahdus_Vert_Hori();
 													break;
-				case AI_KAANTYY_JOS_OSUTTU:			sprite.AI_Kaantyy_Jos_Osuttu();
+				case AI_KAANTYY_JOS_OSUTTU:			sprite->AI_Kaantyy_Jos_Osuttu();
 													break;
-				case AI_EVIL_ONE:					if (sprite.energia < 1) 
+				case AI_EVIL_ONE:					if (sprite->energia < 1) 
 													{
 														PSound::set_musicvolume(0);
 														Game->music_stopped = true;
@@ -1335,10 +1338,10 @@ int Sprite_Movement(SpriteClass& sprite){
 
 				default:
 
-				if (sprite.tyyppi->AI[ai] >= AI_INFOS_BEGIN && sprite.tyyppi->AI[ai] <= AI_INFOS_END)
-					if (sprite.AI_Info(*Player_Sprite)) {
+				if (sprite->tyyppi->AI[ai] >= AI_INFOS_BEGIN && sprite->tyyppi->AI[ai] <= AI_INFOS_END)
+					if (sprite->AI_Info(*Player_Sprite)) {
 
-						int info = sprite.tyyppi->AI[ai] - AI_INFOS_BEGIN + 1;
+						int info = sprite->tyyppi->AI[ai] - AI_INFOS_BEGIN + 1;
 						
 						std::string sinfo = "info";
 						if (info < 10) sinfo += '0';
@@ -1358,41 +1361,41 @@ int Sprite_Movement(SpriteClass& sprite){
 		}
 	}
 
-	//if (kaiku == 1 && sprite.tyyppi->tyyppi == TYPE_PROJECTILE && sprite.tyyppi->vahinko_tyyppi == DAMAGE_NOISE &&
-	//	sprite.tyyppi->aanet[SOUND_ATTACK1] > -1)
-	//	Play_GameSFX(sprite.tyyppi->aanet[SOUND_ATTACK1],20, (int)sprite_x, (int)sprite_y,
-	//				  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+	//if (kaiku == 1 && sprite->tyyppi->tyyppi == TYPE_PROJECTILE && sprite->tyyppi->vahinko_tyyppi == DAMAGE_NOISE &&
+	//	sprite->tyyppi->aanet[SOUND_ATTACK1] > -1)
+	//	Play_GameSFX(sprite->tyyppi->aanet[SOUND_ATTACK1],20, (int)sprite_x, (int)sprite_y,
+	//				  sprite->tyyppi->aani_frq, sprite->tyyppi->random_frq);
 
 
 	/*****************************************************************************************/
 	/* Set game area to sprite                                                               */
 	/*****************************************************************************************/
 
-	if (sprite.x < 0)
-		sprite.x = 0;
+	if (sprite->x < 0)
+		sprite->x = 0;
 
-	if (sprite.y < -sprite_korkeus)
-		sprite.y = -sprite_korkeus;
+	if (sprite->y < -sprite_korkeus)
+		sprite->y = -sprite_korkeus;
 
-	if (sprite.x > PK2MAP_MAP_WIDTH*32)
-		sprite.x = PK2MAP_MAP_WIDTH*32;
+	if (sprite->x > PK2MAP_MAP_WIDTH*32)
+		sprite->x = PK2MAP_MAP_WIDTH*32;
 
 	// If the sprite falls under the lower edge of the map
-	if (sprite.y > PK2MAP_MAP_HEIGHT*32 + sprite_korkeus) {
+	if (sprite->y > PK2MAP_MAP_HEIGHT*32 + sprite_korkeus) {
 
-		sprite.y = PK2MAP_MAP_HEIGHT*32 + sprite_korkeus;
-		sprite.energia = 0;
-		sprite.piilota = true;
+		sprite->y = PK2MAP_MAP_HEIGHT*32 + sprite_korkeus;
+		sprite->energia = 0;
+		sprite->piilota = true;
 
-		if (sprite.kytkinpaino >= 1)
+		if (sprite->kytkinpaino >= 1)
 			Game->vibration = 50;
 	}
 
-	if (sprite.a > max_nopeus)
-		sprite.a = max_nopeus;
+	if (sprite->a > max_nopeus)
+		sprite->a = max_nopeus;
 
-	if (sprite.a < -max_nopeus)
-		sprite.a = -max_nopeus;
+	if (sprite->a < -max_nopeus)
+		sprite->a = -max_nopeus;
 
 
 	/*****************************************************************************************/
@@ -1400,71 +1403,71 @@ int Sprite_Movement(SpriteClass& sprite){
 	/*****************************************************************************************/
 
 	// If the sprite is ready and isn't crouching
-	if (sprite.charging_timer == 0 && !sprite.crouched) {
+	if (sprite->charging_timer == 0 && !sprite->crouched) {
 		// the attack has just started
-		if (sprite.attack1_timer == sprite.tyyppi->attack1_time) {
+		if (sprite->attack1_timer == sprite->tyyppi->attack1_time) {
 			// provides recovery time, after which the sprite can attack again
-			sprite.charging_timer = sprite.tyyppi->charge_time;
-			if(sprite.charging_timer == 0) sprite.charging_timer = 5;
+			sprite->charging_timer = sprite->tyyppi->charge_time;
+			if(sprite->charging_timer == 0) sprite->charging_timer = 5;
 			// if you don't have your own charging time ...
-			if (sprite.ammus1 != nullptr && sprite.tyyppi->charge_time == 0)
+			if (sprite->ammus1 != nullptr && sprite->tyyppi->charge_time == 0)
 			// ... and the projectile has, take charge_time from the projectile
-				if (sprite.ammus1->tulitauko > 0)
-					sprite.charging_timer = sprite.ammus1->tulitauko;
+				if (sprite->ammus1->tulitauko > 0)
+					sprite->charging_timer = sprite->ammus1->tulitauko;
 
 			// attack sound
-			Play_GameSFX(sprite.tyyppi->aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
-						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+			Play_GameSFX(sprite->tyyppi->aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
+						  sprite->tyyppi->aani_frq, sprite->tyyppi->random_frq);
 
-			if (sprite.ammus1 != nullptr) {
-				Sprites_add_ammo(sprite.ammus1,sprite_x, sprite_y, &sprite);
+			if (sprite->ammus1 != nullptr) {
+				Sprites_add_ammo(sprite->ammus1,sprite_x, sprite_y, sprite);
 
-		//		if (Prototypes_List[sprite.ammus1].aanet[SOUND_ATTACK1] > -1)
-		//			Play_GameSFX(Prototypes_List[sprite.ammus1].aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
-		//						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+		//		if (Prototypes_List[sprite->ammus1].aanet[SOUND_ATTACK1] > -1)
+		//			Play_GameSFX(Prototypes_List[sprite->ammus1].aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
+		//						  sprite->tyyppi->aani_frq, sprite->tyyppi->random_frq);
 			}
 		}
 
 		// Same as attack 1
-		if (sprite.attack2_timer == sprite.tyyppi->attack2_time) {
-			sprite.charging_timer = sprite.tyyppi->charge_time;
-			if(sprite.charging_timer == 0) sprite.charging_timer = 5;
-			if (sprite.ammus2 != nullptr && sprite.tyyppi->charge_time == 0)
-				if (sprite.ammus2->tulitauko > 0)
-					sprite.charging_timer = sprite.ammus2->tulitauko;
+		if (sprite->attack2_timer == sprite->tyyppi->attack2_time) {
+			sprite->charging_timer = sprite->tyyppi->charge_time;
+			if(sprite->charging_timer == 0) sprite->charging_timer = 5;
+			if (sprite->ammus2 != nullptr && sprite->tyyppi->charge_time == 0)
+				if (sprite->ammus2->tulitauko > 0)
+					sprite->charging_timer = sprite->ammus2->tulitauko;
 
-			Play_GameSFX(sprite.tyyppi->aanet[SOUND_ATTACK2],100,(int)sprite_x, (int)sprite_y,
-						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+			Play_GameSFX(sprite->tyyppi->aanet[SOUND_ATTACK2],100,(int)sprite_x, (int)sprite_y,
+						  sprite->tyyppi->aani_frq, sprite->tyyppi->random_frq);
 
-			if (sprite.ammus2 != nullptr) {
-				Sprites_add_ammo(sprite.ammus2,sprite_x, sprite_y, &sprite);
+			if (sprite->ammus2 != nullptr) {
+				Sprites_add_ammo(sprite->ammus2,sprite_x, sprite_y, sprite);
 
-		//		if (Prototypes_List[sprite.ammus2].aanet[SOUND_ATTACK1] > -1)
-		//			Play_GameSFX(Prototypes_List[sprite.ammus2].aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
-		//						  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+		//		if (Prototypes_List[sprite->ammus2].aanet[SOUND_ATTACK1] > -1)
+		//			Play_GameSFX(Prototypes_List[sprite->ammus2].aanet[SOUND_ATTACK1],100, (int)sprite_x, (int)sprite_y,
+		//						  sprite->tyyppi->aani_frq, sprite->tyyppi->random_frq);
 
 			}
 		}
 	}
 
 	// Random sounds
-	if (sprite.tyyppi->aanet[SOUND_RANDOM] != -1 && rand()%200 == 1 && sprite.energia > 0)
-		Play_GameSFX(sprite.tyyppi->aanet[SOUND_RANDOM],80,(int)sprite_x, (int)sprite_y,
-					  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+	if (sprite->tyyppi->aanet[SOUND_RANDOM] != -1 && rand()%200 == 1 && sprite->energia > 0)
+		Play_GameSFX(sprite->tyyppi->aanet[SOUND_RANDOM],80,(int)sprite_x, (int)sprite_y,
+					  sprite->tyyppi->aani_frq, sprite->tyyppi->random_frq);
 
 	return 0;
 
 }
 
-int BonusSprite_Movement(SpriteClass& sprite){
+int BonusSprite_Movement(SpriteClass* sprite){
 
-	sprite_x = sprite.x;
-	sprite_y = sprite.y;
-	sprite_a = sprite.a;
-	sprite_b = sprite.b;
+	sprite_x = sprite->x;
+	sprite_y = sprite->y;
+	sprite_a = sprite->a;
+	sprite_b = sprite->b;
 
-	sprite_leveys  = sprite.tyyppi->leveys;
-	sprite_korkeus = sprite.tyyppi->korkeus;
+	sprite_leveys  = sprite->tyyppi->leveys;
+	sprite_korkeus = sprite->tyyppi->korkeus;
 
 	sprite_vasen = sprite_x - sprite_leveys  / 2;
 	sprite_oikea = sprite_x + sprite_leveys  / 2;
@@ -1476,45 +1479,45 @@ int BonusSprite_Movement(SpriteClass& sprite){
 	ylos		= true,
 	alas		= true;
 
-	vedessa = sprite.vedessa;
+	vedessa = sprite->vedessa;
 
-	max_nopeus = sprite.tyyppi->max_nopeus;
+	max_nopeus = sprite->tyyppi->max_nopeus;
 
-	if (sprite.damage_timer > 0)
-		sprite.damage_timer--;
+	if (sprite->damage_timer > 0)
+		sprite->damage_timer--;
 
-	if (sprite.charging_timer > 0)
-		sprite.charging_timer--;
+	if (sprite->charging_timer > 0)
+		sprite->charging_timer--;
 
-	if (sprite.mutation_timer > 0)	// aika muutokseen
-		sprite.mutation_timer --;
+	if (sprite->mutation_timer > 0)	// aika muutokseen
+		sprite->mutation_timer --;
 
 	// Hyppyyn liittyv�t seikat
 
-	if (Game->button_vibration + Game->vibration > 0 && sprite.jump_timer == 0)
-		sprite.jump_timer = sprite.tyyppi->max_hyppy / 2;
+	if (Game->button_vibration + Game->vibration > 0 && sprite->jump_timer == 0)
+		sprite->jump_timer = sprite->tyyppi->max_hyppy / 2;
 
-	if (sprite.jump_timer > 0 && sprite.jump_timer < sprite.tyyppi->max_hyppy)
+	if (sprite->jump_timer > 0 && sprite->jump_timer < sprite->tyyppi->max_hyppy)
 	{
-		sprite.jump_timer ++;
-		sprite_b = (sprite.tyyppi->max_hyppy - sprite.jump_timer)/-4.0;//-2
+		sprite->jump_timer ++;
+		sprite_b = (sprite->tyyppi->max_hyppy - sprite->jump_timer)/-4.0;//-2
 	}
 
 	if (sprite_b > 0)
-		sprite.jump_timer = sprite.tyyppi->max_hyppy;
+		sprite->jump_timer = sprite->tyyppi->max_hyppy;
 
 
 
-	if (sprite.weight != 0)	// jos bonuksella on weight, tutkitaan ymp�rist�
+	if (sprite->weight != 0)	// jos bonuksella on weight, tutkitaan ymp�rist�
 	{
 		// o
 		//
 		// |  Gravity
 		// V
 
-		sprite_b += sprite.weight + sprite_b/1.25;
+		sprite_b += sprite->weight + sprite_b/1.25;
 
-		if (sprite.vedessa)
+		if (sprite->vedessa)
 		{
 			if (sprite_b > 0)
 				sprite_b /= 2.0;
@@ -1523,17 +1526,17 @@ int BonusSprite_Movement(SpriteClass& sprite){
 				Particles_New(PARTICLE_SPARK,sprite_x-4,sprite_y,0,-0.5-rand()%2,rand()%30+30,0,32);
 		}
 
-		sprite.vedessa = false;
+		sprite->vedessa = false;
 
-		sprite.kytkinpaino = sprite.weight;
+		sprite->kytkinpaino = sprite->weight;
 
 		/* TOISET SPRITET */
 
 		PK2BLOCK spritepalikka; 
 
 		for (SpriteClass* sprite2 : Sprites_List) {
-			if (sprite2 != &sprite && !sprite2->piilota) {
-				if (sprite2->tyyppi->este && sprite.tyyppi->tiletarkistus) {
+			if (sprite2 != sprite && !sprite2->piilota) {
+				if (sprite2->tyyppi->este && sprite->tyyppi->tiletarkistus) {
 					if (sprite_x-sprite_leveys/2 +sprite_a <= sprite2->x + sprite2->tyyppi->leveys /2 &&
 						sprite_x+sprite_leveys/2 +sprite_a >= sprite2->x - sprite2->tyyppi->leveys /2 &&
 						sprite_y-sprite_korkeus/2+sprite_b <= sprite2->y + sprite2->tyyppi->korkeus/2 &&
@@ -1578,31 +1581,31 @@ int BonusSprite_Movement(SpriteClass& sprite){
 					sprite_x > sprite2->x - sprite2->tyyppi->leveys/2 &&
 					sprite_y < sprite2->y + sprite2->tyyppi->korkeus/2 &&
 					sprite_y > sprite2->y - sprite2->tyyppi->korkeus/2 &&
-					sprite.damage_timer == 0)
+					sprite->damage_timer == 0)
 				{
 					if (sprite2->tyyppi->type != TYPE_BONUS &&
-						!(sprite2 == Player_Sprite && sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU))
+						!(sprite2 == Player_Sprite && sprite->tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU))
 						sprite_a += sprite2->a*(rand()%4);
 
 					// lis�t��n spriten painoon sit� koskettavan toisen spriten weight
-					sprite.kytkinpaino += sprite2->tyyppi->weight;
+					sprite->kytkinpaino += sprite2->tyyppi->weight;
 
 					// samanmerkkiset spritet vaihtavat suuntaa t�rm�tess��n
-					if (sprite.tyyppi == sprite2->tyyppi &&
+					if (sprite->tyyppi == sprite2->tyyppi &&
 						sprite2->energia > 0)
 					{
-						if (sprite.x < sprite2->x) {
-							sprite2->a += sprite.a / 3.0;
+						if (sprite->x < sprite2->x) {
+							sprite2->a += sprite->a / 3.0;
 							oikealle = false;
 						}
-						if (sprite.x > sprite2->x) {
-							sprite2->a += sprite.a / 3.0;
+						if (sprite->x > sprite2->x) {
+							sprite2->a += sprite->a / 3.0;
 							vasemmalle = false;
 						}
 						/*
-						if (sprite.y < spritet[sprite_index].y)
+						if (sprite->y < spritet[sprite_index].y)
 							alas = false;
-						if (sprite.y > spritet[sprite_index].y)
+						if (sprite->y > spritet[sprite_index].y)
 							ylos = false;*/
 					}
 
@@ -1626,7 +1629,7 @@ int BonusSprite_Movement(SpriteClass& sprite){
 
 		// Lasketaan
 
-		if (sprite.tyyppi->tiletarkistus)
+		if (sprite->tyyppi->tiletarkistus)
 		{
 
 			int palikat_x_lkm = (int)((sprite_leveys) /32)+4;
@@ -1649,7 +1652,7 @@ int BonusSprite_Movement(SpriteClass& sprite){
 
 		}
 
-		if (vedessa != sprite.vedessa) {
+		if (vedessa != sprite->vedessa) {
 			Effect_Splash((int)sprite_x,(int)sprite_y,32);
 			Play_GameSFX(splash_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, true);
 		}
@@ -1672,19 +1675,19 @@ int BonusSprite_Movement(SpriteClass& sprite){
 			if (sprite_b < 0)
 				sprite_b = 0;
 
-			sprite.jump_timer = sprite.tyyppi->max_hyppy;
+			sprite->jump_timer = sprite->tyyppi->max_hyppy;
 		}
 
 		if (!alas)
 		{
 			if (sprite_b >= 0)
 			{
-				if (sprite.jump_timer > 0)
+				if (sprite->jump_timer > 0)
 				{
-					sprite.jump_timer = 0;
+					sprite->jump_timer = 0;
 				//	if (/*sprite_b == 4*/!maassa)
 				//		Play_GameSFX(pump_sound,20,(int)sprite_x, (int)sprite_y,
-				//				      int(25050-sprite.tyyppi->weight*4000),true);
+				//				      int(25050-sprite->tyyppi->weight*4000),true);
 				}
 
 				if (sprite_b > 2)
@@ -1717,23 +1720,23 @@ int BonusSprite_Movement(SpriteClass& sprite){
 		sprite_x += sprite_a;
 		sprite_y += sprite_b;
 
-		sprite.x = sprite_x;
-		sprite.y = sprite_y;
-		sprite.a = sprite_a;
-		sprite.b = sprite_b;
+		sprite->x = sprite_x;
+		sprite->y = sprite_y;
+		sprite->a = sprite_a;
+		sprite->b = sprite_b;
 
-		sprite.oikealle = oikealle;
-		sprite.vasemmalle = vasemmalle;
-		sprite.alas = alas;
-		sprite.ylos = ylos;
+		sprite->oikealle = oikealle;
+		sprite->vasemmalle = vasemmalle;
+		sprite->alas = alas;
+		sprite->ylos = ylos;
 	}
 	else	// jos spriten weight on nolla, tehd��n spritest� "kelluva"
 	{
-		sprite.y = sprite.alku_y + cos_table[int(degree+(sprite.alku_x+sprite.alku_y))%360] / 3.0;
-		sprite_y = sprite.y;
+		sprite->y = sprite->alku_y + cos_table[int(degree+(sprite->alku_x+sprite->alku_y))%360] / 3.0;
+		sprite_y = sprite->y;
 	}
 
-	sprite.weight = sprite.initial_weight;
+	sprite->weight = sprite->initial_weight;
 
 	int tuhoutuminen;
 
@@ -1742,35 +1745,35 @@ int BonusSprite_Movement(SpriteClass& sprite){
 		sprite_x > Player_Sprite->x - Player_Sprite->tyyppi->leveys/2 &&
 		sprite_y < Player_Sprite->y + Player_Sprite->tyyppi->korkeus/2 &&
 		sprite_y > Player_Sprite->y - Player_Sprite->tyyppi->korkeus/2 &&
-		sprite.damage_timer == 0)
+		sprite->damage_timer == 0)
 	{
-		if (sprite.energia > 0 && Player_Sprite->energia > 0)
+		if (sprite->energia > 0 && Player_Sprite->energia > 0)
 		{
-			if (sprite.tyyppi->pisteet != 0) {
+			if (sprite->tyyppi->pisteet != 0) {
 
-				char* name = sprite.tyyppi->nimi;
+				char* name = sprite->tyyppi->nimi;
 				if (!Episode->ignore_collectable && strncmp(name, Episode->collectable_name.c_str(), Episode->collectable_name.size()) == 0)
 					Game->apples_got++;
 
-				Game->score_increment += sprite.tyyppi->pisteet;
+				Game->score_increment += sprite->tyyppi->pisteet;
 				
-				if (!sprite.Onko_AI(AI_BONUS_AIKA)) {
+				if (!sprite->Onko_AI(AI_BONUS_AIKA)) {
 
 					char luku[10];
-					sprintf(luku, "%i", sprite.tyyppi->pisteet);
+					sprintf(luku, "%i", sprite->tyyppi->pisteet);
 					
-					if (sprite.tyyppi->pisteet >= 50)
-						Fadetext_New(fontti2,luku,(int)sprite.x-8,(int)sprite.y-8,100);
+					if (sprite->tyyppi->pisteet >= 50)
+						Fadetext_New(fontti2,luku,(int)sprite->x-8,(int)sprite->y-8,100);
 					else
-						Fadetext_New(fontti1,luku,(int)sprite.x-8,(int)sprite.y-8,100);
+						Fadetext_New(fontti1,luku,(int)sprite->x-8,(int)sprite->y-8,100);
 
 				}
 
 			}
 
-			if (sprite.Onko_AI(AI_BONUS_AIKA)) {
+			if (sprite->Onko_AI(AI_BONUS_AIKA)) {
 				
-				int increase_time = sprite.tyyppi->charge_time * TIME_FPS;
+				int increase_time = sprite->tyyppi->charge_time * TIME_FPS;
 				Game->timeout += increase_time;
 
 				float shown_time = float(increase_time) / 60;
@@ -1787,24 +1790,24 @@ int BonusSprite_Movement(SpriteClass& sprite){
                 if (sek < 10)
                     strcat(luku, "0");
 				strcat(luku, sek_c);
-				Fadetext_New(fontti1,luku,(int)sprite.x-15,(int)sprite.y-8,100);
+				Fadetext_New(fontti1,luku,(int)sprite->x-15,(int)sprite->y-8,100);
 				
 			}
 
-			if (sprite.Onko_AI(AI_BONUS_NAKYMATTOMYYS))
-				Player_Sprite->invisible_timer = sprite.tyyppi->charge_time;
+			if (sprite->Onko_AI(AI_BONUS_NAKYMATTOMYYS))
+				Player_Sprite->invisible_timer = sprite->tyyppi->charge_time;
 
-			if (sprite.Onko_AI(AI_BONUS_SUPERMODE)) {
-				Player_Sprite->super_mode_timer = sprite.tyyppi->charge_time;
+			if (sprite->Onko_AI(AI_BONUS_SUPERMODE)) {
+				Player_Sprite->super_mode_timer = sprite->tyyppi->charge_time;
 				PSound::play_overlay_music();
 			}
 
-			//Game->map.spritet[(int)(sprite.alku_x/32) + (int)(sprite.alku_y/32)*PK2MAP_MAP_WIDTH] = 255;
+			//Game->map.spritet[(int)(sprite->alku_x/32) + (int)(sprite->alku_y/32)*PK2MAP_MAP_WIDTH] = 255;
 
-			if (sprite.tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
-				Player_Sprite->energia -= sprite.tyyppi->vahinko;
+			if (sprite->tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
+				Player_Sprite->energia -= sprite->tyyppi->vahinko;
 
-			tuhoutuminen = sprite.tyyppi->tuhoutuminen;
+			tuhoutuminen = sprite->tyyppi->tuhoutuminen;
 
 			if (tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
 			{
@@ -1812,7 +1815,7 @@ int BonusSprite_Movement(SpriteClass& sprite){
 					tuhoutuminen -= FX_DESTRUCT_ANIMAATIO;
 				else
 				{
-					if (sprite.tyyppi->avain)
+					if (sprite->tyyppi->avain)
 					{
 						Game->keys--;
 
@@ -1820,28 +1823,28 @@ int BonusSprite_Movement(SpriteClass& sprite){
 							Game->map.Open_Locks();
 					}
 
-					sprite.piilota = true;
+					sprite->piilota = true;
 				}
 
-				if (sprite.Onko_AI(AI_UUSI_JOS_TUHOUTUU)) {
+				if (sprite->Onko_AI(AI_UUSI_JOS_TUHOUTUU)) {
 					double ax, ay;
-					ax = sprite.alku_x;//-sprite.tyyppi->leveys;
-					ay = sprite.alku_y-sprite.tyyppi->korkeus/2.0;
-					Sprites_add(sprite.tyyppi, 0, ax-17, ay, &sprite, false);
+					ax = sprite->alku_x;//-sprite->tyyppi->leveys;
+					ay = sprite->alku_y-sprite->tyyppi->korkeus/2.0;
+					Sprites_add(sprite->tyyppi, 0, ax-17, ay, sprite, false);
 					for (int r=1;r<6;r++)
 						Particles_New(PARTICLE_SPARK,ax+rand()%10-rand()%10, ay+rand()%10-rand()%10,0,0,rand()%100,0.1,32);
 
 				}
 
-				if (sprite.tyyppi->bonus != nullptr)
-					if (Gifts_Add(sprite.tyyppi->bonus))
+				if (sprite->tyyppi->bonus != nullptr)
+					if (Gifts_Add(sprite->tyyppi->bonus))
 						Game->Show_Info(tekstit->Get_Text(PK_txt.game_newitem));
 
-				if (sprite.tyyppi->muutos != nullptr)
+				if (sprite->tyyppi->muutos != nullptr)
 				{
-					if (sprite.tyyppi->muutos->AI[0] != AI_BONUS)
+					if (sprite->tyyppi->muutos->AI[0] != AI_BONUS)
 					{
-						Player_Sprite->tyyppi = sprite.tyyppi->muutos;
+						Player_Sprite->tyyppi = sprite->tyyppi->muutos;
 						Player_Sprite->ammus1 = Player_Sprite->tyyppi->ammus1;
 						Player_Sprite->ammus2 = Player_Sprite->tyyppi->ammus2;
 						Player_Sprite->initial_weight = Player_Sprite->tyyppi->weight;
@@ -1854,8 +1857,8 @@ int BonusSprite_Movement(SpriteClass& sprite){
 					}
 				}
 
-				if (sprite.tyyppi->ammus1 != nullptr) {
-					Player_Sprite->ammus1 = sprite.tyyppi->ammus1;
+				if (sprite->tyyppi->ammus1 != nullptr) {
+					Player_Sprite->ammus1 = sprite->tyyppi->ammus1;
 
 					int infotext = Episode->infos.Search_Id("new egg attack");
 					if (infotext != -1)
@@ -1864,8 +1867,8 @@ int BonusSprite_Movement(SpriteClass& sprite){
 						Game->Show_Info(tekstit->Get_Text(PK_txt.game_newegg));
 				}
 
-				if (sprite.tyyppi->ammus2 != nullptr) {
-					Player_Sprite->ammus2 = sprite.tyyppi->ammus2;
+				if (sprite->tyyppi->ammus2 != nullptr) {
+					Player_Sprite->ammus2 = sprite->tyyppi->ammus2;
 
 					int infotext = Episode->infos.Search_Id("new doodle attack");
 					if (infotext != -1)
@@ -1874,8 +1877,8 @@ int BonusSprite_Movement(SpriteClass& sprite){
 						Game->Show_Info(tekstit->Get_Text(PK_txt.game_newdoodle));
 				}
 
-				Play_GameSFX(sprite.tyyppi->aanet[SOUND_DESTRUCTION],100, (int)sprite.x, (int)sprite.y,
-							  sprite.tyyppi->aani_frq, sprite.tyyppi->random_frq);
+				Play_GameSFX(sprite->tyyppi->aanet[SOUND_DESTRUCTION],100, (int)sprite->x, (int)sprite->y,
+							  sprite->tyyppi->aani_frq, sprite->tyyppi->random_frq);
 
 				Effect_Destruction(tuhoutuminen, (u32)sprite_x, (u32)sprite_y);
 			}
@@ -1884,20 +1887,20 @@ int BonusSprite_Movement(SpriteClass& sprite){
 
 	for (int i = 0; i < SPRITE_MAX_AI; i++) {
 
-		if (sprite.tyyppi->AI[i] == AI_NONE)
+		if (sprite->tyyppi->AI[i] == AI_NONE)
 			break;
 
-		switch (sprite.tyyppi->AI[i]) {
+		switch (sprite->tyyppi->AI[i]) {
 		
-		case AI_BONUS:				sprite.AI_Bonus(); break;
+		case AI_BONUS:				sprite->AI_Bonus(); break;
 
-		case AI_BASIC:				sprite.AI_Basic(); break;
+		case AI_BASIC:				sprite->AI_Basic(); break;
 
-		case AI_MUUTOS_AJASTIN:		if (sprite.tyyppi->muutos != nullptr)
-										sprite.AI_Muutos_Ajastin(sprite.tyyppi->muutos);
+		case AI_MUUTOS_AJASTIN:		if (sprite->tyyppi->muutos != nullptr)
+										sprite->AI_Muutos_Ajastin(sprite->tyyppi->muutos);
 									break;
 
-		case AI_TIPPUU_TARINASTA:	sprite.AI_Tippuu_Tarinasta(Game->vibration + Game->button_vibration);
+		case AI_TIPPUU_TARINASTA:	sprite->AI_Tippuu_Tarinasta(Game->vibration + Game->button_vibration);
 									break;
 
 		default:					break;
@@ -1906,8 +1909,8 @@ int BonusSprite_Movement(SpriteClass& sprite){
 	}
 
 	/* The energy doesn't matter that the player is a bonus item */
-	if (sprite.pelaaja != 0)
-		sprite.energia = 0;
+	if (sprite->pelaaja != 0)
+		sprite->energia = 0;
 
 	return 0;
 }

@@ -6,5 +6,5 @@
 
 #include "game/spriteclass.hpp"
 
-int Sprite_Movement(SpriteClass& sprite);
-int BonusSprite_Movement(SpriteClass& sprite);
+int Sprite_Movement(SpriteClass* sprite);
+int BonusSprite_Movement(SpriteClass* sprite);

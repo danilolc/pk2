@@ -383,7 +383,7 @@ int Update_Sprites() {
 	for (SpriteClass* sprite : Sprites_List) {
 		if (sprite->aktiivinen && !sprite->piilota) {
 			if (sprite->tyyppi->type == TYPE_BONUS) {
-				BonusSprite_Movement(*sprite);
+				BonusSprite_Movement(sprite);
 				active_sprites++;
 			}
 		}
@@ -392,7 +392,7 @@ int Update_Sprites() {
 	for (SpriteClass* sprite : Sprites_List) {
 		if (sprite->aktiivinen && !sprite->piilota) {
 			if (sprite->tyyppi->type != TYPE_BONUS && sprite->tyyppi->type != TYPE_BACKGROUND) {
-				Sprite_Movement(*sprite);
+				Sprite_Movement(sprite);
 				active_sprites++;
 			}
 		}
