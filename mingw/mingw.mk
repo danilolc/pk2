@@ -79,22 +79,46 @@ copyfiles:
 	@mkdir -p $(LICENSES) >/dev/null
 
 	@cp $(BIN_SRC)libogg-0.dll $(BIN_DIR)
+  ifeq ("$(wildcard $($(BIN_SRC)LICENSE.ogg-vorbis.txt))","")
+	@cp /mingw64/share/licenses/libogg/COPYING $(LICENSES)/LICENSE.ogg-vorbis.txt
+  else
 	@cp $(BIN_SRC)LICENSE.ogg-vorbis.txt $(LICENSES)
+  endif
 
 	@cp $(BIN_SRC)libmodplug-1.dll $(BIN_DIR)
+  ifeq ("$(wildcard $($(BIN_SRC)LICENSE.modplug.txt))","")
+	@cp /mingw64/share/licenses/libmodplug/LICENSE $(LICENSES)/LICENSE.modplug.txt
+  else
 	@cp $(BIN_SRC)LICENSE.modplug.txt $(LICENSES)
+  endif
 
 	@cp $(BIN_SRC)libmpg123-0.dll $(BIN_DIR)
+  ifeq ("$(wildcard $($(BIN_SRC)LICENSE.mpg123.txt))","")
+	@cp /mingw64/share/licenses/mpg123/COPYING $(LICENSES)/LICENSE.mpg123.txt
+  else
 	@cp $(BIN_SRC)LICENSE.mpg123.txt $(LICENSES)
+  endif
 
 	@cp $(BIN_SRC)libpng16-16.dll $(BIN_DIR)
+  ifeq ("$(wildcard $($(BIN_SRC)LICENSE.png.txt))","")
+	@cp /mingw64/share/licenses/libpng/LICENSE $(LICENSES)/LICENSE.png.txt
+  else
 	@cp $(BIN_SRC)LICENSE.png.txt $(LICENSES)
+  endif
 
 	@cp $(BIN_SRC)zlib1.dll $(BIN_DIR)
+  ifeq ("$(wildcard $($(BIN_SRC)LICENSE.zlib.tx))","")
+	@cp /mingw64/share/licenses/zlib/LICENSE $(LICENSES)/LICENSE.zlib.txt
+  else
 	@cp $(BIN_SRC)LICENSE.zlib.txt $(LICENSES)
+  endif
 
 	@cp $(BIN_SRC)libzip.dll $(BIN_DIR)
-	@cp $(BIN_SRC)LICENSE.libzip.txt $(LICENSES)
+  ifeq ("$(wildcard $($(BIN_SRC)LICENSE.libzip.txt))","")
+	@cp /mingw64/share/licenses/libzip/LICENSE $(LICENSES)/LICENSE.libzip.txt
+  else
+  @cp $(BIN_SRC)LICENSE.libzip.txt $(LICENSES)
+  endif
 	
 	@cp $(BIN_SRC)SDL2.dll $(BIN_DIR)
 	@cp $(BIN_SRC)SDL2_image.dll $(BIN_DIR)
