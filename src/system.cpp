@@ -171,11 +171,7 @@ int Clicked() {
 
 void Draw_Cursor(int x, int y) {
 
-	#ifndef __ANDROID__
-
 	PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
-
-	#endif
 	
 }
 

@@ -263,7 +263,8 @@ int Draw_ScoreCount() {
 
 	}
 
-	Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
+	if (!PUtils::Is_Mobile() || !Settings.gui)
+		Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
 	return 0;
 }

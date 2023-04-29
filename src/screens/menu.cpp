@@ -1440,7 +1440,8 @@ int Draw_Menu() {
 		PDraw::font_write(fontti1, PK2_VERSION, 0, 470);
 
 	if (!mouse_hidden)
-		Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
+		if (!PUtils::Is_Mobile() || !Settings.gui)
+			Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
 	return 0;
 
