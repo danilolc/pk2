@@ -109,10 +109,10 @@ void adjust_screen() {
 
 void set_fullscreen(bool set) {
 
-	#ifdef __ANDROID__
-		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-		return;
-	#endif
+	//#ifdef __ANDROID__
+	//	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+	//	return;
+	//#endif
 
 	renderer->clear_screen();
 
@@ -174,14 +174,14 @@ void get_window_position(int* x, int* y) {
 
 int set_vsync(bool set) {
 
-	//if (set == vsync_set)
-	//	return 0;
+	if (set == vsync_set)
+		return 0;
 
 	int ret = renderer->set_vsync(true);
 	vsync_set = true;
 
-	//if (ret == 0)
-	//	vsync_set = set;
+	if (ret == 0)
+		vsync_set = set;
 	
 	return ret;
 

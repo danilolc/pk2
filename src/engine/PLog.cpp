@@ -63,8 +63,8 @@ static void write_on_file(const char* level_name, const char* origin, const char
     char buffer[BUFFER_SIZE];
     int size;
 
-    size = snprintf(buffer, BUFFER_SIZE, "%s", level_name + 5);
-    log_file->write(buffer, size - 4);
+    size = snprintf(buffer, BUFFER_SIZE, "%s", level_name);
+    log_file->write(buffer, size);
 
     size = snprintf(buffer, BUFFER_SIZE, "\t%s\t- ", origin);
     log_file->write(buffer, size);
@@ -101,15 +101,15 @@ void Write(u8 level, const char* origin, const char* format, ...) {
     switch (level) {
 
         case DEBUG:
-            level_name = ANSI_COLOR_BLUE "[DEBUG]" ANSI_COLOR_RESET; break;
+            level_name =  "[DEBUG]" ; break;
         case INFO:
-            level_name = ANSI_COLOR_GREEN "[INFO]" ANSI_COLOR_RESET; break;
+            level_name =  "[INFO]" ; break;
         case WARN:
-            level_name = ANSI_COLOR_YELLOW "[WARN]" ANSI_COLOR_RESET; break;
+            level_name =  "[WARN]" ; break;
         case ERR:
-            level_name = ANSI_COLOR_RED "[ERR]" ANSI_COLOR_RESET; break;
+            level_name =  "[ERR]" ; break;
         case FATAL:
-            level_name = ANSI_COLOR_FATAL "[FATAL]" ANSI_COLOR_RESET; break;
+            level_name =  "[FATAL]" ; break;
         default:
             level_name = "[UNKNOWN]"; break;
 

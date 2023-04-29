@@ -9,13 +9,14 @@
 CXX = emcc
 
 # Optimization:
-CXXFLAGS += -O2
-#CXXFLAGS += -O3
+CXXFLAGS += -O3 -fno-exceptions -fno-rtti #-flto
+LDFLAGS += #-flto
 
-#CXXFLAGS += -march=native
+CXXFLAGS += -Wl,-u,atexit -Wl,-u,__cxa_atexit
+LDXFLAGS += -Wl,-u,atexit -Wl,-u,__cxa_atexit
 
-#CXXFLAGS += -fno-exceptions -fno-rtti
-#LDFLAGS +=
+CXXFLAGS += -sALLOW_MEMORY_GROWTH -sWASM=1 -sASYNCIFY -sSTACK_SIZE=2097152
+LDFLAGS += -sALLOW_MEMORY_GROWTH -sWASM=1 -sASYNCIFY -sSTACK_SIZE=2097152
 
 # Warnings:
 CXXFLAGS += -Wno-unused-command-line-argument
@@ -26,10 +27,12 @@ CXXFLAGS += --std=c++17
 # SDL2:
 #CXXFLAGS += $(shell pkg-config sdl2 --cflags)
 #LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
-CXXFLAGS += -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_MIXER=2 -sFORCE_FILESYSTEM 
-CXXFLAGS += --preload-file res/ -sSDL2_IMAGE_FORMATS='["png", "bmp"]' -sUSE_MODPLUG=1
-CXXFLAGS += -sSDL2_MIXER_FORMATS='["xm", "mod"]'
-LDFLAGS += $(CXXFLAGS)
+EMFLAGS += -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_MIXER=2 -sFORCE_FILESYSTEM 
+EMFLAGS += --preload-file res/ -sSDL2_IMAGE_FORMATS='["png", "bmp"]' 
+EMFLAGS += -sSDL2_MIXER_FORMATS='["xm", "mod", "ogg". "wav", "mp3"]'
+CXXFLAGS += $(EMFLAGS)
+LDFLAGS += $(EMFLAGS)
+
 
 # LibZip (read episodes on zip files):
 #CXXFLAGS += -DPK2_USE_ZIP $(shell pkg-config libzip --cflags)

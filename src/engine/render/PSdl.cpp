@@ -155,7 +155,7 @@ PSdl::PSdl(int width, int height, void* window) {
 
     }
 
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
 
     SDL_RenderClear(renderer);
 

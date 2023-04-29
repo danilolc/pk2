@@ -72,10 +72,10 @@ void Settings_Init() {
 	Settings.draw_itembar = true;
 	Settings.bg_sprites = true;
 
-	Settings.fps = SETTINGS_60FPS;//SETTINGS_VSYNC;
-	Settings.isFullScreen = true;
+	Settings.fps = SETTINGS_60FPS;
+	Settings.isFullScreen = false;
 	Settings.double_speed = false;
-	Settings.shader_type = SETTINGS_MODE_LINEAR;
+	Settings.shader_type = SETTINGS_MODE_NEAREST;
 
 	Settings.keyboard.left      = PInput::LEFT;
 	Settings.keyboard.right     = PInput::RIGHT;

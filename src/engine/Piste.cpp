@@ -26,9 +26,6 @@ static bool draw = true;
 
 static void wait_frame() {
 
-	SDL_Delay(16);
-	return;
-
 	static u64 last_time = SDL_GetPerformanceCounter();
 
 	u64 c_frec = SDL_GetPerformanceFrequency();
@@ -89,7 +86,7 @@ static void logic() {
 	// Clear PDraw buffer
 	PDraw::update();
 
-	//if (!PRender::is_vsync() && (desired_fps > 0) && draw)
+	if (!PRender::is_vsync() && (desired_fps > 0) && draw)
 		wait_frame();
 
 	PInput::update();
