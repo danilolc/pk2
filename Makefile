@@ -6,30 +6,37 @@
 # "make clean" - Removes all objects, executables and dependencies
 
 # Compiler:
-CXX = g++
+CXX = emcc
 
 # Optimization:
-#CXXFLAGS += -g
 CXXFLAGS += -O2
+#CXXFLAGS += -O3
 
 #CXXFLAGS += -march=native
 
+#CXXFLAGS += -fno-exceptions -fno-rtti
+#LDFLAGS +=
+
 # Warnings:
-CXXFLAGS += -Wall
+CXXFLAGS += -Wno-unused-command-line-argument
 
 # Standart:
-CXXFLAGS += --std=c++11 
+CXXFLAGS += --std=c++17
 
 # SDL2:
-CXXFLAGS += $(shell pkg-config sdl2 --cflags)
-LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
+#CXXFLAGS += $(shell pkg-config sdl2 --cflags)
+#LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
+CXXFLAGS += -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_MIXER=2 -sFORCE_FILESYSTEM 
+CXXFLAGS += --preload-file res/ -sSDL2_IMAGE_FORMATS='["png", "bmp"]' -sUSE_MODPLUG=1
+CXXFLAGS += -sSDL2_MIXER_FORMATS='["xm", "mod"]'
+LDFLAGS += $(CXXFLAGS)
 
 # LibZip (read episodes on zip files):
 #CXXFLAGS += -DPK2_USE_ZIP $(shell pkg-config libzip --cflags)
 #LDFLAGS += $(shell pkg-config libzip --libs)
 
 # Portable (data is stored with resorces):
-CXXFLAGS += -DPK2_PORTABLE
+#CXXFLAGS += -DPK2_PORTABLE
 
 # Commit hash
 CXXFLAGS += -DCOMMIT_HASH='"$(shell git rev-parse --short HEAD)"'
@@ -56,7 +63,7 @@ DEPENDENCIES := $(basename $(DEPENDENCIES))
 DEPENDENCIES := $(addsuffix .d, $(DEPENDENCIES))
 
 # Binary output:
-PK2_BIN = $(BIN_DIR)pekka-kana-2
+PK2_BIN = $(BIN_DIR)pekka-kana-2.html
 
 pk2: $(PK2_BIN)
 
@@ -74,7 +81,7 @@ $(BUILD_DIR)%.o: $(SRC_DIR)%.cpp
 	@echo -Compiling $<
 	@mkdir -p $(dir $@) >/dev/null
 	@$(CXX) $(CXXFLAGS) -I$(SRC_DIR) -o $@ -c $<
-	@$(CXX) -MM -MT $@ -I$(SRC_DIR) $< > $(BUILD_DIR)$*.d
+	@$(CXX) $(CXXFLAGS) -MM -MT $@ -I$(SRC_DIR) $< > $(BUILD_DIR)$*.d
 ###########################
 
 clean:

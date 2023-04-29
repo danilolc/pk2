@@ -76,7 +76,7 @@ int PSdl::set_vsync(bool set) {
 
     Uint32 sync = set? SDL_RENDERER_PRESENTVSYNC : 0;
 
-    renderer = SDL_CreateRenderer(curr_window, -1, SDL_RENDERER_ACCELERATED | sync);
+    renderer = SDL_CreateRenderer(curr_window, -1, /*SDL_RENDERER_ACCELERATED |*/ sync);
     if (!renderer) {
 
         PLog::Write(PLog::FATAL, "PSdl", "Couldn't create renderer!");

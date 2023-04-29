@@ -7,11 +7,11 @@
 #include "engine/PDraw.hpp"
 #include "engine/PLog.hpp"
 #include "engine/types.hpp"
-
-#ifndef __ANDROID__
-#include "engine/render/PGl.hpp"
+#define __ANDROID__
+//#ifndef __ANDROID__
+//#include "engine/render/PGl.hpp"
 #include "engine/render/PSdlSoft.hpp"
-#endif
+//#endif
 
 #ifdef _WIN32
 #include <versionhelpers.h>
@@ -174,13 +174,14 @@ void get_window_position(int* x, int* y) {
 
 int set_vsync(bool set) {
 
-	if (set == vsync_set)
-		return 0;
+	//if (set == vsync_set)
+	//	return 0;
 
-	int ret = renderer->set_vsync(set);
+	int ret = renderer->set_vsync(true);
+	vsync_set = true;
 
-	if (ret == 0)
-		vsync_set = set;
+	//if (ret == 0)
+	//	vsync_set = set;
 	
 	return ret;
 
@@ -228,9 +229,9 @@ int init(int width, int height, const char* name, const char* icon, int render_m
 
     #ifdef __ANDROID__
 
-    window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    //window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 
-	SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+	//SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
 
     window = SDL_CreateWindow(name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
 	if (!window) {
@@ -315,7 +316,7 @@ int init(int width, int height, const char* name, const char* icon, int render_m
 	
 	#endif
 
-	switch (render_method) {
+	/*switch (render_method) {
 
 		case RENDERER_SDL:
 			renderer = new PSdl(width, height, window); break;
@@ -330,7 +331,9 @@ int init(int width, int height, const char* name, const char* icon, int render_m
 		default:
 			renderer = new PSdl(width, height, window); break;
 		
-	}
+	}*/
+
+	renderer = new PSdl(width, height, window);
 
 	if (!renderer) {
 
