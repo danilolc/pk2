@@ -777,7 +777,8 @@ int Screen_InGame(){
 		if (Game->exit_timer == 2) {
 			
 			Fade_out(FADE_NORMAL);
-			PSound::set_musicvolume(0);
+			if (Game->game_over)
+				PSound::set_musicvolume(0);
 		
 		}
 	}
