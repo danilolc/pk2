@@ -4,7 +4,6 @@
 //#########################
 #pragma once
 
-extern int Gui_pad; //unused
 extern int Gui_pad_button;
 
 extern bool Gui_up;

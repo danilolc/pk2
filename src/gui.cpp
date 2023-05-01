@@ -15,8 +15,6 @@
 
 #include <cmath>
 
-int Gui_pad = 0;
-
 //  0 1 2 3 4
 // << < | > >>
 int Gui_pad_button = 2;
@@ -323,6 +321,18 @@ void GUI_Reset() {
 void GUI_Update() {
 
 	const int DELTA = 5;
+
+	Gui_pad_button = 2;
+
+	Gui_up     = false;
+	Gui_down   = false;
+	Gui_egg    = false;
+	Gui_doodle = false;
+	Gui_gift   = false;
+
+	Gui_menu  = false;
+	Gui_touch = false;
+	Gui_tab   = false;
 
 	if (UI_mode == UI_GAME_BUTTONS) {
 

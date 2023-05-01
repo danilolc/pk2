@@ -799,7 +799,7 @@ int Screen_InGame(){
 				Player_Sprite->energia = 0;
 			}
 
-			if (PInput::Keydown(PInput::TAB) || Gui_tab){
+			if (PInput::Keydown(PInput::TAB) || PInput::Keydown(PInput::JOY_GUIDE) || Gui_tab){
 				Gifts_ChangeOrder();
 				key_delay = 10;
 			}

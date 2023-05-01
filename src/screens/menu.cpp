@@ -1199,11 +1199,11 @@ void Draw_Menu_Controls() {
 		else
 			k = PInput::GetKeyController();
 
-		if (k == PInput::ESCAPE || k == PInput::RETURN || k == PInput::JOY_START
-		|| PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::RETURN) || PInput::Keydown(PInput::JOY_START)) {
+		if (k == PInput::ESCAPE || k == PInput::RETURN || k == PInput::JOY_START || k == PInput::JOY_GUIDE
+		/*|| PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::RETURN) || PInput::Keydown(PInput::JOY_START)*/) {
 		
 			menu_lue_kontrollit = 0;
-			menu_valittu_id = 0;		
+			menu_valittu_id = 0;
 			key_delay = 20;
 			save_settings = true;
 		
