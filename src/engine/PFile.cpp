@@ -11,7 +11,7 @@
 #include <cstring>
 #include <sys/stat.h>
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -693,7 +693,6 @@ RW* Path::GetRW(const char* mode) {
 
 	const char* cstr = this->path.c_str();
 
-	//TODO - define a RWops type 0 for zip
 	if (this->zip_file != nullptr) {
 
 		#ifdef PK2_USE_ZIP
@@ -715,20 +714,23 @@ RW* Path::GetRW(const char* mode) {
 
 		}
 
-		/*ret = SDL_AllocRW();
-		if (ret != nullptr) {
+		/*ret = SDL_AllocRW(); // TODO - why isn't it working? (maybe I can't open two files from the same zip)
+		if (ret == nullptr) {
 
-			ret->size = pfile_zip_size;
-			ret->seek = pfile_zip_seek;
-			ret->read = pfile_zip_read;
-			ret->write = pfile_zip_write;
-			ret->close = pfile_zip_close;
-			ret->hidden.unknown.data1 = zfile;
-			ret->hidden.unknown.data2 = (void*)size;
-			ret->type = 0;
-		
+			PLog::Write(PLog::ERR, "PFile", "Can't allocate RW");
+			return nullptr;
+
 		}
-		
+
+		ret->size = pfile_zip_size;
+		ret->seek = pfile_zip_seek;
+		ret->read = pfile_zip_read;
+		ret->write = pfile_zip_write;
+		ret->close = pfile_zip_close;
+		ret->hidden.unknown.data1 = zfile;
+		ret->hidden.unknown.data2 = (void*)size;
+		ret->type = 0;
+				
 		return (RW*)ret;*/
 
 		void* buffer = SDL_malloc(size);
@@ -802,7 +804,7 @@ int RW::read(std::string& str) {
 	while(1) {
 		u8 c = SDL_ReadU8((SDL_RWops*)this);
 
-		if (c == 0)
+		if (c == '\0')
 			return str.size();
 		
 		str += c;
@@ -991,8 +993,8 @@ int RW::close() {
 
 }
 
-std::map<std::string, std::vector<std::string>> scan_cache;
-//std::map<std::string, std::vector<std::string>> scan_cache_zip; //TODO
+std::unordered_map<std::string, std::vector<std::string>> scan_cache;
+//std::unordered_map<std::string, std::vector<std::string>> scan_cache_zip; //TODO
 
 std::vector<std::string> Path::scandir(const char* type) {
     
