@@ -1,0 +1,25 @@
+name: Linux C/C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install SDL dependencies
+      run: sudo apt-get install -y g++ make libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+    - name: make
+      run: make
+    - uses: actions/upload-artifact@v3
+      with:
+        name: linux-x64-nightly
+        path: |
+          bin/
+          res/
