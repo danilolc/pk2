@@ -36,6 +36,7 @@ extern int game_assets2;
 extern int bg_screen;
 
 extern int key_delay;
+extern bool mouse_hidden;
 
 extern double cos_table[360];
 extern double sin_table[360];

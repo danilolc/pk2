@@ -8,13 +8,16 @@
 #include "system.hpp"
 #include "gfx/text.hpp"
 #include "gfx/particles.hpp"
+#include "gfx/effect.hpp"
 #include "episode/episodeclass.hpp"
 #include "settings.hpp"
 #include "gui.hpp"
+#include "language.hpp"
 
 #include "engine/PLog.hpp"
 #include "engine/PSound.hpp"
 #include "engine/PDraw.hpp"
+#include "engine/PInput.hpp"
 
 #include <cstring>
 
@@ -101,7 +104,7 @@ int GameClass::Finnish() {
 
 }
 
-int GameClass::Calculete_TileMasks(){
+int GameClass::Calculete_TileMasks() {
 	
 	u8 *buffer = nullptr;
 	u32 leveys;
@@ -347,12 +350,11 @@ int GameClass::Open_Map() {
 	if (Clean_TileBuffer() == 1)
 		return 1;
 
-	map.Place_Sprites();
-	map.Select_Start();
-	map.Calculate_Edges();
-
-	keys = map.Count_Keys();
+	Place_Sprites();
+	Select_Start();
 	
+	this->keys = Count_Keys();
+
 	Sprites_start_directions();
 
 	Particles_Clear();
@@ -374,6 +376,130 @@ int GameClass::Open_Map() {
 
 	}
 	return 0;
+}
+
+void GameClass::Place_Sprites() {
+
+	Sprites_clear();
+	Sprites_add(Prototypes_List[map.pelaaja_sprite], 1, 0, 0, nullptr, false);
+
+	for (u32 x = 0; x < PK2MAP_MAP_WIDTH; x++) {
+		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT; y++) {
+
+			int sprite = map.spritet[x+y*PK2MAP_MAP_WIDTH];
+			PrototypeClass* protot = Prototypes_List[sprite];
+
+			if (sprite != 255 && protot->korkeus > 0) {
+
+				char* name = protot->nimi;
+				if (!Episode->ignore_collectable && strncmp(name, Episode->collectable_name.c_str(), Episode->collectable_name.size()) == 0)
+					this->apples_count++;
+
+				Sprites_add(protot, 0, x*32, y*32 - protot->korkeus+32, nullptr, false);
+				
+			}
+		}
+	}
+
+	Sprites_sort_bg();
+
+}
+
+void GameClass::Select_Start() {
+
+	double  pos_x = 320;
+	double  pos_y = 196;
+
+	std::vector<u32> starts;
+
+	for (u32 i = 0; i < PK2MAP_MAP_SIZE; i++)
+		if (map.seinat[i] == BLOCK_START)
+			starts.push_back(i);
+
+	if (starts.size() > 0) {
+		u32 i = starts[rand() % starts.size()];
+
+		u32 x = i % PK2MAP_MAP_WIDTH;
+		u32 y = i / PK2MAP_MAP_WIDTH;
+
+		pos_x = x*32;
+		pos_y = y*32;
+
+	}
+
+	Player_Sprite->x = pos_x + Player_Sprite->tyyppi->leveys/2;
+	Player_Sprite->y = pos_y - Player_Sprite->tyyppi->korkeus/2;
+
+	this->camera_x = (int)Player_Sprite->x;
+	this->camera_y = (int)Player_Sprite->y;
+	this->dcamera_x = this->camera_x;
+	this->dcamera_y = this->camera_y;
+
+}
+
+int GameClass::Count_Keys() {
+
+	int keys = 0;
+
+	for (u32 x=0; x < PK2MAP_MAP_SIZE; x++){
+		u8 sprite = map.spritet[x];
+		if (sprite != 255)
+			if (Prototypes_List[sprite]->avain && 
+				Prototypes_List[sprite]->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
+
+				keys++;
+	}
+
+	return keys;
+}
+
+void GameClass::Change_SkullBlocks() {
+
+	for (u32 x = 0; x < PK2MAP_MAP_WIDTH; x++)
+		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT; y++){
+			
+			u8 front = map.seinat[x+y*PK2MAP_MAP_WIDTH];
+			u8 back  = map.taustat[x+y*PK2MAP_MAP_WIDTH];
+
+			if (front == BLOCK_SKULL_FOREGROUND){
+				map.seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
+				if (back != BLOCK_SKULL_FOREGROUND)
+					Effect_SmokeClouds(x*32+24,y*32+6);
+
+			}
+
+			if (back == BLOCK_SKULL_BACKGROUND && front == 255)
+				map.seinat[x+y*PK2MAP_MAP_WIDTH] = BLOCK_SKULL_FOREGROUND;
+		}
+
+	//Put in game
+	this->vibration = 90;//60
+	PInput::Vibrate(1000);
+
+	map.Calculate_Edges();
+}
+
+void GameClass::Open_Locks() {
+
+	for (u32 x = 0; x < PK2MAP_MAP_WIDTH; x++)
+		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT; y++){
+			
+			u8 palikka = map.seinat[x+y*PK2MAP_MAP_WIDTH];
+			
+			if (palikka == BLOCK_LOCK){
+				map.seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
+				Effect_SmokeClouds(x*32+6,y*32+6);
+			}
+		}
+
+	//Put in game
+	this->vibration = 90;//60
+	PInput::Vibrate(1000);
+
+	Show_Info(tekstit->Get_Text(PK_txt.game_locksopen));
+
+	map.Calculate_Edges();
+
 }
 
 void GameClass::Show_Info(const char *text) {

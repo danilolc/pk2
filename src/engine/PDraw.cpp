@@ -340,10 +340,10 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     if (alpha <= 0) alpha = 0;
     u8 alpha8 = alpha;
 
-    uint x_start = src_x;
+    int x_start = src_x;
     if (dst_x < 0) x_start -= dst_x;
 
-    uint x_end = src_x + src_w;
+    int x_end = src_x + src_w;
     int dx = dst_x + (src_w - frameBuffer8->w);
     if (dx > int(x_end)) return -1;
     if (dx > 0) x_end -= dx;
@@ -351,10 +351,10 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     if (x_start >= x_end) return -1;
 
 
-    uint y_start = src_y;
+    int y_start = src_y;
     if (dst_y < 0) y_start -= dst_y;
 
-    uint y_end = src_y + src_h;
+    int y_end = src_y + src_h;
     int dy = dst_y + (src_h - frameBuffer8->h);
     if (dy > int(y_end)) return -1;
     if (dy > 0) y_end -= dy;
@@ -369,8 +369,8 @@ int image_cutcliptransparent(int index, int src_x, int src_y, int src_w, int src
     drawimage_start(index, imagePix, imagePitch);
     drawscreen_start(screenPix, screenPitch);
     
-    for (int posx = x_start; posx < int(x_end); posx++)
-        for (int posy = y_start; posy < int(y_end); posy++) {
+    for (int posx = x_start; posx < x_end; posx++)
+        for (int posy = y_start; posy < y_end; posy++) {
 
             u8 color1 = imagePix[ posx + imagePitch * posy ];
             if (color1 != 255) {

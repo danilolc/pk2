@@ -4,6 +4,8 @@
 //#########################
 #pragma once
 
+#include "engine/types.hpp"
+
 enum SCREEN {
 	SCREEN_NOT_SET,
 	SCREEN_FIRST_START,
@@ -17,6 +19,9 @@ enum SCREEN {
 
 extern int current_screen;
 extern int next_screen;
+
+extern uint menu_valittu_id;
+extern uint menu_valinta_id;
 
 void Fade_Quit();
 

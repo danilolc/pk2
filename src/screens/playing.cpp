@@ -852,11 +852,11 @@ int Screen_InGame(){
 			}
 			if (PInput::Keydown(PInput::L)) {
 				Game->keys = 0;
-				Game->map.Open_Locks();
+				Game->Open_Locks();
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::K)) {
-				Game->map.Change_SkullBlocks();
+				Game->Change_SkullBlocks();
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::W)) {
@@ -869,7 +869,7 @@ int Screen_InGame(){
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::R)) {
-				Game->map.Select_Start();
+				Game->Select_Start();
 				Player_Sprite->energia = 10;
 				Player_Sprite->piilota = false;
 				key_delay = 20;

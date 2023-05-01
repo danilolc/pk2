@@ -76,6 +76,12 @@ class GameClass {
 
 		bool isStarted();
 
+		void Place_Sprites();
+		void Select_Start();
+		int Count_Keys();
+		void Change_SkullBlocks();
+		void Open_Locks();
+
 	private:
 		
 		bool started = false;
@@ -89,8 +95,3 @@ class GameClass {
 };
 
 extern GameClass* Game;
-
-// TODO - remove
-extern bool mouse_hidden;
-bool Draw_Menu_Text(const char *teksti, int x, int y, char end = '\0');
-//

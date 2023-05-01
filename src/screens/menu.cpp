@@ -44,17 +44,12 @@ struct MENU_RECT {
 
 } bg_square;
 
-bool mouse_hidden = false;
-
 int menu_nyt = MENU_MAIN;
 int menu_lue_kontrollit = 0;
 
 uint menu_name_index = 0;
 char menu_name_last_mark = '\0';
 char menu_name[20] = "";
-
-uint menu_valittu_id = 0;
-uint menu_valinta_id = 1;
 
 uint episode_page = 0;
 
@@ -147,43 +142,6 @@ int Draw_BGSquare(int left, int top, int right, int bottom, u8 pvari){
 
 	return 0;
 
-}
-
-bool Draw_Menu_Text(const char *teksti, int x, int y, char end) {
-
-	const int TEXT_H = 20; 
-
-	int length = strlen(teksti) * 15;
-
-	bool mouse_on = PInput::mouse_x > x && PInput::mouse_x < x + length 
-		&& PInput::mouse_y > y && PInput::mouse_y < y + TEXT_H
-		&& !mouse_hidden;
-
-	if ( mouse_on || (menu_valittu_id == menu_valinta_id) ) {
-
-		menu_valittu_id = menu_valinta_id;
-		Wavetext_Draw(teksti, fontti3, x, y, end);//
-
-		int c = Clicked();
-		if ( (c == 1 && mouse_on) || (c > 1) ) {
-
-			Play_MenuSFX(menu_sound, 100);
-			key_delay = 20;
-			menu_valinta_id++;
-			return true;
-
-		}
-
-		//Wavetext_Draw(teksti, fontti3, x, y);
-
-	} else {
-	
-		WavetextSlow_Draw(teksti, fontti2, x, y, end);
-	
-	}
-	menu_valinta_id++;
-
-	return false;
 }
 
 int Draw_BoolBox(int x, int y, bool muuttuja, bool active) {

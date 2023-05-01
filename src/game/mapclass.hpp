@@ -162,13 +162,7 @@ class MapClass {
 
     void Animoi(int degree, int anim, int aika1, int aika2, int aika3);
 
-    //PK2 functions
-    int  Count_Keys();
-    void Change_SkullBlocks();
-    void Open_Locks();
     void Calculate_Edges();
-    void Select_Start();
-    void Place_Sprites();
 
     private:
 

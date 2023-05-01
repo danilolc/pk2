@@ -24,6 +24,9 @@
 int current_screen = SCREEN_FIRST_START;
 int next_screen = SCREEN_NOT_SET;
 
+uint menu_valittu_id = 0;
+uint menu_valinta_id = 1;
+
 static bool closing_game = false;
 
 void Fade_Quit() {
@@ -32,6 +35,45 @@ void Fade_Quit() {
 	closing_game = true;
 	PSound::set_musicvolume(0);
 	
+}
+
+bool Draw_Menu_Text(const char *teksti, int x, int y, char end) {
+
+	const int TEXT_H = 20; 
+
+	int length = strlen(teksti) * 15;
+
+	bool mouse_on = PInput::mouse_x > x && PInput::mouse_x < x + length 
+		&& PInput::mouse_y > y && PInput::mouse_y < y + TEXT_H
+		&& !mouse_hidden;
+
+	if ( mouse_on || (menu_valittu_id == menu_valinta_id) ) {
+
+		menu_valittu_id = menu_valinta_id;
+		Wavetext_Draw(teksti, fontti3, x, y, end);//
+
+		int c = Clicked();
+		if ( (c == 1 && mouse_on) || (c > 1) ) {
+
+			Play_MenuSFX(menu_sound, 100);
+			key_delay = 20;
+			menu_valinta_id++;
+			
+			return true;
+
+		}
+
+		//Wavetext_Draw(teksti, fontti3, x, y);
+
+	} else {
+	
+		WavetextSlow_Draw(teksti, fontti2, x, y, end);
+	
+	}
+
+	menu_valinta_id++;
+
+	return false;
 }
 
 int Screen_First_Start() {

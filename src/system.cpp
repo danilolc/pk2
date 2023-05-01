@@ -40,6 +40,7 @@ int game_assets2 = -1;
 int bg_screen = -1;
 
 int key_delay = 0;
+bool mouse_hidden = false;
 
 double cos_table[360];
 double sin_table[360];

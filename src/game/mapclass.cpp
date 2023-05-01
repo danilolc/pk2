@@ -4,11 +4,6 @@
 //#########################
 #include "game/mapclass.hpp"
 
-#include "episode/episodeclass.hpp"
-#include "game/sprites.hpp"
-#include "game/game.hpp"
-#include "gfx/effect.hpp"
-#include "language.hpp"
 #include "system.hpp"
 
 #include "engine/PDraw.hpp"
@@ -92,6 +87,8 @@ int MapClass::Load(PFile::Path path){
 
 	path.SetFile(this->taustakuva);
 	Load_BG(path);
+
+	Calculate_Edges();
 
 	return ok;
 }
@@ -486,134 +483,6 @@ int MapClass::Load_TilesImage(PFile::Path path){
 int MapClass::Load_BGSfx(PFile::Path path){
 
 	return 0;
-}
-
-/* Pekka Kana 2 funcitons ---------------------------------------------------------------*/
-
-
-// Put in GameClass
-void MapClass::Place_Sprites() {
-
-	Sprites_clear();
-	Sprites_add(Prototypes_List[pelaaja_sprite], 1, 0, 0, nullptr, false);
-
-	for (u32 x = 0; x < PK2MAP_MAP_WIDTH; x++) {
-		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT; y++) {
-
-			int sprite = this->spritet[x+y*PK2MAP_MAP_WIDTH];
-			PrototypeClass* protot = Prototypes_List[sprite];
-
-			if (sprite != 255 && protot->korkeus > 0) {
-
-				char* name = protot->nimi;
-				if (!Episode->ignore_collectable && strncmp(name, Episode->collectable_name.c_str(), Episode->collectable_name.size()) == 0)
-					Game->apples_count++;
-
-				Sprites_add(protot, 0, x*32, y*32 - protot->korkeus+32, nullptr, false);
-				
-			}
-		}
-	}
-
-	Sprites_sort_bg();
-
-}
-
-void MapClass::Select_Start() {
-
-	double  pos_x = 320;
-	double  pos_y = 196;
-
-	std::vector<u32> starts;
-
-	for (u32 i = 0; i < PK2MAP_MAP_SIZE; i++)
-		if (this->seinat[i] == BLOCK_START)
-			starts.push_back(i);
-
-	if (starts.size() > 0) {
-		u32 i = starts[rand() % starts.size()];
-
-		u32 x = i % PK2MAP_MAP_WIDTH;
-		u32 y = i / PK2MAP_MAP_WIDTH;
-
-		pos_x = x*32;
-		pos_y = y*32;
-
-	}
-
-	Player_Sprite->x = pos_x + Player_Sprite->tyyppi->leveys/2;
-	Player_Sprite->y = pos_y - Player_Sprite->tyyppi->korkeus/2;
-
-	Game->camera_x = (int)Player_Sprite->x;
-	Game->camera_y = (int)Player_Sprite->y;
-	Game->dcamera_x = Game->camera_x;
-	Game->dcamera_y = Game->camera_y;
-
-}
-
-int MapClass::Count_Keys() {
-
-	int keys = 0;
-
-	for (u32 x=0; x < PK2MAP_MAP_SIZE; x++){
-		u8 sprite = this->spritet[x];
-		if (sprite != 255)
-			if (Prototypes_List[sprite]->avain && 
-				Prototypes_List[sprite]->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU)
-
-				keys++;
-	}
-
-	return keys;
-}
-
-void MapClass::Change_SkullBlocks() {
-
-	for (u32 x = 0; x < PK2MAP_MAP_WIDTH; x++)
-		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT; y++){
-			
-			u8 front = this->seinat[x+y*PK2MAP_MAP_WIDTH];
-			u8 back  = this->taustat[x+y*PK2MAP_MAP_WIDTH];
-
-			if (front == BLOCK_SKULL_FOREGROUND){
-				this->seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
-				if (back != BLOCK_SKULL_FOREGROUND)
-					Effect_SmokeClouds(x*32+24,y*32+6);
-
-			}
-
-			if (back == BLOCK_SKULL_BACKGROUND && front == 255)
-				this->seinat[x+y*PK2MAP_MAP_WIDTH] = BLOCK_SKULL_FOREGROUND;
-		}
-
-	//Put in game
-	Game->vibration = 90;//60
-	PInput::Vibrate(1000);
-
-	Calculate_Edges();
-}
-
-void MapClass::Open_Locks() {
-
-	for (u32 x = 0; x < PK2MAP_MAP_WIDTH; x++)
-		for (u32 y = 0; y < PK2MAP_MAP_HEIGHT; y++){
-			
-			u8 palikka = this->seinat[x+y*PK2MAP_MAP_WIDTH];
-			
-			if (palikka == BLOCK_LOCK){
-				this->seinat[x+y*PK2MAP_MAP_WIDTH] = 255;
-				Effect_SmokeClouds(x*32+6,y*32+6);
-			}
-		}
-
-	//Put in game
-	Game->vibration = 90;//60
-	PInput::Vibrate(1000);
-
-	Game->Show_Info(tekstit->Get_Text(PK_txt.game_locksopen));
-
-	Calculate_Edges();
-
 }
 
 void MapClass::Calculate_Edges(){

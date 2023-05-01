@@ -249,7 +249,7 @@ static void Check_MapBlock(SpriteClass* sprite, PK2BLOCK &palikka) {
 			if (sprite->tyyppi->tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU) {
 				Game->keys--;
 				if (Game->keys < 1)
-					Game->map.Open_Locks();
+					Game->Open_Locks();
 			}
 
 			Effect_Explosion(palikka.vasen+16, palikka.yla+10, 0);
@@ -948,7 +948,7 @@ int Sprite_Movement(SpriteClass* sprite){
 			}
 
 			if (sprite->Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
-				Game->map.Change_SkullBlocks();
+				Game->Change_SkullBlocks();
 
 			if (sprite->Onko_AI(AI_ATTACK_1_JOS_OSUTTU)){
 				sprite->attack1_timer = sprite->tyyppi->attack1_time;
@@ -981,7 +981,7 @@ int Sprite_Movement(SpriteClass* sprite){
 											  sprite_ala-16-(10+rand()%20), sprite, true);
 
 				if (sprite->Onko_AI(AI_VAIHDA_KALLOT_JOS_TYRMATTY) && !sprite->Onko_AI(AI_VAIHDA_KALLOT_JOS_OSUTTU))
-					Game->map.Change_SkullBlocks();
+					Game->Change_SkullBlocks();
 
 				if (tuhoutuminen >= FX_DESTRUCT_ANIMAATIO)
 					tuhoutuminen -= FX_DESTRUCT_ANIMAATIO;
@@ -1820,7 +1820,7 @@ int BonusSprite_Movement(SpriteClass* sprite){
 						Game->keys--;
 
 						if (Game->keys < 1)
-							Game->map.Open_Locks();
+							Game->Open_Locks();
 					}
 
 					sprite->piilota = true;
