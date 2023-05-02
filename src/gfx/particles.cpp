@@ -35,7 +35,7 @@ void Particles_Update() {
 
 void Particles_New(int type, double x, double y, double a, double b, int time, double weight, int color) {
 
-	Particles.push_back( Particle(type, x, y, a, b, rand()%63, time, weight, color) );
+	Particles.emplace_back(type, x, y, a, b, rand()%63, time, weight, color);
 
 }
 
@@ -58,7 +58,7 @@ void Particles_LoadBG(MapClass* map) {
 	
 	for (int i = 0; i < nof_bg_particles; i++) {
 
-		BGParticles.push_back( Particle(
+		BGParticles.emplace_back(
 			BGPARTICLE_NOTHING,   //type
 			rand()%screen_width,  //x
 			rand()%screen_height, //y
@@ -67,7 +67,7 @@ void Particles_LoadBG(MapClass* map) {
 			rand()%63,            //anim
 			1,                    //time -- unused
 			rand()%10,            //weight
-			0));                  //color
+			0);                   //color
 		
 	}
 

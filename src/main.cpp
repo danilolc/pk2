@@ -28,7 +28,7 @@
 
 #include <SDL.h>
 
-const char default_config[] = 
+static const char default_config[] = 
 "-- Render Method"
 "\r\n-- Possible options: sdl software opengl opengles default"
 "\r\n---------------"
@@ -49,6 +49,10 @@ const char default_config[] =
 "\r\n---------------"
 "\r\n*audio_multi_thread:    yes"
 "\r\n";
+
+static char* test_path = NULL;
+static bool path_set = false;
+static bool editor = false;
 
 static void read_config() {
 
@@ -155,10 +159,8 @@ static void quit() {
 	if (Game)
 		delete Game;
 	
-	if (Episode /*&& !test_level*/) {
-		//Save_Record(10); //Save #10 is the backup
+	if (Episode)
 		delete Episode;
-	}
 	
 	if(tekstit)
 		delete tekstit;
@@ -169,21 +171,12 @@ static void quit() {
 
 }
 
-int main(int argc, char *argv[]) {
+static void read_args(int argc, char *argv[]) {
 
-	char* test_path = NULL;
-	bool path_set = false;
-	bool print_logs = true;
-
-	#ifdef _WIN32
-		print_logs = false;
-	#endif
-
-	// Read args -- TODO - use getopt
 	for (int i = 1; i < argc; i++) {
 		if (strcmp(argv[i], "version") == 0) {
 			printf(PK2_VERSION_STR "\n");
-			exit(0); // why isn't this a return?
+			exit(0);
 		}
 		if (strcmp(argv[i], "dev") == 0) {
 			dev_mode = true;
@@ -227,20 +220,21 @@ int main(int argc, char *argv[]) {
 		else if (strcmp(argv[i], "mobile") == 0) {
 			PUtils::Force_Mobile();
 		}
+		else if (strcmp(argv[i], "editor") == 0) {
+			editor = true;
+		}
 		else {
 			printf("Invalid arg\n");
 			exit(1);
 		}
-
 	}
+}
 
-	PLog::Init(PLog::ALL, PFile::Path(""), print_logs);
+static void set_paths() { // Todo - move to the engine
 
 	if(!path_set)
 		PUtils::Setcwd();
-
-	// Set data_path
-
+	
 	#ifndef __ANDROID__
 
 	#ifdef PK2_PORTABLE
@@ -263,30 +257,6 @@ int main(int argc, char *argv[]) {
 	SDL_free(data_path_p);
 
 	#endif //PK2_PORTABLE
-
-	// Read redirect file to change data directory -- TODO - move to a function
-	PFile::Path redirect = PFile::Path(data_path, "redirect.txt");
-	if (redirect.Find()) {
-
-		PLog::Write(PLog::DEBUG, "PK2", "Found redirect");
-		
-		PFile::RW *redirect_rw = redirect.GetRW("r");
-
-		char* buffer;
-		int size = redirect_rw->to_buffer((void**) &buffer);
-		redirect_rw->close();
-		
-		if (size > 0) {
-
-			buffer[size - 1] = '\0';
-			PLog::Write(PLog::DEBUG, "PK2", "Changing path to %s", buffer);
-
-			data_path = buffer;
-			SDL_free(buffer);
-		
-		}
-
-	}
 
 	#else //__ANDROID__
 
@@ -361,9 +331,9 @@ int main(int argc, char *argv[]) {
 
 	#endif //__ANDROID__
 
-	//Now data_path is set
+}
 
-	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"), print_logs);
+static void log_data() {
 
 	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 started!");
 	PLog::Write(PLog::DEBUG, "PK2", "Game version: %s", PK2_VERSION_STR);
@@ -371,18 +341,31 @@ int main(int argc, char *argv[]) {
 
 	#ifdef COMMIT_HASH
 	PLog::Write(PLog::DEBUG, "PK2", "Cammit hash: " COMMIT_HASH);
+	#else
+	PLog::Write(PLog::DEBUG, "PK2", "Cammit hash unknown");
 	#endif
 
 	PLog::Write(PLog::DEBUG, "PK2", "Data path - %s", data_path.c_str());
+
+}
+
+int main(int argc, char *argv[]) {
+
+	read_args(argc, argv);
+	
+	PLog::Init(PLog::ALL, PFile::Path(""));
+	
+	set_paths();
+	
+	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"));
+	
+	log_data();
+	
 	Prepare_DataPath();
-
+	
 	Settings_Open();
+	
 	read_config();
-
-	if (Settings.shader_type == SETTINGS_MODE_CRT) {
-		screen_width = 640;
-		screen_height = 480;
-	}
 
 	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", render_method, audio_buffer_size, audio_multi_thread);
 	if (!Piste::is_ready()) {

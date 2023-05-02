@@ -23,25 +23,31 @@ namespace PUtils {
 
 bool force_mobile = false;
 
-int Setcwd() {
+void Setcwd() {
 
 	#ifdef __ANDROID__
-
-	return 0;
-	
+	return;
 	#else
 
-	int ret = 0;
 	char* path = SDL_GetBasePath();
-	
 	if (path) {
 		
-		ret = chdir(path);
+		chdir(path);
 		SDL_free(path);
 	
 	}
 
-	return ret + chdir(".." PE_SEP "res");
+	#ifndef _WIN32
+	chdir(".." PE_SEP "res");
+	#endif
+
+	path = getcwd(NULL, 0);
+	if (path) {
+		
+		PLog::Write(PLog::DEBUG, "PUtils", "Working directory: %s", path);
+		free(path);
+
+	}
 
 	#endif
 
@@ -123,15 +129,15 @@ int CreateDir(std::string path){
 
 int RemoveDir(std::string path) {
 
-	// TODO
-	return 1;
+	std::string command = "rmdir /s /q " + path;
+	return system(command.c_str());
 
 }
 
 int RenameDir(std::string old_path, std::string new_path) {
 
-	// TODO
-	return 1;
+	std::string command = "ren " + old_path + " " + new_path;
+	return system(command.c_str());
 
 }
 
@@ -161,7 +167,6 @@ int RenameDir(std::string old_path, std::string new_path) {
 
 #endif
 
-//TODO - test it on android
 void GetLanguage(char* lang) {
 
 	#if (SDL_COMPILEDVERSION < 2014)

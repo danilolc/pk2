@@ -11,7 +11,7 @@
 
 namespace PUtils {
 
-int Setcwd();
+void Setcwd();
 void Lower(char* string);
 void RemoveSpace(char* string);
 

@@ -37,7 +37,7 @@ static bool print_to_stdout = false;
 
 static SDL_mutex* mutex = NULL;
 
-void Init(u8 level, PFile::Path file, bool to_stdout) {
+void Init(u8 level, PFile::Path file) {
 
     if (mutex == NULL)
         mutex = SDL_CreateMutex();
@@ -52,7 +52,9 @@ void Init(u8 level, PFile::Path file, bool to_stdout) {
     if (file.GetFileName().size() > 0)
         log_file = file.GetRW("w");
     
-    print_to_stdout = to_stdout;
+    #ifndef _WIN32
+		print_to_stdout = true;
+    #endif
 
 }
 

@@ -175,6 +175,11 @@ int Settings_Open() {
 
 	Id_To_String(Settings.id, id_code);
 
+	if (Settings.shader_type == SETTINGS_MODE_CRT) {
+		screen_width = 640;
+		screen_height = 480;
+	}
+
 	PLog::Write(PLog::DEBUG, "PK2", "Opened settings");
 	
 	return 0;
