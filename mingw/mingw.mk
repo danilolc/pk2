@@ -9,8 +9,8 @@
 # INC_SRC (the include with SDL2 and Zip)
 # LIB_SRC (the libs with SDL2 and Zip)
 
-CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main $(OPT) -std=gnu++11 -Wall
-LDFLAGS += -s -static-libgcc -static-libstdc++ -L$(LIB_SRC) -lmingw32 -mwindows -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image
+CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main -std=gnu++11 -Wall
+LDFLAGS += -static-libgcc -static-libstdc++ -L$(LIB_SRC) -lmingw32 -mwindows -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image
 
 #Remove these if you don't want or don't have zip
 CXXFLAGS += -DPK2_USE_ZIP
@@ -19,7 +19,9 @@ LDFLAGS += -lzip
 # Portable (data is stored with resorces):
 CXXFLAGS += -DPK2_PORTABLE
 
-CXXFLAGS += -fno-exceptions -fno-rtti
+# Optimization:
+CXXFLAGS += $(OPT) -flto -fno-exceptions -fno-rtti
+LDFLAGS += $(OPT) -flto -Wl,--gc-sections -s
 
 # Commit hash
 CXXFLAGS += -DCOMMIT_HASH='"$(shell git rev-parse --short HEAD)"'

@@ -78,7 +78,6 @@ This example starts the level13.map on dev mode:
 * New graphics and controllers menu
 * SDL_QUIT on Android
 * Autosave settings option, ask when overwriting save, select save on new game
-* Remove repeated languages
 * Low volume sounds not played on low volume - music playing on volume 0
 * Jump frames when fps is low
 * Better sound quality
@@ -94,3 +93,4 @@ This example starts the level13.map on dev mode:
 * Find image (load .bmp or .png)
 * New weather
 * OpenGL ES
+* High resolution mode
