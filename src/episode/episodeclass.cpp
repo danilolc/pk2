@@ -261,6 +261,12 @@ void EpisodeClass::Load() {
 			this->no_ending = true;
 		}
 
+		id = config.Search_Id("use_button_timer");
+		if (id != -1) {
+			PLog::Write(PLog::INFO, "PK2", "Episode use button timer is ON");
+			this->use_button_timer = true;
+		}
+
 	}
 
 	// Sort levels

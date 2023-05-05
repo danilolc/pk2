@@ -128,9 +128,9 @@ class MapClass {
     int      aika           = 0;                            // map time (in (dec)conds)
     u8       extra          = 0;                            // extra config - not used
     u8       tausta         = BACKGROUND_STATIC;            // bg movemant type
-    u32      kytkin1_aika   = SWITCH_INITIAL_VALUE;         // button 1 time - not used
-    u32      kytkin2_aika   = SWITCH_INITIAL_VALUE;         // button 2 time - not used
-    u32      kytkin3_aika   = SWITCH_INITIAL_VALUE;         // button 3 time - not used
+    u32      button1_time   = SWITCH_INITIAL_VALUE;         // button 1 time
+    u32      button2_time   = SWITCH_INITIAL_VALUE;         // button 2 time
+    u32      button3_time   = SWITCH_INITIAL_VALUE;         // button 3 time
     int      pelaaja_sprite = 0;                            // player prototype
 
     u8       taustat[PK2MAP_MAP_SIZE] = {255};              // map bg tiles 256*224

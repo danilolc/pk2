@@ -831,9 +831,9 @@ int Screen_InGame(){
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::Z)) {
-				if (Game->button1 < SWITCH_INITIAL_VALUE - 64) Game->button1 = SWITCH_INITIAL_VALUE;
-				if (Game->button2 < SWITCH_INITIAL_VALUE - 64) Game->button2 = SWITCH_INITIAL_VALUE;
-				if (Game->button3 < SWITCH_INITIAL_VALUE - 64) Game->button3 = SWITCH_INITIAL_VALUE;
+				if (Game->button1 < Game->map.button1_time - 64) Game->button1 = Game->map.button1_time;
+				if (Game->button2 < Game->map.button2_time - 64) Game->button2 = Game->map.button2_time;
+				if (Game->button3 < Game->map.button3_time - 64) Game->button3 = Game->map.button3_time;
 				key_delay = 20;
 			}
 			if (PInput::Keydown(PInput::X)) {

@@ -264,13 +264,13 @@ int MapClass::LoadVersion12(PFile::Path path){
 	this->ilma = atoi(luku);
 
 	file->read(luku, sizeof(luku));
-	this->kytkin1_aika = atoi(luku);
+	this->button1_time = atoi(luku);
 
 	file->read(luku, sizeof(luku));
-	this->kytkin2_aika = atoi(luku);
+	this->button2_time = atoi(luku);
 
 	file->read(luku, sizeof(luku));
-	this->kytkin3_aika = atoi(luku);
+	this->button3_time = atoi(luku);
 
 	file->read(luku, sizeof(luku));
 	this->aika = atoi(luku);
@@ -331,15 +331,15 @@ int MapClass::LoadVersion13(PFile::Path path){
 	memset(luku, 0, sizeof(luku));
 
 	file->read(luku, sizeof(luku));
-	this->kytkin1_aika = atoi(luku);
+	this->button1_time = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
 	file->read(luku, sizeof(luku));
-	this->kytkin2_aika = atoi(luku);
+	this->button2_time = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
 	file->read(luku, sizeof(luku));
-	this->kytkin3_aika = atoi(luku);
+	this->button3_time = atoi(luku);
 	memset(luku, 0, sizeof(luku));
 
 	file->read(luku, sizeof(luku));
@@ -786,8 +786,8 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y){
 		if (button1_timer < 64)
 			button1_timer_y = button1_timer;
 
-		if (button1_timer > SWITCH_INITIAL_VALUE - 64)
-			button1_timer_y = SWITCH_INITIAL_VALUE - button1_timer;
+		if (button1_timer > button1_time - 64)
+			button1_timer_y = button1_time - button1_timer;
 	}
 
 	if (button2_timer > 0){
@@ -796,8 +796,8 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y){
 		if (button2_timer < 64)
 			button2_timer_y = button2_timer;
 
-		if (button2_timer > SWITCH_INITIAL_VALUE - 64)
-			button2_timer_y = SWITCH_INITIAL_VALUE - button2_timer;
+		if (button2_timer > button2_time - 64)
+			button2_timer_y = button2_time - button2_timer;
 	}
 
 	if (button3_timer > 0){
@@ -806,8 +806,8 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y){
 		if (button3_timer < 64)
 			button3_timer_y = button3_timer;
 
-		if (button3_timer > SWITCH_INITIAL_VALUE - 64)
-			button3_timer_y = SWITCH_INITIAL_VALUE - button3_timer;
+		if (button3_timer > button3_time - 64)
+			button3_timer_y = button3_time - button3_timer;
 	}
 
 

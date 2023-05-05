@@ -327,21 +327,21 @@ static void Check_MapBlock(SpriteClass* sprite, PK2BLOCK &palikka) {
 
 					if (sprite->kytkinpaino >= 1) { // Sprite can press the buttons
 						if (palikka.koodi == BLOCK_BUTTON1 && Game->button1 == 0) {
-							Game->button1 = SWITCH_INITIAL_VALUE;
+							Game->button1 = Game->map.button1_time;
 							Game->button_vibration = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 							PInput::Vibrate(1000);
 						}
 
 						if (palikka.koodi == BLOCK_BUTTON2 && Game->button2 == 0) {
-							Game->button2 = SWITCH_INITIAL_VALUE;
+							Game->button2 = Game->map.button2_time;
 							Game->button_vibration = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 							PInput::Vibrate(1000);
 						}
 
 						if (palikka.koodi == BLOCK_BUTTON3 && Game->button3 == 0) {
-							Game->button3 = SWITCH_INITIAL_VALUE;
+							Game->button3 = Game->map.button3_time;
 							Game->button_vibration = 64;
 							Play_GameSFX(switch_sound, 100, (int)sprite_x, (int)sprite_y, SOUND_SAMPLERATE, false);
 							PInput::Vibrate(1000);

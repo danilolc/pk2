@@ -186,8 +186,8 @@ int GameClass::Move_Blocks() {
 		if (this->button1 < 64)
 			kytkin1_y = this->button1;
 
-		if (this->button1 > SWITCH_INITIAL_VALUE-64)
-			kytkin1_y = SWITCH_INITIAL_VALUE - this->button1;
+		if (this->button1 > map.button1_time - 64)
+			kytkin1_y = map.button1_time - this->button1;
 	}
 
 	if (this->button2 > 0) {
@@ -196,8 +196,8 @@ int GameClass::Move_Blocks() {
 		if (this->button2 < 64)
 			kytkin2_y = this->button2;
 
-		if (this->button2 > SWITCH_INITIAL_VALUE-64)
-			kytkin2_y = SWITCH_INITIAL_VALUE - this->button2;
+		if (this->button2 > map.button2_time - 64)
+			kytkin2_y = map.button2_time - this->button2;
 	}
 
 	if (this->button3 > 0) {
@@ -206,8 +206,8 @@ int GameClass::Move_Blocks() {
 		if (this->button3 < 64)
 			kytkin3_x = this->button3;
 
-		if (this->button3 > SWITCH_INITIAL_VALUE-64)
-			kytkin3_x = SWITCH_INITIAL_VALUE - this->button3;
+		if (this->button3 > map.button3_time - 64)
+			kytkin3_x = map.button3_time - this->button3;
 	}
 
 	kytkin1_y /= 2;
@@ -340,6 +340,12 @@ int GameClass::Open_Map() {
 		has_time = true;
 	else
 		has_time = false;
+
+	if (!Episode->use_button_timer) {
+		map.button1_time = SWITCH_INITIAL_VALUE;
+		map.button2_time = SWITCH_INITIAL_VALUE;
+		map.button3_time = SWITCH_INITIAL_VALUE;
+	}
 
 	if (strcmp(map.versio,"1.2") == 0 || strcmp(map.versio,"1.3") == 0)
 		if (Prototypes_GetAll() == 1)
