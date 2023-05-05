@@ -971,10 +971,14 @@ int Sprite_Movement(SpriteClass* sprite){
 		/* If the sprite is destroyed                                                            */
 		/*****************************************************************************************/
 
-		if (sprite->energia < 1){
+		if (sprite->energia < 1) {
 			tuhoutuminen = sprite->tyyppi->tuhoutuminen;
 
-			if (tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU){
+			if (tuhoutuminen != FX_DESTRUCT_EI_TUHOUDU) {
+
+				if (sprite->Onko_AI(AI_CHICK)) // Killed the chick
+					Game->game_over = true;
+
 				if (sprite->tyyppi->bonus != nullptr && sprite->tyyppi->bonusten_lkm > 0)
 					if (sprite->tyyppi->bonus_always || rand()%4 == 1)
 						for (int bi=0; bi<sprite->tyyppi->bonusten_lkm; bi++)

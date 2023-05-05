@@ -344,11 +344,10 @@ bool Sprite_Destructed (SpriteClass* sprite) {
 	if (sprite == Player_Sprite) // Never remove the player
 		return false;
 	
-	if (sprite->Onko_AI(AI_CHICK)) // Killed the chick
-		if (sprite->piilota || sprite->energia < 1)
-			Game->game_over = true;
-	
 	if (sprite->piilota) {
+		if (sprite->Onko_AI(AI_CHICK)) // Killed the chick
+			Game->game_over = true;
+		
 		delete sprite;
 		return true;
 	}
