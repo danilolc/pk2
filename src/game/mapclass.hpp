@@ -107,9 +107,9 @@ class MapClass {
 	int aste      = 0;  // degree of movable blocks
 	int vesiaste  = 0;  // timer for water animation
 	int animaatio = 0;  // block animations frame
-	int button1_timer  = 0;  // button 1 timer
-	int button2_timer  = 0;  // button 2 timer
-	int button3_timer  = 0;  // button 3 timer
+	u32 button1_timer  = 0;  // button 1 timer
+	u32 button2_timer  = 0;  // button 2 timer
+	u32 button3_timer  = 0;  // button 3 timer
 
     public:
 
@@ -160,7 +160,7 @@ class MapClass {
     int Piirra_Taustat(int kamera_x, int kamera_y);
     int Piirra_Seinat (int kamera_x, int kamera_y);
 
-    void Animoi(int degree, int anim, int aika1, int aika2, int aika3);
+    void Animoi(int degree, int anim, u32 aika1, u32 aika2, u32 aika3);
 
     void Calculate_Edges();
 

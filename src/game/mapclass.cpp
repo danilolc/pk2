@@ -25,7 +25,7 @@ struct PK2KARTTA{ // Vanha versio 0.1
 	u8   extrat [640*480];
 };
 
-void MapClass::Animoi(int degree, int anim, int aika1, int aika2, int aika3) {
+void MapClass::Animoi(int degree, int anim, u32 aika1, u32 aika2, u32 aika3) {
 
 	aste = degree;
 	animaatio = anim;

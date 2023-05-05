@@ -270,7 +270,10 @@ RANDOM_MOVE_VERTIC._AND_HORIZ.*/
 
     // New AI
     AI_INFOS_BEGIN = 201,
-    AI_INFOS_END = 301
+    AI_INFOS_END = 301,
+
+    AI_CHICK = 400,
+    AI_CHICKBOX,
 
 };
 

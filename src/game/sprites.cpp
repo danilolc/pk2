@@ -339,9 +339,16 @@ void Sprites_add_ammo(PrototypeClass* protot, double x, double y, SpriteClass* e
 
 }
 
-bool Sprite_Destructed (const SpriteClass* sprite) { 
+bool Sprite_Destructed (SpriteClass* sprite) { 
+
+	if (sprite == Player_Sprite) // Never remove the player
+		return false;
 	
-	if (sprite->piilota && sprite != Player_Sprite) {
+	if (sprite->Onko_AI(AI_CHICK)) // Killed the chick
+		if (sprite->piilota || sprite->energia < 1)
+			Game->game_over = true;
+	
+	if (sprite->piilota) {
 		delete sprite;
 		return true;
 	}
@@ -350,7 +357,7 @@ bool Sprite_Destructed (const SpriteClass* sprite) {
 	
 }
 
-bool bgSprite_Destructed (const SpriteClass* sprite) { 
+bool bgSprite_Destructed (SpriteClass* sprite) { 
 	
 	if (sprite->piilota)
 		return true;

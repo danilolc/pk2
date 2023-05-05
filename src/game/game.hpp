@@ -26,6 +26,8 @@ class GameClass {
 		bool level_clear = false;
 		bool repeating = false;
 
+		bool chick_mode = false;
+
 		u32 exit_timer = 0;
 
 		int  timeout = 0; //timeout in frames
@@ -35,9 +37,9 @@ class GameClass {
 		int palikka_animaatio = 0;
 
 		int button_vibration = 0;
-		int button1 = 0;
-		int button2 = 0;
-		int button3 = 0;
+		u32 button1 = 0;
+		u32 button2 = 0;
+		u32 button3 = 0;
 
 		u32 score = 0;
 		u32 score_increment = 0;

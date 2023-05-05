@@ -190,7 +190,7 @@ static void Check_MapBlock(SpriteClass* sprite, PK2BLOCK &palikka) {
 		}
 
 		/**********************************************************************/
-		/* Examine if bloc is hideway (unused)                               */
+		/* Examine if block is hideway (unused)                               */
 		/**********************************************************************/
 		if (palikka.koodi == BLOCK_HIDEOUT)
 			sprite->piilossa = true;
@@ -201,9 +201,10 @@ static void Check_MapBlock(SpriteClass* sprite, PK2BLOCK &palikka) {
 		/**********************************************************************/
 		/* Examine if block is the exit                                       */
 		/**********************************************************************/
-		if (palikka.koodi == BLOCK_EXIT && sprite->pelaaja != 0)
-			if (!Game->level_clear)
+		if (palikka.koodi == BLOCK_EXIT) {
+			if ((!Game->chick_mode && sprite->pelaaja != 0) || sprite->Onko_AI(AI_CHICK))
 				Game->Finnish();
+		}
 	}
 
 	//If sprite is thouching the block

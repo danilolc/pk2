@@ -59,8 +59,7 @@ int GameClass::Start() {
 	if (this->started)
 		return 1;
 
-	this->level_clear = false;
-
+	// TODO - put these on the class initializer
 	Gifts_Clean(); //Reset gifts
 	Sprites_clear(); //Reset sprites
 	Prototypes_ClearAll(); //Reset prototypes
@@ -357,6 +356,10 @@ int GameClass::Open_Map() {
 		return 1;
 
 	Place_Sprites();
+
+	if (this->chick_mode)
+		PLog::Write(PLog::DEBUG, "PK2", "Chick mode on");
+
 	Select_Start();
 	
 	this->keys = Count_Keys();
@@ -395,11 +398,14 @@ void GameClass::Place_Sprites() {
 			int sprite = map.spritet[x+y*PK2MAP_MAP_WIDTH];
 			PrototypeClass* protot = Prototypes_List[sprite];
 
-			if (sprite != 255 && protot->korkeus > 0) {
+			if (sprite != 255) {
 
-				char* name = protot->nimi;
-				if (!Episode->ignore_collectable && strncmp(name, Episode->collectable_name.c_str(), Episode->collectable_name.size()) == 0)
-					this->apples_count++;
+				if (!Episode->ignore_collectable)
+					if (strncmp(protot->nimi, Episode->collectable_name.c_str(), Episode->collectable_name.size()) == 0)
+						this->apples_count++;
+
+				if (protot->Onko_AI(AI_CHICK) || protot->Onko_AI(AI_CHICKBOX))
+					this->chick_mode = true;
 
 				Sprites_add(protot, 0, x*32, y*32 - protot->korkeus+32, nullptr, false);
 				
