@@ -83,14 +83,21 @@ This example starts the level13.map on dev mode:
 * Better sound quality
 
 # PLANS
-* Make a 64bit release
-* Better error handling (remove PK2_Error)
 * Loading languages from zip files and `all.txt`
-* Multi line info sign
 * Speed-run mode (frame counter, ghost)
 * Better documentation
 * Implement new layer on .map (regions)
 * Find image (load .bmp or .png)
 * New weather
-* OpenGL ES
 * High resolution mode
+
+# V1.5
+* 64bit release
+* Better error handling (remove PK2_Error)
+* Multi line info sign
+* New HQx (OpenGL)?
+* OpenGL ES
+* Edit controller position
+* Faster item tab
+* Lua screen
+* Chick system

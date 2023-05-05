@@ -207,6 +207,7 @@ int Screen_Change() {
 		case SCREEN_GAME    : Screen_InGame_Init();     break;
 		case SCREEN_SCORING : Screen_ScoreCount_Init(); break;
 		case SCREEN_END     : Screen_Ending_Init();     break;
+		case SCREEN_LUA     : Screen_Lua_Init();        break;
 		default             : Fade_Quit();              break;
 	}
 
@@ -236,6 +237,7 @@ int Screen_Loop() {
 		case SCREEN_GAME    : Screen_InGame();     break;
 		case SCREEN_SCORING : Screen_ScoreCount(); break;
 		case SCREEN_END     : Screen_Ending();     break;
+		case SCREEN_LUA     : Screen_Lua();        break;
 		default             : Fade_Quit();         break;
 	}
 
