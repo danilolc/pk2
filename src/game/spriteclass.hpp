@@ -274,6 +274,7 @@ RANDOM_MOVE_VERTIC._AND_HORIZ.*/
 
     AI_CHICK = 400,
     AI_CHICKBOX,
+    AI_DESTRUCTED_NEXT_TO_PLAYER,
 
 };
 
@@ -551,18 +552,18 @@ struct PrototypeClass13{
     bool    vihollinen;                         // if sprite is a enemy
     u32     energia;                            //?sprite energy
     u32     vahinko;                            //?damage if it got hit
-    u8      vahinko_tyyppi;                     //?damage type
-    u8      suojaus;                            //?protection type
+    u8      vahinko_tyyppi;                     // damage type
+    u8      suojaus;                            // immunity type
     u32     pisteet;                            // how much score
     u32     AI[10];                             // AI type (max 10)
     u8      max_hyppy;                          // max jump time
     double  max_nopeus;                         // max speed
-    u32     charge_time;                        //?wait post shoot
+    u32     charge_time;                        // wait post shoot
     u8      vari;                               // color
     bool    este;                               // is a wall
     u32     tuhoutuminen;                       // how sprite is destroyed
     bool    avain;                              // can sprite open locks
-    bool    vibrate;                            //?sprite randomly
+    bool    vibrate;                            // vibrate sprite randomly
     u8      bonusten_lkm;                       // number of bonuses
     u32     attack1_time;                       // attack 1 duration (frames)
     u32     attack2_time;                       // attack 2 duration (frames)
@@ -804,6 +805,8 @@ class SpriteClass{
     int AI_Kiipeilija2();
     bool AI_Info(SpriteClass &pelaaja);
     int AI_Tuhoutuu_Jos_Emo_Tuhoutuu();
+
+    int AI_Destructed_Next_To_Player(SpriteClass &player);
 
     int Animation_Perus();
     int Animation_Kana();

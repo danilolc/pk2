@@ -1551,6 +1551,24 @@ int SpriteClass::AI_Teleportti(std::list<SpriteClass*> spritet, SpriteClass &pla
 	return siirto;
 }
 
+int SpriteClass::AI_Destructed_Next_To_Player(SpriteClass &player) {
+
+	double dx = this->x - player.x;
+	double dy = this->y - player.y;
+
+	int dist = this->tyyppi->energia * 32;
+
+	if (this->energia > 0 && dx*dx + dy*dy < dist*dist) {
+
+		this->saatu_vahinko = this->tyyppi->energia;
+		this->saatu_vahinko_tyyppi = DAMAGE_ALL;
+		
+	}
+	
+	return 0;
+
+}
+
 int SpriteClass::Animation_Perus(){
 
 	int uusi_animaatio = -1;

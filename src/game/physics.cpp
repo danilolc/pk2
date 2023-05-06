@@ -1340,6 +1340,9 @@ int Sprite_Movement(SpriteClass* sprite){
 														Game->music_stopped = true;
 													}
 													break;
+				
+				case AI_DESTRUCTED_NEXT_TO_PLAYER:	sprite->AI_Destructed_Next_To_Player(*Player_Sprite);
+													break;
 
 				default:
 
