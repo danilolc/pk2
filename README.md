@@ -26,16 +26,16 @@ See the game's page at [Itch.io](https://danilolc.itch.io/pekka-kana-2).
 # Compiling
 
 ### Windows
-To compile on Windows, you will need the mingw c++ compiler with SDL2 and Zip (optional) libs.
+To compile on Windows, you will need the mingw c++ compiler with SDL2, Zip and Lua libs.
 There is a Makefile on `/mingw/i686/` that defines the needed stuff and include `/mingw/mingw.mk`.
 Edit the `/mingw/i686/Makefile` as you need and run Make on this directory.
 
 ### Debian
 To compile **Pekka Kana 2** into Debian GNU/Linux based distributions,
-you need the **SDL2**, **SDL2_image** and **SDL2_mixer** libraries installed on
+you need the **SDL2**, **SDL2_image**, **SDL2_mixer**, **Zip** and **Lua** libraries installed on
 the system. To get everything you need, just run the following command on the terminal:
 
-    $ apt install g++ make libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev
+    $ apt install build-essential libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libzip-dev liblua5.4-dev
 
 Then run the "**make**" command inside the "**Pekka Kana 2**" directory.
 

@@ -10,9 +10,11 @@ CXX = g++
 
 # Optimization:
 #CXXFLAGS += -g
-CXXFLAGS += -O2
+CXXFLAGS += -O3
 
-#CXXFLAGS += -march=native
+# Further optimization:
+#CXXFLAGS += -march=native -fno-exceptions -fno-rtti -flto 
+#LDFLAGS += -march=native -s -Wl,--gc-sections -flto -O3
 
 # Warnings:
 CXXFLAGS += -Wall
@@ -25,8 +27,12 @@ CXXFLAGS += $(shell pkg-config sdl2 --cflags)
 LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
 
 # LibZip (read episodes on zip files):
-#CXXFLAGS += -DPK2_USE_ZIP $(shell pkg-config libzip --cflags)
-#LDFLAGS += $(shell pkg-config libzip --libs)
+CXXFLAGS += -DPK2_USE_ZIP $(shell pkg-config libzip --cflags)
+LDFLAGS += $(shell pkg-config libzip --libs)
+
+# Lua:
+CXXFLAGS += $(shell pkg-config lua5.4 --cflags)
+LDFLAGS += $(shell pkg-config lua5.4 --libs)
 
 # Portable (data is stored with resorces):
 CXXFLAGS += -DPK2_PORTABLE
