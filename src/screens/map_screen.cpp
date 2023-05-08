@@ -48,7 +48,7 @@ int PK_Draw_Map_Button(int x, int y, int type){
 		ret = 1;
 	}
 
-	int flash = 50 + (int)(sin_table[degree%360]*2);
+	int flash = 50 + (int)(sin_table(degree)*2);
 
 	if (flash < 0)
 		flash = 0;
@@ -131,8 +131,8 @@ int PK_Draw_Map() {
 			PDraw::image_cutclip(assets,x-9,y-14,1+(icon*28),452,28+(icon*28),479);
 
 			if ( type == 1 ) {
-				int sinx = (int)(sin_table[degree%360]/2);
-				int cosy = (int)(cos_table[degree%360]/2);
+				int sinx = (int)(sin_table(degree)/2);
+				int cosy = (int)(cos_table(degree)/2);
 				int pekkaframe = 28*((degree%360)/120);
 				PDraw::image_cutclip(game_assets,x+sinx-12,y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
 			}
@@ -146,7 +146,7 @@ int PK_Draw_Map() {
 						y, 45, 379, 58, 394);
 				//else //TODO - draw transparent apples
 				//	PDraw::image_cutcliptransparent(game_assets2, 
-				//		45, 379, 58-45, 394-379, x - 10, y, sin_table[degree%360]*3 - 10, COLOR_GRAY);
+				//		45, 379, 58-45, 394-379, x - 10, y, sin_table(degree)*3 - 10, COLOR_GRAY);
 			}
 
 			if (Episode->next_level == UINT32_MAX) {

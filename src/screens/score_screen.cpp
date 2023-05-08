@@ -123,10 +123,10 @@ int Draw_ScoreCount() {
 
 		int kerroin = (int)(cos_table[(degree+i*3)%180]);
 
-		x = (int)(sin_table[(degree+i*10)%360]*2)+kerroin;
-		y = (int)(cos_table[(degree+i*10)%360]*2);//10 | 360 | 2
+		x = (int)(sin_table(degree+i*10)*2)+kerroin;
+		y = (int)(cos_table(degree+i*10)*2);//10 | 360 | 2
 		//PDraw::image_clip(game_assets,320+x,240+y,157,46,181,79);
-		int kuutio = (int)(sin_table[(degree+i*3)%360]);
+		int kuutio = (int)(sin_table(degree+i*3));
 		if (kuutio < 0) kuutio = -kuutio;
 
 		PDraw::screen_fill(320-x,240-y,320-x+kuutio,240-y+kuutio,COLOR_TURQUOISE+8);
@@ -134,10 +134,10 @@ int Draw_ScoreCount() {
 	}
 	for (int i = 0; i < 18; i++) {
 
-		x = (int)(sin_table[(degree+i*10)%360]*3);
-		y = (int)(cos_table[(degree+i*10)%360]*3);//10 | 360 | 3
+		x = (int)(sin_table(degree+i*10)*3);
+		y = (int)(cos_table(degree+i*10)*3);//10 | 360 | 3
 		//PDraw::image_clip(game_assets,320+x,240+y,157,46,181,79);
-		int kuutio = (int)(sin_table[(degree+i*2)%360])+18;
+		int kuutio = (int)(sin_table(degree+i*2))+18;
 		if (kuutio < 0) kuutio = -kuutio;//0;//
 		if (kuutio > 100) kuutio = 100;
 

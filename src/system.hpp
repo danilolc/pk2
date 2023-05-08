@@ -40,6 +40,10 @@ extern bool mouse_hidden;
 
 extern double cos_table[360];
 extern double sin_table[360];
+
+#define cos_table(i) cos_table[((int)(i) % 360 + 360) % 360]
+#define sin_table(i) sin_table[((int)(i) % 360 + 360) % 360]
+
 extern int degree;
 extern int degree_temp;
 

@@ -19,8 +19,8 @@ void Effect_Circle_Star(double x, double y, u8 color) {
 	int time = 50;
 
 	for (int angle = 0; angle < 180; angle += 20) {
-		Particles_New(PARTICLE_STAR, x, y, sin_table[angle]/20, cos_table[angle]/20, time, weight, color);
-		Particles_New(PARTICLE_SPARK, x, y, sin_table[angle+10]/21, cos_table[angle+10]/21, time, weight, color);
+		Particles_New(PARTICLE_STAR, x, y, sin_table(angle)/20, cos_table(angle)/20, time, weight, color);
+		Particles_New(PARTICLE_SPARK, x, y, sin_table(angle+10)/21, cos_table(angle+10)/21, time, weight, color);
 	}
 
 }
@@ -43,7 +43,7 @@ void Effect_Super(double x, double y, int w, int h) {
 		int d = 30 + rand()%40;
 		int color = colors[rand()%5];
 
-		Particles_New(PARTICLE_STAR, px, py, sin_table[angle]/d, cos_table[angle]/d, time, weight, color);
+		Particles_New(PARTICLE_STAR, px, py, sin_table(angle)/d, cos_table(angle)/d, time, weight, color);
 	}
 }
 
@@ -70,7 +70,7 @@ void Effect_Points(double x, double y, int w, int h, u8 color) {
 		if (rnd > 200) type = PARTICLE_LIGHT;
 		else if (rnd > 50) type = PARTICLE_SPARK;
 
-		Particles_New(type, px, py, sin_table[angle]/d, cos_table[angle]/d, time, weight, color);
+		Particles_New(type, px, py, sin_table(angle)/d, cos_table(angle)/d, time, weight, color);
 		
 	}
 }

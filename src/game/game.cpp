@@ -169,11 +169,11 @@ int GameClass::Clean_TileBuffer() {
 // This moves the collisions of the blocks palette
 int GameClass::Move_Blocks() {
 
-	this->lasketut_palikat[BLOCK_LIFT_HORI].vasen = (int)cos_table[degree%360];
-	this->lasketut_palikat[BLOCK_LIFT_HORI].oikea = (int)cos_table[degree%360];
+	this->lasketut_palikat[BLOCK_LIFT_HORI].vasen = (int)cos_table(degree);
+	this->lasketut_palikat[BLOCK_LIFT_HORI].oikea = (int)cos_table(degree);
 
-	this->lasketut_palikat[BLOCK_LIFT_VERT].ala = (int)sin_table[degree%360];
-	this->lasketut_palikat[BLOCK_LIFT_VERT].yla = (int)sin_table[degree%360];
+	this->lasketut_palikat[BLOCK_LIFT_VERT].ala = (int)sin_table(degree);
+	this->lasketut_palikat[BLOCK_LIFT_VERT].yla = (int)sin_table(degree);
 
 	int kytkin1_y = 0,
 		kytkin2_y = 0,

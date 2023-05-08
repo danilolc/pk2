@@ -663,10 +663,10 @@ void MapClass::Animate_Water(int tiles, int water_tiles){
 		d2 = d1;
 
 		for (x=0;x<32;x++){
-			sini = int((y+d2/2)*11.25)%360;
-			cosi = int((x+d1/2)*11.25)%360;
-			sini = (int)sin_table[sini];
-			cosi = (int)cos_table[cosi];
+			sini = (y+d2/2) * 11.25;
+			cosi = (x+d1/2) * 11.25;
+			sini = (int)sin_table(sini);
+			cosi = (int)cos_table(cosi);
 
 			vy = (y+sini/11)%32;
 			vx = (x+cosi/11)%32;
@@ -831,10 +831,10 @@ int MapClass::Piirra_Seinat(int kamera_x, int kamera_y){
 				int ax = 0;
 
 				if (palikka == BLOCK_LIFT_VERT)
-					ay = floor(sin_table[aste%360]);
+					ay = floor(sin_table(aste));
 
 				if (palikka == BLOCK_LIFT_HORI)
-					ax = floor(cos_table[aste%360]);
+					ax = floor(cos_table(aste));
 
 				if (palikka == BLOCK_BUTTON1)
 					ay = button1_timer_y/2;

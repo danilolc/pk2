@@ -295,14 +295,14 @@ void Particle::update_leaf4() {
 
 void Particle::update_flake1() {
 
-	x += sin_table[int(y)%360]/50.0;
+	x += sin_table(y)/50.0;
 	y += b / 7.0;
 
 }
 
 void Particle::update_flake2() {
 
-	x += sin_table[int(y)%360]/100.0;
+	x += sin_table(y)/100.0;
 	y += b / 8.0;
 
 }

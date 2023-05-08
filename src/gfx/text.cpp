@@ -182,8 +182,8 @@ int WavetextLap_Draw(const char *text, int fontti, int x, int y, float lap, char
 
 	for (int i = 0; text[i] != '\0' && text[i] != end; i++) {
 
-		int ys = (int)(sin_table[int((i+degree)*8)%360])/(7.f/(lap*0.8));
-		int xs = (int)(cos_table[int((i+degree)*8)%360])/(9.f/(lap*2.5));
+		int ys = (int)(sin_table((i+degree)*8))/(7.f/(lap*0.8));
+		int xs = (int)(cos_table((i+degree)*8))/(9.f/(lap*2.5));
 		kirjain[0] = text[i];
 		
 		PDraw::font_write(fontti4,kirjain,x+pos-xs+3,y+ys+3);
@@ -202,8 +202,8 @@ int Wavetext_Draw(const char *text, int fontti, int x, int y, char end) {
 
 	for (int i = 0; text[i] != '\0' && text[i] != end; i++) {
 
-		int ys = (int)(sin_table[((i+degree)*8)%360])/7;
-		int xs = (int)(cos_table[((i+degree)*8)%360])/9;
+		int ys = (int)(sin_table((i+degree)*8))/7;
+		int xs = (int)(cos_table((i+degree)*8))/9;
 		kirjain[0] = text[i];
 		
 		PDraw::font_write(fontti4,kirjain,x+pos-xs+3,y+ys+3);
@@ -222,8 +222,8 @@ int WavetextSlow_Draw(const char *text, int fontti, int x, int y, char end) {
 
 	for (int i = 0; text[i] != '\0' && text[i] != end; i++) {
 		
-		int ys = (int)(sin_table[((i+degree)*4)%360])/9;
-		int xs = (int)(cos_table[((i+degree)*4)%360])/11;
+		int ys = (int)(sin_table((i+degree)*4))/9;
+		int xs = (int)(cos_table((i+degree)*4))/11;
 		kirjain[0] = text[i];
 
 		if (Settings.transparent_text) {

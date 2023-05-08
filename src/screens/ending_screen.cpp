@@ -30,7 +30,7 @@ int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 	if (tyyppi == 1){ // Pekka
 		frm = 1;
 		if ((degree/10)%10==rapytys) frm = 0;
-		yk = (int)sin_table[(degree%360)];
+		yk = (int)sin_table(degree);
 		PDraw::image_cutclip(bg_screen,x+3,y+56, 4, 63, 29, 69);
 		if (yk < 0){
 			y+=yk;
@@ -42,7 +42,7 @@ int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 	if (tyyppi == 2){ // kana (katse oikealle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
-		yk = (int)cos_table[((degree+plus)%360)];
+		yk = (int)cos_table(degree+plus);
 		PDraw::image_cutclip(bg_screen,x+3,y+36, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
@@ -54,7 +54,7 @@ int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 	if (tyyppi == 3){ // kana (katse vasemmalle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
-		yk = (int)cos_table[((degree+plus)%360)];
+		yk = (int)cos_table(degree+plus);
 		PDraw::image_cutclip(bg_screen,x+3,y+36, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
@@ -66,7 +66,7 @@ int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 	if (tyyppi == 4){ // pikkukana (katse oikealle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
-		yk = (int)sin_table[(((degree*2)+plus)%360)];
+		yk = (int)sin_table((degree*2)+plus);
 		PDraw::image_cutclip(bg_screen,x+3,y+27, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;
@@ -78,7 +78,7 @@ int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 	if (tyyppi == 5){ // pikkukana (katse vasemmalle)
 		frm = 0;
 		if ((degree/10)%10==rapytys) frm = 1;
-		yk = (int)sin_table[(((degree*2)+plus)%360)];
+		yk = (int)sin_table((degree*2)+plus);
 		PDraw::image_cutclip(bg_screen,x,y+27, 4, 63, 29, 69);
 		if (yk < 0) {
 			y+=yk;

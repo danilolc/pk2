@@ -599,7 +599,7 @@ int Sprite_Movement(SpriteClass* sprite){
 
 		if (!hyppy_maximissa) {
 		// sprite_b = (sprite->tyyppi->max_hyppy/2 - sprite->jump_timer/2)/-2.0;//-4
-		   sprite_b = -sin_table[sprite->jump_timer]/8;//(sprite->tyyppi->max_hyppy/2 - sprite->jump_timer/2)/-2.5;
+		   sprite_b = -sin_table(sprite->jump_timer)/8;//(sprite->tyyppi->max_hyppy/2 - sprite->jump_timer/2)/-2.5;
 			if (sprite_b > sprite->tyyppi->max_hyppy){
 				sprite_b = sprite->tyyppi->max_hyppy/10.0;
 				sprite->jump_timer = 90 - sprite->jump_timer;
@@ -1243,23 +1243,23 @@ int Sprite_Movement(SpriteClass* sprite){
 													break;
 				case AI_PALAA_ALKUUN_Y:				sprite->AI_Palaa_Alkuun_Y();
 													break;
-				case AI_LIIKKUU_X_COS:				sprite->AI_Liikkuu_X(cos_table[degree%360]);
+				case AI_LIIKKUU_X_COS:				sprite->AI_Liikkuu_X(cos_table(degree));
 													break;
-				case AI_LIIKKUU_Y_COS:				sprite->AI_Liikkuu_Y(cos_table[degree%360]);
+				case AI_LIIKKUU_Y_COS:				sprite->AI_Liikkuu_Y(cos_table(degree));
 													break;
-				case AI_LIIKKUU_X_SIN:				sprite->AI_Liikkuu_X(sin_table[degree%360]);
+				case AI_LIIKKUU_X_SIN:				sprite->AI_Liikkuu_X(sin_table(degree));
 													break;
-				case AI_LIIKKUU_Y_SIN:				sprite->AI_Liikkuu_Y(sin_table[degree%360]);
+				case AI_LIIKKUU_Y_SIN:				sprite->AI_Liikkuu_Y(sin_table(degree));
 													break;
-				case AI_LIIKKUU_X_COS_NOPEA:		sprite->AI_Liikkuu_X(cos_table[(degree*2)%360]);
+				case AI_LIIKKUU_X_COS_NOPEA:		sprite->AI_Liikkuu_X(cos_table(degree*2));
 													break;
-				case AI_LIIKKUU_Y_SIN_NOPEA:		sprite->AI_Liikkuu_Y(sin_table[(degree*2)%360]);
+				case AI_LIIKKUU_Y_SIN_NOPEA:		sprite->AI_Liikkuu_Y(sin_table(degree*2));
 													break;
-				case AI_LIIKKUU_X_COS_HIDAS:		sprite->AI_Liikkuu_X(cos_table[(degree/2)%360]);
+				case AI_LIIKKUU_X_COS_HIDAS:		sprite->AI_Liikkuu_X(cos_table(degree/2));
 													break;
-				case AI_LIIKKUU_Y_SIN_HIDAS:		sprite->AI_Liikkuu_Y(sin_table[(degree/2)%360]);
+				case AI_LIIKKUU_Y_SIN_HIDAS:		sprite->AI_Liikkuu_Y(sin_table(degree/2));
 													break;
-				case AI_LIIKKUU_Y_SIN_VAPAA:		sprite->AI_Liikkuu_Y(sin_table[(sprite->action_timer/2)%360]);
+				case AI_LIIKKUU_Y_SIN_VAPAA:		sprite->AI_Liikkuu_Y(sin_table(sprite->action_timer/2));
 													break;
 				case AI_CHANGE_WHEN_ENERGY_UNDER_2:	if (sprite->tyyppi->muutos != nullptr)
 														sprite->AI_Change_When_Energy_Under_2(sprite->tyyppi->muutos);
@@ -1740,7 +1740,7 @@ int BonusSprite_Movement(SpriteClass* sprite){
 	}
 	else	// jos spriten weight on nolla, tehd��n spritest� "kelluva"
 	{
-		sprite->y = sprite->alku_y + cos_table[int(degree+(sprite->alku_x+sprite->alku_y))%360] / 3.0;
+		sprite->y = sprite->alku_y + cos_table(degree+(sprite->alku_x+sprite->alku_y)) / 3.0;
 		sprite_y = sprite->y;
 	}
 

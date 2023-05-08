@@ -74,19 +74,19 @@ int Draw_InGame_BGSprites() {
 														sprite->a = rand()%3;
 												}
 												break;*/
-		case AI_LIIKKUU_X_COS:			sprite->AI_Liikkuu_X(cos_table[degree%360]);
+		case AI_LIIKKUU_X_COS:			sprite->AI_Liikkuu_X(cos_table(degree));
 										alku_x = sprite->x;
 										alku_y = sprite->y;
 										break;
-		case AI_LIIKKUU_Y_COS:			sprite->AI_Liikkuu_Y(cos_table[degree%360]);
+		case AI_LIIKKUU_Y_COS:			sprite->AI_Liikkuu_Y(cos_table(degree));
 										alku_x = sprite->x;
 										alku_y = sprite->y;
 										break;
-		case AI_LIIKKUU_X_SIN:			sprite->AI_Liikkuu_X(sin_table[degree%360]);
+		case AI_LIIKKUU_X_SIN:			sprite->AI_Liikkuu_X(sin_table(degree));
 										alku_x = sprite->x;
 										alku_y = sprite->y;
 										break;
-		case AI_LIIKKUU_Y_SIN:			sprite->AI_Liikkuu_Y(sin_table[degree%360]);
+		case AI_LIIKKUU_Y_SIN:			sprite->AI_Liikkuu_Y(sin_table(degree));
 										alku_x = sprite->x;
 										alku_y = sprite->y;
 										break;
@@ -140,8 +140,8 @@ void Draw_InGame_Sprites() {
 			if (sprite->energia < 1 && sprite->tyyppi->type != TYPE_PROJECTILE){
 				int sx = (int)sprite->x;
 				for (int stars=0; stars<3; stars++){
-					double star_x = sprite->x-8 + (sin_table[((stars*120+degree)*2)%359])/3;
-					double star_y = sprite->y-18 + (cos_table[((stars*120+degree)*2+sx)%359])/8;
+					double star_x = sprite->x - 8  + sin_table((stars*120+degree)*2)      / 3;
+					double star_y = sprite->y - 18 + cos_table((stars*120+degree)*2 + sx) / 8;
 					PDraw::image_cutclip(game_assets,star_x-Game->camera_x, star_y-Game->camera_y,1,1,11,11);
 				}
 			}
@@ -452,7 +452,7 @@ int Draw_InGame_UI(){
 			PDraw::image_cutcliptransparent(game_assets2, 
 				45, 379, 13, 15, 
 				my, my, 
-				sin_table[degree%360]*1.5+60, COLOR_RED);
+				sin_table(degree)*1.5+60, COLOR_RED);
 		else
 			PDraw::image_cutcliptransparent(game_assets2, 
 				45, 379, 13, 15, 

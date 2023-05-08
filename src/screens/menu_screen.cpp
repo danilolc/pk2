@@ -91,10 +91,10 @@ int Draw_BGSquare(int left, int top, int right, int bottom, u8 pvari){
 	top	= bg_square.top;
 	bottom = bg_square.bottom;
 
-	left += (int)(sin_table[(degree*2)%359]/2.0);
-	right += (int)(cos_table[(degree*2)%359]/2.0);
-	top	+= (int)(sin_table[((degree*2)+20)%359]/2.0);
-	bottom += (int)(cos_table[((degree*2)+40)%359]/2.0);
+	left   += (int)(sin_table( degree*2)     / 2.0);
+	right  += (int)(cos_table( degree*2)     / 2.0);
+	top	   += (int)(sin_table((degree*2)+20) / 2.0);
+	bottom += (int)(cos_table((degree*2)+40) / 2.0);
 
 	//PDraw::screen_fill(left,top,right,bottom,38);
 
