@@ -30,7 +30,7 @@ static int current_shader = SHADER_LINEAR;
 
 static float cover_width, cover_height;
 
-static bool screen_fill = false;
+static int screen_fill = SCREEN_FILL_NONE;
 static FRECT screen_dest = {0.f, 0.f, 1.f, 1.f};
 
 static const char* window_name;
@@ -54,7 +54,7 @@ void render_ui(FRECT src, FRECT dst, float alpha) {
 
 }
 
-void set_screen_fill(bool set) {
+void set_screen_fill(int set) {
 
 	screen_fill = set;
 	adjust_screen();
@@ -63,7 +63,7 @@ void set_screen_fill(bool set) {
 
 void adjust_screen() {
 
-	if (screen_fill) {
+	if (screen_fill == SCREEN_FILL_FULL) {
 
 		screen_dest.w = 1.f;
 		screen_dest.h = 1.f;
@@ -81,22 +81,27 @@ void adjust_screen() {
 	int buf_w, buf_h;
 	PDraw::get_buffer_size(&buf_w, &buf_h);
 
-	float screen_prop = (float)w / h;
-	float buff_prop   = (float)buf_w / buf_h;
+	float scale = std::min(w / buf_w, h / buf_h);
 
-	if (buff_prop > screen_prop) {
+	if (screen_fill == SCREEN_FILL_PIXELPERFECT) {
 
-		screen_dest.w = 1.f;
-		screen_dest.h = screen_prop / buff_prop;
-		screen_dest.x = 0.f;
-		screen_dest.y = (1.f - screen_dest.h) / 2;
+		scale = std::max(1, (int)scale);
+
+	}
+
+	screen_dest.w = scale * buf_w * (1.f / w);
+	screen_dest.h = scale * buf_h * (1.f / h);
+
+	screen_dest.x = (1.f - screen_dest.w) / 2;
+	screen_dest.y = (1.f - screen_dest.h) / 2;
 	
-	} else {
+	if (screen_fill == SCREEN_FILL_PIXELPERFECT) {
 
-		screen_dest.w = buff_prop / screen_prop;
-		screen_dest.h = 1.f;
-		screen_dest.x = (1.f - screen_dest.w) / 2;
-		screen_dest.y = 0.f;
+		// Readjusting x and y so that the texture doesn't start mid-pixel,
+		// resulting in uneven pixel grid
+
+		screen_dest.x = ((int)(screen_dest.x * w + 0.5)) / float(w);
+		screen_dest.y = ((int)(screen_dest.y * h + 0.5)) / float(h);
 
 	}
 

@@ -687,9 +687,11 @@ void Draw_Menu_Graphics() {
 			PDraw::font_write(fontti1, "crt", mx, my);
 			mx += 15 + 51;
 			PDraw::font_write(fontti1, "hqx", mx, my);
+			mx += 15 + 51;
+			PDraw::font_write(fontti1, "pixelperfect", mx, my);
 			my += 10;
 
-			option = Draw_Radio(100, my, 4, Settings.shader_type);
+			option = Draw_Radio(100, my, 5, Settings.shader_type);
 
 			if (option != -1) {
 				if (option != Settings.shader_type) {
