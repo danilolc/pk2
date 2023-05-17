@@ -55,13 +55,21 @@ enum {
 
 };
 
+enum {
+
+	SCREEN_FILL_FULL,
+	SCREEN_FILL_PIXELPERFECT,
+	SCREEN_FILL_NONE,
+
+};
+
 void load_ui_texture(PFile::Path file);
 void render_ui(FRECT src, FRECT dst, float alpha);
 
 int  set_filter(const char* filter);
 int  set_shader(int mode);
 
-void set_screen_fill(bool set);
+void set_screen_fill(int set);
 void adjust_screen();
 void set_fullscreen(bool set);
 void set_window_size(int w, int h);

@@ -267,7 +267,7 @@ int Set_Screen_Mode(int mode) {
 
 	int err = -1;
 
-	if (mode == SETTINGS_MODE_NEAREST) {
+	if (mode == SETTINGS_MODE_NEAREST || mode == SETTINGS_MODE_PIXELPERFECT) {
 		err = PRender::set_shader(PRender::SHADER_NEAREST);
 	} else if (mode == SETTINGS_MODE_LINEAR) {
 		err = PRender::set_shader(PRender::SHADER_LINEAR);
@@ -282,12 +282,16 @@ int Set_Screen_Mode(int mode) {
 
 	if (mode == SETTINGS_MODE_CRT) {
 		Set_Screen_Size(640, 480);
-		PRender::set_screen_fill(false);
+		PRender::set_screen_fill(PRender::SCREEN_FILL_NONE);
 	} else {
 		Set_Screen_Size(800, 480);
-		PRender::set_screen_fill(true);
+		if (mode == SETTINGS_MODE_PIXELPERFECT) {
+			PRender::set_screen_fill(PRender::SCREEN_FILL_PIXELPERFECT);
+		} else {
+			PRender::set_screen_fill(PRender::SCREEN_FILL_FULL);
+		}
 	}
 
 	return 0;
-	
+
 }
