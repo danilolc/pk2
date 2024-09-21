@@ -8,6 +8,8 @@
 # Compiler:
 CXX = g++
 
+PKG_CONFIG ?= pkg-config
+
 # Optimization:
 #CXXFLAGS += -g
 CXXFLAGS += -O3
@@ -23,16 +25,16 @@ CXXFLAGS += -Wall
 CXXFLAGS += --std=c++11 
 
 # SDL2:
-CXXFLAGS += $(shell pkg-config sdl2 --cflags)
-LDFLAGS += $(shell pkg-config sdl2 --libs) -lSDL2_mixer -lSDL2_image
+CXXFLAGS += $(shell $(PKG_CONFIG) sdl2 --cflags)
+LDFLAGS += $(shell $(PKG_CONFIG) sdl2 --libs) -lSDL2_mixer -lSDL2_image
 
 # LibZip (read episodes on zip files):
-CXXFLAGS += -DPK2_USE_ZIP $(shell pkg-config libzip --cflags)
-LDFLAGS += $(shell pkg-config libzip --libs)
+CXXFLAGS += -DPK2_USE_ZIP $(shell $(PKG_CONFIG) libzip --cflags)
+LDFLAGS += $(shell $(PKG_CONFIG) libzip --libs)
 
 # Lua:
-CXXFLAGS += $(shell pkg-config lua5.4 --cflags)
-LDFLAGS += $(shell pkg-config lua5.4 --libs)
+CXXFLAGS += $(shell $(PKG_CONFIG) lua5.4 --cflags)
+LDFLAGS += $(shell $(PKG_CONFIG) lua5.4 --libs)
 
 # Portable (data is stored with resorces):
 CXXFLAGS += -DPK2_PORTABLE
