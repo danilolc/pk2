@@ -29,19 +29,20 @@
 #include "exceptions.hpp"
 
 MapScreen::MapScreen(){
-	this->keys_move = true;
+	this->mouseKeysEnabled = true;
 }
 
 int MapScreen::PK_Draw_Map_Button(int x, int y, int type){
 
 	const int BORDER = 23; //Max 23
 	int ret = 0;
-	
-	if (PInput::mouse_x > x && PInput::mouse_x < x + BORDER
-		&& PInput::mouse_y > y && PInput::mouse_y < y + BORDER) {
 
-		if (Clicked()) {
-			key_delay = 30;
+	const Point2D mousePos = PInput::InputSystem::instance().getMousePos();
+	
+	if (mousePos.x > x && mousePos.x < x + BORDER
+		&& mousePos.y > y && mousePos.y < y + BORDER) {
+
+		if (this->enterPressed || this->mousePressed) {
 			return 2;
 		}
 
@@ -102,7 +103,7 @@ void MapScreen::Draw() {
 	}
 	
 	if (!going_to_game) {
-		if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),100,430))
+		if (drawMenuText(PK_txt.mainmenu_return,100,430))
 			next_screen = SCREEN_MENU;
 	} else {
 		WavetextSlow_Draw(tekstit->Get_Text(PK_txt.mainmenu_return).c_str(), fontti2, 100, 430);
@@ -339,21 +340,24 @@ void MapScreen::Init() {
 	Fade_in(FADE_SLOW);
 }
 
+
+void MapScreen::onKeyPressed(const PInput::Key& k){
+	if(!going_to_game){
+
+		if(k==PInput::Key::ESCAPE || k==PInput::Key::JOY_START){
+			next_screen = SCREEN_MENU;
+		}
+	}
+
+	Screen::onKeyPressed(k);
+}
+
+
 void MapScreen::Loop() {
 
 	this->Draw();
 
 	degree = 1 + degree % 360;
-
-	if (!going_to_game && key_delay == 0) {
-
-		if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_START)) {
-			next_screen = SCREEN_MENU;
-			key_delay = 20;
-		}
-		
-	}
-
 	if (next_screen == SCREEN_MENU) {
 
 		int w, h;
@@ -368,9 +372,7 @@ void MapScreen::Loop() {
 
 	} else {
 
-		//if(!Settings.touchscreen_mode || dev_mode){
-			Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
-		//}
+		this->drawMouseCursor();
 	}
 
 	if (going_to_game && !Is_Fading()) {

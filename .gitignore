@@ -1,22 +1,40 @@
 /bin/
 /build/
 /doc/
-
-/res/episodes/*
-!/res/episodes/rooster island 1/
-!/res/episodes/rooster island 2/
+/pkg/
 
 /res/data/
 /res/editor/settings.dat
 /res/episodes/*/scores.dat
+/res/last.session
 
 .vscode/
 .directory
 
+res/sprites/fpig2.spr
+res/sprites/icepig.spr
+res/sprites/ghostwtf.spr
+
 *.zip
 *.out
+
+*.pdb
+*.exe
+*.dll
+*.log
+*.lib
+*.exp
+
+launcher/*.o
+
+*.class
+*.DS_Store
+
+/bindings/java/*.h
 
 /mingw/i686/build/
 /mingw/i686/PK2/
 /mingw/x86_64/build/
 /mingw/x86_64/PK2/
+
+start.sh

@@ -18,7 +18,7 @@
 namespace PK2gui{
 
 
-bool Draw_BoolBox(int x, int y, bool value, bool active){
+bool Draw_BoolBox(int x, int y, bool value, bool active, bool mouseClicked){
 		PDraw::RECT img_src, img_dst = {x , y, 0, 0};
 
 	if(value) img_src = {504,124,31,31};
@@ -31,13 +31,12 @@ bool Draw_BoolBox(int x, int y, bool value, bool active){
 		return false;
 	}
 
-	if (PInput::mouse_x > x && PInput::mouse_x < x+30 && PInput::mouse_y > y && PInput::mouse_y < y+31){
-		if (Clicked()){
 
-			Play_MenuSFX(sfx_global.menu_sound, 100);
-			key_delay = 20;
-			return true;
-		}
+	const Point2D& mousePos = PInput::InputSystem::instance().getMousePos();
+
+	if (mouseClicked && mousePos.x > x && mousePos.x < x+30 && mousePos.y > y && mousePos.y < y+31){
+		Play_MenuSFX(sfx_global.menu_sound, 100);
+		return true;
 	}
 
 	return false;
@@ -69,13 +68,13 @@ bool TextInput::acceptInputChar(PString::UTF8_Char u8c)const{
 }
 
 void TextInput::startInput(){
-    PInput::StartKeyboard();
+	PInput::InputSystem::instance().startTextInput();
 	this->editing = true;
 }
 
 void TextInput::endInput(){
     this->editing = false;
-	PInput::EndKeyboard();
+	PInput::InputSystem::instance().stopTextInput();
 }
 
 
@@ -91,19 +90,71 @@ int TextInput::getTextSize()const{
 	return 0;
 }
 
-bool TextInput::draw(const std::string& title, int tx_start, int ty_start){
+bool TextInput::updateNavigation(const KeyNav::Nav& nav){
+	if(!this->isEditing()) return false;
+
+	switch (nav)
+	{
+	case KeyNav::ACCEPT:
+		this->endInput();
+		return true;
+
+	case KeyNav::DELETE:{
+		for (int c=this->selectedIndex + 1; c < (int)this->buffer.size(); c++){
+			this->buffer[c - 1] = this->buffer[c];
+		}
+		this->buffer[(int)this->buffer.size() - 1] = ' ';
+		return true;
+	}
+
+	case KeyNav::BACKSPACE:{
+
+		if(this->selectedIndex > 0){
+			for (int c= this->selectedIndex; c < (int)this->buffer.size(); c++){
+				this->buffer[c - 1] = this->buffer[c];
+			}
+			this->buffer[(int)this->buffer.size() - 1] = ' ';
+			--this->selectedIndex;
+		}
+		return true;
+	}
+
+	case KeyNav::LEFT:{
+		if(this->selectedIndex > 0){
+			--this->selectedIndex;
+		}
+		return true;
+	}
+	case KeyNav::RIGHT:{
+		++this->selectedIndex;
+		if(this->selectedIndex>this->getTextSize()){
+			this->selectedIndex = this->getTextSize();
+		}
+
+		return true;
+	}	
+	default:
+		break;
+	}
+
+	return false;
+}
+
+bool TextInput::draw(const std::string& title, int tx_start, int ty_start, bool mouseClicked){
 
 	int tx_end = tx_start + 15 *  (int)this->buffer.size();
 	int ty_end = ty_start + 18;
 
-	bool mouse_on_text = PInput::mouse_x >= tx_start && PInput::mouse_x <= tx_end && PInput::mouse_y >= ty_start && PInput::mouse_y <= ty_end;
+
+	const Point2D& mousePos = PInput::InputSystem::instance().getMousePos();
+
+	bool mouse_on_text = mousePos.x >= tx_start && mousePos.x <= tx_end && mousePos.y >= ty_start && mousePos.y <= ty_end;
 
 	int nameLength = this->getTextSize();
 
-	if (mouse_on_text && PInput::MouseLeft() && key_delay == 0) {
+	if (mouse_on_text && mouseClicked) {
 		this->startInput();
-		this->selectedIndex = (PInput::mouse_x - tx_start) / 15; //Set text cursor with the mouse
-		key_delay = 10;
+		this->selectedIndex = (mousePos.x - tx_start) / 15; //Set text cursor with the mouse
 		if(this->selectedIndex>nameLength){
 			this->selectedIndex = nameLength;
 		}
@@ -158,7 +209,7 @@ bool TextInput::draw(const std::string& title, int tx_start, int ty_start){
 
     if (this->editing) {
 
-		PString::UTF8_Char u8c = PInput::ReadKeyboardInput();
+		PString::UTF8_Char u8c = PInput::InputSystem::instance().getLastUTF8();
         if(this->acceptInputChar(u8c)){
 
 			/**
@@ -175,44 +226,7 @@ bool TextInput::draw(const std::string& title, int tx_start, int ty_start){
         }
 
 
-		int keyNav = PInput::ReadKeyboardNav();
-		if (PInput::Keydown(PInput::JOY_START) && key_delay == 0) {
-			this->endInput();
-            return true;
-		}
-
-		if (keyNav == PInput::DEL) {
-			for (int c=this->selectedIndex + 1; c < (int)this->buffer.size(); c++){
-                this->buffer[c - 1] = this->buffer[c];
-            }
-            this->buffer[(int)this->buffer.size() - 1] = ' ';
-		}
-
-		if (keyNav == PInput::BACK && this->selectedIndex > 0) {
-			for (int c= this->selectedIndex; c < (int)this->buffer.size(); c++){
-                this->buffer[c - 1] = this->buffer[c];
-            }
-			this->buffer[(int)this->buffer.size() - 1] = ' ';
-            --this->selectedIndex;
-		}
-
-		if (keyNav == PInput::RETURN) {
-            this->endInput();
-            return true;
-		}
-
-		if (keyNav == PInput::LEFT) {
-            --this->selectedIndex;
-			key_delay = 8;
-		}
-
-		if (keyNav == PInput::RIGHT) {
-			++this->selectedIndex;
-			if(this->selectedIndex>nameLength){
-				this->selectedIndex = nameLength;
-			}
-			key_delay = 8;
-		}
+		//
 	}
 
     return false;
@@ -248,13 +262,15 @@ std::string TextInput::getText()const{
 	return PString::lowercase(PString::rtrim(builder.str()));
 }
 
-bool LinksMenu::drawButton(int x, int y, const PDraw::RECT& rect, const std::string& label){
-	int mouse_x = (int)PInput::mouse_x;
-	int mouse_y = (int)PInput::mouse_y;
+bool LinksMenu::drawButton(int x, int y, const PDraw::RECT& rect, const std::string& label, bool mouseClicked){
 
-	bool res = false;
 
-	if(mouse_x > x && mouse_x < x + rect.w &&
+	const Point2D& mousePos = PInput::InputSystem::instance().getMousePos();
+	int mouse_x = (int)mousePos.x;
+	int mouse_y = (int)mousePos.y;
+
+
+	if(mouseClicked && mouse_x > x && mouse_x < x + rect.w &&
 	mouse_y > y && mouse_y < y + rect.h){
 
 		int label_x = x - PDraw::font_get_text_size(fontti1, label).first - 5;
@@ -264,56 +280,46 @@ bool LinksMenu::drawButton(int x, int y, const PDraw::RECT& rect, const std::str
 
 		x += rand()%3 - rand()%3;
 		y += rand()%3 - rand()%3;
-
-		if(Clicked()){
-			if(this->btnKeyDelay==0){
-				res = true;
-			}
-			this->btnKeyDelay = 10;
-		}		
+		return true;
 	}
 
 	PDraw::image_cutclip(global_gfx_texture, rect, PDraw::RECT(x, y, 0, 0));
-	return res;
+	return false;
 }
 
 
-void LinksMenu::draw(){
+void LinksMenu::draw(bool mouseClicked){
 	int x = 604;
 	int y = 443;
 
-	if(this->btnKeyDelay>0){
-		--this->btnKeyDelay;
-	}
-
-	if(drawButton(x, y, PDraw::RECT(597, 124, 30, 31), "Links")){
+	if(drawButton(x, y, PDraw::RECT(597, 124, 30, 31), "Links", mouseClicked)){
 		this->expanded = !this->expanded;
 	}
 
 	if(this->expanded){
 
 		y -= 47;
-		if(drawButton(x, y, PDraw::RECT(597, 157, 30, 31), "PK2 Fanpage")){
+		if(drawButton(x, y, PDraw::RECT(597, 157, 30, 31), "PK2 Fanpage", mouseClicked)){
 			OpenBrowser(URL_MAKYUNI);
 		}
 
 		y -= 47;
-		if(drawButton(x, y, PDraw::RECT(566, 157, 30, 31), "PisteGamez")){
+		if(drawButton(x, y, PDraw::RECT(566, 157, 30, 31), "PisteGamez", mouseClicked)){
 			OpenBrowser(URL_PISTEGAMEZ);
 		}
 
 		y -= 47;
-		if(drawButton(x, y, PDraw::RECT(535, 157, 30, 31), "Proboards")){
+		if(drawButton(x, y, PDraw::RECT(535, 157, 30, 31), "Proboards", mouseClicked)){
 			OpenBrowser(URL_PROBOARDS);
 		}
 
 		y -= 47;
-		if(drawButton(x, y, PDraw::RECT(504, 157, 30, 31), "GitHub")){
+		if(drawButton(x, y, PDraw::RECT(504, 157, 30, 31), "GitHub", mouseClicked)){
 			OpenBrowser(URL_GITHUB);
 		}
 
 		y -= 47;
-		if(drawButton(x, y, PDraw::RECT(473, 157, 30, 31), "Discord")){
+		if(drawButton(x, y, PDraw::RECT(473, 157, 30, 31), "Discord", mouseClicked)){
 			OpenBrowser(URL_DISCORD);
 		}
 	}

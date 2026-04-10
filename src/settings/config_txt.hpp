@@ -21,6 +21,8 @@ public:
     std::string player = "pekka";
 	int audio_buffer_size = 1024;
 
+    bool deadLevelFinish = false;
+
 #ifdef __ANDROID__
     bool panic_when_missing_assets = false;
     bool save_slots = false;

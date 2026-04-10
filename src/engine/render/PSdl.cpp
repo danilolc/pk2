@@ -6,9 +6,11 @@
 
 #include "engine/PLog.hpp"
 
-#include "engine/render/PSdl.hpp"
+#include "PSdl.hpp"
 
 #include <SDL.h>
+
+#include <stdexcept>
 
 void PSdl::load_ui_texture(void* surface) {
 
@@ -158,11 +160,10 @@ PSdl::PSdl(int width, int height, void* window) {
     if (!renderer) {
 
         PLog::Write(PLog::FATAL, "PSdl", "Couldn't create renderer!");
-
-    }
+		throw std::runtime_error("Cannot create SDL renderer!");
+	}
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
-
     SDL_RenderClear(renderer);
 
 }

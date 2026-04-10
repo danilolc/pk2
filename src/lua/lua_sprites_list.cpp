@@ -31,7 +31,6 @@ SpriteClass* AddSprite2(PrototypeClass* prototype, double x, double y){
     return Game->playerSprite->level_sector->sprites.addLuaSprite(prototype, x, y);
 }
 
-
 void ForEachCreature(sol::object o){
 
     if(o.is<std::function<void(SpriteClass* s)>>()){

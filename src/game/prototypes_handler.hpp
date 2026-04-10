@@ -29,6 +29,7 @@ public:
      * Load sprite prototype by name
      */
     PrototypeClass* loadPrototype(const std::string& filename_in);
+
     /**
      * @brief 
      * Save prototype to file

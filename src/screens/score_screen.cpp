@@ -239,14 +239,16 @@ int ScoreScreen::Draw_ScoreCount() {
 	my += 30;
 
 	x = 110;
-	for (int i = 0; i < MAX_GIFTS; i++) {
+	/*for (int i = 0; i < MAX_GIFTS; i++) {
 		
 		if (Gifts_Get(i) != nullptr)	{
 			Gifts_Draw(i, x, my);
 			x += 38;
 		}
 
-	}
+	}*/
+	Game->gifts.draw(x, my);
+
 	my += 10;
 
 	if (counting_phase == COUNT_ENDED && !test_level) {
@@ -285,14 +287,14 @@ int ScoreScreen::Draw_ScoreCount() {
 	}	
 
 	int _text_id = test_level?PK_txt.mainmenu_exit:PK_txt.score_screen_continue;
-	if (Draw_Menu_Text(tekstit->Get_Text(_text_id),15,430)) {
+	if (drawMenuText(_text_id,15,430)) {
 		going_to_map = true;
 		PSound::set_musicvolume(0);
 		Fade_out(FADE_SLOW);
 	}
 
 	if(!Settings.touchscreen_mode || dev_mode){
-		Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
+		this->drawMouseCursor();
 	}
 	
 	return 0;
@@ -348,9 +350,7 @@ void ScoreScreen::Init() {
 		temp_score += Game->score;
 		temp_score += Game->timeout / 12; //(Game->timeout / 60) * 5;
 		temp_score += Game->playerSprite->energy * 300;
-		for (int i = 0; i < MAX_GIFTS; i++)
-			if (Gifts_Get(i) != nullptr)
-				temp_score += Gifts_Get(i)->score + 500;
+		temp_score += Game->gifts.totalScore();
 
 		/*if (!Game->repeating)
 			Episode->player_score += temp_score;*/
@@ -445,12 +445,12 @@ void ScoreScreen::Loop() {
 
 			Play_MenuSFX(Episode->sfx.score_sound, 70);
 
-		} else if (Gifts_Count() > 0) {
+		} else if ( Game->gifts.get(0)!=nullptr ) {
 			
 			counting_phase = COUNT_GIFTS;
 			counting_delay = 30;
-			gifts_score += Gifts_Get(0)->score + 500;
-			Gifts_Remove(0); 
+			gifts_score += Game->gifts.get(0)->score + 500;
+			Game->gifts.remove(0); 
 			Play_MenuSFX(Episode->sfx.jump_sound, 100);
 
 		} else {
@@ -463,14 +463,13 @@ void ScoreScreen::Loop() {
 	if (counting_delay > 0)
 		counting_delay--;
 
-	if (Clicked() || going_to_map){
+	if ( this->enterPressed || going_to_map){
 
 		if(counting_phase == COUNT_ENDED && !going_to_map) {
 
 			going_to_map = true;
 			Fade_out(FADE_SLOW);
 			PSound::set_musicvolume(0);
-			key_delay = 20;
 
 		} else {
 
@@ -488,13 +487,7 @@ void ScoreScreen::Loop() {
 			energy_score += Game->playerSprite->energy * 300;
 			Game->playerSprite->energy = 0;
 
-			for (int i = 0; i < Gifts_Count(); i++)
-				gifts_score += Gifts_Get(i)->score + 500;
-			
-			Gifts_Clean();
-
-			key_delay = 20;
-
+			gifts_score = Game->gifts.totalScore();
 		}
 
 	}

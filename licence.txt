@@ -1,33 +1,86 @@
-
 This work is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License.
 https://creativecommons.org/licenses/by-nc/4.0/deed.en
-However, the distribution of compiled versions of this game for Android and iOS platforms is strictly
-prohibited. The original authors retain exclusive rights to distribute or authorize distribution on these platforms
 
-Copyright (c) 2003 Janne Kivilahti,
-Copyright (c) SaturninTheAlien, Danilo Lemos and Piste Gamez community,
+
+Platform-specific permissions and restrictions:
+
+1. Distribution on Android and iOS platforms is permitted, provided that:
+   - the application contains no advertisements,
+   - no in-app purchases, subscriptions, or paid features are used,
+   - no third-party advertisement or tracking SDKs are included,
+   - the game is distributed free of charge.
+
+
+All copyrights remain with their respective authors.
+
+Copyright (c) 2003 Janne Kivilahti
+Copyright (c) SaturninTheAlien, Danilo Lemos and the Piste Gamez community
+
 
 You are free to:
-Share — copy and redistribute the material in any medium or format (excluding Android and IOS binaries)
+Share — copy and redistribute the material in any medium or format
 Adapt — remix, transform, and build upon the material
+
 The licensor cannot revoke these freedoms as long as you follow the license terms.
 
-Under the following terms:
-Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made.
-You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-NonCommercial — You may not use the game for commercial purposes
-(excluding your own PK2 episodes, gameplay recordings, or live transmissions).
 
-If you intend to sell this game, generate revenue from it in any form (excluding your own episodes, gameplay recordings, or live transmissions),
-or distribute it on Android or iOS platforms, you must obtain prior permission from the original authors.
-For inquiries, please contact us via our Discord server.
+Under the following terms:
+
+Attribution — You must give appropriate credit, provide a link to the license,
+and indicate if changes were made. You may do so in any reasonable manner,
+but not in any way that suggests the licensor endorses you or your use.
+
+Proper attribution is satisfied by preserving the following existing elements,
+where they are present:
+- the original game credits displayed on the intro or title screen, and
+- the original in-game links to the official project repository and website.
+
+If these elements are not present due to technical or platform limitations
+(e.g. alternative engines or ports), attribution must be provided in a
+reasonable and visible manner appropriate for the platform.
+
+NonCommercial — You may not use the game for commercial purposes.
+
+For clarity, the following uses are explicitly permitted and are not considered commercial use:
+- creation and distribution of PK2 episodes and other in-game content,
+- gameplay recordings, videos, reviews, and live transmissions.
+
+
+Additional permissions:
+
+1. Non-commercial redistribution of the game through free and open-source
+   software package repositories (including Homebrew and Linux distribution package managers
+   such as APT, DNF, Pacman, or Nix) is explicitly permitted, provided that:
+   - the game is distributed free of charge,
+   - no advertisements, sponsorships, or other forms of monetization are involved,
+   - proper attribution is preserved.
+
+2. Notwithstanding the NonCommercial clause, Janne Kivilahti and SaturninTheAlien 
+   are explicitly and independently permitted to distribute compiled versions
+   of the game on the Steam platform.
+
+   This permission applies only to the aforementioned parties and does not
+   extend to other distributors.
+
+Dual licensing:
+
+The original authors may grant additional licenses or permissions
+on a case-by-case basis.
+
+If you intend to sell this game, generate revenue from it in any form
+(excluding your own episodes, gameplay recordings, or live transmissions
+which are explicitly permitted under this license),
+or distribute it in a manner that does not comply with the terms above,
+you must obtain prior permission from the original authors.
+
+For inquiries, please contact us via our Discord server:
 https://discord.gg/kqDJfYX
 
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.

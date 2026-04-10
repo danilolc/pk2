@@ -12,12 +12,14 @@
 
 #include "engine/PDraw.hpp"
 #include "engine/PLog.hpp"
-#include "engine/platform.hpp"
+#include "engine/types.hpp"
 #include "exceptions.hpp"
 
 #include <cstring>
 #include <algorithm>
 #include <sstream>
+
+std::size_t SpriteClass::ID_COUNTER=0;
 
 
 /* -------- SpriteClass  ------------------------------------------------------------------ */
@@ -28,6 +30,10 @@ SpriteClass::SpriteClass(PrototypeClass *prototype, int player_c,
  double y,
  LevelSector*sector,
  SpriteClass*parent){
+	this->id = ID_COUNTER;
+	++ID_COUNTER;
+
+
 	if (prototype) {
 
 		this->prototype         = prototype;
@@ -70,17 +76,22 @@ void SpriteClass::SetAnimation(int anim_i, bool reset){
 }
 int SpriteClass::Animoi(){
 
-	switch (prototype->first_ai()) {
-		case AI_ROOSTER:           Animation_Rooster();  break;
-		case AI_LITTLE_CHICKEN: Animation_Rooster();  break;
-		case AI_BONUS:          Animation_Bonus(); break;
-		case AI_EGG:            Animation_Egg();   break;
-		case AI_EGG2:           Animation_Egg();   break;
-		case AI_PROJECTILE:          Animation_Projectile(); break;
-		case AI_JUMPER:         Animation_Rooster();  break;
-		case AI_BASIC:          Animation_Basic(); break;
-		case AI_TELEPORT:       Animation_Basic(); break;
-		default:                break;
+	if(this->prototype->type==TYPE_CHECKPOINT){
+		Animation_Checkpoint();
+	}
+	else{
+		switch (prototype->first_ai()) {
+			case AI_ROOSTER:           Animation_Rooster();  break;
+			case AI_LITTLE_CHICKEN: Animation_Rooster();  break;
+			case AI_BONUS:          Animation_Bonus(); break;
+			case AI_EGG:            Animation_Egg();   break;
+			case AI_EGG2:           Animation_Egg();   break;
+			case AI_PROJECTILE:          Animation_Projectile(); break;
+			case AI_JUMPER:         Animation_Rooster();  break;
+			case AI_BASIC:          Animation_Basic(); break;
+			case AI_TELEPORT:       Animation_Basic(); break;
+			default: break;
+		}
 	}
 
 	const SpriteAnimation& anim = prototype->animations[animation_index];
@@ -300,6 +311,81 @@ void SpriteClass::Animation_Basic(){
 		SetAnimation(uusi_animaatio,alusta);
 
 }
+
+void SpriteClass::Animation_Checkpoint(){
+	int uusi_animaatio = -1;
+	bool alusta = false;
+
+	if (energy < 1 && !can_move_down)
+	{
+		uusi_animaatio = ANIMATION_DEATH;
+		alusta = true;
+	}
+	else
+	{
+
+		if (a > -0.2 && a < 0.2 && b == 0 && jump_timer <= 0)
+		{
+			uusi_animaatio = ANIMATION_IDLE;
+			alusta = true;
+		}
+
+		if ((a < -0.2 || a > 0.2) && jump_timer <= 0)
+		{
+			uusi_animaatio = ANIMATION_WALKING;
+			alusta = false;
+		}
+
+		if (b < 0)//-0.3
+		{
+			uusi_animaatio = ANIMATION_JUMP_UP;
+			alusta = false;
+		}
+
+		if ((jump_timer > prototype->max_jump || b > 1.5) && can_move_down)
+		{
+			uusi_animaatio = ANIMATION_JUMP_DOWN;
+			alusta = false;
+		}
+
+		if (crouched)
+		{
+			uusi_animaatio = ANIMATION_SQUAT;
+			alusta = true;
+		}
+
+		
+
+		if (attack2_timer > 0)
+		{
+			uusi_animaatio = ANIMATION_ATTACK2;
+			alusta = true;
+		}
+
+		else if (attack1_timer > 0)
+		{
+			uusi_animaatio = ANIMATION_ATTACK1;
+			alusta = true;
+		}
+
+		else if (damage_timer > 0)
+		{
+			uusi_animaatio = ANIMATION_DAMAGE;
+			alusta = false;
+		}
+
+		else if(this->target_sprite!=nullptr && this->prototype->max_speed==0){
+
+			uusi_animaatio = ANIMATION_WALKING;
+			alusta = true;
+		}
+
+	}
+
+	if (uusi_animaatio != -1)
+		SetAnimation(uusi_animaatio,alusta);
+}
+
 void SpriteClass::Animation_Rooster(){
 
 	int uusi_animaatio = -1;
@@ -403,20 +489,10 @@ bool SpriteClass::transformTo(PrototypeClass * transformation){
 
 		this->current_command = 0;
 
-		this->swimming = false;
-		this->max_speed_available = false;
-		this->can_collect_bonuses = this->isPlayer();
+		this->updatePhysicsFlags();
 
 		this->seen_player_x = -1;
 		this->seen_player_y = -1;
-		
-		/**
-		 * @brief 
-		 * Set the default player type
-		 */
-		if(this->isPlayer()){
-			this->player_c = 1;
-		}
 
 		for(const SpriteAI::AI_Class& ai: this->prototype->AI_f){
 			if(ai.trigger == AI_TRIGGER_TRANSFORMATION){
@@ -441,6 +517,35 @@ bool SpriteClass::transformTo(PrototypeClass * transformation){
 	}
 
 	return false;
+}
+
+
+void SpriteClass::updatePhysicsFlags(){
+	this->swimming = false;
+	this->max_speed_available = false;
+	this->can_collect_bonuses = this->isPlayer();
+
+
+	if(this->prototype->can_push_bonuses.has_value()){
+		this->can_push_bonuses = this->prototype->can_push_bonuses.value();
+	}
+	else if(this->prototype->type==TYPE_BONUS){
+		this->can_push_bonuses = false;
+	}
+	else if(this->prototype->ambient){
+		this->can_push_bonuses = this->isPlayer() || this->prototype->weight > 0;
+	}
+	else{
+		this->can_push_bonuses = true;
+	}
+
+	/**
+	 * @brief 
+	 * Set the default player type
+	 */
+	if(this->isPlayer()){
+		this->player_c = 1;
+	}
 }
 
 void SpriteClass::die(){

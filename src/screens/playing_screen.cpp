@@ -35,13 +35,45 @@ PlayingScreen::~PlayingScreen(){
 	
 }
 
+void PlayingScreen::onKeyPressed(const PInput::Key& key){
+	Game->onKeyPressed(key);
+
+
+	const InputSettings& input = Settings.getInput();
+
+	//TODO - touchscreen
+
+	if (key == PInput::Key::ESCAPE || key == PInput::Key::JOY_START) {
+		if(test_level)
+			fadeQuit();
+		else if(!Game->game_over && !Game->level_clear) {
+			this->goingToTheMenu = true;
+		}
+	}
+	else if (key == PInput::Key(SDL_SCANCODE_I)) {
+		if(dev_mode){
+			draw_debug_info = !draw_debug_info;
+		}
+		else{
+			show_fps = !show_fps;
+		}					
+	}
+	else if(key == input.toggleHUD){
+		Settings.draw_gui = !Settings.draw_gui;
+	}
+
+	else if(key == input.screenshotKey){
+		this->takingScreenshot = true;
+	}
+}
+
 void PlayingScreen::Draw_InGame_DebugInfo() {
 	int vali, fy = 70;
 
 	PDraw::set_offset(640, 480);
 
 	vali = PDraw::font_write_line(fontti1,"sprites: ",10,fy);
-	PDraw::font_write_line(fontti1,std::to_string(Game->spritePrototypes.size()),10+vali,fy);
+	PDraw::font_write_line(fontti1,std::to_string(Game->playerSprite->level_sector->sprites.size()),10+vali,fy);
 	fy += 10;
 
 	vali = PDraw::font_write_line(fontti1,"active sprites: ",10,fy);
@@ -77,21 +109,20 @@ void PlayingScreen::Draw_InGame_DebugInfo() {
 		PDraw::font_write_line(fontti1,entry.levelName,0,240+i*10);
 		++i;
 	}
-
-
-	SpriteClass* Player_Sprite = Game->playerSprite;
 	
-	PDraw::font_write_line(fontti1, std::to_string(Player_Sprite->x), 10, 410);
-	PDraw::font_write_line(fontti1, std::to_string(Player_Sprite->y), 10, 420);
-	PDraw::font_write_line(fontti1, std::to_string(Player_Sprite->b), 10, 430);
-	PDraw::font_write_line(fontti1, std::to_string(Player_Sprite->a), 10, 440);
+	PDraw::font_write_line(fontti1, std::to_string(Game->playerSprite->x), 10, 410);
+	PDraw::font_write_line(fontti1, std::to_string(Game->playerSprite->y), 10, 420);
+	PDraw::font_write_line(fontti1, std::to_string(Game->playerSprite->b), 10, 430);
+	PDraw::font_write_line(fontti1, std::to_string(Game->playerSprite->a), 10, 440);
+	PDraw::font_write_line(fontti1, Game->playerSprite->level_sector->name, 10, 450);
+
 	PDraw::font_write_line(fontti1, Game->level_file, 10, 460);
-	PDraw::font_write_line(fontti1, std::to_string(Player_Sprite->jump_timer), 270, 460);
+	PDraw::font_write_line(fontti1, std::to_string(Game->playerSprite->jump_timer), 270, 460);
 
 	PDraw::font_write_line(fontti1, PFilesystem::GetAssetsPath(), 10, 470);
 
-	PDraw::font_write_line(fontti1, std::to_string(Player_Sprite->super_mode_timer), 610, 470);
-	PDraw::font_write_line(fontti1, std::to_string(Player_Sprite->invisible_timer), 610, 460);
+	PDraw::font_write_line(fontti1, std::to_string(Game->playerSprite->super_mode_timer), 610, 470);
+	PDraw::font_write_line(fontti1, std::to_string(Game->playerSprite->invisible_timer), 610, 460);
 	PDraw::font_write_line(fontti1, std::to_string(Game->button1), 610, 450);
 	PDraw::font_write_line(fontti1, std::to_string(Game->button2), 610, 440);
 	PDraw::font_write_line(fontti1, std::to_string(Game->button3), 610, 430);
@@ -109,7 +140,7 @@ void PlayingScreen::Draw_InGame_DevKeys() {
 
 	const char help[] = "h: help";
 
-	if (!PInput::Keydown(PInput::H)) {
+	if (!PInput::Key(SDL_SCANCODE_H).isPressed()) {
 		PDraw::font_write_line(fontti1, help, screen_width - strlen(help) * char_w, screen_height - 10);
 		return;
 	}
@@ -148,22 +179,6 @@ void PlayingScreen::Draw_InGame_DevKeys() {
 		PDraw::font_write_line(fontti1, txts[i], posx, posy + i*10);
 }
 
-
-
-
-void PlayingScreen::Draw_InGame_Gifts() {
-
-	int x,y;
-
-	y = screen_height-35;//36
-	x = Game->item_pannel_x + 35;//40
-
-	for (int i=0;i<MAX_GIFTS;i++)
-		if (Gifts_Get(i) != nullptr){
-			Gifts_Draw(i, x, y);
-			x += 38;
-		}
-}
 
 void PlayingScreen::Draw_InGame_Lower_Menu() {
 	int x, y;
@@ -215,19 +230,20 @@ void PlayingScreen::Draw_InGame_Lower_Menu() {
 	/////////////////
 	// Draw Gifts
 	/////////////////
-	if (Gifts_Count() > 0 && Game->item_pannel_x < 10)
-	Game->item_pannel_x++;
 
-	if (Gifts_Count() == 0 && Game->item_pannel_x > -215)
-		Game->item_pannel_x--;
+	if (Game->gifts.count() > 0 && Game->item_panel_x < 10)
+	Game->item_panel_x++;
 
-	if (Game->item_pannel_x > -215)
-		PDraw::image_cutclip(Game->gfxTexture,Game->item_pannel_x,screen_height-60,
+	if (Game->gifts.count() == 0 && Game->item_panel_x > -215)
+		Game->item_panel_x--;
+
+	if (Game->item_panel_x > -215)
+		PDraw::image_cutclip(Game->gfxTexture,Game->item_panel_x,screen_height-60,
 								1,216,211,266);
-	if (Game->item_pannel_x > 5)
+	if (Game->item_panel_x > 5)
 		PDraw::font_write_line(fontti1,tekstit->Get_Text(PK_txt.game_items),15,screen_height-65);
 
-	Draw_InGame_Gifts();
+	Game->gifts.draw(Game->item_panel_x + 35, screen_height-35);
 }
 
 void PlayingScreen::Draw_InGame_UI(){
@@ -239,24 +255,24 @@ void PlayingScreen::Draw_InGame_UI(){
 	/////////////////
 	vali = PDraw::font_write_line(fontti1,tekstit->Get_Text(PK_txt.game_energy),60,my);
 
-	SpriteClass* Player_Sprite = Game->playerSprite;
-	ShadowedText_Draw(std::to_string(Player_Sprite->energy), 60 + vali, my);
+	//SpriteClass* Game->playerSprite = Game->playerSprite;
+	ShadowedText_Draw(std::to_string(Game->playerSprite->energy), 60 + vali, my);
 
 	/////////////////
 	// Draw Invisible
 	/////////////////
-	if(Player_Sprite->super_mode_timer > 0){
+	if(Game->playerSprite->super_mode_timer > 0){
 		vali = PDraw::font_write_line(fontti1, tekstit->Get_Text(PK_txt.game_supermode),60,my+27);
-		//sprintf(luku, "%i", Player_Sprite->invisible_timer/60);
-		std::string super_mode_timer_s = std::to_string(Player_Sprite->super_mode_timer/60);
+		//sprintf(luku, "%i", Game->playerSprite->invisible_timer/60);
+		std::string super_mode_timer_s = std::to_string(Game->playerSprite->super_mode_timer/60);
 		PDraw::font_write_line(fontti2,super_mode_timer_s,60+vali+1,my+27+1);
 		PDraw::font_write_line(fontti2,super_mode_timer_s,60+vali,my+27);
 	}
 
-	else if(Player_Sprite->invisible_timer > 0){
+	else if(Game->playerSprite->invisible_timer > 0){
 		vali = PDraw::font_write_line(fontti1,tekstit->Get_Text(PK_txt.game_invisible),60,my+27);
-		//sprintf(luku, "%i", Player_Sprite->invisible_timer/60);
-		std::string invisible_timer_s = std::to_string(Player_Sprite->invisible_timer/60);
+		//sprintf(luku, "%i", Game->playerSprite->invisible_timer/60);
+		std::string invisible_timer_s = std::to_string(Game->playerSprite->invisible_timer/60);
 		PDraw::font_write_line(fontti2,invisible_timer_s,60+vali+1,my+27+1);
 		PDraw::font_write_line(fontti2,invisible_timer_s,60+vali,my+27);
 	}
@@ -287,14 +303,14 @@ void PlayingScreen::Draw_InGame_UI(){
 	/////////////////
 	// Draw Ammunition
 	/////////////////
-	if (Player_Sprite->ammo2 != nullptr){
+	if (Game->playerSprite->ammo2 != nullptr){
 		PDraw::font_write_line(fontti1,tekstit->Get_Text(PK_txt.game_attack1), screen_width-170,my);
-		Player_Sprite->ammo2->draw(screen_width-170,my+10,0);
+		Game->playerSprite->ammo2->draw(screen_width-170,my+10,0);
 	}
 
-	if (Player_Sprite->ammo1 != nullptr){
+	if (Game->playerSprite->ammo1 != nullptr){
 		PDraw::font_write_line(fontti1,tekstit->Get_Text(PK_txt.game_attack2), screen_width-90,my+15);
-		Player_Sprite->ammo1->draw(screen_width-90,my+25,0);
+		Game->playerSprite->ammo1->draw(screen_width-90,my+25,0);
 	}
 
 	/////////////////
@@ -324,15 +340,11 @@ void PlayingScreen::drawDevStuff(){
 			PDraw::font_write_line(fontti1, std::to_string(fps), 570 + txt_size, 48);
 		
 		}
-		if (speedrun_mode) {
-			PDraw::font_write_line(fontti1, std::to_string(Game->frame_count), 570, 38);
-		}
 	}
 }
 
 void PlayingScreen::Draw() {
-	SpriteClass* Player_Sprite = Game->playerSprite;
-	LevelSector* sector = Player_Sprite->level_sector;
+	LevelSector* sector = Game->playerSprite->level_sector;
 
 
 	debug_drawn_sprites = 0;
@@ -357,11 +369,11 @@ void PlayingScreen::Draw() {
 		Draw_InGame_Lower_Menu();
 	}
 	
-	else if (Gifts_Count() > 0){
-		Game->item_pannel_x = 10;
+	else if (Game->gifts.count() > 0){
+		Game->item_panel_x = 10;
 	}
 	else{
-		Game->item_pannel_x = -215;
+		Game->item_panel_x = -215;
 	}
 
 	Fadetext_Draw();
@@ -383,7 +395,7 @@ void PlayingScreen::Draw() {
 
 	} else if (Game->game_over) {
 
-		if (Player_Sprite->energy < 1) {
+		if (Game->playerSprite->energy < 1) {
 			const std::string& txt = tekstit->Get_Text(PK_txt.game_ko);
 			std::pair<int, int> p = PDraw::font_get_text_size(fontti2, txt);
 
@@ -411,9 +423,9 @@ void PlayingScreen::Draw() {
 	 * @brief 
 	 * For debugging touchscreen controls
 	 */
-	/*if(dev_mode && Settings.touchscreen_mode){
-		Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
-	}*/
+	if(dev_mode && Settings.touchscreen_mode){
+		this->drawMouseCursor();
+	}
 }
 
 void PlayingScreen::Init(){
@@ -447,39 +459,11 @@ void PlayingScreen::Loop(){
 
 		this->Draw();
 
-		if(key_delay==0 && !Game->game_over&&!Game->level_clear){
-			if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_START) ||
-			TouchScreenControls.menu || TouchScreenControls.touch) {
-				if(test_level)
-					Fade_Quit();
-				else {
-					next_screen = SCREEN_MENU;
-					degree_temp = degree;
-				}
-				key_delay = 20;
-			}
-
-			if (PInput::Keydown(PInput::I)) {
-
-				if(dev_mode){
-					draw_debug_info = !draw_debug_info;
-				}
-				else{
-					show_fps = !show_fps;
-				}					
-				key_delay = 20;
-			}
-
-			if(PInput::Keydown(PInput::F1)){
-				Settings.draw_gui = !Settings.draw_gui;
-				key_delay = 20;
-			}
-			else if(PInput::Keydown(PInput::F2)){
-				std::string name = PFilesystem::GetScreenshotName();
-				PLog::Write(PLog::INFO, "PK2", "Taken %s", name.c_str());
-				PDraw::take_screenshot(name);
-				key_delay = 20;
-			}
+		if(this->takingScreenshot){
+			this->takingScreenshot = false;
+			std::string name = PFilesystem::GetScreenshotName();
+			PLog::Write(PLog::INFO, "PK2", "Taken %s", name.c_str());
+			PDraw::take_screenshot(name);
 		}
 	} else {
 
@@ -501,12 +485,10 @@ void PlayingScreen::Loop(){
 			Game = nullptr;
 			next_screen = SCREEN_MAP;
 		}
-
 	}
-
-	// TODO - FIX
-	if (next_screen == SCREEN_MENU) {
-
+	
+	if (this->goingToTheMenu || TouchScreenControls.menu) {
+		this->goingToTheMenu = false;
 		int w, h;
 		PDraw::image_getsize(bg_screen, w, h);
 		if (w != screen_width) {
@@ -515,5 +497,8 @@ void PlayingScreen::Loop(){
 		}
 		PDraw::image_snapshot(bg_screen);
 
+
+		next_screen = SCREEN_MENU;
+		degree_temp = degree;
 	}
 }

@@ -27,6 +27,9 @@
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
 
+
+#include "lua/lua_game_events.hpp"
+
 #include <cstring>
 
 static double sprite_left;
@@ -132,13 +135,18 @@ void Check_MapBlock(SpriteClass* sprite, PK2BLOCK block) {
 		/**********************************************************************/
 		/* Examine if block is the exit                                       */
 		/**********************************************************************/
-		if (block.id == BLOCK_EXIT && sprite->energy>0) {
+		if (block.id == BLOCK_EXIT && (sprite->energy>0 || config_txt.deadLevelFinish)) {
 
 			switch (Game->level.game_mode)
 			{
 			case GAME_MODE_STANDARD:
 				if(sprite == Game->playerSprite){
 					Game->finish();
+				}
+				break;
+			case GAME_MODE_LUA_EXIT:
+				if(sprite == Game->playerSprite){
+					PK2lua::TriggerEventListeners(PK2lua::LUA_EVENT_EXIT_TOUCHED);
 				}
 				break;
 			case GAME_MODE_CHICK:
@@ -279,21 +287,21 @@ void Check_MapBlock(SpriteClass* sprite, PK2BLOCK block) {
 							Game->button1 = Game->level.button1_time;
 							Game->button_vibration = 64;
 							Play_GameSFX(Episode->sfx.switch_sound, 100, (int)sprite->x, (int)sprite->y, SOUND_SAMPLERATE, false);
-							PInput::Vibrate(1000);
+							Settings.vibrateController(Game->button_vibration);
 						}
 
 						if (block.id == BLOCK_BUTTON2 && Game->button2 == 0) {
 							Game->button2 = Game->level.button2_time;
 							Game->button_vibration = 64;
 							Play_GameSFX(Episode->sfx.switch_sound, 100, (int)sprite->x, (int)sprite->y, SOUND_SAMPLERATE, false);
-							PInput::Vibrate(1000);
+							Settings.vibrateController(Game->button_vibration);
 						}
 
 						if (block.id == BLOCK_BUTTON3 && Game->button3 == 0) {
 							Game->button3 = Game->level.button3_time;
 							Game->button_vibration = 64;
 							Play_GameSFX(Episode->sfx.switch_sound, 100, (int)sprite->x, (int)sprite->y, SOUND_SAMPLERATE, false);
-							PInput::Vibrate(1000);
+							Settings.vibrateController(Game->button_vibration);
 						}
 					}
 
@@ -305,7 +313,7 @@ void Check_MapBlock(SpriteClass* sprite, PK2BLOCK block) {
 					sprite->can_move_up = false;
 
 					if (sprite_upper < block.bottom) {
-						if (block.id == BLOCK_LIFT_VERT && sprite->crouched && sprite->damage_taken_type>DAMAGE_SELF_DESTRUCTION) {
+						if (block.id == BLOCK_LIFT_VERT && sprite->crouched && !sprite->can_move_down && sprite->damage_taken_type>DAMAGE_SELF_DESTRUCTION) {
 							sprite->damage_taken = 2;
 							sprite->damage_taken_type = DAMAGE_IMPACT;
 						}
@@ -443,8 +451,18 @@ void SpriteOnDeath(SpriteClass* sprite){
 				sprite2->damage_taken_type = DAMAGE_SELF_DESTRUCTION;
 			}
 		}
+
+		if(sprite2->target_sprite==sprite){
+
+			if(sprite2->prototype->type!=TYPE_CHECKPOINT || !sprite->isPlayer()){
+				sprite2->target_sprite=nullptr;
+			}
+		}
 	}
 
+	/**
+	 * killed enemies counter
+	 * */
 	if(sprite->original
 	&& sprite->prototype->type == TYPE_GAME_CHARACTER
 	&& !sprite->prototype->indestructible //to ignore indestructible
@@ -455,6 +473,11 @@ void SpriteOnDeath(SpriteClass* sprite){
 		if(Game->enemies<=0){
 			Game->enemies=0;
 		}
+	}
+
+	if(Game->lastCheckpoint==sprite){
+		Game->showInfo("Your checkpoint was destroyed!");
+		Game->lastCheckpoint = nullptr;
 	}
 }
 
@@ -482,13 +505,8 @@ void PotionTransformation(SpriteClass* sprite, PrototypeClass* intended_prototyp
 			sprite->y -= sprite->prototype->height/2;
 		}
 
-		sprite->swimming = false;
-		sprite->max_speed_available = false;
-		sprite->can_collect_bonuses = sprite->isPlayer();
 
-		if(sprite->isPlayer()){
-			sprite->player_c=1;
-		}
+		sprite->updatePhysicsFlags();
 
 		if(sprite==Game->playerSprite){
 			int infotext = Episode->infos.Search_Id("pekka transformed");
@@ -622,7 +640,7 @@ void BonusSpriteCollected(SpriteClass* sprite, SpriteClass* collector){
 
 
 		if (sprite->prototype->bonus != nullptr)
-			if (Gifts_Add(sprite->prototype->bonus))
+			if (Game->gifts.add(sprite->prototype->bonus))
 				Game->showInfo(tekstit->Get_Text(PK_txt.game_newitem));
 
 		if (sprite->prototype->transformation != nullptr){
@@ -716,44 +734,44 @@ void UpdateSprite(SpriteClass* sprite){
 
 	if (sprite->isPlayer() && sprite->energy > 0){
 
+		const InputSettings& input = Settings.getInput();
+
 		/* ATTACK 1 */
-		if ((PInput::Keydown(Input->attack1) || TouchScreenControls.egg) && sprite->charging_timer == 0 && sprite->ammo1 != nullptr)
+		if ((input.attack1.isPressed() || TouchScreenControls.egg) && sprite->charging_timer == 0 && sprite->ammo1 != nullptr)
 			sprite->attack1_timer = sprite->prototype->attack1_time;
 		/* ATTACK 2 */
-		else if ((PInput::Keydown(Input->attack2) || TouchScreenControls.doodle) && sprite->charging_timer == 0 && sprite->ammo2 != nullptr)
+		else if ((input.attack2.isPressed() || TouchScreenControls.doodle) && sprite->charging_timer == 0 && sprite->ammo2 != nullptr)
 				sprite->attack2_timer = sprite->prototype->attack2_time;
 		
 		if(sprite->player_c==1){
 
 			/* CROUCH */
 			sprite->crouched = false;
-			bool axis_couch = (Input == &Settings.joystick) && (PInput::GetAxis(1) > 0.5);
-			if ((PInput::Keydown(Input->down) || TouchScreenControls.down || axis_couch) && !sprite->can_move_down) {
+
+
+			bool axis_couch = Settings.getJoystickAxis(1) > 0.5;
+			if ((input.down.isPressed() || TouchScreenControls.down || axis_couch) && !sprite->can_move_down) {
 				sprite->crouched = true;
 				sprite_upper += sprite_height/1.5;
 			}
 
 			/* SLOW WALK */
-			if (PInput::Keydown(Input->walk_slow)
-			|| TouchScreenControls.pad_button == 1 || TouchScreenControls.pad_button == 3)
+			if ( input.walk_slow.isPressed() || TouchScreenControls.pad_button == 1 || TouchScreenControls.pad_button == 3)
 				add_speed = false;
 
 			/* NAVIGATING*/
 
-			int navigation = 0;
-
-			if (Input == &Settings.joystick)
-				navigation = PInput::GetAxis(0) * 100;
+			int navigation = Settings.getJoystickAxis(0) * 100;;
 
 			if (TouchScreenControls.pad_button == 0 || TouchScreenControls.pad_button == 1)
 				navigation = -100;
 			else if (TouchScreenControls.pad_button == 3 || TouchScreenControls.pad_button == 4)
 				navigation = 100;
 
-			if (PInput::Keydown(Input->right))
+			if (input.right.isPressed())
 				navigation = 100;
 			
-			if (PInput::Keydown(Input->left))
+			if (input.left.isPressed())
 				navigation = -100;
 
 			double a_lisays = 0.04;//0.08;
@@ -787,7 +805,7 @@ void UpdateSprite(SpriteClass* sprite){
 		if(sprite->player_c < 3){
 			/* JUMPING */
 			if (sprite->prototype->weight > 0 && !sprite->swimming) {
-				if (PInput::Keydown(Input->jump) || TouchScreenControls.up) {
+				if (input.up.isPressed() || TouchScreenControls.up) {
 					if (!sprite->crouched) {
 						if (sprite->jump_timer == 0)
 							Play_GameSFX(Episode->sfx.jump_sound, 100, (int)sprite->x, (int)sprite->y,
@@ -802,8 +820,8 @@ void UpdateSprite(SpriteClass* sprite){
 				}
 
 				/* dripping quietly down */
-				bool axis_up = (Input == &Settings.joystick) && (PInput::GetAxis(1) < -0.5);
-				if ((PInput::Keydown(Input->jump) || TouchScreenControls.up || axis_up) && sprite->jump_timer >= 150/*90+20*/ &&
+				bool axis_up = Settings.getJoystickAxis(1) < -0.5;
+				if ((input.up.isPressed() || TouchScreenControls.up || axis_up) && sprite->jump_timer >= 150/*90+20*/ &&
 					sprite->prototype->can_glide)
 					gliding = true;
 			}
@@ -814,10 +832,10 @@ void UpdateSprite(SpriteClass* sprite){
 				if (sprite->max_speed_available)
 					speed *= max_speed;
 
-				if (PInput::Keydown(Input->jump) || TouchScreenControls.up)
+				if (input.up.isPressed() || TouchScreenControls.up || Settings.getJoystickAxis(1) < -0.5)
 					sprite->b -= speed;
 
-				if (PInput::Keydown(Input->down) || TouchScreenControls.down)
+				if (input.down.isPressed() || TouchScreenControls.down || Settings.getJoystickAxis(1) > 0.5)
 					sprite->b += speed;
 
 				sprite->jump_timer = 0;
@@ -970,7 +988,7 @@ void UpdateSprite(SpriteClass* sprite){
 			for (int x = 0; x < palikat_x_lkm; x++) {
 				int p = x + y*palikat_x_lkm;
 				if ( p < 300 )
-					if (!(sprite == Player_Sprite && dev_mode && PInput::Keydown(PInput::Y))){
+					if (!(sprite == Player_Sprite && dev_mode && Settings.getInput().dev_ghostMode.isPressed())){
 						PK2BLOCK block = sector->getBlock(map_vasen+x-1,map_yla+y-1, Game->level.block_types);
 						//Block_Get(map_vasen+x-1,map_yla+y-1);
 						Check_MapBlock(sprite, block);
@@ -1065,13 +1083,19 @@ void UpdateSprite(SpriteClass* sprite){
 							spritepalikka.left_side = BLOCK_BACKGROUND;
 					}
 
-					if (sprite2->a > 0)
+					if(Episode->legacy_obstacle_phasing){
+						if(sprite2->a > 0){
+							spritepalikka.id = BLOCK_LIFT_HORI;
+						}
+					}
+					else if (sprite2->a != 0){
 						spritepalikka.id = BLOCK_LIFT_HORI;
+					}						
 
 					if (sprite2->b > 0)
 						spritepalikka.id = BLOCK_LIFT_VERT;
 
-					if (!(sprite == Player_Sprite && dev_mode && PInput::Keydown(PInput::Y)))
+					if (!(sprite == Player_Sprite && dev_mode && Settings.getInput().dev_ghostMode.isPressed()))
 						Check_SpriteBlock(sprite, spritepalikka); //Colision sprite and sprite block
 				}
 			}
@@ -1120,8 +1144,9 @@ void UpdateSprite(SpriteClass* sprite){
 					sprite->energy = 0;
 					sprite->removed = true;
 
-					if (sprite->weight_button >= 1)
-						Game->vibration = 50;				
+					if (sprite->weight_button >= 1){
+						Game->vibrate(50);
+					}			
 				}
 
 				// If two sprites from different teams touch each other
@@ -1275,8 +1300,7 @@ void UpdateSprite(SpriteClass* sprite){
 					}
 
 					if (sprite->weight > 1) {
-						Game->vibration = 34 + int(sprite->weight * 20);
-						PInput::Vibrate(500);
+						Game->vibrate(34 + int(sprite->weight * 20));
 					}
 				}
 
@@ -1312,18 +1336,12 @@ void UpdateSprite(SpriteClass* sprite){
 	}
 
 	if (sprite->player_c == 1 || sprite->energy < 1) {
-		double kitka = 1.04;
-
-		if (sector->weather == WEATHER_RAIN || sector->weather == WEATHER_RAIN_LEAVES)
-			kitka = 1.03; // Slippery ground in the rain
-
-		if (sector->weather == WEATHER_SNOW)
-			kitka = 1.01; // And even more on snow
-
-		if (!sprite->can_move_down)
-			sprite->a /= kitka;
-		else
+		if (!sprite->can_move_down){
+			sprite->a /= sector->slipperiness_factor;
+		}			
+		else{
 			sprite->a /= 1.03;//1.02//1.05
+		}			
 
 		sprite->b /= 1.25;
 	}
@@ -1360,8 +1378,9 @@ void UpdateSprite(SpriteClass* sprite){
 		sprite->damage_taken_type = DAMAGE_SELF_DESTRUCTION;
 		sprite->removed = true;
 
-		if (sprite->weight_button >= 1)
-			Game->vibration = 50;
+		if (sprite->weight_button >= 1){
+			Game->vibrate(50);
+		}
 	}
 
 
@@ -1521,6 +1540,34 @@ void UpdateSprite(SpriteClass* sprite){
 		Play_GameSFX(sprite->prototype->sounds[SOUND_RANDOM],80,(int)sprite->x, (int)sprite->y,
 					  sprite->prototype->sound_frequency, sprite->prototype->random_sound_frequency);
 
+
+	/**
+	 * If the checkpoint touches player
+	 */
+	if(sprite->prototype->type==TYPE_CHECKPOINT && Game->lastCheckpoint != sprite && sprite->energy>0){
+
+		double sprite2_yla = Player_Sprite->crouched ? Player_Sprite->prototype->height /3 : 0;
+
+
+		if (sprite->x <= Player_Sprite->x + Player_Sprite->prototype->width /2 &&
+				sprite->x >= Player_Sprite->x - Player_Sprite->prototype->width /2 &&
+				sprite->y/*top*/ <= Player_Sprite->y + Player_Sprite->prototype->height/2 &&
+				sprite->y/*bottom*/ >= Player_Sprite->y - Player_Sprite->prototype->height/2 + sprite2_yla){
+
+
+			if(Game->score > Episode->checkpointPenalty){
+				sprite->target_sprite = Player_Sprite;
+				Game->lastCheckpoint = sprite;
+				sprite->attack1_timer = sprite->prototype->attack1_time;
+
+				Game->saveGameState();
+				Game->showInfo("A new checkpoint!");
+			}
+			else{
+				Game->showInfo("Too low score!");
+			}			
+		}
+	}
 	sprite->initial_update = false;
 }
 
@@ -1577,7 +1624,7 @@ void UpdateBonusSprite(SpriteClass* sprite){
 
 	// Hyppyyn liittyv�t seikat
 
-	if (Game->button_vibration + Game->vibration > 0 && sprite->jump_timer == 0)
+	if (Game->button_vibration + Game->getVibration() > 0 && sprite->jump_timer == 0)
 		sprite->jump_timer = sprite->prototype->max_jump / 2;
 
 	if (sprite->jump_timer > 0 && sprite->jump_timer < sprite->prototype->max_jump)
@@ -1679,7 +1726,8 @@ void UpdateBonusSprite(SpriteClass* sprite){
 						BonusSpriteCollected(sprite, sprite2);
 					}
 
-					else if (sprite2->prototype->type != TYPE_BONUS){
+					//Character sprite pushing a bonus
+					else if (sprite2->prototype->type != TYPE_BONUS && (!sprite2->prototype->ambient || sprite2->player_c!=0) ){
 						sprite->a += sprite2->a*(rand()%4);
 					}
 
@@ -1908,3 +1956,56 @@ void UpdateBackgroundSprite(SpriteClass* sprite, double &yl){
 		SpriteOnDeath(sprite);
 	}
 }
+
+
+
+
+// void PlayerRespawnOnCheckpoint(SpriteClass* player, SpriteClass* checkPoint){
+// 	player->energy = player->prototype->energy;
+
+// 	if(player->energy<=0){
+// 		player->energy = 10;
+// 	}
+
+// 	player->removed = false;
+// 	double x = checkPoint->x;
+// 	double y = checkPoint->y;
+// 	std::optional<Point2D>& offset = checkPoint->prototype->ammo1_offset;
+
+// 	if(offset.has_value()){
+
+// 		double off_x = -checkPoint -> prototype->width/2 + offset->x;
+// 		double off_y = -checkPoint -> prototype->height/2 + offset->y;
+
+// 		if(checkPoint->flip_x){
+// 			off_x = -off_x;
+// 		}
+// 		if(checkPoint->flip_y){
+// 			off_y = -off_y;
+// 		}
+
+// 		x += off_x;
+// 		y += off_y;
+// 	}
+
+// 	Game->teleportPlayer(checkPoint->x, checkPoint->y, checkPoint->level_sector);
+
+// 	checkPoint->attack2_timer = checkPoint->prototype->attack2_time;
+
+// 	checkPoint->target_sprite = player;
+
+// 	/**
+// 	 * Score penalty for respawning on checkpoint
+// 	 */
+
+// 	int score = checkPoint->prototype->score;
+// 	if (score != 0){
+// 		if(score>0){
+// 			score = -score;
+// 		}
+// 		Fadetext_New(fontti2,std::to_string(score),(int)checkPoint->x-8,(int)checkPoint->y-8,80);
+// 		Game->score += score;
+
+		
+// 	}
+// }

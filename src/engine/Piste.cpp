@@ -2,12 +2,10 @@
 //Pekka Kana 2
 //Copyright (c) 2003 Janne Kivilahti
 //#########################
-#include "engine/Piste.hpp"
-
-#include "engine/platform.hpp"
-
+#include "Piste.hpp"
 #include <SDL.h>
 #include <functional>
+#include <stdexcept>
 
 #define UPDATE_FPS 30 //Update FPS each 30 frames
 
@@ -63,20 +61,25 @@ static void logic() {
 
 	while( SDL_PollEvent(&event) ) {
 		
-		if(event.type == SDL_QUIT)
+		if(event.type == SDL_QUIT){
 			running = false;
-		else if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
-			PRender::adjust_screen();
-		else if(event.type == SDL_TEXTINPUT && PInput::Is_Editing())
-			PInput::InjectText(event.text.text);
-		else if(event.type == SDL_KEYDOWN && PInput::Is_Editing())
-			PInput::InjectKey(event.key.keysym.scancode);
+		}
+		else if(event.type == SDL_WINDOWEVENT){
 
-		/*else if(event.type==SDL_FINGERDOWN){
-			PInput::InjectFingerDown(event.tfinger.x, event.tfinger.y);
-		}*/
-		
+			if(event.window.event == SDL_WINDOWEVENT_RESIZED){
+				PRender::adjust_screen();
+			}
+			else if(event.window.event == SDL_WINDOWEVENT_RESTORED){
+				PRender::set_pixelperfect();
+			}
+		}
+		else{
+			PInput::InputSystem::instance().handleEvent(event);
+		}		
 	}
+
+	PInput::InputSystem::instance().updateMouse();
+	PInput::InputSystem::instance().updateTouch();
 
 	// Pass PDraw informations do PRender
 	if (draw) {
@@ -92,7 +95,6 @@ static void logic() {
 	if (!PRender::is_vsync() && (desired_fps > 0) && draw)
 		wait_frame();
 
-	PInput::update();
 	PSound::update();
 	
 	if (debug) {
@@ -124,17 +126,16 @@ void init(int width, int height, const char* name, const char* icon, int audio_b
                 SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER /*| SDL_INIT_SENSOR*/;
 	
 	if (SDL_Init(flags) < 0) {
-
 		PLog::Write(PLog::FATAL, "Piste", "Unable to init SDL: %s", SDL_GetError());
-		return;
-		
+		throw std::runtime_error(std::string("Unable to init SDL: ") +SDL_GetError());
 	}
 
 	sdl_show_version();
 	
 	PDraw::init(width, height);
 	PRender::init(width, height, name, icon);
-	PInput::init();
+	PInput::InputSystem::instance().searchForInputDevices();
+
 	PSound::init(audio_buffer_size);
 
 	ready = true;
@@ -145,8 +146,9 @@ void terminate() {
 	
 	PDraw::terminate();
 	PRender::terminate();
-	PInput::terminate();
 	PSound::terminate();
+
+	PInput::InputSystem::instance().closeInputDevices();
 
 	SDL_Quit();
 

@@ -9,7 +9,6 @@
 #include "system.hpp"
 
 #include "engine/PDraw.hpp"
-#include "engine/PInput.hpp"
 #include "engine/PLog.hpp"
 #include "engine/PJson.hpp"
 #include "engine/PFilesystem.hpp"
@@ -40,8 +39,7 @@ LevelClass::LevelClass(){
 
 }
 
-
-void LevelClass::clear(){
+void LevelClass::clearSectors(){
 	for(LevelSector*& sector:this->sectors){
 		if(sector!=nullptr){
 			delete sector;
@@ -49,6 +47,11 @@ void LevelClass::clear(){
 		}
 	}
 	this->sectors.clear();
+}
+
+void LevelClass::clear(){
+
+	this->clearSectors();	
 
 	for(Tileset*& tileset:this->mTilesets){
 		if(tileset!=nullptr){
@@ -122,6 +125,14 @@ void LevelClass::load(PFile::Path path, bool headerOnly) {
 		PLog::Write(PLog::ERR,"PK2",e.what());
 		throw PExcept::FileNotFoundException(path.c_str(), PExcept::MISSING_LEVEL);
 	}
+
+	for(LevelSector*sector: this->sectors){
+		sector->calculateColors();
+		sector->calculateEdges();
+	}
+
+	//TODO - redesign it!
+	this->calculateBlockTypes();
 }
 
 
@@ -194,6 +205,23 @@ void LevelClass::readTiles(PFile::RW& file,
 	}
 }
 
+
+static double getDefaultSlipperinessFactor(int weather){
+	switch (weather)
+	{
+	case WEATHER_RAIN:
+	case WEATHER_RAIN_LEAVES:
+		return 1.03;
+
+	case WEATHER_SNOW:
+		return 1.01;
+	
+	default:
+		break;
+	}
+	return 1.04;
+}
+
 void LevelClass::loadVersion13(PFile::Path path, bool headerOnly){
 	PFile::RW file = path.GetRW2("r");
 	file.read(version,      sizeof(version));
@@ -255,6 +283,8 @@ void LevelClass::loadVersion13(PFile::Path path, bool headerOnly){
 
 	sector->background->scrolling = scrolling;
 	sector->weather = weather;
+	sector->slipperiness_factor = getDefaultSlipperinessFactor(weather);
+	sector->name = "legacy sector";
 
 	// sprite prototypes
 
@@ -395,13 +425,20 @@ void LevelClass::loadVersion15(PFile::Path path, bool headerOnly){
 		jsonReadInt(j, "fire_color_1", sector->fire_color_1);
 		jsonReadInt(j, "fire_color_2", sector->fire_color_2);
 
-		std::string custom_gfx_texture = "";
-		jsonReadString(j, "gfx", custom_gfx_texture);
-		if(custom_gfx_texture!=""){
-			sector->gfxTexture = this->mLoadGfxTexture(custom_gfx_texture);
+		if(j.contains("slipperiness")){
+			sector->slipperiness_factor = j["slipperiness"].get<double>();
+		}
+		else{
+			sector->slipperiness_factor = getDefaultSlipperinessFactor(sector->weather);
+		}
+
+		jsonReadString(j, "gfx", sector->gfxTextureName);
+		if(sector->gfxTextureName!=""){
+			sector->gfxTexture = this->mLoadGfxTexture(sector->gfxTextureName);
 		}
 
 		jsonReadInt(j, "rain_color", sector->rain_color);
+		jsonReadString(j, "name", sector->name);
 
 
 		// Background tiles
@@ -451,8 +488,8 @@ void LevelClass::saveVersion15(PFile::Path path)const{
 	for(LevelSector* sector:this->sectors){
 		nlohmann::json j;
 
-		j["width"] = PK2MAP_MAP_WIDTH;
-		j["height"]= PK2MAP_MAP_HEIGHT;		
+		j["width"] = sector->getWidth();
+		j["height"]= sector->getHeight();		
 
 		j["tileset"] = sector->tileset1->name;
 		if(sector->tileset2!=nullptr){
@@ -469,7 +506,8 @@ void LevelClass::saveVersion15(PFile::Path path)const{
 		j["fire_color_1"] = sector->fire_color_1;
 		j["fire_color_2"] = sector->fire_color_2;
 
-		j["gfx"] = sector->gfxTexture;
+		j["name"] = sector->name;
+		j["gfx"] = sector->gfxTextureName;
 		j["rain_color"] = sector->rain_color;
 
 		file.writeCBOR(j);
@@ -489,11 +527,6 @@ void LevelClass::saveVersion15(PFile::Path path)const{
 
 
 void LevelClass::calculateBlockTypes(){
-
-	for(LevelSector*sector: this->sectors){
-		sector->calculateColors();
-	}
-
 	PK2BLOCK block;
 
 	for (int i=0;i<150;i++){

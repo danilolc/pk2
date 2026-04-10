@@ -10,7 +10,7 @@
 
 #include "PFilesystem.hpp"
 #include "PString.hpp"
-#include "engine/PLog.hpp"
+#include "PLog.hpp"
 
 #include <SDL.h>
 #include <algorithm>
@@ -105,6 +105,9 @@ void SetDataPath(const std::string& name){
     CreateDirectory( (mDataPath / "mapstore").string());
     CreateDirectory( (mDataPath / "saves").string());
     CreateDirectory( (mDataPath / "screenshots").string());
+    CreateDirectory( (mDataPath / "checkpoint").string());
+    CreateDirectory( (mDataPath / "episodes").string());
+
 
     //TODO
     //throw exception if the directory is not writeable

@@ -7,7 +7,10 @@
 #include <string>
 #include <vector>
 #include "engine/PString.hpp"
+#include "engine/PInputKey.hpp"
 #include "gfx/text.hpp"
+
+#include "keyboard_navigation.hpp"
 
 namespace PDraw{
     class RECT;
@@ -15,7 +18,7 @@ namespace PDraw{
 
 namespace PK2gui{
 
-bool Draw_BoolBox(int x, int y, bool value, bool active);
+bool Draw_BoolBox(int x, int y, bool value, bool active, bool mouseClicked);
 
 class TextInput{
 public:
@@ -29,13 +32,15 @@ public:
     std::string getText()const;
 
 
-    bool draw(const std::string& title, int tx_start, int ty_start);
+    bool draw(const std::string& title, int tx_start, int ty_start, bool mouseClicked);
     int getMaxChars()const{
         return (int)this->buffer.size();
     }    
     bool isEditing(){
         return this->editing;
     }
+
+    bool updateNavigation(const KeyNav::Nav& nav);
 private:
     int getTextSize()const;
     bool acceptInputChar(PString::UTF8_Char c)const;
@@ -43,17 +48,16 @@ private:
     std::vector<PString::UTF8_Char> rejectedChars;
     std::vector<PString::UTF8_Char> buffer;
     int selectedIndex = 0;
-    bool editing = true;
+    bool editing = false;
 };
 
 
 class LinksMenu{
 public:
-    void draw();
+    void draw(bool mouseClicked);
 private:
-    bool drawButton(int x, int y, const PDraw::RECT& rect, const std::string& label);
+    bool drawButton(int x, int y, const PDraw::RECT& rect, const std::string& label, bool mouseClicked);
     bool expanded = false;
-    int btnKeyDelay = 0;
 };
 
 }

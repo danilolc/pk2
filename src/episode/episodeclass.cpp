@@ -304,7 +304,12 @@ void EpisodeClass::load() {
 		PFilesystem::SetEpisode(entry.name, &this->source_zip);
 	}
 	else{
-		PFilesystem::SetEpisode(entry.name, nullptr);
+
+		if(entry.path.empty()){
+			PFilesystem::SetEpisode(entry.name, nullptr);
+		} else {
+			PFilesystem::SetEpisode(entry.path, nullptr);
+		}		
 	}
 
 	if(!test_level){
@@ -367,6 +372,8 @@ void EpisodeClass::load() {
 			this->supermode_music = config.getBoolean("supermode_music", true);
 			this->legacy_start_offset = config.getBoolean("legacy_start_offset", false);
 			this->legacy_camera_offset = config.getBoolean("legacy_camera_offset", false);
+			this->legacy_obstacle_phasing = config.getBoolean("legacy_obstacle_phasing", false);
+			this->checkpointPenalty = config.getInteger("checkpoint_penalty", 150);
 		}
 		else{
 			PLog::Write(PLog::ERR, "PK2", "Cannot open episode config file.");

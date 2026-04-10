@@ -4,7 +4,7 @@
 //#########################
 #pragma once
 
-#include "engine/PFile.hpp"
+#include "PFile.hpp"
 
 namespace PRender {
 
@@ -63,12 +63,15 @@ enum {
 void load_ui_texture(PFile::Path file);
 void render_ui(FRECT src, FRECT dst, float alpha);
 
-int  set_filter(const char* filter);
 int  set_shader(int mode);
 
 void set_screen_fill(bool set);
 void adjust_screen();
+
 void set_fullscreen(bool set);
+void set_pixelperfect();
+bool is_fullscreen();
+
 void set_window_size(int w, int h);
 void get_window_size(int* w, int* h);
 void get_cover_size(int* w, int* h);
@@ -77,7 +80,7 @@ void get_window_position(int* x, int* y);
 int  set_vsync(bool set);
 bool is_vsync();
 
-int  init(int width, int height, const char* name, const char* icon);
+void init(int width, int height, const char* name, const char* icon);
 void terminate();
 void update(void* _buffer8);
 

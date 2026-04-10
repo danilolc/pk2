@@ -74,6 +74,9 @@ public:
     void countStartSigns(std::vector<BlockPosition>& vec, u32 sector_id)const;
     void startMusic();
 
+
+    std::string name;
+
     u8* background_tiles = nullptr;
     u8* foreground_tiles = nullptr;
     u8* sprite_tiles = nullptr;
@@ -84,6 +87,8 @@ public:
     Background* background = nullptr;
 
     int gfxTexture = -1;
+
+    std::string gfxTextureName;
 
     SpritesHandler sprites;
 
@@ -99,6 +104,8 @@ public:
 
 
     int weather = WEATHER_NORMAL;                // map climate
+    double slipperiness_factor = 1.03;
+
 
     /**
      * @brief 

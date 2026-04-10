@@ -31,14 +31,15 @@
 #include "game/prototypes_handler.hpp"
 
 #include <cstring>
-#include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
+#include <algorithm>
 #include <SDL.h>
 
 #include "utils/file_converter.hpp"
 
 #include "episode/save_slots.hpp"
-
 
 
 static void start_test(const char* arg) {
@@ -114,10 +115,11 @@ void pk2_main(bool _dev_mode, bool _show_fps, bool _test_level, const std::strin
 	test_level = _test_level;
 	try{
 		log_data();
-		
-		Settings_Open();
 
+		srand(time(nullptr));
 		config_txt.readFile();
+		Calculate_SinCos();
+		Settings_Open();
 
 		if(!_test_level){
 			Search_Episodes();
@@ -131,8 +133,12 @@ void pk2_main(bool _dev_mode, bool _show_fps, bool _test_level, const std::strin
 			throw std::runtime_error("\"icon[.bmp/.png]\" not found!");			
 		}
 
-		Piste::init(screen_width, screen_height, PK2_NAME_STR, iconPath->c_str(),
+		Piste::init(screen_width, screen_height, PK2_VERSION_STR_WINDOW, iconPath->c_str(),
 		config_txt.audio_buffer_size);
+
+		if(Settings.useJoystick && !PInput::InputSystem::instance().isJoystickAvailable()){
+			Settings.useJoystick = false;
+		}
 		
 		if (!Piste::is_ready()) {
 			throw std::runtime_error("Failed to init PisteEngine!");

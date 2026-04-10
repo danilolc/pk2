@@ -200,6 +200,9 @@ AI_Table::AI_Table(){
     true, false, false, false, true); //TO DO Redesign
     Init_AI(AI_TRANSFORM_IF_PLAYER_ABOVE, AI_TRIGGER_ALIVE, AI_Functions::Transform_If_Player_Above,
     true, false, false, false, true); //TO DO Redesign
+
+    Init_AI(AI_TRANSFORM_IF_PLAYER_IN_FRONT, AI_TRIGGER_ALIVE, AI_Functions::Transform_If_Player_in_Front,
+    true, false, false, false, true);
     
     Init_AI(AI_JUMP_IF_PLAYER_ABOVE, AI_TRIGGER_ALIVE, AI_Functions::Jump_If_Player_Above,
     true, false, false, false, true); //TO DO Redesign
@@ -275,14 +278,14 @@ AI_Table::AI_Table(){
     Init_AI(AI_RETURN_TO_ORIG_X_CONSTANT, AI_TRIGGER_ALIVE, AI_Functions::Return_To_Orig_X_Constant);
     Init_AI(AI_RETURN_TO_ORIG_Y_CONSTANT, AI_TRIGGER_ALIVE, AI_Functions::Return_To_Orig_Y_Constant);
 
-    Init_AI(AI_SWIMMING, AI_TRIGGER_ALIVE, AI_Functions::SwimInWater, true, true);
-    Init_AI(AI_MAX_SPEED_SWIMMING, AI_TRIGGER_ALIVE, AI_Functions::SwimInWaterMaxSpeed, true, true);
+    Init_AI(AI_SWIMMING, AI_TRIGGER_ANYWAY, AI_Functions::SwimInWater, true, true);
+    Init_AI(AI_MAX_SPEED_SWIMMING, AI_TRIGGER_ANYWAY, AI_Functions::SwimInWaterMaxSpeed, true, true);
 
     Init_AI(AI_MAX_SPEED_PLAYER, AI_TRIGGER_TRANSFORMATION, AI_Functions::MaxSpeedPlayer, false, true);
     Init_AI(AI_NPC_COLLECT_BONUSES, AI_TRIGGER_TRANSFORMATION, AI_Functions::NpcCollectBonuses, true, false);
 
     Init_AI(AI_MAX_SPEED_PLAYER_ON_SUPER, AI_TRIGGER_ALIVE, AI_Functions::MaxSpeedOnSuper, true, true);
-    Init_AI(AI_MAX_SPEED_SWIMMING, AI_TRIGGER_ALIVE, AI_Functions::MaxSpeedSwimming, true, true);
+    //Init_AI(AI_MAX_SPEED_SWIMMING, AI_TRIGGER_ALIVE, AI_Functions::MaxSpeedSwimming, true, true);
 
     Init_AI(AI_DIE_IF_TOUCHES_WALL, AI_TRIGGER_ALIVE, AI_Functions::DieIfTouchesWall, true, true, true, false);
 
@@ -293,10 +296,9 @@ AI_Table::AI_Table(){
 
     Init_AI(AI_BONUS_CANNOT_BE_PUSHED, AI_TRIGGER_ANYWAY, AI_Functions::CannotBePushed, false, false, true, false);
 
-    Init_AI(AI_WIENER_PROCESS, AI_TRIGGER_ALIVE, AI_Functions::WienerProcess, true, false, true, true);
-
-
-
+    Init_AI(AI_FOLLOW_ENEMY_X, AI_TRIGGER_ALIVE, AI_Functions::Follow_Enemy_X, true, false, false, false);
+    Init_AI(AI_FOLLOW_ENEMY_Y, AI_TRIGGER_ALIVE, AI_Functions::Follow_Enemy_Y, true, false, false, false);
+    Init_AI(AI_FOLLOW_ENEMY_DIAGONALLY, AI_TRIGGER_ALIVE, AI_Functions::Follow_Enemy_Diagonally, true, false, false, false);
 
     Init_AI(AI_LIMITED_PLAYER_CONTROL, AI_TRIGGER_TRANSFORMATION, AI_Functions::UncontrollablePlayer, false, true, false, false);
     Init_AI(AI_VERY_LIMITED_PLAYER_CONTROL, AI_TRIGGER_TRANSFORMATION, AI_Functions::UncontrollablePlayer2, false, true, false, false);
@@ -334,6 +336,20 @@ AI_Table::AI_Table(){
 
     Init_AI(AI_TRANSFORM_IF_DEAD, AI_TRIGGER_DEATH, [](SpriteClass*s){s->transform();});
 
+
+    Init_AI(AI_FOLLOW_PLAYER_DIAGONALLY, AI_TRIGGER_ALIVE, AI_Functions::Follow_Player_Diagonally,  true, false, false, true, true);
+
+
+    Init_AI(AI_ATTACK_1_IF_PLAYER_NEARBY, AI_TRIGGER_ALIVE, AI_Functions::Attack_1_if_Player_Nearby, true, false, false, false, true);
+    Init_AI(AI_ATTACK_2_IF_PLAYER_NEARBY, AI_TRIGGER_ALIVE, AI_Functions::Attack_2_if_Player_Nearby, true, false, false, false, true);
+
+    Init_AI(AI_TRANSFORM_IF_PLAYER_NEARBY, AI_TRIGGER_ALIVE, AI_Functions::Transform_if_Player_Nearby, true, false, true, true, true);
+    Init_AI(AI_DIE_IF_PLAYER_NEARBY, AI_TRIGGER_ALIVE, AI_Functions::Die_if_Player_Nearby,  true, false, true, true, true);
+
+    Init_AI(AI_TRANSFORM_IF_PLAYER_AWAY, AI_TRIGGER_ALIVE, AI_Functions::Transform_if_Player_Away, true, false, true, true, true);
+    Init_AI(AI_DIE_IF_PLAYER_AWAY, AI_TRIGGER_ALIVE, AI_Functions::Die_if_Player_Away,  true, false, true, true, true);
+
+
     /**
      * @brief 
      * AIs triggered on damage
@@ -357,10 +373,6 @@ AI_Table::AI_Table(){
     Init_AI(AI_TRANSFORM_IF_DAMAGED, AI_TRIGGER_DAMAGE, [](SpriteClass*s){s->transform();}, true, true, true, true);
 
     Init_AI(AI_INFINITE_ENERGY, AI_TRIGGER_DAMAGE, AI_Functions::InfiniteEnergy);
-
-    Init_AI(AI_FOLLOW_PLAYER_DIAGONALLY, AI_TRIGGER_ALIVE, AI_Functions::Follow_Player_Diagonally);
-    Init_AI(AI_ATTACK_1_IF_PLAYER_NEARBY, AI_TRIGGER_ALIVE, AI_Functions::Attack_1_if_Player_Nearby);
-    Init_AI(AI_ATTACK_2_IF_PLAYER_NEARBY, AI_TRIGGER_ALIVE, AI_Functions::Attack_2_if_Player_Nearby);
 
     /**
      * @brief 

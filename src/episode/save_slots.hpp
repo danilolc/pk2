@@ -8,7 +8,7 @@
 //Move it to Mapstore or EpisodeClass
 
 #include "episode/episodeclass.hpp"
-#include "engine/platform.hpp"
+#include "engine/types.hpp"
 #include "engine/PJson.hpp"
 #include "mapstore.hpp"
 

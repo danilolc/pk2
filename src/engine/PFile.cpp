@@ -16,11 +16,11 @@
 #include <functional>
 #endif
 
-#include "engine/PFile.hpp"
+#include "PFile.hpp"
 
-#include "engine/PLog.hpp"
-#include "engine/platform.hpp"
-#include "engine/PString.hpp"
+#include "PLog.hpp"
+#include "types.hpp"
+#include "PString.hpp"
 
 
 

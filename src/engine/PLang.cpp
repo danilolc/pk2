@@ -2,9 +2,9 @@
 //Pekka Kana 2
 //Copyright (c) 2003 Janne Kivilahti
 //#########################
-#include "engine/PLang.hpp"
-#include "engine/PLog.hpp"
-#include "engine/PString.hpp"
+#include "PLang.hpp"
+#include "PLog.hpp"
+#include "PString.hpp"
 
 #include <SDL.h>
 #include <cstring>

@@ -550,6 +550,11 @@ void PrototypeClass::setProto20(const nlohmann::json& j){
 		this->player_detection = j["player_detection"].get<Point2D>();
 	}
 
+
+	if(j.contains("can_push_bonuses")){
+		this->can_push_bonuses = j["can_push_bonuses"].get<bool>();
+	}
+
 	/**
 	 * Experimental
 	 */

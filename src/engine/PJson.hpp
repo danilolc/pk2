@@ -14,6 +14,11 @@
 #include <string>
 #include <array>
 #include <map>
+
+
+#define JSON_HAS_CPP_17
+#define JSON_USE_OPTIONAL 1
+
 #include "3rd_party/json.hpp"
 
 #pragma once

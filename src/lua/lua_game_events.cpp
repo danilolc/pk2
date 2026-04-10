@@ -27,7 +27,7 @@ void ClearEvents(){
 }
 
 void TriggerEventListeners(int event_type){
-    for(EventListener listener: mEventListeners){
+    for(const EventListener& listener: mEventListeners){
         if(listener.event_type!=event_type) continue;
 
         sol::protected_function_result res = listener.func();
@@ -38,7 +38,7 @@ void TriggerEventListeners(int event_type){
 }
 
 void AddEventListener(int event_type, sol::object o){
-    if(o.is<std::function<void()>>()){
+    if(o.is<sol::function>()){
         mEventListeners.push_back(EventListener(event_type, o));
     }
     else{
@@ -60,6 +60,7 @@ void ExposeEventsAPI(sol::state& lua, sol::table& PK2_API){
         "GAME_STARTED", LUA_EVENT_GAME_STARTED,
         "GAME_TICK", LUA_EVENT_GAME_TICK,
         "KEYLOCKS_OPENED", LUA_EVENT_KEYLOCKS_OPENED,
+        "EXIT_TOUCHED", LUA_EVENT_EXIT_TOUCHED,
         "addListener", AddEventListener,
         "cleanListeners", ClearEvents);
 

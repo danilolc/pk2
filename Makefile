@@ -41,6 +41,19 @@ CXXFLAGS += --std=c++17 -fPIC
 CXXFLAGS += -DPK2_USE_ZIP -DPK2_USE_LUA $(shell pkg-config sdl2 libzip lua --cflags)
 LDFLAGS += $(shell pkg-config sdl2 libzip lua --libs) -lSDL2_mixer -lSDL2_image
 
+# # Version string
+# PK2_VERSION = $(shell git log -1 --pretty=format:"%s" | grep -o 'v[0-9]\+\.[0-9]\+')
+# ifeq ($(PK2_VERSION),)
+# 	PK2_VERSION = "Unknown_version"
+# endif
+
+PK2_VERSION = "1.5.1 Greta"
+
+# Portable (data is stored with resorces):
+CXXFLAGS += -DPK2_PORTABLE -DPK2_VERSION=\"$(PK2_VERSION)\"
+
+# Commit hash
+# CXXFLAGS += -DCOMMIT_HASH='"$(shell git rev-parse --short HEAD)"'
 
 #Compile command CXX and CXXFLAGS
 COMPILE_COMMAND = $(CXX) $(CXXFLAGS)

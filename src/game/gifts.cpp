@@ -4,96 +4,113 @@
 //#########################
 #include "game/gifts.hpp"
 #include <cstring>
+#include <vector>
 
-static int gifts_count = 0;
-static PrototypeClass* gifts_list[MAX_GIFTS] = {nullptr};
-
-int Gifts_Count() {
-    return gifts_count;
+GiftsHandler::GiftsHandler(){
+	for(PrototypeClass*& proto: this->gifts_list){
+		proto = nullptr;
+	}	
 }
 
-PrototypeClass* Gifts_Get(int i) {
-	return gifts_list[i];
-}
 
-void Gifts_Draw(int i, int x, int y) {
-	PrototypeClass* prot = gifts_list[i];
-	prot->draw(x - prot->width / 2, y - prot->height / 2, 0);
-}
+void GiftsHandler::draw(int x, int y)const{
 
-void Gifts_Clean() {
-	for (int i = 0; i < MAX_GIFTS; i++)
-		gifts_list[i] = nullptr;
-	gifts_count = 0;
-}
+	/*int x,y;
 
-bool Gifts_Add(PrototypeClass* protot) {
-	int i = 0;
-	bool success = false;
-
-	while (i < MAX_GIFTS && !success) {
-		if (gifts_list[i] == nullptr) {
-			success = true;
-			gifts_list[i] = protot;
-			gifts_count++;
+	y = screen_height-35;//36
+	x = panel_x + 35;//40*/
+	for(PrototypeClass*proto: this->gifts_list){
+		if(proto!=nullptr){
+			proto->draw(x - proto->width / 2, y - proto->height / 2, 0);
 		}
-		i++;
+
+		x += 38;
 	}
-	return success;
 }
 
-void Gifts_Remove(int i) {
+void GiftsHandler::clean(){
+	this->giftsNumber = 0;
+	for(PrototypeClass*& proto: this->gifts_list){
+		proto = nullptr;
+	}
+}
+bool GiftsHandler::add(PrototypeClass* protot){
+	for(std::size_t i=0;i<this->gifts_list.size();++i){
+		if(this->gifts_list[i] == nullptr){
+			this->gifts_list[i] = protot;
+			++this->giftsNumber;
+			return true;
+		}
+	}
 
-	if(gifts_list[i] == nullptr)
+	return false;
+}
+
+void GiftsHandler::remove(int i){
+
+	if(this->gifts_list[i] == nullptr)
 		return;
 
 	for (int i = 0; i < MAX_GIFTS - 1; i++)
-		gifts_list[i] = gifts_list[i+1];
+		this->gifts_list[i] = this->gifts_list[i+1];
 	
-	gifts_list[MAX_GIFTS - 1] = nullptr;
+	this->gifts_list[MAX_GIFTS - 1] = nullptr;
 	
-	gifts_count--;
-
+	--this->giftsNumber;
 }
 
-int Gifts_Use(SpritesHandler& sh) {
-	if (gifts_count > 0) {
-		sh.addGiftSprite(gifts_list[0]);
-		Gifts_Remove(0);
-		// /**
-		//  * @brief 
-		//  * Fix spyrooster green bee bug.
-		//  */
-		// SpriteClass* parent = nullptr;
-		// if(sh.Player_Sprite->enemy){
-		// 	parent = sh.Player_Sprite;
-		// }
-
-		// sh.addSprite(
-		// 	gifts_list[0], 0,
-		// 	sh.Player_Sprite->x - gifts_list[0]->width,
-		// 	sh.Player_Sprite->y,
-		// 	parent, false);
+void GiftsHandler::use(SpritesHandler& sh, SpriteClass*player){
+	if(this->giftsNumber > 0){
+		sh.addGiftSprite(gifts_list[0], player);
+		this->remove(0);
 	}
-
-	return 0;
 }
 
-int Gifts_ChangeOrder() {
-	if (gifts_list[0] == nullptr)
-		return 0;
+void GiftsHandler::changeOrder(){
+	if (this->gifts_list[0] == nullptr)
+		return;
 
-	PrototypeClass* temp = gifts_list[0];
+	PrototypeClass* temp = this->gifts_list[0];
 
 	for (int i = 0; i < MAX_GIFTS - 1; i++)
-		gifts_list[i] = gifts_list[i+1];
+		this->gifts_list[i] = this->gifts_list[i+1];
 
 	int count = 0;
 
 	while(count < MAX_GIFTS-1 && gifts_list[count] != nullptr)
 		count++;
 
-	gifts_list[count] = temp;
+	this->gifts_list[count] = temp;
+}
 
-	return 0;
+int GiftsHandler::totalScore()const{
+	int res = 0;
+
+	for(PrototypeClass*proto: this->gifts_list){
+		if(proto!=nullptr){
+			res += proto->score + 500;
+		}
+	}
+
+	return res;
+}
+
+nlohmann::json GiftsHandler::toJson()const{
+	std::vector<std::string> vec;
+	for(const PrototypeClass* proto: this->gifts_list){
+		if(proto!=nullptr){
+			vec.emplace_back(proto->filename);
+		}
+	}
+	return nlohmann::json(vec);
+}
+
+void GiftsHandler::fromJson(const nlohmann::json& j, PrototypesHandler& prototypes){
+	std::vector<std::string> vec;
+	j.get_to(vec);
+
+	this->clean();
+	for(const std::string& filenane: vec){
+		this->add(prototypes.loadPrototype(filenane));
+	}
 }

@@ -6,9 +6,9 @@
 #include <string>
 #include <utility>
 
-#include "engine/PFile.hpp"
-#include "engine/PFont.hpp"
-#include "engine/platform.hpp"
+#include "PFile.hpp"
+#include "PFont.hpp"
+#include "types.hpp"
 
 #define ALPHA_COLOR_INDEX 255
 

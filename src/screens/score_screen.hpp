@@ -9,8 +9,8 @@ class ScoreScreen: public Screen{
 public:
     ScoreScreen();
     ~ScoreScreen();
-    void Init();
-    void Loop();
+    void Init()override;
+    void Loop()override;
 
 private:
     int LevelScore_Compare(int level, int score, int apples, int time);
@@ -27,11 +27,11 @@ private:
     u32 apples_counted = 0;
     u32 apples_not_counted = 0;
 
-    u32 total_score = 0;
-    u32 bonus_score = 0;
-    s32 time_score = 0;
-    u32 energy_score = 0;
-    u32 gifts_score = 0;
+    int total_score = 0;
+    int bonus_score = 0;
+    int time_score = 0;
+    int energy_score = 0;
+    int gifts_score = 0;
 
     bool map_new_record = false;
     bool map_new_time_record = false;

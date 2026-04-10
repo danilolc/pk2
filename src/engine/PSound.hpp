@@ -4,8 +4,8 @@
 //#########################
 #pragma once
 
-#include "engine/PFile.hpp"
-#include "engine/platform.hpp"
+#include "PFile.hpp"
+#include "types.hpp"
 
 namespace PSound {
 

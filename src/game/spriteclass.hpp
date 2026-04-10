@@ -12,13 +12,17 @@
 #include <string>
 #include <map>
 #include <array>
+#include <optional>
 
 #include "prototype.hpp"
 
 class LevelSector;
 
 class SpriteClass{
+private:
+    static std::size_t ID_COUNTER;
 public:
+    std::size_t id = 0;
 
     bool    active       = false;           // if the sprite is acting
     
@@ -41,7 +45,13 @@ public:
     bool    edge_on_the_left = false;           // is there a pit on the left side of the sprite?
     bool    edge_on_the_right   = false;           // is there a pit on the right side of the sprite?
     int     energy          = 0;               // the sprite energy
+
     SpriteClass *parent_sprite   = nullptr;         // the sprite's parent
+    SpriteClass *target_sprite   = nullptr;         // the sprite's target
+
+    std::optional<std::size_t> parent_sprite_id;
+    std::optional<std::size_t> target_sprite_id;
+
     double  weight           = 0;               // sprite weight
     double  weight_button      = 0;               // sprite weight + weight above him (why it doesn't work?)
     bool    crouched         = false;           // if the sprite is crouched
@@ -97,6 +107,12 @@ public:
      */
     bool    can_collect_bonuses = false;
     /**
+     * @brief
+     * if the sprite can push bonuses
+     */
+    bool    can_push_bonuses = false;
+
+    /**
      * @brief 
      * if the sprite is original, placed directly in the levels editor
      */
@@ -129,6 +145,7 @@ public:
     }
 
     bool transformTo(PrototypeClass* transformation);
+    void updatePhysicsFlags();
 
     void die();
 
@@ -146,4 +163,5 @@ private:
     void Animation_Bonus();
     void Animation_Egg();
     void Animation_Projectile();
+    void Animation_Checkpoint();
 };

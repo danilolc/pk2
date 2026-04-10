@@ -50,11 +50,20 @@ void Attack_2_if_Player_in_Front(SpriteClass*s);
 void Attack_1_if_Player_Below(SpriteClass*s);
 void Attack_1_If_Player_Above(SpriteClass*s);
 void Attack_2_If_Player_Above(SpriteClass*s);
+
 void Transform_If_Player_Above(SpriteClass*s);
 void Transform_If_Player_Below(SpriteClass*s);
+void Transform_If_Player_in_Front(SpriteClass* s);
+
 
 void Attack_1_if_Player_Nearby(SpriteClass*s);
 void Attack_2_if_Player_Nearby(SpriteClass*s);
+
+void Transform_if_Player_Nearby(SpriteClass*s);
+void Die_if_Player_Nearby(SpriteClass*s);
+void Transform_if_Player_Away(SpriteClass*s);
+void Die_if_Player_Away(SpriteClass*s);
+
 
 void Jump_If_Player_Above(SpriteClass*s);
 void Jump_If_Player_in_Front(SpriteClass*s);
@@ -95,7 +104,6 @@ void UncontrollablePlayer2(SpriteClass* s);
 
 
 void MaxSpeedPlayer(SpriteClass*s);
-void MaxSpeedSwimming(SpriteClass*s);
 void MaxSpeedOnSuper(SpriteClass*s);
 void NpcCollectBonuses(SpriteClass*s);
 
@@ -107,7 +115,10 @@ void CannotBePushed(SpriteClass*s);
 void TransformIfTouchesFloor(SpriteClass*s);
 void TransformIfTouchesWall(SpriteClass*s);
 
-void WienerProcess(SpriteClass*s);
+
+void Follow_Enemy_X(SpriteClass*s);
+void Follow_Enemy_Y(SpriteClass*s);
+void Follow_Enemy_Diagonally(SpriteClass*s);
 
 /**
  * @brief 

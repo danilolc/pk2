@@ -630,6 +630,24 @@ void Transform_If_Player_Below(SpriteClass*s){
 		}
 	}
 }
+
+void Transform_If_Player_in_Front(SpriteClass* s){
+
+	if(player!=nullptr){
+		double detection = s->prototype->player_detection.x;
+		
+		if ((player->x - s->x < detection && player->x - s->x > -detection) &&
+			(player->y - s->y < s->prototype->height && player->y - s->y > -s->prototype->height)){
+
+			if(s->prototype->charge_time==0){
+				s->transform();
+			}
+			else{
+				Self_Transformation(s);
+			}
+		}
+	}	
+}
 ///////
 
 
@@ -662,8 +680,7 @@ void Jump_If_Player_in_Front(SpriteClass*s){
 	}
 }
 
-
-void Attack_1_if_Player_Nearby(SpriteClass*s){
+static bool IsPlayerNearby(SpriteClass*s){
 	if(player!=nullptr){
 		double k = s->prototype->player_detection.x;
 		double l = s->prototype->player_detection.y;
@@ -675,29 +692,51 @@ void Attack_1_if_Player_Nearby(SpriteClass*s){
 		x = x*x;
 		y = y*y;
 
-		if(x*l + y*k < k*l){
-			s->attack1_timer = s->prototype->attack1_time;
-		}
+		return x*l + y*k < k*l;
+	}
+
+	return false;
+}
+
+
+void Attack_1_if_Player_Nearby(SpriteClass*s){
+	if(IsPlayerNearby(s)){
+		s->attack1_timer = s->prototype->attack1_time;
 	}
 }
 
 void Attack_2_if_Player_Nearby(SpriteClass*s){
-	if(player!=nullptr){
-		double k = s->prototype->player_detection.x;
-		double l = s->prototype->player_detection.y;
-		double x = s->x - player->x;
-		double y = s->y - player->y;
-
-		k = k*k;
-		l = l*l;
-		x = x*x;
-		y = y*y;
-
-		if(x*l + y*k < k*l){
-			s->attack2_timer = s->prototype->attack1_time;
-		}
+	if(IsPlayerNearby(s)){
+		s->attack2_timer = s->prototype->attack2_time;
 	}
 }
+
+
+void Transform_if_Player_Nearby(SpriteClass*s){
+	if(IsPlayerNearby(s)){
+		s->transform();
+	}
+}
+
+void Die_if_Player_Nearby(SpriteClass*s){
+	if(IsPlayerNearby(s)){
+		s->die();
+	}
+}
+
+void Transform_if_Player_Away(SpriteClass*s){
+	if(!IsPlayerNearby(s)){
+		s->transform();
+	}
+}
+
+void Die_if_Player_Away(SpriteClass*s){
+	if(!IsPlayerNearby(s)){
+		s->die();
+	}
+}
+
+
 
 void Damaged_by_Water(SpriteClass*s){
 	if (s->in_water && s->damage_taken_type > DAMAGE_SELF_DESTRUCTION){
@@ -804,7 +843,6 @@ void Self_Transformation(SpriteClass* s){
 		{
 			s->transform();
 
-			s->charging_timer = 0;
 			s->animation_index = -1;
 			s->SetAnimation(ANIMATION_IDLE,true);
 		}
@@ -938,7 +976,7 @@ void Climber2(SpriteClass*s){
 
 void Fall_When_Shaken(SpriteClass*s){
 
-	int tarina = Game->vibration + Game->button_vibration;
+	int tarina = Game->getVibration() + Game->button_vibration;
 
 	if (tarina > 0)
 	{
@@ -1045,14 +1083,12 @@ void Return_To_Orig_Y_Constant(SpriteClass*s){
 }
 
 void SwimInWater(SpriteClass*s){
-	s->swimming = s->in_water;
+	s->swimming = s->in_water && s->energy > 0;
 }
 
 void SwimInWaterMaxSpeed(SpriteClass*s){
-	if(s->swimming != s->in_water){
-		s->swimming = s->in_water;
-		s->max_speed_available = s->in_water;
-	}
+	s->swimming = s->in_water && s->energy > 0;
+	s->max_speed_available = s->swimming;
 }
 
 
@@ -1074,10 +1110,6 @@ void MaxSpeedPlayer(SpriteClass*s){
 
 void MaxSpeedOnSuper(SpriteClass*s){
 	s->max_speed_available = s->super_mode_timer>0;
-}
-
-void MaxSpeedSwimming(SpriteClass*s){
-	s->max_speed_available = s->swimming;
 }
 
 void NpcCollectBonuses(SpriteClass*s){
@@ -1115,28 +1147,57 @@ void CannotBePushed(SpriteClass*s){
 	s->x = s->orig_x;
 }
 
-void WienerProcess(SpriteClass*s){
 
-	/**
-	 * If you were wondering what's this:
-	 * https://en.wikipedia.org/wiki/Wiener_process *  
-	 */
+void Follow_Enemy_X(SpriteClass*s){
+	SpriteClass*target = s->level_sector->sprites.findNearestTarget(s);
+	if(target!=nullptr){
 
-	double angle = (double(rand())/RAND_MAX) * 2 * M_PI;
+		double max = s->prototype->max_speed / 3.5;
 
-	/** 
-	 * Box–Muller transform
-	 */
-	
-	double u1 =  sqrt(-2 * log((double(rand())/RAND_MAX)));
-	double u2 = (double(rand())/RAND_MAX) * 2 * M_PI;
+		if (s->a > -max && s->x > target->x)
+		{
+			s->a -= 0.1;
+		}
 
-	double t = u1 * cos(u2) * s->prototype->max_speed / 3.5;
+		if (s->a < max && s->x < target->x)
+		{
+			s->a += 0.1;
+		}
 
-	s -> a = t * cos(angle);
-	s -> b = t * sin(angle);
+		if (s->prototype->max_speed == 0)
+		{
+			if (target->x < s->x)
+				s->flip_x = true;
+			else
+				s->flip_x = false;
+		}
+	}
 }
 
+
+void Follow_Enemy_Y(SpriteClass*s){
+
+	SpriteClass*target = s->level_sector->sprites.findNearestTarget(s);
+	if(target!=nullptr){
+		double max = s->prototype->max_speed / 3.5;
+		if (s->b > -max && s->y > target->y)
+		{
+			s->b -= 0.4;
+		}
+
+		if (s->b < max && s->y < target->y)
+		{
+			s->b += 0.4;
+		}
+	}
+}
+
+void Follow_Enemy_Diagonally(SpriteClass*s){
+	SpriteClass*target = s->level_sector->sprites.findNearestTarget(s);
+	if(target!=nullptr){
+		s->flyToWaypointXY(target->x, target->y);		
+	}
+}
 
 /**
  * @brief 
@@ -1150,7 +1211,6 @@ void EvilOne(SpriteClass*s){
 
 void Chick(SpriteClass*s){
 	Game->game_over = true;
-	key_delay = 50; //TODO - reduce
 }
 
 void Reborn(SpriteClass*s){
@@ -1253,10 +1313,21 @@ void StartUp(SpriteClass*s){
 }
 
 void StartLeft(SpriteClass*s){
-	s->a = -s->prototype->max_speed / 3.5;
+
+	if(s->prototype->max_speed==0){
+		s->flip_x = true;
+	}
+	else{
+		s->a = -s->prototype->max_speed / 3.5;
+	}	
 }
 void StartRight(SpriteClass*s){
-	s->a = s->prototype->max_speed / 3.5;
+	if(s->prototype->max_speed==0){
+		s->flip_x = false;
+	}
+	else{
+		s->a = s->prototype->max_speed / 3.5;
+	}
 }
 
 void DieIfSkullBlocksChanged(SpriteClass*sprite){

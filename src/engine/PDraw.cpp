@@ -2,10 +2,10 @@
 //Pekka Kana 2
 //Copyright (c) 2003 Janne Kivilahti
 //#########################
-#include "engine/PDraw.hpp"
+#include "PDraw.hpp"
 
-#include "engine/PFont.hpp"
-#include "engine/PLog.hpp"
+#include "PFont.hpp"
+#include "PLog.hpp"
 
 #include <algorithm>
 #include <vector>

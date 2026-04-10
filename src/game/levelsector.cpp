@@ -6,6 +6,7 @@
 #include "engine/PDraw.hpp"
 #include "system.hpp"
 #include "gfx/effect.hpp"
+#include "engine/PString.hpp"
 #include "engine/PSound.hpp"
 #include "engine/PLog.hpp"
 #include "engine/PFilesystem.hpp"
@@ -325,6 +326,9 @@ void LevelSector::countStartSigns(std::vector<BlockPosition>& vec, u32 sector_id
  * Redesign and optimise this function
  */
 void LevelSector::startMusic(){
+
+	this->music_name = PString::rtrim(this->music_name); // to fix bugs with blank field
+
 	if (!this->music_name.empty()) {
 		std::optional<PFile::Path> music_path = PFilesystem::FindAsset(this->music_name,
 		PFilesystem::MUSIC_DIR);
@@ -333,12 +337,16 @@ void LevelSector::startMusic(){
 
 			PLog::Write(PLog::ERR, "PK2", "Can't find music \"%s\", trying \"song01.xm\"",this->music_name.c_str());
 			music_path = PFilesystem::FindAsset("song01.xm",PFilesystem::MUSIC_DIR);
-
 		}
 
-		if (PSound::start_music(*music_path) == -1)
-			PLog::Write(PLog::FATAL, "PK2", "Can't load any music file");
-
+		if(music_path.has_value()){
+			if (PSound::start_music(*music_path) == -1){
+				PLog::Write(PLog::ERR, "PK2", "Can't start the music");				
+			}			
+		}
+		else{
+			PLog::Write(PLog::ERR, "PK2", "Can't load any music file");
+		}
 	}
 	else{
 		PSound::stop_music();

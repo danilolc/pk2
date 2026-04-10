@@ -15,7 +15,7 @@ https://github.com/SaturninTheAlien/pk2_greta
 
 local lib_dir = "/usr/lib/games/pekka-kana-2/"
 local assets_dir = "/usr/share/games/pekka-kana-2/"
-local pk2_realBinName = "pk2_greta_1.5.0"
+local pk2_realBinName = "pk2_greta_1.5.1"
 
 
 local args = { ... }
@@ -67,6 +67,6 @@ local ret = os.execute(command)
 os.exit(ret)
 
 --[[
-    Hello Rosy.iso!
-    I know you are reading this 🌜
+   Lua Cultist was here!
+   Glory to the Moon! 🌜
 ]]

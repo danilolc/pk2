@@ -49,7 +49,7 @@ public:
      * @brief 
      * Spawn a sprite from player's gift
      */
-    void addGiftSprite(PrototypeClass* prototype);
+    void addGiftSprite(PrototypeClass* prototype, SpriteClass* player);
     /**
      * @brief 
      * Spawn a sprite from lua
@@ -64,14 +64,29 @@ public:
     std::list<SpriteClass*> bgSprites_List;
     std::list<SpriteClass*> fgSprites_List;
 
-    SpriteClass* Player_Sprite = nullptr;
     LevelSector* mLevelSector;
 
     void drawSprites(int camera_x, int camera_y, bool gamePaused, int& debug_drawn_sprites);
     void drawBGsprites(int camera_x, int camera_y, bool gamePaused, int& debug_drawn_sprite);
     void drawFGsprites(int camera_x, int camera_y, bool gamePaused, int& debug_drawn_sprite);
 
+
+    nlohmann::json toJson()const;
+    void fromJSON(const nlohmann::json& j, PrototypesHandler& handler, LevelSector*sector);
+
+
+    std::size_t size()const{
+        return this->Sprites_List.size();
+    }
+    SpriteClass* getSpriteById(std::size_t id);
+    SpriteClass * findPlayer();
+
+    SpriteClass* findNearestTarget(const SpriteClass* agent)const;
 private:
+
+    void spriteToJson(nlohmann::json& j, const SpriteClass&s)const;
+    void jsonToSprite(const nlohmann::json&j, SpriteClass&s, PrototypesHandler&handler)const;
+
     SpriteClass * mCreateSprite(PrototypeClass* prototype, int player_c, double x, double y, SpriteClass*parent_sprite=nullptr);
 
     void mAddBG(SpriteClass* sprite) {

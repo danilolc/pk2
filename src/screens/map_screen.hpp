@@ -10,9 +10,13 @@ class MapScreen: public Screen{
 public:
     MapScreen();
 
-    void Init();
-    void Loop();
+    void Init()override;
+    void Loop()override;
     void Draw();
+
+    void onKeyPressed(const PInput::Key& k)override;
+
+    
 private:
     void Play_Music();
 

@@ -164,6 +164,12 @@ void IntroScreen::Draw(){
 		end += 10;
 		
 		CreditsText_Draw("annukka korja",				fontti1, x, y, start, end, intro_counter);
+		y += LINE_SEPARATOR;
+		start += 10;
+		end += 10;
+		
+		CreditsText_Draw("Mipha",				fontti1, x, y, start, end, intro_counter);
+
 		y += SECTION_SEPARATOR;
 		start += 30;
 		end += 30;
@@ -253,7 +259,7 @@ void IntroScreen::Loop() {
 
 	if (!closing_intro) {
 
-		if (Clicked() || TouchScreenControls.touch || intro_counter >= 2930){
+		if (TouchScreenControls.touch || intro_counter >= 2930){
 			closing_intro = true;
 			Fade_out(FADE_SLOW);
 		}
@@ -264,5 +270,12 @@ void IntroScreen::Loop() {
 			next_screen = SCREEN_MENU;
 		}
 
+	}
+}
+
+void IntroScreen::onKeyPressed(const PInput::Key& key){
+	if(!closing_intro){
+		closing_intro = true;
+		Fade_out(FADE_SLOW);
 	}
 }

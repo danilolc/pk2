@@ -2,12 +2,13 @@
 //Pekka Kana 2
 //Copyright (c) 2003 Janne Kivilahti
 //#########################
-#include "engine/PRender.hpp"
+#include "PRender.hpp"
+#include <string>
 #include <stdexcept>
 
-#include "engine/PDraw.hpp"
-#include "engine/PLog.hpp"
-#include "engine/types.hpp"
+#include "PDraw.hpp"
+#include "PLog.hpp"
+#include "types.hpp"
 
 #include "engine/render/PSdl.hpp"
 
@@ -25,9 +26,9 @@ static float cover_width, cover_height;
 static bool screen_fill = false;
 static FRECT screen_dest = {0.f, 0.f, 1.f, 1.f};
 
-static const char* window_name;
-static SDL_Window* window = NULL;
+static SDL_Window* window = nullptr;
 static bool vsync_set = false;
+static bool fullscreen_set = false;
 
 static Renderer* renderer;
 
@@ -102,28 +103,40 @@ void adjust_screen() {
 }
 
 void set_fullscreen(bool set) {
-
+	renderer->clear_screen();
 	#ifdef __ANDROID__
+	
 		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 		return;
+
+	#else
+		fullscreen_set = set;
+		if(set){
+			SDL_SetWindowFullscreen(window, fullscreen_mode);
+		} else {
+			int buf_w, buf_h;
+			PDraw::get_buffer_size(&buf_w, &buf_h);
+			SDL_SetWindowFullscreen(window, 0);		
+			SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+			SDL_SetWindowMinimumSize(window, buf_w/2, buf_h/2);
+			SDL_SetWindowResizable(window, SDL_TRUE);
+		}
+
 	#endif
-
-	renderer->clear_screen();
-
-	if(set)
-		SDL_SetWindowFullscreen(window, fullscreen_mode);
-	else {
-		int buf_w, buf_h;
-		PDraw::get_buffer_size(&buf_w, &buf_h);
-
-		SDL_SetWindowFullscreen(window, 0);
-		SDL_SetWindowSize(window, buf_w, buf_h);
-		SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-		//TODO - adjust dst_rect too and turn off filters
-	}
-
 	adjust_screen();
+}
 
+
+void set_pixelperfect(){
+	int buf_w, buf_h;
+	PDraw::get_buffer_size(&buf_w, &buf_h);
+	SDL_SetWindowSize(window, buf_w, buf_h);
+	adjust_screen();
+}
+
+bool is_fullscreen(){
+	return fullscreen_set;
 }
 
 int set_shader(int shader) {
@@ -186,13 +199,27 @@ bool is_vsync() {
 	
 }
 
-int init(int width, int height, const char* name, const char* icon) {
+void init(int width, int height, const char* name, const char* icon) {
 
-	window_name = name;
 	Uint32 window_flags = SDL_WINDOW_SHOWN;
 
 	PLog::Write(PLog::DEBUG, "PRender", "Initializing graphics");
-	PLog::Write(PLog::DEBUG, "PRender", "Video driver: %s", SDL_GetCurrentVideoDriver());
+
+
+	const char* drv = SDL_GetCurrentVideoDriver();
+	if(drv!=nullptr){
+		std::string videoDriverName = drv;
+		PLog::Write(PLog::INFO, "PRender", "Video driver: %s", videoDriverName.c_str());
+		if(videoDriverName=="offscreen"){
+			PLog::Write(PLog::FATAL, "PRender", "PK2 cannot be run offscreen!");
+			throw std::runtime_error("PK2 cannot be run offscreen!");
+		}
+	}
+	else{
+		PLog::Write(PLog::WARN, "PRender", "Unknown video driver!");
+	}
+	
+
 
     #ifdef __ANDROID__
 
@@ -204,7 +231,7 @@ int init(int width, int height, const char* name, const char* icon) {
 	if (!window) {
 
 		PLog::Write(PLog::FATAL, "PRender", "Couldn't create window!");
-		return -2;
+		throw std::runtime_error("Cannot create SDL window!");
 
 	}
 
@@ -214,8 +241,7 @@ int init(int width, int height, const char* name, const char* icon) {
 	if (!window) {
 
 		PLog::Write(PLog::FATAL, "PRender", "Couldn't create window!");
-		return -2;
-
+		throw std::runtime_error("Cannot create SDL window!");
 	}
 
 	SDL_Surface* window_icon = IMG_Load(icon);
@@ -229,19 +255,10 @@ int init(int width, int height, const char* name, const char* icon) {
 	#endif
 
 	renderer = new PSdl(width, height, window);
-	if (!renderer) {
-
-		PLog::Write(PLog::FATAL, "PRender", "Couldn't create renderer!");
-		SDL_DestroyWindow(window);
-		return -3;
-
-	}
+	/**/
 
 	renderer->set_vsync(vsync_set);
 	adjust_screen();
-
-	return 0;
-
 }
 
 void terminate() {

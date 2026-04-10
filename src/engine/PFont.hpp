@@ -5,7 +5,7 @@
 #pragma once
 
 #include "PFile.hpp"
-#include "platform.hpp"
+#include "types.hpp"
 #include "PString.hpp"
 
 

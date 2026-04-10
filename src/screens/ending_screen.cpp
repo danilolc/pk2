@@ -122,6 +122,7 @@ void EndingScreen::Draw_EndGame(){
 void EndingScreen::Init() {
 
 	TouchScreenControls.change(UI_TOUCH_TO_START);
+	this->touchscreenWasPressed = true;
 	
 	PDraw::set_offset(640, 480);
 
@@ -147,6 +148,7 @@ void EndingScreen::Init() {
 		}
 	}
 
+
 	
 		
 
@@ -158,6 +160,12 @@ void EndingScreen::Init() {
 	Fade_in(FADE_FAST);
 }
 
+void EndingScreen::onKeyPressed(const PInput::Key& key){
+	change_to_next_screen = true;
+	PSound::set_musicvolume(0);
+	Fade_out(FADE_SLOW);
+}
+
 void EndingScreen::Loop(){
 
 	Draw_EndGame();
@@ -167,18 +175,21 @@ void EndingScreen::Loop(){
 	loppulaskuri++;
 	//introlaskuri = loppulaskuri; // introtekstej� varten
 
+	if(Settings.touchscreen_mode){
+
+		if(TouchScreenControls.any&&! this->touchscreenWasPressed){
+			change_to_next_screen = true;
+			PSound::set_musicvolume(0);
+			Fade_out(FADE_SLOW);			
+		}
+
+		this->touchscreenWasPressed = TouchScreenControls.any;
+	}
+
 	if (change_to_next_screen && !Is_Fading()) {
 		PSound::set_musicvolume_now(Settings.music_max_volume);
 		//next_screen = SCREEN_MENU;
 		next_screen = SCREEN_MAP;
-	}
-
-	if (key_delay == 0) {
-		if (Clicked() || TouchScreenControls.touch) {
-			change_to_next_screen = true;
-			PSound::set_musicvolume(0);
-			Fade_out(FADE_SLOW);
-		}
 	}
 
 	if (Episode->glows)

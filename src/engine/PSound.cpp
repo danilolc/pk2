@@ -2,9 +2,9 @@
 //Pekka Kana 2
 //Copyright (c) 2003 Janne Kivilahti
 //#########################
-#include "engine/PSound.hpp"
+#include "PSound.hpp"
 
-#include "engine/PLog.hpp"
+#include "PLog.hpp"
 
 #include <SDL_mixer.h>
 
@@ -228,9 +228,12 @@ void clear_channels() {
 
 int resume_music() {
 
-	if (music == NULL) {
-
-		PLog::Write(PLog::WARN, "PSound", "No music loaded");
+	if (music == nullptr) {
+		static bool warned = false;
+		if (!warned) {
+			PLog::Write(PLog::WARN, "PSound", "No music loaded");
+			warned = true;
+		}
 		return -1;
 	
 	}

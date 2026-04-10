@@ -70,7 +70,7 @@ private:
 
 	int UI_mode = UI_NONE;
 
-	int pad_id = 0;
+	int pad_id = -1;
 	bool pad_grab = false;
 
 	//int doodle_alpha = 0, egg_alpha = 0, gift_alpha = 0; 

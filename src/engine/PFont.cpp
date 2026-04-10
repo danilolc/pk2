@@ -2,12 +2,12 @@
 //Pekka Kana 2
 //Copyright (c) 2003 Janne Kivilahti
 //#########################
-#include "engine/PFont.hpp"
+#include "PFont.hpp"
 
-#include "engine/PDraw.hpp"
-#include "engine/PLang.hpp"
-#include "engine/platform.hpp"
-#include "engine/PFilesystem.hpp"
+#include "PDraw.hpp"
+#include "PLang.hpp"
+#include "types.hpp"
+#include "PFilesystem.hpp"
 
 #include <cmath>
 #include <cstring>

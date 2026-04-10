@@ -4,7 +4,10 @@
 //#########################
 #pragma once
 
-#include "engine/platform.hpp"
+#include "input_settings.hpp"
+
+#include "engine/PInput.hpp"
+#include "engine/types.hpp"
 
 #include "engine/PFile.hpp"
 #include <string>
@@ -32,28 +35,8 @@ enum {
 
 #define SETTINGS_VERSION "1.8"
 
-class GAME_CONTROLS {
-public:
-	u32 left;
-	u32 right;
-	u32 up;
-	u32 down;
-
-	u32 jump;
-	u32 walk_slow;
-	u32 attack1;
-	u32 attack2;
-	u32 open_gift;
-
-	friend void from_json(const nlohmann::json& j, GAME_CONTROLS& controls);
-	friend void to_json(nlohmann::json& j, const GAME_CONTROLS& controls);
-
-};
-
 class PK2SETTINGS {
 public:	
-	u32  id;
-
 	std::string language;
 
 	bool  transparent_text = false;
@@ -66,27 +49,37 @@ public:
 	bool  double_speed = false;
 	u8    shader_type;
 
-	// Controls
-	GAME_CONTROLS keyboard;
-	GAME_CONTROLS joystick;
-	u8 using_controller;
-	u16 vibration;
-	
+
 	// Audio
 	u8  music_max_volume;
 	u8  sfx_max_volume;
 
-	// GUI
-	//bool gui;
+	const InputSettings& getInput()const{
+		return  this->useJoystick ? this->joystickInput : this->keyboardInput;
+	}
+
+
+	PInput::Key* getKeyByMenuID(unsigned int menuId){
+		return this->useJoystick ? this->joystickInput.getKeyByMenuID(menuId) : this->keyboardInput.getKeyByMenuID(menuId);
+	}
 
 	friend void from_json(const nlohmann::json& j, PK2SETTINGS& settings);
-	friend void to_json(nlohmann::json& j, const PK2SETTINGS& settings); 
+	friend void to_json(nlohmann::json& j, const PK2SETTINGS& settings);
+
+
+	bool useJoystick = false;
+    bool useControllerVibrations = false;
+
+
+	bool isUsingJoystick()const;
+    float getJoystickAxis(int axis)const;
+    void vibrateController(int duration, float strength = 0.5)const;
+
+	InputSettings keyboardInput;
+	InputSettings joystickInput;
 };
 
 extern PK2SETTINGS Settings;
-extern GAME_CONTROLS* Input;
-
-//int Settings_GetId(PFile::Path path, u32& id);
 
 void Settings_Open();
 void Settings_Save();

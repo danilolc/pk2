@@ -12,11 +12,14 @@
 
 #include "engine/PLog.hpp"
 #include "engine/PFilesystem.hpp"
+#include "engine/PString.hpp"
+
 #include "exceptions.hpp"
 
 #include <cstring>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 namespace PK2save{
 
@@ -121,6 +124,12 @@ void ClearSlots() {
 }
 
 
+static std::string parseLegacyName(const std::string& s){
+	std::string res = PString::lowercase(PString::rtrim(s));
+	std::replace(res.begin(), res.end(), '-', ' ');
+	return res;
+}
+
 static episode_entry LegacyFindEpisode(const std::string& episodeName){
 
 	bool set = false;
@@ -138,10 +147,30 @@ static episode_entry LegacyFindEpisode(const std::string& episodeName){
 	}
 
 	//Not found
-	if(!set){		
+	if(!set){
+		/**
+		 * On some old releases the character '-' was used instead of space
+		 */
+
+		std::string name_legacy = parseLegacyName(episodeName);
+		for(const episode_entry& episode: episodes){
+			if( parseLegacyName(episode.name).compare(name_legacy) == 0){
+				if (set)
+					PLog::Write(PLog::WARN, "PK2", "Episode conflict on %s, choosing the first one", episodeName.c_str());
+				else {
+					res = episode;
+					set = true;
+				}
+			}		
+		}
+	}
+
+	//falback
+	if(!set){
 		res.name = episodeName;
 		res.is_zip = false;
 	}
+
 	return res;
 }
 

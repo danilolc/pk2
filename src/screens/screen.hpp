@@ -6,6 +6,7 @@
 
 #include "engine/types.hpp"
 #include "engine/PFile.hpp"
+#include "engine/PInputKey.hpp"
 
 #include <string>
 
@@ -24,18 +25,32 @@ enum SCREEN_TYPE {
 
 class Screen{
 public:
-	bool keys_move = false;
-
-	static unsigned int chosen_menu_id;
-	static unsigned int selected_menu_id;
-	
+	bool mouseKeysEnabled = false;
 	static int next_screen;
 	virtual ~Screen(){}
 	virtual void Init()=0;
 	virtual void Loop()=0;
+
+	virtual void onKeyPressed(const PInput::Key& key);
+	virtual void onKeyReleased(const PInput::Key& key);
+
 	static bool closing_game;
+	void clearMouseInput();
+
+
+	static bool mouse_hidden;
+
 protected:
-	static bool Draw_Menu_Text(int id, int x, int y);
-	static bool Draw_Menu_Text(const std::string& text, int x, int y);
-	static void Fade_Quit();	
+	static int bg_screen;
+
+
+	static void drawMouseCursor();
+	bool enterPressed = false;
+	bool mousePressed = false;
+
+	
+
+	bool drawMenuText(int id, int x, int y);
+	virtual bool drawMenuTextS(const std::string& text, int x, int y);
+	static void fadeQuit();	
 };

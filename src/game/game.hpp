@@ -6,9 +6,11 @@
 
 #include <array>
 #include "engine/types.hpp"
+#include "engine/PInputKey.hpp"
 
 #include "sprites_handler.hpp"
 #include "levelclass.hpp"
+#include "gifts.hpp"
 
 const int TIME_FPS = 100; //(dec)conds * TIME_FPS = FRAMES
 const int INFO_TIME = 700;
@@ -36,20 +38,20 @@ class GameClass {
 		bool has_time = false;
 		u64  frame_count = 0; //flames elapsed
 
-		int palikka_animaatio = 0;
+		int tiles_animation_counter = 0;
 
 		int button_vibration = 0;
 		u32 button1 = 0;
 		u32 button2 = 0;
 		u32 button3 = 0;
 
-		u32 score = 0;
-		u32 score_increment = 0;
+		int score = 0;
+		int score_increment = 0;
 
 		u32 apples_count = 0;
 		u32 apples_got = 0;
 
-		int vibration = 0;
+		
 
 		int camera_x = 0;
 		int camera_y = 0;
@@ -67,7 +69,20 @@ class GameClass {
 		int info_timer = 0;
 		std::string info_text;
 
-		int item_pannel_x = -215;
+		int item_panel_x = -215;
+
+
+		bool change_skulls=false;
+		bool event1 = false;
+		bool event2 = false;
+
+		PrototypesHandler spritePrototypes;
+		SpriteClass* playerSprite = nullptr;
+		SpriteClass* lastCheckpoint = nullptr;
+	
+		sol::state * lua = nullptr;
+		GiftsHandler gifts;
+
 
 		GameClass(int idx);
 		GameClass(std::string level_file);
@@ -78,9 +93,7 @@ class GameClass {
 		void start();
 		void finish();
 
-		void moveBlocks(){
-			this->level.moveBlocks(this->button1, this->button2, this->button3);
-		}
+		
 
 
 		void showInfo(const std::string& text);
@@ -96,14 +109,7 @@ class GameClass {
 
 		void openLocks();
 
-		bool change_skulls=false;
-		bool event1 = false;
-		bool event2 = false;
-
-		PrototypesHandler spritePrototypes;
-		SpriteClass* playerSprite;
-	
-		sol::state * lua = nullptr;
+		
 
 		void setCamera(bool legacy_mode=false);
 		void updateCamera();
@@ -120,12 +126,35 @@ class GameClass {
 		int getLevelID()const{
 			return this->level_id;
 		}
+		
+		void saveGameState()const;
+		void loadGameState();
+
+		void vibrate(int vibration);
+		int getVibration()const{
+			return this->vibration;
+		}
+
+		void onKeyPressed(const PInput::Key& key);
 	private:
+
+
+		int vibration = 0;
+		bool hasEnoughPointsToRespawn();
+
+		void moveBlocks(){
+			this->level.moveBlocks(this->button1, this->button2, this->button3);
+		}
+
+		void exposePlayerToAIs();
+
+		nlohmann::json toJson()const;
+		void fromJson(const nlohmann::json& j);
+
+
 		PrototypeClass* initialPlayerPrototype = nullptr;
 		int level_id = -1;
 		bool started = false;
-		int Open_Map();
-
 };
 
 extern GameClass* Game;

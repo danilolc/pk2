@@ -9,8 +9,8 @@
 #include <string>
 #include <vector>
 
-#include "engine/PFile.hpp"
-#include "engine/platform.hpp"
+#include "PFile.hpp"
+#include "types.hpp"
 
 class PLang {
 

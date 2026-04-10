@@ -17,11 +17,7 @@
 #include "engine/PFilesystem.hpp"
 
 #include <sstream>
-#include <ctime>
 #include <stdexcept>
-
-#include <time.h>
-
 
 #include "intro_screen.hpp"
 #include "menu_screen.hpp"
@@ -39,11 +35,7 @@ ScreensHandler::ScreensHandler():
 		{SCREEN_SCORING, new ScoreScreen()},
 		{SCREEN_END, new EndingScreen()},
 	}){
-
-	srand(time(nullptr));
 	
-	Calculate_SinCos();
-
 	Fadetext_Init();
 	if(Settings.touchscreen_mode){
 		TouchScreenControls.load();
@@ -66,17 +58,7 @@ ScreensHandler::ScreensHandler():
 	}
 
 	langlist = PFilesystem::ScanOriginalAssetsDirectory(PFilesystem::LANGUAGE_DIR, ".txt");
-	
-	PInput::SetVibration(Settings.vibration);
-
-	if (Settings.using_controller == SET_TRUE)
-		Input = &Settings.joystick;
-	else if (Settings.using_controller == SET_FALSE)
-		Input = &Settings.keyboard;
-	else if (PInput::ControllerFound())
-		Input = &Settings.joystick;
-	else
-		Input = &Settings.keyboard;
+	PInput::InputSystem::instance().searchForInputDevices();
 
 	int ret = Set_Screen_Mode(Settings.shader_type);
 	if (ret != 0) {
@@ -126,6 +108,11 @@ ScreensHandler::ScreensHandler():
 
 	Fade_in(FADE_SLOW);
 	PSound::set_musicvolume_now(Settings.music_max_volume);
+
+
+	PInput::InputSystem::instance().addKeyDownListener([&](const PInput::Key& key){this->onKeyPressed(key);});
+	PInput::InputSystem::instance().addKeyUpListener([&](const PInput::Key& key){this->onKeyReleased(key);});
+	PInput::InputSystem::instance().addPhysicalMouseMotionListener([&](){Screen::mouse_hidden=false;});
 }
 
 ScreensHandler::~ScreensHandler(){
@@ -141,6 +128,26 @@ ScreensHandler::~ScreensHandler(){
 
 	PDraw::image_delete(global_gfx_texture);
 	PDraw::image_delete(global_gfx_texture2);
+}
+
+
+void ScreensHandler::onKeyPressed(const PInput::Key& key){
+	//std::cout<<"Key pressed: "<<key.getName()<<std::endl;
+
+	this->current_screen->onKeyPressed(key);
+
+#ifndef __ANDROID__
+	if(key==Settings.getInput().fullscreenModeSwitch || (key==PInput::Key::RETURN && PInput::Key::LALT.isPressed())){
+		Settings.isFullScreen = !Settings.isFullScreen;
+		PRender::set_fullscreen(Settings.isFullScreen);
+	}
+#endif
+}
+
+void ScreensHandler::onKeyReleased(const PInput::Key& key){
+	//std::cout<<"Key released: "<<key.getName()<<std::endl;
+	
+	this->current_screen->onKeyReleased(key);
 }
 
 
@@ -161,29 +168,14 @@ void ScreensHandler::Loop() {
 		Fade_in(FADE_NORMAL);
 
 		this->current_screen->Init();
-	}
+	}	
 
-	if(PInput::Keydown(PInput::F11)){
-		if(this->mFullScreenKeyDelay==0){
-			Settings.isFullScreen = !Settings.isFullScreen;
-			PRender::set_fullscreen(Settings.isFullScreen);
-			this->mFullScreenKeyDelay = 20;			
-		}
-	}
-	else if(this->mFullScreenKeyDelay>0){
-		--this->mFullScreenKeyDelay;
-	}
-	
-
-	PInput::UpdateMouse(this->current_screen->keys_move, Settings.isFullScreen);
-	
 	if (Settings.touchscreen_mode)
 		TouchScreenControls.update();
 
+	PInput::InputSystem::instance().mouseKeysEnabled = this->current_screen->mouseKeysEnabled;
 	this->current_screen->Loop();
-
-	if (key_delay > 0)
-		key_delay--;
+	this->current_screen->clearMouseInput();
 
 	if (Screen::closing_game && !Is_Fading()){
 		Piste::stop();

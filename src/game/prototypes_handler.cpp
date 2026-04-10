@@ -25,10 +25,6 @@ void PrototypesHandler::clear(){
 }
 
 PrototypeClass* PrototypesHandler::loadPrototype(const std::string& filename_cAsE){
-
-	if(this->mAssetsLoaded){
-		throw PExcept::PException("Cannot load a sprite prototype after loading sprite assets!");
-	}
 	std::string filename = PString::rtrim(PString::lowercase(filename_cAsE));
 
 
@@ -41,6 +37,10 @@ PrototypeClass* PrototypesHandler::loadPrototype(const std::string& filename_cAs
 		if(prot->filename==filename_stem){
 			return prot;
 		}
+	}
+
+	if(this->mAssetsLoaded){
+		throw PExcept::PException("Cannot load a sprite prototype after loading sprite assets!");
 	}
 	
 	std::string extension = std::filesystem::path(filename).extension().string();

@@ -16,12 +16,14 @@
 #include <cstring>
 #include <algorithm>
 #include <filesystem>
+#include <unordered_set>
 
 #ifdef __ANDROID__
 #include <jni.h>
 #include <optional>
 #include <SDL.h>
 #endif
+
 
 namespace fs = std::filesystem;
 
@@ -80,22 +82,48 @@ static void sortEpisodes(){
 
 void Search_Episodes() {
 	episodes.clear();
+	
+	std::unordered_set<std::string> seen_episodes;
 
-	std::vector<std::string> list = PFilesystem::ScanOriginalAssetsDirectory(PFilesystem::EPISODES_DIR, "/");
+	/**
+	 * Searching for user loose episodes (to improve the integration with the level editor)
+	 */
+	{
+		std::filesystem::path p = std::filesystem::path(PFilesystem::GetDataPath()) / "episodes";
+		std::vector<std::string> list_user = PFilesystem::ScanDirectory_s(p.string(), "/");
+		for(std::string ep: list_user){
+			seen_episodes.emplace(ep);
 
-	for (std::string ep : list) {
-		episode_entry e;
-		e.name = ep;
-		e.is_zip = false;
-        episodes.push_back(e);
+			episode_entry e;
+			e.name = ep;
+			e.path = (p / ep).string();
+			e.is_zip = false;
+			episodes.push_back(e);
+		}
 	}
 
-	#ifdef PK2_USE_ZIP
+	/**
+	 * Searching for vanilla episodes. The directory may be read-only
+	 */
+	{
+		std::vector<std::string> list_assets = PFilesystem::ScanOriginalAssetsDirectory(PFilesystem::EPISODES_DIR, "/");
+
+		for (std::string ep : list_assets) {
+			if(seen_episodes.find(ep)!=seen_episodes.end()){
+				continue;
+			}
+
+			episode_entry e;
+			e.name = ep;
+			e.is_zip = false;
+			episodes.push_back(e);
+		}
+	}
+
 
 	std::string mapstore_path=(fs::path(PFilesystem::GetDataPath())/"mapstore").string();
-
-	list = PFilesystem::ScanDirectory_s(mapstore_path, ".zip");
-	for (std::string zip : list) {
+	std::vector<std::string> list_zip = PFilesystem::ScanDirectory_s(mapstore_path, ".zip");
+	for (std::string zip : list_zip) {
 		try{
 
 			PZip::PZip zp((fs::path(mapstore_path)/zip).string());
@@ -113,7 +141,6 @@ void Search_Episodes() {
 			PLog::Write(PLog::ERR, "PK2", e.what());
 		}
 	}
-	#endif	
 	PLog::Write(PLog::DEBUG, "PK2", "Found %i episodes", (int)episodes.size());
 
 	sortEpisodes();

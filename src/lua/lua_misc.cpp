@@ -22,6 +22,15 @@ LevelSector* GetSector(int id){
     return nullptr;
 }
 
+LevelSector * GetSectorByName(const std::string& name){
+    for(LevelSector*sector:Game->level.sectors){
+        if(sector->name==name){
+            return sector;
+        }
+    }
+    return nullptr;
+}
+
 void ExposeMiscAPI(sol::table& PK2_API){
 
     /**
@@ -43,6 +52,15 @@ void ExposeMiscAPI(sol::table& PK2_API){
      */
 
     PK2_API["getSector"] = GetSector;
+    PK2_API["getSectorCount"] = [](){return Game->level.sectors.size();};
+    PK2_API["getSectorByName"] = GetSectorByName;
+
+
+    PK2_API["saveGameState"] = [](){Game->saveGameState();};
+    PK2_API["loadGameState"] = [](){Game->loadGameState();};
+
+    PK2_API["passLevel"] = [](){Game->finish();};
+    PK2_API["gameOver"] = [](){Game->game_over=true;};
 }
 
 

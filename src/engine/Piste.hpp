@@ -4,15 +4,16 @@
 //#########################
 #pragma once
 
-#include "engine/platform.hpp"
+#include "types.hpp"
 
-#include "engine/PDraw.hpp"
-#include "engine/PRender.hpp"
-#include "engine/PInput.hpp"
-#include "engine/PSound.hpp"
-#include "engine/PLang.hpp"
-#include "engine/PLog.hpp"
-#include "engine/PFile.hpp"
+#include "PDraw.hpp"
+#include "PRender.hpp"
+#include "PSound.hpp"
+#include "PLang.hpp"
+#include "PLog.hpp"
+#include "PFile.hpp"
+#include "PInput.hpp"
+
 #include <functional>
 
 namespace Piste {

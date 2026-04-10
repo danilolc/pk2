@@ -182,6 +182,8 @@ public:
      */
     bool    ambient = false;
 
+    std::optional<bool> can_push_bonuses = {};
+
 
     /**
      * @brief 

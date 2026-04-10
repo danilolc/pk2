@@ -6,6 +6,7 @@
 
 #include "game/spriteclass.hpp"
 
+//void PlayerRespawnOnCheckpoint(SpriteClass * player, SpriteClass * checkpoint);
 void SpriteOffscreen(SpriteClass * sprite);
 void SpriteOnRespawn(SpriteClass* sprite);
 void SpriteOnDeath(SpriteClass* sprite);

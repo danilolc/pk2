@@ -2,10 +2,10 @@
 //Pekka Kana 2
 //Copyright (c) 2003 Janne Kivilahti
 //#########################
-#include "engine/PUtils.hpp"
+#include "PUtils.hpp"
 
-#include "engine/PLog.hpp"
-#include "engine/PFile.hpp"
+#include "PLog.hpp"
+#include "PFile.hpp"
 
 #include <SDL.h>
 #include <filesystem>

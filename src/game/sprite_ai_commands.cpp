@@ -28,7 +28,7 @@ class WaypointX:public Command{
 public:
     WaypointX(double target_x):target_x(target_x){};
     ~WaypointX()=default;
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     double target_x;
 };
@@ -42,7 +42,7 @@ class WaypointRX:public Command{
 public:
     WaypointRX(double target_x):target_x(target_x){};
     ~WaypointRX()=default;
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     double target_x;
 };
@@ -55,7 +55,7 @@ class WaypointY:public Command{
 public:
     WaypointY(double target_y):target_y(target_y){};
     ~WaypointY()=default;
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     double target_y;
 };
@@ -69,7 +69,7 @@ class WaypointRY:public Command{
 public:
     WaypointRY(double target_y):target_y(target_y){};
     ~WaypointRY()=default;
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     double target_y;
 };
@@ -83,7 +83,7 @@ class Waypoint: public Command{
 public:
     Waypoint(double target_x, double target_y):target_x(target_x), target_y(target_y){};
     ~Waypoint()=default;
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     double target_x, target_y;
 };
@@ -97,7 +97,7 @@ class WaypointR: public Command{
 public:
     WaypointR(double target_x, double target_y):target_x(target_x), target_y(target_y){};
     ~WaypointR()=default;
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     double target_x, target_y;
 };
@@ -109,7 +109,7 @@ bool WaypointR::execute(SpriteClass*sprite){
 
 class WaypointSeenPlayer: public Command{
 public:
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 };
 
 bool WaypointSeenPlayer::execute(SpriteClass*sprite){
@@ -134,7 +134,7 @@ bool WaypointSeenPlayer::execute(SpriteClass*sprite){
 
 class WaypointOrigXY: public Command{
 public:
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 };
 
 
@@ -145,7 +145,7 @@ bool WaypointOrigXY::execute(SpriteClass*sprite){
 
 class TransformationCommand: public Command{
 public:
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 };
 
 
@@ -155,7 +155,7 @@ bool TransformationCommand::execute(SpriteClass*sprite){
 
 class SelfDestructionCommand: public Command{
 public:
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 };
 
 bool SelfDestructionCommand::execute(SpriteClass*sprite){
@@ -169,7 +169,7 @@ bool SelfDestructionCommand::execute(SpriteClass*sprite){
 class MakeSoundCommand: public Command{
 public:
     MakeSoundCommand(int sound_index):sound_index(sound_index){}
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     int sound_index = -1;
 };
@@ -184,7 +184,7 @@ bool MakeSoundCommand::execute(SpriteClass*sprite){
 class WaitCommand: public Command{
 public:
     WaitCommand(int wait_time): wait_time(wait_time){};
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     int wait_time = 0;
 };
@@ -210,7 +210,7 @@ public:
         timer_min(timer_min), timer_max(timer_max){
 
         }
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     int timer_min;
     int timer_max;
@@ -243,7 +243,7 @@ double getCommandYPos(const nlohmann::json& j, int prototypeHeight){
 class ThunderCommand:public Command{
 public:
     ThunderCommand()=default;
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 };
 
 
@@ -256,7 +256,7 @@ bool ThunderCommand::execute(SpriteClass*sprite){
 class LuaCommand: public Command{
 public:
     LuaCommand(const std::string & funcName);
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 
 private:
     sol::protected_function l_function;
@@ -286,7 +286,7 @@ bool LuaCommand::execute(SpriteClass*sprite){
 class ChasePlayerCommand: public Command{
 public:
     ChasePlayerCommand(int timer):mTimer(timer){}
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     int mTimer;
 };
@@ -321,7 +321,7 @@ bool ChasePlayerCommand::execute(SpriteClass*sprite){
 class EffectCommand: public Command{
 public:
     EffectCommand(int effect):mEffect(effect){}
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     int mEffect;
 };
@@ -336,7 +336,7 @@ bool EffectCommand::execute(SpriteClass*sprite){
 class WeatherCommand: public Command{
 public:
     WeatherCommand(int weatherId):weatherId(weatherId){}
-    bool execute(SpriteClass*sprite);
+    bool execute(SpriteClass*sprite)override;
 private:
     int weatherId=0;
 };

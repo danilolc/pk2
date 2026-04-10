@@ -50,10 +50,17 @@ void SpriteMakeSound(SpriteClass*sprite, int soundIndex){
     }
 }
 
+SpriteClass* SpriteFindNearestTarget(SpriteClass* agent){
+    if(agent==nullptr)return nullptr;
+    return agent->level_sector->sprites.findNearestTarget(agent);
+}
+
 void ExposeSpriteClass(sol::state& lua){
     lua.new_usertype<SpriteClass>(
         "SpriteClass",
         sol::no_constructor,
+
+        "id", &SpriteClass::id,
 
         /**
          * @brief 
@@ -67,7 +74,7 @@ void ExposeSpriteClass(sol::state& lua){
         "flyToWaypointX", &SpriteClass::flyToWaypointX,
         "flyToWaypointY", &SpriteClass::flyToWaypointY,
         "flyToWaypointXY", &SpriteClass::flyToWaypointXY,
-
+        "findNearestTarget", &SpriteFindNearestTarget,
         "makeSound", &SpriteMakeSound,
 
         /**
@@ -129,7 +136,11 @@ void ExposeSpriteClass(sol::state& lua){
         "canMoveUp", sol::readonly(&SpriteClass::can_move_up),
         "canMoveDown", sol::readonly(&SpriteClass::can_move_down),
 
-        "levelSector", sol::readonly(&SpriteClass::level_sector)
+        "levelSector", sol::readonly(&SpriteClass::level_sector),
+        "parent", sol::readonly(&SpriteClass::parent_sprite),
+        "target", &SpriteClass::target_sprite,
+        "canCollectBonuses", &SpriteClass::can_collect_bonuses,
+        "canPushBonuses", &SpriteClass::can_push_bonuses
         
         );
 }

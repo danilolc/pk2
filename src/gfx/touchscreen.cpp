@@ -142,10 +142,10 @@ void PK2TouchScreenControls::load() {
 
 bool PK2TouchScreenControls::readGui(const PK2TouchScreenButton& gui) {
 	gui.draw();
-	for (PInput::touch_t touch : PInput::touchlist) {
+	for (const PInput::Touch& touch: PInput::InputSystem::instance().getTouches()) {
 
-		float touch_x = touch.pos_x * 1920;
-		float touch_y = touch.pos_y * 1080;
+		float touch_x = touch.x * 1920;
+		float touch_y = touch.y * 1080;
 
 		if(touch_x > gui.dst.x && touch_x < gui.dst.x + gui.dst.w)
 		if(touch_y > gui.dst.y && touch_y < gui.dst.y + gui.dst.h)
@@ -206,10 +206,10 @@ int PK2TouchScreenControls::getPad() {
 	int button = 2;
 
 	if (!pad_grab) {
-		for (PInput::touch_t touch : PInput::touchlist) {
+		for (const PInput::Touch& touch : PInput::InputSystem::instance().getTouches()) {
 			
-			float touch_x = touch.pos_x * 1920;
-			float touch_y = touch.pos_y * 1080;
+			float touch_x = touch.x * 1920;
+			float touch_y = touch.y * 1080;
 
 			if(touch_x > gui_padbg.dst.x && touch_x < gui_padbg.dst.x + gui_padbg.dst.w &&
 				touch_y > gui_padbg.dst.y && touch_y < gui_padbg.dst.y + gui_padbg.dst.h) {
@@ -226,8 +226,8 @@ int PK2TouchScreenControls::getPad() {
 	
 	if (pad_grab) {
 
-		PInput::touch_t* last_touch = nullptr;
-		for (PInput::touch_t& touch : PInput::touchlist) {
+		const PInput::Touch* last_touch = nullptr;
+		for (const PInput::Touch& touch :  PInput::InputSystem::instance().getTouches()) {
 
 			if(touch.id == pad_id)
 				last_touch = &touch;
@@ -242,7 +242,7 @@ int PK2TouchScreenControls::getPad() {
 
 		} else {
 
-			float touch = (last_touch->pos_x * 1920 - gui_padbg.dst.x) / gui_padbg.dst.w;
+			float touch = (last_touch->x * 1920 - gui_padbg.dst.x) / gui_padbg.dst.w;
 			float hold_touch = this->holdPad(touch, &button);
 
 			gui_padbt.dst.x = gui_padbg.dst.x + hold_touch * gui_padbg.dst.w;
@@ -358,7 +358,7 @@ void PK2TouchScreenControls::update() {
 
 			this->gui_doodle.active = Player_Sprite->ammo2 != nullptr;
 			this->gui_egg.active =  Player_Sprite->ammo1 != nullptr;
-			this->gui_gift.active = Gifts_Count() > 0;
+			this->gui_gift.active =  Game->gifts.count() > 0;
 
 			this->gui_up.active = Player_Sprite->player_c < 3;
 			this->gui_down.active = (Player_Sprite->player_c == 1 || (this->gui_up.active && Player_Sprite->weight==0));

@@ -8,7 +8,6 @@
 
 #include "engine/PLog.hpp"
 #include "engine/PUtils.hpp"
-#include "engine/PInput.hpp"
 #include "engine/PDraw.hpp"
 #include "engine/PRender.hpp"
 #include "settings/settings.hpp"
@@ -19,16 +18,11 @@
 int screen_width  = 800;
 int screen_height = 480;
 
-char id_code[8] = "";
-
 int default_palette = -1;
 int global_gfx_texture = -1;
 int global_gfx_texture2 = -1;
 
 int bg_screen = -1;
-
-int key_delay = 0;
-bool mouse_hidden = false;
 
 double cos_table[360];
 double sin_table[360];
@@ -39,7 +33,7 @@ bool test_level = false;
 bool dev_mode = false;
 
 bool show_fps = false;
-bool speedrun_mode = false;
+//bool speedrun_mode = false;
 
 static float alpha = 1;
 static float fade_speed = 0;
@@ -111,14 +105,6 @@ void Update_Colors() {
 
 }
 
-void Id_To_String(u32 id, char* string, std::size_t n) {
-
-	if (!string) return;
-
-	snprintf(string, n, "_%06x", id & 0xFFFFFF);
-
-}
-
 void Calculate_SinCos(){
 
 	for ( int i = 0; i < 360; i++ ) {
@@ -127,23 +113,6 @@ void Calculate_SinCos(){
 		sin_table[i] = sin(M_PI*2*i/180) * 33;
 	
 	}
-
-}
-
-int Clicked() {
-
-	if (key_delay) return 0;
-
-	if (PInput::MouseLeft())
-		return 1;
-
-	if (PInput::Keydown(PInput::SPACE) || PInput::Keydown(PInput::RETURN))
-		return 2;
-
-	if (PInput::Keydown(PInput::JOY_A) || PInput::Keydown(PInput::JOY_START))
-		return 3;
-	
-	return 0;
 
 }
 
