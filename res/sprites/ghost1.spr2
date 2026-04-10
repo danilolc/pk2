@@ -1,0 +1,138 @@
+{
+    "ai": [
+        6,
+        7,
+        16,
+        18,
+        49
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                3,
+                4
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                3,
+                4
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                3,
+                4
+            ]
+        },
+        "death": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "squat": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 10,
+    "check_tiles": true,
+    "color": "normal",
+    "damage": 1,
+    "damage_type": 8,
+    "destruction_effect": 0,
+    "effect": 0,
+    "enemy": true,
+    "energy": 1,
+    "frame": {
+        "height": 33,
+        "pos_x": 1,
+        "pos_y": 145,
+        "width": 38
+    },
+    "frame_rate": 7,
+    "frames_number": 4,
+    "immunity_type": 0,
+    "indestructible": true,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 1,
+    "max_speed": 1.0,
+    "name": "ghost 1",
+    "parallax_type": 0,
+    "picture": "spr_batb.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 0,
+    "size": {
+        "height": 33,
+        "width": 38
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "",
+        "destruction": "",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.0
+}

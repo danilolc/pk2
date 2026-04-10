@@ -1,0 +1,175 @@
+Setup
+------------------------------------------------------------------------------------
+*setup options: Asetukset
+*setup video modes: Valitte näytön resoluutio
+*setup music & sounds: Mussiikki ja äänieffektit
+*setup music: Mussiikki
+*setup sounds: Äänieffektit
+*setup language: Vaiha kieli
+*setup play: Pellaa
+*setup exit: Lopeta
+
+Intro
+------------------------------------------------------------------------------------
+*intro presents: esittää 2003
+*intro a game by: pelin, minkä on teheny
+*intro original character design: alakuperäsen hahamon teki
+*intro tested by: peliä kokkeili
+*intro thanks to: kiitoksia
+*intro translation: tervolaksi käänsi
+*intro translator: Jorma Hurtig
+
+Main Menu
+------------------------------------------------------------------------------------
+*main menu new game: alota kokohnan uus peli
+*main menu continue: jatka pellaamista
+*main menu load game: lattaa vasiten peli
+*main menu save game: tallenna ens kerraksi
+*main menu controls: valitte ite kontrolit
+*main menu graphics: valitte ite raffiikat
+*main menu sounds: valitte ite äänet
+*main menu exit game: lopeta!
+
+*back to main menu: uuesthan päävalikhon!
+
+Load Game
+------------------------------------------------------------------------------------
+*load menu title: lattaa peli
+*load menu info: klikkaa kohasta jonka haluat laata
+*load menu episode: episooti:
+*load menu level: taso:
+
+Save Game
+------------------------------------------------------------------------------------
+*save menu title: laita peli muisthin! Tallenna
+*save menu info: klikkaa kohasta johon haluat tallentaa
+*save menu episode: episooti:
+*save menu level: taso:
+
+Game Controls
+------------------------------------------------------------------------------------
+*controls menu title: ohojausnäppäimet
+*controls menu move left: vasemale
+*controls menu move right: oikiale
+*controls menu jump: hyppy
+*controls menu duck: kyykhyn meno
+*controls menu walk slow: hilijempaa
+*controls menu egg attack: muniminen
+*controls menu doodle attack: kiekhaisu
+*controls menu use item: käytä lahaja
+*controls menu edit: muokkaa kontroleja
+*controls menu keyboard def: perusnapit pelekäle näppäimistöle
+*controls menu gamepad4: perusnapit peliohojaimele  4 nappia
+*controls menu gamepad6: perusnapit peliohojaimele  6 nappia
+
+Sounds
+------------------------------------------------------------------------------------
+*sounds menu title: äänet ja mussiikki
+*sounds menu sfx volume: äänieffektien volluumi
+*sounds menu music volume: mussiikin volluumi
+*sounds menu more: lissää
+*sounds menu less: hilijennä
+
+Graphics
+------------------------------------------------------------------------------------
+*graphics menu title: pelin raffiikat
+*graphics menu transparency fx on: läpinäkyvyyseffektit päälä
+*graphics menu transparency fx off: läpinäkyvyyseffektit poisa
+*graphics menu menus are transparent: menutekstit näkkyy läpi
+*graphics menu menus are not transparent: tavalliset menutekstit
+*graphics menu item bar is visible: esihnet näkkyy
+*graphics menu item bar is not visible: esihnet ei näy
+*graphics menu weather fx on: sääeffektit näkkyy
+*graphics menu weather fx off: sääeffektit ei näy
+*graphics menu bg sprites on: takaspritet näkkyy
+*graphics menu bg sprites off: takaspritet ei näy
+*graphics menu game speed normal: tavallinen noppeus
+*graphics menu game speed double: tuplanoppeus
+
+Player's name
+------------------------------------------------------------------------------------
+*player screen type your name: kirijota nimesti
+*player screen continue: valamis
+*player screen clear: tyhyjennä
+*player default name: pellaaja
+
+Episodes
+------------------------------------------------------------------------------------
+*episode menu choose episode: valitte episooti
+*episode menu get more episodes at: hae lissää episooteja osothesta http://pistegamez.cjb.net
+*episode menu no maps: episootissa ei ole karttoja!?
+
+Map
+------------------------------------------------------------------------------------
+*map screen total score: pisthet
+*map screen next level: seuraava taso
+*episode best player: episootin mestari:
+*episode hiscore: pisthet
+*level best player: paras pellaaja
+*level hiscore: pisthet:
+*level fastest player: noppein pellaaja
+*level best time: aika:
+
+Scores
+------------------------------------------------------------------------------------
+*score screen title: pistheitten lasku
+*score screen level score: pisthet yhthensä
+*score screen bonus score: pisthet poonuksista
+*score screen time score: pisthet ajasta
+*score screen energy score: pisthet enerkiasta
+*score screen item score: pisthet esihneistä
+*score screen continue: jatka ethenpäin
+*score screen total score: tason pisthet
+*score screen new level hiscore: sie teit uuen tason ennätyksen!
+*score screen new level best time: sie olet tason noppein pellaaja!
+*score screen new episode hiscore: sie olet episootin uus mestari!
+
+Game
+------------------------------------------------------------------------------------
+*score: pisthet:
+*game time: aika:
+*energy: enerkia:
+*items: lahajatavarat:
+*attack 1: kieku:
+*attack 2: munat:
+*keys: avvaimet:
+*level clear: taso läpästy!
+*time bonus: aikapoonus
+*game paused: pellaaja tauolla...
+*knocked out: nyt sie tyrmäsit Pekan!
+*time out: aika loppu!
+*try again: yritä uuesthan!
+*locks open: nyt viimisekki lukot on auki!
+*new doodle attack: uus kiekasu!
+*new egg attack: uus muninta!
+*new item: uus lahajatavara!
+
+*loading: ladathan...
+
+The End
+------------------------------------------------------------------------------------
+*end congratulations: onneksi olokhot!
+*end chickens saved: sie olet vaphauttanu telietyt kanat!
+*end the end: loppu
+
+Info Signs
+------------------------------------------------------------------------------------
+*info01: huua rähäjääjät kumhon mekafoonilla!
+*info02: puota vasitenki munia vihollisten pääle!
+*info03: pittää hakia ja ettiä jostaki ulosmeno!
+*info04: lukot aukiiaa, ko kaikki avvaimet on kerätty!
+*info05: Ei Mihinkhän! hyppäät kytkimen pääle!
+*info06: vihiriä kytkin liikuttaa vihireitä seiniä!
+*info07: seinät liikkuu ko painaa sinistä kytkintä.
+*info08: tuli sammuu ko painaa punasta kytkintä.
+*info09: sie voit käyttää lahajoista saamasti tavarat sitte ko haluat!
+*info10: suluka antaa lissää enerkiaa, helepottaa!
+*info11: teleporteista ei tiiä! älä mene mihinkhän hukhan?
+*info12: pistheitä tullee ponuksista ja ko tyrmäät jonku!
+*info13: eti ja yritä hakia kaikki piilosa olevat poonukset!
+*info14: lukon teleki aukiiaa ko avvain ossuu siihen!
+*info15: ole varovasti! täälä on ansoja!
+*info16: jos aika loppuu niin sie et pääse ennää mihinkhän!
+*info17: varo vihasia elläimiä!
+*info18: varo kauhian kovvaa tuulta!
+*info19: vaphauta telietyt kanat! 

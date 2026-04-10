@@ -1,176 +1,216 @@
 Setup 
 ------------------------------------------------------------------------------------
-*setup options:				einstellungen
-*setup video modes:			Video modi
-*setup music & sounds:			Musik und soundeffekte
+*setup options:				Einstellungen
+*setup video modes:			Video
+*setup music & sounds:		Audio
 *setup music:				Musik
-*setup sounds:				Soundeffekte
-*setup language:			Sprache wählen
+*setup sounds:				Sound Effekte
+*setup language:			Sprache
 *setup play:				Spielen
-*setup exit:				Bye-Bye
+*setup exit:				Beenden
+
+
+*back to settings menu:     ZurÃ¼ck zu den Einstellungen
 
 Intro
 ------------------------------------------------------------------------------------
-*intro presents:			präsentiert 2003
+*intro presents:			prÃ¤sentiert 2003
 *intro a game by:			ein Spiel von
-*intro original character design:	original Character design
+*intro original character design:	ursprÃ¼nglicher Entwurf des Charakters
 *intro tested by:			getestet von
-*intro thanks to:			Danke an
-*intro translation:			Deutschübersetzung
-*intro translator:			Sebastian Schöngen
+*intro thanks to:			danke an
+*intro translation:			deutsche Ã¼bersetzung
+*intro translator:			daeta
+*intro game created by:     Spiel ursprÃ¼nglich entwickelt von
+*intro game improved by:    erweitert und verbessert von
+*intro community:           und alle anderen pistegamerz
 
 Main Menu
 ------------------------------------------------------------------------------------
 *main menu new game:			Neues Spiel
-*main menu continue:			Fortsetzen
-*main menu load game:			Spiel laden
-*main menu save game:			Spiel speichern
-*main menu controls:			Tastenbelegung
-*main menu graphics:			Grafiken
-*main menu sounds:			Sounds
-*main menu exit game:			Arrividertschi
+*main menu continue:			Weiter
+*main menu load game:			Laden
+*main menu save game:			Speichern
+*main menu controls:			Steuerung
+*main menu graphics:			Grafik
+*main menu sounds:			    Audio
+*main menu exit game:			Beenden
 
-*back to main menu:			Zurück zum Menü
+---- New GE keys:
+
+*main menu map:             Karte
+*main menu links:           Links
+*main menu back:            ZurÃ¼ck
+*main menu more:            Mehr
+
+----
+
+
+*back to main menu:			ZurÃ¼ck zum HauptmenÃ¼
 
 Load Game
 ------------------------------------------------------------------------------------
 *load menu title:			Spiel laden
-*load menu info:			Klicke auf das Spiel, das du laden willst
+*load menu info:			Klicke auf einen Spielstand um ihn zu laden
 *load menu episode:			Episode: 
 *load menu level:			Level: 
 
 Save Game
 ------------------------------------------------------------------------------------
-*save menu title:			Spiel speichern
-*save menu info:			Klicke auf den Slot, den du bespeichern willst
-*save menu episode:			Episode: 
-*save menu level:			Level: 
+*save menu title:			            Speichern
+*save menu info:			            Klicke auf einen Spielstand um ihn zu speichern
+*save menu episode:			            Episode: 
+*save menu level:			            Level: 
+*save menu empty slot:                  Leer
+*save menu episode completed:           VervollstÃ¤ndigt
 
 Game Controls
 ------------------------------------------------------------------------------------
-*controls menu title:			Tastenbelegungen
-*controls menu move left:		Links laufen
-*controls menu move right:		Rechts laufen
-*controls menu jump:			Hüpfen
+*controls menu title:			Steuerung
+*controls menu move left:		Links
+*controls menu move right:		Rechts
+*controls menu jump:			Springen
 *controls menu duck:			Ducken
-*controls menu walk slow:		Gehen
-*controls menu egg attack:		Eierwurf
-*controls menu doodle attack:		Megaphonangriff
+*controls menu walk slow:		Langsam laufen
+*controls menu egg attack:		Ei Attacke
+*controls menu doodle attack:	Megafon Attacke
 *controls menu use item:		Item benutzen
-*controls menu edit:			Verstellen
-*controls menu keyboard def:		keyboard defaults
-*controls menu gamepad4:		gamepad defaults 4 buttons 
-*controls menu gamepad6:		gamepad defaults 6 buttons
+*controls menu edit:			Ã¤ndern
+
+---- New GE keys:
+
+*controls menu default:                 ZurÃ¼cksetzen
+*controls menu use keyboard:            Tastatur benutzen
+*controls menu use controller:          Controller benutzen
+*controls menu vibration on:            Controller vibriert
+*controls menu vibration off:           Controller vibriert nicht
+
+---- 
 
 Sounds
 ------------------------------------------------------------------------------------
-*sounds menu title:			Sounds und Musik
-*sounds menu sfx volume:		Lautstärke der Soundeffekte
-*sounds menu music volume:		Lautstärke der Musik
-*sounds menu more:			mehr
-*sounds menu less:			weniger
+*sounds menu title:			Audio
+*sounds menu sfx volume:	Sound LautstÃ¤rke
+*sounds menu music volume:	Musik LautstÃ¤rke
+*sounds menu more:			Lauter
+*sounds menu less:			Leiser
 
 Graphics
 ------------------------------------------------------------------------------------
-*graphics menu title:				Grafiken
-*graphics menu transparency fx on:		transparency fx on
-*graphics menu transparency fx off:		transparency fx off
-*graphics menu menus are transparent:		Transparente Menu Texte An
-*graphics menu menus are not transparent:	Transparente Menu Texte Aus 
-*graphics menu item bar is visible:		Itemleiste ist sichtbar
-*graphics menu item bar is not visible:		Itemleiste ist nicht sichtbar
-*graphics menu weather fx on:			Wetter An
-*graphics menu weather fx off:			Wetter Aus
-*graphics menu bg sprites on:			Hintergrund An
-*graphics menu bg sprites off:			Hintergrund Aus
-*graphics menu game speed normal:		Spielgeschwindigkeit ist normal 
-*graphics menu game speed double:		Spiel läuft doppelt so schnell
+*graphics menu title:				        Grafik
+*graphics menu menus are transparent:		MenÃ¼ Text ist transparent
+*graphics menu menus are not transparent:	MenÃ¼ Text ist nicht transparent 
+*graphics menu item bar is visible:		    Inventar ist sichtbar
+*graphics menu item bar is not visible:		Inventar ist nicht sichtbar
+*graphics menu game speed normal:		    Spielgeschwindigkeit ist normal 
+*graphics menu game speed double:		    Spielgeschwindigkeit ist verdoppelt
+*graphics menu game speed:                  Spielgeschwindigkeit
+*graphics menu texture filtering:           Filterung
+
+---- New GE keys:
+
+*graphics menu gui on:                  Spiel GUI an
+*graphics menu gui off:                 Spiel GUI aus
+
+*graphics menu fullscreen on:           Vollbild an
+*graphics menu fullscreen off:          Vollbild aus
+
+*graphics menu touchscreen on:          Touchscreen Modus an
+*graphics menu touchscreen off:         Touchscreen Modus aus
+
+----
 
 Player's name
 ------------------------------------------------------------------------------------
-*player screen type your name:		Gib deinen Namen ein
+*player screen type your name:	Schreibe deinen Namen
 *player screen continue:		Fertig
-*player screen clear:			Löschen
-*player default name:			superchecker
+*player screen clear:			ZurÃ¼cksetzen
+*player default name:			pekka
 
 Episodes
 ------------------------------------------------------------------------------------
-*episode menu choose episode:		Wähle eine Episode
-*episode menu get more episodes at:	Hol dir mehr Episoden auf: http://pistegamez.cjb.net
-*episode menu no maps:			Episode hat keine Karten!?
+*episode menu choose episode:	WÃ¤hle eine Episode
+*episode menu no maps:			Keine Level gefunden
 
 Map
 ------------------------------------------------------------------------------------
-*map screen total score:		Punkte
-*map screen next level:			Nächstes level
-*episode best player:			Episoden Champion:
-*episode hiscore:			Bestpunktzahl
+*map screen total score:	Punktzahl
+*map screen next level:		NÃ¤chstes Level
+*episode best player:		Champion der Episode:
+*episode hiscore:			HÃ¶chste Punktzahl
 *level best player:			Bester Spieler
-*level hiscore:				Punkte:
-*level fastest player:			Schnellster Spieler
+*level hiscore:				Punktzahl:
+*level fastest player:		Schnellster Spieler
 *level best time:			Zeit:
 
 Scores
 ------------------------------------------------------------------------------------
-*score screen title:			Gesamtpunktzahl
-*score screen level score:		Levelpunktzahl
-*score screen bonus score:		Bonuspunkte
-*score screen time score:		Zeitbonus
-*score screen energy score:		Energiebonus
-*score screen item score:		Itembonus
+*score screen title:			Gesamte Punktzahl
+*score screen level score:		Level Punktzahl
+*score screen bonus score:		Bonus Punktzahl
+*score screen time score:		Zeit Bonus
+*score screen energy score:		Energie Bonus
+*score screen item score:		Item Bonus
 *score screen continue:			Karte
-*score screen total score:		Gesamtpunktzahl
-*score screen new level hiscore:	Neuer Rekord!
-*score screen new level best time:	Neue bestzeit!
-*score screen new episode hiscore:	Du bist der Episodenchampion!
+*score screen total score:		Gesamte Punktzahl
+*score screen new level hiscore:	Du hast den Hiscore geknackt!
+*score screen new level best time:	Du bist der schnellste Spieler!
+*score screen new episode hiscore:	Du bist der Champion der Episode!
 
 Game
 ------------------------------------------------------------------------------------
-*score:					Punkte:
+*score:					Punktzahl:
 *game time:				Zeit:
 *energy:				Energie:
 *items:					Items:
-*attack 1:				Meggafon:
+*attack 1:				Megafon:
 *attack 2:				Eier:
-*keys:					Schlüssel:
-*level clear:				Level geschafft!
+*keys:					SchlÃ¼ssel:
+*level clear:			Level geschafft!
 *time bonus:			
-*game paused:				Pause...
-*knocked out:				TOT hahaha...!
-*time out:				Zu lahmarschig!
-*try again:				Versuch´s halt nochmal!
-*locks open:				Alle Schlösser sind offen!
-*new doodle attack:			Ein Meggafon!
-*new egg attack:			Ein Ei!
-*new item:				Ein Item!
+*game paused:			Pause...
+*knocked out:			K.O.!
+*time out:				Die Zeit ist abgelaufen!
+*try again:				Versuchs nochmal!
+*locks open:			Alle SchlÃ¶sser sind offen!
+*new doodle attack:		Ein neues Megafon!
+*new egg attack:		Ein neues Ei!
+*new item:				Ein neues Item!
 
-*loading:				Lade gerade...
+---- NEW GE keys
+
+*invisibility:        Unsichtbarkeit:
+*supermode:           Supermodus:
+
+---- 
+
+*loading:				Laden...
 
 The End
 ------------------------------------------------------------------------------------
-*end congratulations:			Glückwunsch!
-*end chickens saved:			Du hast die Hühner gerettet!
-*end the end:				ENDE
+*end congratulations:			GlÃ¼ckwunsch!
+*end chickens saved:			Du hast die HÃ¼hner gerettet!
+*end the end:				    Ende
 
 Info Signs
 ------------------------------------------------------------------------------------
-*info01:			Töte Gegner mit dem Meggafon!
-*info02:			Schieße Gegner mit Eiern ab!
-*info03:			Finde das Zielschild!
-*info04:			Schlösser gehen auf, wenn du alle Schlüssel gesamelt hast.
-*info05:			Aktiviere Schalter durch Draufsprinen.
-*info06:			Grüne Schalter bewegen Wände mit grünen Pfeilen.
-*info07:			Blaue Schalter bewegen Wände mit blauen Pfeilen.
-*info08:			Orange Schalter löscchen Feuer.
-*info09:			Du kannst Items jederzeit benutzen.
+*info01:			Benutze das Megafon gegen Gegner!
+*info02:			Bombardiere die Gegner mit dem Ei!
+*info03:			Finde das Ausgangsschild!
+*info04:			Die SchlÃ¶sser Ã¶ffnen sich, wenn du alle SchlÃ¼ssel gefunden hast.
+*info05:			Aktiviere Schalter indem du auf sie springst.
+*info06:			GrÃ¼ne Schalter bewegen BlÃ¶cke mit dem grÃ¼nen Pfeil.
+*info07:			Blaue Schalter bewegen BlÃ¶cke mit dem blauen Pfeil.
+*info08:			Orangene Schalter schalten Feuer aus.
+*info09:			Du kannst Items benutzen wann immer du willst.
 *info10:			Federn geben Energie.
-*info11:			Teleporter sind kompliziert. Geh nicht verloren!
-*info12:			Tötungen und Boni erhöhen deine Punktzahl.
-*info13:			Suche immer nach versteckten Boni!
-*info14:			Schlösser gehen auf, wenn ein Schlüssel sie berührt.
-*info15:			Pass auf dass du in keine Falle trittst, VERSAGER...
-*info16:			Beeil dich, die Zeit läuft!
-*info17:			Pass auf wütende Tiere auf!
+*info11:			Teleporter sind knifflig! Verlaufe dich nicht!
+*info12:			Knock-outs und Boni steigern die Punktzahl.
+*info13:			Achte immer auf versteckte Boni!
+*info14:			Ein Schloss Ã¶ffnet sich, wenn ein SchlÃ¼ssel es berÃ¼hrt.
+*info15:			Pass auf Fallen auf! hee hee...
+*info16:			Schnell! Die Zeit lÃ¤uft!
+*info17:			Pass auf wÃ¼tende Tiere auf!
 *info18:			Pass auf starken Wind auf!
-*info19:			Rette die Hühner!
+*info19:			Rette die HÃ¼hner!
 		

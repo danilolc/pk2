@@ -1,0 +1,164 @@
+{
+    "ai": [
+        6,
+        16,
+        11,
+        10,
+        140,
+        137
+    ],
+    "always_active": false,
+    "ammo1": "robohen.spr2",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                1,
+                1,
+                1,
+                2,
+                1,
+                2,
+                1,
+                2
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                1,
+                1,
+                1,
+                2,
+                1,
+                2,
+                1,
+                2
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                4,
+                4,
+                3,
+                3
+            ]
+        },
+        "death": {
+            "loop": true,
+            "sequence": [
+                6,
+                5
+            ]
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1,
+                1,
+                1,
+                2,
+                1,
+                2,
+                1,
+                2
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                4,
+                4,
+                3,
+                3
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                7
+            ]
+        },
+        "squat": {
+            "loop": true,
+            "sequence": [
+                4,
+                4,
+                3,
+                3
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                4,
+                4,
+                3,
+                3
+            ]
+        }
+    },
+    "attack1_time": 600,
+    "attack2_time": 60,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 0,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 600,
+    "check_tiles": true,
+    "color": "normal",
+    "damage": 1,
+    "damage_type": 1,
+    "destruction_effect": 100,
+    "effect": 0,
+    "enemy": true,
+    "energy": 1,
+    "frame": {
+        "height": 46,
+        "pos_x": 1,
+        "pos_y": 1,
+        "width": 38
+    },
+    "frame_rate": 5,
+    "frames_number": 7,
+    "immunity_type": 0,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 16,
+    "max_speed": 0.0,
+    "name": "the evil one 2",
+    "parallax_type": 0,
+    "picture": "spr_evil.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 1000,
+    "size": {
+        "height": 46,
+        "width": 31
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "crow.wav",
+        "attack2": "crow.wav",
+        "damage": "crow.wav",
+        "destruction": "crow_ko.wav",
+        "random": "crow.wav",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.5
+}

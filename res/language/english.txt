@@ -1,23 +1,25 @@
 Setup 
 ------------------------------------------------------------------------------------
 *setup options:				Settings
-*setup video modes:			Video modes
-*setup music & sounds:			Music and sound effects
-*setup music:				Music
-*setup sounds:				Sound effects
 *setup language:			Choose language
 *setup play:				Play
-*setup exit:				Exit
 
 Intro
 ------------------------------------------------------------------------------------
 *intro presents:			presents 2003
-*intro a game by:			a game by
 *intro original character design:	original character design
 *intro tested by:			tested by
 *intro thanks to:			thanks to
 *intro translation:			english translation
-*intro translator:			janne kivilahti
+*intro translator:			janne kivilahti and others
+
+-- new GE keys --
+
+*intro game created by:     game originally created by
+*intro game improved by:    improved by
+*intro community:           and all the other pistegamerz
+
+--
 
 Main Menu
 ------------------------------------------------------------------------------------
@@ -30,14 +32,23 @@ Main Menu
 *main menu sounds:			sounds
 *main menu exit game:			exit
 
-*back to main menu:			back to mainmenu
+---- New GE keys:
+
+*main menu map:             map
+*main menu links:           links
+*main menu back:            back
+*main menu more:            more
+
+*back to settings menu:     back to settings menu
+----
+
+
+*back to main menu:			back to main menu
 
 Load Game
 ------------------------------------------------------------------------------------
 *load menu title:			load game
 *load menu info:			click the saved game you want to load
-*load menu episode:			episode: 
-*load menu level:			level: 
 
 Save Game
 ------------------------------------------------------------------------------------
@@ -46,9 +57,17 @@ Save Game
 *save menu episode:			episode: 
 *save menu level:			level: 
 
+---- New GE keys:
+
+*save menu empty slot:                  empty
+*save menu episode completed:           completed
+
+
+----
+
 Game Controls
 ------------------------------------------------------------------------------------
-*controls menu title:			controlls
+*controls menu title:			controls
 *controls menu move left:		move left
 *controls menu move right:		move right
 *controls menu jump:			jump
@@ -58,9 +77,16 @@ Game Controls
 *controls menu doodle attack:		doodle attack
 *controls menu use item:		use item
 *controls menu edit:			edit
-*controls menu keyboard def:		keyboard defaults
-*controls menu gamepad4:		gamepad defaults 4 buttons 
-*controls menu gamepad6:		gamepad defaults 6 buttons
+
+---- New GE keys:
+
+*controls menu default:                 get default
+*controls menu use keyboard:            use keyboard
+*controls menu use controller:          use game controller
+*controls menu vibration on:            game controller vibrates
+*controls menu vibration off:           game controller does not vibrate
+
+---- 
 
 Sounds
 ------------------------------------------------------------------------------------
@@ -73,31 +99,37 @@ Sounds
 Graphics
 ------------------------------------------------------------------------------------
 *graphics menu title:				graphics
-*graphics menu transparency fx on:		transparency fx on
-*graphics menu transparency fx off:		transparency fx off
 *graphics menu menus are transparent:		transparent menu texts on
 *graphics menu menus are not transparent:	transparent menu texts off 
-*graphics menu item bar is visible:		item bar is visible
-*graphics menu item bar is not visible:		item bar is not visible
-*graphics menu weather fx on:			weather fx on
-*graphics menu weather fx off:			weather fx off
-*graphics menu bg sprites on:			background sprites on
-*graphics menu bg sprites off:			background sprites off
 *graphics menu game speed normal:		game speed is normal 
 *graphics menu game speed double:		game speed is double 
+
+---- New GE keys:
+
+*graphics menu gui on:                  in-game gui is visible
+*graphics menu gui off:                 in-game gui is not visible
+
+*graphics menu fullscreen on:           fullscreen on
+*graphics menu fullscreen off:          fullscreen off
+
+*graphics menu touchscreen on:          touchscreen mode on
+*graphics menu touchscreen off:         touchscreen mode off
+
+*graphics menu game speed:              game speed
+*graphics menu texture filtering:       filtering
+
+----
 
 Player's name
 ------------------------------------------------------------------------------------
 *player screen type your name:		write your name
 *player screen continue:		ready
 *player screen clear:			clear
-*player default name:			pekka
 
 Episodes
 ------------------------------------------------------------------------------------
 *episode menu choose episode:		choose an episode
-*episode menu get more episodes at:	get more episodes at http://pistegamez.cjb.net
-*episode menu no maps:			episode has no maps!?
+*episode menu no maps:			no levels found
 
 Map
 ------------------------------------------------------------------------------------
@@ -143,6 +175,13 @@ Game
 *new doodle attack:			a new doodle!
 *new egg attack:			a new egg!
 *new item:				a new item!
+
+---- NEW GE keys
+
+*invisibility:        invisibility:
+*supermode:           supermode:
+
+---- 
 
 *loading:				loading...
 

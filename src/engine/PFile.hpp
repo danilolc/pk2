@@ -5,93 +5,119 @@
 #pragma once
 
 #include "types.hpp"
+#include "3rd_party/json.hpp"
+#include "PZip.hpp"
 
 #include <vector>
 #include <string>
+#include <stdexcept>
 
 namespace PFile {
 
-struct Zip;
+class PFileException:public std::exception{
+public:
+    PFileException(const std::string& message):message(message){}
+    const char* what() const noexcept{
+        return message.c_str();
+    }
+private:
+    std::string message;
+};
 
-struct RW {
+
+class RW {
+public:
+    RW(void* rwops, void*mem_buffer=nullptr):
+    _rwops(rwops), _mem_buffer(mem_buffer){
+    }
+
+    RW(const RW& source)=delete;
+    RW& operator=(const RW& source)=delete;
+
+    RW(RW&& source);
+    ~RW(){
+        this->close();
+    }
 
     size_t size();
-    size_t to_buffer(void** buffer);
+    //size_t to_buffer(void** buffer);
 
     int read(void* val, size_t size);
-    int read(bool& val);
-
-    int read(std::string& str);
 
     // Read the value always in little endian
-    int read(u8& val);
-    int read(s8& val);
-    int read(u16& val);
-    int read(s16& val);
-    int read(u32& val);
-    int read(s32& val);
-    int read(u64& val);
-    int read(s64& val);
+    void read(bool& val);
+    void read(u8& val);
+    void read(s8& val);
+    void read(u16& val);
+    void read(s16& val);
+    void read(u32& val);
+    void read(s32& val);
+    void read(u64& val);
+    void read(s64& val);
+
+    void readLegacyStrInt(int& val);
+    void readLegacyStrU32(u32& val);
+    void readLegacyStr13Chars(std::string& val);
+    void readLegacyStr40Chars(std::string& val);
 
     int write(const void* val, size_t size);
-    int write(bool val);
+    
+    // Write the value always in little endian    
+    void write(bool val);
+    void write(u8 val);
+    void write(s8 val);
+    void write(u16 val);
+    void write(s16 val);
+    void write(u32 val);
+    void write(s32 val);
+    void write(u64 val);
+    void write(s64 val);
 
-    int write(std::string& str);
+    nlohmann::json readCBOR();
+    void writeCBOR(const nlohmann::json& j);
 
-    // Write the value always in little endian
-    int write(u8 val);
-    int write(s8 val);
-    int write(u16 val);
-    int write(s16 val);
-    int write(u32 val);
-    int write(s32 val);
-    int write(u64 val);
-    int write(s64 val);
+    void close();
 
-    int close();
+    void * _rwops;
+private:
+    void * _mem_buffer;
 
 };
 
+// TODO
+// Delete this class and replace with std::filesystem
 class Path {
 
-    public: 
+public: 
 
     Path(std::string path);
-    Path(Zip* zip_file, std::string path);
+    Path(PZip::PZip* zip_file, const PZip::PZipEntry&e);
     Path(Path path, std::string file);
     ~Path();
 
-    bool operator ==(Path path);
-    const char* c_str();
+    bool operator ==(const Path& path)const;
+    const char* c_str()const{
+        return this->path.c_str();
+    }
 
-    //type:
-    // ""  - all files and directories
-    // "/" - directory
-    // ".exe" - *.exe
-    std::vector<std::string> scandir(const char* type);
+    const std::string& str()const{
+        return this->path;
+    }
 
-    bool NoCaseFind();
-    bool Find();
 
-    bool Is_Zip();
+    std::string GetContentAsString()const;
+    RW GetRW2(std::string mode)const;
+    nlohmann::json GetJSON()const;
+    bool exists()const;
 
-    int SetFile(std::string file);
-    int SetPath(std::string path);
-    void FixSep();
+#ifdef __ANDROID__
+    bool insideAndroidAPK = false;
+#endif
 
-    std::string GetDirectory();
-    std::string GetFileName();
-
-    RW* GetRW(const char* mode);
-
-    private:
-    
+private:
     std::string path;
-    Zip* zip_file;
-
+    PZip::PZip* zip_file;
+    PZip::PZipEntry zip_entry;
 };
-
-Zip* OpenZip(std::string path);
-void CloseZip(Zip* zp);
 
 }

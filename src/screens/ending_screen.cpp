@@ -2,28 +2,28 @@
 //Pekka Kana 2
 //Copyright (c) 2003 Janne Kivilahti
 //#########################
-#include "screens/screens.hpp"
+#include "ending_screen.hpp"
 
 #include "episode/episodeclass.hpp"
 #include "gfx/text.hpp"
-#include "gui.hpp"
+#include "gfx/touchscreen.hpp"
 #include "game/game.hpp"
 #include "language.hpp"
 #include "system.hpp"
-#include "settings.hpp"
+#include "settings/settings.hpp"
+#include "exceptions.hpp"
+
+
 
 #include "engine/PLog.hpp"
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
-#include "engine/PUtils.hpp"
+#include "engine/PFilesystem.hpp"
 
 #include "engine/types.hpp"
 
-static u32 loppulaskuri = 0;
-static bool siirry_lopusta_menuun = false;
-
-int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
+void EndingScreen::Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 	int frm = 0;
 	int yk = 0;
 
@@ -86,10 +86,8 @@ int Draw_EndGame_Image(int x, int y, int tyyppi, int plus, int rapytys){
 		}
 		PDraw::image_cutclip(bg_screen,x,y, 217+frm*29, 33, 243+frm*29, 61);
 	}
-
-	return 0;
 }
-int Draw_EndGame(){
+void EndingScreen::Draw_EndGame(){
 
 	u32 onnittelut_alku	= 300;
 	u32 onnittelut_loppu	= onnittelut_alku + 1000;
@@ -108,49 +106,67 @@ int Draw_EndGame(){
 	Draw_EndGame_Image(360, 284, 5, 60, 2);
 
 	if (loppulaskuri > onnittelut_alku) {
-		CreditsText_Draw(tekstit->Get_Text(PK_txt.end_congratulations), fontti2, 220, 380, onnittelut_alku, onnittelut_loppu, loppulaskuri);
-		CreditsText_Draw(tekstit->Get_Text(PK_txt.end_chickens_saved), fontti1, 220, 402, onnittelut_alku+30, onnittelut_loppu+30, loppulaskuri);
+		CreditsText_Draw_Centered(tekstit->Get_Text(PK_txt.end_congratulations), fontti2, 380, onnittelut_alku, onnittelut_loppu, loppulaskuri);
+		CreditsText_Draw_Centered(tekstit->Get_Text(PK_txt.end_chickens_saved), fontti1, 402, onnittelut_alku+30, onnittelut_loppu+30, loppulaskuri);
+
+		/*CreditsText_Draw(tekstit->Get_Text(PK_txt.end_congratulations).c_str(), fontti2, 220, 380, onnittelut_alku, onnittelut_loppu, loppulaskuri);
+		CreditsText_Draw(tekstit->Get_Text(PK_txt.end_chickens_saved).c_str(), fontti1, 220, 402, onnittelut_alku+30, onnittelut_loppu+30, loppulaskuri);*/
 	}
 	if (loppulaskuri > the_end_alku) {
-		CreditsText_Draw(tekstit->Get_Text(PK_txt.end_the_end), fontti2, 280, 190, the_end_alku, the_end_loppu, loppulaskuri);
-	}
+		CreditsText_Draw_Centered(tekstit->Get_Text(PK_txt.end_the_end), fontti2, 190, the_end_alku, the_end_loppu, loppulaskuri);
 
-	return 0;
+		//CreditsText_Draw(tekstit->Get_Text(PK_txt.end_the_end).c_str(), fontti2, 280, 190, the_end_alku, the_end_loppu, loppulaskuri);
+	}
 }
 
-int Screen_Ending_Init() {
-	
-	if(PUtils::Is_Mobile())
-		GUI_Change(UI_TOUCH_TO_START);
+void EndingScreen::Init() {
+
+	TouchScreenControls.change(UI_TOUCH_TO_START);
+	this->touchscreenWasPressed = true;
 	
 	PDraw::set_offset(640, 480);
 
-	PFile::Path path = Episode->Get_Dir("ending.bmp");
-	if (FindAsset(&path, "gfx" PE_SEP)) {
+	std::optional<PFile::Path> path = PFilesystem::FindAsset("ending.bmp", PFilesystem::GFX_DIR, ".png");
 
-		PDraw::image_load(bg_screen, path, true);
+	if (path.has_value()) {
+
+		PDraw::image_load_with_palette(bg_screen, default_palette, *path, true);
+		PDraw::palette_set(default_palette);
 
 	} else {
-
-		PLog::Write(PLog::ERR, "PK2", "Can't load ending bg"); //"Can't load map bg"
-
+		throw PExcept::PException("\"ending.bmp\" not found!");
 	}
 
-	if (PSound::start_music(PFile::Path("music" PE_SEP "intro.xm")) == -1)
-		PK2_Error("Can't load intro.xm");
+	path = PFilesystem::FindVanillaAsset("intro.xm", PFilesystem::MUSIC_DIR);
+	if(!path.has_value()){
+		throw PExcept::PException("\"intro.xm\" not found!");
+	}
+	else{
+
+		if (PSound::start_music(*path) == -1){
+			PLog::Write(PLog::ERR, "PK2", "Cannot load \"intro.xm\"!");
+		}
+	}
+
+
+	
+		
 
 	PSound::set_musicvolume(Settings.music_max_volume);
 
 	loppulaskuri = 0;
-	siirry_lopusta_menuun = false;
+	change_to_next_screen = false;
 
 	Fade_in(FADE_FAST);
-
-	return 0;
-
 }
 
-int Screen_Ending(){
+void EndingScreen::onKeyPressed(const PInput::Key& key){
+	change_to_next_screen = true;
+	PSound::set_musicvolume(0);
+	Fade_out(FADE_SLOW);
+}
+
+void EndingScreen::Loop(){
 
 	Draw_EndGame();
 
@@ -159,23 +175,24 @@ int Screen_Ending(){
 	loppulaskuri++;
 	//introlaskuri = loppulaskuri; // introtekstej� varten
 
-	if (siirry_lopusta_menuun && !Is_Fading()) {
+	if(Settings.touchscreen_mode){
+
+		if(TouchScreenControls.any&&! this->touchscreenWasPressed){
+			change_to_next_screen = true;
+			PSound::set_musicvolume(0);
+			Fade_out(FADE_SLOW);			
+		}
+
+		this->touchscreenWasPressed = TouchScreenControls.any;
+	}
+
+	if (change_to_next_screen && !Is_Fading()) {
 		PSound::set_musicvolume_now(Settings.music_max_volume);
 		//next_screen = SCREEN_MENU;
 		next_screen = SCREEN_MAP;
 	}
 
-	if (key_delay == 0) {
-		if (Clicked() || Gui_touch) {
-			siirry_lopusta_menuun = true;
-			PSound::set_musicvolume(0);
-			Fade_out(FADE_SLOW);
-		}
-	}
-
 	if (Episode->glows)
 		if (degree % 4 == 0)
 			PDraw::rotate_palette(224,239);
-
-	return 0;
 }

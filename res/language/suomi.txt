@@ -2,19 +2,19 @@
 Setup 
 ------------------------------------------------------------------------------------
 *setup options:			Asetukset
-*setup video modes:		N‰yttˆtilat
-*setup music & sounds:		Musiikki ja ‰‰niefektit
+*setup video modes:		N√§ytt√∂tilat
+*setup music & sounds:		Musiikki ja √§√§niefektit
 *setup music:			Musiikki
-*setup sounds:			ƒ‰niefektit
+*setup sounds:			√Ñ√§niefektit
 *setup language:		Valitse kielitiedosto
 *setup play:			Pelaa
 *setup exit:			Lopeta
 
 Intro
 ------------------------------------------------------------------------------------
-*intro presents:			esitt‰‰ 2003
+*intro presents:			esitt√§√§ 2003
 *intro a game by:			pelin, jonka on tehnyt
-*intro original character design:	alkuper‰isen hahmon kehitti
+*intro original character design:	alkuper√§isen hahmon kehitti
 *intro tested by:			testaajat
 *intro thanks to:			kiitokset
 *intro translation:			suomenkieliset tekstit
@@ -23,15 +23,15 @@ Intro
 Main Menu
 ------------------------------------------------------------------------------------
 *main menu new game:		aloita uusi peli
-*main menu continue:		jatka peli‰
+*main menu continue:		jatka peli√§
 *main menu load game:		lataa peli
 *main menu save game:		tallenna peli
 *main menu controls:		kontrollit
 *main menu graphics:		grafiikka
-*main menu sounds:		‰‰net
+*main menu sounds:		√§√§net
 *main menu exit game:		lopeta
 
-*back to main menu:		takaisin p‰‰menuun
+*back to main menu:		takaisin p√§√§menuun
 
 Load Game
 ------------------------------------------------------------------------------------
@@ -57,33 +57,33 @@ Game Controls
 *controls menu walk slow:	hiipiminen
 *controls menu egg attack:	muniminen
 *controls menu doodle attack:	kiekaisu
-*controls menu use item:	k‰yt‰ esine
+*controls menu use item:	k√§yt√§ esine
 *controls menu edit:		muokkaa kontrolleja
-*controls menu keyboard def:	perusnapit n‰pp‰imistˆlle
+*controls menu keyboard def:	perusnapit n√§pp√§imist√∂lle
 *controls menu gamepad4:	perusnapit gamepadille  4 nappia
 *controls menu gamepad6:	perusnapit gamepadille  6 nappia
 
 Sounds
 ------------------------------------------------------------------------------------
-*sounds menu title:		‰‰net ja musiikki
-*sounds menu sfx volume:	‰‰niefektien voimakkuus
+*sounds menu title:		√§√§net ja musiikki
+*sounds menu sfx volume:	√§√§niefektien voimakkuus
 *sounds menu music volume:	musiikin voimakkuus
-*sounds menu more:		lis‰‰
-*sounds menu less:		v‰henn‰
+*sounds menu more:		lis√§√§
+*sounds menu less:		v√§henn√§
 
 Graphics
 ------------------------------------------------------------------------------------
 *graphics menu title:				pelin grafiikka
-*graphics menu transparency fx on:		l‰pin‰kyvyysefektit on
-*graphics menu transparency fx off:		l‰pin‰kyvyysefektit off
-*graphics menu menus are transparent:		l‰pin‰kyv‰t menutekstit 
+*graphics menu transparency fx on:		l√§pin√§kyvyysefektit on
+*graphics menu transparency fx off:		l√§pin√§kyvyysefektit off
+*graphics menu menus are transparent:		l√§pin√§kyv√§t menutekstit 
 *graphics menu menus are not transparent:	tavalliset menutekstit 
-*graphics menu item bar is visible:		esineet n‰kyv‰t
-*graphics menu item bar is not visible:		esineet eiv‰t n‰y
-*graphics menu weather fx on:			s‰‰efektit n‰kyv‰t
-*graphics menu weather fx off:			s‰‰efektit eiv‰t n‰y
-*graphics menu bg sprites on:			taustaspritet n‰kyv‰t
-*graphics menu bg sprites off:			taustaspritet eiv‰t n‰y
+*graphics menu item bar is visible:		esineet n√§kyv√§t
+*graphics menu item bar is not visible:		esineet eiv√§t n√§y
+*graphics menu weather fx on:			s√§√§efektit n√§kyv√§t
+*graphics menu weather fx off:			s√§√§efektit eiv√§t n√§y
+*graphics menu bg sprites on:			taustaspritet n√§kyv√§t
+*graphics menu bg sprites off:			taustaspritet eiv√§t n√§y
 *graphics menu game speed normal:		normaali nopeus 
 *graphics menu game speed double:		tuplanopeus 
 
@@ -91,13 +91,13 @@ Player's name
 ------------------------------------------------------------------------------------
 *player screen type your name:			kirjoita nimesi
 *player screen continue:			valmis
-*player screen clear:				tyhjenn‰
+*player screen clear:				tyhjenn√§
 *player default name:				pelaaja
 
 Episodes
 ------------------------------------------------------------------------------------
 *episode menu choose episode:			valitse episodi
-*episode menu get more episodes at:		hae lis‰‰ episodeja osoitteesta http://pistegamez.cjb.net
+*episode menu get more episodes at:		hae lis√§√§ episodeja osoitteesta http://pistegamez.cjb.net
 *episode menu no maps:				episodissa ei ole karttoja!?
 
 Map
@@ -118,10 +118,10 @@ Scores
 *score screen bonus score:		pisteet bonuksista
 *score screen time score:		pisteet ajasta
 *score screen energy score:		pisteet energiasta
-*score screen item score:		pisteet esineist‰
+*score screen item score:		pisteet esineist√§
 *score screen continue:			jatka
 *score screen total score:		kokonaispisteet
-*score screen new level hiscore:	teit jakson uuden piste-enn‰tyksen!
+*score screen new level hiscore:	teit jakson uuden piste-enn√§tyksen!
 *score screen new level best time:	olet jakson nopein pelaaja!
 *score screen new episode hiscore:	olet episodin uusi mestari!
 
@@ -134,12 +134,12 @@ Game
 *attack 1:			kieku:
 *attack 2:			munat:
 *keys:				avaimet:
-*level clear:			jakso l‰p‰isty!
+*level clear:			jakso l√§p√§isty!
 *time bonus:			aikabonus
 *game paused:			tauko...
-*knocked out:			pekka on tyrm‰tty!
+*knocked out:			pekka on tyrm√§tty!
 *time out:			aika loppui!
-*try again:			yrit‰ uudestaan!
+*try again:			yrit√§ uudestaan!
 *locks open:			kaikki lukot ovat auki!
 *new doodle attack:		uusi kiekaisu!
 *new egg attack:		uusi muninta!
@@ -156,22 +156,22 @@ The End
 Info Signs
 ------------------------------------------------------------------------------------
 *info01:			huuda viholliset kumoon megafonilla!
-*info02:			tiputa munia vihollisten p‰‰lle!
-*info03:			etsi kent‰n ulosk‰ynti!
-*info04:			lukot aukeavat kun kaikki avaimet on ker‰tty.
-*info05:			liikuta kytkint‰ hypp‰‰m‰ll‰ sen p‰‰lle.
-*info06:			vihre‰ kytkin liikuttaa vihreit‰ seini‰.
-*info07:			sininen kytkin liikuttaa sinisi‰ seini‰.
+*info02:			tiputa munia vihollisten p√§√§lle!
+*info03:			etsi kent√§n ulosk√§ynti!
+*info04:			lukot aukeavat kun kaikki avaimet on ker√§tty.
+*info05:			liikuta kytkint√§ hypp√§√§m√§ll√§ sen p√§√§lle.
+*info06:			vihre√§ kytkin liikuttaa vihreit√§ seini√§.
+*info07:			sininen kytkin liikuttaa sinisi√§ seini√§.
 *info08:			oranssi kytkin sammuttaa tulen.
-*info09:			voit k‰ytt‰‰ lahjoista saamasi esineet milloin haluat.
-*info10:			hˆyhenet palauttavat energiaa.
-*info11:			teleportit ovat arvaamattomia. ‰l‰ eksy!
-*info12:			saat pisteit‰ bonuksista ja tyrm‰yksist‰.
-*info13:			yrit‰ lˆyt‰‰ kaikki k‰tketyt bonukset!
+*info09:			voit k√§ytt√§√§ lahjoista saamasi esineet milloin haluat.
+*info10:			h√∂yhenet palauttavat energiaa.
+*info11:			teleportit ovat arvaamattomia. √§l√§ eksy!
+*info12:			saat pisteit√§ bonuksista ja tyrm√§yksist√§.
+*info13:			yrit√§ l√∂yt√§√§ kaikki k√§tketyt bonukset!
 *info14:			lukko aukeaa, jos avain osuu siihen.
-*info15:			ole varovainen! t‰‰ll‰ on ansoja!
-*info16:			jos aika loppuu, et p‰‰se kentt‰‰ l‰pi.
-*info17:			varo vihaisia el‰imi‰!
+*info15:			ole varovainen! t√§√§ll√§ on ansoja!
+*info16:			jos aika loppuu, et p√§√§se kentt√§√§ l√§pi.
+*info17:			varo vihaisia el√§imi√§!
 *info18:			varo voimakasta tuulta!
 *info19:			vapauta vangitut kanat!
 
@@ -184,15 +184,38 @@ Font Information
 *font path:			language/fonts/
 
 
+----NEW GE keys:
 
+*main menu map:             kartta
+*main menu links:           linkit
+*main menu back:            takaisin
+*main menu more:            lis√§√§
 
+*graphics menu gui on:                  pelin sis√§inen gui p√§√§ll√§
+*graphics menu gui off:                 pelin sis√§inen gui pois p√§√§lt√§
 
+*graphics menu fullscreen on:           kokoruudun tila p√§√§ll√§
+*graphics menu fullscreen off:          kokoruudun tila pois p√§√§lt√§
 
+*graphics menu touchscreen on:          kosketusn√§ytt√∂ p√§√§ll√§
+*graphics menu touchscreen off:         kosketusn√§ytt√∂ pois p√§√§lt√§
 
+*controls menu default:                 oletusasetukset
+*controls menu use keyboard:            k√§yt√§ n√§pp√§imist√∂√§
+*controls menu use controller:          k√§yt√§ peliohjainta
+*controls menu vibration on:            peliohjain v√§risee
+*controls menu vibration off:           peliohjain ei v√§rise
 
+*invisibility:        n√§kym√§tt√∂myys:
+*supermode:           supertila:
 
+*intro game created by:     pelin alkuper√§inen kehitt√§j√§
+*intro game improved by:    parannukset
+*intro community:           ja kaikki muut pistegamerzit
 
+*back to settings menu:     takaisin asetuksiin
+*save menu empty slot:      tyhj√§
+*save menu episode completed:           l√§p√§isty
 
-
-
-
+*graphics menu game speed:              pelin nopeus
+*graphics menu texture filtering:       filter√∂inti

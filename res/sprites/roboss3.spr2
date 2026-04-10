@@ -1,0 +1,130 @@
+{
+    "ai": [
+        6,
+        52,
+        37
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": false,
+            "sequence": [
+                6
+            ]
+        },
+        "attack2": {
+            "loop": false,
+            "sequence": [
+                6
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                5
+            ]
+        },
+        "death": {
+            "loop": true,
+            "sequence": [
+                5
+            ]
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                2
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                1,
+                3
+            ]
+        },
+        "squat": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        }
+    },
+    "attack1_time": 20,
+    "attack2_time": 20,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 0,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 130,
+    "check_tiles": true,
+    "color": "normal",
+    "damage": 3,
+    "damage_type": 1,
+    "destruction_effect": 13,
+    "effect": 0,
+    "enemy": true,
+    "energy": 40,
+    "frame": {
+        "height": 78,
+        "pos_x": 1,
+        "pos_y": 1,
+        "width": 78
+    },
+    "frame_rate": 5,
+    "frames_number": 6,
+    "immunity_type": 0,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 20,
+    "max_speed": 0.0,
+    "name": "static metal hen",
+    "parallax_type": 0,
+    "picture": "spr_mach.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 500,
+    "size": {
+        "height": 78,
+        "width": 78
+    },
+    "sound_frequency": 11050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "boss2_dm.wav",
+        "destruction": "boss2_ko.wav",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "roboss1.spr2",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 2.0
+}

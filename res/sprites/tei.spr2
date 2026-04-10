@@ -1,0 +1,119 @@
+{
+    "ai": [
+        17,
+        19
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": false,
+            "sequence": []
+        },
+        "attack2": {
+            "loop": false,
+            "sequence": []
+        },
+        "damage": {
+            "loop": false,
+            "sequence": []
+        },
+        "death": {
+            "loop": false,
+            "sequence": [
+                2,
+                3,
+                4,
+                5
+            ]
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1
+            ]
+        },
+        "jump_down": {
+            "loop": false,
+            "sequence": []
+        },
+        "jump_up": {
+            "loop": false,
+            "sequence": []
+        },
+        "squat": {
+            "loop": false,
+            "sequence": []
+        },
+        "walking": {
+            "loop": false,
+            "sequence": []
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 0,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 40,
+    "check_tiles": true,
+    "color": "orange",
+    "damage": 0,
+    "damage_type": 0,
+    "destruction_effect": 18,
+    "effect": 0,
+    "enemy": false,
+    "energy": 1,
+    "frame": {
+        "height": 13,
+        "pos_x": 1,
+        "pos_y": 281,
+        "width": 11
+    },
+    "frame_rate": 1,
+    "frames_number": 5,
+    "immunity_type": 0,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 0,
+    "max_speed": 0.0,
+    "name": "debug egg",
+    "parallax_type": 0,
+    "picture": "spr_hens.bmp",
+    "player_detection": {
+        "x": 200.0,
+        "y": 350.0
+    },
+    "projectile_charge_time": 50,
+    "random_sound_frequency": true,
+    "score": 0,
+    "size": {
+        "height": 13,
+        "width": 11
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "",
+        "destruction": "eggcrack.wav",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 3,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.3
+}

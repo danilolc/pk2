@@ -1,176 +1,225 @@
 Setup 
 ------------------------------------------------------------------------------------
-*setup options:				Configuracion
-*setup video modes:			Modos de Video
-*setup music & sounds:			Musica y FX
-*setup music:				Musica
-*setup sounds:				FX
-*setup language:			Escoge lengua
-*setup play:				Jugar
-*setup exit:				Salir
+*setup options:				        Configuración
+*setup video modes:			        Modos de video
+*setup music & sounds:		        Música y sonido
+*setup music:				        Música
+*setup sounds:				        Efectos de sonido
+*setup language:			        Elige un idioma
+*setup play:				        Jugar
+*setup exit:				        Salir
 
 Intro
 ------------------------------------------------------------------------------------
-*intro presents:			presenta 2003
-*intro a game by:			un juego de
-*intro original character design:	diseno de caracteres
-*intro tested by:			probado por
-*intro thanks to:			gracias a 
-*intro translation:			traduccion al espanol
-*intro translator:			fosky
+*intro presents:			        presenta 2003
+*intro original character design:	diseño original de personajes
+*intro tested by:			        testeado por
+*intro thanks to:			        gracias a
+*intro translation:                 traducción al español por
+*intro translator:                  makyuni
+
+-- new GE keys --
+
+*intro game created by:     juego creado originalmente por
+*intro game improved by:    mejorado por
+*intro community:           y todo el resto de pistegamerz
+
+--
 
 Main Menu
 ------------------------------------------------------------------------------------
-*main menu new game:			nuevo juego
-*main menu continue:			continuar
-*main menu load game:			cargar
-*main menu save game:			guardar
-*main menu controls:			controles
-*main menu graphics:			graficos
-*main menu sounds:			sonidos
-*main menu exit game:			salir
+*main menu new game:			    nuevo juego
+*main menu continue:			    continuar
+*main menu load game:			    cargar juego
+*main menu save game:			    guardar juego
+*main menu controls:			    controles
+*main menu graphics:			    gráficos
+*main menu sounds:			        sonidos
+*main menu exit game:			    salir
 
-*back to main menu:			volver al menu
+---- New GE keys:
+
+*main menu map:                     volver al mapa
+*main menu links:                   links
+*main menu back:                    volver
+*main menu more:                    ver más
+
+*back to settings menu:             volver al menú de configuración
+----
+
+
+*back to main menu:			        volver al menú principal
 
 Load Game
 ------------------------------------------------------------------------------------
-*load menu title:			cargar juego
-*load menu info:			haz clic en el juego que quieres cargar
-*load menu episode:			episodio: 
-*load menu level:			nivel: 
+*load menu title:			        cargar juego
+*load menu info:			        elige la casilla que quieres cargar
+*load menu episode:			        episodio: 
+*load menu level:			        nivel: 
 
 Save Game
 ------------------------------------------------------------------------------------
-*save menu title:			guardar juego
-*save menu info:			haz clic donde quieras guardar
-*save menu episode:			episodio: 
-*save menu level:			nivel: 
+*save menu title:			        guardar juego
+*save menu info:			        elige la casilla en la que quieres guardar
+*save menu episode:			        episodio: 
+*save menu level:			        nivel: 
+
+---- New GE keys:
+
+*save menu empty slot:              vacío
+*save menu episode completed:       completado
+
+
+----
 
 Game Controls
 ------------------------------------------------------------------------------------
-*controls menu title:			controles
-*controls menu move left:		izquierda
-*controls menu move right:		derecha
-*controls menu jump:			saltar
-*controls menu duck:			agacharse
-*controls menu walk slow:		andar despacio
-*controls menu egg attack:		lanzar huevos
-*controls menu doodle attack:		ataque doodle
-*controls menu use item:		usar item
-*controls menu edit:			editar
-*controls menu keyboard def:		teclado por defecto
-*controls menu gamepad4:		gamepad defaults 4 buttons 
-*controls menu gamepad6:		gamepad defaults 6 buttons
+*controls menu title:			    controles
+*controls menu move left:		    izquierda
+*controls menu move right:		    derecha
+*controls menu jump:			    saltar
+*controls menu duck:			    agacharse
+*controls menu walk slow:		    caminar lento
+*controls menu egg attack:		    ataque de huevo
+*controls menu doodle attack:		ataque de cacareo
+*controls menu use item:		    usar ítem
+*controls menu edit:			    editar
+
+---- New GE keys:
+
+*controls menu default:             controles predeterminados
+*controls menu use keyboard:        usar teclado
+*controls menu use controller:      usar jostick
+*controls menu vibration on:        vibración del joystick: sí
+*controls menu vibration off:       vibración del joystick: no
+
+---- 
 
 Sounds
 ------------------------------------------------------------------------------------
-*sounds menu title:			sonidos y musica
-*sounds menu sfx volume:		volumen del FX
-*sounds menu music volume:		volumen de la musica
-*sounds menu more:			mas
-*sounds menu less:			menos
+*sounds menu title:			        sonidos y música
+*sounds menu sfx volume:		    volumen de efectos de sonido
+*sounds menu music volume:		    volumen de la música
+*sounds menu more:			        más
+*sounds menu less:			        menos
 
 Graphics
 ------------------------------------------------------------------------------------
-*graphics menu title:				graficos
-*graphics menu transparency fx on:		transparencias fx on
-*graphics menu transparency fx off:		transparencias fx off
-*graphics menu menus are transparent:		textos del menu transparentes on
-*graphics menu menus are not transparent:	textos del menu transparentes off 
-*graphics menu item bar is visible:		barra de items is visible
-*graphics menu item bar is not visible:		barra de items is not visible
-*graphics menu weather fx on:			meteorologia fx on
-*graphics menu weather fx off:			meteorologia fx off
-*graphics menu bg sprites on:			fondos on
-*graphics menu bg sprites off:			fondos off
-*graphics menu game speed normal:		velocidad del juego is normal 
-*graphics menu game speed double:		velocidad del juego is double 
+*graphics menu title:				        gráficos
+*graphics menu menus are transparent:		textos del menú transparentes: sí
+*graphics menu menus are not transparent:	textos del menú transparentes: no
+*graphics menu item bar is visible:		    barra de ítems visible: sí
+*graphics menu item bar is not visible:		barra de ítems visible: no
+*graphics menu game speed normal:		    velocidad de juego: normal 
+*graphics menu game speed double:		    velocidad de juego: doble 
+
+---- New GE keys:
+
+*graphics menu gui on:              gui: sí
+*graphics menu gui off:             gui: no
+
+*graphics menu fullscreen on:       pantalla completa: sí
+*graphics menu fullscreen off:      pantalla completa: no
+
+*graphics menu touchscreen on:      modo pantalla táctil: sí
+*graphics menu touchscreen off:     modo pantalla táctil: no
+
+*graphics menu game speed:          velocidad del juego
+*graphics menu texture filtering:   filtrado de texturas
+
+----
 
 Player's name
 ------------------------------------------------------------------------------------
 *player screen type your name:		escribe tu nombre
-*player screen continue:		listo
-*player screen clear:			borrar
-*player default name:			pekka
+*player screen continue:		    listo
+*player screen clear:			    borrar
+*player default name:			    pekka
 
 Episodes
 ------------------------------------------------------------------------------------
 *episode menu choose episode:		elige un episodio
-*episode menu get more episodes at:	baja mas episodios en http://pistegamez.cjb.net
-*episode menu no maps:			el episodio no tiene mapas!?
+*episode menu no maps:			    no se encontaron niveles
 
 Map
 ------------------------------------------------------------------------------------
-*map screen total score:		puntuacion
-*map screen next level:			siguiente nivel
-*episode best player:			campeon del episodio:
-*episode hiscore:			puntos maximo
-*level best player:			mejor jugador
-*level hiscore:				puntuacion:
-*level fastest player:			jugador mas rapido
-*level best time:			tiempo:
+*map screen total score:		    puntaje
+*map screen next level:			    próximo nivel
+*episode best player:			    campeón del episodio:
+*episode hiscore:			        puntaje más alto
+*level best player:			        mejor jugador
+*level hiscore:				        puntaje:
+*level fastest player:			    jugador más rápido
+*level best time:			        tiempo:
 
 Scores
 ------------------------------------------------------------------------------------
-*score screen title:			puntuacion total
-*score screen level score:		puntos del nivel
-*score screen bonus score:		puntos bonus
-*score screen time score:		bonus tiempo
-*score screen energy score:		bonus energia
-*score screen item score:		bonus items
-*score screen continue:			mapa
-*score screen total score:		puntuacion total
-*score screen new level hiscore:	has roto el hiscore!
-*score screen new level best time:	eres el mas rapido!
-*score screen new episode hiscore:	eres el campeon!
+*score screen title:			    puntos totales
+*score screen level score:		    puntos del nivel
+*score screen bonus score:		    puntos de bonus
+*score screen time score:		    puntos de tiempo
+*score screen energy score:		    bonus por energía
+*score screen item score:		    bonus por ítems
+*score screen continue:			    volver al mapa
+*score screen total score:		    puntaje total
+*score screen new level hiscore:	has roto el récord!
+*score screen new level best time:	eres el jugador más rápido!
+*score screen new episode hiscore:	eres el campeón del episodio!
 
 Game
 ------------------------------------------------------------------------------------
-*score:					puntos:
-*game time:				tiempo:
-*energy:				vida:
-*items:					items:
-*attack 1:				megafono:
-*attack 2:				huevos:
-*keys:					llaves:
-*level clear:				nivel superado!
+*score:					    puntos:
+*game time:				    tiempo:
+*energy:				    energía:
+*items:					    ítems:
+*attack 1:				    cacareo:
+*attack 2:				    huevos:
+*keys:					    llaves:
+*level clear:			    nivel completado!
 *time bonus:			
-*game paused:				pausa...
-*knocked out:				has muerto!
-*time out:				se te acabo el tiempo!
-*try again:				intetalo otra vez!
-*locks open:				las cerraduras estan abiertas!
-*new doodle attack:			un megafono!
-*new egg attack:			un huevo!
-*new item:				un item!
+*game paused:			    pausa...
+*knocked out:			    noqueado!
+*time out:				    se acabó el tiempo!
+*try again:				    intenta de nuevo!
+*locks open:			    todos los cerrojos están abiertos!
+*new doodle attack:		    nuevo cacareo!
+*new egg attack:		    nuevo huevo!
+*new item:				    nuevo ítem!
 
-*loading:				ca(r)gando...
+---- NEW GE keys
+
+*invisibility:              invisible:
+*supermode:                 súpermodo:
+
+---- 
+
+*loading:				    cargando...
 
 The End
 ------------------------------------------------------------------------------------
-*end congratulations:			felicidades!
-*end chickens saved:			has salvado los pollos!
+*end congratulations:		felicidades!
+*end chickens saved:		haz salvado a los pollos!
 *end the end:				fin
 
 Info Signs
 ------------------------------------------------------------------------------------
-*info01:			usa el megafono contra los enemigos!
+*info01:			usa el megáfono contra tus enemigos!
 *info02:			bombardea a los enemigos con huevos!
-*info03:			encuentra la senal de salida!
-*info04:			las cerraduras se abren si tienes todas las llaves.
-*info05:			mueve los interruptores saltando en ellos.
-*info06:			los interruptores verdes mueven muros con flecha verde.
-*info07:			los interruptores azules mueven muros con flecha azul.
-*info08:			los interruptores naranja apagan el fuego.
-*info09:			puedes usar los items cuando quieras.
-*info10:			las plumas te dan energia.
-*info11:			el teletransporte es cabr�n! no te pierdas!
-*info12:			los knocks out y los bonus aumentan tu puntuacion.
-*info13:			always search for hidden bonuses!
-*info14:			una cerradura se abre si un llave lo toca.
+*info03:			encuentra la salida!
+*info04:			los cerrojos se abrirán si tienes todas las llaves.
+*info05:			salta sobre un botón para activarlo.
+*info06:			los botones verdes mueven paredes con flechas verdes.
+*info07:			los botones azules mueven paredes con flechas azules.
+*info08:			los botones naranja apagan el fuego.
+*info09:			puedes usar los ítems de regalo cuando quieras.
+*info10:			las plumas te devuelven energía.
+*info11:			los teletransportadores son engañosos! no te pierdas!
+*info12:			colecciona bonus y noquea enemigos para aumentar tu puntaje.
+*info13:			siempre busca bonus ocultos!
+*info14:			un cerrojo se abrirá si es tocado por una llave.
 *info15:			cuidado con las trampas! je je...
-*info16:			acelera! el tiempo corre!
-*info17:			cuidado con los animales enfadados!
-*info18:			cuidado con el fuerte viento!
-*info19:			salva a los polluelos!
+*info16:			apresúrate! el tiempo corre!
+*info17:			cuidado con los animales furiosos!
+*info18:			cuidado con el viento fuerte!
+*info19:			salva a los pollos!
 		

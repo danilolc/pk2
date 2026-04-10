@@ -1,0 +1,130 @@
+{
+    "ai": [
+        6,
+        121
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "attack2": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "damage": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "death": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "idle": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "jump_down": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "jump_up": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "squat": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "walking": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 1500,
+    "check_tiles": true,
+    "color": "blue",
+    "damage": 0,
+    "damage_type": 0,
+    "destruction_effect": 3,
+    "effect": 0,
+    "enemy": false,
+    "energy": 1,
+    "frame": {
+        "height": 24,
+        "pos_x": 1,
+        "pos_y": 32,
+        "width": 20
+    },
+    "frame_rate": 4,
+    "frames_number": 1,
+    "immunity_type": 0,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 10,
+    "max_speed": 3.0,
+    "name": "ghost powder",
+    "parallax_type": 0,
+    "picture": "spr_bon2.bmp",
+    "player_detection": {
+        "x": 200.0,
+        "y": 350.0
+    },
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 20,
+    "size": {
+        "height": 24,
+        "width": 20
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "",
+        "destruction": "bonus12.wav",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 2,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.5
+}

@@ -10,160 +10,81 @@
 //	Starts the level13.map on dev mode
 //#########################
 #include "engine/Piste.hpp"
+#include "engine/PFilesystem.hpp"
 #include "version.hpp"
 
-#include "screens/screens.hpp"
+#include "screens/screens_handler.hpp"
 #include "gfx/text.hpp"
 #include "game/game.hpp"
 #include "episode/episodeclass.hpp"
 #include "episode/mapstore.hpp"
-#include "save.hpp"
-#include "gui.hpp"
+#include "gfx/touchscreen.hpp"
 #include "system.hpp"
 #include "language.hpp"
-#include "settings.hpp"
 
-#include <cstring>
+#include "settings/settings.hpp"
+#include "settings/config_txt.hpp"
+
+#include <filesystem>
 #include <algorithm>
 
+#include "game/prototypes_handler.hpp"
+
+#include <cstring>
+#include <cstdlib>
+#include <ctime>
+
+#include <algorithm>
 #include <SDL.h>
 
-static const char default_config[] = 
-"-- Render Method"
-"\r\n-- Possible options: sdl software opengl opengles default"
-"\r\n---------------"
-"\r\n*render_method:        default"
-"\r\n"
-"\r\n"
-"\r\n-- Audio Buffer Size"
-"\r\n-- low value = low audio latency; high value = less cpu usage"
-"\r\n-- Default is 1024"
-"\r\n-- Prefer a power of 2: 512 1024 2048 4096 default"
-"\r\n---------------"
-"\r\n*audio_buffer_size:    default"
-"\r\n"
-"\r\n"
-"\r\n-- Multi thread audio"
-"\r\n-- Change frequency in another thread"
-"\r\n-- Default is yes"
-"\r\n---------------"
-"\r\n*audio_multi_thread:    yes"
-"\r\n";
+#include "utils/file_converter.hpp"
 
-static char* test_path = NULL;
-static bool path_set = false;
-static bool editor = false;
+#include "episode/save_slots.hpp"
 
-static void read_config() {
-
-	PLang conf = PLang();
-	PFile::Path path = PFile::Path(data_path + "config.txt");
-	
-	bool ok = conf.Read_File(path);
-	if (!ok) {
-		
-		PFile::RW* rw = path.GetRW("w");
-		if (rw) {
-			rw->write(default_config, sizeof(default_config) - 1);
-			rw->close();
-		}
-
-		return;
-	}
-
-	PLog::Write(PLog::DEBUG, "PK2", "Found config file");
-
-	// TODO - set different render method
-	int idx = conf.Search_Id("render_method");
-	if (idx != -1) {
-		const char* txt = conf.Get_Text(idx);
-		PLog::Write(PLog::DEBUG, "PK2", "Render method set to %s", txt);
-
-		if (strcmp(txt, "default") == 0)
-			render_method = PRender::RENDERER_DEFAULT;
-		else if (strcmp(txt, "sdl") == 0)
-			render_method = PRender::RENDERER_SDL;
-		else if (strcmp(txt, "software") == 0)
-			render_method = PRender::RENDERER_SDL_SOFTWARE;
-		else if (strcmp(txt, "opengl") == 0)
-			render_method = PRender::RENDERER_OPENGL;
-		else if (strcmp(txt, "opengles") == 0)
-			render_method = PRender::RENDERER_OPENGLES;
-
-	}
-
-	idx = conf.Search_Id("audio_buffer_size");
-	if (idx != -1) {
-		const char* txt = conf.Get_Text(idx);
-		int val = atoi(txt);
-
-		if (val > 0) {
-			audio_buffer_size = val;
-			
-
-		}
-	}
-	PLog::Write(PLog::DEBUG, "PK2", "Audio buffer size set to %i", audio_buffer_size);
-
-	idx = conf.Search_Id("audio_multi_thread");
-	if (idx != -1) {
-		const char* txt = conf.Get_Text(idx);
-
-		if (strcmp(txt, "default") == 0)
-			audio_multi_thread = true;
-		else if (strcmp(txt, "yes") == 0)
-			audio_multi_thread = true;
-		else if (strcmp(txt, "no") == 0)
-			audio_multi_thread = false;
-
-		
-	}
-	PLog::Write(PLog::DEBUG, "PK2", "Audio multi thread is %s", audio_multi_thread? "ON" : "OFF");
-
-}
 
 static void start_test(const char* arg) {
 	
 	if (arg == NULL) return;
 
-	PFile::Path path(arg);
+	/**
+	 * @brief 
+	 * TODO
+	 * Not to load the whole episode while testing a level
+	 */
 
+	std::filesystem::path path(arg);
+
+	//PFile::Path path(arg);
 	episode_entry episode;
-	episode.name = path.GetDirectory();
+	episode.name = path.parent_path().string();
 	episode.is_zip = false;
+
 	Episode = new EpisodeClass("test", episode);
 
-	Game = new GameClass(path.GetFileName());
+	Game = new GameClass(path.filename().string());
 
-	PLog::Write(PLog::DEBUG, "PK2", "Testing episode '%s' level '%s'", episode.name.c_str(), Game->map_file.c_str());
+	PLog::Write(PLog::DEBUG, "PK2", "Testing episode '%s' level '%s'", episode.name.c_str(), Game->level_file.c_str());
 
 }
 
-// Clean memory (needed?)
 static void quit() {
-
-	if(PK2_error) {
-
-		PLog::Write(PLog::ERR, "PK2", PK2_error_msg);
-		PUtils::Show_Error(PK2_error_msg);
-		
-	}
-
-	//Settings_Save();
 
 	PSound::stop_music();
 
-	if (PUtils::Is_Mobile())
-		GUI_Exit();
-
-	if (Game)
+	if (Game!=nullptr){
 		delete Game;
+		Game = nullptr;
+	}
 	
-	if (Episode)
+	if (Episode!=nullptr){
 		delete Episode;
+		Episode = nullptr;
+	}
 	
-	if(tekstit)
+	if(tekstit!=nullptr){
 		delete tekstit;
+		tekstit = nullptr;
+	}
 
 	Piste::terminate();
 	PLog::Write(PLog::DEBUG, "PK2", "Terminated");
@@ -171,223 +92,231 @@ static void quit() {
 
 }
 
-static void read_args(int argc, char *argv[]) {
-
-	for (int i = 1; i < argc; i++) {
-		if (strcmp(argv[i], "version") == 0) {
-			printf(PK2_VERSION_STR "\n");
-			exit(0);
-		}
-		if (strcmp(argv[i], "dev") == 0) {
-			dev_mode = true;
-			Piste::set_debug(true);
-		}
-		else if (strcmp(argv[i], "test") == 0) {
-			if (argc <= i + 1) {
-				printf("Please set a level to test\n");
-				exit(1);
-			}
-			else {
-				i++;
-				test_path = argv[i];
-				test_level = true;
-				continue;
-			}
-		}
-		else if (strcmp(argv[i], "path") == 0) {
-			if (argc <= i + 1) {
-				printf("Please set a path\n");
-				exit(1);
-			}
-			else {
-				i++;
-				if (chdir(argv[i]) != 0) {
-					printf("Invalid path\n");
-					exit(1);
-				}
-				path_set = true;
-				continue;
-			}
-		}
-		else if (strcmp(argv[i], "fps") == 0) {
-			show_fps = true;
-			continue;
-		}
-		else if (strcmp(argv[i], "speedrun") == 0) {
-			speedrun_mode = true;
-			continue;
-		}
-		else if (strcmp(argv[i], "mobile") == 0) {
-			PUtils::Force_Mobile();
-		}
-		else if (strcmp(argv[i], "editor") == 0) {
-			editor = true;
-		}
-		else {
-			printf("Invalid arg\n");
-			exit(1);
-		}
-	}
-}
-
-static void set_paths() { // Todo - move to the engine
-
-	if(!path_set)
-		PUtils::Setcwd();
-	
-	#ifndef __ANDROID__
-
-	#ifdef PK2_PORTABLE
-
-	data_path = "." PE_SEP "data" PE_SEP;
-	PUtils::CreateDir(data_path);
-
-	#else
-
-	char* data_path_p = SDL_GetPrefPath(NULL, PK2_NAME);
-	if (data_path_p == NULL) {
-
-		PLog::Write(PLog::FATAL, "PK2", "Failed to init data path");
-		quit();
-		return 1;
-
-	}
-
-	data_path = data_path_p;
-	SDL_free(data_path_p);
-
-	#endif //PK2_PORTABLE
-
-	#else //__ANDROID__
-
-	const char* ptr = SDL_AndroidGetExternalStoragePath(); //TODO 1.5 - external path must be a writeable path
-	if (ptr) {
-		External_Path = ptr;
-		SDL_free((void*)ptr);
-	} else {
-		PLog::Write(PLog::ERR, "PK2", "Couldn't find External Path");
-	}
-
-	ptr = SDL_AndroidGetInternalStoragePath();
-	if (ptr) {
-		Internal_Path = ptr;
-		SDL_free((void*)ptr);
-	} else {
-		PLog::Write(PLog::ERR, "PK2", "Couldn't find Internal Path");
-	}
-
-	External_Path += PE_SEP;
-	Internal_Path += PE_SEP;
-
-	PLog::Write(PLog::DEBUG, "PK2", "External %s", External_Path.c_str());
-	PLog::Write(PLog::DEBUG, "PK2", "Internal %s", Internal_Path.c_str());
-
-	PLog::Write(PLog::DEBUG, "PK2", "Allow %i", SDL_AndroidGetExternalStorageState);
-
-
-	// Choose between internal or external path on Android
-	// Prioritize internal
-	if (PUtils::ExternalWriteable()) {
-
-		PLog::Write(PLog::DEBUG, "PK2", "External access allowed");
-
-		PFile::Path settings_f = PFile::Path("settings.ini");
-		settings_f.SetPath(Internal_Path);
-		PLog::Write(PLog::DEBUG, "PK2", "%s", settings_f.c_str());
-		if (!settings_f.Find()) {
-
-			PLog::Write(PLog::DEBUG, "PK2", "Settings not found on internal");
-
-			settings_f.SetPath(External_Path);
-			if (settings_f.Find()) {
-
-				PLog::Write(PLog::DEBUG, "PK2", "Settings found on external");
-				external_dir = true;
-			
-			}
-			else {
-
-				PLog::Write(PLog::DEBUG, "PK2", "Settings not found on external");
-				external_dir = false;
-
-			}
-		} else {
-
-			PLog::Write(PLog::DEBUG, "PK2", "Settings found on internal");
-			external_dir = false;
-
-		}
-	} else {
-
-		PLog::Write(PLog::DEBUG, "PK2", "External access not allowed");
-		external_dir = false;
-
-	}
-
-	if (external_dir)
-		data_path = External_Path;
-	else
-		data_path = Internal_Path;
-
-	#endif //__ANDROID__
-
-}
 
 static void log_data() {
 
 	PLog::Write(PLog::DEBUG, "PK2", "Pekka Kana 2 started!");
 	PLog::Write(PLog::DEBUG, "PK2", "Game version: %s", PK2_VERSION_STR);
-	PLog::Write(PLog::DEBUG, "PK2", "Number: 0x%x", PK2_VERNUM);
-
-	#ifdef COMMIT_HASH
-	PLog::Write(PLog::DEBUG, "PK2", "Cammit hash: " COMMIT_HASH);
-	#else
-	PLog::Write(PLog::DEBUG, "PK2", "Cammit hash unknown");
-	#endif
-
-	PLog::Write(PLog::DEBUG, "PK2", "Data path - %s", data_path.c_str());
+	PLog::Write(PLog::DEBUG, "PK2", "Assets path - %s", PFilesystem::GetAssetsPath().c_str());
+	PLog::Write(PLog::DEBUG, "PK2", "Data path - %s", PFilesystem::GetDataPath().c_str());
 
 }
 
-int main(int argc, char *argv[]) {
+void pk2_init(){
+	PFilesystem::SetDefaultPaths();
+	PLog::Init(PLog::ALL, true, true);
+}
 
-	read_args(argc, argv);
-	
-	PLog::Init(PLog::ALL, PFile::Path(""));
-	
-	set_paths();
-	
-	PLog::Init(PLog::ALL, PFile::Path(data_path + "log.txt"));
-	
-	log_data();
-	
-	Prepare_DataPath();
-	
-	Settings_Open();
-	
-	read_config();
+void pk2_main(bool _dev_mode, bool _show_fps, bool _test_level, const std::string& test_path){
 
-	Piste::init(screen_width, screen_height, PK2_NAME, "gfx" PE_SEP "icon.bmp", render_method, audio_buffer_size, audio_multi_thread);
-	if (!Piste::is_ready()) {
+	ScreensHandler *handler = nullptr;
+	dev_mode = _dev_mode;
+	show_fps = _show_fps;
+	test_level = _test_level;
+	try{
+		log_data();
 
-		PLog::Write(PLog::FATAL, "PK2", "Failed to init PisteEngine");
-		quit();
-		return 1;
+		srand(time(nullptr));
+		config_txt.readFile();
+		Calculate_SinCos();
+		Settings_Open();
 
+		if(!_test_level){
+			Search_Episodes();
+			if(config_txt.save_slots){
+				PK2save::LoadSaveSlots();
+			}
+		}	
+
+		std::optional<PFile::Path> iconPath = PFilesystem::FindVanillaAsset("icon.bmp", PFilesystem::GFX_DIR, ".png");
+		if(!iconPath.has_value()){
+			throw std::runtime_error("\"icon[.bmp/.png]\" not found!");			
+		}
+
+		Piste::init(screen_width, screen_height, PK2_VERSION_STR_WINDOW, iconPath->c_str(),
+		config_txt.audio_buffer_size);
+
+		if(Settings.useJoystick && !PInput::InputSystem::instance().isJoystickAvailable()){
+			Settings.useJoystick = false;
+		}
+		
+		if (!Piste::is_ready()) {
+			throw std::runtime_error("Failed to init PisteEngine!");
+		}	
+		handler = new ScreensHandler();
+		Screen::next_screen = SCREEN_INTRO;
+		if(dev_mode){
+			Screen::next_screen = SCREEN_MENU;
+		}
+		
+		if(test_level){
+			start_test(test_path.c_str());
+			Screen::next_screen = SCREEN_GAME;
+		}
+
+		Piste::loop(std::bind(&ScreensHandler::Loop, handler)); //The game loop
+	}
+	catch(const std::exception& e){
+		PLog::Write(PLog::FATAL, "PK2", e.what());
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal error!", e.what(), nullptr);
 	}
 
-	Screen_First_Start();
-
-	next_screen = SCREEN_INTRO;
-	if (dev_mode)
-		next_screen = SCREEN_MENU;
-	if (test_level) {
-		start_test(test_path);
-		next_screen = SCREEN_GAME;
+	if(handler!=nullptr){
+		delete handler;
+		handler = nullptr;
 	}
-
-	Piste::loop(Screen_Loop); //The game loop
 
 	quit();
+}
+
+int main(int argc, char **argv) {
+
+	bool test_level = false;
+	bool dev_mode = false;
+	bool show_fps = false;
+	bool converting_sprite = false;
+	bool updating_sprites = false;
+
+	std::string filename_in;
+	std::string filename_out;
+	std::string test_path;
+
+	int state = 0;
+	for(int i=1;i<argc;++i){
+		std::string arg = argv[i];
+		switch (state)
+		{
+		case 0:{
+			if(arg=="--help" || arg=="-h"){
+				printf("Pekka Kana 2 (Pekka the Rooster 2) is a jump 'n run game made "
+				"in the spirit of classic platformers such as Super Mario, SuperTux, "
+				" Jazz Jackrabbit, Super Frog and so on.\n"
+				"Available command arguments are:\n"
+				"-h / --help -> print help,\n"
+				"-v / --version -> print version string,\n"
+				"-d / --dev -> enable the cheats and the debug tools,\n"
+				"--fps -> enable the FPS counter.\n"
+				"-t / --test \"episode/level\" -> test/play particular level\n"
+				"(e.g ./pekka-kana-2 --test \"rooster island 2/level13.map\"),\n"
+
+				"--assets-path -> set a custom assets path (default sprites, rooster islands and so on)\n"
+				"(e.g ./pekka-kana-2 --assets-path \"path/my_pk2assets\")\n"
+
+				"--data-path -> set a custom data path (saves, mapstore, etc)\n"
+				"(e.g ./pekka-kana-2 --data-path \"path/my_saves\")\n"
+				"USE \"./pekka-kana-2 --data-path PREF_PATH\" if you want to use the .local/share dir\n"
+
+				"--convert -> convert an old sprite to the new .spr2 format\n"
+				"(e.g ./pekka-kana-2 --convert \"path/old.spr\")\n"
+				
+				);
+				return 0;
+			}
+			else if(arg=="--version" || arg=="-v"){
+				printf("%s\n", PK2_VERSION_STR);
+				return 0;
+			}
+			else if(arg=="--dev" || arg=="-d" || arg=="dev"){
+				dev_mode = true;
+				//Piste::set_debug(true);
+			}
+			else if(arg=="--test" || arg=="-t" || arg=="test"){
+				state = 1;				
+			}
+			else if(arg=="--assets-path"){
+				state = 2;
+			}
+			else if(arg=="--data-path"){
+				state = 6;
+			}
+
+			else if(arg=="--fps"){
+				show_fps= true;
+			}
+			else if	(arg=="--convert"){
+				filename_in = "";
+				filename_out = "";
+				state=3;
+				converting_sprite = true;
+			}
+			else if (arg=="--update-sprites"){
+				filename_in = ".";
+				filename_out = "";
+				state=5;
+				updating_sprites = true;
+			}
+			else {
+				printf("Invalid arg \"%s\"\n", arg.c_str());
+				return 1;
+			}
+		}
+		break;
+		case 1:{
+			test_path = arg;
+			test_level = true;
+			state = 0;
+		}
+		break;
+		case 2:{
+			
+			try{
+				PFilesystem::SetAssetsPath(arg);
+			}
+			catch(const std::exception& e){
+				printf("%s\n", e.what());
+				return 1;
+			}
+
+			state = 0;
+		}
+		break;
+		case 3:{
+			filename_in = arg;
+			state = 4;			
+		}
+		break;
+		case 4:{
+			filename_out = arg;
+			state = 0;
+		}
+		break;
+		case 5:{
+			filename_in = arg;
+			state = 0;
+		}
+		break;
+		case 6:{
+			try{
+				if(arg=="PREF_PATH"){
+					PFilesystem::SetPrefDataPath();
+				}
+				else{
+					PFilesystem::SetDataPath(arg);
+				}
+			}
+			catch(const std::exception& e){
+				printf("%s\n", e.what());
+				return 1;
+			}
+			state=0;
+		}
+		break;
+		default:
+			printf("Invalid state: %i\n", state);
+			return 1;
+		}
+	}
+
+	pk2_init();
+
+	if(updating_sprites){
+		pk2_updateSprites(filename_in);
+	}
+	else if(converting_sprite){
+		pk2_convertToNewFormat(filename_in, filename_out);
+	}
+	else{
+		pk2_main(dev_mode, show_fps, test_level, test_path);
+	}
 	return 0;
 }

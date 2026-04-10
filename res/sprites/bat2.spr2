@@ -1,0 +1,136 @@
+{
+    "ai": [
+        6,
+        16,
+        7,
+        13,
+        22
+    ],
+    "always_active": false,
+    "ammo1": "bomb.spr2",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                4,
+                2
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                4,
+                2
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                3
+            ]
+        },
+        "death": {
+            "loop": false,
+            "sequence": [
+                3
+            ]
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "squat": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "bomb.spr2",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 40,
+    "check_tiles": true,
+    "color": "normal",
+    "damage": 1,
+    "damage_type": 1,
+    "destruction_effect": 21,
+    "effect": 0,
+    "enemy": true,
+    "energy": 2,
+    "frame": {
+        "height": 44,
+        "pos_x": 1,
+        "pos_y": 34,
+        "width": 41
+    },
+    "frame_rate": 6,
+    "frames_number": 4,
+    "immunity_type": 4,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 20,
+    "max_speed": 2.0,
+    "name": "bomber bat",
+    "parallax_type": 0,
+    "picture": "spr_batb.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 30,
+    "size": {
+        "height": 44,
+        "width": 41
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "damage.wav",
+        "destruction": "ko1.wav",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.0
+}

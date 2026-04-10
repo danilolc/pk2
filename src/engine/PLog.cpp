@@ -4,6 +4,9 @@
 //#########################
 #include "engine/PLog.hpp"
 
+#include "PFilesystem.hpp"
+
+#include <stdexcept>
 #include <ctime>
 #include <cstdio>
 #include <cstring>
@@ -25,37 +28,48 @@
 
 #ifdef _WIN32
 #define END_LINE "\r\n"
+#include <windows.h>
 #else
 #define END_LINE "\n"
 #endif
 
 namespace PLog {
 
-static PFile::RW* log_file = NULL;
+static PFile::RW* log_file = nullptr;
 static u8 log_level = 0;
+
 static bool print_to_stdout = false;
+static bool print_to_file = false;
 
-static SDL_mutex* mutex = NULL;
+/**
+ * @brief 
+ * Is it really necessary to have a mutex for only one thread?
+ */
+static SDL_mutex* mutex = nullptr;
 
-void Init(u8 level, PFile::Path file) {
+void Init(u8 level, bool _print_to_stdout, bool _print_to_file) {
 
-    if (mutex == NULL)
+    print_to_file = _print_to_file;
+    print_to_stdout = _print_to_stdout;
+
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+#endif
+
+    if (mutex == nullptr){
         mutex = SDL_CreateMutex();
+    }
 
     log_level = level;
 
-    if (log_file != NULL)
-        log_file->close();
-    
-    log_file = NULL;
+    if(log_file!=nullptr){
+        throw std::runtime_error("Log file already opened!");
+    }
 
-    if (file.GetFileName().size() > 0)
-        log_file = file.GetRW("w");
-    
-    #ifndef _WIN32
-		print_to_stdout = true;
-    #endif
-
+    if(print_to_file){
+        PFile::Path file = PFilesystem::GetDataFileW("log.txt");
+        log_file = new PFile::RW(file.GetRW2("w"));
+    }
 }
 
 static void write_on_file(const char* level_name, const char* origin, const char* format, va_list* args) {
@@ -78,30 +92,23 @@ static void write_on_file(const char* level_name, const char* origin, const char
 
 }
 
-void Write(const char* txt) {
-
-    Write(PLog::DEBUG, "PLog", txt);
-
-}
-
-void Write(u8 level, const char* origin, const char* format, ...) {
-
+void va_Write(u8 level, const char* origin, const char* format, va_list args)
+{
     if (!(log_level & level))
         return;
 
+    va_list args_file;   // remains uninitialized!! dont touch! because  
+    if (log_file != nullptr) 
+        va_copy(args_file, args);  // for use in write_on_file, this call is potentially expensive
+    
     SDL_LockMutex(mutex);
 
     /*time_t rawtime;
     time (&rawtime);
     struct tm* timeinfo = localtime(&rawtime);*/
-    
-    va_list args;
-    va_start(args, format);
-
     const char* level_name;
-
-    switch (level) {
-
+    switch (level) 
+    {
         case DEBUG:
             level_name = ANSI_COLOR_BLUE "[DEBUG]" ANSI_COLOR_RESET; break;
         case INFO:
@@ -114,11 +121,10 @@ void Write(u8 level, const char* origin, const char* format, ...) {
             level_name = ANSI_COLOR_FATAL "[FATAL]" ANSI_COLOR_RESET; break;
         default:
             level_name = "[UNKNOWN]"; break;
-
     }
 
-    if (print_to_stdout) {
-        
+    if (print_to_stdout) 
+    {    
         #ifdef __ANDROID__
 
         int android_level;
@@ -152,17 +158,59 @@ void Write(u8 level, const char* origin, const char* format, ...) {
 
     }
 
-    if (log_file != NULL) {
+    if (log_file != nullptr) 
+    {
+        write_on_file(level_name, origin, format, &args_file);
         
-        va_end(args);
-        va_start(args, format);
-        write_on_file(level_name, origin, format, &args);
-
+        va_end(args_file); // va_list should be ended by the function that called va_start
     }
-    
+    SDL_UnlockMutex(mutex);
+}
+
+
+void Write(u8 level, const char* origin, const char* format, ...) 
+{    
+    va_list args;
+    va_start(args, format);
+
+    va_Write(level, origin, format, args);
+
+    va_end(args);
+}
+
+void Write(const char* format, ...)
+{
+    u8 level = PLog::DEBUG;
+    const char *origin = "PLog";
+    va_list args;
+    va_start(args, format);
+
+    va_Write(level, origin, format, args);
+
+    va_end(args);
+}
+
+void Write(u8 level, const char* format, ...)
+{
+    const char *origin = "PLog";
+    va_list args;
+    va_start(args, format);
+
+    va_Write(level, origin, format, args);
+
     va_end(args);
 
-    SDL_UnlockMutex(mutex);
+}
+
+void Write(const char *origin, const char* format, ...)
+{
+    u8 level = PLog::DEBUG;
+    va_list args;
+    va_start(args, format);
+
+    va_Write(level, origin, format, args);
+
+    va_end(args);
 
 }
 
@@ -171,14 +219,13 @@ void Exit() {
     Write(DEBUG, "PLog", "Terminated");
 
     SDL_DestroyMutex(mutex);
-    mutex = NULL;
+    mutex = nullptr;
     
-    if (log_file != NULL)
-        log_file->close();
-
-    log_file = NULL;
+    if (log_file != nullptr){
+        delete log_file;
+        log_file = nullptr;
+    }
     log_level = 0;
-
 }
 
 }

@@ -1,0 +1,137 @@
+{
+    "ai": [
+        6,
+        28,
+        29,
+        132
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "death": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "squat": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 10,
+    "check_tiles": false,
+    "color": "normal",
+    "damage": 0,
+    "damage_type": 0,
+    "destruction_effect": 0,
+    "effect": 0,
+    "enemy": true,
+    "energy": 1,
+    "frame": {
+        "height": 5,
+        "pos_x": 581,
+        "pos_y": 19,
+        "width": 7
+    },
+    "frame_rate": 7,
+    "frames_number": 2,
+    "immunity_type": 0,
+    "indestructible": true,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 1,
+    "max_speed": 5.0,
+    "name": "fly",
+    "parallax_type": 0,
+    "picture": "spr_bg1.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 0,
+    "size": {
+        "height": 5,
+        "width": 7
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "",
+        "destruction": "",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.0
+}

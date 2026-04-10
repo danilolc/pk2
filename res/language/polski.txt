@@ -1,50 +1,64 @@
 Setup 
 ------------------------------------------------------------------------------------
 *setup options:				Ustawienia
-*setup video modes:			Tryb graficzny
-*setup music & sounds:			Muzyka i efekty dzwiekowe
+*setup video modes:			Grafika
+*setup music & sounds:			Muzyka i efekty dźwiękowe
 *setup music:				Muzyka
-*setup sounds:				Efekty dzwiekowe
-*setup language:			Wybierz jezyk
+*setup sounds:				Efekty dźwiękowe
+*setup language:			Wybierz język
 *setup play:				Graj
-*setup exit:				Wyjscie
+*setup exit:				Wyjście
 
 Intro
 ------------------------------------------------------------------------------------
 *intro presents:			prezentuje (2003)
-*intro a game by:			gre stworzona przez
-*intro original character design:	projekt oryginalnych postaci
+*intro original character design:	pierwotny projekt postaci
 *intro tested by:			przetestowana przez
-*intro thanks to:			podziekowania
-*intro translation:			polskie tlumaczenie
-*intro translator:			wielu autorow
+*intro thanks to:			podziękowania dla
+*intro translation:			polskie tłumaczenie
+*intro translator:			wielu autorów
+
+-- new GE keys --
+
+*intro game created by:     gra stworzona przez
+*intro game improved by:    nowa wersja stworzona przez
+*intro community:           i całej społeczności PisteGamez
+
+--
 
 Main Menu
 ------------------------------------------------------------------------------------
 *main menu new game:			Nowa gra
 *main menu continue:			Kontynuuj
-*main menu load game:			Wczytaj gre
+*main menu load game:			Wczytaj grę
 *main menu save game:			Zapisz gre
 *main menu controls:			Sterowanie
 *main menu graphics:			Grafika
-*main menu sounds:			Dzwiek
-*main menu exit game:			Wyjscie
+*main menu sounds:			Dźwięk
+*main menu exit game:			Wyjście
 
-*back to main menu:			powrot do menu
+*main menu map:				mapa
+*main menu links:			linki
+*main menu back:			Powrót
+*main menu more:			Więcej
+
+*back to main menu:			powrót do menu
+*back to settings menu:     powrót do ustawień
 
 Load Game
 ------------------------------------------------------------------------------------
-*load menu title:			wczytaj gre
-*load menu info:			kliknij stan gry ktory chcesz wczytac
-*load menu episode:			epizod: 
-*load menu level:			poziom: 
+*load menu title:			wczytaj grę
+*load menu info:			kliknij stan gry który chcesz wczytać
 
 Save Game
 ------------------------------------------------------------------------------------
-*save menu title:			zapisz gre
-*save menu info:			kliknij pozycje gdzie chcesz zapisac stan gry
+*save menu title:			zapisz grę
+*save menu info:			kliknij pozycje gdzie chcesz zapisać stan gry
 *save menu episode:			epizod: 
 *save menu level:			poziom: 
+
+*save menu empty slot:                  pusty
+*save menu episode completed:           ukończony
 
 Game Controls
 ------------------------------------------------------------------------------------
@@ -56,59 +70,64 @@ Game Controls
 *controls menu walk slow:		wolne chodzenie
 *controls menu egg attack:		atak jajkiem
 *controls menu doodle attack:		atak megafonem
-*controls menu use item:		uzycie przedmiotu
+*controls menu use item:		użycie przedmiotu
 *controls menu edit:			edycja
-*controls menu keyboard def:		klawiatura
-*controls menu gamepad4:		gamepad 4 przyciski
-*controls menu gamepad6:		gamepad 6 przyciskow
+
+*controls menu default:			przywróć domyślne
+*controls menu use keyboard:		użyj klawiatury
+*controls menu use controller:		użyj kontrolera
+*controls menu vibration on:		kontroler wibruje
+*controls menu vibration off:		kontroler nie wibruje
 
 Sounds
 ------------------------------------------------------------------------------------
-*sounds menu title:			muzyka i efekty dzwiekowe
-*sounds menu sfx volume:		glosnosc efektow dzwiekowych
-*sounds menu music volume:		glosnosc muzyki
-*sounds menu more:			glosniej
+*sounds menu title:			muzyka i efekty dźwiękowe
+*sounds menu sfx volume:		głośność efektów dźwiękowych
+*sounds menu music volume:		głośność muzyki
+*sounds menu more:			głośniej
 *sounds menu less:			ciszej
 
 Graphics
 ------------------------------------------------------------------------------------
 *graphics menu title:				ustawienia grafiki
-*graphics menu transparency fx on:		przezroczystosc wl
-*graphics menu transparency fx off:		przezroczystosc wyl
-*graphics menu menus are transparent:		przezroczysty tekst wl
-*graphics menu menus are not transparent:	przezroczysty tekst wyl
-*graphics menu item bar is visible:		pasek przedmiotow widoczny
-*graphics menu item bar is not visible:		pasek przedmiotow niewidoczny
-*graphics menu weather fx on:			efekty pogodowe wl
-*graphics menu weather fx off:			efekty pogodowe wyl
-*graphics menu bg sprites on:			detale tla wlaczone
-*graphics menu bg sprites off:			detale tla wylaczone
-*graphics menu game speed normal:		szybkosc gry: normalna
-*graphics menu game speed double:		szybkosc gry: podwojna
+*graphics menu menus are transparent:		przezroczysty tekst wł
+*graphics menu menus are not transparent:	przezroczysty tekst wył
+*graphics menu game speed normal:		szybkość gry: normalna
+*graphics menu game speed double:		szybkość gry: podwójna
+
+*graphics menu gui on:			gui wł
+*graphics menu gui off:			gui wył
+
+*graphics menu fullscreen on:		pełny ekran wł
+*graphics menu fullscreen off:		pełny ekran wył
+
+*graphics menu touchscreen on:		tryb ekranu dotykowego wł
+*graphics menu touchscreen off:		tryb ekranu dotykowego wył
+
+*graphics menu game speed:              szybkość gry
+*graphics menu texture filtering:       filtrowanie
 
 Player's name
 ------------------------------------------------------------------------------------
-*player screen type your name:		wpisz swoje imie
-*player screen continue:		kontynuuj
-*player screen clear:			wyczysc
-*player default name:			pekka
+*player screen type your name:		wpisz imię gracza
+*player screen continue:		dalej
+*player screen clear:			wyczyść
 
 Episodes
 ------------------------------------------------------------------------------------
 *episode menu choose episode:		wybierz epizod
-*episode menu get more episodes at:	wiecej epizodow na http://www.pistegamez.net
-*episode menu no maps:			epizod nie ma map!?
+*episode menu no maps:			nie znaleziono poziomów
 
 Map
 ------------------------------------------------------------------------------------
 *map screen total score:		wynik
-*map screen next level:			nastepny poziom
-*episode best player:			najlepszy gracz epizodu:
-*episode hiscore:			najlepszy wynik epizodu:
-*level best player:			najlepszy gracz poziomu:
-*level hiscore:				najlepszy wynik poziomu:
-*level fastest player:			najszybszy gracz:
-*level best time:			najlepszy czas:
+*map screen next level:			następny poziom
+*episode best player:			mistrz epizodu:
+*episode hiscore:			najlepszy wynik
+*level best player:			najlepszy gracz
+*level hiscore:				wynik:
+*level fastest player:			najszybszy gracz
+*level best time:			czas:
 
 Scores
 ------------------------------------------------------------------------------------
@@ -117,61 +136,71 @@ Scores
 *score screen bonus score:		punkty bonusowe
 
 *score screen time score:		premia za czas
-*score screen energy score:		premia za energie
+*score screen energy score:		premia za energię
 *score screen item score:		premia za przedmioty
 *score screen continue:			mapa
-*score screen total score:		calkowity wynik
-*score screen new level hiscore:	pobilesz najlepszy wynik!
-*score screen new level best time:	jestes najszybszym graczem!
-*score screen new episode hiscore:	jestes mistrzem tego epizodu!
+*score screen total score:		całkowity wynik
+*score screen new level hiscore:	pobiłeś najlepszy wynik!
+*score screen new level best time:	jesteś najszybszym graczem!
+*score screen new episode hiscore:	jesteś mistrzem tego epizodu!
 
 Game
 ------------------------------------------------------------------------------------
 *score:					punkty:
 *game time:				czas:
 *energy:				energia:
-*items:					pozycja:
+*items:					przedmioty:
 *attack 1:				megafon:
 *attack 2:				jajka:
 *keys:					klucze:
-*level clear:				poziom zakonczony!
+*level clear:				poziom zakończony!
 *time bonus:			
 *game paused:				pauza...
-*knocked out:				nokaut, sproboj ponownie!
-*time out:				czas sie skonczyl!
-*try again:				sproboj jeszcze raz!
-*locks open:				wszystkie zamki otwarte!
+*knocked out:				nokaut, spróbuj ponownie!
+*time out:				czas się skończył!
+*try again:				spróbuj jeszcze raz!
+*locks open:				wszystkie kłódki otwarte!
 *new doodle attack:			nowy megafon!
 *new egg attack:			nowe jajko!
 *new item:				nowy przedmiot!
+
+*invisibility:				niewidzialność:
+*supermode:				supertryb:
 
 *loading:				wczytywanie...
 
 The End
 ------------------------------------------------------------------------------------
 *end congratulations:			gratulacje!
-*end chickens saved:			uratowales kurczaki!
+*end chickens saved:			uratowałeś kurczaki!
 *end the end:				KONIEC
 
 Info Signs
 ------------------------------------------------------------------------------------
-*info01:			uzyj megafonu przy wrogu!
-*info02:			bombarduj wroga jajkami!
-*info03:			szukaj znaku wyjscia!
-*info04:			zamki zostana otwarte gdy zbierzesz wszystkie klucze.
-*info05:			skocz na przycisk aby go wcisnac.
-*info06:			zielony przycisk porusza sciany z zielona strzalka.
-*info07:			niebieki przycisk porusza sciany z niebieska strzalka.
-*info08:			pomaranczowy przycisk wylacza ogien.
-*info09:			mozesz uzywac uzywac przedmiotow kiedy potrzebujesz.
-*info10:			piora dodaja energie.
-*info11:			teleportery bywaja zdradliwe! nie zgub sie!
-*info12:			nokauty przeciwnikow i bonusy polepszaja twoj wynik.
-*info13:			zawsze szukaj ukrytych bonusow!
-*info14:			zamek zostanie otwarty, gdy dotknie go klucz.
-*info15:			uwazaj na pulapki! hee hee...
-*info16:			spiesz sie! czas ucieka!
-*info17:			uwazaj na wrogie zwierzeta!
-*info18:			uwazaj na silny wiatr!
+*info01:			użyj megafonu przeciwko wrogom!
+*info02:			bombarduj wrogów jajkami!
+*info03:			szukaj znaku wyjścia!
+*info04:			kłódki zostaną otwarte gdy zbierzesz wszystkie klucze.
+*info05:			wciśnij przycisk skacząc na niego.
+*info06:			zielony przycisk porusza ściany z zieloną strzałką.
+*info07:			niebieski przycisk porusza ściany z niebieską strzałką.
+*info08:			pomarańczowy przycisk wyłącza ogień.
+*info09:			możesz używać przedmiotów kiedy tylko chcesz.
+*info10:			pióra przywracają energię.
+*info11:			teleportery bywają zdradliwe! nie zgub się!
+*info12:			nokauty przeciwników i bonusy polepszają twój wynik.
+*info13:			zawsze szukaj ukrytych bonusów!
+*info14:			kłódka zostanie otwarta, gdy dotknie jej klucz.
+*info15:			uważaj na pułapki! hee hee...
+*info16:			śpiesz się! czas ucieka!
+*info17:			uważaj na wrogie zwierzęta!
+*info18:			uważaj na silny wiatr!
 *info19:			uratuj kurczaki!
 		
+Font Information
+------------------------------------------------------------------------------------
+*font small font:		ScandicSmall.txt
+*font big font normal:		ScandicBig1.txt
+*font big font hilite:		ScandicBig2.txt
+*font big font shadow:		ScandicBig3.txt
+*font path:			language/fonts/

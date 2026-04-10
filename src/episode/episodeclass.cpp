@@ -5,294 +5,387 @@
 #include "episode/episodeclass.hpp"
 
 #include "episode/mapstore.hpp"
-#include "game/mapclass.hpp"
+#include "game/levelclass.hpp"
 #include "language.hpp"
 #include "system.hpp"
+
+
+#include "settings/config_txt.hpp"
 #include "save.hpp"
+#include "save_slots.hpp"
 
 #include "engine/PLog.hpp"
-#include "engine/PUtils.hpp"
 #include "engine/PFile.hpp"
+#include "engine/PFilesystem.hpp"
+
 #include "engine/PDraw.hpp"
+
+#include "lua/pk2_lua.hpp"
 
 #include <algorithm>
 #include <cstring>
 #include <string>
+#include <filesystem>
+#include <iostream>
+
+namespace fs = std::filesystem;
+
+
+void LevelEntry::loadLevelHeader(PFile::Path levelFile){
+	LevelClass temp;
+
+	temp.load(levelFile, true);
+
+	this->levelName = temp.name;
+	this->map_x = temp.icon_x;
+	this->map_y = temp.icon_y;
+	this->number = temp.level_number;
+	this->icon_id = temp.icon_id;
+}
+
+std::string LevelEntry::getLevelFilename(bool proxy)const{
+	if(proxy && this->proxies.has_value()){
+		const std::vector<ProxyLevelEntry>& proxies = *this->proxies;
+		
+		u32 total_probability = 0;
+		for(const ProxyLevelEntry&p : proxies){
+			total_probability += p.weight;
+		}
+
+		int r = rand() % total_probability;
+		for(const ProxyLevelEntry&p : proxies){
+			r-= (int)p.weight;
+			if(r<0){
+				return p.filename;
+			}
+		}
+	}
+
+	return this->fileName;
+}
 
 EpisodeClass* Episode = nullptr;
 
-#define VERSION "1.1"
 
-void EpisodeClass::Clear_Scores() {
-
-	memset(&this->scores, 0, sizeof(this->scores));
-
+EpisodeClass::~EpisodeClass(){
+	PFilesystem::SetEpisode("", nullptr);
 }
 
-int EpisodeClass::Open_Scores() {
+std::string EpisodeClass::getScoresPath()const{
+	return (fs::path(PFilesystem::GetDataPath()) / "scores" / (this->entry.name + ".dat")).string();
+}
 
-	char versio[4];
-
-	this->Clear_Scores();
-
-	PFile::Path path(data_path + "scores" PE_SEP + this->entry.name + ".dat");
-	PFile::RW* file = path.GetRW("r");
-	if (file == nullptr) {
-
-		return 1;
+void EpisodeClass::openScores() {
+	try{
+		this->scoresTable.load(this->getScoresPath());
+		/**
+		 * @brief 
+		 * Fix missing level filenames, for example, in old score files
+		 */
+		int i = 0;
+		for(const LevelEntry& entry:this->levels_list_v){
+			LevelScore * score = this->scoresTable.getScoreByLevelNumber(i);
+			if(score!=nullptr && score->levelFileName.empty()){
+				score->levelFileName = entry.fileName;
+			}
+			++i;
+		}
+	}
+	catch(const std::exception&e){
+		PLog::Write(PLog::WARN, "PK2", e.what());
+		PLog::Write(PLog::INFO, "PK2", "Can't load scores files");
 
 	}
-
-	file->read(versio, 4);
-	if (strncmp(versio, VERSION, 4) == 0) {
-
-		PLog::Write(PLog::INFO, "PK2", "Loading scores v1.1");
-		
-		u32 count;
-		file->read(count);
-
-		if (count > this->level_count)
-			count = this->level_count;
-
-		for (u32 i = 0; i < count; i++) {
-			
-			file->read(this->scores.has_score[i]);
-			file->read(this->scores.best_score[i]);
-			file->read(this->scores.top_player[i], 20);
-			file->read(this->scores.max_apples[i]);
-			
-			file->read(this->scores.has_time[i]);
-			file->read(this->scores.best_time[i]);
-			file->read(this->scores.fastest_player[i], 20);
-
-		}
-
-		file->read(this->scores.episode_top_score);
-		file->read(this->scores.episode_top_player, 20);
-
-		file->close();
-
-	} else if (strncmp(versio, "1.0", 4) == 0) {
-
-		PLog::Write(PLog::INFO, "PK2", "Loading scores v1.0");
-
-		PK2EPISODESCORES10 temp;
-		file->read(&temp, sizeof(temp));
-		file->close();
-
-		for (int i = 0; i < EPISODI_MAX_LEVELS; i++) {
-
-			this->scores.has_score[i] = (temp.best_score[i] != 0) ? 1 : 0;
-			
-			this->scores.best_score[i] = temp.best_score[i];
-			strncpy(this->scores.top_player[i], temp.top_player[i], 20);
-			
-			this->scores.has_time[i] = (temp.best_time[i] != 0) ? 1 : 0;
-			this->scores.max_apples[i] = 0;
-
-			this->scores.best_time[i] = (s32)temp.best_time[i] * 100; //FRAME = (dec)conds * 100
-			strncpy(this->scores.fastest_player[i], temp.fastest_player[i], 20);
-
-			this->Save_Scores();
-
-		}
-
-		this->scores.episode_top_score = temp.episode_top_score;
-		strncpy(this->scores.episode_top_player, temp.episode_top_player, 20);
-
-	} else {
-
-		PLog::Write(PLog::INFO, "PK2", "Can't read this scores version");
-
-		file->close();
-		return 2;
-
-	}
-	
-
-	return 0;
-
 }
 
 // Version 1.1
-int EpisodeClass::Save_Scores() {
-	
-	char versio[4] = VERSION;
+void EpisodeClass::saveScores() {
+	PFile::Path path(this->getScoresPath());
 
-	PFile::Path path(data_path + "scores" PE_SEP + this->entry.name + ".dat");
-
-	PFile::RW* file = path.GetRW("w");
-	if (file == nullptr) {
-
+	try{
+		scoresTable.save(path);
+	}
+	catch(const std::exception& e){
+		PLog::Write(PLog::ERR, "PK2", e.what());
 		PLog::Write(PLog::ERR, "PK2", "Can't save scores");
-		return 1;
-
 	}
-
-	file->write(versio, 4);
-	file->write(level_count);
-
-	for (u32 i = 0; i < level_count; i++) {
-		
-		file->write(this->scores.has_score[i]);
-		file->write(this->scores.best_score[i]);
-		file->write(this->scores.top_player[i], 20);
-		file->write(this->scores.max_apples[i]);
-		
-		file->write(this->scores.has_time[i]);
-		file->write(this->scores.best_time[i]);
-		file->write(this->scores.fastest_player[i], 20);
-
-	}
-
-	file->write(this->scores.episode_top_score);
-	file->write(this->scores.episode_top_player, 20);
-
-	file->close();
-
-	return 0;
-
 }
 
 //TODO - Load info from different languages
-void EpisodeClass::Load_Info() {
+void EpisodeClass::loadInfo() {
 
-	PFile::Path infofile = this->Get_Dir("infosign.txt");
-
-	if (infofile.Find())
-		if (this->infos.Read_File(infofile))
-			PLog::Write(PLog::DEBUG, "PK2", "%s loaded", infofile.c_str());
-
+	std::optional<PFile::Path> infofile = PFilesystem::FindEpisodeAsset("infosign.txt", "");
+	if(infofile.has_value()){
+		if (this->infos.Read_File(*infofile)){
+			PLog::Write(PLog::DEBUG, "PK2", "%s loaded", infofile->c_str());
+		}
+		else{
+			PLog::Write(PLog::ERR, "PK2", "Cannot load %s", infofile->c_str());
+		}		
+	}
 }
 
 //TODO - don't load the same image again
-void EpisodeClass::Load_Assets() {
+void EpisodeClass::loadAssets() {
 
-	PFile::Path path = this->Get_Dir("pk2stuff.bmp");
-	if (FindAsset(&path, "gfx" PE_SEP)) {
+	std::optional<PFile::Path> path = PFilesystem::FindAsset("pk2stuff.png",
+		PFilesystem::GFX_DIR, ".bmp");
 
-		PDraw::image_load(game_assets, path, true);
-
-	} else {
-
+	if(!path.has_value()){
 		PLog::Write(PLog::ERR, "PK2", "Can't load pk2stuff"); //"Can't load map bg"
-
+	}
+	else{
+		PDraw::image_load(global_gfx_texture, *path, true);
 	}
 
-	path = this->Get_Dir("pk2stuff2.png");
-	if (FindAsset(&path, "gfx" PE_SEP)) {
+	path = PFilesystem::FindAsset("pk2stuff2.png",
+		PFilesystem::GFX_DIR, ".bmp");
 
-		PDraw::image_load(game_assets2, path, true);
-
-	} else {
-
+	if(!path.has_value()){
 		PLog::Write(PLog::ERR, "PK2", "Can't load pk2stuff2"); //"Can't load map bg"
-
 	}
-
+	else{
+		PDraw::image_load(global_gfx_texture2, *path, true);
+	}
 }
 
-void EpisodeClass::Load() {
-	
-	if (entry.is_zip)
-		this->source_zip = PFile::OpenZip(data_path + "mapstore" PE_SEP + entry.zipfile);
 
-	PFile::Path path = this->Get_Dir("");
-	std::vector<std::string> list = path.scandir(".map");
-	this->level_count = list.size();
+void from_json(const nlohmann::json& j, ProxyLevelEntry& proxy){
 
-	// Read levels plain data
-	for (u32 i = 0; i < this->level_count; i++) {
+	proxy.filename = j["file"].get<std::string>();
+	PJson::jsonReadU32(j,"weight", proxy.weight);
+}
 
-		MapClass temp;
-		char* mapname = this->levels_list[i].tiedosto;
-		strcpy(mapname, list[i].c_str());
 
-		if (temp.Load_Plain_Data(PFile::Path(path, mapname)) == 0) {
+void EpisodeClass::loadLevels(){
+	std::string dir = PFilesystem::GetEpisodeDirectory();
 
-			strcpy(this->levels_list[i].nimi, temp.nimi);
-			this->levels_list[i].x = temp.x;// 142 + i*35;
-			this->levels_list[i].y = temp.y;// 270;
-			this->levels_list[i].order = temp.jakso;
-			this->levels_list[i].icon = temp.icon;
 
+	std::vector<PFile::Path> proxyLevelFiles;
+	std::vector<std::string> proxyLevelNames;
+
+	if(entry.is_zip){
+		std::vector<PZip::PZipEntry> v = this->source_zip.scanDirectory(
+			std::string("episodes/")+this->entry.name, ".proxy");
+		for(const PZip::PZipEntry& en: v){
+			proxyLevelFiles.emplace_back(PFile::Path(&this->source_zip, en));
+			proxyLevelNames.emplace_back(en.name);
 		}
+	}
+	else{
 
+		proxyLevelNames = PFilesystem::ScanOriginalAssetsDirectory(dir, ".proxy");
+		for(const std::string& name: proxyLevelNames){
+			proxyLevelFiles.emplace_back(PFile::Path((fs::path(dir) / name).string()));
+		}
 	}
 
-	// Read config
-	PLang config(PFile::Path(path, "config.txt"));
-	if (config.loaded) {
+	std::vector<PFile::Path> realLevelFiles;
+	std::vector<std::string> realLevelNames;
 
-		int id = config.Search_Id("glow_effect");
-		if (id != -1) {
-			PLog::Write(PLog::INFO, "PK2", "Episode glow is ON");
-			this->glows = true;
+
+	if(entry.is_zip){
+		std::vector<PZip::PZipEntry> v = this->source_zip.scanDirectory(
+			std::string("episodes/")+this->entry.name, ".map");
+		for(const PZip::PZipEntry& en: v){
+			realLevelFiles.emplace_back(PFile::Path(&this->source_zip, en));
+			realLevelNames.emplace_back(en.name);
 		}
+	}
+	else{
 
-		id = config.Search_Id("hide_numbers");
-		if (id != -1) {
-			PLog::Write(PLog::INFO, "PK2", "Episode hide numbers is ON");
-			this->hide_numbers = true;
+		realLevelNames = PFilesystem::ScanOriginalAssetsDirectory(dir, ".map");
+		for(const std::string& name: realLevelNames){
+			realLevelFiles.emplace_back(PFile::Path((fs::path(dir) / name).string()));
 		}
+	}
 
-		id = config.Search_Id("ignore_collectable");
-		if (id != -1) {
-			PLog::Write(PLog::INFO, "PK2", "Episode ignore apples is ON");
-			this->ignore_collectable = true;
+
+	std::vector<std::string> hiddenLevels;
+
+	std::size_t n = proxyLevelNames.size();
+	for(std::size_t i=0;i<n;++i){
+		try{
+			LevelEntry levelEntry;
+			levelEntry.fileName = proxyLevelNames[i];
+			nlohmann::json j = proxyLevelFiles[i].GetJSON();
+
+			PJson::jsonReadString(j, "name", levelEntry.levelName);
+			PJson::jsonReadU32(j, "number", levelEntry.number);
+			PJson::jsonReadInt(j, "map_x", levelEntry.map_x);
+			PJson::jsonReadInt(j, "map_y", levelEntry.map_y);
+			PJson::jsonReadInt(j, "icon_id", levelEntry.icon_id);
+
+			std::vector<ProxyLevelEntry> proxies = j["levels"].get<std::vector<ProxyLevelEntry>>();
+
+			for(const ProxyLevelEntry& p: proxies){
+
+				/**
+				 * @brief 
+				 * Check if level from proxy exist
+				 */
+
+				if(std::find(realLevelNames.begin(),
+				realLevelNames.end(), p.filename)==realLevelNames.end()){
+					std::ostringstream os;
+					os<<"Level \""<<p.filename<<"\" not found!";
+					throw std::runtime_error(os.str());
+				}
+
+				/**
+				 * @brief 
+				 * Hide levels used by proxies
+				 */
+				if(std::find(hiddenLevels.begin(), hiddenLevels.end(), p.filename)== hiddenLevels.end()){
+					hiddenLevels.push_back(p.filename);
+				}
+			}
+			
+			levelEntry.proxies = proxies;
+			this->levels_list_v.push_back(levelEntry);
 		}
-
-		id = config.Search_Id("collectable_name");
-		if (id != -1) {
-			this->collectable_name = config.Get_Text(id);
-			PLog::Write(PLog::INFO, "PK2", "Collectable name:");
-			PLog::Write(PLog::INFO, "PK2", this->collectable_name.c_str());
+		catch(const std::exception& e){
+			PLog::Write(PLog::ERR, "%s", e.what());
 		}
+	}
 
-		id = config.Search_Id("require_all_levels");
-		if (id != -1) {
-			PLog::Write(PLog::INFO, "PK2", "Episode require all levels is ON");
-			this->require_all_levels = true;
+	std::size_t levelsNumber = realLevelNames.size();
+
+	// Read levels plain data
+	for (u32 i = 0; i < levelsNumber; i++) {
+
+		try{
+			LevelEntry levelEntry;
+			levelEntry.fileName = realLevelNames[i];
+
+			/**
+			 * @brief 
+			 * Hidden levels shouldn't appear on the map screen
+			 */
+			if(std::find(hiddenLevels.begin(), hiddenLevels.end(), levelEntry.fileName)!=hiddenLevels.end()){
+				continue;
+			}
+
+			levelEntry.loadLevelHeader(realLevelFiles[i]);
+			if(levelEntry.number > this->highestLevelNumber){
+				this->highestLevelNumber = levelEntry.number;
+			}
+			this->levels_list_v.emplace_back(levelEntry);
 		}
-
-		id = config.Search_Id("no_ending");
-		if (id != -1) {
-			PLog::Write(PLog::INFO, "PK2", "Episode no ending is ON");
-			this->no_ending = true;
+		catch(const std::exception& e){
+			PLog::Write(PLog::ERR, "PK2 level", e.what());
 		}
-
-		id = config.Search_Id("use_button_timer");
-		if (id != -1) {
-			PLog::Write(PLog::INFO, "PK2", "Episode use button timer is ON");
-			this->use_button_timer = true;
-		}
-
+		
 	}
 
 	// Sort levels
-	std::stable_sort(this->levels_list, this->levels_list + this->level_count,
-	[](const PK2LEVEL& a, const PK2LEVEL& b) {
-		return a.order < b.order;
+	std::stable_sort(this->levels_list_v.begin(), this->levels_list_v.end(),
+	[](const LevelEntry& a, const LevelEntry& b) {
+		return a.number < b.number;
 	});
 
 	// Set positions
-	for (u32 i = 0; i < this->level_count; i++) {	
-	
-		if (levels_list[i].x == 0)
-			levels_list[i].x = 172 + i*30;
-
-		if (levels_list[i].y == 0)
-			levels_list[i].y = 270;
-	
+	int i = 0;
+	for(LevelEntry& entry: this->levels_list_v){
+		if (entry.map_x == 0){
+			entry.map_x = 172 + i*30;
+		}
+		if (entry.map_y == 0){
+			entry.map_y = 270;
+		}
+		++i;
 	}
-
-	this->Open_Scores();
-	this->Load_Info();
-
-	this->Update_NextLevel();
-
 }
 
+void EpisodeClass::load() {
+	
+	if (entry.is_zip){
+		this->source_zip.open( (fs::path(PFilesystem::GetDataPath())/"mapstore"/entry.zipfile).string());
+		PFilesystem::SetEpisode(entry.name, &this->source_zip);
+	}
+	else{
+
+		if(entry.path.empty()){
+			PFilesystem::SetEpisode(entry.name, nullptr);
+		} else {
+			PFilesystem::SetEpisode(entry.path, nullptr);
+		}		
+	}
+
+	if(!test_level){
+		this->loadLevels();
+		this->openScores();
+
+		if(config_txt.save_slots){
+			this->updateNextLevel();
+		}
+		else{
+			PK2save::LoadModern(this);
+		}		
+	}
+
+	std::optional<PFile::Path> config_path = PFilesystem::FindEpisodeAsset("config.txt", "");
+	if(config_path.has_value()){
+
+		PLang config(*config_path);
+		if (config.loaded) {
+
+			int id = config.Search_Id("glow_effect");
+			if (id != -1) {
+				PLog::Write(PLog::INFO, "PK2", "Episode glow is ON");
+				this->glows = true;
+			}
+
+			id = config.Search_Id("hide_numbers");
+			if (id != -1) {
+				PLog::Write(PLog::INFO, "PK2", "Episode hide numbers is ON");
+				this->hide_numbers = true;
+			}
+
+			id = config.Search_Id("ignore_collectable");
+			if (id != -1) {
+				PLog::Write(PLog::INFO, "PK2", "Episode ignore apples is ON");
+				this->ignore_collectable = true;
+			}
+
+			id = config.Search_Id("collectable_name");
+			if (id != -1) {
+				this->collectable_name = config.Get_Text(id);
+				PLog::Write(PLog::INFO, "PK2", "Collectable name:");
+				PLog::Write(PLog::INFO, "PK2", this->collectable_name.c_str());
+			}
+
+			id = config.Search_Id("require_all_levels");
+			if (id != -1) {
+				PLog::Write(PLog::INFO, "PK2", "Episode require all levels is ON");
+				this->require_all_levels = true;
+			}
+
+			id = config.Search_Id("no_ending");
+			if (id != -1) {
+				PLog::Write(PLog::INFO, "PK2", "Episode no ending is ON");
+				this->no_ending = true;
+			}
+
+			this->transformation_offset = config.getBoolean("potion_transformation_offset", false);
+			this->visible_wind = config.getBoolean("visible_wind", false);
+			this->supermode_music = config.getBoolean("supermode_music", true);
+			this->legacy_start_offset = config.getBoolean("legacy_start_offset", false);
+			this->legacy_camera_offset = config.getBoolean("legacy_camera_offset", false);
+			this->legacy_obstacle_phasing = config.getBoolean("legacy_obstacle_phasing", false);
+			this->checkpointPenalty = config.getInteger("checkpoint_penalty", 150);
+		}
+		else{
+			PLog::Write(PLog::ERR, "PK2", "Cannot open episode config file.");
+		}
+	}
+		
+	this->sfx.loadAllForEpisode(sfx_global, this);
+	
+	this->loadInfo();
+}
+
+/*
 EpisodeClass::EpisodeClass(int save) {
 
 	//Search the id
@@ -300,99 +393,118 @@ EpisodeClass::EpisodeClass(int save) {
 	bool set = false;
 	for (int i = 0; i < sz; i++) {
 
-		if (episodes[i].name.compare(saves_list[save].episode) == 0) {
+		if (episodes[i].name.compare(PK2save::saves_slots[save].episode) == 0) {
 			if (set)
-				PLog::Write(PLog::WARN, "PK2", "Episode conflict on %s, choosing the first one", saves_list[save].episode);
+				PLog::Write(PLog::WARN, "PK2", "Episode conflict on %s, choosing the first one", PK2save::saves_slots[save].episode);
 			else {
 				this->entry = episodes[i];
 				set = true;
 			}
 		}
+	}
+	PK2save::saves_slots[save].name[19] = '\0';
+	this->player_name = PK2save::saves_slots[save].name;
+	this->next_level = PK2save::saves_slots[save].next_level;
+	this->player_score = PK2save::saves_slots[save].score;
 
+	
+
+	this->load();
+
+	int size = this->levels_list_v.size();
+	if(size > EPISODI_MAX_LEVELS){
+		size = EPISODI_MAX_LEVELS;
+	}
+
+	for (int j = 0; j < size; j++) {
+
+		this->levels_list_v[j].status = PK2save::saves_slots[save].level_status[j];
+	}
+
+}*/
+
+u8 EpisodeClass::getLevelStatus(int level_id)const{
+	if(level_id >= 0 && level_id < (int)this->levels_list_v.size()){
+		return this->levels_list_v[level_id].status;
+	}
+	else{
+		return 0;
+	}		
+}
+
+void EpisodeClass::updateLevelStatus(int level_id, u8 status){
+	if(level_id >= 0 && level_id < (int)this->levels_list_v.size()){
+		this->levels_list_v[level_id].status = status;
+		this->updateNextLevel();
+	}
+}
+
+int EpisodeClass::getLevelBestScore(int level_id)const{
+	if(level_id >= 0 && level_id < (int)this->levels_list_v.size()){
+		return this->levels_list_v[level_id].best_score;
+	}
+	else{
+		return 0;
+	}
+}
+
+void EpisodeClass::updateLevelBestScore(int level_id, int best_score){
+	if(level_id >= 0 && level_id < (int)this->levels_list_v.size()){
+		this->levels_list_v[level_id].best_score = best_score;
+
+		//Count player score for an episode
+		this->player_score = 0;
+		for(const LevelEntry& entry: this->levels_list_v){
+			this->player_score += entry.best_score;
+		}		
+	}
+}
+
+std::string EpisodeClass::getLevelFilename(int level_id,bool executeProxies)const{
+	if(level_id >= 0 && level_id < (int)this->levels_list_v.size()){
+		return this->levels_list_v[level_id].getLevelFilename(executeProxies);
+	}
+	throw std::runtime_error(std::string("Level with id=")+std::to_string(level_id)+" not found!");
+}
+
+int EpisodeClass::findLevelbyFilename(const std::string& levelFilename)const{
+
+	for(std::size_t i=0; i < this->levels_list_v.size();++i){
+		if(levelFilename == this->levels_list_v[i].fileName){
+			return (int)i;
+		}
 	}
 	
-	strcpy(this->player_name, saves_list[save].name);
-	this->next_level = saves_list[save].next_level;
-	this->player_score = saves_list[save].score;
-
-	for (int j = 0; j < EPISODI_MAX_LEVELS; j++) {
-
-		this->level_status[j] = saves_list[save].level_status[j];
-
-	}
-
-	this->Load();
-
+	return -1;
 }
 
-EpisodeClass::EpisodeClass(const char* player_name, episode_entry entry) {
-
-	this->entry = entry;
-	strcpy(this->player_name, player_name);
-
-	for (int j = 0; j < EPISODI_MAX_LEVELS; j++)
-		this->level_status[j] = 0;
-	
-	this->Load();
-	
+EpisodeClass::EpisodeClass(const std::string& player_name, episode_entry entry):
+entry(entry), player_name(player_name){	
+	this->load();
 }
 
-EpisodeClass::~EpisodeClass() {
+void EpisodeClass::updateNextLevel() {
 
-	if (this->entry.is_zip)
-		PFile::CloseZip(this->source_zip);
+	u32 passedLevelsCounter = 0;
 
-}
+	for(const LevelEntry& entry: this->levels_list_v){
+		u8 status = entry.status;
 
-PFile::Path EpisodeClass::Get_Dir(std::string file) {
+		if((status & LEVEL_PASSED) != 0){
 
-	std::string path("episodes" PE_SEP);
-	path += entry.name + PE_SEP + file;
-
-	if (this->entry.is_zip)
-		return PFile::Path(this->source_zip, path);
-	
-	return PFile::Path(path);
-
-}
-
-void EpisodeClass::Update_NextLevel() {
-
-	if (require_all_levels) {
-
-		next_level = UINT32_MAX;
-		for (u32 i = 0; i < level_count; i++)
-			if (!(level_status[i] & LEVEL_PASSED) && levels_list[i].order < next_level) {
-				next_level = levels_list[i].order;
-				break;
+			if(entry.number + 1 > next_level){
+				this->next_level = entry.number + 1;
 			}
 
-	} else {
-
-		next_level = 1;
-		for (u32 i = 0; i < level_count; i++) {
-			
-			if (levels_list[i].order > next_level)
-				break;
-
-			if (level_status[i] & LEVEL_PASSED)
-				next_level = levels_list[i].order + 1;
+			++passedLevelsCounter;
 		}
-		
-		// Clear levels before next level
-		bool ended = true;
-		for (u32 i = 0; i < level_count; i++) {
-			if (levels_list[i].order < next_level) {
-				level_status[i] |= LEVEL_PASSED;
-			}
-			if (!(level_status[i] & LEVEL_PASSED))
-				ended = false;
-		}
-
-		if (ended)
-			next_level = UINT32_MAX;
-		
 	}
 
 
+	if(require_all_levels){
+		this->completed = passedLevelsCounter == this->levels_list_v.size();
+	}
+	else{
+		this->completed = this->next_level > this->getHighestLevelNumber();
+	}
 }

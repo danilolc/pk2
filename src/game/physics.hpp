@@ -6,5 +6,10 @@
 
 #include "game/spriteclass.hpp"
 
-int Sprite_Movement(SpriteClass* sprite);
-int BonusSprite_Movement(SpriteClass* sprite);
+//void PlayerRespawnOnCheckpoint(SpriteClass * player, SpriteClass * checkpoint);
+void SpriteOffscreen(SpriteClass * sprite);
+void SpriteOnRespawn(SpriteClass* sprite);
+void SpriteOnDeath(SpriteClass* sprite);
+void UpdateSprite(SpriteClass* sprite);
+void UpdateBonusSprite(SpriteClass* sprite);
+void UpdateBackgroundSprite(SpriteClass* sprite, double &yl);

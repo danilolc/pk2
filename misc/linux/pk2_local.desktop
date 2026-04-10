@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Pekka Kana 2
+Comment=Platformer in which you play as a rooster
+Exec=/usr/local/games/pekka-kana-2
+Icon=pekka-kana-2
+Terminal=false
+Categories=Game;

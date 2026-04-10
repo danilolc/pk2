@@ -1,0 +1,142 @@
+{
+    "ai": [
+        6,
+        20,
+        23,
+        25
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3
+            ]
+        },
+        "attack2": {
+            "loop": false,
+            "sequence": []
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3
+            ]
+        },
+        "death": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3
+            ]
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3
+            ]
+        },
+        "squat": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 200,
+    "check_tiles": true,
+    "color": "normal",
+    "damage": 1,
+    "damage_type": 4,
+    "destruction_effect": 18,
+    "effect": 0,
+    "enemy": true,
+    "energy": 1,
+    "frame": {
+        "height": 30,
+        "pos_x": 1,
+        "pos_y": 112,
+        "width": 28
+    },
+    "frame_rate": 8,
+    "frames_number": 3,
+    "immunity_type": 4,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 5,
+    "max_speed": 0.0,
+    "name": "flame",
+    "parallax_type": 0,
+    "picture": "spr_batb.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 0,
+    "size": {
+        "height": 30,
+        "width": 28
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "",
+        "destruction": "",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.5
+}

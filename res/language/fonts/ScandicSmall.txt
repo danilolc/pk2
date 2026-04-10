@@ -4,9 +4,11 @@ Font attributes
 *image width:	640
 *image x:	1
 *image y:	0
-*letters:	abcdefghijklmnopqrstuvwxyz���0123456789.!?:-,+=()/"\_%
+*letters:	abcdefghijklmnopqrstuvwxyzåäö0123456789.!?:-,+=()/"\_%áéíóúñąęśńźżłćßü'
 *letter width:	8
 *letter height:	10
+
+*line spacing: 2
 
 
 

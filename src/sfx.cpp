@@ -4,14 +4,18 @@
 //#########################
 #include "sfx.hpp"
 
+#include "exceptions.hpp"
+
 #include "system.hpp"
-#include "settings.hpp"
+#include "settings/settings.hpp"
 #include "game/game.hpp"
 
 #include "engine/PLog.hpp"
 #include "engine/PSound.hpp"
+#include "engine/PFilesystem.hpp"
 
 #include <cmath>
+#include <sstream>
 
 struct GameSFX {
 
@@ -23,79 +27,83 @@ struct GameSFX {
 
 GameSFX sfx_list[PSound::CHANNELS];
 
-int switch_sound = -1;
-int jump_sound = -1;
-int splash_sound = -1;
-int open_locks_sound = -1;
-int menu_sound = -1;
-int moo_sound = -1;
-int doodle_sound = -1;
-int pump_sound = -1;
-int score_sound = -1;
-int apple_sound = -1;
+const std::map<std::string, int SfxHandler::*> SfxHandler::soundFilenames = {
+    {"switch3.wav", &SfxHandler::switch_sound},
+    {"jump4.wav", &SfxHandler::jump_sound},
+    {"splash.wav", &SfxHandler::splash_sound},
+    {"openlock.wav", &SfxHandler::open_locks_sound},
+    {"menu2.wav", &SfxHandler::menu_sound},
+    {"moo.wav", &SfxHandler::moo_sound},
+    {"doodle.wav", &SfxHandler::doodle_sound},
+    {"pump.wav", &SfxHandler::pump_sound},
+    {"counter.wav", &SfxHandler::score_sound},
+    {"app_bite.wav", &SfxHandler::apple_sound},
+    {"thunder.wav", &SfxHandler::thunder_sound}
+};
 
-int Load_SFX() {
+
+int SfxHandler::mLoadSound(const std::string& name){
+
+    namespace fs = std::filesystem;
+
+    std::optional<PFile::Path> path = PFilesystem::FindVanillaAsset(name, PFilesystem::SFX_DIR);
+    if(!path.has_value()){
+        throw PExcept::FileNotFoundException(name, PExcept::MISSING_SFX);
+    }
+
+    int result = PSound::load_sfx(*path);
+    if(result==-1){
+        throw PExcept::FileNotFoundException(name, PExcept::MISSING_SFX);
+    }
     
-    PFile::Path path("sfx" PE_SEP);
+    this->mSounds.push_back(result);
+    return result;
+}
 
-    path.SetFile("switch3.wav");
-    switch_sound = PSound::load_sfx(path);
-    if (switch_sound == -1)
-        PK2_Error("Can't find switch3.wav");
-
-    path.SetFile("jump4.wav");
-    jump_sound = PSound::load_sfx(path);
-    if (jump_sound == -1)
-        PK2_Error("Can't find jump4.wav");
-
-    path.SetFile("splash.wav");
-    splash_sound = PSound::load_sfx(path);
-    if (splash_sound == -1)
-        PK2_Error("Can't find splash.wav");
-
-    path.SetFile("openlock.wav");
-    open_locks_sound = PSound::load_sfx(path);
-    if (open_locks_sound == -1) {
-        PK2_Error("Can't find openlock.wav");
+int SfxHandler::mLoadSoundEpisode(int prev, const std::string&name, EpisodeClass*episode){
+    std::optional<PFile::Path> path = PFilesystem::FindEpisodeAsset(name, PFilesystem::SFX_DIR);
+    if(path.has_value()){
+        int res = PSound::load_sfx(*path);
+        if(res!=-1){
+            this->mSounds.push_back(res);
+            return res;
+        }
+        else{
+            std::ostringstream os;
+            os<<"Unable to load SFX \""<<name<<"\" from ZIP episode";
+            PLog::Write(PLog::ERR, "PK2", os.str().c_str());                
+        }
     }
+    return prev;
+}
 
-    path.SetFile("menu2.wav");
-    menu_sound = PSound::load_sfx(path);
-    if (menu_sound == -1)
-        PK2_Error("Can't find menu2.wav");
-
-    path.SetFile("moo.wav");
-    moo_sound = PSound::load_sfx(path);
-    if (moo_sound == -1)
-        PK2_Error("Can't find moo.wav");
-
-    path.SetFile("doodle.wav");
-    doodle_sound = PSound::load_sfx(path);
-    if (doodle_sound == -1)
-        PK2_Error("Can't find doodle.wav");
-
-    path.SetFile("pump.wav");
-    pump_sound = PSound::load_sfx(path);
-    if (pump_sound == -1)
-        PK2_Error("Can't find pump.wav");
-
-    path.SetFile("counter.wav");
-    score_sound = PSound::load_sfx(path);
-    if (score_sound == -1) {
-        PK2_Error("Can't find counter.wav");
-    }
-
-    path.SetFile("app_bite.wav");
-    apple_sound = PSound::load_sfx(path);
-    if (apple_sound == -1) {
-        PK2_Error("Can't find app_bite.wav");
+void SfxHandler::loadAll(){
+    for(auto p: SfxHandler::soundFilenames){
+        this->*p.second = this->mLoadSound(p.first);
     }
 
     for (int i = 0; i < PSound::CHANNELS; i++)
         sfx_list[i].used = false;
-
-    return 0;
 }
+
+void SfxHandler::loadAllForEpisode(const SfxHandler& src, EpisodeClass*episode){
+    for(auto p: SfxHandler::soundFilenames){
+        this->*p.second = this->mLoadSoundEpisode(src.*p.second, p.first, episode);
+    }
+}
+
+void SfxHandler::free(){
+    for(int index:this->mSounds){
+        PSound::free_sfx(index);
+    }
+    this->mSounds.clear();
+
+    for(auto p: SfxHandler::soundFilenames){
+        this->*p.second = -1;
+    }
+}
+
+SfxHandler sfx_global;
 
 int get_pan(int x, int y) {
 
@@ -176,7 +184,7 @@ void Play_GameSFX(int sound, int volume, int x, int y, int freq, bool random_fre
         int channel = PSound::play_sfx(sound, vol, pan, freq);
         if (channel == -1) {
 
-            PLog::Write(PLog::ERR, "PK2", "Can't play sound");
+            //PLog::Write(PLog::ERR, "PK2", "Can't play sound");
             return;
 
         }

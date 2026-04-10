@@ -1,0 +1,111 @@
+{
+    "ai": [
+        17,
+        7
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": false,
+            "sequence": []
+        },
+        "attack2": {
+            "loop": false,
+            "sequence": []
+        },
+        "damage": {
+            "loop": false,
+            "sequence": []
+        },
+        "death": {
+            "loop": false,
+            "sequence": []
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "jump_down": {
+            "loop": false,
+            "sequence": []
+        },
+        "jump_up": {
+            "loop": false,
+            "sequence": []
+        },
+        "squat": {
+            "loop": false,
+            "sequence": []
+        },
+        "walking": {
+            "loop": false,
+            "sequence": []
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 140,
+    "check_tiles": true,
+    "color": "orange",
+    "damage": 1,
+    "damage_type": 1,
+    "destruction_effect": 100,
+    "effect": 0,
+    "enemy": true,
+    "energy": 1,
+    "frame": {
+        "height": 7,
+        "pos_x": 1,
+        "pos_y": 44,
+        "width": 7
+    },
+    "frame_rate": 1,
+    "frames_number": 2,
+    "immunity_type": 0,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 0,
+    "max_speed": 4.0,
+    "name": "ammo type 1",
+    "parallax_type": 0,
+    "picture": "spr_tank.bmp",
+    "projectile_charge_time": 40,
+    "random_sound_frequency": true,
+    "score": 0,
+    "size": {
+        "height": 7,
+        "width": 7
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "",
+        "destruction": "",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 3,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.0
+}

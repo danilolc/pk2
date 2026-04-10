@@ -4,20 +4,25 @@
 //#########################
 #pragma once
 
-#include "engine/PFile.hpp"
+#include "PFile.hpp"
 
 namespace PRender {
 
-struct FRECT {
-	
-	float x, y, w, h;
+class FRECT {
+public:
+	FRECT() = default;
+	FRECT(float x, float y, float w, float h)
+	:x(x), y(y), w(w), h(h){}
+	float x=0, y=0, w=0, h=0;
 
 };
 
-struct RECT {
-	
-	int x, y, w, h;
-
+class RECT {
+public:
+	RECT() = default;
+	RECT(int x, int y, int w, int h)
+	:x(x), y(y), w(w), h(h){}
+	int x=0, y=0, w=0, h=0;
 };
 
 class Renderer {
@@ -51,19 +56,22 @@ enum {
 	RENDERER_SDL,
 	RENDERER_OPENGL,
 	RENDERER_OPENGLES,
-	RENDERER_SDL_SOFTWARE,
+	//RENDERER_SDL_SOFTWARE,
 
 };
 
 void load_ui_texture(PFile::Path file);
 void render_ui(FRECT src, FRECT dst, float alpha);
 
-int  set_filter(const char* filter);
 int  set_shader(int mode);
 
 void set_screen_fill(bool set);
 void adjust_screen();
+
 void set_fullscreen(bool set);
+void set_pixelperfect();
+bool is_fullscreen();
+
 void set_window_size(int w, int h);
 void get_window_size(int* w, int* h);
 void get_cover_size(int* w, int* h);
@@ -72,7 +80,7 @@ void get_window_position(int* x, int* y);
 int  set_vsync(bool set);
 bool is_vsync();
 
-int  init(int width, int height, const char* name, const char* icon, int render_method);
+void init(int width, int height, const char* name, const char* icon);
 void terminate();
 void update(void* _buffer8);
 

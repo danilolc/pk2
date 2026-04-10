@@ -4,16 +4,45 @@
 //#########################
 #pragma once
 
-#include "game/sprites.hpp"
+#include "engine/PJson.hpp"
+#include "sprites_handler.hpp"
+#include "prototypes_handler.hpp"
+#include <array>
 
 #define MAX_GIFTS 4
 
-bool Gifts_Add(PrototypeClass* protot);
-int Gifts_Use();
-void Gifts_Clean();
-int Gifts_Count();
 
-PrototypeClass* Gifts_Get(int i);
-void Gifts_Remove(int i);
-void Gifts_Draw(int i, int x, int y);
-int Gifts_ChangeOrder();
+class GiftsHandler{
+public:
+    GiftsHandler();
+
+    bool add(PrototypeClass* proto);
+    void use(SpritesHandler& spritesHandler, SpriteClass* player);
+    void clean();
+    int count()const{
+        return this->giftsNumber;
+    }
+
+    PrototypeClass* get(int i){
+        return this->gifts_list[i];
+    }
+    void remove(int i);
+
+    void draw(int x, int y)const;
+    void changeOrder();
+
+    int totalScore()const;
+
+    /*friend void to_json(nlohmann::json& j, const GiftsHandler&gh);
+    friend void from_json(const nlohmann::json& j, GiftsHandler&gh);*/
+
+    nlohmann::json toJson()const;
+    void fromJson(const nlohmann::json& j, PrototypesHandler& prototypes);
+private:
+
+    int giftsNumber = 0;
+    std::array<PrototypeClass*, MAX_GIFTS> gifts_list; 
+};
+
+/*void to_json(nlohmann::json& j, const GiftsHandler&gh);
+void from_json(const nlohmann::json& j, GiftsHandler&gh);*/

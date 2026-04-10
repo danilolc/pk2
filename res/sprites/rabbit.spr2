@@ -1,0 +1,158 @@
+{
+    "ai": [
+        6,
+        50,
+        13,
+        7,
+        8,
+        139
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                17,
+                17,
+                18,
+                18
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                17,
+                17,
+                18,
+                18
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                15,
+                15,
+                16,
+                16
+            ]
+        },
+        "death": {
+            "loop": false,
+            "sequence": [
+                5,
+                5,
+                6,
+                6,
+                7,
+                7,
+                8
+            ]
+        },
+        "idle": {
+            "loop": false,
+            "sequence": [
+                1,
+                1,
+                2,
+                2,
+                1,
+                1,
+                2,
+                2,
+                1
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                4
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                3
+            ]
+        },
+        "squat": {
+            "loop": false,
+            "sequence": [
+                19
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                9,
+                10,
+                11,
+                12,
+                13,
+                14
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "carrot.spr2",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 15,
+    "check_tiles": true,
+    "color": "normal",
+    "damage": 1,
+    "damage_type": 1,
+    "destruction_effect": 100,
+    "effect": 0,
+    "enemy": true,
+    "energy": 2,
+    "frame": {
+        "height": 47,
+        "pos_x": 1,
+        "pos_y": 1,
+        "width": 34
+    },
+    "frame_rate": 5,
+    "frames_number": 19,
+    "immunity_type": 0,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 35,
+    "max_speed": 3.0,
+    "name": "boxing bunny",
+    "parallax_type": 0,
+    "picture": "spr_bun.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 20,
+    "size": {
+        "height": 47,
+        "width": 31
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "bunny_at.wav",
+        "attack2": "bunny_at.wav",
+        "damage": "bunny_dm.wav",
+        "destruction": "bunny_ko.wav",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 1.0
+}

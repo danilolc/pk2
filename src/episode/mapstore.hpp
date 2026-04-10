@@ -4,19 +4,28 @@
 //#########################
 #pragma once
 
-#include "engine/platform.hpp"
+#include "engine/types.hpp"
+#include "engine/PJson.hpp"
 
 #include <vector>
 #include <string>
 
-struct episode_entry {
-
+class episode_entry{
+public:
     std::string name;
     std::string zipfile;
-    bool is_zip;
-
+    std::string path;
+    bool is_zip = false;
 };
+
+void to_json(nlohmann::json& j,const episode_entry& entry);
+void from_json(const nlohmann::json& j, episode_entry& entry);
 
 extern std::vector<episode_entry> episodes;
 
 void Search_Episodes();
+
+#ifdef __ANDROID__
+void Android_InstallZipEpisode();
+
+#endif

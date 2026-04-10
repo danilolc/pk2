@@ -6,9 +6,11 @@
 
 #include "engine/PLog.hpp"
 
-#include "engine/render/PSdl.hpp"
+#include "PSdl.hpp"
 
 #include <SDL.h>
+
+#include <stdexcept>
 
 void PSdl::load_ui_texture(void* surface) {
 
@@ -67,6 +69,12 @@ int PSdl::set_shader(int mode) {
 
 int PSdl::set_vsync(bool set) {
 
+    if(renderer!=nullptr && SDL_RenderSetVSync(renderer, set)!=0){
+        PLog::Write(PLog::ERR, "PSDL", "Couldn't set vsync %s", SDL_GetError());
+    }
+
+    /*Uint32 sync = set? SDL_RENDERER_PRESENTVSYNC : 0;
+
     if (renderer) {
 
         ui_texture = NULL;
@@ -84,7 +92,7 @@ int PSdl::set_vsync(bool set) {
 
     }
 
-    SDL_RenderClear(renderer);
+    SDL_RenderClear(renderer);*/
 
     return 0;
 
@@ -152,11 +160,10 @@ PSdl::PSdl(int width, int height, void* window) {
     if (!renderer) {
 
         PLog::Write(PLog::FATAL, "PSdl", "Couldn't create renderer!");
-
-    }
+		throw std::runtime_error("Cannot create SDL renderer!");
+	}
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
-
     SDL_RenderClear(renderer);
 
 }

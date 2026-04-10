@@ -17,3 +17,13 @@ typedef int32_t s32;
 typedef int64_t s64;
 
 typedef unsigned int uint;
+
+
+class Point2D{
+public:
+    Point2D()=default;
+    Point2D(double x, double y):x(x), y(y){
+    }
+    double x = 0;
+    double y = 0;
+};

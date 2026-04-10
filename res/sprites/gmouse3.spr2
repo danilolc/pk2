@@ -1,0 +1,152 @@
+{
+    "ai": [
+        6,
+        11,
+        24,
+        37,
+        10
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "tennisb.spr2",
+    "animations": {
+        "attack1": {
+            "loop": false,
+            "sequence": [
+                3,
+                3,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                3,
+                3,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                5
+            ]
+        },
+        "death": {
+            "loop": true,
+            "sequence": [
+                6,
+                6,
+                7,
+                7
+            ]
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1,
+                1,
+                1,
+                1,
+                2,
+                2,
+                2
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                3
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                3
+            ]
+        },
+        "squat": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                1
+            ]
+        }
+    },
+    "attack1_time": 9,
+    "attack2_time": 9,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 0,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 80,
+    "check_tiles": true,
+    "color": "blue",
+    "damage": 3,
+    "damage_type": 6,
+    "destruction_effect": 100,
+    "effect": 0,
+    "enemy": true,
+    "energy": 20,
+    "frame": {
+        "height": 67,
+        "pos_x": 1,
+        "pos_y": 1,
+        "width": 71
+    },
+    "frame_rate": 7,
+    "frames_number": 7,
+    "immunity_type": 6,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 30,
+    "max_speed": 0.0,
+    "name": "giant ice mouse",
+    "parallax_type": 0,
+    "picture": "spr_mous.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 100,
+    "size": {
+        "height": 67,
+        "width": 71
+    },
+    "sound_frequency": 11050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "",
+        "destruction": "ko1.wav",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 3.0
+}

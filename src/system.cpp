@@ -4,43 +4,25 @@
 //#########################
 #include "system.hpp"
 
+#include "engine/PFilesystem.hpp"
+
 #include "engine/PLog.hpp"
 #include "engine/PUtils.hpp"
-#include "engine/PInput.hpp"
 #include "engine/PDraw.hpp"
 #include "engine/PRender.hpp"
-#include "settings.hpp"
+#include "settings/settings.hpp"
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <string>
 
 int screen_width  = 800;
 int screen_height = 480;
 
-bool audio_multi_thread = true;
-int audio_buffer_size = 1024;
-int render_method = PRender::RENDERER_DEFAULT;
+int default_palette = -1;
+int global_gfx_texture = -1;
+int global_gfx_texture2 = -1;
 
-#ifdef __ANDROID__
-
-bool external_dir;
-
-std::string External_Path;
-std::string Internal_Path;
-
-#endif
-
-char id_code[8] = "";
-
-std::string data_path;
-
-int game_assets = -1;
-int game_assets2 = -1;
 int bg_screen = -1;
-
-int key_delay = 0;
-bool mouse_hidden = false;
 
 double cos_table[360];
 double sin_table[360];
@@ -51,10 +33,7 @@ bool test_level = false;
 bool dev_mode = false;
 
 bool show_fps = false;
-bool speedrun_mode = false;
-
-bool PK2_error = false;
-const char* PK2_error_msg = nullptr;
+//bool speedrun_mode = false;
 
 static float alpha = 1;
 static float fade_speed = 0;
@@ -87,7 +66,7 @@ void Fade_in(float speed){
     alpha = 0;
     fade_speed = speed;
 }
-void Do_Thunder() {
+void StartLightningEffect() {
 	thunder_index = 0;
 }
 
@@ -126,22 +105,6 @@ void Update_Colors() {
 
 }
 
-int PK2_Error(const char* msg) {
-	
-	PK2_error = true;
-	PK2_error_msg = msg;
-
-	return 0;
-}
-
-void Id_To_String(u32 id, char* string) {
-
-	if (!string) return;
-
-	sprintf(string, "_%06x", id & 0xFFFFFF);
-
-}
-
 void Calculate_SinCos(){
 
 	for ( int i = 0; i < 360; i++ ) {
@@ -153,103 +116,8 @@ void Calculate_SinCos(){
 
 }
 
-int Clicked() {
-
-	if (key_delay) return 0;
-
-	if (PInput::MouseLeft())
-		return 1;
-
-	if (PInput::Keydown(PInput::SPACE) || PInput::Keydown(PInput::RETURN))
-		return 2;
-
-	if (PInput::Keydown(PInput::JOY_A) || PInput::Keydown(PInput::JOY_START))
-		return 3;
-	
-	return 0;
-
-}
-
 void Draw_Cursor(int x, int y) {
-
-	PDraw::image_cutclip(game_assets,x,y,621,461,640,480);
-	
-}
-
-void Prepare_DataPath() {
-
-	PUtils::CreateDir(data_path);
-	PUtils::CreateDir(data_path + "scores" PE_SEP);
-	PUtils::CreateDir(data_path + "mapstore" PE_SEP);
-
-}
-
-void Move_DataPath(std::string new_path) {
-
-	PLog::Write(PLog::DEBUG, "PK2", "Renaming data from %s to %s", data_path.c_str(), new_path.c_str());
-
-	// There is a save on the destination
-	PFile::Path old_settings = PFile::Path(new_path, "settings.ini");
-	if (old_settings.Find()) {
-	    u32 id;
-		int ret = Settings_GetId(old_settings, id);
-		if (ret == 0) {
-            char ids[8];
-            Id_To_String(id, ids);
-            std::string bkp_dir = data_path + "backups" + PE_SEP;
-            PUtils::CreateDir(bkp_dir);
-            PUtils::RenameDir(new_path, bkp_dir + ids + PE_SEP);
-        }
-	}
-
-	PUtils::RemoveDir(new_path);
-	PUtils::RenameDir(data_path, new_path);
-
-	data_path = new_path;
-
-}
-
-//TODO - Receive Episode, organize this
-bool FindAsset(PFile::Path* path, const char* default_dir) {
-
-	if (!path->Find()) {
-
-		PLog::Write(PLog::INFO, "PK2", "Can't find %s", path->c_str());
-
-		path->SetPath(default_dir);
-		PLog::Write(PLog::INFO, "PK2", "Trying %s", path->c_str());
-		
-		if (!path->Find()) {
-			
-			PLog::Write(PLog::INFO, "PK2", "Can't find %s", path->c_str());
-
-			if (path->Is_Zip()) {
-
-				PLog::Write(PLog::INFO, "PK2", "Trying outsize zip");
-
-				std::string filename = path->GetFileName();
-
-				*path = PFile::Path(default_dir);
-				path->SetFile(filename);
-				if (!path->Find()) {
-
-					//PLog::Write(PLog::ERR, "PK2", "Can't find %s", path->c_str());
-					return false;
-
-				}
-
-			} else {
-
-				return false;
-
-			}
-		
-		}
-		
-	}
-
-	return true;
-
+	PDraw::image_cutclip(global_gfx_texture,x,y,621,461,640,480);
 }
 
 int Set_Screen_Size(int w, int h) {

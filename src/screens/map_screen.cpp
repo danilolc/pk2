@@ -2,48 +2,56 @@
 //Pekka Kana 2
 //Copyright (c) 2003 Janne Kivilahti
 //#########################
-#include "screens/screens.hpp"
+#include <iostream>
+
+#include "map_screen.hpp"
 
 #include "engine/PLog.hpp"
 #include "engine/PDraw.hpp"
 #include "engine/PInput.hpp"
 #include "engine/PSound.hpp"
-#include "engine/PUtils.hpp"
+#include "engine/PFilesystem.hpp"
+
+#include <array>
+#include <string>
 
 #include <cstring>
 
 #include "game/game.hpp"
 #include "game/spriteclass.hpp"
-#include "settings.hpp"
+#include "settings/settings.hpp"
 #include "gfx/text.hpp"
 #include "language.hpp"
-#include "gui.hpp"
+#include "gfx/touchscreen.hpp"
 #include "episode/episodeclass.hpp"
 #include "sfx.hpp"
-#include "save.hpp"
 #include "system.hpp"
+#include "exceptions.hpp"
 
-bool going_to_game = false;
+MapScreen::MapScreen(){
+	this->mouseKeysEnabled = true;
+}
 
-int PK_Draw_Map_Button(int x, int y, int type){
+int MapScreen::PK_Draw_Map_Button(int x, int y, int type){
 
 	const int BORDER = 23; //Max 23
 	int ret = 0;
-	
-	if (PInput::mouse_x > x && PInput::mouse_x < x + BORDER
-		&& PInput::mouse_y > y && PInput::mouse_y < y + BORDER) {
 
-		if (Clicked()) {
-			key_delay = 30;
+	const Point2D mousePos = PInput::InputSystem::instance().getMousePos();
+	
+	if (mousePos.x > x && mousePos.x < x + BORDER
+		&& mousePos.y > y && mousePos.y < y + BORDER) {
+
+		if (this->enterPressed || this->mousePressed) {
 			return 2;
 		}
 
 		if (type == 0)
-			PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-4, y-4, 60, 32);
+			PDraw::image_cutcliptransparent(global_gfx_texture, 247, 1, 25, 25, x-3, y-3, 60, 32);
 		if (type == 1)
-			PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-2, y-2, 60, 96);
+			PDraw::image_cutcliptransparent(global_gfx_texture, 247, 1, 25, 25, x-3, y-3, 60, 96);
 		if (type == 2)
-			PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-4, y-4, 60, 64);
+			PDraw::image_cutcliptransparent(global_gfx_texture, 247, 1, 25, 25, x-3, y-3, 60, 64);
 
 		ret = 1;
 	}
@@ -54,112 +62,116 @@ int PK_Draw_Map_Button(int x, int y, int type){
 		flash = 0;
 	
 	if (type == 1)
-		PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-2, y-2, flash, 96);
+		PDraw::image_cutcliptransparent(global_gfx_texture, 247, 1, 25, 25, x-3, y-3, flash, 96);
 
 	if (((degree/45)+1)%4==0 || type==0)
-		PDraw::image_cutclip(game_assets,x,y,1 + 25*type,58,23 + 25*type,80);
+		PDraw::image_cutclip(global_gfx_texture,x-1,y-1,1 + 25*type,58,23 + 25*type,80);
 
 	return ret;
 }
 
-int PK_Draw_Map() {
-
-	char luku[20];
+void MapScreen::Draw() {
 
 	PDraw::image_clip(bg_screen, 0, 0);
 
-	ShadowedText_Draw(Episode->entry.name.c_str(), 100, 72);
+	ShadowedText_Draw(Episode->entry.name, 100, 72);
 
 	int ysize = ShadowedText_Draw(tekstit->Get_Text(PK_txt.map_total_score), 100, 92);
 	
-	sprintf(luku, "%i", Episode->player_score);
-	ShadowedText_Draw(luku, 100 + ysize + 15, 92);
+	ShadowedText_Draw(std::to_string(Episode->getPlayerScore()), 100 + ysize + 15, 92);
 
-	if (Episode->scores.episode_top_score > 0) {
+	if (Episode->scoresTable.episodeTopScore > 0) {
 
-		ysize = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_best_player),360,72);
-		PDraw::font_write(fontti1,Episode->scores.episode_top_player,360+ysize+10,72);
+		ysize = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_best_player),360,72).first;
+		PDraw::font_write_line(fontti1,Episode->scoresTable.episodeTopPlayer,360+ysize+10,72);
 		
-		ysize = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_hiscore),360,92);
-		sprintf(luku, "%i", Episode->scores.episode_top_score);
-		PDraw::font_write(fontti2,luku,360+ysize+15,92);
+		ysize = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_episode_hiscore),360,92).first;
+		PDraw::font_write_line(fontti2,std::to_string(Episode->scoresTable.episodeTopScore), 360+ysize+15,92);
 
 	}
 
-	if (Episode->next_level < UINT32_MAX) {
-		ysize = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_next_level),100,120);
-		sprintf(luku, "%i", Episode->next_level);
-		PDraw::font_write(fontti1,luku,100+ysize+15,120);
+	if (Episode->next_level <= Episode->getHighestLevelNumber()) {
+		ysize = PDraw::font_write(fontti1,tekstit->Get_Text(PK_txt.map_next_level),100,120).first;
+		PDraw::font_write_line(fontti1,std::to_string(Episode->next_level),100+ysize + 8,120);
 	}
 
-	//PK_Particles_Draw();
-
-	if (Episode->level_count == 0) {
-		PDraw::font_write(fontti2,tekstit->Get_Text(PK_txt.episodes_no_maps),180,290);
+	if (Episode->getLevelsNumber() == 0) {
+		const std::string& txt = tekstit->Get_Text(PK_txt.episodes_no_maps);
+		std::pair<int, int> p = PDraw::font_get_text_size(fontti2, txt);
+		PDraw::font_write(fontti2, txt, 320 - p.first/2, 240 - p.second);
+		//PDraw::font_write(fontti2,txt,180,290);
 	}
 	
 	if (!going_to_game) {
-		if (Draw_Menu_Text(tekstit->Get_Text(PK_txt.mainmenu_return),100,430))
+		if (drawMenuText(PK_txt.mainmenu_return,100,430))
 			next_screen = SCREEN_MENU;
 	} else {
-		WavetextSlow_Draw(tekstit->Get_Text(PK_txt.mainmenu_return), fontti2, 100, 430);
+		WavetextSlow_Draw(tekstit->Get_Text(PK_txt.mainmenu_return).c_str(), fontti2, 100, 430);
 	}
 
-	for (u32 i = 0; i < Episode->level_count; i++) {
-		if (strcmp(Episode->levels_list[i].nimi,"")!=0 && Episode->levels_list[i].order > 0) {
+	//for (u32 i = 0; i < Episode->level_count; i++) {
+	u32 i = 0;
+	for(const LevelEntry& entry: Episode->getLevelEntries()){
+		if (!entry.levelName.empty() && entry.number > 0) {
 			
 			int type = -1;
-			if (Episode->levels_list[i].order == Episode->next_level)
+			if (entry.number == Episode->next_level)
 				type = 1;
-			if (Episode->levels_list[i].order > Episode->next_level)
+			if (entry.number > Episode->next_level)
 				type = 2;
-			if (Episode->level_status[i] != 0)
+			if (entry.status != 0)
 				type = 0;
 
-			int x = Episode->levels_list[i].x;
-			int y = Episode->levels_list[i].y;
+			int x = entry.map_x;
+			int y = entry.map_y;
 
-			int icon = Episode->levels_list[i].icon;
+			int icon = entry.icon_id;
 
-			int assets = game_assets;
+			int assets = global_gfx_texture;
 			if (icon >= 22) {
 				icon -= 22;
-				assets = game_assets2;
+				assets = global_gfx_texture2;
 			}
 
-			//PDraw::image_clip(game_assets,x-4,y-4-30,1+(icon*27),452,27+(icon*27),478);
 			PDraw::image_cutclip(assets,x-9,y-14,1+(icon*28),452,28+(icon*28),479);
 
+			//draw circling rooster head
 			if ( type == 1 ) {
 				int sinx = (int)(sin_table(degree)/2);
 				int cosy = (int)(cos_table(degree)/2);
 				int pekkaframe = 28*((degree%360)/120);
-				PDraw::image_cutclip(game_assets,x+sinx-12,y-17+cosy,157+pekkaframe,46,181+pekkaframe,79);
+				PDraw::image_cutclip(global_gfx_texture,x+sinx-8,y-17+cosy,157+pekkaframe,46,182+pekkaframe,80);
 			}
 
 			int paluu = PK_Draw_Map_Button(x-5, y-10, type);
 
 			if (!Episode->ignore_collectable) {
-				if (Episode->level_status[i] & LEVEL_ALLAPPLES)
-					PDraw::image_cutclip(game_assets2, 
+				if (entry.status & LEVEL_ALLAPPLES){
+					PDraw::image_cutclip(global_gfx_texture2, 
 						x - 10,
 						y, 45, 379, 58, 394);
+				}
+				else if(entry.status & LEVEL_HAS_BIG_APPLES){
+					PDraw::image_cutclip(global_gfx_texture2, 
+						x - 10,
+						y, 45, 397, 58, 412);
+				}
 				//else //TODO - draw transparent apples
-				//	PDraw::image_cutcliptransparent(game_assets2, 
+				//	PDraw::image_cutcliptransparent(global_gfx_texture2, 
 				//		45, 379, 58-45, 394-379, x - 10, y, sin_table(degree)*3 - 10, COLOR_GRAY);
 			}
 
-			if (Episode->next_level == UINT32_MAX) {
+			if (Episode->isCompleted()) {
 
 				int dd = (degree / 3) % 60;
-				int order = Episode->levels_list[i].order;
+				int order = entry.number;
 
 				int a = 0;
 				if (order < dd)
 					a = 100 - (dd - order) * 5;
 				
 				if (a > 0)
-					PDraw::image_cutcliptransparent(game_assets, 247, 1, 25, 25, x-9, y-14, a, COLOR_TURQUOISE);
+					PDraw::image_cutcliptransparent(global_gfx_texture, 247, 1, 25, 25, x-8, y-13, a, COLOR_TURQUOISE);
 
 			}
 
@@ -167,23 +179,28 @@ int PK_Draw_Map() {
 			if (paluu == 2) {
 				if (type != 2 || dev_mode) {
 
+					if(Game!=nullptr){
+						delete Game;
+						Game = nullptr;
+					}
+
 					Game = new GameClass(i);
 					
 					going_to_game = true;
 					Fade_out(FADE_SLOW);
 					PSound::set_musicvolume(0);
-					Play_MenuSFX(doodle_sound,90);
+					Play_MenuSFX(Episode->sfx.doodle_sound,90);
 				
 				} else {
 
-					Play_MenuSFX(moo_sound,100);
+					Play_MenuSFX(Episode->sfx.moo_sound,100);
 
 				}
 			}
 
 			if (!Episode->hide_numbers) {
-				sprintf(luku, "%i", Episode->levels_list[i].order);
-				PDraw::font_write(fontti1,luku,x-12+2,y-29+2);
+				//sprintf(luku, "%i", Episode->levels_list[i].order);
+				PDraw::font_write_line(fontti1,std::to_string(entry.number),x-12+2,y-29+2);
 			}
 
 			// if mouse hoover
@@ -191,107 +208,109 @@ int PK_Draw_Map() {
 
 				int info_x = 489+3, info_y = 341-26;
 
-				PDraw::image_cutclip(game_assets,info_x-3,info_y+26,473,0,607,121);
-				PDraw::font_write(fontti1,Episode->levels_list[i].nimi,info_x,info_y+30);
+				PDraw::image_cutclip(global_gfx_texture,info_x-3,info_y+26,473,0,608,122);
 
-				if (Episode->scores.has_score[i]) { 
-					
-					PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_player),info_x,info_y+50,75);
-					PDraw::font_write(fontti1,Episode->scores.top_player[i],info_x,info_y+62);
-					ysize = 8 + PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_hiscore),info_x,info_y+74,75);
-					sprintf(luku, "%i", Episode->scores.best_score[i]);
-					PDraw::font_write(fontti1,luku,info_x+ysize,info_y+75);
-				
-                }
+				info_y += 30;
+				info_y += PDraw::font_write(fontti1,entry.levelName,info_x,info_y).second;
+				info_y += 10;				
 
-				if (Episode->scores.has_time[i]) {
+				LevelScore* levelScore = Episode->scoresTable.getScoreByLevelName(entry.fileName);
+				if(levelScore!=nullptr){
 
-					PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_fastest_player),info_x,info_y+98,75);
-					PDraw::font_write(fontti1,Episode->scores.fastest_player[i],info_x,info_y+110);
+					PDraw::font_writealpha_s(fontti1,tekstit->Get_Text(PK_txt.map_level_best_player),info_x,info_y,75);
+					info_y+=12;
 
-					ysize = 8 + PDraw::font_writealpha(fontti1,tekstit->Get_Text(PK_txt.map_level_best_time),info_x,info_y+122,75);
+					PDraw::font_write_line(fontti1,levelScore->topPlayer,info_x,info_y);
+					info_y+=12;
 
-					s32 time = Episode->scores.best_time[i] / 60;
-					if (time < 0) {
-						time = -time;
-						ysize += PDraw::font_write(fontti1,"-",info_x+ysize,info_y+122);
+					ysize = 8 + PDraw::font_writealpha_s(fontti1,tekstit->Get_Text(PK_txt.map_level_hiscore),info_x,info_y,75).first;
+
+
+					//sprintf(luku, "%i", Episode->scores.best_score[i]);
+					info_y+=1;
+					PDraw::font_write_line(fontti1,std::to_string(levelScore->bestScore),info_x+ysize,info_y);
+
+					if(levelScore->hasTime){
+						info_y+=23;
+
+						PDraw::font_writealpha_s(fontti1,tekstit->Get_Text(PK_txt.map_level_fastest_player),info_x,info_y,75);
+						info_y+=12;
+
+						PDraw::font_write_line(fontti1,levelScore->fastestPlayer,info_x,info_y);
+						info_y+=12;
+
+						ysize = 8 + PDraw::font_writealpha_s(fontti1,tekstit->Get_Text(PK_txt.map_level_best_time),info_x,info_y,75).first;
+
+						s32 time = levelScore->bestTime / 60;
+						if (time < 0) {
+							time = -time;
+							ysize += PDraw::font_write_line(fontti1,"-",info_x+ysize,info_y);
+						}
+
+						s32 min = time / 60;
+						s32 sek = time % 60;
+						
+						std::string min_s = std::to_string(min);
+						std::string sek_s = std::to_string(sek);
+
+						//sprintf(luku, "%i", min);
+						ysize += PDraw::font_write_line(fontti1,min_s,info_x+ysize,info_y);
+						ysize += PDraw::font_write_line(fontti1,":",info_x+ysize,info_y);
+						if (sek < 10)
+							ysize += PDraw::font_write_line(fontti1,"0",info_x+ysize,info_y);
+						//sprintf(luku, "%i", sek);
+						PDraw::font_write_line(fontti1,sek_s,info_x+ysize,info_y);
 					}
-
-					s32 min = time / 60;
-					s32 sek = time % 60;
-
-					sprintf(luku, "%i", min);
-					ysize += PDraw::font_write(fontti1,luku,info_x+ysize,info_y+122);
-					ysize += PDraw::font_write(fontti1,":",info_x+ysize,info_y+122);
-                    if (sek < 10)
-                        ysize += PDraw::font_write(fontti1,"0",info_x+ysize,info_y+122);
-					sprintf(luku, "%i", sek);
-					PDraw::font_write(fontti1,luku,info_x+ysize,info_y+122);
-
 				}
 			}
 		}
+		++i;
+	}
+}
+
+void MapScreen::Play_Music() {
+	static const std::array<std::string, 6> map_music_filenames = {
+		"map.xm",
+		"map.ogg",
+		"map.mp3",
+		"map.s3m",
+		"map.mod",
+		"map.it",
+	};
+
+	std::optional<PFile::Path> mapmus = {};
+
+	for(const std::string& music_name:map_music_filenames){
+		mapmus = PFilesystem::FindEpisodeAsset(music_name, PFilesystem::MUSIC_DIR);
+
+		if(mapmus.has_value())break;
+	}
+	if(!mapmus.has_value()){
+		//mapmus =   PFile::Path("music" PE_SEP);
+		for(const std::string& music_name:map_music_filenames){
+			//mapmus.SetFile(music_name);
+
+			mapmus = PFilesystem::FindVanillaAsset(music_name, PFilesystem::MUSIC_DIR);
+			if(mapmus.has_value())break;
+		}
 	}
 
-	return 0;
+	if(mapmus.has_value()){
+		PSound::start_music(*mapmus);
+		PSound::set_musicvolume_now(Settings.music_max_volume);
+	}
+	else{
+		PLog::Write(PLog::ERR,"PK2","Map music not found!");
+	}
 }
 
-int Play_Music() {
-
-	PFile::Path mapmus = Episode->Get_Dir("");
-
-	mapmus.SetFile("map.mp3");
-	if (mapmus.Find())
-		goto found;
-	
-	mapmus.SetFile("map.ogg");
-	if (mapmus.Find())
-		goto found;
-	
-	mapmus.SetFile("map.xm");
-	if (mapmus.Find())
-		goto found;
-	
-	mapmus.SetFile("map.mod");
-	if (mapmus.Find())
-		goto found;
-	
-	mapmus.SetFile("map.it");
-	if (mapmus.Find())
-		goto found;
-	
-	mapmus.SetFile("map.s3m");
-	if (mapmus.Find())
-		goto found;
-	
-	mapmus = PFile::Path("music" PE_SEP "map.mp3");
-	if (mapmus.Find())
-		goto found;
-	
-	mapmus.SetFile("map.ogg");
-	if (mapmus.Find())
-		goto found;
-	
-	mapmus.SetFile("map.xm");
-	
-	found:
-
-	PSound::start_music(mapmus);
-	PSound::set_musicvolume_now(Settings.music_max_volume);
-
-	return 0;
-
-}
-
-int Screen_Map_Init() {
+void MapScreen::Init() {
 
 	if (!Episode) {
-		PK2_Error("Episode not started");
-		return 1;
+		throw PExcept::PException("Episode not started!");
 	}
 
-	if(PUtils::Is_Mobile())
-		GUI_Change(UI_CURSOR);
+	TouchScreenControls.change(UI_CURSOR);
 
 	mouse_hidden = false;
 	
@@ -300,13 +319,13 @@ int Screen_Map_Init() {
 	degree = degree_temp;
 
 	// Load custom assets (should be done when creating Episode)
-	Episode->Load_Assets();
+	Episode->loadAssets();
 
-	PFile::Path path = Episode->Get_Dir("map.bmp");
+	std::optional<PFile::Path> path = PFilesystem::FindAsset("map.bmp", PFilesystem::GFX_DIR, ".png");
 
-	if (FindAsset(&path, "gfx" PE_SEP)) {
-
-		PDraw::image_load(bg_screen, path, true);
+	if (path.has_value()) {
+		PDraw::image_load_with_palette(bg_screen, default_palette, *path, true);
+		PDraw::palette_set(default_palette);
 
 	} else {
 
@@ -319,26 +338,26 @@ int Screen_Map_Init() {
 	going_to_game = false;
 
 	Fade_in(FADE_SLOW);
-
-	return 0;
-	
 }
 
-int Screen_Map() {
 
-	PK_Draw_Map();
+void MapScreen::onKeyPressed(const PInput::Key& k){
+	if(!going_to_game){
 
-	degree = 1 + degree % 360;
-
-	if (!going_to_game && key_delay == 0) {
-
-		if (PInput::Keydown(PInput::ESCAPE) || PInput::Keydown(PInput::JOY_START)) {
+		if(k==PInput::Key::ESCAPE || k==PInput::Key::JOY_START){
 			next_screen = SCREEN_MENU;
-			key_delay = 20;
 		}
-		
 	}
 
+	Screen::onKeyPressed(k);
+}
+
+
+void MapScreen::Loop() {
+
+	this->Draw();
+
+	degree = 1 + degree % 360;
 	if (next_screen == SCREEN_MENU) {
 
 		int w, h;
@@ -352,10 +371,8 @@ int Screen_Map() {
 		degree_temp = degree;
 
 	} else {
-	
-		if (!PUtils::Is_Mobile() || !Settings.gui)
-			Draw_Cursor(PInput::mouse_x, PInput::mouse_y);
 
+		this->drawMouseCursor();
 	}
 
 	if (going_to_game && !Is_Fading()) {
@@ -365,7 +382,13 @@ int Screen_Map() {
 		//Draw "loading" text
 		PDraw::set_offset(screen_width, screen_height);
 		PDraw::screen_fill(0);
-		PDraw::font_write(fontti2, tekstit->Get_Text(PK_txt.game_loading), screen_width / 2 - 82, screen_height / 2 - 9);
+
+		const std::string& txt = tekstit->Get_Text(PK_txt.game_loading);
+		std::pair<int, int> p = PDraw::font_get_text_size(fontti2, txt);
+
+		int x = screen_width / 2 - p.first / 2;
+		int y = screen_height / 2 - p.second / 2;
+		PDraw::font_write(fontti2, txt, x, y);
 		Fade_out(0);
 
 	}
@@ -373,6 +396,4 @@ int Screen_Map() {
 	if (Episode->glows)
 		if (degree % 4 == 0)
 			PDraw::rotate_palette(224,239);
-
-	return 0;
 }

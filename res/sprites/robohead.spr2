@@ -1,0 +1,145 @@
+{
+    "ai": [
+        6,
+        130,
+        23
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                3,
+                4
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                3,
+                4
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        "death": {
+            "loop": false,
+            "sequence": []
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        "squat": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3,
+                4
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                1,
+                2,
+                3,
+                4
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 15,
+    "check_tiles": true,
+    "color": "normal",
+    "damage": 1,
+    "damage_type": 1,
+    "destruction_effect": 11,
+    "effect": 0,
+    "enemy": true,
+    "energy": 1,
+    "frame": {
+        "height": 24,
+        "pos_x": 1,
+        "pos_y": 40,
+        "width": 25
+    },
+    "frame_rate": 3,
+    "frames_number": 4,
+    "immunity_type": 1,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 10,
+    "max_speed": 2.0,
+    "name": "head of robot hen",
+    "parallax_type": 0,
+    "picture": "spr_robo.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 5,
+    "size": {
+        "height": 24,
+        "width": 25
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "robo_dmg.wav",
+        "destruction": "explot.wav",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.0
+}

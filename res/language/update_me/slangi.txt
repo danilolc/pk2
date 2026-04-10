@@ -1,0 +1,191 @@
+
+Setup 
+------------------------------------------------------------------------------------
+*setup options:			Asetukset
+*setup video modes:		Näyton reso
+*setup music & sounds:		Musa ja ääniefektit
+*setup music:			Musa
+*setup sounds:			Ääniefektit
+*setup language:		Valkkaa kielifilu
+*setup play:			Pelaa
+*setup exit:			Lopeta
+
+Intro
+------------------------------------------------------------------------------------
+*intro presents:			esittää 2003
+*intro a game by:			pelin, jonka on tehny
+*intro original character design:	alkuperäsen hahmon väsäs
+*intro tested by:			pelii testas
+*intro thanks to:			kiitokset
+*intro translation:			slangiks kääns
+*intro translator:			heikki salko
+
+Main Menu
+------------------------------------------------------------------------------------
+*main menu new game:		alota uus peli
+*main menu continue:		jatka pelii
+*main menu load game:		lataa peli
+*main menu save game:		seivaa
+*main menu controls:		kontrollit
+*main menu graphics:		graffat
+*main menu sounds:		äänet
+*main menu exit game:		lopeta
+
+*back to main menu:		takas päävalikkoon
+
+Load Game
+------------------------------------------------------------------------------------
+*load menu title:		lataa peli
+*load menu info:		klikkaa seiviä, jonka haluut ladata
+*load menu episode:		episodi: 
+*load menu level:		taso: 
+
+Save Game
+------------------------------------------------------------------------------------
+*save menu title:		seivaa peli
+*save menu info:		klikkaa paikkaa, johon haluut tallentaa
+*save menu episode:		episodi: 
+*save menu level:		taso: 
+
+Game Controls
+------------------------------------------------------------------------------------
+*controls menu title:		ohjausnäppäimet
+*controls menu move left:	vasemmalle
+*controls menu move right:	oikeelle
+*controls menu jump:		hyppy
+*controls menu duck:		kyykkyyn meno
+*controls menu walk slow:	hiipiminen
+*controls menu egg attack:	muniminen
+*controls menu doodle attack:	kiekasu
+*controls menu use item:	käytä esine
+*controls menu edit:		muokkaa kontrolleja
+*controls menu keyboard def:	perusnapit näppäimistölle
+*controls menu gamepad4:	perusnapit gamepadille  4 nappia
+*controls menu gamepad6:	perusnapit gamepadille  6 nappia
+
+Sounds
+------------------------------------------------------------------------------------
+*sounds menu title:		äänet ja musa
+*sounds menu sfx volume:	ääniefektien volyymi
+*sounds menu music volume:	musan volyymi
+*sounds menu more:		lisää
+*sounds menu less:		vähennä
+
+Graphics
+------------------------------------------------------------------------------------
+*graphics menu title:				pelin graffat
+*graphics menu transparency fx on:		läpinäkyvyysefektit on
+*graphics menu transparency fx off:		läpinäkyvyysefektit off
+*graphics menu menus are transparent:		läpinäkyvät menutekstit 
+*graphics menu menus are not transparent:	tavalliset menutekstit 
+*graphics menu item bar is visible:		esineet näkyy
+*graphics menu item bar is not visible:		esineet ei näy
+*graphics menu weather fx on:			sääefektit näkyy
+*graphics menu weather fx off:			sääefektit ei näy
+*graphics menu bg sprites on:			taustaspritet näkyy
+*graphics menu bg sprites off:			taustaspritet ei näy
+*graphics menu game speed normal:		normaali nopeus 
+*graphics menu game speed double:		tuplanopeus 
+
+Player's name
+------------------------------------------------------------------------------------
+*player screen type your name:			kirjota nimes
+*player screen continue:			valmis
+*player screen clear:				tyhjennä
+*player default name:				pelaaja
+
+Episodes
+------------------------------------------------------------------------------------
+*episode menu choose episode:			valkkaa episodi
+*episode menu get more episodes at:		hae lisää episodei osotteest http://pistegamez.cjb.net
+*episode menu no maps:				episodis ei oo karttoi!?
+
+Map
+------------------------------------------------------------------------------------
+*map screen total score:			pinnat
+*map screen next level:				seuraava taso
+*episode best player:				episodin mestari:
+*episode hiscore:				pinnat
+*level best player:				paras pelaaja
+*level hiscore:					pinnat:
+*level fastest player:				nopein pelaaja
+*level best time:				aika:
+
+Scores
+------------------------------------------------------------------------------------
+*score screen title:			tuloksenlasku
+*score screen level score:		pinnat yhteensä
+*score screen bonus score:		pinnat bonuksista
+*score screen time score:		pinnat ajasta
+*score screen energy score:		pinnat energiasta
+*score screen item score:		pinnat esineistä
+*score screen continue:			jatka
+*score screen total score:		tason pinnat
+*score screen new level hiscore:	teit tason uuden enkan!
+*score screen new level best time:	oot tason nopein pelaaja!
+*score screen new episode hiscore:	oot episodin uus  mestari!
+
+Game
+------------------------------------------------------------------------------------
+*score:				pinnat:
+*game time:			aika:
+*energy:			energia:
+*items:				tavarat:
+*attack 1:			kieku:
+*attack 2:			munat:
+*keys:				avaimet:
+*level clear:			taso läpästy!
+*time bonus:			aikabonus
+*game paused:			peli on tauolla...
+*knocked out:			pekka on tyrmätty!
+*time out:			aika loppu!
+*try again:			yritä uuestaan!
+*locks open:			kaikki lukot on auki!
+*new doodle attack:		uus kiekasu!
+*new egg attack:		uus muninta!
+*new item:			uus tavara!
+
+*loading:			ladataan...
+
+The End
+------------------------------------------------------------------------------------
+*end congratulations:		onneks olkoon!
+*end chickens saved:		oot vapauttanu kanat!
+*end the end:				loppu
+
+Info Signs
+------------------------------------------------------------------------------------
+*info01:			huuda vastukset kumoon megafonilla!
+*info02:			tiputa munii vihollisten päälle!
+*info03:			eti kentän uloskäynti!
+*info04:			lukot aukee, ku kaikki avaimet on kerätty.
+*info05:			liikuta kytkintä hyppäämällä sen päälle.
+*info06:			vihree kytkin liikuttaa vihreit seinii.
+*info07:			sinine kytkin liikuttaa sinisii seinii.
+*info08:			oranssi kytkin sammuttaa tulen.
+*info09:			voit käyttää lahjoista saamas tavarat millon haluut.
+*info10:			höyhenet palauttaa energiaa.
+*info11:			teleportit on arvaamattomia. älä eksy!
+*info12:			saat pinnoja bonuksista ja tyrmäyksistä.
+*info13:			yritä löytää kaikki kätketyt bonukset!
+*info14:			lukko aukee, jos avain osuu siihen.
+*info15:			oo varovainen! tääl on ansoi!
+*info16:			jos aika loppuu, et pääse tasoo läpi.
+*info17:			varo vihasia elukoita!
+*info18:			varo kovaa tuulta!
+*info19:			vapauta vangitut kanat!
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+

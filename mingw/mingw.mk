@@ -9,7 +9,7 @@
 # INC_SRC (the include with SDL2 and Zip)
 # LIB_SRC (the libs with SDL2 and Zip)
 
-CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main -std=gnu++11 -Wall
+CXXFLAGS += -I$(INC_SRC) -I$(INC_SRC)SDL2/ -Dmain=SDL_main -std=gnu++17 -Wall
 LDFLAGS += -static-libgcc -static-libstdc++ -L$(LIB_SRC) -lmingw32 -mwindows -lSDL2main -lSDL2 -lSDL2_mixer -lSDL2_image
 
 # Remove these if you don't want or don't have zip

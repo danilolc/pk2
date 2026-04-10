@@ -1,0 +1,132 @@
+{
+    "ai": [
+        6,
+        24,
+        11,
+        23
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "ammo1.spr2",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                4,
+                5
+            ]
+        },
+        "death": {
+            "loop": false,
+            "sequence": [
+                6
+            ]
+        },
+        "idle": {
+            "loop": false,
+            "sequence": [
+                1
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                2
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                2
+            ]
+        },
+        "squat": {
+            "loop": false,
+            "sequence": [
+                3
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "cheese.spr2",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 100,
+    "check_tiles": true,
+    "color": "violet",
+    "damage": 1,
+    "damage_type": 1,
+    "destruction_effect": 100,
+    "effect": 0,
+    "enemy": true,
+    "energy": 3,
+    "frame": {
+        "height": 40,
+        "pos_x": 1,
+        "pos_y": 1,
+        "width": 43
+    },
+    "frame_rate": 3,
+    "frames_number": 18,
+    "immunity_type": 0,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 28,
+    "max_speed": 1.0,
+    "name": "evil tank 3",
+    "parallax_type": 0,
+    "picture": "spr_tank.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 50,
+    "size": {
+        "height": 40,
+        "width": 43
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "tankshot.wav",
+        "damage": "damage.wav",
+        "destruction": "ko1.wav",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 1.5
+}

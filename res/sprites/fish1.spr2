@@ -1,0 +1,140 @@
+{
+    "ai": [
+        6,
+        16,
+        18,
+        7
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                3,
+                4
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                3,
+                4
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                5,
+                6
+            ]
+        },
+        "death": {
+            "loop": false,
+            "sequence": [
+                7
+            ]
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1,
+                1,
+                1,
+                2,
+                2,
+                2
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                2,
+                2
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "squat": {
+            "loop": true,
+            "sequence": [
+                4,
+                4
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": true,
+    "charge_time": 15,
+    "check_tiles": true,
+    "color": "normal",
+    "damage": 1,
+    "damage_type": 1,
+    "destruction_effect": 100,
+    "effect": 0,
+    "enemy": true,
+    "energy": 1,
+    "frame": {
+        "height": 28,
+        "pos_x": 1,
+        "pos_y": 1,
+        "width": 36
+    },
+    "frame_rate": 8,
+    "frames_number": 7,
+    "immunity_type": 0,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 20,
+    "max_speed": 2.0,
+    "name": "fish",
+    "parallax_type": 0,
+    "picture": "spr_fisb.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 5,
+    "size": {
+        "height": 28,
+        "width": 36
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "damage.wav",
+        "destruction": "ko1.wav",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.0
+}

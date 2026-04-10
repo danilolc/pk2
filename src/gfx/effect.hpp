@@ -16,4 +16,6 @@ void Effect_Explosion(double x, double y, u8 color);
 void Effect_Smoke(double x, double y, u8 color);
 void Effect_SmokeClouds(double x, double y);
 void Effect_Stars(double x, double y, u8 color);
-void Effect_Destruction(u8 tehoste, double x, double y);
+
+
+void Effect_By_ID(int effect_id, double x, double y);

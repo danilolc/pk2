@@ -1,0 +1,162 @@
+{
+    "ai": [
+        6,
+        24,
+        7,
+        18,
+        8
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "doodlef2.spr2",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                10,
+                11,
+                12,
+                12,
+                12,
+                12,
+                11,
+                10,
+                1
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                10,
+                11,
+                12,
+                12,
+                12,
+                12,
+                11,
+                10,
+                1
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                13,
+                14
+            ]
+        },
+        "death": {
+            "loop": false,
+            "sequence": [
+                15,
+                15,
+                16,
+                16,
+                17,
+                17,
+                18
+            ]
+        },
+        "idle": {
+            "loop": false,
+            "sequence": [
+                1,
+                1,
+                1,
+                1,
+                2,
+                2,
+                2,
+                1
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                8
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                7
+            ]
+        },
+        "squat": {
+            "loop": false,
+            "sequence": [
+                9
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                3,
+                4,
+                5,
+                6
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "apple.spr2",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 30,
+    "check_tiles": true,
+    "color": "normal",
+    "damage": 1,
+    "damage_type": 1,
+    "destruction_effect": 100,
+    "effect": 0,
+    "enemy": true,
+    "energy": 3,
+    "frame": {
+        "height": 40,
+        "pos_x": 1,
+        "pos_y": 1,
+        "width": 34
+    },
+    "frame_rate": 5,
+    "frames_number": 18,
+    "immunity_type": 0,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 28,
+    "max_speed": 2.0,
+    "name": "chilli pig",
+    "parallax_type": 0,
+    "picture": "spr_pigs.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 20,
+    "size": {
+        "height": 40,
+        "width": 31
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "pig2.wav",
+        "attack2": "pig2.wav",
+        "damage": "pig.wav",
+        "destruction": "pig_ko.wav",
+        "random": "",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 1.5
+}

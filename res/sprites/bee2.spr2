@@ -1,0 +1,134 @@
+{
+    "ai": [
+        6,
+        130,
+        23,
+        25
+    ],
+    "always_active": false,
+    "ammo1": "",
+    "ammo2": "",
+    "animations": {
+        "attack1": {
+            "loop": true,
+            "sequence": [
+                3,
+                4
+            ]
+        },
+        "attack2": {
+            "loop": true,
+            "sequence": [
+                3,
+                4
+            ]
+        },
+        "damage": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "death": {
+            "loop": false,
+            "sequence": []
+        },
+        "idle": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "jump_down": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "jump_up": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "squat": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        },
+        "walking": {
+            "loop": true,
+            "sequence": [
+                1,
+                2
+            ]
+        }
+    },
+    "attack1_time": 60,
+    "attack2_time": 60,
+    "bonus": "",
+    "bonus_always": false,
+    "bonuses_number": 1,
+    "can_glide": false,
+    "can_open_locks": false,
+    "can_swim": false,
+    "charge_time": 15,
+    "check_tiles": true,
+    "color": "red",
+    "damage": 1,
+    "damage_type": 13,
+    "destruction_effect": 4,
+    "effect": 0,
+    "enemy": true,
+    "energy": 1,
+    "frame": {
+        "height": 10,
+        "pos_x": 1,
+        "pos_y": 32,
+        "width": 10
+    },
+    "frame_rate": 3,
+    "frames_number": 4,
+    "immunity_type": 13,
+    "indestructible": false,
+    "info_id": 0,
+    "is_transparent": false,
+    "is_wall": false,
+    "is_wall_down": true,
+    "is_wall_left": true,
+    "is_wall_right": true,
+    "is_wall_up": true,
+    "max_jump": 10,
+    "max_speed": 3.0,
+    "name": "angry bee",
+    "parallax_type": 0,
+    "picture": "spr_fisb.bmp",
+    "projectile_charge_time": 0,
+    "random_sound_frequency": true,
+    "score": 1,
+    "size": {
+        "height": 10,
+        "width": 10
+    },
+    "sound_frequency": 22050,
+    "sounds": {
+        "attack1": "",
+        "attack2": "",
+        "damage": "",
+        "destruction": "bee_ko.wav",
+        "random": "bee.wav",
+        "special1": "",
+        "special2": ""
+    },
+    "transformation": "",
+    "type": 1,
+    "version": "2.0",
+    "vibrates": false,
+    "weight": 0.0
+}
